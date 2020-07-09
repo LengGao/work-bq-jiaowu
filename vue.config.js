@@ -1,6 +1,6 @@
 const webpack = require('webpack')
-const CompressionWebpackPlugin = require('compression-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const UglifyESPlugin = require('uglifyjs-webpack-plugin')
+const path = require("path");
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
     lintOnSave:false,//关闭语法检测
@@ -9,10 +9,6 @@ module.exports = {
         open: true,
         proxy: {
             '/api': {
-                // target: process.env.NODE_ENV === 'production' ? '/' : 'http://www.crm.cc',
-                // target: 'http://api.epx.net',
-                // target: 'http://api.crmhome.cc',
-                // target: 'http://api.datuihome.com', 
                  target: 'http://api.video.cn/', 
                 // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
                 changeOrigin: true,
@@ -23,14 +19,6 @@ module.exports = {
                 }
             },
       },
-    before(app) {
-      app.get('/api/mockData', (req, res) => {
-        res.json(mockData)
-      })
-      app.get('/api/main', (req, res) => {
-        res.json(1)
-      })
-    },
   },
   // 全局配置css文件
   css: {
@@ -42,22 +30,18 @@ module.exports = {
       },
     },
   },
-  assetsDir:process.env.NODE_ENV === 'production' ? './static/admin/style/' : '',
-  // 配置部署服务器的设置
-  // assetsDir: process.env.NODE_ENV === 'production' ? './static/admin/style/' : '',
-  //不生成.map文件
-  productionSourceMap: false,
-  // vue路由按需加载 去除插件
-  chainWebpack(config) {
-    config.plugins.delete('preload')
-    config.plugins.delete('prefetch')
-    // 对应package里的判断条件
-    if (process.env.npm_config_report) {
-      config
-        .plugin('webpack-bundle-analyzer')
-        .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+
+  productionSourceMap: true,
+  configureWebpack:{  // 覆盖webpack默认配置的都在这里
+    resolve:{   // 配置解析别名
+        alias:{
+            '@':path.resolve(__dirname, './src'),
+            '@h':path.resolve(__dirname, './src/assets/hotcss'),
+            '@s':path.resolve(__dirname, './src/assets/style'),
+            '@i':path.resolve(__dirname, './src/assets/images'),
+        } 
     }
-  },
+},
   // 启动gzip压缩
   configureWebpack: (config) => {
     config.plugins.push(
@@ -70,19 +54,26 @@ module.exports = {
     // 开发环境不需要gzip
     if (process.env.NODE_ENV !== 'production') return
     config.plugins.push(
-      new CompressionWebpackPlugin({
-        // 正在匹配需要压缩的文件后缀
-        test: /\.(js|css|svg|woff|ttf|json|html)$/,
-        // 大于10kb的会压缩
-        threshold: 10240,
-        // 其余配置查看compression-webpack-plugin
-      }),
-      new UglifyJsPlugin({
+      new UglifyESPlugin({
+        // 多嵌套了一层
         uglifyOptions: {
           compress: {
+            // 在UglifyJs删除没有用到的代码时不输出警告
+            warnings: false,
+            // 删除所有的 `console` 语句，可以兼容ie浏览器
             drop_console: true,
+            // 内嵌定义了但是只用到一次的变量
+            collapse_vars: true,
+            // 提取出出现多次但是没有定义成变量去引用的静态值
+            reduce_vars: true,
           },
-        },
+          output: {
+            // 最紧凑的输出
+            beautify: false,
+            // 删除所有的注释
+            comments: false,
+          }
+        }
       })
     )
   },
