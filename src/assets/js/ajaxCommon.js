@@ -1,7 +1,6 @@
 import axios from 'axios'
 import Vue from 'vue'
 import url from '@/assets/js/url'
-import common from '@/assets/js/common'
 import qs from 'qs'
 
 axios.interceptors.request.use(
@@ -97,4 +96,4 @@ let axiosHttp = (obj) => {
       }
     })
 }
-export { axiosHttp, v, url, common }
+export { axiosHttp, v, url }
