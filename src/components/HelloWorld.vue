@@ -34,14 +34,10 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/Breadcrumb'
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
-  },
-   components: {
-    Breadcrumb
   },
 }
 </script>

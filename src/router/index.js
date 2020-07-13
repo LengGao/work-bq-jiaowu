@@ -26,6 +26,13 @@ const routes = [
     component: () => import(/* webpackChunkName: "login" */ '../views/login/index.vue'),
     meta: { title: '东培学堂--登录' }
   },
+  {
+    path: '/404',
+    name: 'error',
+    component: () => import(/* webpackChunkName: "login" */ '../views/404.vue'),
+    meta: { title: '东培学堂--错误页面' }
+  },
+  {path: '*', redirect: '/404', hidden: true}
 ]
 
 const router = new VueRouter({

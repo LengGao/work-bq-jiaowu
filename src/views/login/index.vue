@@ -116,6 +116,7 @@
         }
       },
       handleLogin() {
+        let that = this
         this.$refs.loginForm.validate(valid => {
          
           if (valid) {
@@ -125,15 +126,16 @@
             //   this.dialogVisible =true;
             //   return;
             // }
-            this.loading = true;
-            this.$store.dispatch('Login', this.loginForm).then(() => {
-              this.loading = false;
+            that.loading = true;
+            // that.$router.push({path: '/'})
+            that.$store.dispatch('Login', that.loginForm).then(() => {
+              that.loading = false;
               console.log('hahahahahha')
               // setCookie("username",this.loginForm.username,15);
               // setCookie("password",this.loginForm.password,15);
-              this.$router.push({path: '/about'})
+              that.$router.push({path: '/'})
             }).catch(() => {
-              this.loading = false
+              that.loading = false
             })
           } else {
             console.log('参数验证不合法！');

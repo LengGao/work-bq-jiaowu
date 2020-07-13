@@ -2,21 +2,18 @@
   <div class="about">
    
     <h1>This is an about page</h1>
-     <Breadcrumb />
+     <breadcrumb />
     <div id="myChart" :style="{width: '300px', height: '300px'}"></div>
   </div>
 </template>
 <script>
-import Breadcrumb from '../components/Breadcrumb'
+
 export default {
   name: 'About',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
-    components: {
-    Breadcrumb
-  }
   },
   mounted(){
     this.drawLine();
