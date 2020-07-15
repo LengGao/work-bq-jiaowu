@@ -65,23 +65,12 @@
       </el-form>
     </el-card>
     <img :src="login_center_bg" class="login-center-layout" />
-    <el-dialog
-      title="公众号二维码"
-      :visible.sync="dialogVisible"
-      :show-close="false"
-      :center="true"
-      width="30%"
-    >
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogConfirm">确定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import { isvalidUsername } from "@/utils/validate";
-import { setSupport, getSupport, setCookie, getCookie } from "@/utils/support";
+import { setSupport, getSupport, setCookie, getCookie } from "@/utils/support"; //Cookie 的相关操作
 import login_center_bg from "@/assets/images/login_center_bg.png";
 
 export default {

@@ -52,20 +52,7 @@ module.exports = {
       .loader('svg-sprite-loader')
       .options({
          symbolId: 'icon-[name]'
-     });
-
-    // config.module.rules.delete("svg");
-    // config.module
-    //     .rule('svg-smart')
-    //     .test(/\.svg$/)
-    //     .include
-    //     .add(resolve('src/icons/svg'))
-    //     .end()
-    //     .use('svg-sprite-loader')
-    //     .loader('svg-sprite-loader')
-    //     .options({
-    //         symbolId:'icon-[name]'
-    //     })
+     })
 },
   productionSourceMap: true,
  

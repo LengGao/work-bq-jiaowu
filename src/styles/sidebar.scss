@@ -22,6 +22,7 @@
     left: 0px;
     z-index: 1001;
     overflow: hidden;
+    
     a {
       display: inline-block;
       width: 100%;
@@ -33,6 +34,17 @@
       border: none;
       width: 100% !important;
     }
+  }
+  .sidebar-container::after{
+    content: '';
+    display: block;
+    width:100px;
+    height:30px;
+    background: #991a1a;
+    position: absolute;
+    top:0;
+    left: 20px;
+    transform: rotateY(90deg);
   }
 
   .hideSidebar {

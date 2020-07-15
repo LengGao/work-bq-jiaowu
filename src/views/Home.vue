@@ -21,15 +21,5 @@ export default {
 }
 </script>
 <style lang="scss">
-.main {
-  position: fixed;
-  left: 180px;
-  top: 60px;
-  bottom: 0;
-  right: 0;
-  padding: 20px;
-  overflow-y: auto;
-  padding-bottom: 0;
-  background-color: #f5f5f5;
-}
+
 </style>
