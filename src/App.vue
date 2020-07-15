@@ -1,13 +1,14 @@
 <template>
   <div id="app">
     <router-view name="header"></router-view>
-    <section class="main" id="main" v-if="isRouterAlive">
+    <section class="main" id="main">
       <transition name="fade" mode="out-in">
         <router-view name="content" class v-if="isRouterAlive"></router-view>
       </transition>
     </section>
     <router-view name="slider"></router-view>
-     <router-view name="login" class v-if="isRouterAlive"></router-view>
+    <!-- <router-view name="login" class v-if="!isRouterAlive"></router-view>
+    <router-view name="error" class ></router-view> -->
   </div>
 </template>
 <script>
@@ -16,7 +17,6 @@ export default {
   provide() {
     return {
       reload: this.reload,
-      logining:this.logining // 应对login以及404和其他特殊布局页面
     };
   },
   data() {
@@ -33,12 +33,7 @@ export default {
         this.isRouterAlive = true; //再打开
       });
     },
-    logining(){
-        this.isRouterAlive = false;
-         this.$nextTick(function() {
-        this.isRouterAlive = false; //再打开
-      });
-    }
+  
   }
 };
 </script>

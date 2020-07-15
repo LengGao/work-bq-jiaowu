@@ -25,7 +25,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'Home',
     components:{
       content:() => import(/* webpackChunkName: "about" */ '../views/Home.vue'),
@@ -48,10 +48,10 @@ const routes = [
     meta: { title: '东培学堂--关于' }
   },
   {
-    path: '/login',
+    path: '/',
     name: 'Login',
     components:{
-      login:() => import(/* webpackChunkName: "login" */ '../views/login/index.vue'),
+      content:() => import(/* webpackChunkName: "login" */ '../views/login/index.vue'),
     },
     meta: { title: '东培学堂--登录' }
   },

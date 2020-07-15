@@ -8,6 +8,7 @@ import { Message } from 'element-ui'
 const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
   NProgress.start()
+  
   // if (getToken()) {
   //   if (to.path === '/login') {
   //     next({ path: '/' })
