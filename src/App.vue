@@ -7,8 +7,6 @@
       </transition>
     </section>
     <router-view name="slider"></router-view>
-    <!-- <router-view name="login" class v-if="!isRouterAlive"></router-view>
-    <router-view name="error" class ></router-view> -->
   </div>
 </template>
 <script>
@@ -48,34 +46,31 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: #f5f5f5;
+  
+}
+.main {
+  position: fixed;
+  left: 240px;
+  top: 95px;
+  bottom: 0;
+  right: 0;
+  overflow-y: auto;
+  padding-bottom: 0;
+}
+#nav {
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
 }
 
-// #nav {
-//   padding: 30px;
-//   a {
-//     font-weight: bold;
-//     color: #2c3e50;
-
-//     &.router-link-exact-active {
-//       color: #42b983;
-//     }
-//   }
-// }
-// .main {
-//   position: fixed;
-//   left: 180px;
-//   top: 60px;
-//   bottom: 0;
-//   right: 0;
-//   padding: 20px;
-//   overflow-y: auto;
-//   padding-bottom: 0;
-//   background-color: #f5f5f5;
-// }
-// @media screen and (max-width: 1000px) {
-//   .main {
-//     padding: 15px;
-//   }
-// }
+@media screen and (max-width: 1000px) {
+  .main {
+    padding: 15px;
+  }
+}
 </style>

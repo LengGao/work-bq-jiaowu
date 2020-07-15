@@ -50,7 +50,7 @@ export default {
   max-width: 100%;
   max-height: 100%;
 }
-.app-container{
+.app-container {
   background: #ffffff;
   position: fixed;
   left: 0;
@@ -60,16 +60,15 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 999;
-   margin: 120px auto;
-   display: flex;
-   justify-items: center;
-    margin: 120px auto;
-  
+  margin: 120px auto;
+  display: flex;
+  justify-items: center;
+  margin: 120px auto;
 }
-.main{
- left: 0 !important;
- top: 0 !important;
- padding: 0 !important;
- background: #ffffff !important;
+.main {
+  left: 0 !important;
+  top: 0 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
 }
 </style>
