@@ -65,6 +65,7 @@
   import login_center_bg from '@/assets/images/login_center_bg.png'
 
   export default {
+     inject: ['reload'],
     name: 'Login',
     data() {
       const validateUsername = (rule, value, callback) => {
@@ -98,6 +99,7 @@
       }
     },
     created() {
+      this.reload()
       this.loginForm.username = getCookie("username");
       this.loginForm.password = getCookie("password");
       if(this.loginForm.username === undefined||this.loginForm.username==null||this.loginForm.username===''){
@@ -134,6 +136,7 @@
               // setCookie("username",this.loginForm.username,15);
               // setCookie("password",this.loginForm.password,15);
               that.$router.push({path: '/'})
+              that.reload()//调用reload使
             }).catch(() => {
               that.loading = false
             })

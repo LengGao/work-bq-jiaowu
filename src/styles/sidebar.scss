@@ -13,13 +13,13 @@
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
     }
     transition: width .28s;
-    width: 180px !important;
+    width: 240px !important;
     height: 100%;
     position: fixed;
     font-size: 0px;
-    top: 0;
+    top: 66px;
     bottom: 0;
-    left: 0;
+    left: 0px;
     z-index: 1001;
     overflow: hidden;
     a {

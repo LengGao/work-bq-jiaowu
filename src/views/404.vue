@@ -2,7 +2,7 @@
   <div>
     <div class="app-container">
       <el-col :span="12">
-        <img :src="img_404" alt="404" class="img-style">
+        <img :src="img_404" alt="404" class="img-style" />
       </el-col>
       <el-col :span="12">
         <div style="margin-left: 100px;margin-top: 60px">
@@ -17,32 +17,37 @@
 </template>
 
 <script>
-  import img_404 from '@/assets/images/gif_404.gif';
-  export default {
-    name: 'error',
-    data() {
-      return {
-        img_404
-      }
-    },
-    methods: {
-      handleGoMain() {
-        this.$router.push({path: '/'})
-      }
-    },
+import img_404 from "@/assets/images/gif_404.gif";
+export default {
+  inject: ["logining"],
+  inject: ["reload"],
+  name: "error",
+  data() {
+    return {
+      img_404
+    };
+  },
+  created() {
+    this.logining();
+  },
+  methods: {
+    handleGoMain() {
+      this.$router.push({ path: "/" });
+    }
   }
+};
 </script>
 
 <style scoped>
-  .app-container {
-    width: 80%;
-    margin: 120px auto;
-  }
+.app-container {
+  width: 80%;
+  margin: 120px auto;
+}
 
-  .img-style {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-  }
+.img-style {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
 </style>
