@@ -1,5 +1,6 @@
 <template>
-  <div class="app-wrapper" :class="classObj">
+  <div class="app-wrapper"
+       :class="classObj">
     <sidebar class="sidebar-container"></sidebar>
     <!-- <div class="main-container">
       <navbar></navbar>
@@ -39,11 +40,11 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/mixin.scss";
-  .app-wrapper {
-    @include clearfix;
-    position: relative;
-    height: 100%;
-    width: 100%;
-  }
+@import 'src/styles/mixin.scss';
+.app-wrapper {
+  @include clearfix;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
 </style>
