@@ -1,18 +1,19 @@
 #app {
-
   // 主体区域
   .main-container {
     min-height: 100%;
-    transition: margin-left .28s;
+    transition: margin-left 0.28s;
     margin-left: 180px;
   }
 
-   // 侧边栏
+  // 侧边栏
   .sidebar-container {
+    border-right: 30px solid #f0f2f5;
     .horizontal-collapse-transition {
-      transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+      transition: 0s width ease-in-out, 0s padding-left ease-in-out,
+        0s padding-right ease-in-out;
     }
-    transition: width .28s;
+    transition: width 0.28s;
     width: 240px !important;
     height: 100%;
     position: fixed;
@@ -22,7 +23,7 @@
     left: 0px;
     z-index: 1001;
     overflow: hidden;
-    
+
     a {
       display: inline-block;
       width: 100%;
@@ -35,14 +36,14 @@
       width: 100% !important;
     }
   }
-  .sidebar-container::after{
+  .sidebar-container::after {
     content: '';
     display: block;
-    width:100px;
-    height:30px;
+    width: 100px;
+    height: 30px;
     background: #991a1a;
     position: absolute;
-    top:0;
+    top: 0;
     left: 20px;
     transform: rotateY(90deg);
   }
@@ -62,9 +63,9 @@
       }
     }
     .el-submenu {
-      &>.el-submenu__title {
+      & > .el-submenu__title {
         padding-left: 10px !important;
-        &>span {
+        & > span {
           height: 0;
           width: 0;
           overflow: hidden;
@@ -78,7 +79,7 @@
     }
   }
 
-  .sidebar-container .nest-menu .el-submenu>.el-submenu__title,
+  .sidebar-container .nest-menu .el-submenu > .el-submenu__title,
   .sidebar-container .el-submenu .el-menu-item {
     min-width: 180px !important;
     background-color: $subMenuBg !important;
@@ -97,7 +98,7 @@
     }
     .sidebar-container {
       top: 50px;
-      transition: transform .28s;
+      transition: transform 0.28s;
       width: 180px !important;
     }
     &.hideSidebar {

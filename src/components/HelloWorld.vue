@@ -2,7 +2,9 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <breadcrumb></breadcrumb>
-    <!-- <search></search> -->
+    <search></search>
+    <el-button type="primary"
+               @click="tomyclients">我的客户</el-button>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -72,6 +74,13 @@ export default {
   },
   components: {
     // Search
+  },
+  methods: {
+    tomyclients() {
+      this.$router.push({
+        name: 'myClients'
+      })
+    }
   }
 }
 </script>

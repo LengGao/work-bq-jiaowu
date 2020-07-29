@@ -1,9 +1,13 @@
 <template>
   <div id="app">
     <router-view name="header"></router-view>
-    <section class="main" id="main">
-      <transition name="fade" mode="out-in">
-        <router-view name="content" class v-if="isRouterAlive"></router-view>
+    <section class="main"
+             id="main">
+      <transition name="fade"
+                  mode="out-in">
+        <router-view name="content"
+                     class
+                     v-if="isRouterAlive"></router-view>
       </transition>
     </section>
     <router-view name="slider"></router-view>
@@ -11,29 +15,28 @@
 </template>
 <script>
 export default {
-  name: "app",
+  name: 'app',
   provide() {
     return {
-      reload: this.reload,
-    };
+      reload: this.reload
+    }
   },
   data() {
     return {
       isRouterAlive: true //控制视图是否显示的变量
-    };
+    }
   },
   mounted() {},
   methods: {
     reload() {
-      this.isRouterAlive = false;
+      this.isRouterAlive = false
       //先关闭，
       this.$nextTick(function() {
-        this.isRouterAlive = true; //再打开
-      });
-    },
-  
+        this.isRouterAlive = true //再打开
+      })
+    }
   }
-};
+}
 </script>
 <style lang="scss">
 * {
@@ -46,7 +49,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  
 }
 .main {
   position: fixed;

@@ -1,14 +1,14 @@
 // 组件
 .actTop {
-    padding:20px;
-    background: #fff;
-    border: solid 1px #cccccc;
-    margin-bottom: 20px;
+  padding: 20px;
+  background: #fff;
+  border: solid 1px #cccccc;
+  margin-bottom: 20px;
 }
 
 .min_el_btn {
-    min-width: 120px;
-    min-height: 40px;
+  min-width: 120px;
+  min-height: 40px;
 }
 
 // 标题
@@ -18,7 +18,7 @@
   line-height: 49px;
   border-bottom: solid 1px #cccccc;
   box-sizing: border-box;
-  padding:0 20px;
+  padding: 0 20px;
 }
 
 .border_wrap {
@@ -32,7 +32,7 @@
 .module_box {
   border: 1px solid #cccccc;
   background: #fff;
-  padding:20px;
+  padding: 20px;
   margin-bottom: 20px;
 }
 
@@ -40,7 +40,7 @@
 .module_box10 {
   border: 1px solid #cccccc;
   background: #fff;
-  padding:10px;
+  padding: 10px;
   margin-bottom: 20px;
 }
 
@@ -57,7 +57,6 @@
   margin-left: 16px;
   margin-bottom: 10px;
   display: inline-block;
-  
 }
 
 .select_top {
@@ -98,27 +97,27 @@
 }
 
 .visibility {
-  visibility:hidden;
+  visibility: hidden;
 }
 
 .save_btn_box {
   text-align: center;
- 
+
   button {
     width: 160px;
     height: 40px;
     font-weight: bold;
-    margin:0 20px;
+    margin: 0 20px;
   }
 }
 
 .textarea_h170 {
   textarea {
-    height:171px;
+    height: 171px;
   }
 }
 .textarea_date {
-  padding:24px 0;
+  padding: 24px 0;
 }
 
 .dialog_box {
@@ -133,7 +132,7 @@
     padding: 0 20px;
   }
   .dialog_content {
-    padding:20px;
+    padding: 20px;
     padding-bottom: 0;
   }
   .head_img {
@@ -143,12 +142,12 @@
     margin-bottom: 20px;
     p {
       font-weight: bold;
-      padding:10px 0;
+      padding: 10px 0;
     }
     .el-avatar {
       position: absolute;
-      left:0;
-      top:0;
+      left: 0;
+      top: 0;
     }
   }
 }
@@ -189,65 +188,65 @@
   display: block;
 }
 
-@media screen and (max-width:1000px) {
-    .min_el_btn {
-        min-width: auto;
-    }
+@media screen and (max-width: 1000px) {
+  .min_el_btn {
+    min-width: auto;
+  }
 }
 
 // 班级教师框
 .teacher_box {
-    border: 1px solid #cccccc;
-    background: #fff;
-    padding:10px;
-    margin-top: -1px;
-    line-height: 60px;
-    font-size: 14px;
-    position: relative;
-    .teacher_close {
-        font-size: 18px;
-        position: absolute;
-        right: 40px;
-        top:30px;
-        cursor:pointer;
-        border-radius: 50%;
-    }
+  border: 1px solid #cccccc;
+  background: #fff;
+  padding: 10px;
+  margin-top: -1px;
+  line-height: 60px;
+  font-size: 14px;
+  position: relative;
+  .teacher_close {
+    font-size: 18px;
+    position: absolute;
+    right: 40px;
+    top: 30px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
 }
 
 // 表格头部颜色
-.table_com{
+.table_com {
   .el-table thead tr {
     background-image: linear-gradient(90deg, #944ebc 0%, #fd6f6b 100%),
       linear-gradient($gb_color, $gb_color);
   }
-  
+
   .el-table th {
     background-color: transparent;
     color: #fff;
   }
-} 
+}
 
-.table_com_green{
+.table_com_green {
   .el-table thead tr {
     background-color: $gb_color;
   }
-  
+
   .el-table th {
     background-color: transparent;
     color: #fff;
   }
-} 
+}
 
-.table_com_ccc{
+.table_com_ccc {
   .el-table thead tr {
     background-color: #ccc;
   }
-  
+
   .el-table th {
     background-color: transparent;
     color: #fff;
   }
-} 
+}
 
 // 弹窗编辑组件
 .title_com2 {
@@ -256,23 +255,21 @@
   line-height: 49px;
   border-bottom: solid 1px #cccccc;
   box-sizing: border-box;
-  padding:0 20px;
+  padding: 0 20px;
   color: #fff;
-  background-image: linear-gradient(90deg, 
-		#944ebc 0%, 
-		#fd6f6b 100%), 
-	linear-gradient(
-		#ffffff, 
-		#ffffff);
+  background-image: linear-gradient(90deg, #944ebc 0%, #fd6f6b 100%),
+    linear-gradient(#ffffff, #ffffff);
 }
 
 .dialog_max600 {
   max-width: 600px;
-  margin:0 auto;
+  margin: 0 auto;
 }
 
 .dialog_content {
-  padding:20px;max-width:600px;margin:0 auto;
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 // 题目信息框
@@ -280,16 +277,16 @@
   display: flex;
   font-size: 14px;
   position: relative;
-  
+
   .subject_img {
     width: 260px;
-	  height: 150px;
+    height: 150px;
   }
   .select_checke {
     display: flex;
     padding: 0 20px 0 10px;
     height: 100%;
-    margin:auto 0;
+    margin: auto 0;
   }
   .subject_info {
     padding-left: 20px;
@@ -308,7 +305,7 @@
       margin-right: 8px;
     }
     p {
-      padding:6px 0;
+      padding: 6px 0;
     }
     time {
       display: block;
@@ -318,20 +315,19 @@
   }
   .subject_right {
     margin: auto 0 0 auto;
-    padding:0 10px 10px 0;
+    padding: 0 10px 10px 0;
   }
   .subject_position {
     position: absolute;
     right: 20px;
     background-color: #2798ee;
     color: #fff;
-    top:25%;
+    top: 25%;
   }
 
   .tag_zi {
-    background-color: #9b50b7!important;
+    background-color: #9b50b7 !important;
   }
-  
 }
 
 // 题目列表  题目信息框
@@ -339,7 +335,7 @@
   .subject_list_right {
     position: absolute;
     right: 20px;
-    top:50%;
+    top: 50%;
     transform: translateY(-50%);
   }
   .subject_h3 {
@@ -347,8 +343,6 @@
     font-weight: bold;
   }
 }
-
-
 
 // 网校 成绩显示框
 .score_box {
@@ -358,8 +352,8 @@
     min-width: 230px;
     height: 50px;
     box-sizing: border-box;
-    padding:16px 18px;
-    border:1px solid #e6e6e6;
+    padding: 16px 18px;
+    border: 1px solid #e6e6e6;
     font-size: 14px;
     float: left;
     margin-left: -1px;
@@ -385,7 +379,6 @@
   p {
     line-height: 16px;
   }
-
 }
 
 .set_period_box {
@@ -398,32 +391,30 @@
     line-height: 18px;
     font-size: 14px;
     position: relative;
-    
   }
   .el-tag {
     position: absolute;
     right: 120px;
-    top:50%;
+    top: 50%;
     transform: translateY(-50%);
   }
-  
 }
 .set_period_box::before {
   content: '';
   position: absolute;
-  left:20px;
-  top:calc(50% - 8px);
+  left: 20px;
+  top: calc(50% - 8px);
   width: 16px;
-  height:16px;
+  height: 16px;
   border-radius: 50%;
-  border:2px solid rgba(0,0,0,0.5);
+  border: 2px solid rgba(0, 0, 0, 0.5);
   box-sizing: border-box;
 }
 
 .set_manage {
   position: absolute;
   right: 20px;
-  top:50%;
+  top: 50%;
   transform: translateY(-50%);
 }
 
@@ -431,9 +422,9 @@
 .subject_list_info {
   font-size: 14px;
   color: #999999;
-  margin-top:5px;
+  margin-top: 5px;
   time {
-    margin-left:10px;
+    margin-left: 10px;
   }
 }
 
@@ -454,8 +445,12 @@
     vertical-align: top;
     margin-top: 1px;
     box-sizing: border-box;
-    padding:0 5px;
+    padding: 0 5px;
   }
 }
-
-
+//搜索查询
+.inline_date_box {
+  margin-left: 16px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
