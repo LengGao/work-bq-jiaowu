@@ -1,0 +1,183 @@
+<template>
+  <section class="main">
+    <div class="client_head">
+      <!-- <search :hideTime="false"></search> -->
+      <el-button type="primary" @click="toIntentionEntry">意向录入</el-button>
+    </div>
+    <!--表格-->
+    <div class="userTable">
+      <el-table
+        ref="multipleTable"
+        :data="schoolData"
+        tooltip-effect="light"
+        stripe
+        style="width: 100%;"
+        class="min_table"
+      >
+        <el-table-column
+          prop="uid"
+          label="学员编号"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="studentName"
+          label="学生姓名"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+
+        <el-table-column
+          prop="mobile"
+          label="手机号码"
+          min-width="150"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="regtime"
+          label="注册时间"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="courseType"
+          label="课程类型"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="courseName"
+          label="课程名称"
+          min-width="150"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="organization"
+          label="所属机构"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="teacher"
+          label="所属老师"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="channelSource"
+          label="渠道来源"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="dealStatus"
+          label="成交状态"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+
+        <el-table-column label="操作" fixed="right" min-width="200">
+          <template>
+            <div style="display: flex;">
+              <el-button type="text" @click="toIntentionEntry">编辑</el-button>
+              <el-button type="text" @click="topayment">缴费</el-button>
+              <el-button type="text" @click="jumpSea">跳海</el-button>
+              <el-button type="text" @click="topayment">退费</el-button>
+              <el-button type="text" @click="toStudentDetail">详情</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- <div class="table_bottom">
+        <div class="table_bottom">
+          <page :data="schoolData.count"
+                :curpage="page"
+                @pageChange="doPageChange" />
+        </div>
+      </div> -->
+    </div>
+  </section>
+</template>
+
+<script>
+export default {
+  name: 'myClients',
+  data() {
+    return {
+      schoolData: [
+        {
+          uid: 5624,
+          studentName: '悦心',
+          mobile: '15007094305',
+          regtime: '2020-05-30',
+          courseType: '职称类',
+          courseName: '系统集成项目管理师',
+          organization: '岗顶校区0',
+          teacher: '林老师',
+          channelSource: '上门自诩',
+          dealStatus: '未成交',
+        },
+      ],
+    }
+  },
+  methods: {
+    topayment() {
+      this.$router.push(
+        // name: 'payMent'
+        { path: '/etm/payMent', query: { id: 'row.id' } }
+      )
+    },
+    toStudentDetail() {
+      this.$router.push({
+        path: '/etm/studentDetail',
+        // query: { id: 'row.id' }
+      })
+    },
+    toIntentionEntry() {
+      this.$router.push({
+        path: '/etm/IntentionEntry',
+        // query: { id: 'row.id' }
+      })
+    },
+    jumpSea() {
+      this.$confirm('确定要把学员转交到公海吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+  },
+  //   mounted() {}
+}
+</script>
+
+<style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
+.main {
+  padding: 20px;
+}
+.client_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.userTable {
+  margin-top: 20px;
+}
+</style>

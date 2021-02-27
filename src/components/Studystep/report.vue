@@ -1,9 +1,7 @@
 <template>
   <div>
     <el-row>
-      <el-col :lg="6"
-              v-for="(item,index) in 4"
-              :key="index">
+      <el-col :lg="6" v-for="(item, index) in 4" :key="index">
         <div class="timeCard">
           <div>
             <h3>坚持学习天数</h3>
@@ -15,34 +13,44 @@
     <div class="practive">
       <h1>题库练习</h1>
       <div class="userTable">
-        <el-table ref="multipleTable"
-                  :data="schoolData"
-                  tooltip-effect="light"
-                  stripe
-                  style="width: 100%"
-                  class="min_table">
-
-          <el-table-column prop="uid"
-                           label="刷题数量"
-                           show-overflow-tooltip
-                           min-width="90"></el-table-column>
-          <el-table-column prop="nickname"
-                           label="做题进度"
-                           min-width="110"
-                           show-overflow-tooltip></el-table-column>
-
-          <el-table-column prop="mobile"
-                           label="正确率"
-                           min-width="150"
-                           show-overflow-tooltip></el-table-column>
-          <el-table-column prop="classNum"
-                           label="收藏题数"
-                           min-width="150"
-                           show-overflow-tooltip></el-table-column>
-          <el-table-column prop="classroomName"
-                           label="错数题数"
-                           min-width="100"
-                           show-overflow-tooltip></el-table-column>
+        <el-table
+          ref="multipleTable"
+          :data="schoolData"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%;"
+          class="min_table"
+        >
+          <el-table-column
+            prop="uid"
+            label="刷题数量"
+            show-overflow-tooltip
+            min-width="90"
+          ></el-table-column>
+          <el-table-column
+            prop="nickname"
+            label="做题进度"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="正确率"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="classNum"
+            label="收藏题数"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="classroomName"
+            label="错数题数"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
         </el-table>
         <!-- <div class="table_bottom">
         <div class="table_bottom">
@@ -57,10 +65,21 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      schoolData: [],
+    }
+  },
+}
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
 .timeCard {
   width: 90%;
   height: 90px;

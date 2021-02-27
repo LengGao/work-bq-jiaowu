@@ -125,24 +125,22 @@ export default {
 
 <style scoped lang="scss">
 #header {
-  position: fixed;
+  position: relative;
   top: 0;
   right: 0;
   left: 0;
   height: 65px;
-  -webkit-box-shadow: 0px 1px 1px #74797a77;
-  -moz-box-shadow: 0px 1px 1px #74797a77;
-  box-shadow: 0px 1px 1px #74797a77;
-  z-index: 1000;
+  
+  z-index: 9999;
 }
-#header::after {
-    content: '';
-    display: block;
-    width:100%;
-    height: 30px;
-    background: #f5f5f5;
-    position: absolute;
-    bottom: -30px;
-    right:0;
-}
+// #header::after {
+//     content: '';
+//     display: block;
+//     width:100%;
+//     height: 30px;
+//     background: #f5f5f5;
+//     position: absolute;
+//     bottom: -30px;
+//     right:0;
+// }
 </style>

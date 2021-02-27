@@ -1,6 +1,13 @@
- //to reset element-ui default css
+//to reset element-ui default css
+.btn-next , .btn-prev {
+  padding:0 10px!important;
+}
+.page_btn{
+  margin-left: 20px;
+  
+}
 .el-upload {
-  input[type="file"] {
+  input[type='file'] {
     display: none !important;
   }
 }
@@ -26,4 +33,7 @@
       height: 200px;
     }
   }
+}
+.el-date-editor .el-range-separator {
+  width: 6% !important;
 }
