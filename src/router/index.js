@@ -50,48 +50,57 @@ export const asyncRouterMap = [
     meta: { title: '招生管理', icon: 'product' },
     name: 'etm',
     children: [
-      {
-        path: 'enrollmentManagement',
-        name: 'enrollmentManagement',
-        component: () => import('@/views/etm/myClients.vue'),
-        meta: { title: '客户管理', icon: 'product-add' },
-      },
+      // {
+      //   path: 'enrollmentManagement',
+      //   name: 'enrollmentManagement',
+      //   component: () => import('@/views/etm/myClients.vue'),
+      //   meta: { title: '客户管理', icon: 'product-add' },
+      // },
       {
         path: 'customerManage',
         name: 'customerManage',
         component: () => import('@/views/etm/customerManage.vue'),
         meta: { title: '客户管理', icon: 'product-add' },
       },
-      // 我的客户组件开始
+      //客户管理组件开始
+      {
+        path: 'customeRegist',
+        name: 'customeRegist',
+        component: () => import('@/views/etm/customerManage/customeRegist.vue'),
+        meta: { title: '客户报名', icon: 'product-cate' },
+        hidden: true,
+      },
+      //客户管理组件结束
 
-      {
-        path: 'IntentionEntry',
-        name: 'IntentionEntry',
-        component: () => import('@/views/etm/myClient/IntentionEntry.vue'),
-        meta: { title: '学员编辑', icon: 'product-cate' },
-        hidden: true,
-      },
-      {
-        path: 'payMent',
-        name: 'payMent',
-        component: () => import('@/views/etm/myClient/payMent.vue'),
-        meta: { title: '缴费', icon: 'product-cate' },
-        hidden: true,
-      },
-      {
-        path: 'studentDetail',
-        name: 'studentDetail',
-        component: () => import('@/views/etm/myClient/studentDetail.vue'),
-        meta: { title: '客户详情', icon: 'product-cate' },
-        hidden: true,
-      },
-      {
-        path: 'studyReport',
-        name: 'studyReport',
-        component: () => import('@/views/etm/myClient/studyReport.vue'),
-        meta: { title: '学院报告', icon: 'product-list' },
-        hidden: true,
-      },
+      // 我的客户组件开始
+      // {
+      //   path: 'IntentionEntry',
+      //   name: 'IntentionEntry',
+      //   component: () => import('@/views/etm/myClient/IntentionEntry.vue'),
+      //   meta: { title: '学员编辑', icon: 'product-cate' },
+      //   hidden: true,
+      // },
+      // {
+      //   path: 'payMent',
+      //   name: 'payMent',
+      //   component: () => import('@/views/etm/myClient/payMent.vue'),
+      //   meta: { title: '缴费', icon: 'product-cate' },
+      //   hidden: true,
+      // },
+      // {
+      //   path: 'studentDetail',
+      //   name: 'studentDetail',
+      //   component: () => import('@/views/etm/myClient/studentDetail.vue'),
+      //   meta: { title: '客户详情', icon: 'product-cate' },
+      //   hidden: true,
+      // },
+      // {
+      //   path: 'studyReport',
+      //   name: 'studyReport',
+      //   component: () => import('@/views/etm/myClient/studyReport.vue'),
+      //   meta: { title: '学院报告', icon: 'product-list' },
+      //   hidden: true,
+      // },
       // 我的客户组件结束
       {
         path: 'seaStudent',

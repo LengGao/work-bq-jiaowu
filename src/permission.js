@@ -21,7 +21,8 @@ router.beforeEach((to, from, next) => {
             let menus = [
               { name: 'etm' }, //包含了招生管理
               // { name: 'enrollmentManagement' }, //首页
-              { name: 'customerManage' }, //首页
+              { name: 'customerManage' }, //招生管理>客户管理
+              { name: 'customeRegist' }, //招生管理>客户管理>客户报名
               { name: 'visualization' }, //数据看板
               { name: 'pms' }, //
               { name: 'seaStudent' }, //公海学员
@@ -76,11 +77,11 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
     }
   }
-  ogress.done()
+  NProgress.done()
   //   }
   // }
   next()
-  gress.done()
+  NProgress.done()
   //   }
   // }
   next()
