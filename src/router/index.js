@@ -70,6 +70,21 @@ export const asyncRouterMap = [
         meta: { title: '客户报名', icon: 'product-cate' },
         hidden: true,
       },
+      {
+        path: 'customeDetail',
+        name: 'customeDetail',
+        component: () => import('@/views/etm/customerManage/customeDetail.vue'),
+        meta: { title: '客户详情', icon: 'product-cate' },
+        hidden: true,
+      },
+
+      {
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: () => import('@/views/etm/customerManage/orderDetail.vue'),
+        meta: { title: '订单详情', icon: 'product-cate' },
+        hidden: true,
+      },
       //客户管理组件结束
 
       // 我的客户组件开始
@@ -103,9 +118,9 @@ export const asyncRouterMap = [
       // },
       // 我的客户组件结束
       {
-        path: 'seaStudent',
-        name: 'seaStudent',
-        component: () => import('@/views/etm/seaStudent.vue'),
+        path: 'seaCustomer',
+        name: 'seaCustomer',
+        component: () => import('@/views/etm/seaCustomer.vue'),
         meta: { title: '公海学员', icon: 'product-cate' },
       },
 

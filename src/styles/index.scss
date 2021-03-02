@@ -65,7 +65,13 @@ a:hover {
 .app-container {
   padding: 20px;
 }
-
+//子页面的全局样式
+.mainwrap {
+  background: #fff;
+  padding: 30px;
+  width: 100%;
+  height: 100%;
+}
 //搜索栏样式
 .filter-container {
 }

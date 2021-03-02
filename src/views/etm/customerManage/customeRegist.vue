@@ -10,17 +10,17 @@
         <h3>客户信息</h3>
         <el-row>
           <el-col :sm="6">
-            <el-form-item label="活动名称">
+            <el-form-item label="客户姓名">
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="6">
-            <el-form-item label="活动名称">
+            <el-form-item label="手机号码">
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="6">
-            <el-form-item label="活动名称">
+            <el-form-item label="身份证号">
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
           </el-col>
@@ -104,7 +104,7 @@
       <div class="customer_sum_up">
         <h3>费用小结</h3>
         <div class="expense_summary">
-          <div class="expense_summary_label">订单总价<span>￥135000</span></div>
+          <div class="expense_summary_label">优惠总价<span>￥135000</span></div>
           <div class="expense_summary_label">订单总价<span>￥135000</span></div>
           <div class="expense_summary_label">
             订单总价<span style="color: #fd6500">￥135000</span>
@@ -115,19 +115,19 @@
         <h3>支付信息</h3>
         <el-row>
           <el-col :sm="6">
-            <el-form-item label="活动名称">
+            <el-form-item label="支付方式">
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="6">
-            <el-form-item label="活动名称">
+            <el-form-item label="支付金額">
               <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="6">
-            <el-form-item label="活动名称">
+            <!-- <el-form-item label="活动名称">
               <el-input v-model="ruleForm.name"></el-input>
-            </el-form-item>
+            </el-form-item> -->
           </el-col>
         </el-row>
       </div>
@@ -136,7 +136,7 @@
         <el-row>
           <el-col :sm="6">
             <div class="expense_summary_label">
-              订单总价<span>￥135000</span>
+              <span>￥135000</span>
             </div>
           </el-col>
           <el-col :sm="6">
@@ -377,10 +377,11 @@
         </el-table>
       </div>
       <!--关闭-->
-      <div class="customer_colse">
-        <el-button type="primary" @click="orderVisible = false"
-          >确 定</el-button
-        >
+      <div
+        class="customer_colse"
+        style="display:flex;justify-content:center;margin-top:20px"
+      >
+        <el-button type="primary" @click="toCustomerDetail">关 闭</el-button>
       </div>
     </el-dialog>
   </section>
@@ -397,6 +398,12 @@ export default {
     }
   },
   methods: {
+    //跳转到客户详情页面
+    toCustomerDetail() {
+      this.$router.push({
+        path: '/etm/customeDetail',
+      })
+    },
     delbtn() {},
     orderDeatilShow() {
       this.orderVisible = true
@@ -422,11 +429,17 @@ h3 {
   font-size: 16px;
   padding-left: 4px;
   border-left: 4px solid #199fff;
+  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 .customer_sum_up {
   margin: 30px 0;
   h3 {
     padding-left: 6px;
+    font-family: 'Arial Normal', 'Arial', sans-serif;
+    font-weight: 400;
+    font-style: normal;
     margin-bottom: 20px;
     border-left: 4px solid #199fff;
   }
@@ -464,5 +477,10 @@ h3 {
       padding-left: 60px;
     }
   }
+}
+.customer_colse {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

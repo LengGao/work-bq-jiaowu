@@ -23,9 +23,11 @@ router.beforeEach((to, from, next) => {
               // { name: 'enrollmentManagement' }, //首页
               { name: 'customerManage' }, //招生管理>客户管理
               { name: 'customeRegist' }, //招生管理>客户管理>客户报名
+              { name: 'customerDetail' }, //招生管理>客户管理>客户报名>客户详情orderDetail
+              { name: 'orderDetail' }, //招生管理>客户管理>客户报名>订单详情
               { name: 'visualization' }, //数据看板
               { name: 'pms' }, //
-              { name: 'seaStudent' }, //公海学员
+              { name: 'seaCustomer' }, //公海学员
               { name: 'queryStudent' },
               { name: 'clientSeting' },
               { name: 'payMent' },
