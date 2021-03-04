@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-   hihihihi
   </div>
 </template>
 
@@ -10,15 +9,10 @@
 
 export default {
   name: 'Home',
-  mounted(){
-    console.log($('div'),'qwe')
-    
+  mounted() {
+    console.log($('div'), 'qwe')
   },
- 
- 
 }
-
 </script>
 <style lang="scss">
-
 </style>

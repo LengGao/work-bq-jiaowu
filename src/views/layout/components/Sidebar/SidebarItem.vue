@@ -4,8 +4,8 @@
       <router-link
         v-if="
           hasOneShowingChildren(item.children) &&
-          !item.children[0].children &&
-          !item.alwaysShow
+            !item.children[0].children &&
+            !item.alwaysShow
         "
         :to="item.path + '/' + item.children[0].path"
         :key="item.children[0].name"
@@ -54,9 +54,12 @@
                 v-if="child.meta && child.meta.icon"
                 :icon-class="child.meta.icon"
               ></svg-icon>
-              <span v-if="child.meta && child.meta.title" slot="title">{{
-                child.meta.title
-              }}</span>
+              <span
+                v-if="child.meta && child.meta.title"
+                slot="title"
+                class="title"
+                >{{ child.meta.title }}</span
+              >
             </el-menu-item>
           </router-link>
         </template>
@@ -77,6 +80,9 @@ export default {
       default: false,
     },
   },
+  mounted() {
+    console.log(this.routes)
+  },
   methods: {
     hasOneShowingChildren(children) {
       const showingChildren = children.filter((item) => {
@@ -90,3 +96,17 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import 'src/styles/minxins.scss';
+@import 'src/styles/variables.scss';
+.el-menu-item.is-active {
+  background-color: rgb(38, 52, 69) !important;
+  color: #fff;
+  span {
+    color: #199fff !important;
+  }
+}
+// .title {
+//   @include font_color($font-color-theme);
+// }
+</style>

@@ -1,7 +1,10 @@
 <template>
-  <div class="about">
-    <div id="myChart" :style="{ width: '70%', height: '300px' }"></div>
-  </div>
+  <!-- <div class="about"> -->
+  <div
+    id="myChart"
+    :style="{ width: '85%', height: '80%', float: 'left', marginLeft: '10px' }"
+  ></div>
+  <!-- </div> -->
 </template>
 <script>
 export default {
@@ -17,6 +20,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    Yseries: Array,
+    title: {
+      type: String,
+      default: '访问量',
+    },
   },
   data() {
     return {
@@ -30,8 +38,14 @@ export default {
         console.log(newValue)
       },
     },
+    Yseries: {
+      handler(newValue, oldValue) {
+        // this.Yseries.length = 0
+        this.drawLine()
+        console.log(newValue)
+      },
+    },
   },
-
   mounted() {
     this.drawLine()
   },
@@ -41,49 +55,48 @@ export default {
       let myChart = this.$echarts.init(document.getElementById('myChart'))
       // 绘制图表
       myChart.setOption({
-        title: {
-          text: '在线人数',
-          left: 'left',
-        },
-        textStyle: {
-          //文字颜色
-          color: '#000000',
-          //字体风格,'normal','italic','oblique'
-          fontStyle: 'normal',
-          //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
-          fontWeight: '700',
-          //字体系列
-          fontFamily: 'sans-serif',
-          //字体大小
-          fontSize: 16,
-        },
         tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: '#cecece',
-            },
+          show: true,
+        },
+        title: {
+          text: this.title,
+          left: 'left',
+          fontSize: '14px',
+          textStyle: {
+            //文字颜色
+            color: '#000000',
+            //字体风格,'normal','italic','oblique'
+            fontStyle: 'normal',
+            //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
+            fontWeight: '600',
+            //字体系列
+            fontFamily: 'sans-serif',
+            //字体大小
+            fontSize: 14,
           },
         },
+        animation: true,
+
         legend: {
           data: this.lines,
         },
-        toolbox: {
-          feature: {
-            saveAsImage: {},
-          },
-        },
+        // toolbox: {
+        //   feature: {
+        //     saveAsImage: {},
+        //   },
+        // },
         grid: {
-          left: '3%',
+          left: '4%',
           right: '4%',
-          bottom: '3%',
+          bottom: '6%',
           containLabel: true,
         },
         xAxis: [
           {
             type: 'category',
             boundaryGap: false,
+            interval: 0,
+
             data: this.xdata,
             splitLine: {
               show: this.gridShow,
@@ -109,15 +122,19 @@ export default {
             stack: '总量',
             itemStyle: {
               normal: {
-                color: '#515c64',
+                color: '#bbe1fc',
               },
             },
             areaStyle: {},
-            data: [120, 132, 101, 134, 90, 230, 210],
+            // data: [120, 132, 101, 134, 90, 230, 210],
+            data: this.Yseries,
           },
         ],
       })
     },
+  },
+  beforeDestroy() {
+    clearInterval(this.set)
   },
 }
 </script>

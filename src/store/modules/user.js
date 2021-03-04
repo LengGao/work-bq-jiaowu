@@ -1,12 +1,18 @@
-import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import {
+  getToken,
+  setToken,
+  removeToken,
+  setStaff_id,
+  getStaff_id,
+} from '@/utils/auth'
+import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
 
 const user = {
   state: {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
   },
 
   mutations: {
@@ -21,7 +27,7 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
-    }
+    },
   },
 
   actions: {
@@ -29,71 +35,76 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        setToken('tokenStr')
-        commit('SET_TOKEN', 'tokenStr')
-        resolve()
-        // login(username, userInfo.password).then(response => {
-        //   console.log(response)
-        //   const data = response.data
-        //   const tokenStr = data.tokenHead+data.token
-        //   setToken(tokenStr)
-        //   commit('SET_TOKEN', tokenStr)
-        //   resolve()
-        // }).catch(error => {
-        //   console.log(error)
-        //   // setToken('tokenStr')
-        //   // commit('SET_TOKEN', 'tokenStr')
-        //   reject(error)
-        // })
+        let config = {
+          Account: username,
+          Password: userInfo.password,
+        }
+        console.log(config)
+        axiosHttp({
+          url: url.login,
+          data: config,
+          method: 'POST',
+          then(res) {
+            const tokenStr = res.data.data.token
+            setToken(tokenStr)
+            setStaff_id(res.data.data.info.staff_id)
+            commit('SET_TOKEN', tokenStr)
+            resolve()
+          },
+        })
       })
     },
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        commit('SET_AVATAR', 'data.icon')
-        commit('SET_NAME', 'data.username')
-        commit('SET_ROLES', ['1','1','2','2'])
-        resolve()
-        // getInfo().then(response => {
-        //   const data = response.data
-        //   if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-        //     commit('SET_ROLES', data.roles)
-        //   } else {
-        //     reject('getInfo: roles must be a non-null array !')
-        //   }
-        //   commit('SET_NAME', data.username)
-        //   commit('SET_AVATAR', data.icon)
-        //   resolve(response)
-        // }).catch(error => {
-        //   commit('SET_NAME', 'admin')
-        //   commit('SET_AVATAR', 'data.icon')
-        //   reject(error)
-        // })
+        // let err = [1, 2, 3, 4]
+        // commit('SET_ROLES', err)
+        // resolve(err)
+        axiosHttp({
+          url: url.getMenu,
+          // data: config,
+          method: 'GET',
+          then(res) {
+            console.log(res.data)
+            if (res.data.data && res.data.data.length > 0) {
+              commit('SET_ROLES', res.data.data)
+            } else {
+              reject('getInfo: roles must be a non-null array !')
+            }
+            resolve(res.data.data)
+          },
+        })
       })
     },
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
+        let config = {
+          staff_id: getStaff_id(),
+        }
+        axiosHttp({
+          url: url.logout,
+          data: config,
+          method: 'GET',
+          then(res) {
+            let data = res.data.data
+            commit('SET_TOKEN', '')
+            commit('SET_ROLES', [])
+            removeToken()
+            resolve()
+          },
         })
       })
     },
-
     // 前端 登出
     FedLogOut({ commit }) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         commit('SET_TOKEN', '')
         removeToken()
         resolve()
       })
-    }
-  }
+    },
+  },
 }
 
 export default user

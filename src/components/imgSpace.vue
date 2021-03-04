@@ -3,9 +3,9 @@
     <section>
       <ul class="left-container">
         <li style="color:#909399">图片分组</li>
-        <li style=" cursor: pointer;" @click="imgSplit()">全部图片({{list}})</li>
+        <li style=" cursor: pointer;" @click="imgSplit()">全部图片({{ list }})</li>
         <li
-          v-for="(item,index) of spaceList.list"
+          v-for="(item, index) of spaceList.list"
           :key="index"
           style=" cursor: pointer;"
           @click="imgSplit(item.bucket_id)"
@@ -88,7 +88,7 @@
           <el-form-item label="图片分组：">
             <el-select v-model="ruleForm.bucket_id" clearable>
               <el-option
-                v-for="(item,index) in spaceList.list"
+                v-for="(item, index) in spaceList.list"
                 :key="index"
                 :label="item.name"
                 :value="item.bucket_id"
@@ -112,14 +112,14 @@
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 const defaultAddPicture = {
-  name: null
+  name: null,
 };
 export default {
   name: "imgSpace",
   data() {
     return {
       ruleForm: {
-        bucket_id: ""
+        bucket_id: "",
       },
       info: "info",
       dialogVisible: false,
@@ -130,8 +130,8 @@ export default {
       selectList: [
         {
           value: "职称类",
-          val: 1
-        }
+          val: 1,
+        },
       ],
       imgId: [],
       total: 12,
@@ -143,13 +143,13 @@ export default {
         list: [
           {
             name: "姓名",
-            bucket_id: 1
+            bucket_id: 1,
           },
           {
             name: "手机号码",
-            bucket_id: 2
-          }
-        ]
+            bucket_id: 2,
+          },
+        ],
       },
       keytype: 1,
       dialogSpace: false,
@@ -158,7 +158,7 @@ export default {
       mutiSelectTrans: 0,
       imgName: "",
       imgSingleId: "",
-      url:''
+      url: "",
     };
   },
   created() {
@@ -168,20 +168,31 @@ export default {
   mounted() {
     console.log(this.spaceList);
   },
+  props: {
+    pathRoute: {
+      type: String,
+      default: "",
+    },
+  },
   methods: {
-    clearSelect(){
-       this.$refs.multipleTable.clearSelection();
+    clearSelect() {
+      this.$refs.multipleTable.clearSelection();
     },
     cancle() {
       this.$router.go(-1);
     },
     confirm() {
-        this.$router.push(
-        {
-          path: "/eda/lessonClassifi",
-          query: {  url: JSON.stringify(this.url) }
-        }
-      );
+      if (this.url) {
+        this.$router.push({
+          path: this.pathRoute,
+          query: { url: JSON.stringify(this.url),img_id:this.img_id },
+        });
+      }else{
+       this.$message({
+            type:'warning',
+            message:'请选择图片'
+        })
+      }
     },
     imgSuccess() {
       this.dialogUpload = false;
@@ -205,17 +216,18 @@ export default {
       this.$api.getImagesList(this, "imgData");
     },
     handleSelectionChange(val) {
-      if(val.length > 1){
+      console.log(val)
+      if (val.length > 1) {
         this.$message({
-          type:'warning',
-          message:'图片最多只能选一张'
-        })
-        this.url = ''
-        this.clearSelect()
-      }else{
-         this.url = val[0].url
+          type: "warning",
+          message: "图片最多只能选一张",
+        });
+        this.url = "";
+        this.clearSelect();
+      } else {
+        this.url = val[0].url;
+        this.img_id = val[0].image_id
       }
-     
     },
     uploadConfirm() {
       this.$refs.mychild.submitUpload("嘿嘿嘿");
@@ -224,8 +236,8 @@ export default {
       this.bucket_id = "";
       this.bucket_id = id;
       this.$api.getImagesList(this, "imgData");
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -269,7 +281,7 @@ img {
   cursor: pointer;
 }
 .el-select .el-input__inner:nth-child(1) {
-   color: #fff;
+  color: #fff;
   //  background: #199FFF;
   width: 110px;
 }

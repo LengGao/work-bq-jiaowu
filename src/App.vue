@@ -1,10 +1,12 @@
 <template>
-  <div id="app">
+  <!-- <el-scrollbar style="height:100%"> -->
+  <div id="app" v-if="isRouterAlive">
     <keep-alive>
       <router-view v-if="this.$route.meta.keepAlive" />
     </keep-alive>
     <router-view v-if="!this.$route.meta.keepAlive"></router-view>
   </div>
+  <!-- </el-scrollbar> -->
 </template>
 <script>
 export default {
@@ -32,10 +34,17 @@ export default {
 }
 </script>
 <style lang="scss">
-// #app{
-//   height: 100%;
-//   width: 100%;
-// }
+#app {
+  height: 100%;
+  width: 100%;
+}
+/deep/.el-scrollbar__thumb {
+  display: none;
+}
+/deep/.el-scrollbar__wrap {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 html {
   background: #f0f2f5;
 }

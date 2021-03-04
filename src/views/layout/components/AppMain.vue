@@ -19,7 +19,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .app-main {
-  background: #fff;
   position: relative;
   left: 0;
   bottom: 0;

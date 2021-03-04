@@ -1,0 +1,108 @@
+<template>
+  <section class="mainwrap">
+    <search
+      :hideTime="true"
+      :hideOtherOption="true"
+      :courseTypeShow="true"
+    ></search>
+
+    <!--表格-->
+    <div class="userTable">
+      <el-table
+        ref="multipleTable"
+        :data="schoolData"
+        tooltip-effect="light"
+        stripe
+        style="width: 100%"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <!-- <el-table-column type="selection" width="30"></el-table-column> -->
+        <el-table-column
+          prop="uid"
+          label="序号"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="courseName"
+          label="课程名称"
+          min-width="150"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="courseType"
+          label="课程分类"
+          min-width="150"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="cardPerson"
+          label="观看总人数"
+          min-width="150"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column label="观看情况">
+          <template slot-scope="scope">
+            <el-button type="text" @click="toWatchSituation(scope.row)"
+              >详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- <div class="table_bottom">
+        <div class="table_bottom">
+          <page
+            :data="schoolData.count"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
+      </div> -->
+    </div>
+  </section>
+</template>
+
+<script>
+export default {
+  name: 'realTopic',
+  data() {
+    return {
+      page: 1,
+      schoolData: [],
+      type: '',
+      selectData: [],
+    }
+  },
+  created() {
+    this.type = 'punch'
+    this.$api.getCategoryList(this, 'selectData')
+    this.$api.getCourseList(this, 'schoolData')
+  },
+  methods: {
+    toWatchSituation() {
+      this.$router.push({
+        path: '/sts/watchSituation',
+      })
+    },
+  },
+}
+</script>
+<style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
+.main {
+  padding: 20px;
+  margin: 20px;
+  background: #fff;
+}
+
+.userTable {
+  margin-top: 20px;
+}
+
+</style>

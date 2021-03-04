@@ -1,22 +1,18 @@
 const webpack = require('webpack')
 const UglifyESPlugin = require('uglifyjs-webpack-plugin')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const path = require('path')
-function resolve(dir) {
-  return path.join(__dirname, '..', dir)
-}
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   lintOnSave: false, //关闭语法检测
   devServer: {
-    // server_name: 'www.crm.cc',
     open: true,
     proxy: {
       '/ai': {
         // target: 'http://120.27.63.9:8080',
         // target: 'http://dongpei.kaifa',
-        //target: 'http://sc.dp.com', //超
-        target: 'http://thing.com',
-
+        target: 'http://sc.dp.com', //超
+        //target: 'http://thing.com',
         //target: 'http://testadmin.beiqujy.com/apidata', //测试
         //target: 'http://dpadmin.beiqujy.com/apidata', //测试
         //target: 'http://dongpei.local', //孝华
@@ -36,9 +32,7 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: `
-              @import "@/assets/css/global_var.scss";
-            `,
+        data: `@import "@/assets/css/global_var.scss";`,
       },
     },
   },
@@ -63,9 +57,29 @@ module.exports = {
       .loader('svg-sprite-loader')
       .options({
         symbolId: 'icon-[name]',
-      })
+      }),
+      config.plugins.delete('preload')
+    config.plugins.delete('prefetch')
+    // 对应package里的判断条件
+    if (process.env.npm_config_report) {
+      config
+        .plugin('webpack-bundle-analyzer')
+        .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+    }
+    if (process.env.NODE_ENV === 'production') {
+      // 给js和css配置版本号
+      const Timestamp = new Date().getTime()
+      config.output.filename('js/[name].' + Timestamp + '.js').end()
+      config.output.chunkFilename('js/[name].' + Timestamp + '.js').end()
+      config.plugin('extract-css').tap((args) => [
+        {
+          filename: `css/[name].${Timestamp}.css`,
+          chunkFilename: `css/[name].${Timestamp}.css`,
+        },
+      ])
+    }
   },
-  productionSourceMap: true,
+  productionSourceMap: false,
   // 启动gzip压缩
   configureWebpack: (config) => {
     config.plugins.push(
@@ -78,6 +92,13 @@ module.exports = {
     // 开发环境不需要gzip
     if (process.env.NODE_ENV !== 'production') return
     config.plugins.push(
+      new CompressionWebpackPlugin({
+        // 正在匹配需要压缩的文件后缀
+        test: /\.(js|css|svg|woff|ttf|json|html)$/,
+        // 大于10kb的会压缩
+        threshold: 10240,
+        // 其余配置查看compression-webpack-plugin
+      }),
       new UglifyESPlugin({
         // 多嵌套了一层
         uglifyOptions: {
@@ -97,6 +118,8 @@ module.exports = {
             // 删除所有的注释
             comments: false,
           },
+          parallel: true,
+          cache: true,
         },
       })
     )

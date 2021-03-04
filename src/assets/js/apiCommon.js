@@ -1,13 +1,19 @@
 import axios from 'axios'
 import Vue from 'vue'
 import url from '@/assets/js/url'
-// import common from '@/assets/js/common'
+import common from '@/utils/common'
 import qs from 'qs'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
+import { Message, MessageBox } from 'element-ui'
 
 axios.interceptors.request.use(
   (config) => {
     if (config.method === 'post') {
       config.data = qs.stringify(config.data)
+    }
+    if (store.getters.token) {
+      config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config
   },
@@ -16,7 +22,6 @@ axios.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-
 // 区分生产模式和开发模式
 function setHost() {
   var host = window.location.host.split('.')
@@ -32,9 +37,9 @@ function setHost() {
 //新增加测试环境
 let location = process.env.VUE_APP_LOACTION || setHost()
 // axios默认配置
-axios.defaults.timeout = 10000 // 超时时间
+axios.defaults.timeout = 1800000 // 超时时间
 axios.defaults.baseURL = location // 默认地址
-// Vue.prototype.$urls = location
+Vue.prototype.$urls = location
 axios.defaults.headers['Content-Type'] =
   'application/x-www-form-urlencoded;charset=UTF-8'
 let v = new Vue()
@@ -61,30 +66,44 @@ let axiosHttp = (obj) => {
     method: obj.method || 'POST',
     url: obj.url || '',
     data: obj.data || '',
-    params,
+    params: params,
     // `withCredentials` 表示跨域请求时是否需要使用凭证
     withCredentials: true, // default
   })
     .then(function(res) {
       loading.close()
       let data = res.data
-      // if (data.data == void 0) {
-      //    v.$alert('加载失败，请稍后再试!!', '系统提示');
-      // } else
-      if (data.code == 1) {
-        v.$alert(data.msg, '系统提示')
-        obj.catch && typeof obj.catch == 'function' && obj.catch(res)
-      } else if (data.code == 999) {
-        // 999重新登陆
-        process.env.NODE_ENV == 'production' &&
-          v.$alert(data.msg, '系统提示', {
-            callback: () => (window.location.href = '/adminLogin'),
+      console.log(data.code)
+      if (data.code <= 3004 && data.code > 3000 ? true : false) {
+        v.$confirm(data.message, {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(() => {
+          store.dispatch('FedLogOut').then(() => {
+            window.location.reload()
           })
+        })
       } else if (data.code == 444) {
         // 444是404页面
-        // v.$router.push({name:'error'});
+        v.$router.push({ name: '404' })
+      } else if (data.code == 3005) {
+        v.$message({
+          type: 'error',
+          message: data.message,
+        })
+        setTimeout(() => {
+          window.location.reload()
+        }, 1200)
       } else {
-        obj.then && typeof obj.then == 'function' && obj.then(res)
+        if (data.code != 0) {
+          v.$message({
+            type: 'error',
+            message: data.message,
+          })
+        } else {
+          obj.then && typeof obj.then == 'function' && obj.then(res)
+        }
       }
     })
     .catch(function(error) {
@@ -93,10 +112,12 @@ let axiosHttp = (obj) => {
       if (error.response) {
         console.log(error.response.status)
         if (error.response.status != 200) {
-          v.$alert('加载失败，请稍后再试!', '系统提示')
-          obj.catch && typeof obj.catch == 'function' && obj.catch(error)
+          v.$message({
+            type: 'error',
+            message: error.response.statusText,
+          })
         }
       }
     })
 }
-export { axiosHttp, v, url }
+export { axiosHttp, v, url, common }

@@ -1,6 +1,34 @@
 <template>
   <scroll-bar>
-    <!-- <div style="color:#fff;"><img :src="logo" alt="logo" class="img-style" /></div> -->
+    <transition name="fade">
+      <div v-if="sidebar.opened">
+        <div style="color:#fff;cursor: pointer;" class="img-style">
+          <router-link to="/" tag="li"
+            ><img :src="logo" alt="logo"
+          /></router-link>
+        </div>
+        <div>
+          <el-button type="primary" icon="el-icon-plus" @click="something"
+            >快捷功能</el-button
+          >
+          <transition name="fade">
+            <ul v-if="showMenu" class="ul">
+              <li
+                v-for="(item, index) in content"
+                :key="item.name"
+                @click="doActive(index)"
+                :class="{ active: index == current }"
+              >
+                <router-link :to="item.links" tag="li">
+                  <svg-icon :icon-class="item.icon"></svg-icon>
+                  <span class="MyClassFun">{{ item.name }}</span>
+                </router-link>
+              </li>
+            </ul>
+          </transition>
+        </div>
+      </div>
+    </transition>
     <el-menu
       mode="vertical"
       :show-timeout="200"
@@ -8,7 +36,10 @@
       :collapse="isCollapse"
       background-color="#304156"
       text-color="#bfcbd9"
+      :unique-opened="true"
+      :collapse-transition="true"
       active-text-color="#409EFF"
+      @select="handleMenuSelect"
     >
       <sidebar-item :routes="routes"></sidebar-item>
     </el-menu>
@@ -19,18 +50,46 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import ScrollBar from '@/components/ScrollBar'
-import logo from '@/assets/images/logo.jpg'
+import logo from '@/assets/images/logos.png'
 export default {
   components: { SidebarItem, ScrollBar },
   data() {
     return {
       logo,
+      showMenu: false,
+      current: -1,
+      content: [
+        {
+          name: '我的客户',
+          links: '/etm/enrollmentManagement',
+          icon: 'colorMyClient',
+        },
+        {
+          name: '查询学员',
+          links: '/etm/queryStudent',
+          icon: 'myQueryStudent',
+        },
+        { name: '班级管理', links: '/eda/classManage', icon: 'MyClassMan' },
+        { name: '直播管理', links: '/eda/liveManager', icon: 'MyVideoMan' },
+      ],
     }
+  },
+  methods: {
+    handleMenuSelect(index, indexPath) {
+      console.log(indexPath)
+      // this.breads = indexPath
+    },
+    something() {
+      this.showMenu = !this.showMenu
+    },
+    doActive(index) {
+      this.current = index
+      this.something()
+    },
   },
   computed: {
     ...mapGetters(['sidebar', 'routers']),
     routes() {
-      // return this.$router.options.routes
       return this.routers
     },
     isCollapse() {
@@ -41,9 +100,89 @@ export default {
 </script>
 <style lang="scss" scoped>
 .img-style {
-  width: 139px;
-  height: 40px;
+  width: 141px;
+  height: 35px;
   margin: auto;
   display: block;
+  margin-top: 16px;
+}
+img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+.el-button--primary {
+  background-color: #1890ff !important ;
+  width: 170px !important;
+  margin-top: 12px;
+  margin-left: 15px;
+}
+.ul {
+  width: 170px;
+  height: 200px;
+  list-style: none;
+  background: #ffffff;
+  position: relative;
+  left: 15px;
+  top: 15px;
+  border-radius: 5px;
+  z-index: 99;
+  margin-bottom: 15px;
+}
+.ul > li {
+  height: 50px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 50px;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.ul > li:hover {
+  background: rgba(53, 189, 12, 0.04);
+}
+.ul > li > li {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.6s cubic-bezier(0.42, 0, 1, 1);
+}
+/* 定义进入动画的初始状态*/
+.fade-enter {
+  height: 0;
+}
+/* 定义进入动画的结束状态*/
+.fade-enter-to {
+  height: 200px;
+}
+/* 定义离开动画的初始状态*/
+.fade-leave {
+  height: 200px;
+}
+/* 定义离开动画的结束状态*/
+.fade-leave-to {
+  height: 0;
+}
+.active {
+  color: rgb(10, 53, 145);
+  background: rgba(216, 17, 17, 0.04);
+}
+.svg-icon {
+  font-size: 18px;
+  margin: 0 !important;
+  margin-right: 8px !important;
+  color: rgb(10, 53, 145);
+}
+.MyClassFun {
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 14px;
 }
 </style>

@@ -1,24 +1,27 @@
 import router from './router'
 import store from './store'
-import NProgress from 'nprogress' // Progress 进度import 'nprogress/nprogress.css' // Progress 进度条样式
+import NProgress from 'nprogress' // Progress 进度条
+import 'nprogress/nprogress.css' // Progress 进度条样式
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // 验权
-
-const whiteList = ['/login'] // 不重定向白名单
+const whiteList = ['/login', '/forget', '/resetpage', '/menuManage'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
-  console.log(store.getters.roles.length)
+  console.log(getToken())
   NProgress.start()
   if (getToken()) {
     if (to.path === '/login') {
       next({ path: '/' })
-      NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
+      NProgress.done()
     } else {
       if (store.getters.roles.length === 0) {
         store
           .dispatch('GetInfo')
           .then((res) => {
-            // 拉取用户信息
+            // 拉取用户信息,获取权限菜单
+            // let menus = res
             let menus = [
+              { name: 'sou' }, //包含了资源设置
+              { name: 'classifiSetting' }, //资源设置>分类设置
               { name: 'etm' }, //包含了招生管理
               // { name: 'enrollmentManagement' }, //首页
               { name: 'customerManage' }, //招生管理>客户管理
@@ -29,33 +32,33 @@ router.beforeEach((to, from, next) => {
               { name: 'pms' }, //
               { name: 'seaCustomer' }, //公海学员
               { name: 'queryStudent' },
-              { name: 'clientSeting' },
-              { name: 'payMent' },
-              { name: 'IntentionEntry' },
-              { name: 'studentDetail' },
-              { name: 'studyReport' },
-              { name: 'eda' },
-              { name: 'lessonClassifi' },
-              { name: 'homeClassifi' },
-              { name: 'lessonDetail' },
-              { name: 'videoMananger' }, //视频管理
-              { name: 'questionBank' }, //题库管理
-              { name: 'yearTest' }, //历年真题
-              { name: 'freedomTest' }, //自由出题
-              { name: 'chapterPractise' }, //章节练习
-              { name: 'liveManager' }, //直播管理
-              { name: 'testSeting' }, //考试配置
-              { name: 'extra' }, //系统配置
-              { name: 'imgSpace' },
-              { name: 'videoWaterMark' },
-              { name: 'miniProgram' },
-              { name: 'messageInter' },
-              { name: 'addNewClassify' }, //添加新课程分类
-              { name: 'addObject' },
+              // { name: 'clientSeting' },
+              // { name: 'payMent' },
+              // { name: 'IntentionEntry' },
+              // { name: 'studentDetail' },
+              // { name: 'studyReport' },
+              // { name: 'eda' },
+              // { name: 'lessonClassifi' },
+              // { name: 'homeClassifi' },
+              // { name: 'lessonDetail' },
+              // { name: 'videoMananger' }, //视频管理
+              // { name: 'questionBank' }, //题库管理
+              // { name: 'yearTest' }, //历年真题
+              // { name: 'freedomTest' }, //自由出题
+              // { name: 'chapterPractise' }, //章节练习
+              // { name: 'liveManager' }, //直播管理
+              // { name: 'testSeting' }, //考试配置
+              // { name: 'extra' }, //系统配置
+              // { name: 'imgSpace' },
+              // { name: 'videoWaterMark' },
+              // { name: 'miniProgram' },
+              // { name: 'messageInter' },
+              // { name: 'addNewClassify' }, //添加新课程分类
+              // { name: 'addObject' },
             ]
-            let username = 'admin'
-            store.dispatch('GenerateRoutes', { menus, username }).then(() => {
-              console.log('qweewqe')
+
+            let username = 'account'
+            store.dispatch('GenerateRoutes', { username, menus }).then(() => {
               // 生成可访问的路由表
               router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
               next({ ...to, replace: true })
@@ -79,16 +82,8 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
     }
   }
-  NProgress.done()
-  //   }
-  // }
-  next()
-  NProgress.done()
-  //   }
-  // }
-  next()
 })
-
 router.afterEach(() => {
   NProgress.done() // 结束Progress
 })
+//节流自定义全局命令

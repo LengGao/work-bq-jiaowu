@@ -237,52 +237,6 @@
               {{ scope.row.type | dealType }}
             </template>
           </el-table-column>
-
-          <el-table-column label="操作" fixed="right" min-width="200">
-            <template slot-scope="scope">
-              <div style="display: flex;">
-                <el-button
-                  type="text"
-                  v-if="scope.row.type != '3'"
-                  @click="toIntentionEntry(scope.row)"
-                  >编辑</el-button
-                >
-                <el-button
-                  type="text"
-                  v-if="scope.row.type == '1' || scope.row.type == '3'"
-                  @click="topayment(scope.row)"
-                  >缴费</el-button
-                >
-                <el-button
-                  type="text"
-                  v-if="scope.row.type == '1'"
-                  @click="jumpSea(scope.row)"
-                  >跳海</el-button
-                >
-                <el-button
-                  type="text"
-                  v-if="scope.row.type == '1'"
-                  @click="toSwapStudent"
-                  >转交</el-button
-                >
-                <el-button
-                  type="text"
-                  @click="topayment(scope.row, (refund = 'refund'))"
-                  v-if="scope.row.type == '2'"
-                  >退费</el-button
-                >
-                <el-button
-                  type="text"
-                  @click="toRefundDetail(scope.row)"
-                  v-if="scope.row.type == '3'"
-                  >退费情况</el-button
-                >
-                <el-button type="text" @click="toStudentDetail(scope.row)"
-                  >详情</el-button
-                >
-              </div>
-            </template>
-          </el-table-column>
         </el-table>
         <!--添加客户弹框--->
 

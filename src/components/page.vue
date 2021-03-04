@@ -6,20 +6,19 @@
   单页个数  pageSize
    -->
   <section>
-    <el-pagination background
-                   layout="prev, pager, next, jumper, slot"
-                   :total="data"
-                   :page-size="pageSize"
-                   prev-text="上一页"
-                   next-text="下一页"
-                   :current-page="curpage"
-                   @current-change="doPageChange"
-                   class="hidden-xs-only">
-      <el-button class="page_btn"
-                 type="success"
-                 plain>跳转</el-button>
+    <el-pagination
+      background
+      layout="prev, pager, next, jumper, slot"
+      :total="data"
+      :page-size="pageSize"
+      prev-text="上一页"
+      next-text="下一页"
+      :current-page="curpage"
+      @current-change="doPageChange"
+      class="hidden-xs-only"
+    >
+      <!-- <el-button class="page_btn" type="success" plain>跳转</el-button> -->
     </el-pagination>
-
   </section>
 </template>
 
@@ -33,12 +32,12 @@ export default {
     data: Number,
     curpage: {
       type: Number,
-      default: 1
+      default: 1,
     },
     pageSize: {
       type: Number,
-      default: 20
-    }
+      default: 20,
+    },
   },
 
   mounted() {
@@ -47,10 +46,9 @@ export default {
   methods: {
     doPageChange(page) {
       this.$emit('pageChange', page)
-    }
-  }
+    },
+  },
 }
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

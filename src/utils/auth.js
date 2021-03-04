@@ -13,3 +13,11 @@ export function setToken(token) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+export function setStaff_id(Staff_id) {
+  return Cookies.set('Staff_id', Staff_id)
+}
+
+export function getStaff_id() {
+  return Cookies.get('Staff_id')
+}

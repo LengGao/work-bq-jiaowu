@@ -1,4 +1,3 @@
-
 body,
 h1,
 h2,
@@ -24,12 +23,12 @@ input,
 textarea,
 th,
 td {
-    margin: 0;
-    padding: 0
+  margin: 0;
+  padding: 0;
 }
 
 html {
-    color: #000;
+  color: #000;
 }
 
 body,
@@ -37,8 +36,9 @@ button,
 input,
 select,
 textarea {
-    font-size: 12px;
-    font-family: arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti
+  font-size: 12px;
+  font-family: arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体',
+    \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti;
 }
 
 /* body,button,input,select,textarea{font-size:12px;font-family:'Microsoft Yahei','微软雅黑','宋体',\5b8b\4f53,Tahoma,Arial,Helvetica,STHeiti} */
@@ -48,310 +48,320 @@ h3,
 h4,
 h5,
 h6 {
-    font-size: 100%
+  font-size: 100%;
 }
 
 em {
-    font-style: normal
+  font-style: normal;
 }
 
 ul,
 ol {
-    list-style: none
+  list-style: none;
 }
-
+ul,
+li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
 a {
-    text-decoration: none;
-    color:#606266;
+  text-decoration: none;
+  color: #606266;
 }
 
 a:hover {
-    text-decoration: none
+  text-decoration: none;
 }
 
 legend {
-    color: #000
+  color: #000;
 }
 
 fieldset,
 img {
-    border: 0
+  border: 0;
 }
 
 button,
 input,
 select,
 textarea {
-    font-size: 100%;
-    border: none;
+  font-size: 100%;
+  border: none;
 }
 
 table {
-    border-collapse: collapse;
-    border-spacing: 0
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 textarea {
-    resize: vertical
+  resize: vertical;
+}
+.mainwrap {
+  padding: 20px !important;
+  background: #fff;
 }
 
 .left,
 .fl {
-    float: left
+  float: left;
 }
 
 .right,
 .fr {
-    float: right
+  float: right;
 }
 
 .overflow {
-    overflow: hidden
+  overflow: hidden;
 }
 
 .hide {
-    display: none
+  display: none;
 }
 
 .show {
-    display: block
+  display: block;
 }
 
 .inline {
-    display: inline
+  display: inline;
 }
 
 .error {
-    color: #F00;
-    font-size: 12px
+  color: #f00;
+  font-size: 12px;
 }
 
 label,
 button {
-    cursor: pointer
+  cursor: pointer;
 }
 
 .clearfix:after {
-    content: '\20';
-    display: block;
-    height: 0;
-    clear: both
+  content: '\20';
+  display: block;
+  height: 0;
+  clear: both;
 }
 
 .clearfix {
-    zoom: 1
+  zoom: 1;
 }
 
 .clear {
-    clear: both;
-    height: 0;
-    line-height: 0;
-    font-size: 0;
-    visibility: hidden;
-    overflow: hidden
+  clear: both;
+  height: 0;
+  line-height: 0;
+  font-size: 0;
+  visibility: hidden;
+  overflow: hidden;
 }
 
 img {
-    border: 0
+  border: 0;
 }
 
 .position {
-    position: relative;
+  position: relative;
 }
-
-
-
 /* 强制一行显示 */
 .text_overflow {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 多行显示 */
 .text_overflow2 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.nav_box , .nav_li , .nav_son {
-    transition: all .3s;
-    -webkit-transition:all .3s;
+.nav_box,
+.nav_li,
+.nav_son {
+  transition: all 0.3s;
+  -webkit-transition: all 0.3s;
 }
 
 // 导航
 .nav_box {
-  box-shadow: 4px 0px 10px 0px 
-  rgba(24, 25, 25, 0.1);
-    width: 220px;
-    background-color: $gb_nav;
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    overflow: auto;
-    z-index:10;
-    .logo {
-      height: 120px;
-      display: flex;
-      > img {
-        margin: auto;
-        max-width: 100%;
-      }
-    }
-  }
-  
-  .nav {
-    .nav_li {
-      position: relative;
-      color: #fff;
-      .nav_li_title {
-        color: $gb_nav_font;
-        font-size: 18px;
-        font-weight: bold;
-        padding: 18px 10px 18px 85px;
-        position: relative;
-        > img {
-          position: absolute;
-          left: 33px;
-          top: 6px;
-        }
-      }
-      .nav_son {
-        height: 0px;
-        overflow: hidden;
-        > li {
-          width: 100%;
-          a {
-            height: 40px;
-            line-height: 40px;
-            color: $gb_nav_font;
-            font-size: 14px;
-            display: block;
-            padding: 0 10px 0 60px;
-          }
-          a:hover,
-          a.active {
-            background-color: $bg_a_hover;
-          }
-        }
-      }
-    }
-    .nav_li.active {
-      background-color: $gb_nav_son;
-    }
-    .nav_li:hover::after , .nav_li.hov::after {
-      content: "";
-      display: block;
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 8px;
-      height: 60px;
-      background-color: $gb_color;
-    }
-  
-    .nav_li.active .nav_son {
-      height: auto;
-    }
-  }
-
-  .m_cover {
-      position: fixed;
-      left:0;
-      top:0;
-      bottom: 0;
-      right:0;
-      background: rgba(0,0,0,0.5);
-      z-index: -1;
-      display: block;
-  }
-
-  // 头部
-.header {
-    position: fixed;
-    left: 220px;
-    top: 0;
-    height: 59px;
-    background-color: #ffffff;
-    right: 0;
-    border-bottom: 1px solid #ccc;
-  }
-  .header_left {
-    padding: 19px 20px;
-  }
-  .header_title {
-    font-size: 18px;
-    line-height: 60px;
-    font-weight: bold;
-    padding-left: 10px;
-  }
-  .header_right {
-    height: 100%;
+  box-shadow: 4px 0px 10px 0px rgba(24, 25, 25, 0.1);
+  width: 220px;
+  background-color: $gb_nav;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow: auto;
+  z-index: 10;
+  .logo {
+    height: 120px;
     display: flex;
-    line-height: 60px;
-    font-size: 14px;
-    margin-right: 90px;
-    color: #000;
     > img {
       margin: auto;
-      margin-right: 11px;
+      max-width: 100%;
     }
   }
-  .header_ra {
-    display: flex;
-    height: 100%;
-    line-height: 60px;
-    color: #000;
-    > img {
-      margin: auto;
-      margin-right: 11px;
-    }
-  }
-  .select_com {
-    margin-top: 26px;
-    margin-left: 16px;
-  }
-
-  
-#app.hideNav {
-    .nav_box {
-        display: none;
-    }
-    #header , #main {
-        left:0;
-    }
-    #nav_img {
-        transform: rotate(-180deg);
-    }
-    .m_cover {display: none;}
 }
 
-@media screen and (max-width:1000px) {
+.nav {
+  .nav_li {
+    position: relative;
+    color: #fff;
+    .nav_li_title {
+      color: $gb_nav_font;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 18px 10px 18px 85px;
+      position: relative;
+      > img {
+        position: absolute;
+        left: 33px;
+        top: 6px;
+      }
+    }
+    .nav_son {
+      height: 0px;
+      overflow: hidden;
+      > li {
+        width: 100%;
+        a {
+          height: 40px;
+          line-height: 40px;
+          color: $gb_nav_font;
+          font-size: 14px;
+          display: block;
+          padding: 0 10px 0 60px;
+        }
+        a:hover,
+        a.active {
+          background-color: $bg_a_hover;
+        }
+      }
+    }
+  }
+  .nav_li.active {
+    background-color: $gb_nav_son;
+  }
+  .nav_li:hover::after,
+  .nav_li.hov::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8px;
+    height: 60px;
+    background-color: $gb_color;
+  }
+
+  .nav_li.active .nav_son {
+    height: auto;
+  }
+}
+
+.m_cover {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+  display: block;
+}
+
+// 头部
+.header {
+  position: fixed;
+  left: 220px;
+  top: 0;
+  height: 59px;
+  background-color: #ffffff;
+  right: 0;
+  border-bottom: 1px solid #ccc;
+}
+.header_left {
+  padding: 19px 20px;
+}
+.header_title {
+  font-size: 18px;
+  line-height: 60px;
+  font-weight: bold;
+  padding-left: 10px;
+}
+.header_right {
+  height: 100%;
+  display: flex;
+  line-height: 60px;
+  font-size: 14px;
+  margin-right: 90px;
+  color: #000;
+  > img {
+    margin: auto;
+    margin-right: 11px;
+  }
+}
+.header_ra {
+  display: flex;
+  height: 100%;
+  line-height: 60px;
+  color: #000;
+  > img {
+    margin: auto;
+    margin-right: 11px;
+  }
+}
+.select_com {
+  margin-top: 26px;
+  margin-left: 16px;
+}
+
+#app.hideNav {
+  .nav_box {
+    display: none;
+  }
+  #header,
+  #main {
+    left: 0;
+  }
+  #nav_img {
+    transform: rotate(-180deg);
+  }
+  .m_cover {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1000px) {
   #app {
-    #header , #main {
-        left:0;
+    #header,
+    #main {
+      left: 0;
     }
   }
 }
 
 .select_com {
-    border:10px solid #666666;
-    border-color: #666 transparent transparent transparent;
-    border-width: 10px 7px 10px 7px;
+  border: 10px solid #666666;
+  border-color: #666 transparent transparent transparent;
+  border-width: 10px 7px 10px 7px;
 }
 .m_cover {
-    display: none!important;
+  display: none !important;
 }
 
-
-@media screen and (max-width:1000px){
-   .m_cover {
-       display: block!important;
-   }
+@media screen and (max-width: 1000px) {
+  .m_cover {
+    display: block !important;
+  }
 }
 
 @import url(./component.scss);
@@ -359,22 +369,23 @@ img {
 
 //   修改elementUi默认样式 覆盖
 
-.btn-next , .btn-prev {
-    padding:0 10px!important;
+.btn-next,
+.btn-prev {
+  padding: 0 10px !important;
 }
 
-.min_table .el-table__body-wrapper{
+.min_table .el-table__body-wrapper {
   min-height: 530px;
 }
-.el-table .cell.el-tooltip{
-  max-height:50px
+.el-table .cell.el-tooltip {
+  max-height: 50px;
 }
-.min_table.departmentManage .el-table__body-wrapper{
+.min_table.departmentManage .el-table__body-wrapper {
   min-height: 0;
-  height: 0!important;
-  overflow :hidden;
+  height: 0 !important;
+  overflow: hidden;
 }
-.align-rows{
+.align-rows {
   display: flex;
   align-items: center;
 }
@@ -395,9 +406,9 @@ img {
 
 .update_cer_item .el-form-item__content {
   width: calc(100% - 100px);
-  @media screen and (max-width:600px) {
+  @media screen and (max-width: 600px) {
     width: 100%;
-}
+  }
 }
 
 .label_100vw {
@@ -413,15 +424,15 @@ img {
 }
 
 .el_input100 {
-  width:100%;
+  width: 100%;
   .el-form-item__content {
-    width:calc(100% - 100px);
+    width: calc(100% - 100px);
   }
 }
 .el_input200 {
-  width:100%;
+  width: 100%;
   .el-form-item__content {
-    width:calc(100% - 200px);
+    width: calc(100% - 200px);
   }
 }
 
@@ -434,7 +445,7 @@ img {
 
 .none_table {
   .el-table__body-wrapper {
-    height:0;
+    height: 0;
   }
 }
 div.el-table th > .cell.highlight {
@@ -455,13 +466,12 @@ span.el-table__column-filter-trigger i {
 }
 
 .pad20 {
-  padding:20px;
+  padding: 20px;
 }
-
 
 // 练习
 .practice_wrap {
-  background: rgb(233,236,240);
+  background: rgb(233, 236, 240);
   width: 100%;
   height: 100vh;
   display: flex;
@@ -488,7 +498,8 @@ span.el-table__column-filter-trigger i {
     font-size: 14px;
     cursor: pointer;
   }
-  .practice_answer:hover , .practice_answer.active {
+  .practice_answer:hover,
+  .practice_answer.active {
     border-color: $gb_color;
   }
   .practice_answer::before {
@@ -503,7 +514,7 @@ span.el-table__column-filter-trigger i {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }
-  
+
   .practice_answer_btn {
     position: absolute;
     text-align: center;
@@ -519,22 +530,21 @@ span.el-table__column-filter-trigger i {
     }
     .open_answer {
       position: absolute;
-      left:20px;
+      left: 20px;
       font-size: 30px;
-      bottom:0;
+      bottom: 0;
       cursor: pointer;
     }
     .multiple_btn_box {
       position: absolute;
-      left:0;
-      top:-50px;
+      left: 0;
+      top: -50px;
       width: 100%;
       height: 40px;
       .el-button {
         width: 410px;
       }
     }
-    
   }
   .practice_answer_analysis {
     padding: 30px 0 13px;
@@ -554,16 +564,23 @@ span.el-table__column-filter-trigger i {
     line-height: 22px;
     padding: 18px;
   }
-  @media screen and (max-width:767px){
+  @media screen and (max-width: 767px) {
     .practice_answer_btn {
       .el-button {
         width: auto;
       }
       .multiple_btn_box {
-        .el-button {width: 180px;}
+        .el-button {
+          width: 180px;
+        }
       }
-      
     }
   }
 }
-
+.home {
+  display: flex;
+  background: #ffffff;
+  margin: 23px 0px 0px 23px;
+  padding: 23px 0px 23px 23px;
+  font-size: 14px;
+}
