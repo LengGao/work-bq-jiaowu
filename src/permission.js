@@ -22,14 +22,19 @@ router.beforeEach((to, from, next) => {
             let menus = [
               { name: 'sou' }, //包含了资源设置
               { name: 'classifiSetting' }, //资源设置>分类设置
+              { name: 'courseManage' }, //资源设置>课程管理
+              { name: 'textbookManage' }, //资源设置>教材管理
+              { name: 'textbookRecord' }, //资源设置>教材管理>教材记录
+              { name: 'projectManage' }, //资源设置>项目管理
+              { name: 'agency' }, //资源设置>推荐机构
+              { name: 'schoolManage' }, //资源设置>校区管理
               { name: 'etm' }, //包含了招生管理
-              // { name: 'enrollmentManagement' }, //首页
               { name: 'customerManage' }, //招生管理>客户管理
               { name: 'customeRegist' }, //招生管理>客户管理>客户报名
               { name: 'customerDetail' }, //招生管理>客户管理>客户报名>客户详情orderDetail
               { name: 'orderDetail' }, //招生管理>客户管理>客户报名>订单详情
               { name: 'visualization' }, //数据看板
-              { name: 'pms' }, //
+              { name: 'pms' },
               { name: 'seaCustomer' }, //公海学员
               { name: 'queryStudent' },
               // { name: 'clientSeting' },
