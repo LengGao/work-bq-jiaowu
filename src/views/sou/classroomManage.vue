@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+      *管理所有教学教室以及使用情况
     </div>
 
     <section class="mainwrap">
@@ -17,28 +17,26 @@
       </ul>
       <div class="client_head">
         <search2
-          :courseTypeShow="true"
           :contentShow="true"
           typeTx="punch"
-          inputText="课程名称"
+          inputText="教室名称"
           api="getCourseManage"
           @getTable="getTableList"
           :selectList="selectData.list"
         ></search2>
-        <div v-if="isTagactive === 2">
+        <!-- <div v-if="isTagactive === 2">
           <el-button type="primary" @click="toCreateClass">资源中心</el-button>
-        </div>
+        </div> -->
         <div v-if="isTagactive === 1">
-          <el-button type="primary" @click="toCreateClass"
+          <!-- <el-button type="primary" @click="toCreateClass"
             >创建单科班</el-button
-          >
-          <el-button type="primary" @click="toCreateClass('2')"
-            >创建套餐班</el-button
-          >
+          > -->
+          <el-button type="primary" @click="addClassroom">添加教室</el-button>
         </div>
       </div>
-      <!--表格-->
-      <div class="userTable">
+
+      <!--教室配置表格-->
+      <div class="userTable" v-if="isTagactive === 1">
         <el-table
           ref="multipleTable"
           :data="schoolData.list"
@@ -50,81 +48,34 @@
           :cell-style="{ 'text-align': 'center' }"
           class="min_table"
         >
-          <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
             prop="course_id"
-            label="课程编号"
+            label="教室名称"
             show-overflow-tooltip
             min-width="90"
           ></el-table-column>
-          <!-- <el-table-column
-            prop="cover_img"
-            label="缩略图"
-            min-width="80"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <div style="width:50px ;height:50px;">
-                <img :src="scope.row.cover_img" alt class="school_class_box" />
-              </div>
-            </template>
-          </el-table-column> -->
+
           <el-table-column
             prop="course_name"
-            label="课程名称"
+            label="最大容纳人数"
             min-width="200"
             column-key="course_id"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="category_name"
-            label="课程分类"
+            label="详细地址"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="class_type_name"
-            label="课程班型"
+            label="备注"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="course_price"
-            label="课程价格"
-            min-width="80"
-            show-overflow-tooltip
-          ></el-table-column>
-          <!-- <el-table-column
-            prop="keshi"
-            label="视频个数"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="is_publish_status"
-            label="状态"
-            min-width="50"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            label="课程排序"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <el-col :span="12">
-                <el-input
-                  v-model="scope.row.sort"
-                  placeholder
-                  size="small"
-                  @blur="scopes(scope.row.course_id, scope.row.sort)"
-                ></el-input>
-              </el-col>
-            </template>
-          </el-table-column>
-          -->
-          <el-table-column
-            label="是否上架"
+            label="是否启用"
             min-width="100"
             show-overflow-tooltip
           >
@@ -151,12 +102,6 @@
                 <el-button type="text" @click="toCreateClass(scope.row)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="toCreateClass(scope.row)"
-                  >配置</el-button
-                >
-                <el-button type="text" @click="toCreateClass(scope.row)"
-                  >复制</el-button
-                >
               </div>
             </template>
             <template slot-scope="scope" v-if="isTagactive === 2">
@@ -168,23 +113,139 @@
             </template>
           </el-table-column>
         </el-table>
-        <!-- <div style="display:flex;justify-content:space-between">
-          <div class="batch_btn" style="padding-top:40px">
-            <el-button @click="batchRelease">批量发布</el-button>
-            <el-button @click="batchClose">批量关闭</el-button>
-            <el-button @click="batchDeletion">批量删除</el-button>
-          </div>
-          <div class="table_bottom">
-            <div class="table_bottom">
-              <page
-                :data="schoolData.total"
-                :curpage="page"
-                @pageChange="doPageChange"
-              />
+        <div class="table_bottom">
+          <page
+            :data="schoolData.total"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
+      </div>
+      <!--教室配置表格-->
+      <div class="userTable" v-if="isTagactive === 2">
+        <el-table
+          ref="multipleTable"
+          :data="schoolData.list"
+          tooltip-effect="light"
+          stripe
+          @selection-change="handleSelectionChange"
+          style="width: 100%;"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          class="min_table"
+        >
+          <el-table-column
+            prop="course_id"
+            label="上课时间"
+            show-overflow-tooltip
+            min-width="90"
+          ></el-table-column>
+
+          <el-table-column
+            prop="course_name"
+            label="教室名称"
+            min-width="200"
+            column-key="course_id"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="上课人数"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="class_type_name"
+            label="课程类型"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="class_type_name"
+            label="课程名称"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="class_type_name"
+            label="课次名称"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="class_type_name"
+            label="上课老师"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="class_type_name"
+            label="状态"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+        </el-table>
+        <div class="table_bottom">
+          <page
+            :data="schoolData.total"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
+      </div>
+      <!--教室配置弹框-->
+      <el-dialog title="提示" :visible.sync="classVisible" width="50%">
+        <el-form label-width="100px">
+          <el-row>
+            <el-col :lg="12" :sm="12" :xs="12" :md="12">
+              <el-form-item label="教室名称">
+                <el-input
+                  placeholder="请输入教室名称"
+                  class="input-width"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :lg="12" :sm="12" :xs="12" :md="12">
+              <el-form-item label="项目名称">
+                <el-input
+                  placeholder="请输入项目名称"
+                  class="input-width"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="适用范围">
+              <el-radio-group>
+                <el-radio :label="3">当前校区</el-radio>
+                <el-radio :label="6">全部校区</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="详细地址">
+              <el-input placeholder="请输入项目名称"></el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="备注信息">
+              <el-input type="textarea" placeholder="请输入备注信息"></el-input>
+            </el-form-item>
+          </el-row>
+        </el-form>
+        <!-- <span>这是一段信息</span> -->
+        <span slot="footer" class="dialog-footer">
+          <div style="display:flex;justify-content:space-between">
+            <el-checkbox style="padding-left:10px">继续添加</el-checkbox>
+            <div>
+              <el-button @click="classVisible = false">取 消</el-button>
+              <el-button type="primary" @click="classVisible = false"
+                >确 定</el-button
+              >
             </div>
           </div>
-        </div> -->
-      </div>
+        </span>
+      </el-dialog>
     </section>
   </div>
 </template>
@@ -194,6 +255,7 @@ export default {
   name: 'courseManage',
   data() {
     return {
+      classVisible: false,
       ruleForm: {
         category_id: '',
       },
@@ -201,11 +263,11 @@ export default {
       tabFun: [
         {
           id: 1,
-          name: '自建课程',
+          name: '教室配置',
         },
         {
           id: 2,
-          name: '公共课程',
+          name: '使用情况',
         },
       ],
       page: 1,
@@ -222,6 +284,9 @@ export default {
   },
 
   methods: {
+    addClassroom() {
+      this.classVisible = true
+    },
     statusSwitch(ab) {
       this.isTagactive = ab.id
     },
@@ -260,6 +325,7 @@ export default {
       //   } else {
       //     setMeal = '1'
       //   }
+
       this.$router.push({
         path: '/sou/createClass',
         query: {},
@@ -414,7 +480,7 @@ export default {
   }
 }
 .tabg {
-  //background: #2798ee;
+  //   background: #2798ee;
   color: #2798ee !important;
   border-bottom: 2px solid #199fff !important;
 }

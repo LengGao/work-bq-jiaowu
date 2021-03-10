@@ -28,38 +28,22 @@ router.beforeEach((to, from, next) => {
               { name: 'projectManage' }, //资源设置>项目管理
               { name: 'agency' }, //资源设置>推荐机构
               { name: 'schoolManage' }, //资源设置>校区管理
+              { name: 'classroomManage' }, //资源设置>教室管理
+              { name: 'customField' }, //资源管理>自定义字段
+              { name: 'businessTemplate' }, //资源管理>业务模板
               { name: 'etm' }, //包含了招生管理
               { name: 'customerManage' }, //招生管理>客户管理
               { name: 'customeRegist' }, //招生管理>客户管理>客户报名
-              { name: 'customerDetail' }, //招生管理>客户管理>客户报名>客户详情orderDetail
+              { name: 'customerDetail' }, //招生管理>客户管理>客户报名>客户详情
               { name: 'orderDetail' }, //招生管理>客户管理>客户报名>订单详情
+              { name: 'seaCustomer' }, //招生管理>公海客户
               { name: 'visualization' }, //数据看板
-              { name: 'pms' },
-              { name: 'seaCustomer' }, //公海学员
-              { name: 'queryStudent' },
-              // { name: 'clientSeting' },
-              // { name: 'payMent' },
-              // { name: 'IntentionEntry' },
-              // { name: 'studentDetail' },
-              // { name: 'studyReport' },
-              // { name: 'eda' },
-              // { name: 'lessonClassifi' },
-              // { name: 'homeClassifi' },
-              // { name: 'lessonDetail' },
-              // { name: 'videoMananger' }, //视频管理
-              // { name: 'questionBank' }, //题库管理
-              // { name: 'yearTest' }, //历年真题
-              // { name: 'freedomTest' }, //自由出题
-              // { name: 'chapterPractise' }, //章节练习
-              // { name: 'liveManager' }, //直播管理
-              // { name: 'testSeting' }, //考试配置
-              // { name: 'extra' }, //系统配置
-              // { name: 'imgSpace' },
-              // { name: 'videoWaterMark' },
-              // { name: 'miniProgram' },
-              // { name: 'messageInter' },
-              // { name: 'addNewClassify' }, //添加新课程分类
-              // { name: 'addObject' },
+              { name: 'eda' }, //包含了教务管理
+              { name: 'studentCenter' }, //教务管理>学生中心
+              { name: 'studentDetail' }, //教务管理>学生中心>学生详情
+              { name: 'classManage' }, //教务管理>班级管理
+              // { name: 'learnerManage' }, //教务管理>班级管理>学生管理
+              { name: 'addStudent' }, //教务管理>班级管理>学生管理>添加学生
             ]
 
             let username = 'account'

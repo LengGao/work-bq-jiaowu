@@ -4,112 +4,35 @@
       *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
     </div>
     <div class="mainPart">
-      <ul class="customer_navigation">
+      <!-- <ul class="customer_navigation">
         <li v-for="item in tabFun" :key="item.id">{{ item.name }}</li>
-      </ul>
+      </ul> -->
       <!--搜索模块-->
       <header>
-        <div class="searchModule">
-          <el-date-picker
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          >
-          </el-date-picker>
-
-          <el-select
-            filterable
-            style="width:130px;margin:0 10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="所属项目"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="推荐机构"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="渠道来源"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="成交状态"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="所属校区"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-input
-            v-model="ruleForm.institution_id"
-            placeholder="客户姓名/手机号码"
-            style="width:200px;margin-right:10px;"
-          ></el-input>
-          <el-button type="primary">搜索</el-button>
+        <div class="classContent">
+          <p>班级名称<span>系统集成面授1班</span></p>
+          <p>班级名称<span>系统集成面授1班</span></p>
+          <p>班级名称<span>系统集成面授1班</span></p>
+          <p>班级名称<span>系统集成面授1班</span></p>
         </div>
-        <el-button type="primary" style="height:40px" @click="addCustomer">
-          添加客户</el-button
-        >
+        <div>
+          <search2
+            :contentShow="true"
+            api="getHomeclassifiList"
+            inputText="分类名称"
+            @getTable="getTableList"
+          ></search2>
+          <el-button type="primary" style="height:40px" @click="addCustomer">
+            添加客户</el-button
+          >
+        </div>
       </header>
       <el-row class="dataPanel" style="">
         <template>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :lg="6">
             <div class="timeCard">
               <div>
-                <h3>客户总数</h3>
+                <h3>学生数量</h3>
                 <div class="time_num">
                   2000000
                   <!-- <span>{{ panelData.day }}</span -->
@@ -117,41 +40,30 @@
               </div>
             </div>
           </el-col>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :lg="6">
             <div class="timeCard">
               <div>
-                <h3>报名客户</h3>
+                <h3>出勤人数</h3>
                 <div class="time_num">
                   <!-- <span>{{ panelData.use_time }}</span> -->
                 </div>
               </div>
             </div>
           </el-col>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :lg="6">
             <div class="timeCard">
               <div>
-                <h3>复购客户</h3>
+                <h3>缺勤人数</h3>
                 <div class="time_num">
                   <!-- <span>{{ panelData.total_problem }}</span> -->
                 </div>
               </div>
             </div>
           </el-col>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :lg="6">
             <div class="timeCard">
               <div>
-                <h3>订单金额</h3>
-                <div class="time_num">
-                  <!-- <span>{{ panelData.accuracy }}</span
-                  ><em>%</em> -->
-                </div>
-              </div>
-            </div>
-          </el-col>
-          <el-col :lg="{ span: '4-8' }">
-            <div class="timeCard">
-              <div>
-                <h3>汇款金额</h3>
+                <h3>出勤率</h3>
                 <div class="time_num">
                   <!-- <span>{{ panelData.accuracy }}</span
                   ><em>%</em> -->
@@ -175,7 +87,7 @@
         >
           <el-table-column
             prop="uid"
-            label="学员编号"
+            label="序号"
             show-overflow-tooltip
             min-width="90"
           ></el-table-column>
@@ -194,49 +106,16 @@
           ></el-table-column>
           <el-table-column
             prop="create_time"
-            label="注册时间"
+            label="考情情况"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="category_name"
-            label="课程类型"
+            label="备注信息"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
-            prop="course_name"
-            label="课程名称"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="institution_name"
-            label="所属机构"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="teacher_name"
-            label="所属老师"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="sources"
-            label="渠道来源"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            label="成交状态"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              {{ scope.row.type | dealType }}
-            </template>
-          </el-table-column>
         </el-table>
         <!--添加客户弹框--->
 
@@ -258,7 +137,7 @@
               <el-col :lg="8">
                 <el-form-item label="客户姓名" prop="surname">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.surname"
                   ></el-input>
                 </el-form-item>
@@ -266,7 +145,7 @@
               <el-col :lg="8">
                 <el-form-item label="手机号码" prop="mobile">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.mobile"
                   ></el-input>
                 </el-form-item>
@@ -274,7 +153,7 @@
               <el-col :lg="8">
                 <el-form-item label="备用号码" prop="name">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.name"
                   ></el-input>
                 </el-form-item>
@@ -284,7 +163,7 @@
               <el-col :lg="8">
                 <el-form-item label="身份证号" prop="id_card_number">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.id_card_number"
                   ></el-input>
                 </el-form-item>
@@ -312,9 +191,7 @@
                   <el-date-picker
                     v-model="ruleForm.birthday"
                     type="date"
-                    format="yyyy-MM-dd "
-                    value-format="yyyy-MM-dd "
-                    class="input-width"
+                    style="width:240px"
                     placeholder="选择日期"
                   >
                   </el-date-picker>
@@ -323,7 +200,7 @@
               <el-col :lg="8">
                 <el-form-item label="QQ" prop="qq">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.qq"
                   ></el-input>
                 </el-form-item>
@@ -331,7 +208,7 @@
               <el-col :lg="8">
                 <el-form-item label="邮箱地址" prop="email">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.email"
                   ></el-input>
                 </el-form-item>
@@ -341,19 +218,19 @@
               <el-col :lg="8">
                 <el-form-item label="文化程度" prop="culture">
                   <!-- <el-input
-                   class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.culture"
                   ></el-input> -->
                   <el-select
-                    v-model="ruleForm.value"
+                    v-model="value"
                     placeholder="请选择文化程度"
-                    class="input-width"
+                    style="width:240px"
                   >
                     <el-option
                       v-for="item in cultures"
                       :key="item.value"
                       :label="item.label"
-                      :value="item.label"
+                      :value="item.value"
                     >
                     </el-option>
                   </el-select>
@@ -362,7 +239,7 @@
               <el-col :lg="8">
                 <el-form-item label="籍贯" prop="province">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.province"
                   ></el-input>
                 </el-form-item>
@@ -370,7 +247,7 @@
               <el-col :lg="8">
                 <el-form-item label="常住地" prop="city">
                   <el-input
-                    class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.city"
                   ></el-input>
                 </el-form-item>
@@ -380,8 +257,7 @@
               <el-col :lg="8">
                 <el-form-item label="推荐机构" prop="from_organization_id">
                   <el-input
-                    class="input-width"
-                    placeholder="请选择推荐机构"
+                    style="width:240px"
                     v-model="ruleForm.from_organization_id"
                   ></el-input>
                 </el-form-item>
@@ -389,8 +265,7 @@
               <el-col :lg="8">
                 <el-form-item label="渠道来源" prop="sources">
                   <el-input
-                    class="input-width"
-                    placeholder="请选择渠道来源"
+                    style="width:240px"
                     v-model="ruleForm.sources"
                   ></el-input>
                 </el-form-item>
@@ -398,7 +273,7 @@
               <!-- <el-col :lg="8">
                 <el-form-item label="是否跨区报考" prop="name">
                   <el-input
-                   class="input-width"
+                    style="width:240px"
                     v-model="ruleForm.name"
                   ></el-input>
                 </el-form-item>
@@ -413,10 +288,8 @@
           <!-- <span>这是一段信息</span> -->
           <span slot="footer" class="dialog-footer">
             <el-button @click="curstomerVisible = false">取 消</el-button>
-            <el-button type="primary" @click="preserve('ruleForm')"
-              >保 存</el-button
-            >
-            <el-button type="primary" @click="preserve('ruleForm', 2)"
+            <el-button type="primary" @click="preserve">保 存</el-button>
+            <el-button type="primary" @click="toCustomeRegist"
               >保存并报名</el-button
             >
           </span>
@@ -427,7 +300,6 @@
 </template>
 
 <script>
-import { getBirth, getSex } from '@/utils/index'
 export default {
   name: 'myClients',
 
@@ -482,24 +354,24 @@ export default {
         //     trigger: 'blur',
         //   },
         // ],
-        id_card_number: [
-          { required: true, message: '请输入身份证ID', trigger: 'blur' },
-          {
-            validator: function(rule, value, callback) {
-              if (
-                /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) == false
-              ) {
-                callback(new Error('你的身份证格式不正确'))
-              } else {
-                callback()
-              }
-            },
-            trigger: 'blur',
-          },
-        ],
-        // sources: [
-        //   { required: true, message: '请填写渠道来源', trigger: 'change' },
+        // id_card_number: [
+        //   { required: true, message: '请输入身份证ID', trigger: 'blur' },
+        //   {
+        //     validator: function(rule, value, callback) {
+        //       if (
+        //         /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) == false
+        //       ) {
+        //         callback(new Error('你的身份证格式不正确'))
+        //       } else {
+        //         callback()
+        //       }
+        //     },
+        //     trigger: 'blur',
+        //   },
         // ],
+        sources: [
+          { required: true, message: '请填写渠道来源', trigger: 'change' },
+        ],
       },
       ruleForm: {
         surname: '',
@@ -507,7 +379,7 @@ export default {
         id_card_number: '',
         sex: 0,
         birthday: '',
-        marry: 0,
+        marry: '',
         qq: '',
         email: '',
         culture: '',
@@ -537,7 +409,7 @@ export default {
     this.status = 1
   },
   mounted() {
-    // this.$api.getCategoryList(this, 'schoolData')
+    this.$api.getCategoryList(this, 'schoolData')
   },
   filters: {
     dealType(type) {
@@ -552,25 +424,9 @@ export default {
   },
   methods: {
     //保存
-    preserve(formName, num) {
-      //没有自动填充生日
-      if (this.ruleForm.birthday == '') {
-        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number)
-      }
-      //没有自动填充性别
-      if (this.ruleForm.sex == '') {
-        this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
-      }
+    preserve() {
       console.log(this.ruleForm)
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.$api.addCustomers(this, this.ruleForm, num)
-          // alert('submit!');
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      this.$api.addCustomers(this, this.ruleForm)
     },
 
     toCustomeRegist() {
@@ -668,9 +524,6 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
-.input-width {
-  width: 240px;
-}
 .main {
   padding: 20px;
   margin: 20px;
@@ -767,5 +620,20 @@ header {
 .flexfr {
   display: flex;
   justify-content: flex-end;
+}
+.classContent {
+  width: 1500px;
+  display: flex;
+
+  p {
+    margin-right: 40px;
+    font-family: 'Microsoft YaHei UI', sans-serif;
+    color: #999999;
+    font-size: 16px;
+    span {
+      padding-left: 30px;
+      color: #666666;
+    }
+  }
 }
 </style>

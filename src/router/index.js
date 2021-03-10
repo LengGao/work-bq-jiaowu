@@ -42,7 +42,7 @@ export const asyncRouterMap = [
   {
     path: '/sou',
     component: Layout,
-    redirect: '/sou/enrollmentManagement',
+    redirect: '/sou/classifiSetting',
     meta: { title: '资源配置', icon: 'zhaoshengguanli' },
     name: 'sou',
     children: [
@@ -110,6 +110,24 @@ export const asyncRouterMap = [
         component: () => import('@/views/sou/schoolManage.vue'),
         meta: { title: '校区管理', icon: 'product-add' },
       },
+      {
+        path: 'classroomManage',
+        name: 'classroomManage',
+        component: () => import('@/views/sou/classroomManage.vue'),
+        meta: { title: '教室管理', icon: 'product-add' },
+      },
+      {
+        path: 'customField',
+        name: 'customField',
+        component: () => import('@/views/sou/customField.vue'),
+        meta: { title: '自定义字段', icon: 'product-add' },
+      },
+      {
+        path: 'businessTemplate',
+        name: 'businessTemplate',
+        component: () => import('@/views/sou/businessTemplate.vue'),
+        meta: { title: '业务模板', icon: 'product-add' },
+      },
     ],
   },
   {
@@ -146,6 +164,81 @@ export const asyncRouterMap = [
         component: () => import('@/views/etm/seaCustomer.vue'),
         meta: { title: '公海客户', icon: 'product-cate' },
       },
+    ],
+  },
+  {
+    path: '/eda',
+    component: Layout,
+    redirect: '/eda/studentCenter',
+    meta: { title: '教务管理', icon: 'zhaoshengguanli' },
+    name: 'eda',
+    children: [
+      {
+        path: 'studentCenter',
+        name: 'studentCenter',
+        component: () => import('@/views/eda/studentCenter.vue'),
+        meta: { title: '学生中心', icon: 'product-cate' },
+      },
+      //学生中心组件开始
+      {
+        path: 'studentDetail',
+        name: 'studentDetail',
+        component: () => import('@/views/eda/studentCenter/studentDetail.vue'),
+        meta: { title: '', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'orderManage',
+        name: 'orderManage',
+        component: () => import('@/views/eda/studentCenter/orderManage.vue'),
+        meta: { title: '', icon: 'product-cate' },
+        hidden: true,
+      },
+
+      //学生中心组件结束
+      {
+        path: 'classManage',
+        name: 'classManage',
+        component: () => import('@/views/eda/classManage.vue'),
+        meta: { title: '班级管理', icon: 'product-cate' },
+      },
+      //班级管理组件开始
+      {
+        path: 'learnerManage',
+        name: 'learnerManage',
+        component: () => import('@/views/eda/classManage/learnerManage.vue'),
+        meta: { title: '', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'addStudent',
+        name: 'addStudent',
+        component: () => import('@/views/eda/classManage/addStudent.vue'),
+        meta: { title: '', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'massMessage',
+        name: 'massMessage',
+        component: () => import('@/views/eda/classManage/massMessage.vue'),
+        meta: { title: '', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'classDetail',
+        name: 'classDetail',
+        component: () => import('@/views/eda/classManage/classDetail.vue'),
+        meta: { title: '', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'examStatis',
+        name: 'examStatis',
+        component: () => import('@/views/eda/classManage/examStatis.vue'),
+        meta: { title: '考勤统计', icon: 'product-cate' },
+        hidden: true,
+      },
+      //班级管理组件开始
     ],
   },
 

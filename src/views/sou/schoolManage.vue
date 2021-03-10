@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head_remind">
-      *管理第三方推荐机构的账号密码
+      *管理校区负责人的联系方式
     </div>
     <section class="mainwrap">
       <div class="head-search">
@@ -9,11 +9,11 @@
           :contentShow="true"
           typeTx="punch"
           api="getHomeclassifiList"
-          inputText="机构名称"
+          inputText="校区名称"
           @getTable="getTableList"
         ></search2>
         <el-button type="primary" @click="projectDialog">
-          添加机构
+          添加校区
         </el-button>
       </div>
       <!--表格-->
@@ -27,18 +27,12 @@
           :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
-            label="机构编号"
+            label="校区名称"
             show-overflow-tooltip
             min-width="90"
             prop="index_category_id"
           >
           </el-table-column>
-          <el-table-column
-            prop="index_category_name"
-            label="机构名称"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
           <el-table-column
             prop="index_category_name"
             label="负责人"
@@ -47,35 +41,27 @@
           ></el-table-column>
           <el-table-column
             prop="index_category_name"
-            label="手机号"
+            label="联系方式"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
-            label="推荐学员"
-            min-width="110"
+            prop="status"
+            label="是否启用"
+            min-width="150"
             show-overflow-tooltip
-          ></el-table-column>
-
-          <el-table-column
-            prop="index_category_name"
-            label="成交学员"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="index_category_name"
-            label="未成交学员"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="index_category_name"
-            label="退费学员"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <el-switch
+                active-color="#13ce66"
+                v-model="scope.row.account_status"
+                :active-value="1"
+                :inactive-value="2"
+                @change="changeSwitch(scope.row)"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
@@ -101,7 +87,7 @@
       </div> -->
       </div>
       <!--添加项目弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%">
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -109,34 +95,60 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="机构名称" prop="name">
+          <el-form-item label="校区名称" prop="name">
             <el-input
               v-model="ruleForm.name"
-              placeholder="请输入机构名称"
-              class="input-width"
+              placeholder="请输入校区名称"
             ></el-input>
           </el-form-item>
-          <el-form-item label="负责人姓名" prop="name">
-            <el-input
-              v-model="ruleForm.name"
-              placeholder="请输入负责人姓名"
-              class="input-width"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="手机号码" prop="name">
-            <el-input
-              v-model="ruleForm.name"
-              placeholder="请输入手机号码"
-              class="input-width"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="登录密码" prop="name">
-            <el-input
-              v-model="ruleForm.name"
-              placeholder="请输入登录密码"
-              class="input-width"
-            ></el-input>
-          </el-form-item>
+          <el-row>
+            <el-col :lg="12" :md="12" :sm="12" :xs="12">
+              <el-form-item label="负责人" prop="name">
+                <el-input
+                  v-model="ruleForm.name"
+                  placeholder="请输入负责人姓名"
+                  class="input-width"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :lg="12" :md="12" :sm="12" :xs="12">
+              <el-form-item label="联系方式" prop="name">
+                <el-input
+                  v-model="ruleForm.name"
+                  placeholder="请输入联系方式"
+                  class="input-width"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :lg="12" :md="12" :sm="12" :xs="12">
+              <el-form-item label="地址" prop="name">
+                <div style="display:flex;aligin-item:center; ">
+                  <el-input
+                    v-model="ruleForm.name"
+                    placeholder="请输入详细地址"
+                    class="input-width"
+                  ></el-input>
+                  <div class="el-icon-search search-btn"></div>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col
+              :lg="12"
+              :md="12"
+              :sm="12"
+              :xs="12"
+              style="display:flex;justify-content:space-between"
+            >
+              <el-form-item label="经度" prop="name">
+                <el-input v-model="ruleForm.name" style="80px"></el-input>
+              </el-form-item>
+              <el-form-item label="纬度" prop="name">
+                <el-input v-model="ruleForm.name" style="80px"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -153,7 +165,7 @@ export default {
   data() {
     return {
       ruleForm: {},
-      dialogTitle: '添加机构',
+      dialogTitle: '添加校区',
       dialogVisible: false,
     }
   },
@@ -228,5 +240,17 @@ export default {
 }
 .project-ul:last-child {
   border-bottom: 1px solid rgba(235, 238, 245, 1);
+}
+.search-btn {
+  background: #199fff;
+  width: 42px;
+  height: 39px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 4px;
+  margin-left: 10px;
 }
 </style>
