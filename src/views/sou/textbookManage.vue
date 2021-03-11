@@ -31,46 +31,46 @@
           :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
-            label="ID"
+            label="book_id"
             show-overflow-tooltip
             min-width="90"
             prop="index_category_id"
           >
           </el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="book_name"
             label="教材名称"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="category_name"
             label="所属分类"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="chief_editor"
             label="主编"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="book_price"
             label="价格"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
-            prop="index_category_name"
+            prop="book_isbn"
             label="教材条码ISBN"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
-            prop="index_category_name"
+            prop="number"
             label="库存数量"
             min-width="110"
             show-overflow-tooltip
@@ -314,7 +314,7 @@ export default {
   },
 
   created() {
-    // this.$api.getHomeclassifiList(this, 'schoolData')
+    this.$api.getTeachBooksList(this, 'schoolData')
   },
 
   methods: {

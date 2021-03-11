@@ -3,6 +3,7 @@ import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
 import imgSpace from '@/assets/js/imgSpace'
 import quertionBank from '@/assets/js/quertionBank'
 import enrollStu from '@/assets/js/enrollStu'
+import resource from '@/assets/js/resource'
 import statiSys from '@/assets/js/statiSys'
 import schManage from '@/assets/js/schManage'
 import testconfig from '@/assets/js/testconfig'
@@ -2134,6 +2135,7 @@ Object.assign(
   quertionBank,
   testconfig,
   enrollStu,
+  resource,
   statiSys,
   schManage,
   visualization,

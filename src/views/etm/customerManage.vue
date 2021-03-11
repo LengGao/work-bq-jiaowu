@@ -100,9 +100,18 @@
           ></el-input>
           <el-button type="primary">搜索</el-button>
         </div>
-        <el-button type="primary" style="height:40px" @click="addCustomer">
-          添加客户</el-button
-        >
+        <div>
+          <el-button
+            type="primary"
+            style="height:40px"
+            @click="toOnlineStudents"
+          >
+            网课学生</el-button
+          >
+          <el-button type="primary" style="height:40px" @click="addCustomer">
+            添加客户</el-button
+          >
+        </div>
       </header>
       <el-row class="dataPanel" style="">
         <template>
@@ -175,69 +184,71 @@
         >
           <el-table-column
             prop="uid"
-            label="学员编号"
+            label="ID"
             show-overflow-tooltip
             min-width="90"
           ></el-table-column>
           <el-table-column
-            prop="realname"
-            label="学生姓名"
+            prop="surname"
+            label="客户姓名"
             min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号码"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="birthday"
+            label="出生日期"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="sex"
+            label="性别"
+            min-width="100"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
-            prop="mobile"
-            label="手机号码"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="create_time"
-            label="注册时间"
+            prop="from_organization_name"
+            label="推荐机构"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
-            prop="category_name"
-            label="课程类型"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="course_name"
-            label="课程名称"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="institution_name"
-            label="所属机构"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="teacher_name"
-            label="所属老师"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
+
           <el-table-column
             prop="sources"
             label="渠道来源"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             label="成交状态"
             min-width="100"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              {{ scope.row.type | dealType }}
+              {{ scope.row.is_verify | dealType }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
         </el-table>
+        <div class="table_bottom">
+          <page
+            :data="schoolData.total"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
         <!--添加客户弹框--->
 
         <el-dialog
@@ -537,20 +548,25 @@ export default {
     this.status = 1
   },
   mounted() {
-    // this.$api.getCategoryList(this, 'schoolData')
+    this.$api.getCustomerList(this, 'schoolData')
   },
   filters: {
-    dealType(type) {
-      if (type == '2') {
-        return '已成交'
-      } else if (type == '3') {
-        return '已退费'
-      } else {
-        return '未成交'
-      }
-    },
+    // dealType(is_verify) {
+    //   if (is_verify == '1') {
+    //     return '已成交'
+    //   } else if (is_verify == '2') {
+    //     return '已退费'
+    //   } else {
+    //     return '未成交'
+    //   }
+    // },
   },
   methods: {
+    toOnlineStudents() {
+      this.$router.push({
+        path: '/etm/onlineStudents',
+      })
+    },
     //保存
     preserve(formName, num) {
       //没有自动填充生日
@@ -580,8 +596,17 @@ export default {
     },
 
     addCustomer() {
+      console.log(this.ruleForm)
+      for (var i in this.ruleForm) {
+        console.log(i)
+        this.ruleForm[i] = ''
+      }
       //添加用户弹框打开
       this.curstomerVisible = true
+    },
+    doPageChange(page) {
+      this.page = page
+      this.$api.getCustomerList(this, 'schoolData')
     },
     //   getTableList(state, val, datas) {
     //     console.log(state, val, datas)
@@ -649,10 +674,7 @@ export default {
     //         })
     //       })
     //   },
-    //   doPageChange(page) {
-    //     this.page = page
-    //     this.$api.getMyclient(this, 'schoolData', this.datas)
-    //   },
+    //
     // },
     //
   },

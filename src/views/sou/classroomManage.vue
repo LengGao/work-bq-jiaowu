@@ -21,16 +21,10 @@
           typeTx="punch"
           inputText="教室名称"
           api="getCourseManage"
-          @getTable="getTableList"
           :selectList="selectData.list"
         ></search2>
-        <!-- <div v-if="isTagactive === 2">
-          <el-button type="primary" @click="toCreateClass">资源中心</el-button>
-        </div> -->
+
         <div v-if="isTagactive === 1">
-          <!-- <el-button type="primary" @click="toCreateClass"
-            >创建单科班</el-button
-          > -->
           <el-button type="primary" @click="addClassroom">添加教室</el-button>
         </div>
       </div>
@@ -42,34 +36,33 @@
           :data="schoolData.list"
           tooltip-effect="light"
           stripe
-          @selection-change="handleSelectionChange"
           style="width: 100%;"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
           class="min_table"
         >
           <el-table-column
-            prop="course_id"
+            prop="room_name"
             label="教室名称"
             show-overflow-tooltip
             min-width="90"
           ></el-table-column>
 
           <el-table-column
-            prop="course_name"
+            prop="max_num"
             label="最大容纳人数"
             min-width="200"
             column-key="course_id"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="category_name"
+            prop="address"
             label="详细地址"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="class_type_name"
+            prop="comment"
             label="备注"
             min-width="100"
             show-overflow-tooltip
@@ -81,33 +74,29 @@
           >
             <template slot-scope="scope">
               <el-switch
-                v-model="scope.row.is_publish"
+                v-model="scope.row.status"
                 class="tablescope"
                 active-color="#2798ee"
                 inactive-color="#eaeefb"
                 :active-value="1"
-                :inactive-value="2"
-                active-text="发布"
-                inactive-text="关闭"
-                @change="release(scope.row, $event)"
-                :width="50"
+                :inactive-value="0"
+                @change="startUsing(scope.row, $event)"
               >
               </el-switch>
             </template>
           </el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="200">
-            <template slot-scope="scope" v-if="isTagactive === 1">
+            <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="toCreateClass(scope.row)"
+                <el-button type="text" @click="editClassroom(scope.row)"
                   >编辑</el-button
                 >
-              </div>
-            </template>
-            <template slot-scope="scope" v-if="isTagactive === 2">
-              <div style="display: flex; justify-content:center;">
                 <el-button type="text" @click="toCreateClass(scope.row)"
-                  >查看详情</el-button
+                  >使用情况</el-button
+                >
+                <el-button type="text" @click="handleDelete(scope.row)"
+                  >删除</el-button
                 >
               </div>
             </template>
@@ -128,7 +117,6 @@
           :data="schoolData.list"
           tooltip-effect="light"
           stripe
-          @selection-change="handleSelectionChange"
           style="width: 100%;"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
@@ -194,52 +182,73 @@
         </div>
       </div>
       <!--教室配置弹框-->
-      <el-dialog title="提示" :visible.sync="classVisible" width="50%">
-        <el-form label-width="100px">
+      <el-dialog :title="classTitle" :visible.sync="classVisible" width="50%">
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
           <el-row>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
-              <el-form-item label="教室名称">
+              <el-form-item label="教室名称" prop="room_name">
                 <el-input
+                  v-model="ruleForm.room_name"
                   placeholder="请输入教室名称"
                   class="input-width"
                 ></el-input>
               </el-form-item>
             </el-col>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
-              <el-form-item label="项目名称">
+              <el-form-item label="容纳人数" prop="max_num">
                 <el-input
-                  placeholder="请输入项目名称"
+                  v-model="ruleForm.max_num"
+                  placeholder="请输入容纳人数"
+                  type="number"
                   class="input-width"
                 ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
-            <el-form-item label="适用范围">
-              <el-radio-group>
+          <!-- <el-row>
+            <el-form-item label="适用范围" prop="region">
+              <el-radio-group v-model="ruleForm.radio">
                 <el-radio :label="3">当前校区</el-radio>
                 <el-radio :label="6">全部校区</el-radio>
               </el-radio-group>
             </el-form-item>
-          </el-row>
+          </el-row> -->
           <el-row>
             <el-form-item label="详细地址">
-              <el-input placeholder="请输入项目名称"></el-input>
+              <el-input
+                placeholder="请输入项目名称"
+                v-model="ruleForm.address"
+              ></el-input>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="备注信息">
-              <el-input type="textarea" placeholder="请输入备注信息"></el-input>
+              <el-input
+                type="textarea"
+                v-model="ruleForm.comment"
+                placeholder="请输入备注信息"
+              ></el-input>
             </el-form-item>
           </el-row>
         </el-form>
         <!-- <span>这是一段信息</span> -->
         <span slot="footer" class="dialog-footer">
           <div style="display:flex;justify-content:space-between">
-            <el-checkbox style="padding-left:10px">继续添加</el-checkbox>
+            <el-checkbox
+              style="padding-left:10px ;"
+              :class="ruleForm.id ? 'continueAdd' : ''"
+              v-model="addChecked"
+              >继续添加</el-checkbox
+            >
             <div>
               <el-button @click="classVisible = false">取 消</el-button>
-              <el-button type="primary" @click="classVisible = false"
+              <el-button type="primary" @click="handleConfirm('ruleForm')"
                 >确 定</el-button
               >
             </div>
@@ -256,8 +265,21 @@ export default {
   data() {
     return {
       classVisible: false,
+      classTitle: '添加教室',
+      addChecked: false, //继续添加
+      rules: {
+        room_name: [
+          { required: true, message: '请输入教室名称', trigger: 'blur' },
+        ],
+        max_num: [
+          { required: true, message: '请输入容纳人数', trigger: 'blur' },
+        ],
+      },
       ruleForm: {
-        category_id: '',
+        room_name: '',
+        address: '',
+        comment: '',
+        max_num: '',
       },
       isTagactive: 1,
       tabFun: [
@@ -279,12 +301,67 @@ export default {
   },
   created() {},
   mounted() {
-    // this.$api.getCourseManage(this, 'schoolData')
+    this.$api.getRoomList(this, 'schoolData')
     // this.$api.getCategoryList(this, 'selectData')
   },
 
   methods: {
+    startUsing(ab) {
+      this.$api.updateRoomStatus(this, ab.id, ab.status)
+    },
+    handleDelete(ab) {
+      this.$confirm('此操作将删除该教室, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$api.deleteRoom(this, ab.id)
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+
+    handleConfirm(formName) {
+      console.log(this.ruleForm)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.ruleForm.id) {
+            //修改教室
+            this.$api.updateRoom(this, this.ruleForm)
+          } else {
+            //添加教室
+            this.$api.createRoom(this, this.ruleForm)
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    editClassroom(ab) {
+      console.log(ab)
+      this.classTitle = '编辑教室'
+      this.ruleForm = ab
+      this.classVisible = true
+    },
     addClassroom() {
+      this.classTitle = '添加教室'
+      this.ruleForm = {
+        room_name: '',
+        address: '',
+        comment: '',
+        max_num: '',
+      }
+
       this.classVisible = true
     },
     statusSwitch(ab) {
@@ -300,132 +377,16 @@ export default {
     },
     doPageChange(page) {
       this.page = page
-      this.$api.getCourseManage(this, 'schoolData', this.datas)
+      this.$api.getRoomList(this, 'schoolData')
     },
 
-    handleSelectionChange(val) {
-      let multipleSelection = val
-      this.course_ids = multipleSelection.map((i) => {
-        console.log(i.course_id)
-        return i.course_id
-      })
-    },
     toCreateClass(text) {
-      //   console.log(text)
-      //   let course_id = ''
-      //   let setMeal = ''
-      //   if (text == '2') {
-      //     setMeal = text
-      //   } else if (text.class_type_name == '套餐班') {
-      //     setMeal = '2'
-      //     course_id = text.course_id
-      //   } else if (text.class_type_name == '单科班') {
-      //     setMeal = '1'
-      //     course_id = text.course_id
-      //   } else {
-      //     setMeal = '1'
-      //   }
-
       this.$router.push({
         path: '/sou/createClass',
         query: {},
       })
     },
-
-    release(ab, status) {
-      let course_id = []
-      course_id.push(ab.course_id)
-      this.$api.bashPublish(this, course_id, status)
-    },
-    chapterVideo(index, row) {
-      this.$router.push({
-        path: '/eda/videoUpload',
-        query: { video_collection_id: row.video_collection_id },
-      })
-    },
-    scopes(id, sorts) {
-      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      var re = new RegExp(regu)
-      if (!re.test(sorts)) {
-        this.$message.error('请输入正确的排序！')
-        return false
-      } else {
-        this.$api.updateCourseSort(id, sorts, this)
-      }
-    },
-    batchRelease() {
-      if (this.course_ids.length > 0) {
-        let status = 2
-        this.$api.bashPublish(this, this.course_ids, status)
-      } else {
-        this.$message({
-          type: 'warning',
-          message: '请先勾选你想发布的项',
-        })
-      }
-    },
-    batchClose() {
-      if (this.course_ids.length > 0) {
-        let status = 1
-        this.$api.bashPublish(this, this.course_ids, status)
-      } else {
-        this.$message({
-          type: 'warning',
-          message: '请先勾选你想关闭的项',
-        })
-      }
-    },
-    batchDeletion() {
-      if (this.course_ids.length > 0) {
-        this.$confirm(
-          '你正在批量删除该条数据,数据删除后将无法恢复,请谨慎操作?',
-          '提示',
-          {
-            confirmButtonText: '删除',
-            cancelButtonText: '取消',
-            type: 'warning',
-          }
-        )
-          .then(() => {
-            this.$api.bashDelete(this, this.course_ids)
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除',
-            })
-          })
-      } else {
-        this.$message({
-          type: 'warning',
-          message: '请先勾选你想删除的项',
-        })
-      }
-    },
-    handleDelete(ab) {
-      console.log(ab)
-      let course_id = ab.course_id
-      this.$confirm(
-        '你正在删除该条数据,数据删除后将无法恢复,请谨慎操作?',
-        '提示',
-        {
-          confirmButtonText: '删除',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
-        .then(() => {
-          this.$api.deleteCourses(this, ab.course_id)
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
-    },
   },
-  //   mounted() {}
 }
 </script>
 
@@ -440,7 +401,12 @@ export default {
   margin: 20px;
   background: #fff;
 }
-
+.input-width {
+  width: 240px;
+}
+.continueAdd {
+  visibility: hidden;
+}
 .head_remind {
   padding: 20px;
   font-weight: 400;

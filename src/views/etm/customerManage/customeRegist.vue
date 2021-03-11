@@ -120,6 +120,7 @@
                         type="danger"
                         icon="el-icon-delete"
                         circle
+                        plain
                         @click="delbtn(scope.$index, projectData)"
                       ></el-button>
                       <!-- <el-button
@@ -576,6 +577,7 @@ export default {
       rows.splice(index, 1)
     },
     orderDeatilShow() {
+      this.overdue_money = this.receivableMoney - this.ruleForm.pay_money
       this.ruleForm.order_token = Math.floor(Math.random() * 1000000 + 1) + ''
       this.ruleForm.project = JSON.stringify(this.projectData)
       console.log(this.ruleForm)
@@ -586,6 +588,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/.el-button.is-circle {
+  padding: 7px;
+}
 /deep/.el-input__inner {
   // width: 240px;
 }
