@@ -133,7 +133,7 @@ export default {
       options: [
         {
           value: '选项1',
-          label: '黄金糕',
+          label: '111',
         },
       ],
 
