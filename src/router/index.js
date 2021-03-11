@@ -152,6 +152,14 @@ export const asyncRouterMap = [
         hidden: true,
       },
       {
+        path: 'onlineStudents',
+        name: 'onlineStudents',
+        component: () =>
+          import('@/views/etm/customerManage/onlineStudents.vue'),
+        meta: { title: '网课学生', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
         path: 'customeDetail',
         name: 'customeDetail',
         component: () => import('@/views/etm/customerManage/customeDetail.vue'),

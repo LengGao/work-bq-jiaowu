@@ -1,8 +1,21 @@
 export default {
   //招生管理
+  getCustomerList: '/UserArchives/index',
   addCustomers: '/UserArchives/add',
   createOrder: '/order/create',
+  getCommonUserList: '/Enrollment/commonUserList',
+  onlineUserList: '/Enrollment/onlineUserList',
+  getSchoolList: '/School/list',
+  updateSort: '/School/updateSort',
 
+  //资源配置
+  getTeachBooksList: '/books/index',
+  getRoomList: '/Schoolroom/roomList',
+  createRoom: '/Schoolroom/createRoom',
+  updateRoom: '/Schoolroom/updateRoom',
+  deleteRoom: '/Schoolroom/deleteRoom',
+  updateRoomStatus: '/Schoolroom/updateRoomStatus',
+  updateStatus: '/School/updateStatus',
   //系统配置
   getBucketList: '/oss/getBucketList',
   getImagesList: '/oss/getImagesList',
@@ -25,8 +38,8 @@ export default {
   createMenuData: '/AdminMenu/createMenuData',
   deleteMenuData: '/AdminMenu/deleteMenuData',
   updateMenuData: '/AdminMenu/updateMenuData',
-  updateStatus: '/AdminMenu/updateStatus',
-  updateSort: '/AdminMenu/updateSort',
+  // updateStatus: '/AdminMenu/updateStatus',
+  // updateSort: '/AdminMenu/updateSort',
 
   //清除缓存
   clearCache: '/passport/clearCache',

@@ -20,7 +20,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.list"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
@@ -30,21 +30,35 @@
             label="校区名称"
             show-overflow-tooltip
             min-width="90"
-            prop="index_category_id"
+            prop="institution_name"
           >
           </el-table-column>
-          <el-table-column
-            prop="index_category_name"
-            label="负责人"
-            min-width="110"
+          <!-- <el-table-column
+            label="校区名称"
             show-overflow-tooltip
-          ></el-table-column>
+            min-width="90"
+            prop="institution_name"
+          >
+          </el-table-column> -->
           <el-table-column
-            prop="index_category_name"
-            label="联系方式"
-            min-width="110"
+            label="创建时间"
             show-overflow-tooltip
-          ></el-table-column>
+            min-width="90"
+            prop="create_time"
+          >
+          </el-table-column>
+          <el-table-column label="排序" min-width="100" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <el-col :span="12">
+                <el-input
+                  v-model="scope.row.sort"
+                  placeholder
+                  size="small"
+                  @input="scopes(scope.row.institution_id, scope.row.sort)"
+                ></el-input>
+              </el-col>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="status"
             label="是否启用"
@@ -165,11 +179,31 @@ export default {
   data() {
     return {
       ruleForm: {},
+      rules: {},
+      schoolData: [],
       dialogTitle: '添加校区',
       dialogVisible: false,
     }
   },
+  created() {
+    this.$api.getSchoolList(this, 'schoolData')
+  },
   methods: {
+    scopes(index_category_id, sorts) {
+      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
+      var re = new RegExp(regu)
+      if (!re.test(sorts)) {
+        this.$message.error('请输入正确的排序！')
+        return false
+      } else {
+        this.$api.updateSort(this, index_category_id, sorts)
+      }
+    },
+    getTableList() {},
+    changeSwitch(ab) {
+      console.log(ab.institution_id, ab.account_status)
+      this.$api.updateStatus(this, ab.institution_id, ab.account_status)
+    },
     projectDialog() {
       this.dialogVisible = true
     },

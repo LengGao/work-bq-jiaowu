@@ -64,21 +64,9 @@
           min-width="150"
           show-overflow-tooltip
         ></el-table-column>
-        <!-- <el-table-column
-          prop="class_type"
-          label="意向类型"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="course_name"
-          label="意向课程"
-          min-width="150"
-          show-overflow-tooltip
-        ></el-table-column> -->
 
         <el-table-column
-          prop="sources"
+          prop="from"
           label="数据来源"
           min-width="100"
           show-overflow-tooltip
@@ -129,7 +117,7 @@ export default {
   },
   mounted() {
     // let status = 3
-    this.$api.getMyclient(this, 'schoolData')
+    this.$api.getCommonUserList(this, 'schoolData')
   },
   methods: {
     getTableList(state, val, datas) {
@@ -157,7 +145,7 @@ export default {
     doPageChange(page) {
       this.page = page
       // this.$api.getMyclient(this, 'myclient', status)
-      this.$api.getMyclient(this, 'schoolData', this.datas)
+      this.$api.getCommonUserList(this, 'schoolData', this.datas)
     },
   },
 }
