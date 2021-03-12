@@ -12,9 +12,9 @@
           inputText="校区名称"
           @getTable="getTableList"
         ></search2>
-        <el-button type="primary" @click="projectDialog">
+        <!-- <el-button type="primary" @click="projectDialog">
           添加校区
-        </el-button>
+        </el-button> -->
       </div>
       <!--表格-->
       <div class="userTable">
@@ -26,6 +26,17 @@
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
         >
+          <el-table-column label="排序" min-width="100" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.sort"
+                placeholder
+                size="small"
+                style="width:60px"
+                @blur="scopes(scope.row.institution_id, scope.row.sort)"
+              ></el-input>
+            </template>
+          </el-table-column>
           <el-table-column
             label="校区名称"
             show-overflow-tooltip
@@ -47,18 +58,7 @@
             prop="create_time"
           >
           </el-table-column>
-          <el-table-column label="排序" min-width="100" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <el-col :span="12">
-                <el-input
-                  v-model="scope.row.sort"
-                  placeholder
-                  size="small"
-                  @input="scopes(scope.row.institution_id, scope.row.sort)"
-                ></el-input>
-              </el-col>
-            </template>
-          </el-table-column>
+
           <el-table-column
             prop="status"
             label="是否启用"
@@ -77,7 +77,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <!-- <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
                 <el-button type="text" @click="addClassiFion(scope.row)"
@@ -88,7 +88,7 @@
                 >
               </div>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <!-- <div class="table_bottom">
         <div class="table_bottom">
@@ -189,20 +189,20 @@ export default {
     this.$api.getSchoolList(this, 'schoolData')
   },
   methods: {
-    scopes(index_category_id, sorts) {
+    scopes(institution_id, sorts) {
       var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
       var re = new RegExp(regu)
       if (!re.test(sorts)) {
         this.$message.error('请输入正确的排序！')
         return false
       } else {
-        this.$api.updateSort(this, index_category_id, sorts)
+        this.$api.changeUpdateSort(this, institution_id, sorts)
       }
     },
     getTableList() {},
     changeSwitch(ab) {
       console.log(ab.institution_id, ab.account_status)
-      this.$api.updateStatus(this, ab.institution_id, ab.account_status)
+      this.$api.changeUpdateStatus(this, ab.institution_id, ab.account_status)
     },
     projectDialog() {
       this.dialogVisible = true

@@ -6,16 +6,24 @@ export default {
   getCommonUserList: '/Enrollment/commonUserList',
   onlineUserList: '/Enrollment/onlineUserList',
   getSchoolList: '/School/list',
-  updateSort: '/School/updateSort',
+  changeUpdateSort: '/School/updateSort',
 
   //资源配置
+  getCategoryList: '/courseCategory/getCategoryList',
+  updateCategorySort: '/courseCategory/updateCategorySort',
+  insertCategory: '/courseCategory/insertCategory',
   getTeachBooksList: '/books/index',
+
   getRoomList: '/Schoolroom/roomList',
   createRoom: '/Schoolroom/createRoom',
   updateRoom: '/Schoolroom/updateRoom',
   deleteRoom: '/Schoolroom/deleteRoom',
   updateRoomStatus: '/Schoolroom/updateRoomStatus',
-  updateStatus: '/School/updateStatus',
+  changeUpdateStatus: '/School/updateStatus',
+  getProjectList: '/project/index',
+  createProject: '/project/create',
+  deleteproject: '/project/deleteproject',
+  editProject: '/project/edit',
   //系统配置
   getBucketList: '/oss/getBucketList',
   getImagesList: '/oss/getImagesList',
