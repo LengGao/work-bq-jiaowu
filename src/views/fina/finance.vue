@@ -512,4 +512,8 @@ header {
   color: #199fff;
   cursor: pointer;
 }
+.realname {
+  color: #199fff;
+  cursor: pointer;
+}
 </style>
