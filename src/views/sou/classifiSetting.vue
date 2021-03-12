@@ -28,29 +28,24 @@
             label="分类ID"
             show-overflow-tooltip
             min-width="90"
-            prop="index_category_id"
+            prop="category_id"
           >
           </el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="category_name"
             label="分类名称"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
-            prop="index_category_icon"
             label="分类图标"
             min-width="150"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
               <div style="margin:0 auto;width:50px ;height:50px;">
-                <img
-                  :src="scope.row.index_category_icon"
-                  alt
-                  class="school_class_box"
-                />
+                <img :src="scope.row.icon" alt class="school_class_box" />
               </div>
             </template>
           </el-table-column>
@@ -68,7 +63,7 @@
                     v-model="scope.row.sort"
                     placeholder
                     size="small"
-                    @blur="scopes(scope.row.index_category_id, scope.row.sort)"
+                    @blur="scopes(scope.row.category_id, scope.row.sort)"
                   ></el-input>
                 </el-col>
               </div>
@@ -120,22 +115,35 @@
       >
         <el-form label-width="100px">
           <el-form-item label="所属分类">
-            <el-input
+            <el-select
+              v-model="ruleForm.category_name"
+              placeholder="请选择所属分类"
+              style="width:240px"
+            >
+              <el-option
+                v-for="item in schoolData.list"
+                :key="item.category_id"
+                :label="item.category_name"
+                :value="item.category_name"
+              >
+              </el-option>
+            </el-select>
+            <!-- <el-input
               placeholder="请输入分类名称"
-              v-model="addClassify.index_category_name"
+              v-model="ruleForm.index_category_name"
               class="input-width"
-            ></el-input>
+            ></el-input> -->
           </el-form-item>
           <el-form-item label="分类名称：">
             <el-input
               placeholder="请输入分类名称"
-              v-model="addClassify.index_category_name"
+              v-model="ruleForm.index_category_name"
               class="input-width"
             ></el-input>
           </el-form-item>
           <el-form-item label="分类排序：">
             <el-input
-              v-model="addClassify.sort"
+              v-model="ruleForm.sort"
               class="input-width"
               placeholder=" 排序数字越大分类越靠前"
               type="number"
@@ -161,8 +169,8 @@ export default {
       schoolData: [],
       index_category_id: '',
       dialogTitle: '',
-      addClassify: {
-        index_category_name: '',
+      ruleForm: {
+        category_name: '',
         sort: '',
       },
       datas: {},
@@ -175,7 +183,7 @@ export default {
   },
 
   created() {
-    // this.$api.getHomeclassifiList(this, 'schoolData')
+    this.$api.getCategoryList(this, 'schoolData')
   },
 
   methods: {
@@ -201,33 +209,34 @@ export default {
       //   this.index_category_id = zx.index_category_id
       //   this.$api.getHomeclassifiDetail(this, this.index_category_id)
     },
-    scopes(index_category_id, sorts) {
-      //   var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      //   var re = new RegExp(regu)
-      //   if (!re.test(sorts)) {
-      //     this.$message.error('请输入正确的排序！')
-      //     return false
-      //   } else {
-      //     this.$api.updateHomeClassifiSort(index_category_id, sorts, this)
-      //   }
+    scopes(id, sorts) {
+      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
+      var re = new RegExp(regu)
+      if (!re.test(sorts)) {
+        this.$message.error('请输入正确的排序！')
+        return false
+      } else {
+        this.$api.updateCategorySort(id, sorts, this)
+      }
     },
 
     addClassiFion() {
       this.dialogTitle = '添加分类'
-      //   for (let key in this.addClassify) {
-      //     this.addClassify[key] = ''
+      //   for (let key in this.ruleForm) {
+      //     this.ruleForm[key] = ''
       //   }
       //   this.url = ''
       //   this.haschoose = false
       this.dialogVisible = true
     },
     handleConfirm() {
-      //   console.log(this.index_category_id == '')
-      //   if (this.index_category_id == '' || this.index_category_id == undefined) {
-      //     this.$api.addHomeCategory(this, 'addClassify')
-      //   } else {
-      //     this.$api.modifyHomeCategory(this, this.index_category_id)
-      //   }
+      console.log(this.ruleForm)
+      console.log(this.index_category_id == '')
+      if (this.index_category_id == '' || this.index_category_id == undefined) {
+        this.$api.insertCategory(this, 'ruleForm')
+      } else {
+        this.$api.insertCategory(this, 'ruleForm')
+      }
     },
   },
 }

@@ -166,16 +166,16 @@ let resource = {
       },
     })
   },
-  //校区列表
+  //校区状态修改
 
-  updateStatus(self, id, status) {
+  changeUpdateStatus(self, id, status) {
     let config = {
       id: id,
-      status: status,
+      account_status: status,
     }
     console.log(config)
     axiosHttp({
-      url: url.updateStatus,
+      url: url.changeUpdateStatus,
       data: config,
       // method: 'GET',
       then(res) {
@@ -192,14 +192,14 @@ let resource = {
     })
   },
   //校区排序
-  updateSort(self, id, sort) {
+  changeUpdateSort(self, id, sort) {
     let config = {
       id: id,
       sort: sort,
     }
     console.log(config)
     axiosHttp({
-      url: url.updateSort,
+      url: url.changeUpdateSort,
       data: config,
       // method: 'GET',
       then(res) {
@@ -209,8 +209,135 @@ let resource = {
             type: 'success',
             message: res.data.message,
           })
-
           self.$api.getSchoolList(self, 'schoolData')
+        }
+      },
+    })
+  },
+  //项目列表
+  getProjectList(self, name) {
+    let config = {
+      // id: id,
+      // sort: sort,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getProjectList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        // console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+        }
+      },
+    })
+  },
+  //添加项目
+  createProject(self, ruleForm) {
+    let config = {
+      project_name: ruleForm.project_name,
+      category_id: parseInt(ruleForm.category_id),
+      price: parseFloat(ruleForm.price),
+      lowest_price: parseFloat(ruleForm.lowest_price),
+      service_type: ruleForm.service_type,
+
+      service_period: ruleForm.service_period,
+      service_effective: ruleForm.service_effective,
+      course: ruleForm.course,
+      problem: ruleForm.problem,
+      textbooks: ruleForm.textbooks,
+      status: ruleForm.status,
+      applay: parseInt(ruleForm.applay),
+      school: ruleForm.school,
+    }
+    // console.log(config)
+    axiosHttp({
+      url: url.createProject,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.$api.getProjectList(self, 'schoolData')
+          self.dialogVisible = false
+        }
+      },
+    })
+  },
+  //删除项目接口
+  deleteproject(self, project_id) {
+    let config = {
+      project_id: project_id,
+    }
+    // console.log(config)
+    axiosHttp({
+      url: url.deleteproject,
+      data: config,
+      method: 'GET',
+      then(res) {
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.$api.getProjectList(self, 'schoolData')
+          self.dialogVisible = false
+        }
+      },
+    })
+  },
+  //编辑项目接口
+  editProject(self, ruleForm, way) {
+    let config = {}
+    if (way == 'GET') {
+      config = {
+        project_id: ruleForm.project_id,
+      }
+    } else {
+      config = {
+        project_id: ruleForm.id,
+        project_name: ruleForm.project_name,
+        category_id: parseInt(ruleForm.category_id),
+        price: parseFloat(ruleForm.price),
+        lowest_price: parseFloat(ruleForm.lowest_price),
+        service_type: ruleForm.service_type,
+
+        service_period: ruleForm.service_period,
+        service_effective: ruleForm.service_effective,
+        course: ruleForm.course,
+        problem: ruleForm.problem,
+        textbooks: ruleForm.textbooks,
+        status: ruleForm.status,
+        applay: parseInt(ruleForm.applay),
+        school: ruleForm.school,
+      }
+    }
+
+    // console.log(config)
+    axiosHttp({
+      url: url.editProject,
+      data: config,
+      method: way,
+      then(res) {
+        if (res.data.code == 0) {
+          let data = res.data.data
+          if (way == 'GET') {
+            console.log(data)
+            self.ruleForm = data
+          } else {
+            self.$message({
+              type: 'success',
+              message: res.data.message,
+            })
+            self.$api.getProjectList(self, 'schoolData')
+            self.dialogVisible = false
+          }
         }
       },
     })

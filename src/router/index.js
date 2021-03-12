@@ -247,6 +247,21 @@ export const asyncRouterMap = [
         hidden: true,
       },
       //班级管理组件开始
+      {
+        path: 'teachSchedule',
+        name: 'teachSchedule',
+        component: () => import('@/views/eda/teachSchedule.vue'),
+        meta: { title: '排课管理', icon: 'product-cate' },
+      },
+      //排课管理开始
+      {
+        path: 'addSchedule',
+        name: 'addSchedule',
+        component: () => import('@/views/eda/teachSchedule/addSchedule.vue'),
+        meta: { title: '添加排课', icon: 'product-cate' },
+        hidden: true,
+      },
+      //排课管理结束
     ],
   },
 
