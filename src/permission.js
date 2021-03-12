@@ -45,6 +45,13 @@ router.beforeEach((to, from, next) => {
               // { name: 'learnerManage' }, //教务管理>班级管理>学生管理
               { name: 'addStudent' }, //教务管理>班级管理>学生管理>添加学生
               { name: 'teachSchedule' }, //教务管理>排课管理
+
+              { name: 'exa' }, //考务管理
+              { name: 'examination' },
+              { name: 'apply' },
+              { name: 'achievement' },
+              { name: 'graduation' },
+              { name: 'createplan' },
             ]
 
             let username = 'account'

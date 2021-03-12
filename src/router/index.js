@@ -346,7 +346,47 @@ export const asyncRouterMap = [
       },
     ],
   },
-
+  {
+    path: '/exa',
+    component: Layout,
+    redirect: '/exa/examination',
+    meta: { title: '考务管理', icon: 'zhaoshengguanli' },
+    name: 'exa',
+    children: [
+      {
+        path: 'examination',
+        name: 'examination',
+        component: () => import('@/views/exa/examination.vue'),
+        meta: { title: '考试计划', icon: 'product-add' },
+      },
+      {
+        path: 'apply',
+        name: 'apply',
+        component: () => import('@/views/exa/apply.vue'),
+        meta: { title: '报考管理', icon: 'product-add' },
+      },
+      {
+        path: 'achievement',
+        name: 'achievement',
+        component: () => import('@/views/exa/achievement.vue'),
+        meta: { title: '成绩管理', icon: 'product-add' },
+      },
+      {
+        path: 'graduation',
+        name: 'graduation',
+        component: () => import('@/views/exa/graduation.vue'),
+        meta: { title: '毕业管理', icon: 'product-add' },
+      },
+      {
+        path: 'createplan',
+        name: 'createplan',
+        component: () => import('@/views/exa/examination/createplan.vue'),
+        meta: { title: '添加考试计划', icon: 'product-cate' },
+        hidden: true,
+      },
+     
+    ],
+  },
   { path: '*', redirect: '/404' },
 ]
 export default new VueRouter({
