@@ -52,6 +52,12 @@ router.beforeEach((to, from, next) => {
               { name: 'graduation' }, 
               { name: 'createplan' }, 
 
+              { name: 'fina' }, //财务管理
+              { name: 'finance' }, //订单管理
+              { name: 'order' }, 
+
+
+
             ]
 
             let username = 'account'

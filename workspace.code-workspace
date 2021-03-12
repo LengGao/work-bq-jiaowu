@@ -11,6 +11,7 @@
     }
   ],
   "settings": {
-    "workbench.settings.editor": "json"
+    "workbench.settings.editor": "json",
+    "eggHelper.serverPort": 35684
   }
 }

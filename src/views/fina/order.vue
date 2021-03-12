@@ -11,28 +11,45 @@
           :key="item.id"
           :class="{ tabg: item.id == isTagactive }"
           @click="statusSwitch(item)"
+          
         >
           {{ item.name }}
         </li>
       </ul>
       <div class="client_head">
-        <search2
-          :contentShow="true"
-          api="getHomeclassifiList"
-          inputText="学生姓名/手机号"
-          @getTable="getTableList"
-        ></search2>
+        <div class="searchModule">
+          <el-date-picker
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            v-model="startend"
+          >
+          </el-date-picker>
 
-        <div v-if="isTagactive === 2">
-          <el-button type="primary" @click="toCreateClass">资源中心</el-button>
+          <el-select
+            filterable
+            style="width:130px;margin:0 10px"
+            v-model="ruleForm.institution_id"
+            slot="prepend"
+            placeholder="财务状态"
+            clearable
+          >
+
+          </el-select>
+         
+          <el-input
+            v-model="ruleForm.institution_id"
+            placeholder="学员姓名/手机号码"
+            style="width:200px;margin-right:10px;"
+          ></el-input>
+          <el-button type="primary">搜索</el-button>
         </div>
-        <div v-if="isTagactive === 1">
+        <div>
           <el-button type="primary" @click="toCreateClass"
-            >导入</el-button
+            >导出数据</el-button
           >
-          <el-button type="primary" @click="toCreateClass('2')"
-            >添加</el-button
-          >
+          
         </div>
       </div>
       <!--表格-->
@@ -51,65 +68,59 @@
           <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
             prop="course_id"
-            label="学员编号"
+            label="订单时间"
             show-overflow-tooltip
             min-width="80"
           ></el-table-column>
          
           <el-table-column
             prop="course_name"
-            label="学员姓名"
+            label="订单编号"
             min-width="100"
             column-key="course_id"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="category_name"
-            label="手机号码"
+            label="学员姓名"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="class_type_name"
-            label="项目名称"
+            label="联系方式"
             min-width="200"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="course_price"
-            label="学期"
+            label="项目名称"
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
           
           <el-table-column
-            label="课程代码"
+            label="实付金额"
             min-width="100"
             show-overflow-tooltip
           > 
           </el-table-column>
 
           <el-table-column
-            label="课程名称"
+            label="财务状态"
             min-width="150"
             show-overflow-tooltip
           > 
           </el-table-column>
 
           <el-table-column
-            label="学分"
+            label="操作"
             min-width="100"
             show-overflow-tooltip
           > 
           </el-table-column>
 
-          <el-table-column
-            label="总评成绩"
-            min-width="100"
-            show-overflow-tooltip
-          > 
-          </el-table-column>
-
+          
          
         </el-table>
         
@@ -120,10 +131,11 @@
 
 <script>
 export default {
-  name: 'courseManage',
+  name: 'order',
 
   data() {
     return {
+    startend:'',
       ruleForm: {
         category_id: '',
       },
@@ -131,22 +143,22 @@ export default {
       tabFun: [
         {
           id: 1,
-          name: '学历教育',
+          name: '入账审批',
         },
         {
           id: 2,
-          name: '职称考证',
+          name: '退费审批',
         },
         {
           id: 3,
-          name: '特种作业',
+          name: '作废审批',
         },
       ],
 
       page: 1,
       
       schoolData: [
-      
+
       ],
       course_ids: [],
       datas: {},
