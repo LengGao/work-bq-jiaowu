@@ -55,16 +55,12 @@ router.beforeEach((to, from, next) => {
               { name: 'createplan' },
               { name: 'fina' }, //财务管理
               { name: 'finance' }, //订单管理
-<<<<<<< HEAD
-              { name: 'order' },
-=======
               { name: 'order' }, 
               { name: 'orderDetail' }, 
               { name: 'cusdetail' }, 
 
 
 
->>>>>>> yqq
             ]
 
             let username = 'account'
