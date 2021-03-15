@@ -108,7 +108,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.data"
           tooltip-effect="light"
           stripe
           style="width: 100%;"
@@ -155,22 +155,26 @@
           ></el-table-column>
           <el-table-column
             prop="course_name"
-            label="所属老师"
+            label="所属班级"
             min-width="150"
             show-overflow-tooltip
           ></el-table-column>
+
           <el-table-column
-            prop="institution_name"
-            label="数据来源"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="teacher_name"
+            prop="create_time"
             label="创建时间"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="200">
+            <template slot-scope="scope">
+              <div style="display:flex;justify-content:center">
+                <el-button type="text" @click="handleEdit(scope.row)"
+                  >学生详情</el-button
+                >
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
         <!--添加客户弹框-->
         <el-dialog
@@ -259,7 +263,7 @@ export default {
 
   data() {
     return {
-      schoolData: [{ realname: '张小北' }],
+      schoolData: [],
       rules: {},
       ruleForm: {},
       importVisible: false,
@@ -270,6 +274,7 @@ export default {
     }
   },
   created() {
+    this.$api.getStudentManage(this, 'schoolData')
     this.status = 1
   },
   mounted() {},

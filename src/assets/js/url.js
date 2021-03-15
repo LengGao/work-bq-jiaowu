@@ -24,6 +24,13 @@ export default {
   createProject: '/project/create',
   deleteproject: '/project/deleteproject',
   editProject: '/project/edit',
+
+  //教务管理
+  getStudentManage: '/classstudents/studentmanage',
+  getClassroomList: '/classroom/index',
+  addClasses: 'classroom/add',
+  modifyClasses: '/classroom/edit',
+
   //系统配置
   getBucketList: '/oss/getBucketList',
   getImagesList: '/oss/getImagesList',

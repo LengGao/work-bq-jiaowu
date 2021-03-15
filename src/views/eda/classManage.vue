@@ -20,7 +20,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.list"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
@@ -30,23 +30,18 @@
             label="编号"
             show-overflow-tooltip
             min-width="90"
-            prop="index_category_id"
+            prop="classroom_id"
           >
           </el-table-column>
           <el-table-column
-            prop="realname"
+            prop="classroom_name"
             label="班级名称"
             min-width="110"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
-              <div class="realname" @click="toClassDetail">
-                {{ scope.row.realname }}
-              </div>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="category_name"
             label="所属分类"
             min-width="110"
             show-overflow-tooltip
@@ -58,22 +53,22 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="teacher_name"
             label="班主任"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="student_number"
             label="班级人数"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="300">
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
-                <el-button type="text" @click="topayment(scope.row)"
+                <el-button type="text" @click="handleEdit(scope.row)"
                   >编辑</el-button
                 >
                 <el-button type="text" @click="toLearnerManage(scope.row)"
@@ -109,38 +104,54 @@
           <el-row>
             <el-col :lg="12" :xs="12" :sm="12" :xl="12">
               <el-form-item label="所属分类">
-                <el-input
-                  placeholder="请输入分类名称"
-                  v-model="addClassify.index_category_name"
-                  class="input-width"
-                ></el-input>
+                <el-select
+                  v-model="ruleForm.category_id"
+                  placeholder="请选择所属分类"
+                >
+                  <el-option
+                    v-for="item in classifyData.list"
+                    :key="item.category_id"
+                    :label="item.category_name"
+                    :value="item.category_id"
+                  >
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
+            <!-- <el-col :lg="12" :xs="12" :sm="12" :xl="12">
               <el-form-item label="所属项目">
                 <el-input
                   placeholder="请输入所属项目"
-                  v-model="addClassify.index_category_name"
+                  v-model="ruleForm.index_category_name"
                   class="input-width"
                 ></el-input>
               </el-form-item>
-            </el-col>
+            </el-col> -->
+          </el-row>
+          <el-row>
             <el-col :lg="12" :xs="12" :sm="12" :xl="12">
               <el-form-item label="班级名称">
                 <el-input
                   placeholder="请输入班级名称"
-                  v-model="addClassify.index_category_name"
+                  v-model="ruleForm.classroom_name"
                   class="input-width"
                 ></el-input>
               </el-form-item>
             </el-col>
             <el-col :lg="12" :xs="12" :sm="12" :xl="12">
               <el-form-item label="班主任">
-                <el-input
-                  placeholder="请输入班主任"
-                  v-model="addClassify.index_category_name"
-                  class="input-width"
-                ></el-input>
+                <el-select
+                  v-model="ruleForm.master_teacher_id"
+                  placeholder="请选择"
+                >
+                  <!-- <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option> -->
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -175,17 +186,19 @@
 export default {
   data() {
     return {
-      schoolData: [
-        {
-          index_category_name: '手机端',
-          realname: '系统集成帮',
-        },
-      ],
+      schoolData: [],
+      classifyData: [],
       index_category_id: '',
       dialogTitle: '添加班级',
-      addClassify: {
-        index_category_name: '',
-        sort: '',
+      ruleForm: {
+        classroom_name: '',
+        teacher_id: '',
+        master_teacher_id: 1,
+        course_id: '',
+        class_icon:
+          'http://dpsystem.oss-cn-shenzhen.aliyuncs.com/moren1607659060/35b5e665b81ee8be42812abdb9a40256',
+        describe: '',
+        category_id: '',
       },
       datas: {},
       url: '',
@@ -196,11 +209,23 @@ export default {
     }
   },
 
-  created() {
-    // this.$api.getHomeclassifiList(this, 'schoolData')
+  created() {},
+  mounted() {
+    this.$api.getClassroomList(this, 'schoolData')
+    this.$api.getCategoryList(this, 'classifyData')
   },
 
   methods: {
+    handleEdit(ab) {
+      this.dialogVisible = true
+      this.ruleForm.classroom_id = ab.classroom_id
+      this.ruleForm.classroom_name = ab.classroom_name
+      this.ruleForm.teacher_id = ab.teacher_id
+      this.ruleForm.master_teacher_id = ab.master_teacher_id
+      this.ruleForm.class_icon = ab.class_icon
+
+      // console.log(ab)
+    },
     toClassDetail() {
       this.$router.push({
         path: '/eda/classDetail',
@@ -251,21 +276,25 @@ export default {
     },
 
     addClass() {
-      //   this.dialogTitle = '添加分类'
-      //   for (let key in this.addClassify) {
-      //     this.addClassify[key] = ''
-      //   }
+      this.dialogTitle = '添加班级'
+      for (let key in this.ruleForm) {
+        this.ruleForm[key] = ''
+      }
       //   this.url = ''
       //   this.haschoose = false
       this.dialogVisible = true
     },
     handleConfirm() {
-      //   console.log(this.index_category_id == '')
-      //   if (this.index_category_id == '' || this.index_category_id == undefined) {
-      //     this.$api.addHomeCategory(this, 'addClassify')
-      //   } else {
-      //     this.$api.modifyHomeCategory(this, this.index_category_id)
-      //   }
+      console.log(this.ruleForm)
+      console.log(this.ruleForm.classroom_id == '')
+      if (
+        this.ruleForm.classroom_id == '' ||
+        this.ruleForm.classroom_id == undefined
+      ) {
+        this.$api.addClasses(this, this.ruleForm)
+      } else {
+        this.$api.modifyClasses(this, this.ruleForm)
+      }
     },
   },
 }

@@ -17,7 +17,7 @@
           <el-button type="primary" @click="toAddSchedule">
             添加排课
           </el-button>
-          <el-button type="primary" @click="projectDialog">
+          <el-button type="primary" @click="toAllSchedule">
             查看全部排课
           </el-button>
         </div>
@@ -26,7 +26,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.data"
+          :data="schoolData"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
@@ -78,7 +78,7 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
-                <el-button type="text" @click="handleEdit(scope.row)"
+                <el-button type="text" @click="toTimetablePreview(scope.row)"
                   >课表预览</el-button
                 >
                 <!-- <el-button type="text" @click="handleDelete(scope.row)"
@@ -106,10 +106,20 @@
 export default {
   data() {
     return {
-      schoolData: [],
+      schoolData: [{ project_name: '双方都浪费' }],
     }
   },
   methods: {
+    toTimetablePreview() {
+      this.$router.push({
+        path: '/eda/timetablePreview',
+      })
+    },
+    toAllSchedule() {
+      this.$router.push({
+        path: '/eda/allSchedule',
+      })
+    },
     toAddSchedule() {
       this.$router.push({
         path: '/eda/addSchedule',
