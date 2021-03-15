@@ -43,7 +43,7 @@ Vue.prototype.$urls = location
 axios.defaults.headers['Content-Type'] =
   'application/x-www-form-urlencoded;charset=UTF-8'
 let v = new Vue()
-/**
+/**  
  *
  * 接收一个对象
  *  method 请求类型

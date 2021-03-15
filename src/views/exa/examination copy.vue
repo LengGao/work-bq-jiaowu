@@ -1,45 +1,84 @@
 <template>
-  <div>
-    <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+    <div>
+     <div class="head_remind">
+      *本模块展示所有的班级数据，方便教务老师管理班级的日常工作。
     </div>
 
     <section class="mainwrap">
-      <ul class="navigation">
-        <li
-          v-for="item in tabFun"
-          :key="item.id"
-          :class="{ tabg: item.id == isTagactive }"
-          @click="statusSwitch(item)"
-        >
-          {{ item.name }}
-        </li>
-      </ul>
+      
       <div class="client_head">
         <search2
+          :courseTypeShow="true"
           :contentShow="true"
-          api="getHomeclassifiList"
-          inputText="学生姓名/手机号"
+          typeTx="punch"
+          inputText="课程名称"
+          api="getCourseManage"
           @getTable="getTableList"
+          :selectList="selectData.list"
         ></search2>
+        
+        <div>
+          <el-button type="primary" @click="dialogVisible = true">添加考试计划</el-button>
+          <el-dialog
+          title="添加考试计划"
+          :visible.sync="dialogVisible"
+          width="30%"
+          >
+          <div>
 
-        <div v-if="isTagactive === 2">
-          <el-button type="primary" @click="toCreateClass">资源中心</el-button>
-        </div>
-        <div v-if="isTagactive === 1">
-          <el-button type="primary" @click="toCreateClass"
-            >导入</el-button
-          >
-          <el-button type="primary" @click="toCreateClass('2')"
-            >添加</el-button
-          >
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+
+              <el-form-item label="所属分类" prop="region">
+              <el-select v-model="ruleForm.region" placeholder="请选择所属分类">
+                <el-option label="学历教育" value="shanghai"></el-option>
+                <el-option label="职称考证" value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="考试计划名称" prop="name">
+              <el-input v-model="ruleForm.name" style="width:220px" placeholder="请输入考试计划名称"></el-input>
+            </el-form-item>
+            
+            <el-form-item label="考试时间" required>
+              <el-col :span="11">
+                <el-form-item prop="date1">
+                  <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col class="line" :span="2">-</el-col>
+              <el-col :span="11">
+                <el-form-item prop="date2">
+                  <el-time-picker placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+         
+         
+           
+            <el-form-item label="考试形式" prop="desc">
+              <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
+
+          </div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          </span>
+        </el-dialog>
+
+      
         </div>
       </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
+          :data="schoolData"
           tooltip-effect="light"
           stripe
           @selection-change="handleSelectionChange"
@@ -50,80 +89,113 @@
         >
           <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
-            prop="course_id"
-            label="学员编号"
+            prop="id"
+            label="ID"
             show-overflow-tooltip
-            min-width="80"
+            min-width="60"
           ></el-table-column>
-         
+       
           <el-table-column
             prop="course_name"
-            label="学员姓名"
-            min-width="100"
+            label="考试计划"
+            min-width="180"
             column-key="course_id"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="category_name"
-            label="手机号码"
-            min-width="110"
+            prop="e_name"
+            label="所属分类"
+            min-width="70"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="class_type_name"
-            label="项目名称"
-            min-width="200"
+            prop="create_time"
+            label="考试时间"
+            min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="course_price"
-            label="学期"
+            prop="start_time"
+            label="报考时间"
+            min-width="180"
+            show-overflow-tooltip
+          ></el-table-column>
+
+          <el-table-column
+            prop="max_num"
+            label="计划人数"
             min-width="80"
             show-overflow-tooltip
-          ></el-table-column>
-          
-          <el-table-column
-            label="课程代码"
-            min-width="100"
-            show-overflow-tooltip
-          > 
+          >
+            
           </el-table-column>
 
-          <el-table-column
-            label="课程名称"
-            min-width="150"
-            show-overflow-tooltip
-          > 
+          <el-table-column label="操作" fixed="right" min-width="200">
+            <template slot-scope="scope">
+              <div style="display: flex; justify-content:center;">
+                <el-button type="text" @click="toCreateClass(scope.row)"
+                  >编辑</el-button
+                >
+                
+                <el-button type="text" @click="toCreateClass(scope.row)"
+                  >删除</el-button
+                >
+              </div>
+            </template>
+            
           </el-table-column>
-
-          <el-table-column
-            label="学分"
-            min-width="100"
-            show-overflow-tooltip
-          > 
-          </el-table-column>
-
-          <el-table-column
-            label="总评成绩"
-            min-width="100"
-            show-overflow-tooltip
-          > 
-          </el-table-column>
-
-         
         </el-table>
-        
       </div>
     </section>
-  </div>
+
+    </div>
+
+    
 </template>
 
 <script>
-export default {
-  name: 'courseManage',
 
-  data() {
+export default {
+    name: 'examination',
+
+     data() {
     return {
+       ruleForm: {
+          name: '',
+          region: '',
+          date1: '',
+          date2: '',
+          delivery: false,
+          type: [],
+          resource: '',
+          desc: ''
+        },
+        rules: {
+          name: [
+            { required: true, message: '请输入考试名称', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          region: [
+            { required: true, message: '请选择活动区域', trigger: 'change' }
+          ],
+          date1: [
+            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          ],
+          date2: [
+            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+          ],
+          type: [
+            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+          ],
+          resource: [
+            { required: true, message: '请选择活动资源', trigger: 'change' }
+          ],
+          desc: [
+            { required: true, message: '请填写活动形式', trigger: 'blur' }
+          ]
+        },
+
+      dialogVisible: false,
       ruleForm: {
         category_id: '',
       },
@@ -131,35 +203,54 @@ export default {
       tabFun: [
         {
           id: 1,
-          name: '学历教育',
+          name: '自建课程',
         },
         {
           id: 2,
-          name: '职称考证',
-        },
-        {
-          id: 3,
-          name: '特种作业',
+          name: '公共课程',
         },
       ],
-
       page: 1,
-      
       schoolData: [
-      
+        // {
+        // id:1,
+        // start_time:8888,
+        // course_name:'系统集成项目管理工程师',
+        // e_name:'软考',
+        // create_time:'2021年',
+        // max_num:200,
+        // },
+        // {
+        // id:2,    
+        // start_time:8888,
+        // course_name:'信息系统项目管理师',
+        // e_name:'软考',
+        // create_time:'2021年',
+        // max_num:200,
+        // }
       ],
       course_ids: [],
       datas: {},
       selectData: [],
     }
   },
-  created() {},
-  mounted() {
-    // this.$api.getCourseManage(this, 'schoolData')
-    // this.$api.getCategoryList(this, 'selectData')
-  },
 
-  methods: {
+    methods: {
+
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+
     statusSwitch(ab) {
       this.isTagactive = ab.id
     },
@@ -183,26 +274,19 @@ export default {
         return i.course_id
       })
     },
-    toCreateClass(text) {
-      //   console.log(text)
-      //   let course_id = ''
-      //   let setMeal = ''
-      //   if (text == '2') {
-      //     setMeal = text
-      //   } else if (text.class_type_name == '套餐班') {
-      //     setMeal = '2'
-      //     course_id = text.course_id
-      //   } else if (text.class_type_name == '单科班') {
-      //     setMeal = '1'
-      //     course_id = text.course_id
-      //   } else {
-      //     setMeal = '1'
-      //   }
-      this.$router.push({
-        path: '/sou/createClass',
-        query: {},
-      })
-    },
+    // tocreatePlan(text) {
+ 
+    //   this.$router.push({
+    //     path: '/exa/createplan',
+    //     query: {},
+    //   })
+    // },
+
+     open() {
+        this.$alert('<strong>这是 <i>HTML</i> 片段</strong>', 'HTML 片段', {
+          dangerouslyUseHTMLString: true
+        });
+      },
 
     release(ab, status) {
       let course_id = []
@@ -297,7 +381,9 @@ export default {
         })
     },
   },
-  //   mounted() {}
+
+
+
 }
 </script>
 
@@ -323,17 +409,17 @@ export default {
   border-bottom: 15px solid #f2f6fc;
 }
 .navigation {
-  width: 220px;
+  width: 133px;
   display: flex;
   justify-content: space-between;
   font-family: 'Microsoft YaHei UI', sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 22px;
+  font-size: 16px;
   margin-bottom: 10px;
   li {
     height: 28px;
-    font-size: 15px;
+    font-size: 14px;
 
     border-bottom: 2px solid #fff;
     display: flex;
@@ -395,3 +481,4 @@ export default {
   }
 }
 </style>
+

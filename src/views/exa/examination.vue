@@ -26,49 +26,92 @@
           >
           <div>
 
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm">
 
-              <el-form-item label="所属分类" prop="region">
-              <el-select v-model="ruleForm.region" placeholder="请选择所属分类">
-                <el-option label="学历教育" value="shanghai"></el-option>
-                <el-option label="职称考证" value="beijing"></el-option>
+           
+
+            <el-form-item label="所属分类" prop="cate_id">
+              <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类">
+                <el-option label="学历教育" value="xueli"></el-option>
+                <el-option label="职称考证" value="zhicheng"></el-option>
+                <el-option label="特种作业" value="tezhong"></el-option>
               </el-select>
             </el-form-item>
 
-            <el-form-item label="考试计划名称" prop="name">
-              <el-input v-model="ruleForm.name" style="width:220px" placeholder="请输入考试计划名称"></el-input>
+             <el-form-item label="考试计划名称" prop="name">
+              <el-input v-model="ruleForm.name" style="width:220px"></el-input>
+            </el-form-item>
+
+            <el-form-item label="考试时间" required>
+
+               <el-date-picker
+                v-model="value1"
+                type="date"
+                placeholder="选择日期"
+                style="width:125px;margin-right:5px;">
+              </el-date-picker>
+
+
+              <el-time-select
+              placeholder="起始时间"
+              v-model="start_time"
+              :picker-options="{
+                start: '08:30',
+                step: '00:15',
+                end: '18:30',
+                
+              }"
+              style="width:120px;margin-right:5px;">
+             
+              </el-time-select>
+               至
+              <el-time-select
+                placeholder="结束时间"
+                v-model="end_time"
+                :picker-options="{
+                  start: '08:30',
+                  step: '00:15',
+                  end: '18:30',
+                  minTime: startTime
+                }"
+                style="width:120px;">
+              </el-time-select>
+
+            </el-form-item>
+
+            
+            <el-form-item label="报考时间" required>
+             
+
+               <div class="block">
+              <el-date-picker
+                v-model="value1"
+                type="datetimerange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+            </div>
+            </el-form-item>
+     
+             <el-form-item label="计划人数" prop="max_num">
+              <el-input v-model="ruleForm.max_num" style="width:220px"></el-input>
             </el-form-item>
             
-            <el-form-item label="考试时间" required>
-              <el-col :span="11">
-                <el-form-item prop="date1">
-                  <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col class="line" :span="2">-</el-col>
-              <el-col :span="11">
-                <el-form-item prop="date2">
-                  <el-time-picker placeholder="选择时间" v-model="ruleForm.date2" style="width: 100%;"></el-time-picker>
-                </el-form-item>
-              </el-col>
-            </el-form-item>
-         
-         
-           
-            <el-form-item label="考试形式" prop="desc">
-              <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+            <el-form-item label="补考规则" prop="desc">
+              分数小于
+               <el-input v-model="ruleForm.desc" style="width:50px"></el-input>
+               分时需要补考
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
               <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
+
           </el-form>
 
           </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-          </span>
+
         </el-dialog>
 
       
@@ -150,16 +193,45 @@
 
     </div>
 
-    
+
 </template>
 
 <script>
-
 export default {
     name: 'examination',
 
-     data() {
+    data() {
     return {
+
+       pickerOptions: {
+          shortcuts: [{
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+         
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+        value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+        value2: '',
+
        ruleForm: {
           name: '',
           region: '',
@@ -169,14 +241,13 @@ export default {
           type: [],
           resource: '',
           desc: ''
-        },
+        },    
         rules: {
           name: [
             { required: true, message: '请输入考试名称', trigger: 'blur' },
-            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
-          region: [
-            { required: true, message: '请选择活动区域', trigger: 'change' }
+          cate_id: [
+            { required: true, message: '', trigger: 'change' }
           ],
           date1: [
             { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
@@ -184,14 +255,12 @@ export default {
           date2: [
             { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
           ],
-          type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          ],
-          resource: [
-            { required: true, message: '请选择活动资源', trigger: 'change' }
+         
+          max_num: [
+            {type: 'date', required: true, message: '请填写计划人数',  trigger: 'change' }
           ],
           desc: [
-            { required: true, message: '请填写活动形式', trigger: 'blur' }
+            { type: 'date', required: true, message: '请填写分数', trigger: 'blur' }
           ]
         },
 
@@ -212,22 +281,7 @@ export default {
       ],
       page: 1,
       schoolData: [
-        // {
-        // id:1,
-        // start_time:8888,
-        // course_name:'系统集成项目管理工程师',
-        // e_name:'软考',
-        // create_time:'2021年',
-        // max_num:200,
-        // },
-        // {
-        // id:2,    
-        // start_time:8888,
-        // course_name:'信息系统项目管理师',
-        // e_name:'软考',
-        // create_time:'2021年',
-        // max_num:200,
-        // }
+      
       ],
       course_ids: [],
       datas: {},
@@ -235,7 +289,20 @@ export default {
     }
   },
 
+    mounted() {
+    // let status = 3
+    this.$api.planList(this, 'schoolData')
+  },
     methods: {
+      receiveStudent(zx) {
+      console.log(zx)
+      this.$api.receive(this, zx.intent_id)
+    },
+    doPageChange(page) {
+      this.page = page
+      // this.$api.getMyclient(this, 'myclient', status)
+      this.$api.planList(this, 'schoolData', this.datas)
+    },
 
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {

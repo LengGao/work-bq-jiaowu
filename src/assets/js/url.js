@@ -100,4 +100,9 @@ export default {
   editorOpen: '/LiveClass/info',
   //修改公开课
   modifyOpen: '/LiveClass/modify',
+  //考试计划
+  planList: 'Examination/planList',
+  //财务订单管理
+  orderindex: '/order/index',
+
 }

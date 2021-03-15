@@ -423,6 +423,29 @@ export const asyncRouterMap = [
       },
     ],
   },
+
+  {
+    path: '/fina',
+    component: Layout,
+    redirect: '/fina/finance',
+    meta: { title: '财务管理', icon: 'zhaoshengguanli' },
+    name: 'fina',
+    children: [
+      {
+        path: 'finance',
+        name: 'finance',
+        component: () => import('@/views/fina/finance.vue'),
+        meta: { title: '订单管理', icon: 'product-add' },
+      },
+      {
+        path: 'order',
+        name: 'order',
+        component: () => import('@/views/fina/order.vue'),
+        meta: { title: '订单审批', icon: 'product-add' },
+      },
+    ],
+  },
+
   { path: '*', redirect: '/404' },
 ]
 export default new VueRouter({
