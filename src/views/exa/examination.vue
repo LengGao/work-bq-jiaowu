@@ -202,8 +202,12 @@ export default {
 
     data() {
     return {
+      end_time:'',
+      start_time:'',
+      startTime:'',
 
-       pickerOptions: {
+
+      pickerOptions: {
           shortcuts: [{
             onClick(picker) {
               const end = new Date();
@@ -281,7 +285,14 @@ export default {
       ],
       page: 1,
       schoolData: [
-      
+      // {
+      //   course_id:1,
+      //   course_name:'20209090123',
+      //   class_type_name:1360000000,
+      //   course_price:888,
+      //   max_num:888,
+      //   max_time:'已付款',
+      //   },
       ],
       course_ids: [],
       datas: {},
@@ -348,12 +359,6 @@ export default {
     //     query: {},
     //   })
     // },
-
-     open() {
-        this.$alert('<strong>这是 <i>HTML</i> 片段</strong>', 'HTML 片段', {
-          dangerouslyUseHTMLString: true
-        });
-      },
 
     release(ab, status) {
       let course_id = []

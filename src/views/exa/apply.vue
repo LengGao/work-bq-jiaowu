@@ -120,6 +120,10 @@ export default {
 
      data() {
     return {
+      toCreateClass:'',
+      click:'',
+
+
       ruleForm: {
         category_id: '',
       },

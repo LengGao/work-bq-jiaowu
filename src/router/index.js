@@ -443,6 +443,20 @@ export const asyncRouterMap = [
         component: () => import('@/views/fina/order.vue'),
         meta: { title: '订单审批', icon: 'product-add' },
       },
+      {
+        path: 'orderdetail',
+        name: 'orderdetail',
+        component: () => import('@/views/fina/order/orderDetail.vue'),
+        meta: { title: '订单详情', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'cusdetail',
+        name: 'cusdetail',
+        component: () => import('@/views/fina/finance/cusdetail.vue'),
+        meta: { title: '客户详情', icon: 'product-cate' },
+        hidden: true,
+      },
     ],
   },
 
