@@ -13,7 +13,7 @@
       ></search>
       <div>
         <el-checkbox v-model="checked">显示未归档学生</el-checkbox>
-        <el-button type="primary" style="margin-left:20px">批量发放</el-button>
+        <!-- <el-button type="primary" style="margin-left:20px">批量发放</el-button> -->
       </div>
     </div>
 
@@ -21,7 +21,7 @@
     <div class="userTable">
       <el-table
         ref="multipleTable"
-        :data="schoolData"
+        :data="schoolData.list"
         tooltip-effect="light"
         stripe
         style="width: 100%;"
@@ -36,51 +36,51 @@
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="user_realname"
+          prop="nickname"
           label="学生姓名"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="telphone"
+          prop="mobile"
           label="手机号码"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
-          prop="institution_name"
+          prop="category_name"
           label="所属分类"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
-          prop="create_time"
+          prop="project_name"
           label="所属项目"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="create_time"
+          prop="classroom_id"
           label="所属班级"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="create_time"
+          prop="total_books"
           label="应发教材"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="create_time"
+          prop="not_issued"
           label="欠发教材"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="create_time"
+          prop="update_time"
           label="最后更新时间"
           min-width="100"
           show-overflow-tooltip
@@ -97,14 +97,14 @@
               <el-button type="text" @click="handleAdd(scope.row)"
                 >教材发放</el-button
               >
-              <el-button type="text" @click="handleAdd(scope.row)"
+              <el-button type="text" @click="toMaterialJournal(scope.row)"
                 >日志</el-button
               >
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+      <el-dialog title="发放教材" :visible.sync="dialogVisible" width="30%">
         <!-- <span>这是一段信息</span> -->
         <el-form
           :model="ruleForm"
@@ -167,13 +167,11 @@ export default {
   name: 'seaStudent',
   data() {
     return {
+      rules: {},
+      options: [],
       ruleForm: {},
       dialogVisible: false,
-      schoolData: [
-        {
-          user_realname: '混分巨兽',
-        },
-      ],
+      schoolData: [],
       page: 1,
       status: 3,
       datas: {},
@@ -181,9 +179,17 @@ export default {
     }
   },
   mounted() {
-    // this.$api.onlineUserList(this, 'schoolData')
+    this.$api.dispenseList(this, 'schoolData')
+    this.$api.getTeachBooksList(this, 'schoolData')
   },
   methods: {
+    toMaterialJournal(ab) {
+      console.log(ab)
+      this.$router.push({
+        path: '/eda/materialJournal',
+        query: { id: ab.id },
+      })
+    },
     handleAdd() {
       this.dialogVisible = true
     },
@@ -199,7 +205,7 @@ export default {
 
     doPageChange(page) {
       this.page = page
-      this.$api.onlineUserList(this, 'schoolData')
+      this.$api.dispenseList(this, 'schoolData')
     },
   },
 }

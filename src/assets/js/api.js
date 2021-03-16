@@ -234,7 +234,6 @@ let api = {
       describe: ruleForm.describe,
       category_id: ruleForm.category_id,
     }
-
     axiosHttp({
       url: url.addClasses,
       data: config,
@@ -272,6 +271,63 @@ let api = {
           self.$api.getClassroomList(self, 'schoolData')
           self.dialogVisible = false
           // self[name] = data
+        }
+      },
+    })
+  },
+
+  /***************教材发放**************/
+  //发放教材列表
+  dispenseList(self, name) {
+    let config = {
+      page: self.page,
+    }
+    axiosHttp({
+      url: url.dispenseList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          for (var item of data.list) {
+            if (item.update_time != 0 || item.update_time != '') {
+              item.update_time = self.$moment
+                .unix(item.update_time)
+                .format('YYYY-MM-DD HH:mm:ss')
+            } else {
+              item.update_time = '---'
+            }
+          }
+          self[name] = data
+        }
+      },
+    })
+  },
+  getDispenseLog(self, name) {
+    let config = {
+      page: self.page,
+      id: self.$route.query.id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getDispenseLog,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          for (var item of data.data) {
+            if (item.create_time != 0 || item.create_time != '') {
+              item.create_time = self.$moment
+                .unix(item.create_time)
+                .format('YYYY-MM-DD HH:mm:ss')
+            } else {
+              item.create_time = '---'
+            }
+          }
+          self[name] = data
         }
       },
     })
