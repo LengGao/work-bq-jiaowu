@@ -104,5 +104,9 @@ export default {
   planList: 'Examination/planList',
   //财务订单管理
   orderindex: '/order/index',
+  //订单详情
+  orderdetail: '/order/detail',
+  //角色权限
+  roleperm: '/role/index',
 
 }

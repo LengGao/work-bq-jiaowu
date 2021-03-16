@@ -394,7 +394,7 @@ export const asyncRouterMap = [
         path: 'examination',
         name: 'examination',
         component: () => import('@/views/exa/examination.vue'),
-        meta: { title: '考试计划', icon: 'product-add' },
+        meta: { title: '考试配置', icon: 'product-add' },
       },
       {
         path: 'apply',
@@ -443,6 +443,69 @@ export const asyncRouterMap = [
         component: () => import('@/views/fina/order.vue'),
         meta: { title: '订单审批', icon: 'product-add' },
       },
+      {
+        path: 'orderdetail',
+        name: 'orderdetail',
+        component: () => import('@/views/fina/order/orderDetail.vue'),
+        meta: { title: '订单详情', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'cusdetail',
+        name: 'cusdetail',
+        component: () => import('@/views/fina/finance/cusdetail.vue'),
+        meta: { title: '客户详情', icon: 'product-cate' },
+        hidden: true,
+      },
+    ],
+  },
+
+  {
+    path: '/set',
+    component: Layout,
+    redirect: '/set/role',
+    meta: { title: '系统设置', icon: 'zhaoshengguanli' },
+    name: 'set',
+    children: [
+      {
+        path: 'role',
+        name: 'role',
+        component: () => import('@/views/set/role.vue'),
+        meta: { title: '角色权限', icon: 'product-add' },
+      },
+      {
+        path: 'staff',
+        name: 'staff',
+        component: () => import('@/views/set/staff.vue'),
+        meta: { title: '员工管理', icon: 'product-add' },
+      },
+      {
+        path: 'menumanage',
+        name: 'menumanage',
+        component: () => import('@/views/set/menumanage.vue'),
+        meta: { title: '菜单管理', icon: 'product-add' },
+      },
+      {
+        path: 'roledetail',
+        name: 'roledetail',
+        component: () => import('@/views/set/role/roledetail.vue'),
+        meta: { title: '添加角色', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'notice',
+        name: 'notice',
+        component: () => import('@/views/set/notice.vue'),
+        meta: { title: '通知公告', icon: 'product-add' },
+        
+      },
+      // {
+      //   path: 'cusdetail',
+      //   name: 'cusdetail',
+      //   component: () => import('@/views/fina/finance/cusdetail.vue'),
+      //   meta: { title: '客户详情', icon: 'product-cate' },
+      //   hidden: true,
+      // },
     ],
   },
 

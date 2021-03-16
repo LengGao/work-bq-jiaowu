@@ -55,7 +55,19 @@ router.beforeEach((to, from, next) => {
               { name: 'createplan' },
               { name: 'fina' }, //财务管理
               { name: 'finance' }, //订单管理
-              { name: 'order' },
+              { name: 'order' }, 
+              { name: 'orderDetail' }, 
+              { name: 'cusdetail' }, 
+              { name: 'set' }, //系统设置
+              { name: 'role' }, //角色权限
+              { name: 'staff' }, 
+              { name: 'roledetail' }, 
+              { name: 'menumanage' }, //菜单管理
+              { name: 'notice' }, //通知公告
+
+              
+
+
             ]
 
             let username = 'account'

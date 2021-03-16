@@ -12,6 +12,11 @@
   ],
   "settings": {
     "workbench.settings.editor": "json",
-    "eggHelper.serverPort": 35684
+    "eggHelper.serverPort": 35684,
+    "workbench.colorCustomizations": {
+      "activityBar.background": "#1B331B",
+      "titleBar.activeBackground": "#254826",
+      "titleBar.activeForeground": "#F9FCF9"
+    }
   }
 }
