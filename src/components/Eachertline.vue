@@ -2,13 +2,13 @@
   <!-- <div class="about"> -->
   <div
     id="myChart"
-    :style="{ width: '85%', height: '80%', float: 'left', marginLeft: '10px' }"
+    :style="{ width: '85%', height: '90%', float: 'left', marginLeft: '10px' }"
   ></div>
   <!-- </div> -->
 </template>
 <script>
 export default {
-  name: 'Eachertline',
+  name: "Eachertline",
   props: {
     lines: Array,
     xdata: Array,
@@ -23,56 +23,63 @@ export default {
     Yseries: Array,
     title: {
       type: String,
-      default: '访问量',
+      default: "访问量",
     },
   },
   data() {
     return {
-      msg: 'Welcome to Your Vue.js App',
-    }
+      msg: "Welcome to Your Vue.js App",
+    };
   },
   watch: {
     xdata: {
       handler(newValue, oldValue) {
-        this.drawLine()
-        console.log(newValue)
+        this.drawLine();
+        console.log(newValue);
       },
     },
     Yseries: {
       handler(newValue, oldValue) {
         // this.Yseries.length = 0
-        this.drawLine()
-        console.log(newValue)
+        this.drawLine();
+        console.log(newValue);
       },
     },
   },
   mounted() {
-    this.drawLine()
+    this.drawLine();
   },
   methods: {
     drawLine() {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(document.getElementById('myChart'))
+      let myChart = this.$echarts.init(document.getElementById("myChart"));
       // 绘制图表
       myChart.setOption({
         tooltip: {
           show: true,
+          trigger: "axis",
+          // axisPointer: {
+          //   type: "cross",
+          //   label: {
+          //     backgroundColor: "#6a7985",
+          //   },
+          // },
         },
         title: {
           text: this.title,
-          left: 'left',
-          fontSize: '14px',
+          left: "left",
+          fontSize: "14px",
           textStyle: {
             //文字颜色
-            color: '#000000',
+            color: "#000000",
             //字体风格,'normal','italic','oblique'
-            fontStyle: 'normal',
+            fontStyle: "normal",
             //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
-            fontWeight: '600',
+            fontWeight: "normal",
             //字体系列
-            fontFamily: 'sans-serif',
+            fontFamily: "sans-serif",
             //字体大小
-            fontSize: 14,
+            fontSize: 18,
           },
         },
         animation: true,
@@ -86,17 +93,16 @@ export default {
         //   },
         // },
         grid: {
-          left: '4%',
-          right: '4%',
-          bottom: '6%',
+          left: "4%",
+          right: "4%",
+          bottom: "6%",
           containLabel: true,
         },
         xAxis: [
           {
-            type: 'category',
+            type: "category",
             boundaryGap: false,
             interval: 0,
-
             data: this.xdata,
             splitLine: {
               show: this.gridShow,
@@ -106,7 +112,7 @@ export default {
         ],
         yAxis: [
           {
-            type: 'value',
+            type: "value",
             splitLine: {
               show: this.gridShow,
             },
@@ -115,14 +121,14 @@ export default {
         ],
         series: [
           {
-            name: '邮件营销',
-            type: 'line',
-            symbol: 'none',
+            // name: '邮件营销',
+            type: "line",
+            symbol: "none",
             smooth: true,
-            stack: '总量',
+            stack: "总量",
             itemStyle: {
               normal: {
-                color: '#bbe1fc',
+                color: "#bbe1fc",
               },
             },
             areaStyle: {},
@@ -130,11 +136,11 @@ export default {
             data: this.Yseries,
           },
         ],
-      })
+      });
     },
   },
   beforeDestroy() {
-    clearInterval(this.set)
+    clearInterval(this.set);
   },
-}
+};
 </script>

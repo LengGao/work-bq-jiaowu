@@ -6,125 +6,89 @@
 
     <section class="mainwrap">
       <ul class="navigation">
-        <li
-          v-for="item in tabFun"
-          :key="item.id"
-          :class="{ tabg: item.id == isTagactive }"
-          @click="statusSwitch(item)"
-          
-        >
+        <li v-for="item in tabFun" :key="item.id" :class="{ tabg: item.id == isTagactive }" @click="statusSwitch(item)">
           {{ item.name }}
         </li>
       </ul>
       <div class="client_head">
         <div class="searchModule">
-          <el-date-picker
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            v-model="startend"
-          >
+          <el-date-picker type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" v-model="startend">
           </el-date-picker>
 
-          <el-select
-            filterable
-            style="width:130px;margin:0 10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="财务状态"
-            clearable
-          >
+          <el-select filterable style="width:130px;margin:0 10px" v-model="ruleForm.institution_id" slot="prepend" placeholder="财务状态" clearable>
 
           </el-select>
-         
-          <el-input
-            v-model="ruleForm.institution_id"
-            placeholder="学员姓名/手机号码"
-            style="width:200px;margin-right:10px;"
-          ></el-input>
+
+          <el-input v-model="ruleForm.institution_id" placeholder="学员姓名/手机号码" style="width:200px;margin-right:10px;"></el-input>
           <el-button type="primary">搜索</el-button>
         </div>
         <div>
-          <el-button type="primary" @click="toCreateClass"
+          <!-- <el-button type="primary" @click="toCreateClass"
             >导出数据</el-button
-          >
-          
+          > -->
+          <el-button type="primary">导出数据</el-button>
+
         </div>
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="schoolData.list"
-          tooltip-effect="light"
-          stripe
-          @selection-change="handleSelectionChange"
-          style="width: 100%;"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-          class="min_table"
-        >
+        <el-table ref="multipleTable" :data="schoolData" tooltip-effect="light" stripe @selection-change="handleSelectionChange" style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
           <el-table-column type="selection" width="45"> </el-table-column>
-          <el-table-column
-            prop="course_id"
-            label="订单时间"
-            show-overflow-tooltip
-            min-width="80"
-          ></el-table-column>
-         
-          <el-table-column
-            prop="course_name"
-            label="订单编号"
-            min-width="100"
-            column-key="course_id"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="category_name"
-            label="学员姓名"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="class_type_name"
-            label="联系方式"
-            min-width="200"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="course_price"
-            label="项目名称"
-            min-width="80"
-            show-overflow-tooltip
-          ></el-table-column>
-          
-          <el-table-column
-            label="实付金额"
-            min-width="100"
-            show-overflow-tooltip
-          > 
+          <el-table-column prop="course_id" label="订单时间" show-overflow-tooltip min-width="100"></el-table-column>
+
+          <el-table-column prop="course_name" label="订单编号" min-width="100" column-key="course_id" show-overflow-tooltip>
+            <template slot-scope="scope">
+              <div class="coursename" @click="orderDetail">
+                1111
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="category_name" label="学员姓名" min-width="70" show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column prop="class_type_name" label="联系方式" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="course_price" label="项目名称" min-width="180" show-overflow-tooltip></el-table-column>
+
+          <el-table-column prop="max_num" label="实付金额" min-width="80" show-overflow-tooltip>
           </el-table-column>
 
-          <el-table-column
-            label="财务状态"
-            min-width="150"
-            show-overflow-tooltip
-          > 
+          <el-table-column prop="max_time" label="财务状态" min-width="80" show-overflow-tooltip>
           </el-table-column>
 
-          <el-table-column
-            label="操作"
-            min-width="100"
-            show-overflow-tooltip
-          > 
-          </el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="200">
+            <template slot-scope="scope">
+              <!-- <div style="display: flex; justify-content:center;">
+                <el-button type="text" @click="toCreateClass(scope.row)"
+                  >入账</el-button>
+              </div> -->
+              <div>
+                <el-button type="text" @click="dialogVisible = true">入账</el-button>
 
-          
-         
+              </div>
+
+            </template>
+          </el-table-column>
         </el-table>
-        
+
       </div>
+      <!-- <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog> -->
+      <el-dialog
+              title="提示"
+              :visible.sync="dialogVisible"
+              width="25%"
+              
+             >
+              <span style="font-size:20px;">是否将此笔订单入账？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+              </span>
+            </el-dialog>
     </section>
   </div>
 </template>
@@ -135,7 +99,8 @@ export default {
 
   data() {
     return {
-    startend:'',
+      dialogVisible: false,
+      startend: '',
       ruleForm: {
         category_id: '',
       },
@@ -156,9 +121,40 @@ export default {
       ],
 
       page: 1,
-      
-      schoolData: [
 
+      schoolData: [
+        {
+          course_id: 1,
+          course_name: '20209090123',
+          class_type_name: 1360000000,
+          course_price: 888,
+          max_num: 888,
+          max_time: '已付款',
+        },
+        {
+          course_id: 1,
+          course_name: '20209090123',
+          class_type_name: 19805550009,
+          course_price: 888,
+          max_num: 888,
+          max_time: '已付款',
+        },
+        {
+          course_id: 1,
+          course_name: '20209090123',
+          class_type_name: 18922229898,
+          course_price: 888,
+          max_num: 888,
+          max_time: '已付款',
+        },
+        {
+          course_id: 1,
+          course_name: '20209090123',
+          class_type_name: 19800005959,
+          course_price: 888,
+          max_num: 888,
+          max_time: '已付款',
+        },
       ],
       course_ids: [],
       datas: {},
@@ -172,6 +168,18 @@ export default {
   },
 
   methods: {
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then((_) => {
+          done()
+        })
+        .catch((_) => {})
+    },
+    orderDetail() {
+      this.$router.push({
+        path: '/fina/orderDetail',
+      })
+    },
     statusSwitch(ab) {
       this.isTagactive = ab.id
     },
@@ -261,15 +269,11 @@ export default {
     },
     batchDeletion() {
       if (this.course_ids.length > 0) {
-        this.$confirm(
-          '你正在批量删除该条数据,数据删除后将无法恢复,请谨慎操作?',
-          '提示',
-          {
-            confirmButtonText: '删除',
-            cancelButtonText: '取消',
-            type: 'warning',
-          }
-        )
+        this.$confirm('你正在批量删除该条数据,数据删除后将无法恢复,请谨慎操作?', '提示', {
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
           .then(() => {
             this.$api.bashDelete(this, this.course_ids)
           })
@@ -289,15 +293,11 @@ export default {
     handleDelete(ab) {
       console.log(ab)
       let course_id = ab.course_id
-      this.$confirm(
-        '你正在删除该条数据,数据删除后将无法恢复,请谨慎操作?',
-        '提示',
-        {
-          confirmButtonText: '删除',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
+      this.$confirm('你正在删除该条数据,数据删除后将无法恢复,请谨慎操作?', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
         .then(() => {
           this.$api.deleteCourses(this, ab.course_id)
         })
@@ -309,7 +309,6 @@ export default {
         })
     },
   },
-  //   mounted() {}
 }
 </script>
 
@@ -405,5 +404,12 @@ export default {
   .is-checked {
     padding: 0;
   }
+}
+.coursename {
+  color: #2798ee;
+}
+.dialog-footer {
+  display: flex;
+  justify-content: center;
 }
 </style>
