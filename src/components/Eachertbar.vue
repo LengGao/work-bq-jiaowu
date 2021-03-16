@@ -1,6 +1,9 @@
 <template>
   <!-- <div class="about"> -->
-  <div id="myChart" :style="{ width: '83%', height: '80%',float:'left',marginLeft:'10px'}"></div>
+  <div
+    id="myChart"
+    :style="{ width: '83%', height: '80%', float: 'left', marginLeft: '10px' }"
+  ></div>
   <!-- </div> -->
 </template>
 <script>
@@ -50,7 +53,7 @@ export default {
       // 绘制图表
       myChart.setOption({
         title: {
-          text: "销售量",
+          text: "销售趋势",
           left: "left",
           fontSize: "14px",
           textStyle: {
@@ -59,11 +62,11 @@ export default {
             //字体风格,'normal','italic','oblique'
             fontStyle: "normal",
             //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
-            fontWeight: "600",
+            fontWeight: "normal",
             //字体系列
             fontFamily: "sans-serif",
             //字体大小
-            fontSize: 14,
+            fontSize: 18,
           },
         },
         grid: {
@@ -72,15 +75,15 @@ export default {
           bottom: "6%",
           containLabel: true,
         },
-          tooltip: {
-            trigger: "axis",
-            axisPointer: {
-             type: 'shadow',
-              label: {
-                backgroundColor: "#cecece",
-              },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+            label: {
+              backgroundColor: "#cecece",
             },
           },
+        },
         xAxis: {
           type: "category",
           data: this.xdata,
@@ -90,7 +93,7 @@ export default {
         },
         series: [
           {
-             barWidth: "50%",
+            barWidth: "50%",
             data: this.Yseries,
             itemStyle: {
               normal: {
