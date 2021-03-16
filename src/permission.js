@@ -58,7 +58,14 @@ router.beforeEach((to, from, next) => {
               { name: 'order' }, 
               { name: 'orderDetail' }, 
               { name: 'cusdetail' }, 
+              { name: 'set' }, //系统设置
+              { name: 'role' }, //角色权限
+              { name: 'staff' }, 
+              { name: 'roledetail' }, 
+              { name: 'menumanage' }, //菜单管理
+              { name: 'notice' }, //通知公告
 
+              
 
 
             ]

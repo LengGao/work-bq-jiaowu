@@ -372,7 +372,6 @@
         </div>
       </el-dialog>
 
-
       <!-- 退款弹出框 -->
         <el-dialog title="申请退款" :visible.sync="refundFormVisible">
 
@@ -468,10 +467,8 @@
           <el-button type="primary" @click="refundFormVisible = false">确 定</el-button>
         </div>
       </el-dialog>
-
-      
-
       </div>
+
     </div>
   </section>
 </template>

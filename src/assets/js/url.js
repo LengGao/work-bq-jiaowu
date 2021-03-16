@@ -106,5 +106,7 @@ export default {
   orderindex: '/order/index',
   //订单详情
   orderdetail: '/order/detail',
+  //角色权限
+  roleperm: '/role/index',
 
 }

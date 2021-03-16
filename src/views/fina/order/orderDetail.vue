@@ -19,8 +19,8 @@
           >
             <el-row class="detailLine">
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="订单编号" prop="order_id">
-                  <div class="ruleWord">{{ ruleForm.order_id }}</div>
+                <el-form-item label="订单编号" prop="order_no">
+                  <div class="ruleWord">{{ ruleForm.order_no }}</div>
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
@@ -248,15 +248,13 @@ export default {
     return {
       dialogVisible: false,
       ruleForm: {
-          order_id:100,
-          verify_time:2021-10-10,
-          surname: 'yqq',
-          order_money: 100000,
-          reduction: 98888,
-          order_money: 98888,
-          pay_money: 98888,
-          
-
+          // order_id:100,
+          // verify_time:2021-10-10,
+          // surname: 'yqq',
+          // order_money: 100000,
+          // reduction: 98888,
+          // order_money: 98888,
+          // pay_money: 98888,
         },
 
       schoolData: [
@@ -269,7 +267,6 @@ export default {
           fs:'微信',
           money:8800,
           zt:'已付款',
-
           uiddd:'刘刘刘刘',
         }
       ],
