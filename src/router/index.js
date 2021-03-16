@@ -33,7 +33,7 @@ export const constantRouterMap = [
         path: 'visualization',
         name: 'visualization',
         component: () => import('@/views/pms/visualization.vue'),
-        meta: { title: '数据看板', icon: 'shujukanban' },
+        meta: { title: '工作台', icon: 'shujukanban' },
       },
     ],
   },

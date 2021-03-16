@@ -37,7 +37,7 @@ router.beforeEach((to, from, next) => {
               { name: 'customerDetail' }, //招生管理>客户管理>客户报名>客户详情
               { name: 'orderDetail' }, //招生管理>客户管理>客户报名>订单详情
               { name: 'seaCustomer' }, //招生管理>公海客户
-              { name: 'visualization' }, //数据看板
+              { name: 'visualization' }, //工作台
               { name: 'eda' }, //包含了教务管理
               { name: 'studentCenter' }, //教务管理>学生中心
               { name: 'studentDetail' }, //教务管理>学生中心>学生详情
