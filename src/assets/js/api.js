@@ -332,6 +332,36 @@ let api = {
       },
     })
   },
+  /***************排班管理****************/
+  //班级列表
+  classroomList(self, name) {
+    let config = {
+      // page: self.page,
+      // id: self.$route.query.id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.classroomList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          for (var item of data.data) {
+            if (item.create_time != 0 || item.create_time != '') {
+              item.create_time = self.$moment
+                .unix(item.create_time)
+                .format('YYYY-MM-DD HH:mm:ss')
+            } else {
+              item.create_time = '---'
+            }
+          }
+          self[name] = data
+        }
+      },
+    })
+  },
 }
 
 Object.assign(

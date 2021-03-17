@@ -79,13 +79,18 @@
         </el-col>
         <el-col :lg="8" :md="8" :sm="8" :xs="8">
           <el-form-item label="默认上课时间" prop="classTime">
-            <el-select
-              v-model="ruleForm.classTime"
-              placeholder="请选择默认上课时间"
+            <el-time-picker
+              @change="choseTime"
+              is-range
+              v-model="classTimeArr"
+              format="HH:mm"
+              value-format="HH:mm"
+              range-separator="至"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+              placeholder="选择时间范围"
             >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
+            </el-time-picker>
           </el-form-item>
         </el-col>
         <el-col :lg="8" :md="8" :sm="8" :xs="8">
@@ -285,6 +290,11 @@
 export default {
   data() {
     return {
+      value1: [],
+      classTimeArr: [
+        new Date(2016, 9, 10, 8, 40),
+        new Date(2016, 9, 10, 9, 40),
+      ],
       dateArr: [],
       ruleForm: {
         date: '',
@@ -305,6 +315,8 @@ export default {
     }
   },
   mounted() {
+    this.$api.classroomList(this, 'classData') //班级列表
+
     //为了解决bug，所以默认值放在了这里
     this.$nextTick(function() {
       // this.dateArr = ['2018-08-03', '2018-08-06']
@@ -313,6 +325,7 @@ export default {
     })
   },
   methods: {
+    choseTime(e) {},
     addTime(ab, index) {
       console.log(this.schoolData[index])
     },
@@ -334,10 +347,7 @@ export default {
           schoolroom_id: this.ruleForm.teaching_type,
           // start_time: '',
           // end_time: '',
-          timeArr: [
-            ['08:30', '09:30'],
-            ['08:30', '09:30'],
-          ],
+          timeArr: this.classTimeArr,
           stfaa_id: this.ruleForm.teaching_type,
           remark: this.ruleForm.teaching_type,
           class_hour: [],
@@ -353,6 +363,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
 footer {
   width: 100%;
   bottom: 20px;

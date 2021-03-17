@@ -32,6 +32,7 @@ export default {
   modifyClasses: '/classroom/edit',
   dispenseList: '/books/dispenseList',
   getDispenseLog: '/books/dispenseLog',
+  classroomList: 'arrange/classroomList',
 
   //系统配置
   getBucketList: '/oss/getBucketList',

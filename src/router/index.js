@@ -454,6 +454,12 @@ export const asyncRouterMap = [
     name: 'exa',
     children: [
       {
+        path: 'teachingManage',
+        name: 'teachingManage',
+        component: () => import('@/views/exa/teachingManage.vue'),
+        meta: { title: '授课老师', icon: 'product-add' },
+      },
+      {
         path: 'examination',
         name: 'examination',
         component: () => import('@/views/exa/examination.vue'),
@@ -530,6 +536,12 @@ export const asyncRouterMap = [
     meta: { title: '系统设置', icon: 'zhaoshengguanli' },
     name: 'set',
     children: [
+      {
+        path: 'imgSpace',
+        name: 'imgSpace',
+        component: () => import('@/views/set/imgSpace.vue'),
+        meta: { title: '图片空间', icon: 'product-add' },
+      },
       {
         path: 'role',
         name: 'role',

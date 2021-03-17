@@ -50,6 +50,7 @@ router.beforeEach((to, from, next) => {
               { name: 'teachSchedule' }, //教务管理>排课管理
 
               { name: 'exa' }, //考务管理
+              { name: 'teachingManage' }, //考务管理>授课老师
               { name: 'examination' },
               { name: 'apply' },
               { name: 'achievement' },
@@ -59,7 +60,13 @@ router.beforeEach((to, from, next) => {
               { name: 'finance' }, //订单管理
               { name: 'order' },
 
-              { name: '' },
+              { name: 'set' },
+              { name: 'imgSpace' },
+              { name: 'role' }, //系统设置>角色权限
+              { name: 'staff' }, //系统设置>员工管理
+              { name: 'roledetail' }, //系统设置>角色权限>添加角色
+              { name: 'menumanage' }, //系统设置>菜单管理
+              { name: 'notice' }, //系统设置>通知公告
             ]
 
             let username = 'account'
