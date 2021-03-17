@@ -111,7 +111,7 @@
           <!-- <span>这是一段信息</span> -->
           <span slot="footer" class="dialog-footer">
             <el-button @click="importVisible = false">取 消</el-button>
-            <el-button type="primary" @click="toOrderManage">提 交</el-button>
+            <el-button type="primary" @click="handleConfirm">提 交</el-button>
           </span>
         </el-dialog>
         </div>
@@ -575,6 +575,45 @@ export default {
 
   },
   methods: {
+    handleDelete(ab) {
+      this.$confirm('此操作将删除该教室, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$api.deleteRoom(this, ab.id)
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+
+    handleConfirm(formName) {
+      console.log(this.ruleForm)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.ruleForm.id) {
+            //修改教室
+            this.$api.updateRoom(this, this.ruleForm)
+          } else {
+            //添加教室
+            this.$api.createRoom(this, this.ruleForm)
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+
      handleRemove(file, fileList) {
         console.log(file, fileList);
       },

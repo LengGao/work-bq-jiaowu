@@ -108,5 +108,13 @@ export default {
   orderdetail: '/order/detail',
   //角色权限
   roleperm: '/role/index',
+  //通知公告
+  noticelist: '/SystemAnnouncement/list',
+
+  //删除公告
+  deletenoticelist: '/SystemAnnouncement/delete',
+   //编辑公告
+   updatenoticelist: '/SystemAnnouncement/update',
+
 
 }
