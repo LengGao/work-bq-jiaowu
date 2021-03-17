@@ -52,7 +52,7 @@
             </span>
           </el-input>
         </el-form-item>
-        <el-form-item style="margin-bottom: 10px;text-align: center">
+        <el-form-item style="margin-bottom: 10px; text-align: center">
           <el-button
             style="width: 45%"
             type="primary"
@@ -63,12 +63,12 @@
             登录
           </el-button>
         </el-form-item>
-        <el-form-item style="margin-bottom: 60px;">
-          <div style="display:flex;justify-content:space-between">
+        <el-form-item style="margin-bottom: 60px">
+          <div style="display: flex; justify-content: space-between">
             <el-checkbox v-model="checked" @change="remember"
               >记住密码</el-checkbox
             >
-            <router-link to="/forget" style="color:#199FFF"
+            <router-link to="/forget" style="color: #199fff"
               >忘记密码</router-link
             >
           </div>
@@ -80,137 +80,137 @@
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
-import { setSupport, getSupport, setCookie, getCookie } from '@/utils/support'
-import login_center_bg from '@/assets/images/login-img.jpg'
-import logologin from '@/assets/images/logo-login.jpg'
-const Base64 = require('js-base64').Base64
+import { isvalidUsername } from "@/utils/validate";
+import { setSupport, getSupport, setCookie, getCookie } from "@/utils/support";
+import login_center_bg from "@/assets/images/login-img.jpg";
+import logologin from "@/assets/images/logo-login.jpg";
+const Base64 = require("js-base64").Base64;
 export default {
-  name: 'login',
+  name: "login",
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
+        callback(new Error("请输入正确的用户名"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     const validatePass = (rule, value, callback) => {
       if (value.length < 3) {
-        callback(new Error('密码不能小于3位'))
+        callback(new Error("密码不能小于3位"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     return {
       checked: false,
       loginForm: {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'blur', validator: validateUsername },
+          { required: true, trigger: "blur", validator: validateUsername },
         ],
         password: [
-          { required: true, trigger: 'blur', validator: validatePass },
+          { required: true, trigger: "blur", validator: validatePass },
         ],
       },
       loading: false,
-      pwdType: 'password',
+      pwdType: "password",
       login_center_bg,
       logologin,
       dialogVisible: false,
       supportDialogVisible: false,
-    }
+    };
   },
   created() {
-    console.log(getCookie('password'))
-    this.loginForm.username = getCookie('username')
-    if (getCookie('password'))
-      this.loginForm.password = Base64.decode(getCookie('password'))
-    console.log(getCookie('remember'))
-    this.checked = getCookie('remember') == 'true' ? true : false
+    console.log(getCookie("password"));
+    this.loginForm.username = getCookie("username");
+    if (getCookie("password"))
+      this.loginForm.password = Base64.decode(getCookie("password"));
+    console.log(getCookie("remember"));
+    this.checked = getCookie("remember") == "true" ? true : false;
     if (
       this.loginForm.username === undefined ||
       this.loginForm.username == null ||
-      this.loginForm.username === ''
+      this.loginForm.username === ""
     ) {
-      this.loginForm.username = 'account'
+      this.loginForm.username = "account";
     }
     if (
       this.loginForm.password === undefined ||
       this.loginForm.password == null
     ) {
-      this.loginForm.password = ''
+      this.loginForm.password = "";
     }
   },
   methods: {
     remember(data, row) {
-      console.log(data, row)
+      console.log(data, row);
       if (data) {
-        this.setCookie('account', this.loginForm.username, 30)
+        this.setCookie("account", this.loginForm.username, 30);
         // base64加密密码
-        let password = Base64.encode(this.loginForm.password)
-        this.setCookie('password', password, 30)
+        let password = Base64.encode(this.loginForm.password);
+        this.setCookie("password", password, 30);
       } else {
-        this.setCookie('account', '')
-        this.setCookie('password', '')
+        this.setCookie("account", "");
+        this.setCookie("password", "");
       }
-      this.setCookie('remember', data)
+      this.setCookie("remember", data);
     },
-    setCookie: function(cName, value, expiredays) {
-      var exdate = new Date()
-      exdate.setDate(exdate.getDate() + expiredays)
+    setCookie: function (cName, value, expiredays) {
+      var exdate = new Date();
+      exdate.setDate(exdate.getDate() + expiredays);
       document.cookie =
         cName +
-        '=' +
+        "=" +
         decodeURIComponent(value) +
-        (expiredays == null ? '' : ';expires=' + exdate.toGMTString())
+        (expiredays == null ? "" : ";expires=" + exdate.toGMTString());
     },
     showPwd() {
-      if (this.pwdType === 'password') {
-        this.pwdType = ''
+      if (this.pwdType === "password") {
+        this.pwdType = "";
       } else {
-        this.pwdType = 'password'
+        this.pwdType = "password";
       }
     },
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
           this.$store
-            .dispatch('Login', this.loginForm)
+            .dispatch("Login", this.loginForm)
             .then(() => {
-              this.loading = false
+              this.loading = false;
               // setCookie('username', this.loginForm.username, 15)
               // setCookie('password', this.loginForm.password, 15)
-              console.log('跳转路由')
-              this.$router.push({ path: '/' })
+              console.log("跳转路由");
+              this.$router.push({ path: "/" });
             })
             .catch((res) => {
-              console.log(res)
-              this.loading = false
-            })
+              console.log(res);
+              this.loading = false;
+            });
         } else {
-          console.log('参数验证不合法！')
-          return false
+          console.log("参数验证不合法！");
+          return false;
         }
-      })
+      });
     },
     handleTry() {
-      this.dialogVisible = true
+      this.dialogVisible = true;
     },
     dialogConfirm() {
-      this.dialogVisible = false
-      setSupport(true)
+      this.dialogVisible = false;
+      setSupport(true);
     },
     dialogCancel() {
-      this.dialogVisible = false
-      setSupport(false)
+      this.dialogVisible = false;
+      setSupport(false);
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .login-form-layout {

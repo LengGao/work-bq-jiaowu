@@ -31,20 +31,17 @@ export default {
     xdata: {
       handler(newValue, oldValue) {
         this.drawLine();
-        console.log(newValue);
       },
     },
     Yseries: {
       handler(newValue, oldValue) {
         // this.Yseries.length = 0
         this.drawLine();
-        console.log(newValue);
       },
     },
   },
   mounted() {
     this.drawLine();
-    console.log(12313231, this.Yseries);
   },
   methods: {
     drawLine() {
@@ -66,7 +63,7 @@ export default {
             //字体系列
             fontFamily: "sans-serif",
             //字体大小
-            fontSize: 18,
+            fontSize: 14,
           },
         },
         grid: {

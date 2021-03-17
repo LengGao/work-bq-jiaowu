@@ -1,12 +1,12 @@
 <template>
   <div class="msg">
     <div class="msg-title">
-      <h3 class="title">消息中心</h3>
+      <h4 class="title">消息中心</h4>
       <span class="more">更多</span>
     </div>
     <ul class="msg-content">
       <li class="msg-item" v-for="(item, index) in data" :key="index">
-        <span class="msg-item-info">{{ item.title }}</span>
+        <span class="msg-item-info" :title="item.title">{{ item.title }}</span>
         <span class="msg-item-date">{{ item.create_time }}</span>
       </li>
     </ul>
@@ -32,7 +32,7 @@ export default {
   margin-right: 16px;
 }
 .msg {
-  min-height: 219px;
+  min-height: 220px;
   width: 335px;
   padding: 16px;
   border: 1px solid #dcdfe6;
@@ -42,7 +42,7 @@ export default {
     justify-content: space-between;
     .more {
       color: #199fff;
-      font-size: 14px;
+      font-size: 12px;
       cursor: pointer;
     }
   }
@@ -61,6 +61,7 @@ export default {
       }
       .msg-item-date {
         width: 100px;
+        font-size: 12px;
         flex-shrink: 0;
         text-align: right;
       }

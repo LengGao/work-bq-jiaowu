@@ -2,7 +2,7 @@
   <div class="admin" v-loading="loading">
     <div class="admin-top">
       <div class="admin-top-title">
-        <h3 class="title">任务助手</h3>
+        <h4 class="title">任务助手</h4>
         <span>六步完成教务系统基本设置</span>
       </div>
       <div class="admin-top-cards">
@@ -12,14 +12,15 @@
           <el-button round v-if="item.status" type="info" disabled size="mini"
             >已完成</el-button
           >
-          <el-button round v-else type="success" size="mini">未完成</el-button>
+          <el-button round v-else type="success" size="mini">去完成</el-button>
+          <i v-if="item.status" class="el-icon-check card-item-status"></i>
         </el-card>
       </div>
     </div>
     <div class="admin-center">
       <div class="center-data">
         <div class="center-data-title">
-          <h3 class="title">数据概况</h3>
+          <h4 class="title">数据概况</h4>
         </div>
         <ul class="center-data-content">
           <li class="data-item" v-for="(item, index) in dataList" :key="index">
@@ -347,6 +348,7 @@ export default {
         width: 200px;
         min-height: 140px;
         margin-right: 10px;
+        font-size: 14px;
         &:last-child {
           margin-right: 0;
         }
@@ -358,6 +360,22 @@ export default {
           flex-direction: column;
           justify-content: space-between;
           align-items: center;
+          position: relative;
+        }
+        .card-item-status {
+          position: absolute;
+          right: 0;
+          top: 0;
+          border: 12px solid #43d100;
+          border-bottom-color: #fff;
+          border-left-color: #fff;
+          color: #fff;
+          font-size: 12px;
+          &::before {
+            position: absolute;
+            top: -10px;
+            right: -11px;
+          }
         }
         .card-item-desc {
           color: #909399;
@@ -404,7 +422,7 @@ export default {
       display: flex;
       justify-content: space-between;
       .chart-line-data {
-        flex: 1;
+        min-width: 240px;
         text-align: center;
         li {
           text-align: left;
@@ -424,7 +442,7 @@ export default {
           .up {
             color: #43d100;
             &::after {
-              margin: 0 6px 4px 12px;
+              margin: 0 6px 4px 2px;
               display: inline-block;
               content: "";
               border: 6px solid #fff;
@@ -434,7 +452,7 @@ export default {
           .down {
             color: #fd6500;
             &::after {
-              margin: 0 6px -4px 12px;
+              margin: 0 6px -4px 2px;
               display: inline-block;
               content: "";
               border: 6px solid #fff;
@@ -451,7 +469,7 @@ export default {
       .chart-bar-list {
         flex: 1;
         .list-title {
-          font-size: 18px;
+          font-size: 14px;
           font-weight: 500;
           margin-bottom: 25px;
         }
