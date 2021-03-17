@@ -17,14 +17,10 @@ export default {
 
     }
   },
-
-   
+ 
     methods: {
-      
 
   },
-
-
 
 }
 </script>

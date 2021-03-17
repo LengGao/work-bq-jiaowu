@@ -24,10 +24,6 @@ export default {
     }
   },
 
-    mounted() {
-    // let status = 3
-    this.$api.roleperm(this, 'schoolData')
-  },
     methods: {
       
 

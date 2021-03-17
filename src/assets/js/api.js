@@ -13,6 +13,10 @@ import miniPro from '@/assets/js/miniPro'
 import loginApi from '@/assets/js/login'
 import axios from 'axios'
 import eventBus from '../../utils/eventbus.js'
+import Examination from '@/assets/js/Examination'
+import Finance from '@/assets/js/Finance'
+import system from '@/assets/js/system'
+
 let api = {
   /**
    * @param {* this} self
@@ -290,6 +294,9 @@ Object.assign(
   visualization,
   videoManger,
   miniPro,
-  loginApi
+  loginApi,
+  Examination,
+  Finance,
+  system
 )
 export default api
