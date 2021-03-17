@@ -30,6 +30,8 @@ export default {
   getClassroomList: '/classroom/index',
   addClasses: 'classroom/add',
   modifyClasses: '/classroom/edit',
+  dispenseList: '/books/dispenseList',
+  getDispenseLog: '/books/dispenseLog',
 
   //系统配置
   getBucketList: '/oss/getBucketList',
@@ -104,5 +106,8 @@ export default {
   planList: 'Examination/planList',
   //财务订单管理
   orderindex: '/order/index',
-
+  //订单详情
+  orderdetail: '/order/detail',
+  //角色权限
+  roleperm: '/role/index',
 }

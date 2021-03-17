@@ -128,6 +128,30 @@ export const asyncRouterMap = [
         component: () => import('@/views/sou/businessTemplate.vue'),
         meta: { title: '业务模板', icon: 'product-add' },
       },
+      {
+        path: 'warehouseManage',
+        name: 'warehouseManage',
+        component: () => import('@/views/sou/warehouseManage.vue'),
+        meta: { title: '仓储管理', icon: 'product-add' },
+      },
+      //仓库管理组件开始
+      {
+        path: 'warehouseRecord',
+        name: 'warehouseRecord',
+        component: () =>
+          import('@/views/sou/warehouseManage/warehouseRecord.vue'),
+        meta: { title: '出入库记录', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'textbookDetail',
+        name: 'textbookDetail',
+        component: () =>
+          import('@/views/sou/warehouseManage/textbookDetail.vue'),
+        meta: { title: '教材详情', icon: 'product-cate' },
+        hidden: true,
+      },
+      //仓库管理组件结束
     ],
   },
   {
@@ -253,7 +277,46 @@ export const asyncRouterMap = [
         component: () => import('@/views/eda/teachMaterial.vue'),
         meta: { title: '教材发放', icon: 'product-cate' },
       },
-
+      //教材发放组件开始
+      {
+        path: 'materialJournal',
+        name: 'materialJournal',
+        component: () =>
+          import('@/views/eda/teachMaterial/materialJournal.vue'),
+        meta: { title: '日志', icon: 'product-cate' },
+        hidden: true,
+      },
+      //教材发放组件结束
+      {
+        path: 'attendanceManage',
+        name: 'attendanceManage',
+        component: () => import('@/views/eda/attendanceManage.vue'),
+        meta: { title: '考勤管理', icon: 'product-cate' },
+      },
+      //考勤管理组件开始
+      {
+        path: 'callinClass',
+        name: 'callinClass',
+        component: () => import('@/views/eda/attendanceManage/callinClass.vue'),
+        meta: { title: '上课点名', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'sinCode',
+        name: 'sinCode',
+        component: () => import('@/views/eda/attendanceManage/sinCode.vue'),
+        meta: { title: '签到码', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'attendanceStatistics',
+        name: 'attendanceStatistics',
+        component: () =>
+          import('@/views/eda/attendanceManage/attendanceStatistics.vue'),
+        meta: { title: '考勤统计', icon: 'product-cate' },
+        hidden: true,
+      },
+      //考勤管理组件结束
       {
         path: 'teachSchedule',
         name: 'teachSchedule',
@@ -302,87 +365,87 @@ export const asyncRouterMap = [
     ],
   },
 
-  // {
-  //   path: '/extra',
-  //   component: Layout,
-  //   redirect: '/extra/imgSpace',
-  //   meta: { title: '系统配置', icon: 'xitongpeizhi' },
-  //   name: 'pms',
-  //   children: [
-  //     {
-  //       path: 'imgSpace',
-  //       name: 'imgSpace',
-  //       component: () => import('@/views/extra/imgSpace.vue'),
-  //       meta: { title: '图片空间', icon: 'imgSpace' },
-  //     },
-  //     {
-  //       path: 'videoWaterMark',
-  //       name: 'videoWaterMark',
-  //       component: () => import('@/views/extra/videoWaterMark.vue'),
-  //       meta: { title: '视频水印', icon: 'videoConfirm' },
-  //     },
-  //     {
-  //       path: 'miniProgram',
-  //       name: 'miniProgram',
-  //       component: () => import('@/views/extra/miniProgram.vue'),
-  //       meta: { title: '小程序', icon: 'miniPro', keepAlive: true },
-  //     },
-  //     {
-  //       path: 'onlineSchool',
-  //       name: 'onlineSchool',
-  //       component: () => import('@/views/extra/onlineSchool.vue'),
-  //       meta: { title: 'PC网校', icon: 'onlinePC', keepAlive: true },
-  //     },
-  //     {
-  //       path: 'menuManage',
-  //       name: 'menuManage',
-  //       component: () => import('@/views/extra/menuManage.vue'),
-  //       meta: { title: '菜单管理', icon: 'onlinePC', keepAlive: true },
-  //     },
-  //     //pc网课组件开始
-  //     {
-  //       path: 'pageDesign',
-  //       name: 'pageDesign',
-  //       component: () => import('@/views/extra/onlineSchool/pageDesign.vue'),
-  //       meta: { title: '首页装修', icon: 'product-list' },
-  //       hidden: true,
-  //     },
-  //     {
-  //       path: 'pageAdvert',
-  //       name: 'pageAdvert',
-  //       component: () => import('@/views/extra/onlineSchool/pageAdvert.vue'),
-  //       meta: { title: '子页面广告位', icon: 'product-list' },
-  //       hidden: true,
-  //     },
-  //     {
-  //       path: 'aboutUs',
-  //       name: 'aboutUs',
-  //       component: () => import('@/views/extra/onlineSchool/aboutUs.vue'),
-  //       meta: { title: '关于我们页面', icon: 'product-list' },
-  //       hidden: true,
-  //     },
-  //     {
-  //       path: 'contactUs',
-  //       name: 'contactUs',
-  //       component: () => import('@/views/extra/onlineSchool/contactUs.vue'),
-  //       meta: { title: '联系我们页面', icon: 'product-list' },
-  //       hidden: true,
-  //     },
-  //     //pc网课组件结束
-  //     {
-  //       path: 'messageInter',
-  //       name: 'messageInter',
-  //       component: () => import('@/views/extra/messageInter.vue'),
-  //       meta: { title: '消息互动', icon: 'messageInter' },
-  //     },
-  //     {
-  //       path: 'smsRecord',
-  //       name: 'smsRecord',
-  //       component: () => import('@/views/extra/smsRecord.vue'),
-  //       meta: { title: '短信记录', icon: 'messageInter' },
-  //     },
-  //   ],
-  // },
+  {
+    path: '/extra',
+    component: Layout,
+    redirect: '/extra/imgSpace',
+    meta: { title: '系统配置', icon: 'xitongpeizhi' },
+    name: 'pms',
+    children: [
+      {
+        path: 'imgSpace',
+        name: 'imgSpace',
+        component: () => import('@/views/extra/imgSpace.vue'),
+        meta: { title: '图片空间', icon: 'imgSpace' },
+      },
+      {
+        path: 'videoWaterMark',
+        name: 'videoWaterMark',
+        component: () => import('@/views/extra/videoWaterMark.vue'),
+        meta: { title: '视频水印', icon: 'videoConfirm' },
+      },
+      {
+        path: 'miniProgram',
+        name: 'miniProgram',
+        component: () => import('@/views/extra/miniProgram.vue'),
+        meta: { title: '小程序', icon: 'miniPro', keepAlive: true },
+      },
+      {
+        path: 'onlineSchool',
+        name: 'onlineSchool',
+        component: () => import('@/views/extra/onlineSchool.vue'),
+        meta: { title: 'PC网校', icon: 'onlinePC', keepAlive: true },
+      },
+      {
+        path: 'menuManage',
+        name: 'menuManage',
+        component: () => import('@/views/extra/menuManage.vue'),
+        meta: { title: '菜单管理', icon: 'onlinePC', keepAlive: true },
+      },
+      //pc网课组件开始
+      {
+        path: 'pageDesign',
+        name: 'pageDesign',
+        component: () => import('@/views/extra/onlineSchool/pageDesign.vue'),
+        meta: { title: '首页装修', icon: 'product-list' },
+        hidden: true,
+      },
+      {
+        path: 'pageAdvert',
+        name: 'pageAdvert',
+        component: () => import('@/views/extra/onlineSchool/pageAdvert.vue'),
+        meta: { title: '子页面广告位', icon: 'product-list' },
+        hidden: true,
+      },
+      {
+        path: 'aboutUs',
+        name: 'aboutUs',
+        component: () => import('@/views/extra/onlineSchool/aboutUs.vue'),
+        meta: { title: '关于我们页面', icon: 'product-list' },
+        hidden: true,
+      },
+      {
+        path: 'contactUs',
+        name: 'contactUs',
+        component: () => import('@/views/extra/onlineSchool/contactUs.vue'),
+        meta: { title: '联系我们页面', icon: 'product-list' },
+        hidden: true,
+      },
+      //pc网课组件结束
+      {
+        path: 'messageInter',
+        name: 'messageInter',
+        component: () => import('@/views/extra/messageInter.vue'),
+        meta: { title: '消息互动', icon: 'messageInter' },
+      },
+      {
+        path: 'smsRecord',
+        name: 'smsRecord',
+        component: () => import('@/views/extra/smsRecord.vue'),
+        meta: { title: '短信记录', icon: 'messageInter' },
+      },
+    ],
+  },
   {
     path: '/exa',
     component: Layout,
@@ -394,7 +457,7 @@ export const asyncRouterMap = [
         path: 'examination',
         name: 'examination',
         component: () => import('@/views/exa/examination.vue'),
-        meta: { title: '考试计划', icon: 'product-add' },
+        meta: { title: '考试配置', icon: 'product-add' },
       },
       {
         path: 'apply',
@@ -443,6 +506,69 @@ export const asyncRouterMap = [
         component: () => import('@/views/fina/order.vue'),
         meta: { title: '订单审批', icon: 'product-add' },
       },
+      {
+        path: 'orderdetail',
+        name: 'orderdetail',
+        component: () => import('@/views/fina/order/orderDetail.vue'),
+        meta: { title: '订单详情', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'cusdetail',
+        name: 'cusdetail',
+        component: () => import('@/views/fina/finance/cusdetail.vue'),
+        meta: { title: '客户详情', icon: 'product-cate' },
+        hidden: true,
+      },
+    ],
+  },
+
+  {
+    path: '/set',
+    component: Layout,
+    redirect: '/set/role',
+    meta: { title: '系统设置', icon: 'zhaoshengguanli' },
+    name: 'set',
+    children: [
+      {
+        path: 'role',
+        name: 'role',
+        component: () => import('@/views/set/role.vue'),
+        meta: { title: '角色权限', icon: 'product-add' },
+      },
+      {
+        path: 'staff',
+        name: 'staff',
+        component: () => import('@/views/set/staff.vue'),
+        meta: { title: '员工管理', icon: 'product-add' },
+      },
+      {
+        path: 'menumanage',
+        name: 'menumanage',
+        component: () => import('@/views/set/menumanage.vue'),
+        meta: { title: '菜单管理', icon: 'product-add' },
+      },
+      {
+        path: 'roledetail',
+        name: 'roledetail',
+        component: () => import('@/views/set/role/roledetail.vue'),
+        meta: { title: '添加角色', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'notice',
+        name: 'notice',
+        component: () => import('@/views/set/notice.vue'),
+        meta: { title: '通知公告', icon: 'product-add' },
+        
+      },
+      // {
+      //   path: 'cusdetail',
+      //   name: 'cusdetail',
+      //   component: () => import('@/views/fina/finance/cusdetail.vue'),
+      //   meta: { title: '客户详情', icon: 'product-cate' },
+      //   hidden: true,
+      // },
     ],
   },
 

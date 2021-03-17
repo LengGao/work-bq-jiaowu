@@ -26,6 +26,7 @@ router.beforeEach((to, from, next) => {
               { name: 'textbookManage' }, //资源设置>教材管理
               { name: 'textbookRecord' }, //资源设置>教材管理>教材记录
               { name: 'projectManage' }, //资源设置>项目管理
+              { name: 'warehouseManage' }, //资源设置>仓库管理
               { name: 'agency' }, //资源设置>推荐机构
               { name: 'schoolManage' }, //资源设置>校区管理
               { name: 'classroomManage' }, //资源设置>教室管理
@@ -42,6 +43,7 @@ router.beforeEach((to, from, next) => {
               { name: 'studentCenter' }, //教务管理>学生中心
               { name: 'studentDetail' }, //教务管理>学生中心>学生详情
               { name: 'classManage' }, //教务管理>班级管理
+              { name: 'attendanceManage' }, //教务管理>考勤管理
               // { name: 'learnerManage' }, //教务管理>班级管理>学生管理
               { name: 'addStudent' }, //教务管理>班级管理>学生管理>添加学生
               { name: 'teachMaterial' }, //教务管理>教材发放
@@ -56,6 +58,8 @@ router.beforeEach((to, from, next) => {
               { name: 'fina' }, //财务管理
               { name: 'finance' }, //订单管理
               { name: 'order' },
+
+              { name: '' },
             ]
 
             let username = 'account'
