@@ -374,93 +374,18 @@ export const asyncRouterMap = [
   },
 
   {
-    path: '/extra',
-    component: Layout,
-    redirect: '/extra/imgSpace',
-    meta: { title: '系统配置', icon: 'xitongpeizhi' },
-    name: 'pms',
-    children: [
-      {
-        path: 'imgSpace',
-        name: 'imgSpace',
-        component: () => import('@/views/extra/imgSpace.vue'),
-        meta: { title: '图片空间', icon: 'imgSpace' },
-      },
-      {
-        path: 'videoWaterMark',
-        name: 'videoWaterMark',
-        component: () => import('@/views/extra/videoWaterMark.vue'),
-        meta: { title: '视频水印', icon: 'videoConfirm' },
-      },
-      {
-        path: 'miniProgram',
-        name: 'miniProgram',
-        component: () => import('@/views/extra/miniProgram.vue'),
-        meta: { title: '小程序', icon: 'miniPro', keepAlive: true },
-      },
-      {
-        path: 'onlineSchool',
-        name: 'onlineSchool',
-        component: () => import('@/views/extra/onlineSchool.vue'),
-        meta: { title: 'PC网校', icon: 'onlinePC', keepAlive: true },
-      },
-      {
-        path: 'menuManage',
-        name: 'menuManage',
-        component: () => import('@/views/extra/menuManage.vue'),
-        meta: { title: '菜单管理', icon: 'onlinePC', keepAlive: true },
-      },
-      //pc网课组件开始
-      {
-        path: 'pageDesign',
-        name: 'pageDesign',
-        component: () => import('@/views/extra/onlineSchool/pageDesign.vue'),
-        meta: { title: '首页装修', icon: 'product-list' },
-        hidden: true,
-      },
-      {
-        path: 'pageAdvert',
-        name: 'pageAdvert',
-        component: () => import('@/views/extra/onlineSchool/pageAdvert.vue'),
-        meta: { title: '子页面广告位', icon: 'product-list' },
-        hidden: true,
-      },
-      {
-        path: 'aboutUs',
-        name: 'aboutUs',
-        component: () => import('@/views/extra/onlineSchool/aboutUs.vue'),
-        meta: { title: '关于我们页面', icon: 'product-list' },
-        hidden: true,
-      },
-      {
-        path: 'contactUs',
-        name: 'contactUs',
-        component: () => import('@/views/extra/onlineSchool/contactUs.vue'),
-        meta: { title: '联系我们页面', icon: 'product-list' },
-        hidden: true,
-      },
-      //pc网课组件结束
-      {
-        path: 'messageInter',
-        name: 'messageInter',
-        component: () => import('@/views/extra/messageInter.vue'),
-        meta: { title: '消息互动', icon: 'messageInter' },
-      },
-      {
-        path: 'smsRecord',
-        name: 'smsRecord',
-        component: () => import('@/views/extra/smsRecord.vue'),
-        meta: { title: '短信记录', icon: 'messageInter' },
-      },
-    ],
-  },
-  {
     path: '/exa',
     component: Layout,
     redirect: '/exa/examination',
     meta: { title: '考务管理', icon: 'zhaoshengguanli' },
     name: 'exa',
     children: [
+      {
+        path: 'teachingManage',
+        name: 'teachingManage',
+        component: () => import('@/views/exa/teachingManage.vue'),
+        meta: { title: '授课老师', icon: 'product-add' },
+      },
       {
         path: 'examination',
         name: 'examination',
@@ -539,6 +464,12 @@ export const asyncRouterMap = [
     name: 'set',
     children: [
       {
+        path: 'imgSpace',
+        name: 'imgSpace',
+        component: () => import('@/views/set/imgSpace.vue'),
+        meta: { title: '图片空间', icon: 'product-add' },
+      },
+      {
         path: 'role',
         name: 'role',
         component: () => import('@/views/set/role.vue'),
@@ -568,7 +499,6 @@ export const asyncRouterMap = [
         name: 'notice',
         component: () => import('@/views/set/notice.vue'),
         meta: { title: '通知公告', icon: 'product-add' },
-
       },
       // {
       //   path: 'cusdetail',

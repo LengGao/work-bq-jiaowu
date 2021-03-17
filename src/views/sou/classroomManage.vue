@@ -110,6 +110,7 @@
           />
         </div>
       </div>
+
       <!--教室配置表格-->
       <div class="userTable" v-if="isTagactive === 2">
         <el-table

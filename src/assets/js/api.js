@@ -13,6 +13,10 @@ import miniPro from '@/assets/js/miniPro'
 import loginApi from '@/assets/js/login'
 import axios from 'axios'
 import eventBus from '../../utils/eventbus.js'
+import Examination from '@/assets/js/Examination'
+import Finance from '@/assets/js/Finance'
+import system from '@/assets/js/system'
+
 let api = {
   /**
    * @param {* this} self
@@ -157,7 +161,7 @@ let api = {
         if (res.data.code == 0) {
           self.$message({
             type: 'success',
-            message: '添加成功',
+            message: res.data.message,
           })
           self.dialogVisible = false
           self.$api.getCategoryList(self, 'schoolData')
@@ -208,6 +212,10 @@ let api = {
         let data = res.data.data
         console.log(data)
         if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
           // for (var item of data.data) {
           //   if (item.create_time != 0 || item.create_time != '') {
           //     item.create_time = self.$moment
@@ -217,7 +225,7 @@ let api = {
           //     item.create_time = '---'
           //   }
           // }
-          self[name] = data
+          // self[name] = data
         }
       },
     })
@@ -332,6 +340,56 @@ let api = {
       },
     })
   },
+  /***************排班管理****************/
+  //班级列表
+  classroomList(self, name) {
+    let config = {
+      // page: self.page,
+      // id: self.$route.query.id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.classroomList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          for (var item of data.data) {
+            if (item.create_time != 0 || item.create_time != '') {
+              item.create_time = self.$moment
+                .unix(item.create_time)
+                .format('YYYY-MM-DD HH:mm:ss')
+            } else {
+              item.create_time = '---'
+            }
+          }
+          self[name] = data
+        }
+      },
+    })
+  },
+  //创建排课
+  addScheduling(self, ruleForm) {
+    let config = ruleForm
+    console.log(config)
+    axiosHttp({
+      url: url.addScheduling,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+        }
+      },
+    })
+  },
 }
 
 Object.assign(
@@ -346,6 +404,9 @@ Object.assign(
   visualization,
   videoManger,
   miniPro,
-  loginApi
+  loginApi,
+  Examination,
+  Finance,
+  system
 )
 export default api

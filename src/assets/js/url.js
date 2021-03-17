@@ -13,7 +13,6 @@ export default {
   updateCategorySort: '/courseCategory/updateCategorySort',
   insertCategory: '/courseCategory/insertCategory',
   getTeachBooksList: '/books/index',
-
   getRoomList: '/Schoolroom/roomList',
   createRoom: '/Schoolroom/createRoom',
   updateRoom: '/Schoolroom/updateRoom',
@@ -32,6 +31,14 @@ export default {
   modifyClasses: '/classroom/edit',
   dispenseList: '/books/dispenseList',
   getDispenseLog: '/books/dispenseLog',
+  classroomList: 'arrange/classroomList',
+  getTeacherList: '/teacher/index',
+  changeTeacherStatus: '/teacher/ajaxStatus',
+  getTeacherDrop: '/teacher/getList',
+  addTeacher: '/teacher/add',
+  deleteTeacher: '/teacher/delete',
+  getTeacherInfo: '/teacher/info',
+  addScheduling: '/arrange/insert',
 
   //系统配置
   getBucketList: '/oss/getBucketList',
@@ -110,4 +117,16 @@ export default {
   orderdetail: '/order/detail',
   //角色权限
   roleperm: '/role/index',
+  //通知公告
+  noticelist: '/SystemAnnouncement/list',
+
+  //删除公告
+  deletenoticelist: '/SystemAnnouncement/delete',
+  //编辑公告
+  updatenoticelist: '/SystemAnnouncement/update',
+
+  getStaffList: '/staff/index',
+  getRoleSelectData: '/staff/getRoleSelectData',
+  getIdentitySelect: '/staff/getIdentitySelect',
+  getInstitutionSelectData: '/staff/getInstitutionSelectData',
 }
