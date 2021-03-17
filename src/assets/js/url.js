@@ -33,6 +33,12 @@ export default {
   dispenseList: '/books/dispenseList',
   getDispenseLog: '/books/dispenseLog',
   classroomList: 'arrange/classroomList',
+  getTeacherList: '/teacher/index',
+  changeTeacherStatus: '/teacher/ajaxStatus',
+  getTeacherDrop: '/teacher/getList',
+  addTeacher: '/teacher/add',
+  deleteTeacher: '/teacher/delete',
+  getTeacherInfo: '/teacher/info',
 
   //系统配置
   getBucketList: '/oss/getBucketList',
