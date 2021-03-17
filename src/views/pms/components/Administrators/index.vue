@@ -12,7 +12,8 @@
           <el-button round v-if="item.status" type="info" disabled size="mini"
             >已完成</el-button
           >
-          <el-button round v-else type="success" size="mini">未完成</el-button>
+          <el-button round v-else type="success" size="mini">去完成</el-button>
+          <i v-if="item.status" class="el-icon-check card-item-status"></i>
         </el-card>
       </div>
     </div>
@@ -358,6 +359,22 @@ export default {
           flex-direction: column;
           justify-content: space-between;
           align-items: center;
+          position: relative;
+        }
+        .card-item-status {
+          position: absolute;
+          right: 0;
+          top: 0;
+          border: 12px solid #43d100;
+          border-bottom-color: #fff;
+          border-left-color: #fff;
+          color: #fff;
+          font-size: 12px;
+          &::before {
+            position: absolute;
+            top: -10px;
+            right: -11px;
+          }
         }
         .card-item-desc {
           color: #909399;

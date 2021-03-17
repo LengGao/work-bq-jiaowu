@@ -38,3 +38,43 @@ export function getSaleChart(params) {
         params
     })
 }
+/**
+ * 获取招生/教务工作台信息
+ */
+export function getStaffWorkData() {
+    return request({
+        url: '/Workbench/getStaffWorkData',
+        method: 'get',
+    })
+}
+/**
+ * 获取待办信息
+ * @param {*} params 
+ */
+export function getStaffBacklog(params) {
+    return request({
+        url: '/Workbench/getStaffBacklog',
+        method: 'get',
+        params
+    })
+}
+/**
+ * 获取所有入口
+ * 
+ */
+export function getMenuList() {
+    return request({
+        url: '/Workbench/getMenuList',
+        method: 'get',
+    })
+}
+/**
+ * 设置快捷入口
+ */
+export function setStaffQuickEntry(data) {
+    return request({
+        url: '/Workbench/setStaffQuickEntry',
+        method: 'post',
+        data
+    })
+}

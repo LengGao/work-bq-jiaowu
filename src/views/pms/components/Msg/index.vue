@@ -32,7 +32,7 @@ export default {
   margin-right: 16px;
 }
 .msg {
-  min-height: 219px;
+  min-height: 220px;
   width: 335px;
   padding: 16px;
   border: 1px solid #dcdfe6;

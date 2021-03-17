@@ -1,17 +1,24 @@
 <template>
-  <div class="recruit-students">
+  <div class="recruit-students" v-loading="loading">
     <div class="container-left">
       <div class="entry">
         <h3 class="entry-title">常用入口</h3>
         <div class="entry-content">
-          <div class="entry-item" v-for="(item, index) in entrys" :key="index">
+          <div
+            class="entry-item"
+            v-for="(item, index) in entrys"
+            :key="index"
+            @click="handleEntryLink(item.node)"
+          >
             <div class="entry-icon" :class="`bc-${index + 1}`">
               <i class="el-icon-tickets"></i>
             </div>
-            <span class="entry-name">{{ item.name }}</span>
+            <span class="entry-name">{{ item.menu_name }}</span>
           </div>
           <div class="entry-item entry-add">
-            <el-button type="info" icon="el-icon-plus">编辑入口</el-button>
+            <el-button type="info" @click="handleOpen" icon="el-icon-plus"
+              >编辑入口</el-button
+            >
           </div>
         </div>
       </div>
@@ -19,137 +26,128 @@
         <h3 class="remind-title">待办提醒</h3>
         <span class="more"> 更多 </span>
         <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="全部" name="1"></el-tab-pane>
-          <el-tab-pane label="待跟进" name="2"></el-tab-pane>
-          <el-tab-pane label="待回访" name="3"></el-tab-pane>
-          <el-tab-pane label="待续费" name="4"></el-tab-pane>
+          <!-- all: 全部, 0：待跟进，1：已跟进/跟进中，2：就读中，3、已毕业 4、放弃跟进 5、复活跟进， 6、复活意向跟进 -->
+          <el-tab-pane label="全部" name="all"></el-tab-pane>
+          <el-tab-pane label="待跟进" name="0"></el-tab-pane>
+          <el-tab-pane label="已跟进/跟进中" name="1"></el-tab-pane>
+          <el-tab-pane label="就读中" name="2"></el-tab-pane>
+          <el-tab-pane label="已毕业" name="3"></el-tab-pane>
+          <el-tab-pane label="放弃跟进" name="4"></el-tab-pane>
+          <el-tab-pane label="复活跟进" name="5"></el-tab-pane>
+          <el-tab-pane label="复活意向跟进" name="6"></el-tab-pane>
         </el-tabs>
         <div class="remind-content">
-          <ul class="remind-list">
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
+          <ul class="remind-list" v-loading="remindLoading">
+            <li v-for="(item, index) in remindList" :key="index">
+              <span class="name">{{ item.user_realname }}</span>
+              {{ item.desc }}跟进人：
+              <span class="name">{{ item.staff_name }}</span
+              >， 跟进时间：<span class="date">{{ item.todo_time }}</span> ；
             </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
-            <li>
-              对 天河校区 客户 林伽伽 在 2021-01-09 10:00 进行跟进回访，去处理
-            </li>
+            <li v-if="!remindList.length" class="no-data">暂无数据</li>
           </ul>
+          <!-- :page-size="100" -->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
+            :current-page="pageNum"
+            :page-sizes="[10, 20, 30]"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="400"
+            :total="total"
           >
           </el-pagination>
         </div>
       </div>
     </div>
     <div class="container-right">
-      <Msg />
+      <Msg :data="msgData" />
     </div>
+    <AddEntry :visible.sync="dialogVisible" @on-ok="setStaffQuickEntry" />
   </div>
 </template>
 <script>
 import Msg from "../Msg/index";
+import AddEntry from "./components/addEntry";
+import {
+  getStaffWorkData,
+  getStaffBacklog,
+  setStaffQuickEntry,
+} from "@/api/workbench.js";
 export default {
   name: "RecruitStudents",
   components: {
     Msg,
+    AddEntry,
   },
   data() {
     return {
-      activeName: "1",
-      entrys: [
-        {
-          name: "客户管理",
-        },
-        {
-          name: "收费管理",
-        },
-        {
-          name: "客户管理",
-        },
-        {
-          name: "课程管理",
-        },
-        {
-          name: "客户管理",
-        },
-        {
-          name: "客户管理",
-        },
-        {
-          name: "客户管理",
-        },
-        {
-          name: "客户管理",
-        },
-        {
-          name: "客户管理",
-        },
-      ],
-      currentPage: 1,
+      activeName: "all",
+      loading: false,
+      msgData: [],
+      entrys: [],
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
+      remindList: [],
+      remindLoading: false,
+      dialogVisible: false,
     };
   },
   created() {
-    console.log("created ---------------");
+    this.getStaffWorkData();
+    this.getStaffBacklog();
   },
   methods: {
+    handleOpen() {
+      this.dialogVisible = true;
+    },
+    handleEntryLink(name) {
+      this.$router.push({ name });
+    },
+    async setStaffQuickEntry(ids) {
+      const data = {
+        menu_ids_arr: ids,
+      };
+      const res = await setStaffQuickEntry(data);
+      if (res.code === 0) {
+        this.$message.success("编辑成功");
+        this.getStaffWorkData();
+      }
+    },
+    //获取待办提醒
+    async getStaffBacklog() {
+      const data = {
+        type: this.activeName,
+        limit: this.pageSize,
+        page: this.pageNum,
+      };
+      this.remindLoading = true;
+      const res = await getStaffBacklog(data);
+      this.remindLoading = false;
+      if (res.code === 0) {
+        this.total = res.data.total;
+        this.remindList = res.data.list;
+      }
+    },
+    // 获取招生、教务工作台信息
+    async getStaffWorkData() {
+      this.loading = true;
+      const res = await getStaffWorkData();
+      this.loading = false;
+      this.msgData = res.data?.message || [];
+      this.entrys = res.data?.quick_entry;
+    },
     handleClick() {
-      console.log(2222);
+      this.getStaffBacklog();
     },
     handleSizeChange(size) {
-      console.log(size);
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getStaffBacklog();
     },
     handleCurrentChange(page) {
-      console.log(page);
+      this.pageNum = page;
+      this.getStaffBacklog();
     },
   },
 };
@@ -185,16 +183,21 @@ export default {
   .bc-9 {
     background-color: #199fff;
   }
+
   .container-left {
     margin-right: 10px;
+    flex: 1;
   }
+
   .entry {
     padding: 20px;
     border: 1px solid #dcdfe6;
     margin-bottom: 10px;
+    min-height: 220px;
     .entry-title {
       font-weight: normal;
     }
+
     .entry-content {
       display: flex;
       flex-wrap: wrap;
@@ -205,6 +208,7 @@ export default {
         align-items: center;
         margin-bottom: 16px;
         justify-content: center;
+        cursor: pointer;
         .entry-icon {
           border-radius: 50%;
           width: 50px;
@@ -231,6 +235,9 @@ export default {
     .remind-title {
       font-weight: normal;
     }
+    /deep/.el-tabs__item:last-child {
+      margin-right: 40px;
+    }
     .more {
       right: 20px;
       top: 55px;
@@ -245,7 +252,21 @@ export default {
         height: 350px;
         overflow-y: auto;
         li {
-          line-height: 30px;
+          font-size: 14px;
+          line-height: 40px;
+          color: #606266;
+          .name {
+            color: #199fff;
+          }
+          .date {
+            color: #c0c4cc;
+          }
+        }
+        .no-data {
+          font-size: 12px;
+          color: #c0c4cc;
+          text-align: center;
+          padding-top: 100px;
         }
       }
     }

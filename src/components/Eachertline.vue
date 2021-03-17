@@ -35,7 +35,6 @@ export default {
     xdata: {
       handler(newValue, oldValue) {
         this.drawLine();
-        console.log(newValue);
       },
     },
     Yseries: {
