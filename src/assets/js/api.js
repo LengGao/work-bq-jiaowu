@@ -161,7 +161,7 @@ let api = {
         if (res.data.code == 0) {
           self.$message({
             type: 'success',
-            message: '添加成功',
+            message: res.data.message,
           })
           self.dialogVisible = false
           self.$api.getCategoryList(self, 'schoolData')
@@ -212,6 +212,10 @@ let api = {
         let data = res.data.data
         console.log(data)
         if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
           // for (var item of data.data) {
           //   if (item.create_time != 0 || item.create_time != '') {
           //     item.create_time = self.$moment
@@ -221,7 +225,7 @@ let api = {
           //     item.create_time = '---'
           //   }
           // }
-          self[name] = data
+          // self[name] = data
         }
       },
     })
@@ -362,6 +366,26 @@ let api = {
             }
           }
           self[name] = data
+        }
+      },
+    })
+  },
+  //创建排课
+  addScheduling(self, ruleForm) {
+    let config = ruleForm
+    console.log(config)
+    axiosHttp({
+      url: url.addScheduling,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
         }
       },
     })

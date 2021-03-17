@@ -13,8 +13,12 @@
               v-model="ruleForm.category_id"
               placeholder="请选择所属分类"
             >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option
+                v-for="item in cateData.list"
+                :key="item.category_id"
+                :label="item.category_name"
+                :value="item.category_id"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -37,16 +41,25 @@
               v-model="ruleForm.teacher_id"
               placeholder="请选择默认老师"
             >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option
+                v-for="item in teacherData.list"
+                :key="item.teacher_id"
+                :label="item.teacher_name"
+                :value="item.teacher_id"
+              ></el-option>
+              <!-- <el-option label="区域二" value="beijing"></el-option> -->
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :lg="8" :md="8" :sm="8" :xs="8">
           <el-form-item label="默认方式" prop="region">
             <el-select v-model="ruleForm.region" placeholder="请选择默认方式">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option
+                v-for="item in regionData"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -56,8 +69,12 @@
               v-model="ruleForm.schoolroom_id"
               placeholder="请选择默认教室"
             >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option
+                v-for="item in roomData.list"
+                :key="item.id"
+                :label="item.room_name"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -140,13 +157,18 @@
         </el-table-column>
         <el-table-column label="上课时间" min-width="260" show-overflow-tooltip>
           <template slot-scope="scope">
-            <div v-for="(item, index) in scope.row.timeArr" :key="index">
+            <div
+              v-for="(item, index) in scope.row.timeArr"
+              :key="index"
+              style="margin-bottom:10px"
+            >
+              <!-- {{ item }} -->
               <el-time-picker
                 style="width:220px"
                 format="HH:mm"
                 value-format="HH:mm"
                 is-range
-                v-model="item.arr"
+                v-model="scope.row.timeArr[index]"
                 range-separator="至"
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
@@ -161,7 +183,7 @@
               <span
                 class="el-icon-minus"
                 style="padding-left:5px"
-                @click="delTime()"
+                @click="delTime(scope.row.timeArr, index)"
               >
               </span>
             </div>
@@ -180,10 +202,10 @@
               class="common-width"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in teacherData.list"
+                :key="item.teacher_id"
+                :label="item.teacher_name"
+                :value="item.teacher_id"
               >
               </el-option>
             </el-select>
@@ -202,12 +224,11 @@
               class="common-width"
             >
               <el-option
-                v-for="item in options"
+                v-for="item in regionData"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value"
-              >
-              </el-option>
+              ></el-option>
             </el-select> </template
         ></el-table-column>
 
@@ -224,12 +245,11 @@
               class="common-width"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
+                v-for="item in roomData.list"
+                :key="item.id"
+                :label="item.room_name"
+                :value="item.id"
+              ></el-option>
             </el-select> </template
         ></el-table-column>
         <el-table-column
@@ -291,11 +311,24 @@ export default {
   data() {
     return {
       value1: [],
+      roomData: [],
+      cateData: [],
+      regionData: [
+        {
+          value: 1,
+          name: '面授',
+        },
+        {
+          value: 2,
+          name: '直播',
+        },
+      ],
       classTimeArr: [
         new Date(2016, 9, 10, 8, 40),
         new Date(2016, 9, 10, 9, 40),
       ],
       dateArr: [],
+      teacherData: {},
       ruleForm: {
         date: '',
         title: '',
@@ -315,8 +348,10 @@ export default {
     }
   },
   mounted() {
-    this.$api.classroomList(this, 'classData') //班级列表
-
+    // this.$api.classroomList(this, 'classData') //班级列表
+    this.$api.getTeacherList(this, 'teacherData') //老师列表
+    this.$api.getRoomList(this, 'roomData') //教室列表
+    this.$api.getCategoryList(this, 'cateData') //教室列表
     //为了解决bug，所以默认值放在了这里
     this.$nextTick(function() {
       // this.dateArr = ['2018-08-03', '2018-08-06']
@@ -327,15 +362,51 @@ export default {
   methods: {
     choseTime(e) {},
     addTime(ab, index) {
-      console.log(this.schoolData[index])
+      let arr = ab[0]
+      ab.push(arr)
+
+      // console.log(this.schoolData[index])
     },
-    delTime() {},
+    delTime(ab, index) {
+      ab.splice(index, 1)
+    },
     handleSave() {
-      console.log(this.schoolData)
+      //对上课时间进行处理
+      this.schoolData.forEach((i) => {
+        if (i.timeArr.length > 1) {
+          i.timeArr.forEach((v, index) => {
+            console.log(v, index)
+            //判断最开始的时间和最后一次的时间
+            if (index == 0) {
+              i.start_time = v[0]
+            } else if (index == i.timeArr.length - 1) {
+              i.end_time = v[1]
+            }
+            var obj = {
+              start_time: v[0],
+              end_time: v[1],
+            }
+            i.class_hour.push(obj)
+          })
+        } else {
+          var obj = {
+            start_time: i.timeArr[0][0],
+            end_time: i.timeArr[0][1],
+          }
+          i.start_time = i.timeArr[0][0]
+          i.end_time = i.timeArr[0][1]
+          i.class_hour.push(obj)
+        }
+      })
+      this.$api.addScheduling(this, this.schoolData)
     },
 
     createCourse() {
       console.log(this.dateArr)
+      console.log(this.classTimeArr)
+      let timeArr = []
+      timeArr.push(JSON.parse(JSON.stringify(this.classTimeArr)))
+      console.log(timeArr)
       this.dateArr.forEach((i) => {
         var obj = {
           date: i,
@@ -345,9 +416,7 @@ export default {
           teacher_id: this.ruleForm.teacher_id,
           teaching_type: this.ruleForm.teaching_type,
           schoolroom_id: this.ruleForm.teaching_type,
-          // start_time: '',
-          // end_time: '',
-          timeArr: this.classTimeArr,
+          timeArr: [['04:40', '09:40']],
           stfaa_id: this.ruleForm.teaching_type,
           remark: this.ruleForm.teaching_type,
           class_hour: [],
@@ -355,8 +424,6 @@ export default {
         this.schoolData.push(obj)
       })
       console.log(this.schoolData)
-      // let obj = { buy_number: 1 }
-      // this.schoolData.push(obj)
     },
   },
 }

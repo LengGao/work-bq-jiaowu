@@ -13,7 +13,6 @@ export default {
   updateCategorySort: '/courseCategory/updateCategorySort',
   insertCategory: '/courseCategory/insertCategory',
   getTeachBooksList: '/books/index',
-
   getRoomList: '/Schoolroom/roomList',
   createRoom: '/Schoolroom/createRoom',
   updateRoom: '/Schoolroom/updateRoom',
@@ -39,6 +38,7 @@ export default {
   addTeacher: '/teacher/add',
   deleteTeacher: '/teacher/delete',
   getTeacherInfo: '/teacher/info',
+  addScheduling: '/arrange/insert',
 
   //系统配置
   getBucketList: '/oss/getBucketList',
