@@ -25,12 +25,11 @@
   </div>
 </template>  
 <script>
-import { getIdentity } from "@/api/workbench.js";
 export default {
   name: "workbench",
   data() {
     return {
-      activeName: "",
+      activeName: this.$store.state.user.identity + "",
       componentNames: {
         //1教务 2招生 3老师 4财务 5管理员
         5: "Administrators",
@@ -46,17 +45,6 @@ export default {
           import(`./components/${this.componentNames[this.activeName]}/index`);
       }
       return "";
-    },
-  },
-  created() {
-    this.getIdentity();
-  },
-  methods: {
-    //獲取身份
-    async getIdentity() {
-      const res = await getIdentity();
-      // this.activeName = res.data?.identity + "";
-      this.activeName = 1 + "";
     },
   },
 };

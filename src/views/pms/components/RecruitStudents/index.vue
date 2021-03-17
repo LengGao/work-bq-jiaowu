@@ -2,7 +2,7 @@
   <div class="recruit-students" v-loading="loading">
     <div class="container-left">
       <div class="entry">
-        <h3 class="entry-title">常用入口</h3>
+        <h4 class="entry-title">常用入口</h4>
         <div class="entry-content">
           <div
             class="entry-item"
@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="remind">
-        <h3 class="remind-title">待办提醒</h3>
+        <h4 class="remind-title">待办提醒</h4>
         <span class="more"> 更多 </span>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <!-- all: 全部, 0：待跟进，1：已跟进/跟进中，2：就读中，3、已毕业 4、放弃跟进 5、复活跟进， 6、复活意向跟进 -->
@@ -39,12 +39,13 @@
         <div class="remind-content">
           <ul class="remind-list" v-loading="remindLoading">
             <li v-for="(item, index) in remindList" :key="index">
+              <span>{{ index + 1 }}、</span>
               <span class="name">{{ item.user_realname }}</span>
               {{ item.desc }}跟进人：
               <span class="name">{{ item.staff_name }}</span
-              >， 跟进时间：<span class="date">{{ item.todo_time }}</span> ；
+              >， 跟进时间：<span class="date">{{ item.todo_time }}；</span>
             </li>
-            <li v-if="!remindList.length" class="no-data">暂无数据</li>
+            <li v-if="!remindList.length" class="no-data">暂无相关提醒</li>
           </ul>
           <!-- :page-size="100" -->
           <el-pagination
@@ -207,8 +208,15 @@ export default {
         display: flex;
         align-items: center;
         margin-bottom: 16px;
-        justify-content: center;
+        padding: 6px;
+        // justify-content: center;
+        font-size: 14px;
         cursor: pointer;
+        border-radius: 15px;
+        transition: all 0.4s;
+        &:hover {
+          background-color: #ecf5ff;
+        }
         .entry-icon {
           border-radius: 50%;
           width: 50px;
@@ -218,9 +226,13 @@ export default {
           line-height: 50px;
           color: #fff;
           font-size: 25px;
+          flex-shrink: 0;
         }
       }
       .entry-add {
+        &:hover {
+          background-color: #fff;
+        }
         button {
           border-radius: 30px;
         }
@@ -240,9 +252,9 @@ export default {
     }
     .more {
       right: 20px;
-      top: 55px;
+      top: 52px;
       color: #199fff;
-      font-size: 14px;
+      font-size: 12px;
       z-index: 10;
       cursor: pointer;
       position: absolute;
@@ -253,7 +265,7 @@ export default {
         overflow-y: auto;
         li {
           font-size: 14px;
-          line-height: 40px;
+          margin-bottom: 12px;
           color: #606266;
           .name {
             color: #199fff;

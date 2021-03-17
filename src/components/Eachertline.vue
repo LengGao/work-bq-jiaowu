@@ -2,7 +2,7 @@
   <!-- <div class="about"> -->
   <div
     id="myChart"
-    :style="{ width: '85%', height: '90%', float: 'left', marginLeft: '10px' }"
+    :style="{ width: '83%', height: '90%', float: 'left', marginLeft: '10px' }"
   ></div>
   <!-- </div> -->
 </template>
@@ -78,7 +78,7 @@ export default {
             //字体系列
             fontFamily: "sans-serif",
             //字体大小
-            fontSize: 18,
+            fontSize: 14,
           },
         },
         animation: true,

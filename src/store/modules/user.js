@@ -6,13 +6,14 @@ import {
   getStaff_id,
 } from '@/utils/auth'
 import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
-
+import { getIdentity } from "@/api/workbench.js";
 const user = {
   state: {
     token: getToken(),
     name: '',
     avatar: '',
     roles: [],
+    identity: sessionStorage.getItem('identity') || ''
   },
 
   mutations: {
@@ -28,6 +29,9 @@ const user = {
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
+    SET_IDENTITY: (state, identity) => {
+      state.identity = identity
+    }
   },
 
   actions: {
@@ -53,6 +57,13 @@ const user = {
           },
         })
       })
+    },
+    // 获取用户身份并保存
+    async setIdentity({ commit }) {
+      const res = await getIdentity()
+      const identity = res.data?.identity || ''
+      sessionStorage.setItem('identity', identity)
+      commit('SET_IDENTITY', identity)
     },
     // 获取用户信息
     GetInfo({ commit, state }) {
@@ -90,6 +101,7 @@ const user = {
             let data = res.data.data
             commit('SET_TOKEN', '')
             commit('SET_ROLES', [])
+            sessionStorage.clear()
             removeToken()
             resolve()
           },
