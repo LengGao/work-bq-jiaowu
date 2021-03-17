@@ -185,7 +185,6 @@ export default {
               this.loading = false;
               // setCookie('username', this.loginForm.username, 15)
               // setCookie('password', this.loginForm.password, 15)
-              this.$store.dispatch("setIdentity");
               console.log("跳转路由");
               this.$router.push({ path: "/" });
             })

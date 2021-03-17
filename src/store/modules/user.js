@@ -13,7 +13,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    identity: sessionStorage.getItem('identity') || ''
+    identity: '' // 用户身份 1教务 2招生 3老师 4财务 5管理员
   },
 
   mutations: {
@@ -62,7 +62,6 @@ const user = {
     async setIdentity({ commit }) {
       const res = await getIdentity()
       const identity = res.data?.identity || ''
-      sessionStorage.setItem('identity', identity)
       commit('SET_IDENTITY', identity)
     },
     // 获取用户信息
@@ -101,7 +100,6 @@ const user = {
             let data = res.data.data
             commit('SET_TOKEN', '')
             commit('SET_ROLES', [])
-            sessionStorage.clear()
             removeToken()
             resolve()
           },

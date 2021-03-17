@@ -25,6 +25,7 @@
   </div>
 </template>  
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "workbench",
   data() {
@@ -39,12 +40,18 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["identity"]),
     getComponent() {
       if (this.activeName) {
         return () =>
           import(`./components/${this.componentNames[this.activeName]}/index`);
       }
       return "";
+    },
+  },
+  watch: {
+    identity(val) {
+      this.activeName = val + "";
     },
   },
 };
