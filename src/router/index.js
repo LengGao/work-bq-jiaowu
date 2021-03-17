@@ -347,6 +347,14 @@ export const asyncRouterMap = [
         hidden: true,
       },
       //排课管理结束
+      // 证件资料开始
+      {
+        path: 'certificates',
+        name: 'certificates',
+        component: () =>
+          import('@/views/eda/certificates/index.vue'),
+        meta: { title: '证件资料', icon: 'product-cate' },
+      },
     ],
   },
   {
@@ -560,7 +568,7 @@ export const asyncRouterMap = [
         name: 'notice',
         component: () => import('@/views/set/notice.vue'),
         meta: { title: '通知公告', icon: 'product-add' },
-        
+
       },
       // {
       //   path: 'cusdetail',

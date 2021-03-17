@@ -58,6 +58,7 @@ router.beforeEach((to, from, next) => {
               { name: 'fina' }, //财务管理
               { name: 'finance' }, //订单管理
               { name: 'order' },
+              { name: 'certificates' },// 证件资料
 
               { name: '' },
             ]
