@@ -2,7 +2,8 @@
   <div class="search-lise">
     <div v-for="(item, index) in options" :key="index">
       <component
-        v-model="data[item.key]"
+        :style="item.width ? { width: item.width + 'px' } : ''"
+        v-model.trim="data[item.key]"
         :is="allComponents[item.type || 'input']"
         v-bind="item.attrs"
         class="search-item"

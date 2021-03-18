@@ -9,7 +9,7 @@
         </div>
         <div>
           <el-button type="primary" icon="el-icon-plus" @click="something"
-            >快捷功能</el-button
+            >快捷功能1</el-button
           >
           <transition name="fade">
             <ul v-if="showMenu" class="ul">
