@@ -86,13 +86,50 @@
         width="45%"
         >
          <div>
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+          <el-form-item label="通知标题" prop="name">
+              <el-input v-model="ruleForm.name" placeholder="请输入通知标题" style="width:300px"></el-input>
+            </el-form-item>
 
-        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" style="height:600px;"></quill-editor>
+        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" style="display:block;height:280px;margin-bottom:40px"></quill-editor>
+
+           <el-form-item label="内容摘要" prop="abstract" style="margin-top:80px;">
+              <el-input v-model="ruleForm.abstract" placeholder="请输入内容摘要" style="width:100%;"></el-input>
+            </el-form-item>
+
+              <div class="abstract">
+            <el-form-item label="接受范围" prop="abstract">
+             <el-radio-group v-model="radio2" @change="change">
+            <el-radio :label="1">全部员工</el-radio>
+            <el-radio :label="2">指定角色</el-radio>
+          </el-radio-group>
+          <el-select v-model="value1" multiple placeholder="请选择" v-if="radio2 !== 1">
+                 <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+          </el-select>
+            </el-form-item>
+            </div>
+
+             <div class="abstract">
+            <el-form-item label="是否发送短信" prop="abstract" class="abstract" style="width:400px">
+             <el-radio-group>
+            <el-radio v-model="radio2" label="1">是</el-radio>
+            <el-radio v-model="radio2" label="1" >否</el-radio>
+          </el-radio-group>
+            </el-form-item>
+             </div>
+
+            </el-form>
     </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
         </span>
+        
       </el-dialog>
      </section>
     </div>
@@ -110,13 +147,44 @@ export default {
 
     data() {
     return {
+
+      options: [{
+          value: '选项1',
+          label: '校长'
+        }, {
+          value: '选项2',
+          label: '招生'
+        }, {
+          value: '选项3',
+          label: '教务'
+        }],
+         value1: [],
+
+    radio2: 1,
+    inputValue: '',
+    radio: '0',
     classTitle: '新建公告',
     dialogVisible: false,
     schoolData: [ ],
-     content: '',
+    content: '',
             editorOption: {
-               placeholder: '编辑文章内容'
-             },
+            placeholder: '编辑公告内容'
+            },
+    ruleForm: {
+      type:[],
+    },
+    rules: {
+      name: [
+            { required: true, message: '请输入通知标题', trigger: 'blur' },
+          ],
+      abstract: [
+            { required: true, message: '请输入公告摘要', trigger: 'blur' },
+          ],
+      
+      type: [
+            { type: 'array', required: true, message: '请至少选择一个', trigger: 'change' }
+          ],
+    },
     }
   },
 
@@ -129,6 +197,27 @@ export default {
     this.$api.noticelist(this, 'schoolData')
   },
     methods: {
+       submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      change(val){
+          console.log(val, 'val');
+        console.log(this.inputValue, 'input的值');
+      },
+
       handleDelete(ab) {
         console.log(ab)
       this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
@@ -179,6 +268,15 @@ export default {
 /deep/.el-form-item{
   margin-bottom:10px;
 }
+/deep/.el-dialog__header{
+  background: #f1f1f1;
+}
+/deep/.el-form-item__content{
+  width: 50%;
+}
+/deep/.el-radio__input.is-checked + .el-radio__label{
+  margin-right: 10px;
+}
 
 .main {
   padding: 20px;
@@ -204,6 +302,11 @@ export default {
   justify-content: space-between;
   margin-bottom: 20px;
 }
+.abstract{
+  width: 50%;
+ float: left;
+}
+
 
 </style>
 

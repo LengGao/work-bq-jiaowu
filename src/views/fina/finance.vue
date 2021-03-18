@@ -123,7 +123,6 @@
               <div>
                 <h3>订单总价</h3>
                 <div class="time_num">
-                  
                   <span>{{ panelData.day }}</span>
                 </div>
               </div>
@@ -285,7 +284,7 @@
               >
                 <el-row class="detailLine">
                   <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="订单编号：" prop="order_id">
+                    <el-form-item label="订单编号：" prop="order_no">
                       <div class="ruleWord">{{ ruleForm.order_no }}</div>
                     </el-form-item>
                   </el-col>
@@ -508,7 +507,7 @@ export default {
       //  }
       ],  
       panelData:{
-        day:'',
+        day:'10000000',
         use_time:'',
         total_problem:'',
         accuracy:'',
