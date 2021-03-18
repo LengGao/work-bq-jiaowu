@@ -262,8 +262,14 @@ export default {
 .userTable {
   margin-top: 20px;
 }
+/deep/.preview-dialog {
+  .el-dialog__body {
+    text-align: center;
+  }
+}
 .list-img {
   width: 50px;
   height: 50px;
+  cursor: pointer;
 }
 </style>
