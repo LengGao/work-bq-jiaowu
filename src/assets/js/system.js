@@ -106,6 +106,65 @@ let system = {
       },
     })
   },
+  //添加员工
+  addStaff(self, ruleForm) {
+    let config = {
+      staff_name: ruleForm.staff_name,
+      mobile_num: ruleForm.mobile_num,
+      account: ruleForm.account,
+      password: ruleForm.password,
+      head_photo: ruleForm.head_photo,
+      role_ids: ruleForm.role_ids,
+      as_headmaster: ruleForm.as_headmaster,
+      is_super: ruleForm.is_super,
+      institution_id: ruleForm.institution_id,
+      identity: ruleForm.identity,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.addStaff,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        // console.log(res.data.data.list)
+        // let data = res.data.data
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.dialogVisible = false
+          self.$api.getStaffList(self, 'schoolData')
+          // self[name] = data
+        }
+      },
+    })
+  },
+  //删除员工
+  deleteStaff(self, id) {
+    let config = {
+      id: id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.deleteStaff,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        // console.log(res.data.data.list)
+        // let data = res.data.data.list
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.$api.getStaffList(self, 'schoolData')
+          // self[name] = data
+        }
+      },
+    })
+  },
+
   //获取角色选择列表
   getRoleSelectData(self, name) {
     let config = {
