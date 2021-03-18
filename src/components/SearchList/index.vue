@@ -48,6 +48,7 @@ export default {
         input: "el-input",
         select: "el-select",
         datePicker: "el-date-picker",
+        cascader: "el-cascader",
       },
     };
   },

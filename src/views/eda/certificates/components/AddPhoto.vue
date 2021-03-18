@@ -60,7 +60,6 @@ export default {
       headers: {
         token: this.$store.state.user.token,
       },
-      imageUrl: "",
       uploads: [
         {
           key: "portrait",
@@ -125,7 +124,6 @@ export default {
     },
     handleAvatarSuccess(res, file, key) {
       this.photoData[key] = res.data?.data?.url || "";
-      this.imageUrl = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
       // const isJPG = file.type === "image/jpeg";

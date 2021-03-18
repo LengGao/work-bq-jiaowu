@@ -144,14 +144,6 @@ export default {
       currentUid: "",
       previewSrc: "",
       previewDialog: false,
-      photoData: {
-        portrait: "",
-        photo_id_card: "",
-        photo_residence_permit: "",
-        graduation_certificate: "",
-        photo_commitment: "",
-        photo_health: "",
-      },
     };
   },
   created() {
