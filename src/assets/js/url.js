@@ -129,4 +129,6 @@ export default {
   getRoleSelectData: '/staff/getRoleSelectData',
   getIdentitySelect: '/staff/getIdentitySelect',
   getInstitutionSelectData: '/staff/getInstitutionSelectData',
+  addStaff: '/staff/add',
+  deleteStaff: '/staff/delete',
 }

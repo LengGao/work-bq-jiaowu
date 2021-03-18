@@ -5,7 +5,7 @@ import quertionBank from '@/assets/js/quertionBank'
 import enrollStu from '@/assets/js/enrollStu'
 import resource from '@/assets/js/resource'
 import statiSys from '@/assets/js/statiSys'
-import schManage from '@/assets/js/schManage'
+
 import testconfig from '@/assets/js/testconfig'
 import visualization from '@/assets/js/visualization'
 import videoManger from '@/assets/js/videoManger'
@@ -400,7 +400,6 @@ Object.assign(
   enrollStu,
   resource,
   statiSys,
-  schManage,
   visualization,
   videoManger,
   miniPro,

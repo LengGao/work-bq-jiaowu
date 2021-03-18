@@ -115,7 +115,7 @@
                   <el-button type="text" @click="topayment(scope.row)"
                     >编辑</el-button
                   >
-                  <el-button type="text" @click="topayment(scope.row)"
+                  <el-button type="text" @click="handleDelete(scope.row)"
                     >删除</el-button
                   >
                 </div>
@@ -309,7 +309,31 @@ export default {
   },
   methods: {
     getTableList() {},
-    handleConfirm() {
+    handleDelete(ab) {
+      this.$confirm('此操作将永久删除该员工, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$api.deleteStaff(this, ab.staff_id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+    handleConfirm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$api.addStaff(this, this.ruleForm)
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
       console.log(this.ruleForm)
     },
     statusSwitch(ab) {
