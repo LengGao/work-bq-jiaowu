@@ -70,8 +70,20 @@ export default {
       }
       this.handleSearch();
     },
+    deepClone(data, newData) {
+      for (const key in data) {
+        if (typeof data[key] === "object") {
+          newData[key] = Array.isArray(data[key]) ? [] : {};
+          this.deepClone(data[key], newData[key]);
+        } else {
+          newData[key] = data[key];
+        }
+      }
+    },
     handleSearch() {
-      this.$emit("on-search", { ...this.searchData });
+      const data = {};
+      this.deepClone(this.searchData, data);
+      this.$emit("on-search", data);
     },
   },
 };

@@ -150,8 +150,9 @@ export default {
           key: "category_id",
           type: "cascader",
           attrs: {
+            placeholder: "所属分类",
             clearable: true,
-            options: [{ value: 1, label: "test" }],
+            options: [],
           },
         },
         {

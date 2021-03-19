@@ -107,7 +107,7 @@ export default {
     },
     async getStorageById() {
       const data = {
-        organization_id: this.id,
+        storage_id: this.id,
       };
       const res = await getStorageById(data);
       if (res.code === 0) {

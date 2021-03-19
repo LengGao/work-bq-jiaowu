@@ -27,19 +27,19 @@
           :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
-            prop="book_name"
+            prop="storage_name"
             label="仓库名称"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="category_name"
+            prop="institution_name"
             label="关联机构"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="chief_editor"
+            prop="number"
             label="教材总数量"
             min-width="110"
             show-overflow-tooltip
@@ -51,26 +51,26 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <el-switch :value="false"> </el-switch>
+              <el-switch :value="row.status === 1"> </el-switch>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="300">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openEdit(row.book_id)"
+                <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="openPutStorage(row.book_id)"
+                <el-button type="text" @click="openPutStorage(row.id)"
                   >入库</el-button
                 >
-                <el-button type="text" @click="openEdit(row.book_id)"
+                <el-button type="text" @click="openAllocation(row.id)"
                   >调拨</el-button
                 >
 
-                <el-button type="text" @click="link(row.book_id)"
+                <el-button type="text" @click="link(row.id, 'textbookDetails')"
                   >教材详情</el-button
                 >
-                <el-button type="text" @click="openEdit(row.book_id)"
+                <el-button type="text" @click="link(row.id, 'storageLog')"
                   >仓库日志</el-button
                 >
               </div>
@@ -86,17 +86,25 @@
         </div>
       </div>
     </section>
+    <!-- 添加仓库 -->
     <AddWarehouse
       v-model="addDialog"
       :title="dialogTitle"
       :selectData="selectData"
       :id="currentId"
-      @on-success="getBookList"
+      @on-success="getStorageList"
     />
+    <!-- 入库 -->
     <PutInStorage
       v-model="putDialog"
       :id="currentId"
-      @on-success="getBookList"
+      @on-success="getStorageList"
+    />
+    <!-- 调拨 -->
+    <AllocationStorage
+      v-model="allocationDialog"
+      :id="currentId"
+      @on-success="getStorageList"
     />
   </div>
 </template>
@@ -105,13 +113,15 @@
 import SearchList from "@/components/SearchList/index";
 import AddWarehouse from "./components/AddWarehouse";
 import PutInStorage from "./components/PutInStorage";
-import { getBookList, getInstitutionSelectData } from "@/api/sou";
+import AllocationStorage from "./components/AllocationStorage";
+import { getStorageList, getInstitutionSelectData } from "@/api/sou";
 
 export default {
   components: {
     SearchList,
     AddWarehouse,
     PutInStorage,
+    AllocationStorage,
   },
   data() {
     return {
@@ -120,14 +130,15 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        category_id: [],
+        organization_id: [],
         keyboard: "",
       },
       searchOptions: [
         {
-          key: "category_id",
+          key: "organization_id",
           type: "cascader",
           attrs: {
+            placeholder: "所属机构",
             clearable: true,
             filterable: true,
             options: [],
@@ -145,11 +156,12 @@ export default {
       currentId: "",
       selectData: [],
       putDialog: false,
+      allocationDialog: false,
     };
   },
 
   created() {
-    this.getBookList();
+    this.getStorageList();
     this.getInstitutionSelectData();
   },
 
@@ -173,10 +185,15 @@ export default {
         }
       });
     },
-    link(id) {
-      this.$router.push({ name: "inventoryDetails", query: { id } });
+    link(id, name) {
+      this.$router.push({ name, query: { id } });
     },
-    openPutStorage() {
+    openAllocation(id) {
+      this.currentId = id;
+      this.allocationDialog = true;
+    },
+    openPutStorage(id) {
+      this.currentId = id;
       this.putDialog = true;
     },
     openEdit(id) {
@@ -193,19 +210,20 @@ export default {
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;
-      this.getBookList();
+      this.getStorageList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getBookList();
+      this.getStorageList();
     },
-    async getBookList() {
+    async getStorageList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
+        organization_id: this.searchData.organization_id.pop(),
       };
       this.listLoading = true;
-      const res = await getBookList(data);
+      const res = await getStorageList(data);
       this.listLoading = false;
       this.listData = res.data.data;
       this.listTotal = res.data.total;

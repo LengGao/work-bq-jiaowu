@@ -48,6 +48,17 @@ export function getBookById(params) {
     })
 }
 /**
+ * 库存详情
+ * @param {*} params 
+ */
+export function getbookinstorage(params) {
+    return request({
+        url: '/books/getbookinstorage',
+        method: 'get',
+        params
+    })
+}
+/**
  * 获取分类选项
  * @param {*} data 
  */
@@ -69,6 +80,18 @@ export function addstorage(data) {
         data
     })
 }
+/**
+ * 获取仓库列表
+ * @param {*} data 
+ */
+export function getStorageList(params) {
+    return request({
+        url: '/storage/index',
+        method: 'get',
+        params
+    })
+}
+
 /**
  * 编辑仓库
  * @param {*} data 
@@ -99,6 +122,44 @@ export function getInstitutionSelectData() {
         url: '/staff/getInstitutionSelectData',
         method: 'get',
 
+    })
+}
+/**
+ * 教材入库
+ */
+export function textbooksputstorage(data) {
+    return request({
+        url: '/books/textbooksputstorage',
+        method: 'post',
+        data
+    })
+}
+/** 
+ * 根据仓库查教材
+*/
+export function getstoragebook(params) {
+    return request({
+        url: '/storage/getstoragebook',
+        method: 'get',
+        params
+    })
+}
+/**
+ * 库存调拨
+ * @param {*} data 
+ */
+export function mobilizestorage(data) {
+    return request({
+        url: '/books/mobilizestorage',
+        method: 'post',
+        data
+    })
+}
+//获取仓库下拉列表
+export function getStorageOptions() {
+    return request({
+        url: '/storage/getstoragelist',
+        method: 'get',
     })
 }
 
