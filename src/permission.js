@@ -21,6 +21,7 @@ router.beforeEach((to, from, next) => {
             // let menus = res
             let menus = [
               { name: 'sou' }, //包含了资源设置
+              { name: 'homeClassifi' }, //资源分类>首页分类
               { name: 'classifiSetting' }, //资源设置>分类设置
               { name: 'courseManage' }, //资源设置>课程管理
               { name: 'textbookManage' }, //资源设置>教材管理

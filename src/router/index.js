@@ -53,6 +53,12 @@ export const asyncRouterMap = [
         meta: { title: '分类设置', icon: 'product-add' },
       },
       {
+        path: 'homeClassifi',
+        name: 'homeClassifi',
+        component: () => import('@/views/sou/homeClassifi.vue'),
+        meta: { title: '首页分类', icon: 'product-add' },
+      },
+      {
         path: 'courseManage',
         name: 'courseManage',
         component: () => import('@/views/sou/courseManage.vue'),

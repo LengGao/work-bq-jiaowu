@@ -16,15 +16,11 @@
         </li>
       </ul>
       <div class="client_head">
-        <search2
-          :courseTypeShow="true"
-          :contentShow="true"
-          typeTx="punch"
-          inputText="课程名称"
-          api="getCourseManage"
-          @getTable="getTableList"
-          :selectList="selectData.list"
-        ></search2>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <div v-if="isTagactive === 2">
           <el-button type="primary" @click="toCreateClass">资源中心</el-button>
         </div>
@@ -39,10 +35,13 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
+          :data="listData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           tooltip-effect="light"
           stripe
-          @selection-change="handleSelectionChange"
           style="width: 100%;"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
@@ -166,6 +165,13 @@
             </template>
           </el-table-column>
         </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
         <!-- <div style="display:flex;justify-content:space-between">
           <div class="batch_btn" style="padding-top:40px">
             <el-button @click="batchRelease">批量发布</el-button>
@@ -188,7 +194,12 @@
 </template>
 
 <script>
+import SearchList from '@/components/SearchList/index'
+import { getCourseList, getCateList } from '@/api/sou'
 export default {
+  components: {
+    SearchList,
+  },
   name: 'courseManage',
   data() {
     return {
@@ -206,158 +217,88 @@ export default {
           name: '公共课程',
         },
       ],
-      page: 1,
-      schoolData: [],
-      course_ids: [],
-      datas: {},
       selectData: [],
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        category_id: [],
+        course_name: '',
+      },
+      searchOptions: [
+        {
+          key: 'category_id',
+          type: 'cascader',
+          attrs: {
+            clearable: true,
+            options: [{ value: 1, label: 'test' }],
+          },
+        },
+        {
+          key: 'course_name',
+          attrs: {
+            placeholder: '课程名称',
+          },
+        },
+      ],
     }
   },
-  created() {},
+  created() {
+    this.getCourseList()
+    this.getCateList()
+  },
   mounted() {
-    this.$api.getCourseManage(this, 'schoolData')
+    // this.$api.getCourseManage(this, 'schoolData')
     // this.$api.getCategoryList(this, 'selectData')
   },
 
   methods: {
-    statusSwitch(ab) {
-      this.isTagactive = ab.id
-    },
-    getTableList(state, val, datas) {
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+    async getCateList() {
+      const data = { list: true }
+      const res = await getCateList(data)
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData)
+        this.searchOptions[0].attrs.options = this.selectData
       }
     },
-    doPageChange(page) {
-      this.page = page
-      this.$api.getCourseManage(this, 'schoolData', this.datas)
-    },
-
-    handleSelectionChange(val) {
-      let multipleSelection = val
-      this.course_ids = multipleSelection.map((i) => {
-        console.log(i.course_id)
-        return i.course_id
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {}
+        newData[index].value = item.category_id
+        newData[index].label = item.category_name
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
       })
     },
-    toCreateClass(text) {
-      //   console.log(text)
-      //   let course_id = ''
-      //   let setMeal = ''
-      //   if (text == '2') {
-      //     setMeal = text
-      //   } else if (text.class_type_name == '套餐班') {
-      //     setMeal = '2'
-      //     course_id = text.course_id
-      //   } else if (text.class_type_name == '单科班') {
-      //     setMeal = '1'
-      //     course_id = text.course_id
-      //   } else {
-      //     setMeal = '1'
-      //   }
+    toCreateClass() {
       this.$router.push({
         path: '/sou/createClass',
-        query: {},
       })
     },
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getCourseList()
+    },
+    handleSearch() {
+      this.getCourseList()
+    },
+    async getCourseList() {
+      const data = {
+        page: this.pageNum,
 
-    release(ab, status) {
-      let course_id = []
-      course_id.push(ab.course_id)
-      this.$api.bashPublish(this, course_id, status)
-    },
-    chapterVideo(index, row) {
-      this.$router.push({
-        path: '/eda/videoUpload',
-        query: { video_collection_id: row.video_collection_id },
-      })
-    },
-    scopes(id, sorts) {
-      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      var re = new RegExp(regu)
-      if (!re.test(sorts)) {
-        this.$message.error('请输入正确的排序！')
-        return false
-      } else {
-        this.$api.updateCourseSort(id, sorts, this)
+        ...this.searchData,
+        category_id: this.searchData.category_id.pop(),
       }
-    },
-    batchRelease() {
-      if (this.course_ids.length > 0) {
-        let status = 2
-        this.$api.bashPublish(this, this.course_ids, status)
-      } else {
-        this.$message({
-          type: 'warning',
-          message: '请先勾选你想发布的项',
-        })
-      }
-    },
-    batchClose() {
-      if (this.course_ids.length > 0) {
-        let status = 1
-        this.$api.bashPublish(this, this.course_ids, status)
-      } else {
-        this.$message({
-          type: 'warning',
-          message: '请先勾选你想关闭的项',
-        })
-      }
-    },
-    batchDeletion() {
-      if (this.course_ids.length > 0) {
-        this.$confirm(
-          '你正在批量删除该条数据,数据删除后将无法恢复,请谨慎操作?',
-          '提示',
-          {
-            confirmButtonText: '删除',
-            cancelButtonText: '取消',
-            type: 'warning',
-          }
-        )
-          .then(() => {
-            this.$api.bashDelete(this, this.course_ids)
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除',
-            })
-          })
-      } else {
-        this.$message({
-          type: 'warning',
-          message: '请先勾选你想删除的项',
-        })
-      }
-    },
-    handleDelete(ab) {
-      console.log(ab)
-      let course_id = ab.course_id
-      this.$confirm(
-        '你正在删除该条数据,数据删除后将无法恢复,请谨慎操作?',
-        '提示',
-        {
-          confirmButtonText: '删除',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
-        .then(() => {
-          this.$api.deleteCourses(this, ab.course_id)
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+      this.listLoading = true
+      const res = await getCourseList(data)
+      this.listLoading = false
+      this.listData = res.data.data
+      this.listTotal = res.data.total
     },
   },
-  //   mounted() {}
 }
 </script>
 

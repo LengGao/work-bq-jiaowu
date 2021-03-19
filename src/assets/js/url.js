@@ -25,6 +25,7 @@ export default {
   deleteproject: '/project/deleteproject',
   editProject: '/project/edit',
   getCourseManage: '/course/index',
+  getHomeclassifiList: '/indexCategory/index.html',
 
   //教务管理
   getStudentManage: '/classstudents/studentmanage',
