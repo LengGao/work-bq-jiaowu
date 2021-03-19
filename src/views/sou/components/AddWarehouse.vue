@@ -16,11 +16,11 @@
     >
       <el-row>
         <el-col :lg="20" :sm="20" :xs="20" :md="20">
-          <el-form-item label="仓库名称" prop="book_name">
+          <el-form-item label="仓库名称" prop="storage_name">
             <el-input
               maxlength="30"
               placeholder="请输入仓库名称"
-              v-model.trim="formData.book_name"
+              v-model.trim="formData.storage_name"
               class="input-width"
             ></el-input>
           </el-form-item>
@@ -28,14 +28,15 @@
       </el-row>
       <el-row>
         <el-col :lg="20" :sm="20" :xs="20" :md="20">
-          <el-form-item label="关联机构" prop="category_id">
-            <el-select
+          <el-form-item label="关联机构" prop="organization_id">
+            <el-cascader
               clearable
+              filterable
               style="width: 100%"
               placeholder="请选择关联机构"
-              v-model="formData.category_id"
+              v-model="formData.organization_id"
               :options="selectData"
-            ></el-select>
+            ></el-cascader>
           </el-form-item>
         </el-col>
       </el-row>
@@ -50,7 +51,7 @@
 </template>
 
 <script>
-import { addBook, getBookById, editBook } from "@/api/sou";
+import { addstorage, getStorageById, editstorage } from "@/api/sou";
 export default {
   props: {
     value: {
@@ -74,15 +75,15 @@ export default {
     return {
       visible: this.value,
       formData: {
-        book_name: "",
-        category_id: "",
+        storage_name: "",
+        organization_id: "",
       },
       rules: {
-        book_name: [
-          { required: true, message: "请输入教材名称", trigger: "blur" },
+        storage_name: [
+          { required: true, message: "请输入仓库名称", trigger: "blur" },
         ],
-        category_id: [
-          { required: true, message: "请选择分类", trigger: "change" },
+        organization_id: [
+          { required: true, message: "请选择机构", trigger: "change" },
         ],
       },
     };
@@ -95,14 +96,20 @@ export default {
   methods: {
     handleOpen() {
       if (this.id) {
-        this.getBookById();
+        this.getStorageById();
+      } else {
+        this.formData.organization_id = 1;
+        // 为了清空cascader的值
+        setTimeout(() => {
+          this.formData.organization_id = "";
+        }, 10);
       }
     },
-    async getBookById() {
+    async getStorageById() {
       const data = {
-        book_id: this.id,
+        organization_id: this.id,
       };
-      const res = await getBookById(data);
+      const res = await getStorageById(data);
       if (res.code === 0) {
         for (const k in this.formData) {
           this.formData[k] = res.data[k];
@@ -112,14 +119,17 @@ export default {
     async submit() {
       const data = {
         ...this.formData,
+        organization_id: Array.isArray(this.formData.organization_id)
+          ? this.formData.organization_id.pop()
+          : this.formData.organization_id,
       };
       if (this.id) {
-        data.book_id = this.id;
+        data.storage_id = this.id;
       }
-      const api = this.id ? editBook : addBook;
+      const api = this.id ? editstorage : addstorage;
       const res = await api(data);
       if (res.code === 0) {
-        this.$message.success(`教材${this.id ? "编辑" : "新增"}成功`);
+        this.$message.success(`仓库${this.id ? "编辑" : "新增"}成功`);
         this.hanldeCancel();
         this.$emit("on-success");
       }

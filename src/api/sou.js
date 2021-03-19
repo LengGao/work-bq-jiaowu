@@ -91,3 +91,46 @@ export function editCourse(data) {
     data,
   })
 }
+
+/**
+ * 添加仓库
+ * @param {*} data
+ */
+export function addstorage(data) {
+  return request({
+    url: '/storage/addstorage',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 编辑仓库
+ * @param {*} data
+ */
+export function editstorage(data) {
+  return request({
+    url: '/storage/editstorage',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 根据id获取仓库详情
+ * @param {*} data
+ */
+export function getStorageById(params) {
+  return request({
+    url: '/storage/editstorage',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 获取机构选项
+ */
+export function getInstitutionSelectData() {
+  return request({
+    url: '/staff/getInstitutionSelectData',
+    method: 'get',
+  })
+}

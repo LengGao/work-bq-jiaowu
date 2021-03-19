@@ -105,7 +105,7 @@
 import SearchList from "@/components/SearchList/index";
 import AddWarehouse from "./components/AddWarehouse";
 import PutInStorage from "./components/PutInStorage";
-import { getBookList, getCateList } from "@/api/sou";
+import { getBookList, getInstitutionSelectData } from "@/api/sou";
 
 export default {
   components: {
@@ -126,10 +126,11 @@ export default {
       searchOptions: [
         {
           key: "category_id",
-          type: "select",
-          options: [{ value: 1, label: "test" }],
+          type: "cascader",
           attrs: {
             clearable: true,
+            filterable: true,
+            options: [],
           },
         },
         {
@@ -149,13 +150,13 @@ export default {
 
   created() {
     this.getBookList();
-    this.getCateList();
+    this.getInstitutionSelectData();
   },
 
   methods: {
-    async getCateList() {
+    async getInstitutionSelectData() {
       const data = { list: true };
-      const res = await getCateList(data);
+      const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData);
         this.searchOptions[0].attrs.options = this.selectData;
@@ -164,11 +165,11 @@ export default {
     cloneData(data, newData) {
       data.forEach((item, index) => {
         newData[index] = {};
-        newData[index].value = item.category_id;
-        newData[index].label = item.category_name;
-        if (item.son && item.son.length) {
+        newData[index].value = item.institution_id;
+        newData[index].label = item.institution_name;
+        if (item.children && item.children.length) {
           newData[index].children = [];
-          this.cloneData(item.son, newData[index].children);
+          this.cloneData(item.children, newData[index].children);
         }
       });
     },

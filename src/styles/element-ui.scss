@@ -37,3 +37,15 @@
 .el-date-editor .el-range-separator {
   width: 6% !important;
 }
+// dialog 头部样式
+.el-dialog{
+  border-radius: 10px;
+  .el-dialog__header{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #F2F2F2;
+    .el-dialog__title{
+      color: #606266;
+    }
+  }
+}
