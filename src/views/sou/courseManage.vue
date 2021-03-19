@@ -143,7 +143,7 @@
           </el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="200">
-            <template slot-scope="scope" v-if="isTagactive === 1">
+            <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
                 <el-button type="text" @click="toCreateClass(scope.row)"
                   >编辑</el-button
@@ -156,13 +156,13 @@
                 >
               </div>
             </template>
-            <template slot-scope="scope" v-if="isTagactive === 2">
+            <!-- <template slot-scope="scope" v-if="isTagactive === 2">
               <div style="display: flex; justify-content:center;">
                 <el-button type="text" @click="toCreateClass(scope.row)"
                   >查看详情</el-button
                 >
               </div>
-            </template>
+            </template> -->
           </el-table-column>
         </el-table>
         <div class="table_bottom">
@@ -195,8 +195,9 @@
 
 <script>
 import SearchList from '@/components/SearchList/index'
-import { getCourseList, getCateList } from '@/api/sou'
+import { getCourseList, getCateList, bashPublish } from '@/api/sou'
 export default {
+  course_id: '',
   components: {
     SearchList,
   },
@@ -254,6 +255,21 @@ export default {
   },
 
   methods: {
+    async bashPublish(ab) {
+      const data = { course_ids: ab.course_id, is_publish: ab.is_publish }
+      const res = await bashPublish(data)
+      console.log(res)
+      if (res.code === 0) {
+      }
+    },
+    release(ab, status) {
+      this.bashPublish(ab)
+    },
+    statusSwitch(ab) {
+      console.log(ab.id)
+      this.isTagactive = ab.id
+    },
+
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
@@ -273,9 +289,12 @@ export default {
         }
       })
     },
-    toCreateClass() {
+    toCreateClass(ab) {
       this.$router.push({
         path: '/sou/createClass',
+        query: {
+          course_id: ab.course_id,
+        },
       })
     },
     handlePageChange(val) {
@@ -295,7 +314,7 @@ export default {
       this.listLoading = true
       const res = await getCourseList(data)
       this.listLoading = false
-      this.listData = res.data.data
+      this.listData = res.data.list
       this.listTotal = res.data.total
     },
   },

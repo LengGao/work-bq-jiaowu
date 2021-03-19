@@ -55,6 +55,18 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="课程名称" prop="brief">
+                <el-input
+                  type="textarea"
+                  style="width:740px;"
+                  v-model="formData.brief"
+                  placeholder="请输入课程简介"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
           <el-row>
             <el-col :sm="12">
@@ -101,10 +113,133 @@
                   <i class=" iconjia el-icon-plus" @click="addIcon"></i>
                   <img
                     style="width:100%;height:100%; border-radius: 3px"
-                    :src="url"
+                    :src="formData.cover_img"
                     alt=""
                   />
                 </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="关联视频集" prop="video_collection_id">
+                <el-select
+                  filterable
+                  v-model="formData.video_collection_id"
+                  placeholder="请选择关联视频集"
+                >
+                  <el-option
+                    v-for="item in videoData.data"
+                    :key="item.video_collection_id"
+                    :label="item.video_collection_name"
+                    :value="item.video_collection_id"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="12">
+              <el-form-item label="关联题库" prop="problem_course_id">
+                <el-select
+                  filterable
+                  v-model="formData.problem_course_id"
+                  placeholder="请选择关联题库"
+                >
+                  <el-option
+                    v-for="item in questionBank.list"
+                    :key="item.problem_course_id"
+                    :label="item.course_name"
+                    :value="item.problem_course_id"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="是否置顶">
+                <el-radio-group v-model="formData.is_topping" @change="isReal">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="2">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="12">
+              <el-form-item label="划线价格" prop="past_price">
+                <el-input
+                  placeholder="请输入划线价格"
+                  type="number"
+                  v-model="formData.past_price"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="热门推荐" prop="is_hot">
+                <el-radio-group v-model="formData.is_hot">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="2">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="12">
+              <el-form-item label="热门课程排序" prop="hot_sort">
+                <el-input
+                  placeholder="排序数字越大课程越靠前"
+                  type="number"
+                  v-model="formData.hot_sort"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="售卖方式" prop="sale_type">
+                <el-radio-group v-model="formData.sale_type" @change="isFree">
+                  <el-radio :label="1">付费</el-radio>
+                  <el-radio :label="2">免费</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="12">
+              <el-form-item
+                label="免费课程排序"
+                prop="free_sort"
+                v-if="formData.sale_type == 2"
+              >
+                <el-input
+                  placeholder="排序数字越大课程越靠前"
+                  type="number"
+                  v-model="formData.free_sort"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :sm="12">
+              <el-form-item label="购买数量" prop="is_fictitious">
+                <el-radio-group
+                  v-model="formData.is_fictitious"
+                  @change="isReal"
+                >
+                  <el-radio :label="1">虚拟</el-radio>
+                  <el-radio :label="0">真实</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :sm="12">
+              <el-form-item
+                label="虚拟数量"
+                prop="fictitious_num"
+                v-if="formData.is_fictitious == '1'"
+              >
+                <el-input
+                  placeholder="请输入虚拟数量"
+                  type="number"
+                  v-model="formData.fictitious_num"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -141,7 +276,7 @@
             <!-- <el-button @click="releaseCourse('ruleForm', 'is_publish')"
         >保存草稿</el-button
       > -->
-            <el-button>取消</el-button>
+            <el-button @click="handleCancle">取消</el-button>
             <el-button type="primary" @click="handleSave('ruleForm')"
               >保存</el-button
             >
@@ -168,7 +303,7 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 import { uploadImageUrl } from '@/api/educational'
-import { addCourse, getCateList, editCourse } from '@/api/sou'
+import { addCourse, getCateList, editCourse, getCoursesDetail } from '@/api/sou'
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'], // toggled buttons
   [{ header: 1 }, { header: 2 }], // custom button values
@@ -195,7 +330,10 @@ export default {
       haschoose: false,
       selectData: [],
       homeData: {},
+      videoData: {},
       teacherData: {},
+      questionBank: {},
+
       formData: {
         is_topping: '',
         course_name: '',
@@ -215,7 +353,7 @@ export default {
         is_fictitious: 1,
         sort: '',
         include_course_ids: [],
-        class_type: 0,
+        class_type: 1,
         brief: '',
         free_sort: 0,
         hot_sort: 0,
@@ -288,13 +426,43 @@ export default {
     }
   },
   created() {
+    this.course_id = this.$route.query.course_id
+    this.course_id ? this.getCoursesDetail() : ''
     this.getCateList() //获取所属分类
     this.$api.getTeacherSublist(this, 'teacherData') //老师列表
     this.$api.getHomeclassifiList(this, 'homeData') //获取首页分类
+    // this.$api.getProblemCourseList(this, 'questionBank') //课程题库列表
+    // this.$api.videocollectionlist(this, 'videoData') //视频列表
   },
   mounted() {},
 
   methods: {
+    async getCoursesDetail() {
+      const data = { id: this.course_id }
+      console.log(data)
+      const res = await getCoursesDetail(data)
+      console.log(res)
+      if (res.code === 0) {
+        this.formData = res.data.info
+        this.formData.category_id = res.data.info.course_category_id
+      }
+    },
+    handleCancle() {
+      this.$router.go(-1)
+    },
+    isReal(ab) {
+      console.log(ab)
+      if (ab == 0) {
+        this.formData.fictitious_num = 0
+      }
+    },
+    isFree(zx) {
+      console.log(zx)
+      if (zx == 2) {
+        this.formData.course_price = 0
+        this.formData.past_price = 0
+      }
+    },
     async submit() {
       const data = {
         ...this.formData,
@@ -307,8 +475,13 @@ export default {
       }
       const api = this.id ? editCourse : addCourse
       const res = await api(data)
+      console.log(res)
       if (res.code === 0) {
-        this.$message.success(`教材${this.id ? '编辑' : '新增'}成功`)
+        this.$message({
+          type: 'success',
+          message: res.message,
+        })
+        this.$router.go(-1)
         // this.hanldeCancel()
         // this.$emit('on-success')
       }
@@ -329,6 +502,7 @@ export default {
       this.pictureVisible = false
     },
     closeImg(radioUrl) {
+      console.log(this.formData)
       // console.log(radioUrl + '我好睡')
       this.pictureVisible = false
       if (radioUrl != undefined) {
@@ -368,35 +542,11 @@ export default {
         path: '/sou/configureCourses',
       })
     },
-    addIcon() {
-      this.pictureVisible = true
-    },
-    clearUrl() {
-      // this.url = ''
-      // this.haschoose = false
-      this.pictureVisible = false
-    },
-    closeImg(radioUrl) {
-      // console.log(radioUrl + '我好睡')
-      this.pictureVisible = false
-      if (radioUrl != undefined) {
-        this.haschoose = true
-        this.url = radioUrl
-        this.ruleForm.cover_img = radioUrl
-      } else {
-        this.url = ''
-        this.haschoose = false
-        this.ruleForm.cover_img = ''
-      }
-    },
-    changeParentTitle(txt) {
-      console.log(txt)
-      this.ruleForm.introduction = txt
-    },
+
     /***************quillEditor编辑器事件****************/
     onEditorChange({ editor, html, text }) {
       //内容改变事件
-      console.log(html)
+      this.formData.introduction = html
       this.content = html
     },
     // 富文本图片上传前
