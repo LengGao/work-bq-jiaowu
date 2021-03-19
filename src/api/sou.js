@@ -93,6 +93,29 @@ export function editCourse(data) {
 }
 
 /**
+ *修改课程
+ * @param {*} data
+ */
+export function getCoursesDetail(params) {
+  return request({
+    url: '/course/info',
+    method: 'get',
+    params,
+  })
+}
+/**
+ *是否上架
+ * @param {*} data
+ */
+export function bashPublish(data) {
+  return request({
+    url: '/course/bashPublish',
+    method: 'post',
+    data,
+  })
+}
+
+/**
  * 添加仓库
  * @param {*} data
  */

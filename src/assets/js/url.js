@@ -26,7 +26,17 @@ export default {
   editProject: '/project/edit',
   getCourseManage: '/course/index',
   getHomeclassifiList: '/indexCategory/index.html',
+  videocollectionlist: '/video/videocollectionlist',
+  getProblemCourseList: '/problem/getProblemCourseList',
 
+  getRecommender: 'institution/index',
+  doAccount: 'institution/doAccount',
+  addorGanization: '/institution/add',
+  deleteInstitution: '/institution/delete',
+  addBlock: '/institution/addBlock',
+  organizationDetail: '/institution/info',
+  modifyOrganization: '/institution/modify',
+  modifyBlock: '/institution/modifyBlock',
   //教务管理
   getStudentManage: '/classstudents/studentmanage',
   getClassroomList: '/classroom/index',

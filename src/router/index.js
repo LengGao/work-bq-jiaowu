@@ -115,9 +115,18 @@ export const asyncRouterMap = [
       {
         path: 'agency',
         name: 'agency',
-        component: () => import('@/views/sou/agency.vue'),
+        component: () => import('@/views/sou/recommender.vue'),
         meta: { title: '推荐机构', icon: 'product-add' },
       },
+      //推荐机构组件开始
+      {
+        path: 'editOrgan',
+        name: 'editOrgan',
+        component: () => import('@/views/sou/recommender/editOrgan.vue'),
+        meta: { title: '编辑机构', icon: 'product-list' },
+        hidden: true,
+      },
+      //推荐机构组件结束
       {
         path: 'schoolManage',
         name: 'schoolManage',
