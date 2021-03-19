@@ -372,7 +372,9 @@ let api = {
   },
   //创建排课
   addScheduling(self, ruleForm) {
-    let config = ruleForm
+    let config = {
+      param: ruleForm,
+    }
     console.log(config)
     axiosHttp({
       url: url.addScheduling,
@@ -386,7 +388,132 @@ let api = {
             type: 'success',
             message: res.data.message,
           })
+          self.$router.go(-1)
         }
+      },
+    })
+  },
+  //排课列表
+  getTimetableList(self, name) {
+    // let config = ruleForm
+    let config = {
+      page: self.page,
+    }
+    // console.log(config)
+    axiosHttp({
+      url: url.getTimetableList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          let data = res.data.data
+          for (var item of data.list) {
+            if (item.frist_class_time != 0 || item.frist_class_time != '') {
+              item.frist_class_time = self.$moment
+                .unix(item.frist_class_time)
+                .format('YYYY-MM-DD HH:mm:ss')
+            } else {
+              item.frist_class_time = '---'
+            }
+          }
+          self[name] = data
+        }
+      },
+    })
+  },
+  //全部排课列表
+  getAllForPageList(self, name) {
+    let config = {
+      page: self.page,
+    }
+    axiosHttp({
+      url: url.getAllForPageList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          let data = res.data.data
+          for (var item of data.list) {
+            if (item.start_time != 0 || item.start_time != '') {
+              item.start_time = self.$moment
+                .unix(item.start_time)
+                .format('YYYY-MM-DD HH:mm:ss')
+            } else {
+              item.start_time = '---'
+            }
+          }
+          self[name] = data
+        }
+      },
+    })
+  },
+  //导出当月排课
+  exportExcelSchedule(self, name) {
+    let config = {
+      // page: self.page,
+    }
+    axiosHttp({
+      url: url.exportExcelSchedule,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          self.url = data.url
+          self.dialogVisible = true
+          // if (res.data.data.url) {
+
+          //   // window.location.href = res.data.data.url
+          // }
+          // let data = res.data.data
+          // for (var item of data.list) {
+          //   if (item.start_time != 0 || item.start_time != '') {
+          //     item.start_time = self.$moment
+          //       .unix(item.start_time)
+          //       .format('YYYY-MM-DD HH:mm:ss')
+          //   } else {
+          //     item.start_time = '---'
+          //   }
+          // }
+          // self[name] = data
+        }
+      },
+    })
+  },
+  //课程列表
+  getCourseManage(self, name, data = {}) {
+    let course_name = ''
+    let class_type = ''
+    let course_category_id = ''
+    if (data.name != '' || data.name != undefined) {
+      course_name = data.name
+    }
+    if (data.id != '' || data.id != undefined) {
+      course_category_id = data.id
+    }
+    if (data.course_type != '' || data.course_type != undefined) {
+      class_type = data.course_type
+    }
+    let config = {
+      page: self.page,
+      course_name: course_name,
+      course_category_id: course_category_id || self.ruleForm.category_id,
+      class_type: class_type,
+    }
+    console.log(config)
+
+    axiosHttp({
+      url: url.getCourseManage,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        self[name] = res.data.data
       },
     })
   },

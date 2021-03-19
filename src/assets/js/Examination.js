@@ -124,6 +124,30 @@ let Examination = {
       },
     })
   },
+  //获取老师 不带分页
+  getTeacherSublist(self, name, data = {}) {
+    // let name_mobile = ''
+    // if (data.name != '' || data.name != undefined) {
+    //   name_mobile = data.name
+    // }
+    let config = {
+      // page: self.page,
+      // name_mobile: name_mobile,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getTeacherSublist,
+      data: config,
+      method: 'GET',
+      then(res) {
+        // for (let item of res.data.data.list) {
+        //   item.add_time = self.$moment.unix(item.add_time).format('YYYY-MM-DD')
+        // }
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
   //修改老师排序
   updateTeacherSort(teacher_id, sort, self) {
     let config = {

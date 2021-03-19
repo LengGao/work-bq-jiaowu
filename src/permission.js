@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
               { name: 'fina' }, //财务管理
               { name: 'finance' }, //订单管理
               { name: 'order' },
-              { name: 'certificates' },// 证件资料
+              { name: 'certificates' }, // 证件资料
               { name: 'finance' }, //财务管理>订单管理
               { name: 'order' }, //财务管理>订单审批
               { name: 'orderDetail' }, //财务管理>订单审批>订单详情
@@ -71,6 +71,7 @@ router.beforeEach((to, from, next) => {
               { name: 'roledetail' }, //系统设置>角色权限>添加角色
               { name: 'menumanage' }, //系统设置>菜单管理
               { name: 'notice' }, //系统设置>通知公告
+              { name: 'operationLog' }, //系统设置>操作记录
             ]
 
             let username = 'account'
