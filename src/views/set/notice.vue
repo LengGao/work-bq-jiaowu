@@ -72,7 +72,7 @@
           </el-table-column>
 
 
-          <el-pagination
+        <el-pagination
         background
         layout="prev, pager, next"
         :total="1000">
@@ -86,19 +86,25 @@
         width="45%"
         >
          <div>
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
-          <el-form-item label="通知标题" prop="name">
-              <el-input v-model="ruleForm.name" placeholder="请输入通知标题" style="width:300px"></el-input>
+            <el-form 
+            :model="ruleForm" 
+            :rules="rules" 
+            ref="ruleForm" 
+            label-width="80px" 
+            class="demo-ruleForm"
+            >
+          <el-form-item label="通知标题" prop="title">
+              <el-input v-model="ruleForm.title" placeholder="请输入通知标题" style="width:300px"></el-input>
             </el-form-item>
 
-        <quill-editor ref="myTextEditor" v-model="content" :options="editorOption" style="display:block;height:280px;margin-bottom:40px"></quill-editor>
+        <quill-editor ref="myTextEditor" v-model="content" prop="content" :options="editorOption" style="display:block;height:280px;margin-bottom:40px"></quill-editor>
 
-           <el-form-item label="内容摘要" prop="abstract" style="margin-top:80px;">
-              <el-input v-model="ruleForm.abstract" placeholder="请输入内容摘要" style="width:100%;"></el-input>
+           <el-form-item label="内容摘要" prop="digest" style="margin-top:80px;">
+              <el-input v-model="ruleForm.digest" placeholder="请输入内容摘要" style="width:100%;"></el-input>
             </el-form-item>
 
-              <div class="abstract">
-            <el-form-item label="接受范围" prop="abstract">
+            <div class="abstract">
+            <el-form-item label="接受范围" prop="receiver">
              <el-radio-group v-model="radio2" @change="change">
             <el-radio :label="1">全部员工</el-radio>
             <el-radio :label="2">指定角色</el-radio>
@@ -112,16 +118,17 @@
                 </el-option>
           </el-select>
             </el-form-item>
-            </div>
+            </div> 
 
-             <div class="abstract">
-            <el-form-item label="是否发送短信" prop="abstract" class="abstract" style="width:400px">
-             <el-radio-group>
-            <el-radio v-model="radio2" label="1">是</el-radio>
-            <el-radio v-model="radio2" label="1" >否</el-radio>
-          </el-radio-group>
-            </el-form-item>
-             </div>
+            <el-col :lg="12" :sm="12" :xs="12" :md="12">
+              <el-form-item label="发送短信">
+                <el-radio-group v-model="ruleForm.send_sms">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="2">否</el-radio>
+                  <!-- <el-radio :label="3">指定校区</el-radio> -->
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
 
             </el-form>
     </div>
@@ -129,6 +136,8 @@
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
         </span>
+
+        
         
       </el-dialog>
      </section>
@@ -163,12 +172,15 @@ export default {
     radio2: 1,
     inputValue: '',
     radio: '0',
+    radio3: '0',
     classTitle: '新建公告',
     dialogVisible: false,
     schoolData: [ ],
     content: '',
-            editorOption: {
-            placeholder: '编辑公告内容'
+    applay: '',
+
+    editorOption: {
+    placeholder: '编辑公告内容'
             },
     ruleForm: {
       type:[],
@@ -273,10 +285,12 @@ export default {
 }
 /deep/.el-form-item__content{
   width: 50%;
+
 }
 /deep/.el-radio__input.is-checked + .el-radio__label{
   margin-right: 10px;
 }
+
 
 .main {
   padding: 20px;

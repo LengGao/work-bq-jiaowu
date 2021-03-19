@@ -116,14 +116,15 @@
         </el-dialog>
         </div>
 
-      <el-row class="dataPanel" style="">
+      <el-row class="dataPanel" style=""
+      >
         <template>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :lg="{span: '4-8' }">
             <div class="timeCard">
               <div>
                 <h3>订单总价</h3>
                 <div class="time_num">
-                  <span>{{ panelData.day }}</span>
+                  <span>{{ panelData.order_money }}</span>
                 </div>
               </div>
             </div>
@@ -133,17 +134,17 @@
               <div>
                 <h3>应收金额</h3>
                 <div class="time_num">
-                  <span>{{ panelData.use_time }}</span>
+                  <span>{{ panelData.order_money }}</span>
                 </div>
               </div>
             </div>
           </el-col>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :lg="{span:'4-8' }">
             <div class="timeCard">
               <div>
                 <h3>实收金额</h3>
                 <div class="time_num">
-                  <span>{{ panelData.total_problem }}</span>
+                  <span>{{ panelData.pay_money }}</span>
                 </div>
               </div>
             </div>
@@ -153,7 +154,7 @@
               <div>
                 <h3>欠费金额</h3>
                 <div class="time_num">
-                  <span>{{ panelData.accuracy }}</span
+                  <span>{{ panelData.overdue_money }}</span
                   >
                 </div>
               </div>
@@ -164,7 +165,7 @@
               <div>
                 <h3>退费金额</h3>
                 <div class="time_num">
-                  <span>{{ panelData.accuracy }}</span
+                  <span>{{ panelData.reduction }}</span
                   >
                 </div>
               </div>
@@ -178,7 +179,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.list"
           tooltip-effect="light"
           stripe
           style="width: 100%;"
@@ -195,7 +196,7 @@
             min-width="90"
           >
           <template slot-scope="scope">
-              <div class="coursename" @click="orderDetail">
+              <div class="coursename" @click="orderDetail(scope.row)">
            {{scope.row.order_no}}
               </div>
             </template>
@@ -258,11 +259,20 @@
               <div style="display: flex; justify-content:center;">
                 <el-button type="text" @click="dialogFormVisible = true">收款</el-button>
                 <el-button type="text" @click="refundFormVisible = true">退款</el-button>
+                <el-button type="text" @click="voidFormVisible = true">作废</el-button>
               </div>
             </template>
             
           </el-table-column>
         </el-table>
+
+         <div class="table_bottom">
+          <page
+            :data="schoolData.total"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
 
         <!-- 收款弹出框 -->
         <el-dialog title="收款" :visible.sync="dialogFormVisible">
@@ -466,6 +476,87 @@
           <el-button type="primary" @click="refundFormVisible = false">确 定</el-button>
         </div>
       </el-dialog>
+
+      <!-- 作废弹出框 -->
+        <el-dialog title="申请作废" :visible.sync="voidFormVisible">
+
+          <!--订单信息-->
+        <div>
+          <el-row style="min-width:900px;margin-bottom:20px;">
+            <el-col :lg="21" :sm="21" :xs="21" :md="21">
+              <div class="order-header">
+                <h3 style="height:20px;padding-left:5px;font-size:16px">订单信息</h3>
+              </div>
+
+              <el-form
+                :model="ruleForm"
+                ref="ruleForm"
+                label-width="100px"
+                class="demo-ruleForm"
+                label-position="left"
+              >
+                <el-row class="detailLine">
+                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                    <el-form-item label="订单编号：" prop="order_id">
+                      <div class="ruleWord">{{ ruleForm.order_id }}</div>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                    <el-form-item label="订单时间：" prop="verify_time">
+                      <div class="ruleWord">{{ ruleForm.verify_time }}</div>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                    <el-form-item label="收费学生：" prop="surname">
+                      <div class="ruleWord">{{ ruleForm.surname }}</div>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                    <el-form-item label="应收金额：" prop="order_money">
+                      <div class="ruleWord">{{ ruleForm.order_money }}</div>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                    <el-form-item label="已付金额：" prop="pay_money">
+                      <div class="ruleWord">{{ ruleForm.pay_money }}</div>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                    <el-form-item label="欠费金额：" prop="reduction">
+                      <div class="ruleWord">{{ ruleForm.reduction }}</div>
+                    </el-form-item>
+                  </el-col>
+                
+                </el-row>
+              </el-form>
+            </el-col>
+            <el-col :lg="3" :sm="3" :xs="3" :md="3">
+            </el-col>
+          </el-row>
+        </div>
+        <div class="order-header">
+                <h3 style="height:20px;padding-left:5px;">作废信息</h3>
+              </div>
+          
+          <div class="formmoney">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="width:100%;">
+
+             <div style="margin-top:20px;">
+               <el-form-item label="作废原因" prop="money" style="display:flex;">
+              <el-input type="textarea" placeholder="请输入作废原因" v-model="form.desc" style="width:595px;"></el-input>
+            </el-form-item>
+             </div>
+        </el-form>
+          </div>
+
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="voidFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="voidFormVisible = false">确 定</el-button>
+        </div>
+      </el-dialog>
+
       </div>
 
     </div>
@@ -495,22 +586,15 @@ export default {
           ],
       },
       schoolData: [
-      //  {
-      //    order_id:'',
-      //    surname:'',
-      //    total:'',
-      //    reduction:'',
-      //    order_money:'',
-      //    pay_money:'',
-      //    overdue_money:'',
-      //    pay_status:'',
-      //  }
+     
       ],  
+      
       panelData:{
-        day:'10000000',
-        use_time:'',
-        total_problem:'',
-        accuracy:'',
+        total:'',
+        order_money:'',
+        pay_money:'',
+        overdue_money:'',
+        money:'',
 
       },   
 
@@ -551,6 +635,7 @@ export default {
 
         dialogFormVisible: false,
         refundFormVisible: false,
+        voidFormVisible: false,
         form: {
           name: '',
           region: '',
@@ -625,9 +710,12 @@ export default {
         path: '/fina/cusdetail',
       })
     },
-    orderDetail() {
+    orderDetail(ab) {
       this.$router.push({
         path: '/fina/orderDetail',
+        query:{
+          order_id: ab.order_id	
+        }
       })
     },
      statusSwitch(ab) {
@@ -883,5 +971,36 @@ header {
   justify-content: space-between;
   border-left:4px solid #2798ee;
   margin-bottom: 10px;
+}
+
+.timeCard {
+  width: 90%;
+  height: 90px;
+  border: 1px solid #ccc;
+  float: left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px;
+  h3 {
+    font-weight: 400;
+    font-style: normal;
+    color: #606266;
+    text-align: center;
+  }
+  .time_num {
+    padding-top: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    font-family: 'Microsoft YaHei UI', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    color: #606266;
+    text-align: center em {
+      font-size: 20px;
+    }
+  }
 }
 </style>

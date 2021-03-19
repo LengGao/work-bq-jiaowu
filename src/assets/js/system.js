@@ -45,6 +45,27 @@ let system = {
     })
   },
 
+  //编辑公告
+  createlist(self, id) {
+    let config = {
+      // search_box: ruleForm.search_box,
+      id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.createlist,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res.data.data.list)
+        let data = res.data.data.list
+        if (res.data.code == 0) {
+          self[name] = data
+        }
+      },
+    })
+  },
+
   //删除公告
   deletenoticelist(self, id) {
     let config = {
