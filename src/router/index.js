@@ -351,8 +351,7 @@ export const asyncRouterMap = [
       {
         path: 'certificates',
         name: 'certificates',
-        component: () =>
-          import('@/views/eda/certificates/index.vue'),
+        component: () => import('@/views/eda/certificates/index.vue'),
         meta: { title: '证件资料', icon: 'product-cate' },
       },
     ],
@@ -499,6 +498,29 @@ export const asyncRouterMap = [
         name: 'notice',
         component: () => import('@/views/set/notice.vue'),
         meta: { title: '通知公告', icon: 'product-add' },
+      },
+
+      {
+        path: 'operationLog',
+        name: 'operationLog',
+        component: () => import('@/views/set/operationLog.vue'),
+        meta: { title: '操作日志', icon: 'product-add' },
+      },
+      //操作日志组件组件
+      {
+        path: 'logDetails',
+        name: 'logDetails',
+        component: () => import('@/views/set/operationLog/logDetails.vue'),
+        meta: { title: '日志详情', icon: 'product-add' },
+        hidden: true,
+      },
+      //操作日志组件结束
+      {
+        path: 'roledetail',
+        name: 'roledetail',
+        component: () => import('@/views/set/role/roledetail.vue'),
+        meta: { title: '添加角色', icon: 'product-add' },
+        hidden: true,
       },
       // {
       //   path: 'cusdetail',

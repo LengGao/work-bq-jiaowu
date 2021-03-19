@@ -14,6 +14,7 @@ export default {
   insertCategory: '/courseCategory/insertCategory',
   getTeachBooksList: '/books/index',
   getRoomList: '/Schoolroom/roomList',
+  getRoomSelect: '/Schoolroom/getRoomSelect',
   createRoom: '/Schoolroom/createRoom',
   updateRoom: '/Schoolroom/updateRoom',
   deleteRoom: '/Schoolroom/deleteRoom',
@@ -23,6 +24,7 @@ export default {
   createProject: '/project/create',
   deleteproject: '/project/deleteproject',
   editProject: '/project/edit',
+  getCourseManage: '/course/index',
 
   //教务管理
   getStudentManage: '/classstudents/studentmanage',
@@ -33,12 +35,16 @@ export default {
   getDispenseLog: '/books/dispenseLog',
   classroomList: 'arrange/classroomList',
   getTeacherList: '/teacher/index',
+  getTeacherSublist: '/teacher/getList',
   changeTeacherStatus: '/teacher/ajaxStatus',
   getTeacherDrop: '/teacher/getList',
   addTeacher: '/teacher/add',
   deleteTeacher: '/teacher/delete',
   getTeacherInfo: '/teacher/info',
   addScheduling: '/arrange/insert',
+  getTimetableList: 'arrange/classroomList',
+  getAllForPageList: 'arrange/getAllForPageList',
+  exportExcelSchedule: '/arrange/exportExcel',
 
   //系统配置
   getBucketList: '/oss/getBucketList',
@@ -62,8 +68,12 @@ export default {
   createMenuData: '/AdminMenu/createMenuData',
   deleteMenuData: '/AdminMenu/deleteMenuData',
   updateMenuData: '/AdminMenu/updateMenuData',
-  // updateStatus: '/AdminMenu/updateStatus',
-  // updateSort: '/AdminMenu/updateSort',
+  getadminLogList: 'adminLog/index',
+  getAdminOperationRecordList:
+    '/AdminOperationRecord/getAdminOperationRecordList',
+  getAdminOperationDetail: '/AdminOperationRecord/getAdminOperationDetail',
+  rollBackOperation: '/AdminOperationRecord/rollBackOperation',
+  getActionSelectList: '/AdminOperationRecord/getActionSelectList',
 
   //清除缓存
   clearCache: '/passport/clearCache',
@@ -131,4 +141,10 @@ export default {
   getInstitutionSelectData: '/staff/getInstitutionSelectData',
   addStaff: '/staff/add',
   deleteStaff: '/staff/delete',
+  ajaxStatusStaff: '/staff/ajaxStatus',
+  updateSuperStaff: '/staff/updateSuper',
+  updateMasterStaff: '/staff/updateMaster',
+  getStaffInfo: '/staff/info',
+  modifyStaff: '/staff/modify',
+  getStaffSelect: '/staff/getStaffSelect',
 }

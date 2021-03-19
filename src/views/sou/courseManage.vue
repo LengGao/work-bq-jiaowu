@@ -29,12 +29,10 @@
           <el-button type="primary" @click="toCreateClass">资源中心</el-button>
         </div>
         <div v-if="isTagactive === 1">
-          <el-button type="primary" @click="toCreateClass"
-            >创建单科班</el-button
-          >
-          <el-button type="primary" @click="toCreateClass('2')"
+          <el-button type="primary" @click="toCreateClass">添加课程</el-button>
+          <!-- <el-button type="primary" @click="toCreateClass('2')"
             >创建套餐班</el-button
-          >
+          > -->
         </div>
       </div>
       <!--表格-->
@@ -217,7 +215,7 @@ export default {
   },
   created() {},
   mounted() {
-    // this.$api.getCourseManage(this, 'schoolData')
+    this.$api.getCourseManage(this, 'schoolData')
     // this.$api.getCategoryList(this, 'selectData')
   },
 

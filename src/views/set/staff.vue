@@ -4,53 +4,23 @@
       *可按照角色权限对员工账号进行分类管理
     </div>
 
-    <div class="staffsearch">
-      <search2
-        :contentShow="true"
-        api="getHomeclassifiList"
-        inputText="搜索员工姓名/手机号"
-        @getTable="getTableList"
-      ></search2>
-    </div>
-    <div class="mainwrap ">
-      <!-- <div class="left-container">
-        <div class="enrollment-info">
-          <h2>成员信息</h2>
-          <ul>
-            <li
-              v-for="item in enrollData"
-              :class="{ tabg: item.id == isTagactive }"
-              :key="item.id"
-              @click="statusSwitch(item)"
-            >
-              {{ item.name }}
-            </li>
-          </ul>
-        </div>
-        <div class="enrollment-info" style="margin-top:20px">
-          <h2>部门信息</h2>
-          <ul>
-            <li
-              v-for="item in depaData"
-              :class="{ tabg: item.id == isTagactive }"
-              :key="item.id"
-              @click="depaSwitch(item)"
-            >
-              {{ item.name }}
-            </li>
-          </ul>
-        </div>
-      </div> -->
+    <div class="mainwrap">
       <section class="main-right">
         <div class="client_head">
-          <h4>{{ isTagactiveName }}</h4>
+          <search2
+            :contentShow="true"
+            api="getStaffList"
+            inputText="搜索员工姓名/手机号"
+            @getTable="getTableList"
+          ></search2>
+
           <el-button type="primary" @click="addStaff">添加员工</el-button>
         </div>
         <!--表格-->
         <div class="userTable">
           <el-table
             ref="multipleTable"
-            :data="schoolData"
+            :data="schoolData.list"
             style="width: 100%"
             class="min_table"
             :header-cell-style="{ 'text-align': 'center' }"
@@ -93,7 +63,6 @@
             </el-table-column>
 
             <el-table-column
-              prop="status"
               label="账号状态"
               min-width="150"
               show-overflow-tooltip
@@ -104,7 +73,39 @@
                   v-model="scope.row.account_status"
                   :active-value="1"
                   :inactive-value="2"
-                  @change="changeSwitch(scope.row)"
+                  @change="accountSwitch(scope.row)"
+                >
+                </el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="是否为超管"
+              min-width="150"
+              show-overflow-tooltip
+            >
+              <template slot-scope="scope">
+                <el-switch
+                  active-color="#13ce66"
+                  v-model="scope.row.is_super"
+                  :active-value="1"
+                  :inactive-value="0"
+                  @change="adminSwitch(scope.row)"
+                >
+                </el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="班主任"
+              min-width="150"
+              show-overflow-tooltip
+            >
+              <template slot-scope="scope">
+                <el-switch
+                  active-color="#13ce66"
+                  v-model="scope.row.as_headmaster"
+                  :active-value="1"
+                  :inactive-value="2"
+                  @change="headSwitch(scope.row)"
                 >
                 </el-switch>
               </template>
@@ -112,7 +113,7 @@
             <el-table-column label="操作" fixed="right" min-width="200">
               <template slot-scope="scope">
                 <div style="display:flex;justify-content:center">
-                  <el-button type="text" @click="topayment(scope.row)"
+                  <el-button type="text" @click="handleEdit(scope.row)"
                     >编辑</el-button
                   >
                   <el-button type="text" @click="handleDelete(scope.row)"
@@ -122,6 +123,15 @@
               </template>
             </el-table-column>
           </el-table>
+          <div class="table_bottom">
+            <div class="table_bottom">
+              <page
+                :data="schoolData.total"
+                :curpage="page"
+                @pageChange="doPageChange"
+              />
+            </div>
+          </div>
         </div>
       </section>
     </div>
@@ -134,7 +144,7 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="员工头像" prop="name">
+        <el-form-item label="员工头像">
           <div v-show="!haschoose">
             <div class="headPortrait el-icon-plus" @click="addIcon"></div>
             <div style="color:#aaa;ling-height:20px">
@@ -151,8 +161,15 @@
             />
           </div>
         </el-form-item>
-        <el-form-item label="员工姓名" placeholder="请输入员工姓名" prop="name">
-          <el-input v-model="ruleForm.name" class="common-width"></el-input>
+        <el-form-item
+          label="员工姓名"
+          placeholder="请输入员工姓名"
+          prop="staff_name"
+        >
+          <el-input
+            v-model="ruleForm.staff_name"
+            class="common-width"
+          ></el-input>
         </el-form-item>
         <el-form-item label="手机号码" prop="mobile_num">
           <el-input
@@ -255,13 +272,25 @@ export default {
   name: 'staff',
   data() {
     return {
+      page: 1,
       schoolData: [],
       haschoose: false,
       roleData: [],
       IdentityData: [],
       instituData: [],
       isTagactive: 1,
-      ruleForm: {},
+      ruleForm: {
+        staff_name: '',
+        mobile_num: '',
+        account: '',
+        password: '',
+        head_photo: '',
+        role_ids: '',
+        as_headmaster: '',
+        is_super: '',
+        institution_id: '',
+        identity: '',
+      },
       pictureVisible: false,
       dialogVisible: false,
       isTagactiveName: '全部成员',
@@ -308,7 +337,25 @@ export default {
     this.$api.getInstitutionSelectData(this, 'instituData') //所属角色列表
   },
   methods: {
-    getTableList() {},
+    handleEdit(ab) {
+      console.log(ab)
+      // this.ruleForm.id = ab.staff_id
+      this.dialogVisible = true
+      this.$api.getStaffInfo(this, ab.staff_id)
+    },
+    getTableList(state, val, datas) {
+      console.log(state, val)
+      if (state == 'page') {
+        this.page = val
+        this.datas = datas
+      } else if (state == 'data') {
+        this.schoolData = val
+      }
+    },
+    doPageChange(page) {
+      this.page = page
+      this.$api.getStaffList(this, 'schoolData')
+    },
     handleDelete(ab) {
       this.$confirm('此操作将永久删除该员工, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -328,7 +375,14 @@ export default {
     handleConfirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$api.addStaff(this, this.ruleForm)
+          console.log(this.ruleForm)
+          if (this.ruleForm.id) {
+            //修改员工
+            this.$api.modifyStaff(this, this.ruleForm)
+          } else {
+            //添加员工
+            this.$api.addStaff(this, this.ruleForm)
+          }
         } else {
           console.log('error submit!!')
           return false
@@ -336,15 +390,32 @@ export default {
       })
       console.log(this.ruleForm)
     },
-    statusSwitch(ab) {
-      this.isTagactive = ab.id
-      this.isTagactiveName = ab.name
+    accountSwitch(ab) {
+      this.$api.ajaxStatusStaff(this, ab.staff_id, ab.account_status)
+    },
+    adminSwitch(ab) {
+      this.$api.updateSuperStaff(this, ab.staff_id, ab.is_super)
+    },
+    headSwitch(ab) {
+      this.$api.updateMasterStaff(this, ab.staff_id, ab.as_headmaster)
     },
     depaSwitch(cd) {
       this.isTagactive = cd.id
       this.isTagactiveName = cd.name
     },
     addStaff() {
+      this.ruleForm = {
+        staff_name: '',
+        mobile_num: '',
+        account: '',
+        password: '',
+        head_photo: '',
+        role_ids: '',
+        as_headmaster: '',
+        is_super: '',
+        institution_id: '',
+        identity: '',
+      }
       this.dialogVisible = true
     },
     clearUrl() {
