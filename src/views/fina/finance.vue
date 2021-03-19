@@ -654,6 +654,7 @@ export default {
   },
   mounted() {
     this.$api.orderindex(this, 'schoolData')
+   
   },
   filters: {
 

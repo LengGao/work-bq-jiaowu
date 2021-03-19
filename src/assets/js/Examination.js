@@ -46,17 +46,20 @@ let Examination = {
   //添加科目
   createSubject(self, ruleForm) {
     let config = {
-      cate_id: ruleForm. cate_id,
-      name:name,
-      exam:exam,
-      score:score,
-      qualified:qualified,
-      desc:desc,
-      subject_name:subject_name,
-      cost:cost,
-      total_score:total_score,
-      pass_score:pass_score,
+      // name:name,
+      // exam:exam,
+      // score:score,
+      // qualified:qualified,
+      // desc:desc,
+
+      cate_id: ruleForm.cate_id,
+      subject_name: ruleForm.subject_name,
+      cost: ruleForm.cost,
+      total_score: ruleForm.total_score,
+      pass_score: ruleForm.pass_score,
+
       // search_box: ruleForm.search_box,
+
       page: self.page,
     }
     console.log(config)
@@ -69,6 +72,8 @@ let Examination = {
         let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
+          self.dialogVisible=false
+          self.$api.subjectList(self, 'subjectData')
         }
       },
     })

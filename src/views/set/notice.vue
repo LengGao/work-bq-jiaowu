@@ -12,7 +12,7 @@
           inputText="通知标题"
     
         ></search2>
-        <el-button type="primary" @click="dialogVisible = true">新建通知</el-button>
+        <el-button type="primary" @click="addSubject">新建通知</el-button>
        
       </div>
 
@@ -20,7 +20,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.list"
           tooltip-effect="light"
           stripe
           
@@ -81,7 +81,7 @@
       </div>
 
       <el-dialog
-        :title="classTitle"
+        title="添加公告"
         :visible.sync="dialogVisible"
         width="45%"
         >
@@ -97,17 +97,17 @@
               <el-input v-model="ruleForm.title" placeholder="请输入通知标题" style="width:300px"></el-input>
             </el-form-item>
 
-        <quill-editor ref="myTextEditor" v-model="content" prop="content" :options="editorOption" style="display:block;height:280px;margin-bottom:40px"></quill-editor>
+        <quill-editor ref="myTextEditor" v-model="ruleForm.content" prop="content" :options="editorOption" style="display:block;height:280px;margin-bottom:40px"></quill-editor>
 
            <el-form-item label="内容摘要" prop="digest" style="margin-top:80px;">
               <el-input v-model="ruleForm.digest" placeholder="请输入内容摘要" style="width:100%;"></el-input>
             </el-form-item>
 
             <div class="abstract">
-            <el-form-item label="接受范围" prop="receiver">
-             <el-radio-group v-model="radio2" @change="change">
-            <el-radio :label="1">全部员工</el-radio>
-            <el-radio :label="2">指定角色</el-radio>
+            <el-form-item label="通知对象" prop="receiver">
+             <el-radio-group v-model="ruleForm.receiver" @change="change">
+            <el-radio v-model="radio2" label="1">全部员工</el-radio>
+            <el-radio v-model="radio2" label="2">指定角色</el-radio>
           </el-radio-group>
           <el-select v-model="value1" multiple placeholder="请选择" v-if="radio2 !== 1">
                  <el-option
@@ -134,11 +134,9 @@
     </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
         </span>
 
-        
-        
       </el-dialog>
      </section>
     </div>
@@ -156,8 +154,7 @@ export default {
 
     data() {
     return {
-
-      options: [{
+    options: [{
           value: '选项1',
           label: '校长'
         }, {
@@ -169,7 +166,8 @@ export default {
         }],
          value1: [],
 
-    radio2: 1,
+
+    radio2: 0,
     inputValue: '',
     radio: '0',
     radio3: '0',
@@ -180,19 +178,23 @@ export default {
     applay: '',
 
     editorOption: {
-    placeholder: '编辑公告内容'
-            },
+    placeholder: '编辑公告内容'},
+
     ruleForm: {
+      title:'',
+      content: '',
+      digest: '',
+      receiver: '',
+      send_sms: '',
       type:[],
     },
     rules: {
-      name: [
+      title: [
             { required: true, message: '请输入通知标题', trigger: 'blur' },
           ],
-      abstract: [
+      digest: [
             { required: true, message: '请输入公告摘要', trigger: 'blur' },
           ],
-      
       type: [
             { type: 'array', required: true, message: '请至少选择一个', trigger: 'change' }
           ],
@@ -209,16 +211,37 @@ export default {
     this.$api.noticelist(this, 'schoolData')
   },
     methods: {
+      doPageChange(page) {
+      this.page = page
+      this.$api.createlist(this, 'schoolData', this.datas)
+    },
        submitForm(formName) {
+        console.log(this.ruleForm)
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+           if (this.ruleForm.id) {
+            //修改
+            this.$api.updateRoom(this, this.ruleForm)
           } else {
+            //添加通知
+            this.$api.createlist(this, this.ruleForm)
+          }
+          }else {
             console.log('error submit!!');
             return false;
           }
         });
       },
+      addSubject(){
+       this.ruleForm = {
+          title:'',
+          content: '',
+          digest: '',
+          receiver: '',
+          send_sms: ''
+      }
+      this.dialogVisible = true
+    },
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
