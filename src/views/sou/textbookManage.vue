@@ -96,7 +96,9 @@
                 <el-button type="text" @click="openEdit(row.book_id)"
                   >编辑</el-button
                 >
-                <el-button type="text">库存详情</el-button>
+                <el-button type="text" @click="link(row.book_id)"
+                  >库存详情</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -192,6 +194,9 @@ export default {
           this.cloneData(item.son, newData[index].children);
         }
       });
+    },
+    link(id) {
+      this.$router.push({ name: "inventoryDetails", query: { id } });
     },
     openEdit(id) {
       this.dialogTitle = "编辑教材";
