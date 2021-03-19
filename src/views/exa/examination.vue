@@ -531,7 +531,7 @@ export default {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // alert('添加成功');
-  this.$api.createSubject(this, 'createData')
+  this.$api.createSubject(this, this.ruleForm)
           } else {
             console.log('error submit!!');
             return false;
