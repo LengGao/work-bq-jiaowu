@@ -26,7 +26,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.list"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
@@ -38,9 +38,14 @@
             min-width="90"
             prop="project_id"
           >
+            <template slot-scope="scope">
+              <div>
+                {{ scope.$index + 1 }}
+              </div>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="project_name"
+            prop="classroom_name"
             label="班级名称"
             min-width="110"
             show-overflow-tooltip
@@ -52,28 +57,17 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="project_price"
+            prop="total_people"
             label="学生数"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
-
           <el-table-column
-            label="是否启用"
-            min-width="150"
+            prop="frist_class_time"
+            label="开课日期"
+            min-width="110"
             show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <el-switch
-                active-color="#13ce66"
-                v-model="scope.row.project_status"
-                :active-value="1"
-                :inactive-value="2"
-                @change="changeSwitch(scope.row)"
-              >
-              </el-switch>
-            </template>
-          </el-table-column>
+          ></el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
@@ -88,28 +82,41 @@
             </template>
           </el-table-column>
         </el-table>
-        <!-- <div class="table_bottom">
         <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
+          <div class="table_bottom">
+            <page
+              :data="schoolData.total"
+              :curpage="page"
+              @pageChange="doPageChange"
+            />
+          </div>
         </div>
-      </div> -->
       </div>
     </section>
   </section>
 </template>
 
 <script>
+// import SearchList from '@/components/SearchList/index'
 export default {
+  name: 'teachSchedule',
+  // components: {
+  //   SearchList,
+  // },
   data() {
     return {
-      schoolData: [{ project_name: '双方都浪费' }],
+      schoolData: [],
+      page: 1,
     }
   },
+  created() {
+    this.$api.getTimetableList(this, 'schoolData')
+  },
   methods: {
+    doPageChange(page) {
+      this.page = page
+      this.$api.getTimetableList(this, 'schoolData')
+    },
     toTimetablePreview() {
       this.$router.push({
         path: '/eda/timetablePreview',
@@ -130,6 +137,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
 .head_remind {
   padding: 20px;
   font-weight: 400;

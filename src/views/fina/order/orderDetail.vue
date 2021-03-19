@@ -30,7 +30,7 @@
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="收费学生" prop="surname">
-                  <div class="ruleWord">{{ ruleForm.surname }}</div>
+                  <div class="ruleWord">{{ ruleForm.account.surname }}</div>
                 </el-form-item>
               </el-col>
 
@@ -38,7 +38,7 @@
                 <el-form-item label="订单总价" prop="order_money">
                   <div class="ruleWord">{{ ruleForm.order_money }}</div>
                 </el-form-item>
-              </el-col>
+              </el-col> 
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="优惠 小计" prop="reduction">
                   <div class="ruleWord">{{ ruleForm.reduction }}</div>
@@ -78,17 +78,13 @@
             <el-row>
               <el-button type="primary" @click="dialogVisible = true">入账</el-button>              
             </el-row>
-
           </el-form>
-
-          
         </el-col>
 
          <el-dialog
               title="提示"
               :visible.sync="dialogVisible"
               width="25%"
-              
               >
               <span style="font-size:20px;">是否将此笔订单入账？</span>
               <span slot="footer" class="dialog-footer">
@@ -110,7 +106,7 @@
       <h3 style="margin:15px 0">订单详情</h3>
       <el-table
         ref="multipleTable"
-        :data="schoolData"
+        :data="schoolData.list"
         tooltip-effect="light"
         stripe
         style="width: 100%;"
@@ -125,19 +121,19 @@
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="price"
+          prop="pay_money"
           label="价格"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="youhui"
+          prop="reduction"
           label="优惠金额"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="yingshou"
+          prop="pay_money"
           label="应收金额"
           show-overflow-tooltip
           min-width="90"
@@ -156,7 +152,7 @@
       <h3 style="margin-bottom:15px">缴费记录</h3>
       <el-table
         ref="multipleTable"
-        :data="schoolData"
+        :data="schoolData.list"
         tooltip-effect="light"
         stripe
         style="width: 100%;"
@@ -165,25 +161,25 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="time"
+          prop="supplement_time"
           label="支付时间"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="fs"
+          prop="pay_type"
           label="支付方式"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="money"
+          prop="pay_money"
           label="支付金额"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="zt"
+          prop="uid"
           label="状态"
           show-overflow-tooltip
           min-width="90"
@@ -195,7 +191,7 @@
       <h3 style="margin-bottom:15px">经办信息</h3>
       <el-table
         ref="multipleTable"
-        :data="schoolData"
+        :data="schoolData.list"
         tooltip-effect="light"
         stripe
         style="width: 100%;"
@@ -248,26 +244,21 @@ export default {
     return {
       dialogVisible: false,
       ruleForm: {
-          // order_id:100,
-          // verify_time:2021-10-10,
-          // surname: 'yqq',
-          // order_money: 100000,
-          // reduction: 98888,
-          // order_money: 98888,
-          // pay_money: 98888,
+          order_no:'',
+          verify_time:'',
+          surname:'',
+          order_money:'',
+          reduction:'',
+          pay_money:'',
+          reduction:'',
+          account:{}
         },
-
       schoolData: [
-        {uid:'系统集成项目管理工程师',
-          price:9880,
-          youhui:1000,
-          yingshou:8800,
-
-          time:2021-3,
-          fs:'微信',
-          money:8800,
-          zt:'已付款',
-          uiddd:'刘刘刘刘',
+        {supplement_time:'',
+          pay_type:'',
+          pay_money:'',
+          yingshou:'',
+          uid:'',
         }
       ],
     }

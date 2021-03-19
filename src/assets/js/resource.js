@@ -33,6 +33,23 @@ let resource = {
       },
     })
   },
+  //教室列表
+  getRoomSelect(self, name, data) {
+    let config = {
+      // page: self.page,
+      //   category_name: category_name,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getRoomSelect,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
   //添加教室
   createRoom(self, ruleForm) {
     let config = {

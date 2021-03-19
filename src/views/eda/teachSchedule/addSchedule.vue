@@ -12,6 +12,7 @@
             <el-select
               v-model="ruleForm.category_id"
               placeholder="请选择所属分类"
+              @change="categoryChange"
             >
               <el-option
                 v-for="item in cateData.list"
@@ -42,7 +43,7 @@
               placeholder="请选择默认老师"
             >
               <el-option
-                v-for="item in teacherData.list"
+                v-for="item in teacherData"
                 :key="item.teacher_id"
                 :label="item.teacher_name"
                 :value="item.teacher_id"
@@ -70,7 +71,7 @@
               placeholder="请选择默认教室"
             >
               <el-option
-                v-for="item in roomData.list"
+                v-for="item in roomData"
                 :key="item.id"
                 :label="item.room_name"
                 :value="item.id"
@@ -135,12 +136,14 @@
         <el-table-column
           label="上课日期"
           show-overflow-tooltip
-          min-width="130"
+          min-width="160"
           prop="project_id"
         >
           <template slot-scope="scope">
             <el-date-picker
-              style="width:130px"
+              style="width:160px"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               v-model="scope.row.date"
               type="date"
               placeholder="选择日期"
@@ -164,7 +167,7 @@
             >
               <!-- {{ item }} -->
               <el-time-picker
-                style="width:220px"
+                style="width:250px"
                 format="HH:mm"
                 value-format="HH:mm"
                 is-range
@@ -202,7 +205,7 @@
               class="common-width"
             >
               <el-option
-                v-for="item in teacherData.list"
+                v-for="item in teacherData"
                 :key="item.teacher_id"
                 :label="item.teacher_name"
                 :value="item.teacher_id"
@@ -245,7 +248,7 @@
               class="common-width"
             >
               <el-option
-                v-for="item in roomData.list"
+                v-for="item in roomData"
                 :key="item.id"
                 :label="item.room_name"
                 :value="item.id"
@@ -260,15 +263,16 @@
         >
           <template slot-scope="scope">
             <el-select
-              v-model="scope.row.stfaa_id"
+              v-model="scope.row.staff_id"
               placeholder="请选择"
+              multiple
               class="common-width"
             >
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in staffData"
+                :key="item.staff_id"
+                :label="item.staff_name"
+                :value="item.staff_id"
               >
               </el-option>
             </el-select> </template
@@ -282,7 +286,7 @@
           <template slot-scope="scope">
             <el-input v-model="scope.row.remark"></el-input> </template
         ></el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="200">
+        <!-- <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
             <div style="display:flex;justify-content:center">
               <el-button type="text" @click="handleEdit(scope.row)"
@@ -293,8 +297,9 @@
               >
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
+      <el-button type="text" @click="addOneClass">添加单个上课信息</el-button>
       <footer>
         <!-- <el-checkbox v-model="checked">检查上课冲突</el-checkbox> -->
         <div>
@@ -312,6 +317,7 @@ export default {
     return {
       value1: [],
       roomData: [],
+      staffData: [],
       cateData: [],
       regionData: [
         {
@@ -349,9 +355,10 @@ export default {
   },
   mounted() {
     // this.$api.classroomList(this, 'classData') //班级列表
-    this.$api.getTeacherList(this, 'teacherData') //老师列表
-    this.$api.getRoomList(this, 'roomData') //教室列表
-    this.$api.getCategoryList(this, 'cateData') //教室列表
+    this.$api.getTeacherSublist(this, 'teacherData') //老师列表
+    this.$api.getStaffSelect(this, 'staffData') //跟班人员下拉列表
+    this.$api.getRoomSelect(this, 'roomData') //教室列表
+    this.$api.getCategoryList(this, 'cateData') //分类
     //为了解决bug，所以默认值放在了这里
     this.$nextTick(function() {
       // this.dateArr = ['2018-08-03', '2018-08-06']
@@ -360,6 +367,15 @@ export default {
     })
   },
   methods: {
+    categoryChange(e) {
+      console.log(e)
+      if (this.schoolData.length != 0) {
+        console.log(this.schoolData)
+        this.schoolData.forEach((i) => {
+          i.category_id = this.ruleForm.category_id
+        })
+      }
+    },
     choseTime(e) {},
     addTime(ab, index) {
       let arr = ab[0]
@@ -398,30 +414,50 @@ export default {
           i.class_hour.push(obj)
         }
       })
+      console.log(this.schoolData)
       this.$api.addScheduling(this, this.schoolData)
+    },
+    addOneClass() {
+      var obj = {
+        date: '',
+        title: new Date(),
+        // classroom_id_arr: this.ruleForm.classroom_id_arr,
+        classroom_id_arr: [55, 56, 57],
+        category_id: this.ruleForm.category_id,
+        teacher_id: this.ruleForm.teacher_id,
+        teaching_type: this.ruleForm.region,
+        schoolroom_id: this.ruleForm.schoolroom_id,
+        timeArr: [['04:40', '09:40']],
+        staff_id: [],
+        remark: this.ruleForm.teaching_type,
+        class_hour: [],
+      }
+      this.schoolData.push(obj)
     },
 
     createCourse() {
-      console.log(this.dateArr)
-      console.log(this.classTimeArr)
+      console.log(this.ruleForm)
+      // console.log(this.classTimeArr)
       let timeArr = []
       timeArr.push(JSON.parse(JSON.stringify(this.classTimeArr)))
       console.log(timeArr)
       this.dateArr.forEach((i) => {
         var obj = {
           date: i,
-          title: '',
-          classroom_id_arr: this.ruleForm.classroom_id_arr,
-          category_id: this.ruleForm.teacher_id,
+          title: i,
+          // classroom_id_arr: this.ruleForm.classroom_id_arr,
+          classroom_id_arr: [55, 56, 57],
+          category_id: this.ruleForm.category_id,
           teacher_id: this.ruleForm.teacher_id,
-          teaching_type: this.ruleForm.teaching_type,
-          schoolroom_id: this.ruleForm.teaching_type,
+          teaching_type: this.ruleForm.region,
+          schoolroom_id: this.ruleForm.schoolroom_id,
           timeArr: [['04:40', '09:40']],
-          stfaa_id: this.ruleForm.teaching_type,
+          staff_id: [],
           remark: this.ruleForm.teaching_type,
           class_hour: [],
         }
         this.schoolData.push(obj)
+        console.log(obj)
       })
       console.log(this.schoolData)
     },

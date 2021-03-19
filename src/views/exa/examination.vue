@@ -46,7 +46,7 @@
           <el-dialog
           title="添加报考规则"
           :visible.sync="guizeVisible"
-          width="27%"
+          width="30%"
           >
           <div>
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm">
@@ -63,7 +63,7 @@
             </el-form-item>
 
              <el-form-item label="报考省市" prop="max_num">
-              111
+              省  市
             </el-form-item>
 
             <el-form-item label="个人照片" prop="photo">
@@ -121,14 +121,6 @@
                  <el-input v-model="ruleForm.remarks" style="width:80%"></el-input>
             </el-form-item>
 
-            
-
-
-            <!-- <el-form-item label="补考规则" prop="desc">
-              分数小于
-               <el-input v-model="ruleForm.desc" style="width:50px"></el-input>
-               分时需要补考
-            </el-form-item> -->
             <el-form-item>
                <el-button @click="guizeVisible = false">取 消</el-button>
               <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
@@ -146,10 +138,16 @@
           <el-dialog
           title="添加科目"
           :visible.sync="dialogVisible"
-          width="22%"
+          width="23%"
           >
           <div>
-           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm">
+           <el-form :model="ruleForm" 
+           :rules="rules" 
+           ref="ruleForm" 
+           label-width="110px" 
+           class="demo-ruleForm"
+           :data="createData.list"
+           >
             <el-form-item label="所属分类" prop="cate_id">
               <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类">
                 <el-option label="学历教育" value="xueli"></el-option>
@@ -158,20 +156,20 @@
               </el-select>
             </el-form-item>
 
-             <el-form-item label="科目名称" prop="name">
-              <el-input v-model="ruleForm.name" placeholder="请输入科目名称" style="width:220px"></el-input>
+             <el-form-item label="科目名称">
+              <el-input v-model="ruleForm.subject_name" placeholder="请输入科目名称" style="width:220px"></el-input>
             </el-form-item>
 
-             <el-form-item label="补考费用" prop="exam">
-              <el-input v-model="ruleForm.exam" placeholder="请输入补考费用" style="width:220px"></el-input>
+             <el-form-item label="补考费用" prop="cost">
+              <el-input v-model="ruleForm.cost" placeholder="请输入补考费用" style="width:220px"></el-input>
             </el-form-item>
 
-            <el-form-item label="考试总分" prop="score">
-              <el-input v-model="ruleForm.score" placeholder="请输入考试总分" style="width:220px"></el-input>
+            <el-form-item label="考试总分" prop="total_score">
+              <el-input v-model="ruleForm.total_score" placeholder="请输入考试总分" style="width:220px"></el-input>
             </el-form-item>
 
-            <el-form-item label="合格分数" prop="qualified">
-              <el-input v-model="ruleForm.qualified" placeholder="请输入合格分数" style="width:220px"></el-input>
+            <el-form-item label="合格分数" prop="pass_score">
+              <el-input v-model="ruleForm.pass_score" placeholder="请输入合格分数" style="width:220px"></el-input>
             </el-form-item>
             
             <!-- <el-form-item label="补考规则" prop="desc">
@@ -196,7 +194,7 @@
       <div class="userTable" v-if="isTagactive === 1">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="subjectData.list"
           tooltip-effect="light"
           stripe
           @selection-change="handleSelectionChange"
@@ -214,41 +212,39 @@
           ></el-table-column>
        
           <el-table-column
-            prop="course_name"
+            prop="subject_name"
             label="考试科目"
             min-width="160"
-            column-key="course_id"
+            column-key="subject_name"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="e_name"
+            prop="category_name"
             label="所属分类"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="cost"
             label="补考费用"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="start_time"
+            prop="total_score"
             label="考试总分"
             min-width="180"
             show-overflow-tooltip
           ></el-table-column>
-
           <el-table-column
-            prop="max_num"
+            prop="pass_score"
             label="合格分数"
             min-width="80"
             show-overflow-tooltip
           >
           </el-table-column>
-
           <el-table-column
-            prop="max_num"
+
             label="是否启用"
             min-width="80"
             show-overflow-tooltip
@@ -256,7 +252,7 @@
             <template slot-scope="scope">
               <el-switch
                 active-color="#13ce66"
-                v-model="scope.row.account_status"
+                v-model="scope.row.status"
                 :active-value="1"
                 :inactive-value="2"
                 @change="changeSwitch(scope.row)"
@@ -264,7 +260,6 @@
               </el-switch>
             </template>
           </el-table-column>
-
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
@@ -280,13 +275,20 @@
             
           </el-table-column>
         </el-table>
+        <div class="table_bottom">
+          <page
+            :data="subjectData.total"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
       </div>
 
        <!--表格-->
       <div class="userTable" v-if="isTagactive === 2">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.list"
           tooltip-effect="light"
           stripe
           @selection-change="handleSelectionChange"
@@ -302,35 +304,32 @@
             show-overflow-tooltip
             min-width="60"
           ></el-table-column>
-       
           <el-table-column
-            prop="course_name"
+            prop="rule_name"
             label="报考规则"
             min-width="160"
-            column-key="course_id"
+            column-key="rule_name"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="e_name"
+            prop="category_name	"
             label="所属分类"
             min-width="120"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="region"
             label="报考省市"
             min-width="120"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="start_time"
+            prop="comment"
             label="备注信息"
             min-width="290"
             show-overflow-tooltip
           ></el-table-column>
-
           <el-table-column
-            prop="max_num"
             label="是否启用"
             min-width="80"
             show-overflow-tooltip
@@ -338,7 +337,7 @@
             <template slot-scope="scope">
               <el-switch
                 active-color="#13ce66"
-                v-model="scope.row.account_status"
+                v-model="scope.row.status"
                 :active-value="1"
                 :inactive-value="2"
                 @change="changeSwitch(scope.row)"
@@ -346,22 +345,28 @@
               </el-switch>
             </template>
           </el-table-column>
-
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
                 <el-button type="text" @click="toCreateClass(scope.row)"
                   >编辑</el-button
                 >
-                
                 <el-button type="text" @click="toCreateClass(scope.row)"
                   >删除</el-button
                 >
               </div>
             </template>
-            
           </el-table-column>
         </el-table>
+
+         <div class="table_bottom">
+          <page
+            :data="schoolData.total"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
+
       </div>
     </section>
     </div>
@@ -373,6 +378,7 @@ export default {
     name: 'examination',
 
     data() {
+      
     return {
       radio: '0',
       radio1: '0',
@@ -384,7 +390,7 @@ export default {
       end_time:'',
       start_time:'',
       startTime:'',
-
+      
       pickerOptions: {
           shortcuts: [{
             onClick(picker) {
@@ -414,30 +420,35 @@ export default {
         value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
         value2: '',
 
-       ruleForm: {
+      ruleForm: {
+          cate_id: '',
           name: '',
-          region: '',
-          date1: '',
-          date2: '',
+          exam: '',
+          score: '',
           delivery: false,
           type: [],
-          resource: '',
-          desc: ''
+          qualified: '',
+          desc: '',
+          subject_name: '',
+          cost: '',
+          total_score: '',
+          pass_score: '',
+
         },    
         rules: {
           cate_id: [
             { required: true, message: '请选择所属分类', trigger: 'blur' },
           ],
-          name: [
+          subject_name: [
             { required: true, message: '请输入科目名称', trigger: 'blur' },
           ],
-          exam: [
+          cost: [
             { required: true, message: '请输入补考费用', trigger: 'change' }
           ],
-          score: [
+          total_score: [
             { required: true, message: '请输入考试总分', trigger: 'change' }
           ],
-          qualified: [
+          pass_score: [
             { message: '请输入合格分数', trigger: 'change' }
           ],
 
@@ -470,9 +481,6 @@ export default {
 
       dialogVisible: false,
       guizeVisible:false,
-      ruleForm: {
-        category_id: '',
-      },
       isTagactive: 1,
       tabFun: [
         {
@@ -485,25 +493,20 @@ export default {
         },
       ],
       page: 1,
-      schoolData: [
-      // {
-      //   course_id:1,
-      //   course_name:'20209090123',
-      //   class_type_name:1360000000,
-      //   course_price:888,
-      //   max_num:888,
-      //   max_time:'已付款',
-      //   },
-      ],
+      schoolData: [],
+      subjectData: [],
+      createData: [],
       course_ids: [],
       datas: {},
       selectData: [],
     }
   },
 
-    mounted() {
-    // let status = 3
-    this.$api.planList(this, 'schoolData')
+  mounted() {
+    this.$api.ruleList(this, 'schoolData'),
+    this.$api.subjectList(this, 'subjectData')
+  
+
   },
     methods: {
       
@@ -513,14 +516,22 @@ export default {
     },
     doPageChange(page) {
       this.page = page
-      // this.$api.getMyclient(this, 'myclient', status)
-      this.$api.planList(this, 'schoolData', this.datas)
+      this.$api.subjectList(this, 'subjectData', this.datas)
+    },
+    doPageChange(page) {
+      this.page = page
+      this.$api.createSubject(this, 'createData', this.datas)
+    },
+    doPageChange(page) {
+      this.page = page
+      this.$api.ruleList(this, 'schoolData', this.datas)
     },
 
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            // alert('添加成功');
+  this.$api.createSubject(this, this.ruleForm)
           } else {
             console.log('error submit!!');
             return false;
@@ -667,9 +678,7 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
-/deep/.el-form-item{
-  margin-bottom:10px;
-}
+
 /deep/.inputage .el-input__inner {
   width: 30px;
   height: 30px;

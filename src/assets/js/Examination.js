@@ -3,26 +3,78 @@ import Vue from 'vue'
 import { type } from 'jquery'
 
 let Examination = {
-  //考试计划列表
-  planList(self, name) {
+  //考试科目列表
+  subjectList(self, name) {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
     }
     console.log(config)
     axiosHttp({
-      url: url.planList,
+      url: url.subjectList,
       data: config,
       method: 'GET',
       then(res) {
-        console.log(res.data.data.list)
-        let data = res.data.data.list
+        console.log(res.data.data)
+        let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
         }
       },
     })
   },
+  //考试规则列表
+  ruleList(self, name) {
+    let config = {
+      // search_box: ruleForm.search_box,
+      page: self.page,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.ruleList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+        }
+      },
+    })
+  },
+  //添加科目
+  createSubject(self, ruleForm) {
+    let config = {
+      cate_id: ruleForm. cate_id,
+      name:name,
+      exam:exam,
+      score:score,
+      qualified:qualified,
+      desc:desc,
+      subject_name:subject_name,
+      cost:cost,
+      total_score:total_score,
+      pass_score:pass_score,
+      // search_box: ruleForm.search_box,
+      page: self.page,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.createSubject,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+        }
+      },
+    })
+  },
+
+
   //授课老师下拉列表
   getTeacherDrop(self, name, data = {}) {
     let name_mobile = ''
@@ -67,6 +119,30 @@ let Examination = {
         for (let item of res.data.data.list) {
           item.add_time = self.$moment.unix(item.add_time).format('YYYY-MM-DD')
         }
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
+  //获取老师 不带分页
+  getTeacherSublist(self, name, data = {}) {
+    // let name_mobile = ''
+    // if (data.name != '' || data.name != undefined) {
+    //   name_mobile = data.name
+    // }
+    let config = {
+      // page: self.page,
+      // name_mobile: name_mobile,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getTeacherSublist,
+      data: config,
+      method: 'GET',
+      then(res) {
+        // for (let item of res.data.data.list) {
+        //   item.add_time = self.$moment.unix(item.add_time).format('YYYY-MM-DD')
+        // }
         console.log(res.data.data)
         self[name] = res.data.data
       },
