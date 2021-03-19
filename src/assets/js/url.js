@@ -25,6 +25,7 @@ export default {
   deleteproject: '/project/deleteproject',
   editProject: '/project/edit',
   getCourseManage: '/course/index',
+  getHomeclassifiList: '/indexCategory/index.html',
 
   //教务管理
   getStudentManage: '/classstudents/studentmanage',
@@ -119,8 +120,13 @@ export default {
   editorOpen: '/LiveClass/info',
   //修改公开课
   modifyOpen: '/LiveClass/modify',
-  //考试计划
-  planList: 'Examination/planList',
+  //考试科目
+  subjectList: '/Examination/subjectList',
+  //报考规则
+  ruleList: '/Examination/ruleList',
+  //添加科目
+  createSubject: '/Examination/createSubject',
+
   //财务订单管理
   orderindex: '/order/index',
   //订单详情
@@ -129,7 +135,8 @@ export default {
   roleperm: '/role/index',
   //通知公告
   noticelist: '/SystemAnnouncement/list',
-
+  //添加公告
+  createlist: '/SystemAnnouncement/create',
   //删除公告
   deletenoticelist: '/SystemAnnouncement/delete',
   //编辑公告

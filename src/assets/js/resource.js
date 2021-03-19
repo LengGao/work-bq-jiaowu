@@ -359,5 +359,104 @@ let resource = {
       },
     })
   },
+  //首页分类列表
+  getHomeclassifiList(self, name, data = {}) {
+    let index_category_name = ''
+    if (data.name != '' || data.name != undefined) {
+      index_category_name = data.name
+    }
+    let config = {
+      page: self.page,
+      index_category_name: index_category_name,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getHomeclassifiList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
+  //添加首页分类
+  addHomeCategory(self, name) {
+    let config = {
+      index_category_name: self[name].index_category_name,
+      sort: self[name].sort,
+      index_category_icon: self['url'],
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.addHomeCategory,
+      data: config,
+      then(res) {
+        console.log(res.data.data)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.dialogVisibleHome = false
+          self.$api.getHomeclassifiList(self, 'homeData')
+        }
+      },
+    })
+  },
+  //删除首页分类
+  deleteHomeclassifi(Homeclassifi_id, self) {
+    let config = {
+      id: parseInt(Homeclassifi_id.index_category_id),
+    }
+    axiosHttp({
+      url: url.deleteHomeclassifi,
+      data: config,
+      method: 'POST',
+      then(res) {
+        if (res.data.code == 0) {
+          self.$api.getHomeclassifiList(self, 'homeData')
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+        }
+      },
+    })
+  },
+  //分类列表详情
+  getHomeclassifiDetail(self, id) {
+    let config = {
+      id: id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getHomeclassifiDetail,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        let homeClass = res.data.data
+        self.addClassifyHome = homeClass.info
+        self['url'] = homeClass.info.index_category_icon
+        // self[name] =homeClass
+      },
+    })
+  },
+  //修改首页分类排序值
+  updateHomeClassifiSort(index_category_id, sort, self) {
+    let config = {
+      index_category_id: parseInt(index_category_id),
+      sort: parseInt(sort),
+    }
+    axiosHttp({
+      url: url.updateHomeClassifiSort,
+      data: config,
+      method: 'POST',
+      then(res) {
+        self.$api.getHomeclassifiList(self, 'homeData')
+      },
+    })
+  },
 }
 export default resource

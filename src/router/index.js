@@ -53,6 +53,12 @@ export const asyncRouterMap = [
         meta: { title: '分类设置', icon: 'product-add' },
       },
       {
+        path: 'homeClassifi',
+        name: 'homeClassifi',
+        component: () => import('@/views/sou/homeClassifi.vue'),
+        meta: { title: '首页分类', icon: 'product-add' },
+      },
+      {
         path: 'courseManage',
         name: 'courseManage',
         component: () => import('@/views/sou/courseManage.vue'),
@@ -76,13 +82,21 @@ export const asyncRouterMap = [
         hidden: true,
       },
       //课程管理组件结束
+
+      //教材管理组件开始
       {
         path: 'textbookManage',
         name: 'textbookManage',
         component: () => import('@/views/sou/textbookManage.vue'),
         meta: { title: '教材管理', icon: 'product-add' },
       },
-      //教材管理组件开始
+      {
+        path: 'inventoryDetails',
+        name: 'inventoryDetails',
+        component: () => import('@/views/sou/inventoryDetails/index.vue'),
+        meta: { title: '库存详情', icon: 'product-add' },
+        hidden: true,
+      },
       {
         path: 'textbookRecord',
         name: 'textbookRecord',
@@ -132,7 +146,7 @@ export const asyncRouterMap = [
         path: 'warehouseManage',
         name: 'warehouseManage',
         component: () => import('@/views/sou/warehouseManage.vue'),
-        meta: { title: '仓储管理', icon: 'product-add' },
+        meta: { title: '仓库管理', icon: 'product-add' },
       },
       //仓库管理组件开始
       {

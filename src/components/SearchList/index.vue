@@ -3,7 +3,7 @@
     <div v-for="(item, index) in options" :key="index">
       <component
         :style="item.width ? { width: item.width + 'px' } : ''"
-        v-model.trim="data[item.key]"
+        v-model.trim="searchData[item.key]"
         :is="allComponents[item.type || 'input']"
         v-bind="item.attrs"
         class="search-item"
@@ -23,7 +23,7 @@
       </component>
     </div>
     <div class="search-btns">
-      <!-- <el-button>重置</el-button> -->
+      <el-button @click="handleReset">重置</el-button>
       <el-button @click="handleSearch">搜索</el-button>
     </div>
   </div>
@@ -50,11 +50,28 @@ export default {
         datePicker: "el-date-picker",
         cascader: "el-cascader",
       },
+      searchData: {},
     };
   },
+  created() {
+    this.initData();
+  },
   methods: {
+    initData() {
+      this.searchData = { ...this.data };
+    },
+    handleReset() {
+      for (const key in this.searchData) {
+        if (typeof this.searchData[key] === "object") {
+          this.searchData[key] = Array.isArray(this.searchData[key]) ? [] : {};
+        } else {
+          this.searchData[key] = "";
+        }
+      }
+      this.handleSearch();
+    },
     handleSearch() {
-      this.$emit("on-search");
+      this.$emit("on-search", { ...this.searchData });
     },
   },
 };

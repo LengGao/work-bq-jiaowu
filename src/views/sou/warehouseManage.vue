@@ -1,287 +1,216 @@
 <template>
-  <section>
-    <div class="head_remind">
-      *管理不同机构的仓库
-    </div>
-    <div class="mainwrap">
-      <header class="header">
-        <search2></search2>
+  <div>
+    <div class="head_remind">*管理不同机构的仓库和仓库出入库。</div>
+    <section class="mainwrap">
+      <div class="client_head">
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <div>
-          <el-button type="primary" @click="addWarehouse">添加仓库</el-button>
-          <el-button type="primary" @click="enterWarehouse" class="btn-width"
-            >入库</el-button
-          >
-          <el-button type="primary" @click="allocation" class="btn-width"
-            >调拨</el-button
-          >
+          <el-button type="primary" @click="openAdd">添加仓库</el-button>
         </div>
-      </header>
+      </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="listData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
+            prop="book_name"
             label="仓库名称"
+            min-width="110"
             show-overflow-tooltip
-            min-width="90"
-            prop="index_category_id"
-          >
-          </el-table-column>
+          ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="category_name"
             label="关联机构"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="mobile"
+            prop="chief_editor"
             label="教材总数量"
-            min-width="150"
+            min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="status"
+            prop="book_price"
             label="是否启用"
-            min-width="150"
+            min-width="110"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
-              <el-switch
-                active-color="#13ce66"
-                v-model="scope.row.account_status"
-                :active-value="1"
-                :inactive-value="2"
-                @change="changeSwitch(scope.row)"
-              >
-              </el-switch>
+            <template slot-scope="{ row }">
+              <el-switch :value="false"> </el-switch>
             </template>
           </el-table-column>
-
-          <el-table-column label="操作" fixed="right" min-width="210">
-            <template slot-scope="scope">
-              <div style="display:flex;justify-content:center;width:100%">
-                <el-button
-                  type="text"
-                  @click="topayment(scope.row)"
-                  style="margin-right:20px"
+          <el-table-column label="操作" fixed="right" min-width="300">
+            <template slot-scope="{ row }">
+              <div style="display: flex; justify-content: center">
+                <el-button type="text" @click="openEdit(row.book_id)"
                   >编辑</el-button
                 >
-                <el-button
-                  type="text"
-                  @click="toTextbookDetail(scope.row)"
-                  style="margin-right:20px"
+                <el-button type="text" @click="openPutStorage(row.book_id)"
+                  >入库</el-button
+                >
+                <el-button type="text" @click="openEdit(row.book_id)"
+                  >调拨</el-button
+                >
+
+                <el-button type="text" @click="link(row.book_id)"
                   >教材详情</el-button
                 >
-                <el-button type="text" @click="toWarehouseRecord(scope.row)"
+                <el-button type="text" @click="openEdit(row.book_id)"
                   >仓库日志</el-button
                 >
               </div>
             </template>
           </el-table-column>
         </el-table>
-      </div>
-    </div>
-    <el-dialog title="添加仓库" :visible.sync="dialogVisible" width="30%">
-      <!-- <span>这是一段信息</span> -->
-      <el-form
-        :model="ruleForm"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="仓库名称" prop="name">
-          <el-input
-            class="input-width"
-            v-model="ruleForm.name"
-            placeholder="请输入仓库名称"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="关联机构" prop="name">
-          <el-select
-            v-model="value"
-            placeholder="请选择关联机构"
-            class="input-width"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >保 存</el-button
-        >
-      </span>
-    </el-dialog>
-    <el-dialog title="入库" :visible.sync="enterVisible" width="40%">
-      <div style="display:flex">
-        <div style="padding-right:40px">
-          <span style="padding-right:10px">仓库名称</span>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <div>
-          <span style="padding-right:10px">仓库名称</span>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
-      <el-table
-        :data="tableData"
-        style="width: 100%;margin-top:20px"
-        class="min_table"
-        :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
-      >
-        <template slot="empty">
-          <!--  <img class="data-pic" src="#" alt="" />-->
-
-          <el-button type="text">
-            + 选择添加教材
-          </el-button>
-        </template>
-
-        <el-table-column prop="date" label="教材名称" width="180">
-        </el-table-column>
-        <el-table-column prop="name" label="所属分类" width="180">
-        </el-table-column>
-        <el-table-column prop="address" label="价格"> </el-table-column>
-        <el-table-column prop="address" label="库存"> </el-table-column>
-        <el-table-column prop="address" label="入库数量"> </el-table-column>
-        <el-table-column prop="address" label="操作"> </el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="enterVisible = false">取 消</el-button>
-        <el-button type="primary" @click="enterVisible = false"
-          >入 库</el-button
-        >
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="调拨"
-      :visible.sync="allocationVisible"
-      width="50%"
-      :before-close="handleClose"
-    >
-      <el-form
-        :model="ruleForm"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-row>
-          <el-col :lg="8" :md="8" :sm="8" :xs="8" v-for="item in 3" :key="item">
-            <el-form-item label="活动名称" prop="name">
-              <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <el-table
-        :data="tableData"
-        style="width: 100%;margin-top:20px"
-        class="min_table"
-        :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
-      >
-        <template slot="empty">
-          <!--  <img class="data-pic" src="#" alt="" />-->
-
-          <el-button type="text">
-            + 选择添加教材
-          </el-button>
-        </template>
-
-        <el-table-column prop="date" label="教材名称" width="180">
-        </el-table-column>
-        <el-table-column prop="name" label="所属分类" width="180">
-        </el-table-column>
-        <el-table-column prop="address" label="价格"> </el-table-column>
-        <el-table-column prop="address" label="库存"> </el-table-column>
-        <el-table-column prop="address" label="入库数量"> </el-table-column>
-        <el-table-column prop="address" label="操作"> </el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="allocationVisible = false">取 消</el-button>
-        <el-button type="primary" @click="allocationVisible = false"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
-  </section>
+    </section>
+    <AddWarehouse
+      v-model="addDialog"
+      :title="dialogTitle"
+      :selectData="selectData"
+      :id="currentId"
+      @on-success="getBookList"
+    />
+    <PutInStorage
+      v-model="putDialog"
+      :id="currentId"
+      @on-success="getBookList"
+    />
+  </div>
 </template>
 
 <script>
+import SearchList from "@/components/SearchList/index";
+import AddWarehouse from "./components/AddWarehouse";
+import PutInStorage from "./components/PutInStorage";
+import { getBookList, getCateList } from "@/api/sou";
+
 export default {
-  name: 'warehouseManage',
+  components: {
+    SearchList,
+    AddWarehouse,
+    PutInStorage,
+  },
   data() {
     return {
-      dialogVisible: false,
-      enterVisible: false, //入库弹框
-      allocationVisible: false, //回播弹框
-      options: [],
-      schoolData: [
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        category_id: [],
+        keyboard: "",
+      },
+      searchOptions: [
         {
-          index_category_name: '我想',
+          key: "category_id",
+          type: "select",
+          options: [{ value: 1, label: "test" }],
+          attrs: {
+            clearable: true,
+          },
+        },
+        {
+          key: "keyboard",
+          attrs: {
+            placeholder: "仓库名称",
+          },
         },
       ],
-      ruleForm: {},
-      rules: {},
-    }
+      addDialog: false,
+      dialogTitle: "添加仓库",
+      currentId: "",
+      selectData: [],
+      putDialog: false,
+    };
   },
+
+  created() {
+    this.getBookList();
+    this.getCateList();
+  },
+
   methods: {
-    allocation() {
-      this.allocationVisible = true
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData);
+        this.searchOptions[0].attrs.options = this.selectData;
+      }
     },
-    enterWarehouse() {
-      this.enterVisible = true
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
+        if (item.son && item.son.length) {
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
+        }
+      });
     },
-    toTextbookDetail() {
-      this.$router.push({
-        path: '/sou/textbookDetail',
-      })
+    link(id) {
+      this.$router.push({ name: "inventoryDetails", query: { id } });
     },
-    toWarehouseRecord() {
-      this.$router.push({
-        path: '/sou/warehouseRecord',
-      })
+    openPutStorage() {
+      this.putDialog = true;
     },
-    addWarehouse() {
-      this.dialogVisible = true
+    openEdit(id) {
+      this.dialogTitle = "编辑仓库";
+      this.currentId = id;
+      this.addDialog = true;
+    },
+    openAdd() {
+      this.currentId = "";
+      this.dialogTitle = "添加仓库";
+      this.addDialog = true;
+    },
+
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = data;
+      this.getBookList();
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.getBookList();
+    },
+    async getBookList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await getBookList(data);
+      this.listLoading = false;
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -290,15 +219,29 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
-.header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
 .input-width {
   width: 240px;
 }
-.btn-width {
-  width: 90px;
+.main {
+  padding: 20px;
+  margin: 20px;
+  background: #fff;
+}
+.head_remind {
+  padding: 20px;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  color: #909399;
+  width: 100%;
+  border-bottom: 15px solid #f2f6fc;
+}
+.client_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.userTable {
+  margin-top: 20px;
 }
 </style>

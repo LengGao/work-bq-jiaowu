@@ -155,7 +155,9 @@ export default {
       this.previewSrc = src;
     },
 
-    handleSearch() {
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = data;
       this.getCertificateLog();
     },
     handlePageChange(val) {

@@ -146,7 +146,7 @@ export default {
       visible: this.value,
       formData: {
         book_name: "",
-        category_id: [],
+        category_id: "",
         book_cover: "",
         chief_editor: "",
         book_price: "",
@@ -158,7 +158,7 @@ export default {
           { required: true, message: "请输入教材名称", trigger: "blur" },
         ],
         category_id: [
-          { required: true, message: "请选择分类", trigger: "blur" },
+          { required: true, message: "请选择分类", trigger: "change" },
         ],
       },
     };
@@ -170,11 +170,15 @@ export default {
   },
   methods: {
     handleOpen() {
-      this.formData.category_id = 1;
-      this.id && this.getBookById();
-      setTimeout(() => {
-        this.formData.category_id = "";
-      }, 10);
+      if (this.id) {
+        this.getBookById();
+      } else {
+        this.formData.category_id = 1;
+        // 为了清空cascader的值
+        setTimeout(() => {
+          this.formData.category_id = "";
+        }, 10);
+      }
     },
     async getBookById() {
       const data = {
@@ -184,16 +188,15 @@ export default {
       if (res.code === 0) {
         for (const k in this.formData) {
           this.formData[k] = res.data[k];
-          if (k === "category_id") {
-            this.formData[k] = [res.data[k]];
-          }
         }
       }
     },
     async submit() {
       const data = {
         ...this.formData,
-        category_id: this.formData.category_id.pop(),
+        category_id: Array.isArray(this.formData.category_id)
+          ? this.formData.category_id.pop()
+          : this.formData.category_id,
       };
       if (this.id) {
         data.book_id = this.id;
@@ -217,11 +220,7 @@ export default {
       this.$refs[formName].resetFields();
       for (const k in this.formData) {
         this.formData[k] = "";
-        if (k === "category_id") {
-          this.formData[k] = [];
-        }
       }
-      console.log(this.$refs.cascader);
       this.hanldeCancel();
     },
     hanldeCancel() {

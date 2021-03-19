@@ -15,20 +15,15 @@
           <!--左边部分-->
           <el-row>
             <el-col :sm="12">
-              <el-form-item label="课程分类" prop="course_category_id">
-                <el-select
-                  filterable
-                  v-model="formData.course_category_id"
-                  placeholder="请选择课程分类"
-                >
-                  <el-option
-                    v-for="item in classifiData.list"
-                    :key="item.category_id"
-                    :label="item.category_name"
-                    :value="item.category_id"
-                  >
-                  </el-option>
-                </el-select>
+              <el-form-item label="课程分类">
+                <el-cascader
+                  :key="selectData.length"
+                  ref="cascader"
+                  style="240px"
+                  placeholder="请选择分类"
+                  v-model="formData.category_id"
+                  :options="selectData"
+                ></el-cascader>
               </el-form-item>
             </el-col>
             <el-col :sm="12">
@@ -114,41 +109,56 @@
             </el-col>
           </el-row>
 
-          <el-row style="z-index:1">
+          <el-row style="height:400px">
             <el-form-item
               label="课程介绍"
               class="textarea_date"
               prop="introduction"
             >
+              <el-upload
+                class="avatar-uploader"
+                :action="serverUrl"
+                name="image"
+                :headers="header"
+                :show-file-list="false"
+                :on-success="uploadSuccess"
+                :on-error="uploadError"
+                :before-upload="beforeUpload"
+              >
+              </el-upload>
               <quill-editor
                 v-model="content"
                 ref="myQuillEditor"
                 :options="editorOption"
                 @change="onEditorChange($event)"
-                style="height:300px"
+                style="height:200px"
               >
               </quill-editor>
             </el-form-item>
           </el-row>
+          <el-form-item> </el-form-item>
+          <div class="entybtn">
+            <!-- <el-button @click="releaseCourse('ruleForm', 'is_publish')"
+        >保存草稿</el-button
+      > -->
+            <el-button>取消</el-button>
+            <el-button type="primary" @click="handleSave('ruleForm')"
+              >保存</el-button
+            >
+            <el-button type="primary" @click="toConfigureCourses"
+              >保存并配置</el-button
+            >
+          </div>
         </el-form>
       </el-col>
       <el-col :sm="8" :md="8"></el-col>
     </el-row>
-    <div class="entybtn">
-      <!-- <el-button @click="releaseCourse('ruleForm', 'is_publish')"
-        >保存草稿</el-button
-      > -->
-      <el-button>取消</el-button>
-      <el-button type="primary">保存</el-button>
-      <el-button type="primary" @click="toConfigureCourses"
-        >保存并配置</el-button
-      >
-    </div>
-    <!-- <imgDialog
+
+    <imgDialog
       v-if="pictureVisible"
       @closeImg="closeImg"
       @clearUrl="clearUrl"
-    ></imgDialog> -->
+    ></imgDialog>
   </section>
 </template>
 
@@ -158,6 +168,7 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 import { uploadImageUrl } from '@/api/educational'
+import { addCourse, getCateList, editCourse } from '@/api/sou'
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'], // toggled buttons
   [{ header: 1 }, { header: 2 }], // custom button values
@@ -180,17 +191,11 @@ export default {
   data() {
     return {
       editor: null,
-      setMeal: false,
-      formData: {},
-      form: {
-        chapter: [],
-        // chaName: '',
-      },
-      chapterCo: [],
-      course_id: '',
-      url: '',
       pictureVisible: false,
       haschoose: false,
+      selectData: [],
+      homeData: {},
+      teacherData: {},
       formData: {
         is_topping: '',
         course_name: '',
@@ -215,6 +220,9 @@ export default {
         free_sort: 0,
         hot_sort: 0,
       },
+      url: '',
+      pictureVisible: false,
+      haschoose: false,
       rules: {
         course_name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -249,17 +257,6 @@ export default {
           { required: true, message: '请输入课程价格', trigger: 'blur' },
         ],
       },
-      classifiData: [],
-      teacherData: [],
-      homeData: [],
-      questionBank: [],
-      courseData: [],
-      videoData: [],
-      radio: '',
-      imageUrl: '',
-      chapterTags: [],
-      taglist: {},
-      lastPage: '',
 
       /***********quillEditor编辑器需要的参数**********/
 
@@ -290,10 +287,81 @@ export default {
       }, // 有的图片服务器要求请求头需要有token
     }
   },
-  created() {},
+  created() {
+    this.getCateList() //获取所属分类
+    this.$api.getTeacherSublist(this, 'teacherData') //老师列表
+    this.$api.getHomeclassifiList(this, 'homeData') //获取首页分类
+  },
   mounted() {},
 
   methods: {
+    async submit() {
+      const data = {
+        ...this.formData,
+        category_id: Array.isArray(this.formData.category_id)
+          ? this.formData.category_id.pop()
+          : this.formData.category_id,
+      }
+      if (this.id) {
+        data.book_id = this.id
+      }
+      const api = this.id ? editCourse : addCourse
+      const res = await api(data)
+      if (res.code === 0) {
+        this.$message.success(`教材${this.id ? '编辑' : '新增'}成功`)
+        // this.hanldeCancel()
+        // this.$emit('on-success')
+      }
+    },
+    handleSave(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.submit()
+        }
+      })
+    },
+    addIcon() {
+      this.pictureVisible = true
+    },
+    clearUrl() {
+      // this.url = ''
+      // this.haschoose = false
+      this.pictureVisible = false
+    },
+    closeImg(radioUrl) {
+      // console.log(radioUrl + '我好睡')
+      this.pictureVisible = false
+      if (radioUrl != undefined) {
+        this.haschoose = true
+        this.url = radioUrl
+        this.formData.cover_img = radioUrl
+      } else {
+        this.url = ''
+        this.haschoose = false
+        this.formData.cover_img = ''
+      }
+    },
+    async getCateList() {
+      const data = { list: true }
+      const res = await getCateList(data)
+      console.log(res)
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData)
+        console.log(this.selectData)
+        // this.searchOptions[0].attrs.options = this.selectData
+      }
+    },
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {}
+        newData[index].value = item.category_id
+        newData[index].label = item.category_name
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
+      })
+    },
     //跳转配置课程页面
     toConfigureCourses() {
       this.$router.push({
@@ -328,6 +396,7 @@ export default {
     /***************quillEditor编辑器事件****************/
     onEditorChange({ editor, html, text }) {
       //内容改变事件
+      console.log(html)
       this.content = html
     },
     // 富文本图片上传前
@@ -342,11 +411,15 @@ export default {
       console.log(res)
       let quill = this.$refs.myQuillEditor.quill
       // 如果上传成功
-      if (res.code == 200) {
+      if (res.code == 0) {
+        this.$message({
+          type: 'success',
+          message: res.message,
+        })
         // 获取光标所在位置
         let length = quill.getSelection().index
         // 插入图片 res.url为服务器返回的图片地址
-        quill.insertEmbed(length, 'image', res.url)
+        quill.insertEmbed(length, 'image', res.data.data.url)
         // 调整光标到最后
         quill.setSelection(length + 1)
       } else {

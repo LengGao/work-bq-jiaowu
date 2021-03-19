@@ -69,3 +69,25 @@ export function getCourseList(params) {
     params,
   })
 }
+/**
+ * 添加课程
+ * @param {*} data
+ */
+export function addCourse(data) {
+  return request({
+    url: '/course/add',
+    method: 'post',
+    data,
+  })
+}
+/**
+ *修改课程
+ * @param {*} data
+ */
+export function editCourse(data) {
+  return request({
+    url: '/course/modify',
+    method: 'post',
+    data,
+  })
+}

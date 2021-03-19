@@ -4,7 +4,7 @@ import { type } from 'jquery'
 
 let Finance = {
     
-//财务订单管理
+//订单管理
 orderindex(self, name) {
     let config = {
       // search_box: ruleForm.search_box,
@@ -16,21 +16,24 @@ orderindex(self, name) {
       data: config,
       method: 'GET',
       then(res) {
-        console.log(res.data.data.list)
-        let data = res.data.data.list
+        console.log(res.data.data)
+        let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
-        
+          self.panelData = res.data.data.count[0]
         }
       },
     })
   },
   
-   //财务订单详情
+   //订单详情
    orderdetail(self, name) {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
+      order_id:self.$route.query.order_id	
+      //order_id赋值：上一级路由的order_id
+
     }
     console.log(config)
     axiosHttp({
@@ -38,11 +41,11 @@ orderindex(self, name) {
       data: config,
       method: 'GET',
       then(res) {
-        console.log(res.data.data.list)
-        let data = res.data.data.list
+        console.log(res.data.data)
+        let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
-        
+          self.ruleForm = res.data.data
         }
       },
     })

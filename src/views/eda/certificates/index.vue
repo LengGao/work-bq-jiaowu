@@ -241,7 +241,9 @@ export default {
       this.currentUid = id;
       this.addDialog = true;
     },
-    handleSearch() {
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = data;
       this.getCertificates();
     },
     handlePageChange(val) {
