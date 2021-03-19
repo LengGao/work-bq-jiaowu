@@ -354,6 +354,14 @@ export const asyncRouterMap = [
         component: () => import('@/views/eda/certificates/index.vue'),
         meta: { title: '证件资料', icon: 'product-cate' },
       },
+      {
+        path: 'certificatesLog',
+        name: 'certificatesLog',
+        component: () =>
+          import('@/views/eda/certificates/certificatesLog/index.vue'),
+        meta: { title: '日志', icon: 'product-cate' },
+        hidden: true,
+      },
     ],
   },
   {
