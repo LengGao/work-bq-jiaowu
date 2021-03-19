@@ -6,8 +6,7 @@
       <el-col :sm="16" :md="16" class="colleft">
         <el-form
           label-width="140px"
-          class="demo-ruleForm"
-          :model="ruleForm"
+          :model="formData"
           :rules="rules"
           ref="ruleForm"
           :show-message="true"
@@ -19,7 +18,7 @@
               <el-form-item label="课程分类" prop="course_category_id">
                 <el-select
                   filterable
-                  v-model="ruleForm.course_category_id"
+                  v-model="formData.course_category_id"
                   placeholder="请选择课程分类"
                 >
                   <el-option
@@ -36,7 +35,7 @@
               <el-form-item label="任课老师" prop="teacher_id">
                 <el-select
                   filterable
-                  v-model="ruleForm.teacher_id"
+                  v-model="formData.teacher_id"
                   placeholder="请选择任课老师"
                 >
                   <el-option
@@ -55,7 +54,7 @@
               <el-form-item label="课程名称" prop="course_name">
                 <el-input
                   style="width:740px;"
-                  v-model="ruleForm.course_name"
+                  v-model="formData.course_name"
                   placeholder="请输入课程名称"
                 ></el-input>
               </el-form-item>
@@ -67,7 +66,7 @@
               <el-form-item label="首页分类" prop="index_category_id">
                 <el-select
                   filterable
-                  v-model="ruleForm.index_category_id"
+                  v-model="formData.index_category_id"
                   placeholder="请选择首页分类"
                 >
                   <el-option
@@ -82,14 +81,14 @@
               <el-form-item label="全部课程排序" prop="sort">
                 <el-input
                   type="number"
-                  v-model="ruleForm.sort"
+                  v-model="formData.sort"
                   placeholder="排序数字越大课程越靠前"
                 ></el-input>
               </el-form-item>
               <el-form-item label="课程价格" prop="course_price">
                 <el-input
                   placeholder="请输入课程价格"
-                  v-model="ruleForm.course_price"
+                  v-model="formData.course_price"
                   type="number"
                 ></el-input>
               </el-form-item>
@@ -121,18 +120,14 @@
               class="textarea_date"
               prop="introduction"
             >
-              <div id="caseAnalyse"></div>
-              <!--<kindeditor
-                @kindeditorChange="changeParentTitle"
-                :content="ruleForm.introduction"
-                height="200px"
-                id="caseAnalyse"
-              />-->
-              <!-- <el-input
-                type="textarea"
-                placeholder="请输入内容"
-                v-model="ruleForm.introduction"
-              ></el-input> -->
+              <quill-editor
+                v-model="content"
+                ref="myQuillEditor"
+                :options="editorOption"
+                @change="onEditorChange($event)"
+                style="height:300px"
+              >
+              </quill-editor>
             </el-form-item>
           </el-row>
         </el-form>
@@ -158,15 +153,35 @@
 </template>
 
 <script>
-import E from 'wangeditor'
-import Vue from 'vue'
-
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
+import { uploadImageUrl } from '@/api/educational'
+const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+  [{ header: 1 }, { header: 2 }], // custom button values
+  [{ list: 'ordered' }, { list: 'bullet' }],
+  [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+  [{ direction: 'rtl' }], // text direction
+  [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  [{ font: [] }],
+  [{ align: [] }],
+  ['link', 'image'],
+  ['clean'],
+]
 export default {
   name: 'IntentionEntry',
+  components: {
+    quillEditor,
+  },
   data() {
     return {
       editor: null,
       setMeal: false,
+      formData: {},
       form: {
         chapter: [],
         // chaName: '',
@@ -176,7 +191,7 @@ export default {
       url: '',
       pictureVisible: false,
       haschoose: false,
-      ruleForm: {
+      formData: {
         is_topping: '',
         course_name: '',
         course_category_id: '',
@@ -216,15 +231,7 @@ export default {
         teacher_id: [
           { required: true, message: '请选择任课老师', trigger: 'change' },
         ],
-        // video_collection_id: [
-        //   { required: true, message: '请选择活动区域', trigger: 'change' },
-        // ],
-        // problem_course_id: [
-        //   { required: true, message: '请选择活动区域', trigger: 'change' },
-        // ],
-        // index_category_id: [
-        //   { required: true, message: '请选择活动区域', trigger: 'change' },
-        // ],
+
         sale_type: [
           { required: true, message: '请选择售卖方式', trigger: 'change' },
         ],
@@ -253,95 +260,38 @@ export default {
       chapterTags: [],
       taglist: {},
       lastPage: '',
-    }
-  },
-  created() {
-    // //课程分类列表
-    // this.$api.getCategoryList(this, 'classifiData')
-    // //授课老师列表
-    // this.$api.getTeacherDrop(this, 'teacherData')
-    // //首页分类表
-    // this.$api.getHomeclassifiList(this, 'homeData')
-  },
-  mounted() {
-    // let lastPage = this.$route.query.lastPage
-    // lastPage ? (this.lastPage = lastPage) : ''
-    // let Meal = this.$route.query.setMeal
-    // this.course_id = this.$route.query.course_id
-    // if (Meal == '2') {
-    //   //关联课程
-    //   this.$api.getSingleCourses(this, 'courseData')
-    //   this.setMeal = true
-    //   this.$route.meta.title = '创建套餐班'
-    //   this.ruleForm.class_type = 2
-    // } else {
-    //   this.ruleForm.class_type = 1
-    //   this.setMeal = false
-    //   this.$route.meta.title = '创建单科班'
-    // }
-    // if (this.course_id != '') {
-    //   this.$api.getCoursesDetail(this, this.course_id)
-    // }
-    //wangEditor编辑器
-    this.editor = new E('#caseAnalyse')
-    // editor.config.uploadImgServer = Vue.prototype.rootDir + '/oss/uploadImage'
-    this.editor.config.uploadImgShowBase64 = true
-    //编辑器中的图片上传到本地
-    let that = this
-    this.editor.config.customUploadImg = function(files, insert) {
-      var formData = new FormData()
-      formData.append('image', files[0])
-      $.ajax({
-        type: 'POST',
-        url: Vue.prototype.rootDir + '/oss/uploadImage',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(res) {
-          if (res.code == 0) {
-            that.$message({
-              message: res.message,
-              type: 'success',
-            })
-            insert(res.data.data.url)
-          } else {
-            that.$message.error(res.message)
-          }
+
+      /***********quillEditor编辑器需要的参数**********/
+
+      quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
+      content: null,
+      editorOption: {
+        placeholder: '',
+        theme: 'snow', // or 'bubble'
+        modules: {
+          toolbar: {
+            container: toolbarOptions,
+            handlers: {
+              image: function(value) {
+                if (value) {
+                  // 触发input框选择图片文件
+                  document.querySelector('.avatar-uploader input').click()
+                } else {
+                  this.quill.format('image', false)
+                }
+              },
+            },
+          },
         },
-        error(err) {
-          that.$message({
-            message: '服务器维护中',
-            type: 'warning',
-          })
-        },
-      })
+      },
+      serverUrl: uploadImageUrl, // 这里写你要上传的图片服务器地址
+      header: {
+        token: this.$store.state.user.token,
+      }, // 有的图片服务器要求请求头需要有token
     }
-    this.editor.config.onchange = (html) => {
-      this.ruleForm.introduction = html
-    }
-    // 普通的自定义菜单
-    this.editor.config.menus = [
-      'bold',
-      'fontSize',
-      'fontName',
-      'italic',
-      'underline',
-      'strikeThrough',
-      'foreColor',
-      'backColor',
-      'list',
-      'justify',
-      'image',
-      'table',
-      'undo',
-      'redo',
-      'qgs',
-    ]
-    this.editor.create()
   },
-  // beforeDestroy() {
-  //   eventBus.$off('lastPageNum', this.lastPage)
-  // },
+  created() {},
+  mounted() {},
 
   methods: {
     //跳转配置课程页面
@@ -375,7 +325,42 @@ export default {
       console.log(txt)
       this.ruleForm.introduction = txt
     },
-    // changeLeaning() {},
+    /***************quillEditor编辑器事件****************/
+    onEditorChange({ editor, html, text }) {
+      //内容改变事件
+      this.content = html
+    },
+    // 富文本图片上传前
+    beforeUpload() {
+      // 显示loading动画
+      this.quillUpdateImg = true
+    },
+
+    uploadSuccess(res, file) {
+      // res为图片服务器返回的数据
+      // 获取富文本组件实例
+      console.log(res)
+      let quill = this.$refs.myQuillEditor.quill
+      // 如果上传成功
+      if (res.code == 200) {
+        // 获取光标所在位置
+        let length = quill.getSelection().index
+        // 插入图片 res.url为服务器返回的图片地址
+        quill.insertEmbed(length, 'image', res.url)
+        // 调整光标到最后
+        quill.setSelection(length + 1)
+      } else {
+        this.$message.error('图片插入失败')
+      }
+      // loading动画消失
+      this.quillUpdateImg = false
+    },
+    // 富文本图片上传失败
+    uploadError() {
+      // loading动画消失
+      this.quillUpdateImg = false
+      this.$message.error('图片插入失败')
+    },
   },
 }
 </script>
