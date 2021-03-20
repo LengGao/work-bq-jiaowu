@@ -1,4 +1,4 @@
-<template>
+ <template>
   <section class="mainwrap">
     <el-row style="min-width:1100px">
       <el-col :lg="15" :md="15" :sm="15" :xs="15">
@@ -29,501 +29,472 @@
           </el-col>
         </el-row>
       </el-col>
-
       <el-col :lg="3" :md="3" :sm="3" :xs="3">
-        <div>
+        <div style="display:flex;justify-content:flex-end">
           <el-button type="primary">报名</el-button>
-          <!-- <el-button type="primary">编辑</el-button> -->
         </div>
       </el-col>
     </el-row>
-    <!--基本信息-->
-    <div>
+
+    <section class="main-contain">
       <el-row style="min-width:1100px">
-        <el-col :lg="18" :sm="18" :xs="18" :md="18">
-          <el-row>
-            <el-col :lg="4" :sm="4" :xs="4" :md="4">
-              <h3 style="margin:20px 0 15px  0">基本信息</h3></el-col
-            >
-            <el-col :lg="16" :sm="16" :xs="16" :md="16"
-              ><div style="width:10px%;height:10px"></div
-            ></el-col>
-            <el-col :lg="4" :sm="4" :xs="4" :md="4">
-              <template v-if="editorInfoShow">
-                <el-button type="primary" @click="editorInfoHide"
-                  >取消</el-button
-                >
-                <el-button type="primary">保存</el-button>
-              </template>
-              <el-button
-                type="primary"
-                @click="showEditorInfo"
-                v-if="!editorInfoShow"
+        <el-col :lg="18" :md="18" :sm="18" :xs="18">
+          <div class="navigationBox">
+            <ul class="navigation">
+              <li
+                v-for="item in tabFun"
+                :key="item.id"
+                @click="statusSwitch(item)"
+                :class="{ tabg: item.id == isTagactive }"
+              >
+                {{ item.name }}
+              </li>
+            </ul>
+            <div style="margin-bottom:10px" v-if="isTagactive == 1">
+              <div v-show="editorInfoShow">
+                <el-button>取消</el-button>
+                <el-button type="primary" @click="editorInfo">保存</el-button>
+              </div>
+
+              <el-button v-show="!editorInfoShow" @click="editorInfo"
                 >编辑</el-button
               >
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
-
-      <el-row style="min-width:1100px">
-        <el-col :lg="18" :sm="18" :xs="18" :md="18" v-if="!editorInfoShow">
-          <el-form
-            :model="ruleForm"
-            ref="ruleForm"
-            label-width="100px"
-            class="demo-ruleForm"
-          >
-            <el-row class="detailLine">
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="客户姓名" prop="cusname">
-                  <div class="ruleWord">{{ ruleForm.cusname }}</div>
-                  <!-- <el-button type="text" disabled>{{ ruleForm.uid }}</el-button> -->
-                </el-form-item>
-                <!-- <span>学员编号</span>
-                <el-input disabled v-model="ruleForm.uid"></el-input> -->
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="手机号码" prop="create_time">
-                  <div class="ruleWord">{{ ruleForm.create_time }}</div>
-                  <!-- <el-input v-model="ruleForm.create_time" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="备用号码" prop="user_nicename">
-                  <div class="ruleWord">{{ ruleForm.user_nicename }}</div>
-                  <!-- <el-input
-                    v-model="ruleForm.user_nicename"
-                    disabled
-                  ></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="身份证号" prop="realname">
-                  <div class="ruleWord">{{ ruleForm.realname }}</div>
-                  <!-- <el-input v-model="ruleForm.realname" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="学员性别" prop="mobile">
-                  <div class="ruleWord">{{ ruleForm.mobile }}</div>
-                  <!-- <el-input v-model="ruleForm.mobile" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="婚姻状况" prop="identity_card">
-                  <div class="ruleWord">{{ ruleForm.identity_card }}</div>
-                  <!-- <el-input
-                    v-model="ruleForm.identity_card"
-                    disabled
-                  ></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="出生日期" prop="name">
-                  <div class="ruleWord">{{ ruleForm.name }}</div>
-                  <!-- <el-input v-model="ruleForm.name" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="年龄" prop="type">
-                  <div class="ruleWord">{{ ruleForm.type }}</div>
-                  <!-- <el-input v-model="ruleForm.type" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="邮箱地址" prop="organization_id">
-                  <div class="ruleWord">{{ ruleForm.organization_id }}</div>
-                  <!-- <el-input
-                    v-model="ruleForm.organization_id"
-                    disabled
-                  ></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="文化程度" prop="name">
-                  <div class="ruleWord">{{ ruleForm.name }}</div>
-                  <!-- <el-input v-model="ruleForm.name" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="地域" prop="pay_amount">
-                  <div class="ruleWord">{{ ruleForm.pay_amount }}</div>
-                  <!-- <el-input v-model="ruleForm.pay_amount" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="所属校区" prop="class_type">
-                  <div class="ruleWord">{{ ruleForm.class_type }}</div>
-                  <!-- <el-input v-model="ruleForm.class_type" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="渠道来源" prop="update_time">
-                  <div class="ruleWord">{{ ruleForm.update_time }}</div>
-                  <!-- <el-input v-model="ruleForm.update_time" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="所属机构" prop="update_time">
-                  <div class="ruleWord">{{ ruleForm.update_time }}</div>
-                  <!-- <el-input v-model="ruleForm.update_time" disabled></el-input> -->
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-        <!--编辑基本信息-->
-        <el-col :lg="18" :sm="18" :xs="18" :md="18" v-if="editorInfoShow">
-          <el-form
-            :model="ruleForm"
-            ref="ruleForm"
-            label-width="100px"
-            class="demo-ruleForm"
-          >
-            <el-row class="detailLine">
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="客户姓名" prop="uid">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-                <!-- <span>学员编号</span>
-                <el-input disabled v-model="ruleForm.uid"></el-input> -->
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="手机号码" prop="create_time">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="电话号码" prop="user_nicename">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="身份证号" prop="realname">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="学员性别" prop="mobile">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="婚姻状况" prop="identity_card">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="出生日期" prop="name">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="年龄" prop="type">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="邮箱地址" prop="organization_id">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="文化程度" prop="name">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="地域" prop="pay_amount">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="所属校区" prop="class_type">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="渠道来源" prop="update_time">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="所属机构" prop="update_time">
-                  <el-input
-                    v-model="ruleForm.create_time"
-                    style="width:240px"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-
-        <el-col :lg="3" :sm="3" :xs="3" :md="3"> </el-col>
-      </el-row>
-    </div>
-    <el-row style="min-width:1100px">
-      <el-col :lg="18" :sm="18" :xs="18" :md="18">
-        <!--订单记录-->
-        <div class="customer_sum_up">
-          <h3 style="margin:20px 0">订单记录</h3>
-          <!--表格-->
-
-          <div class="userTable">
-            <el-table
-              ref="multipleTable"
-              :data="schoolData"
-              style="width: 100%"
-              class="min_table"
-              :header-cell-style="{ 'text-align': 'center' }"
-              :cell-style="{ 'text-align': 'center' }"
-            >
-              <el-table-column
-                label="订单编号"
-                show-overflow-tooltip
-                min-width="90"
-                prop="index_category_id"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="index_category_name"
-                label="订单状态"
-                min-width="110"
-                show-overflow-tooltip
-              ></el-table-column>
-              <el-table-column
-                prop="mobile"
-                label="订单总价"
-                min-width="150"
-                show-overflow-tooltip
-              ></el-table-column>
-              <el-table-column
-                prop="mobile"
-                label="优惠金额"
-                min-width="150"
-                show-overflow-tooltip
-              ></el-table-column>
-
-              <el-table-column
-                prop="mobile"
-                label="应收金额"
-                min-width="150"
-                show-overflow-tooltip
-              ></el-table-column>
-              <el-table-column
-                prop="mobile"
-                label="实收金额"
-                min-width="150"
-                show-overflow-tooltip
-              ></el-table-column>
-              <el-table-column
-                prop="mobile"
-                label="欠交金额"
-                min-width="150"
-                show-overflow-tooltip
-              ></el-table-column>
-
-              <el-table-column label="操作" fixed="right" min-width="200">
-                <template>
-                  <div style="display:flex;justify-content:center">
-                    <el-button type="text" style="" @click="orderVisibleShow"
-                      >收款</el-button
-                    >
-                    <el-button
-                      type="text"
-                      style="padding:0 40px"
-                      @click="orderVisibleShow"
-                      >退费</el-button
-                    >
-                    <el-button type="text" style="" @click="orderVisibleShow"
-                      >作废</el-button
-                    >
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </div>
-        <!--客户历史-->
-        <div class="customer_sum_up">
-          <h3 style="margin:20px 0">订单记录</h3>
-          <!--表格-->
-          <el-input type="textarea" placeholder="请填写跟进记录"></el-input>
-          <div style="display:flex;justify-content:flex-end">
-            <el-button type="primary" style="margin-top:20px;width:80px;"
-              >发布</el-button
-            >
-          </div>
-          <div class="textContent">
-            <h5>报名缴费</h5>
-            <p>2020-05-26 17:21:01 操作人：admin 角色：教务 部门：招生部</p>
-            <div>
-              备注信息：老客户转介绍，给予八五折优惠
             </div>
           </div>
-        </div>
-      </el-col>
-    </el-row>
-    <el-dialog title="提示" :visible.sync="orderVisible" width="70%">
-      <h3 style="margin-bottom:10px ">订单信息</h3>
-      <el-row>
-        <el-col
-          :lg="8"
-          :md="8"
-          :sm="8"
-          :xs="8"
-          class="orderInfo"
-          v-for="i in 6"
-          :key="i"
-        >
-          订单编号: <span>A-451420200701</span>
+          <!--基本信息-->
+          <div class="information" v-if="isTagactive == 1">
+            <div style="padding:40px 100px">
+              <el-steps :active="active" finish-status="success">
+                <el-step title="报名"></el-step>
+                <el-step title="培训"></el-step>
+                <el-step title="考试"></el-step>
+                <el-step title="毕业"></el-step>
+              </el-steps>
+            </div>
+
+            <el-form
+              :model="ruleForm"
+              ref="ruleForm"
+              label-width="100px"
+              class="demo-ruleForm"
+              v-if="!editorInfoShow"
+            >
+              <el-row class="detailLine">
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="客户姓名" prop="uid">
+                    <div class="ruleWord">{{ ruleForm.uid }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="手机号码" prop="create_time">
+                    <div class="ruleWord">{{ ruleForm.create_time }}</div>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="紧急号码" prop="user_nicename">
+                    <div class="ruleWord">{{ ruleForm.user_nicename }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="身份证号" prop="realname">
+                    <div class="ruleWord">{{ ruleForm.realname }}sdfdsfsdf</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="微信" prop="realname">
+                    <div class="ruleWord">{{ ruleForm.realname }}sdfdsfsdf</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="学员性别" prop="mobile">
+                    <div class="ruleWord">{{ ruleForm.mobile }}</div>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="出生日期" prop="name">
+                    <div class="ruleWord">{{ ruleForm.name }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="QQ" prop="identity_card">
+                    <div class="ruleWord">{{ ruleForm.identity_card }}</div>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="邮箱地址" prop="organization_id">
+                    <div class="ruleWord">{{ ruleForm.organization_id }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="文化程度" prop="name">
+                    <div class="ruleWord">{{ ruleForm.name }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="籍贯" prop="pay_amount">
+                    <div class="ruleWord">{{ ruleForm.pay_amount }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="常住地" prop="pay_amount">
+                    <div class="ruleWord">{{ ruleForm.pay_amount }}</div>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="渠道来源" prop="update_time">
+                    <div class="ruleWord">{{ ruleForm.update_time }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="所属机构" prop="update_time">
+                    <div class="ruleWord">{{ ruleForm.update_time }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="备注信息" prop="update_time">
+                    <div class="ruleWord">{{ ruleForm.update_time }}</div>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+
+            <!--编辑基本信息-->
+
+            <el-form
+              :model="ruleForm"
+              ref="ruleForm"
+              label-width="100px"
+              class="demo-ruleForm"
+              v-if="editorInfoShow"
+            >
+              <el-row class="detailLine">
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="学生号码" prop="uid">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="手机号码" prop="create_time">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="紧急号码" prop="user_nicename">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="身份证号" prop="realname">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="微信" prop="realname">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="学员性别" prop="mobile">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+
+                <!-- <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="婚姻状况" prop="identity_card">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col> -->
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="出生日期" prop="name">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="QQ" prop="type">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <!-- <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="年龄" prop="type">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col> -->
+
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="邮箱地址" prop="organization_id">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="文化程度" prop="name">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="籍贯" prop="pay_amount">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="常住地" prop="pay_amount">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <!-- <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="所属校区" prop="class_type">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col> -->
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="渠道来源" prop="update_time">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="所属机构" prop="update_time">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="备注信息" prop="update_time">
+                    <el-input
+                      v-model="ruleForm.create_time"
+                      style="width:240px"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </div>
+          <!--证件资料-->
+          <div class="certificate" v-if="isTagactive == 2">
+            <el-row>
+              <el-col :lg="18" :md="18" :sm="18" :xs="18">
+                <el-row>
+                  <el-col
+                    :lg="8"
+                    :md="8"
+                    :sm="8"
+                    :xs="8"
+                    v-for="item in 5"
+                    :key="item"
+                    style="margin-bottom:40px"
+                  >
+                    <div class="certificate-item">
+                      <p>免冠正面照</p>
+                      <div
+                        class="headPortrait el-icon-plus"
+                        @click="addIcon"
+                      ></div></div
+                  ></el-col>
+                </el-row>
+              </el-col>
+              <el-col
+                :lg="6"
+                :md="6"
+                :sm="6"
+                :xs="6"
+                style="display:flex;justify-content:flex-end"
+              >
+                <el-button>查看大图</el-button>
+                <el-button>打包下载</el-button>
+              </el-col>
+            </el-row>
+          </div>
+         
+          <!--订单记录-->
+          <div v-if="isTagactive == 3">
+            <!--表格-->
+            <div class="userTable">
+              <el-table
+                ref="multipleTable"
+                :data="schoolData"
+                tooltip-effect="light"
+                stripe
+                style="width: 100%;"
+                :header-cell-style="{ 'text-align': 'center' }"
+                :cell-style="{ 'text-align': 'center' }"
+                class="min_table"
+              >
+                <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
+                <el-table-column
+                  prop="course_id"
+                  label="订单编号"
+                  show-overflow-tooltip
+                  min-width="90"
+                ></el-table-column>
+                <el-table-column
+                  prop="course_name"
+                  label="订单时间"
+                  min-width="200"
+                  column-key="course_id"
+                  show-overflow-tooltip
+                ></el-table-column>
+                <el-table-column
+                  prop="category_name"
+                  label="订单金额"
+                  min-width="100"
+                  show-overflow-tooltip
+                ></el-table-column>
+                <el-table-column
+                  prop="category_name"
+                  label="订单状态"
+                  min-width="100"
+                  show-overflow-tooltip
+                ></el-table-column>
+              </el-table>
+            </div>
+          </div>
+          <!--跟进记录-->
+          <div v-if="isTagactive == 4" class="record">
+            <el-input type="textarea" placeholder="请填写跟进记录..." />
+            <div class="record-head" style="">
+              <div>
+                <span>下次跟进时间</span>
+                <el-date-picker
+                  v-model="value1"
+                  type="date"
+                  placeholder="选择日期"
+                >
+                </el-date-picker>
+              </div>
+              <el-button type="primary">发布</el-button>
+            </div>
+            <div class="record-box" v-for="item in 4" :key="item">
+              <div class="record-title">
+                <p>跟进时间<span>2020-05-26 17:21:01</span></p>
+                <p>更进人<span>admin</span></p>
+                <p>部门<span>招生部</span></p>
+                <p>角色<span>教务</span></p>
+              </div>
+              <div class="record-content">
+                <p>更进内容<span>2020-05-26 17:21:01</span></p>
+              </div>
+              <div class="record-content">
+                <p>下次跟进时间<span>未设置</span></p>
+              </div>
+            </div>
+          </div>
         </el-col>
       </el-row>
-      <h3 style="margin:20px 0">支付信息</h3>
-      <el-form
-        label-width="100px"
-        class="demo-ruleForm"
-        :model="ruleForm"
-       
-        ref="ruleForm"
-        :show-message="true"
-        label-position="right"
-      >
-        <el-row>
-          <el-col :lg="12" :md="12" :sm="12" :xs="12">
-            <el-form-item label="支付方式" prop="name">
-              <el-input v-model="ruleForm.name"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="12" :md="12" :sm="12" :xs="12">
-            <el-form-item label="支付金额" prop="name">
-              <el-input v-model="ruleForm.name"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="12" :md="12" :sm="12" :xs="12">
-            <el-form-item label="上传收据" prop="name">
-              <el-input v-model="ruleForm.name"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="orderVisible = false">取 消</el-button>
-        <el-button type="primary" @click="toOrderDetail">收 费</el-button>
-      </span>
-    </el-dialog>
+    </section>
   </section>
 </template>
 
 <script>
 export default {
-  name: 'customeDetail',
   data() {
     return {
-      ruleForm: {
-          create_time:100,
-          user_nicename:1360000000,
-          realname:420900002121,
-          mobile:'男',
-          identity_card:'已婚',
-         
-      },
-      schoolData: [{ index_category_id: 1 }],
-      editorInfoShow: false, //控制编辑信息显示
-      orderVisible: false,
+      isTagactive: 1,
+      schoolData: [],
+      editorInfoShow: false,
+      ruleForm: {},
+      tabFun: [
+        {
+          id: 1,
+          name: '基本信息',
+        },
+        {
+          id: 2,
+          name: '证件资料',
+        },
+        {
+          id: 3,
+          name: '订单记录',
+        },
+        {
+          id: 4,
+          name: '跟进记录',
+        },
+      ],
     }
   },
   methods: {
-    //跳转订单详情页
-    toOrderDetail() {
-      this.$router.push({
-        path: '/etm/orderDetail',
-      })
-    },
-    orderVisibleShow() {
-      this.orderVisible = true
-    },
-    showEditorInfo() {
+    editorInfo() {
       this.editorInfoShow = !this.editorInfoShow
     },
-    editorInfoHide() {
-      this.editorInfoShow = false
+    statusSwitch(ab) {
+      this.isTagactive = ab.id
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-/deep/.el-form-item__label {
-  font-size: 16px;
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
   color: #909399;
 }
-/deep/.el-input__inner {
-  width: 240px;
-}
-/deep/
-.ruleWord {
-  font-size: 16px;
-  color: #606266;
-}
-.orderInfo {
-  padding: 10px 0;
+/deep/.el-button {
+  padding: 9px 0;
+  width: 80px;
 }
 .detail-name {
   display: flex;
   font-size: 16px;
   color: #909399;
   align-items: center;
+}
+.tabg {
+  color: #2798ee !important;
+  border-bottom: 2px solid #199fff !important;
 }
 .detail-info {
   // height: 100%;
@@ -539,40 +510,121 @@ export default {
     padding-left: 30px;
   }
 }
-/deep/.el-table__header th,
-.el-table__header tr {
-  background-color: #f8f8f8;
-  color: #909399;
-}
-h3 {
-  color: #333333;
-  font-size: 16px;
 
-  font-family: 'Arial Normal', 'Arial', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-
-  padding-left: 4px;
-  border-left: 4px solid #199fff;
-}
-.textContent {
-  font-size: 16px;
-  color: #606266;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  h5 {
+.navigationBox {
+  height: 45px;
+  border-bottom: 1px solid #ccc;
+  margin-top: 30px;
+  padding-left: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  .navigation {
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Microsoft YaHei UI', sans-serif;
+    font-weight: 400;
+    font-style: normal;
     font-size: 16px;
-    color: #606266;
+    letter-spacing: normal;
+    color: #333333;
+    li {
+      height: 28px;
+      font-size: 16px;
+
+      border-bottom: 2px solid #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+      cursor: pointer;
+      color: #666666;
+    }
+    li:last-child {
+      margin-right: 0px !important;
+    }
+    li:hover {
+      color: #199fff;
+      border-bottom: 2px solid #199fff;
+    }
+  }
+}
+.headPortrait {
+  width: 87px;
+  height: 87px;
+  background: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  color: #3333;
+  border: 1px solid rgba(220, 223, 230, 1);
+  border-radius: 5px;
+}
+.headPortrait:hover {
+  border: 1px solid rgba(240, 240, 240, 1);
+  cursor: pointer;
+}
+.certificate-item {
+  display: flex;
+  p {
+    padding: 10px 20px 0 0;
+  }
+}
+.certificate {
+  margin-top: 20px;
+}
+.userTable {
+  margin-top: 20px;
+}
+.record {
+  margin-top: 20px;
+}
+.record-head {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  span {
+    padding-right: 20px;
+  }
+}
+.record-box {
+  margin-top: 40px;
+}
+.record-title {
+  display: flex;
+  justify-content: space-between;
+  min-width: 600px;
+  max-width: 800px;
+
+  p {
     font-family: 'Arial Normal', 'Arial', sans-serif;
     font-weight: 400;
     font-style: normal;
-    padding-top: 10px;
-  }
-  p {
-    padding: 10px 0;
     font-size: 16px;
     color: #909399;
+    letter-spacing: normal;
+    span {
+      color: #606266;
+      margin-left: 15px;
+    }
+  }
+}
+.record-content {
+  margin-top: 15px;
+  p {
+    font-family: 'Arial Normal', 'Arial', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    color: #909399;
+    letter-spacing: normal;
+    span {
+      color: #606266;
+      margin-left: 15px;
+    }
   }
 }
 </style>

@@ -284,7 +284,6 @@
         </div>
       </el-dialog>
 
-
            <!-- 作废弹出框 -->
         <el-dialog title="申请作废" :visible.sync="voidFormVisible">
 
@@ -577,18 +576,10 @@ export default {
             { required: true, message: '', trigger: 'change' }
           ],
       },
-      schoolData: [
-     
-      ],  
-      
-      panelData:{
+      schoolData: [],  
+      panelData:{},   
 
-      },   
-
-      ruleForm: {
-        // order_id: '',
-
-      },
+   
     }
   },
   mounted() {
