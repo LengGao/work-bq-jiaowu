@@ -6,7 +6,9 @@ let enrollStu = {
   getCustomerList(self, name) {
     let config = {
       // search_box: ruleForm.search_box,
-      page: self.page,
+      page: self.pageNum,
+      ...self.searchData,
+      // category_id: self.searchData.category_id.pop(),
     }
     console.log(config)
     axiosHttp({
@@ -17,6 +19,7 @@ let enrollStu = {
         console.log(res.data.data.list)
         let data = res.data.data
         if (res.data.code == 0) {
+          self.analysis = data.analysis[0]
           for (var item of data.list) {
             if (item.from_organization_name == '') {
               item.from_organization_name = '--'
@@ -190,8 +193,6 @@ let enrollStu = {
       },
     })
   },
-
-
 }
 
 export default enrollStu
