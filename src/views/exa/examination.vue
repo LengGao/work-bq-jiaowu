@@ -134,7 +134,7 @@
 
         <div v-if="isTagactive === 1">
          <div>
-          <el-button type="primary" @click="dialogVisible = true">添加科目</el-button>
+          <el-button type="primary" @click="addSubject">添加科目</el-button>
           <el-dialog
           title="添加科目"
           :visible.sync="dialogVisible"
@@ -146,13 +146,12 @@
            ref="ruleForm" 
            label-width="110px" 
            class="demo-ruleForm"
-           :data="createData.list"
            >
             <el-form-item label="所属分类" prop="cate_id">
               <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类">
-                <el-option label="学历教育" value="xueli"></el-option>
-                <el-option label="职称考证" value="zhicheng"></el-option>
-                <el-option label="特种作业" value="tezhong"></el-option>
+                <el-option label="学历教育" value="1"></el-option>
+                <el-option label="职称考证" value="2"></el-option>
+                <el-option label="特种作业" value="3"></el-option>
               </el-select>
             </el-form-item>
 
@@ -421,18 +420,19 @@ export default {
         value2: '',
 
       ruleForm: {
+          // name: '',
+          // exam: '',
+          // score: '',
+          // delivery: false,
+          // type: [],
+          // qualified: '',
+          // desc: '',
+
+          subject_name:'',
           cate_id: '',
-          name: '',
-          exam: '',
-          score: '',
-          delivery: false,
-          type: [],
-          qualified: '',
-          desc: '',
-          subject_name: '',
           cost: '',
           total_score: '',
-          pass_score: '',
+          pass_score: ''
 
         },    
         rules: {
@@ -505,8 +505,6 @@ export default {
   mounted() {
     this.$api.ruleList(this, 'schoolData'),
     this.$api.subjectList(this, 'subjectData')
-  
-
   },
     methods: {
       
@@ -528,19 +526,38 @@ export default {
     },
 
       submitForm(formName) {
+        console.log(this.ruleForm)
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            // alert('添加成功');
-  this.$api.createSubject(this, this.ruleForm)
+           if (this.ruleForm.id) {
+            //修改
+            this.$api.updateRoom(this, this.ruleForm)
           } else {
+            //添加科目
+            this.$api.createSubject(this, this.ruleForm)
+          }
+          }else {
             console.log('error submit!!');
             return false;
           }
         });
       },
+
+    addSubject(){
+       this.ruleForm = {
+        subject_name:'',
+          cate_id: '',
+          cost: '',
+          total_score: '',
+          pass_score: ''
+      }
+      this.dialogVisible = true
+    },
+
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
+
 
     statusSwitch(ab) {
       this.isTagactive = ab.id

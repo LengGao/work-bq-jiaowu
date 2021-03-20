@@ -9,6 +9,7 @@ let Finance = {
       all: self.all,
       ...self.searchData,
       page: self.page,
+      all:1,
     }
     console.log(config)
     axiosHttp({
@@ -21,6 +22,7 @@ let Finance = {
         if (res.data.code == 0) {
           self[name] = data
           self.panelData = res.data.data.count[0]
+ 
         }
       },
     })
@@ -40,8 +42,8 @@ let Finance = {
       data: config,
       method: 'GET',
       then(res) {
-        console.log(res.data.data)
-        let data = res.data.data
+        console.log(res.data.data.pay_log)
+        let data = res.data.data.pay_log
         if (res.data.code == 0) {
           self[name] = data
           self.ruleForm = res.data.data

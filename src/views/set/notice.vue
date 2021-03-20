@@ -20,7 +20,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="schoolData.list"
           tooltip-effect="light"
           stripe
           style="width: 100%;"

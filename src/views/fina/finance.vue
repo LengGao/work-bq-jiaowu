@@ -812,6 +812,7 @@ export default {
   },
   mounted() {
     this.$api.orderindex(this, 'schoolData')
+   
   },
   filters: {},
   methods: {
@@ -1168,5 +1169,8 @@ header {
       font-size: 20px;
     }
   }
+}
+.table_bottom{
+text-align: right;
 }
 </style>

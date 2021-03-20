@@ -30,9 +30,17 @@
       </div>
       <!--表格-->
       <div class="userTable" v-if="isTagactive === 1">
-        <el-table ref="multipleTable" :data="schoolData" tooltip-effect="light" stripe @selection-change="handleSelectionChange" style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
+        <el-table ref="multipleTable" 
+        :data="schoolData.list" 
+        tooltip-effect="light" 
+        stripe @selection-change="handleSelectionChange" 
+        style="width: 100%;" 
+        :header-cell-style="{ 'text-align': 'center' }" 
+        :cell-style="{ 'text-align': 'center' }" 
+        class="min_table">
+
           <el-table-column type="selection" width="45"> </el-table-column>
-          <el-table-column prop="verify_time" label="订单时间" show-overflow-tooltip min-width="100"></el-table-column>
+          <el-table-column prop="create_time" label="订单时间" show-overflow-tooltip min-width="100"></el-table-column>
 
           <el-table-column prop="order_no" label="订单编号" min-width="100" column-key="course_id" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -64,6 +72,14 @@
             </template>
           </el-table-column>
         </el-table>
+
+        <div class="table_bottom">
+          <page
+            :data="schoolData.total"
+            :curpage="page"
+            @pageChange="doPageChange"
+          />
+        </div>
 
       </div>
 
@@ -147,8 +163,6 @@
 
       </div>
 
-   
-
       <!-- <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
         <span>这是一段信息</span>
         <span slot="footer" class="dialog-footer">
@@ -203,12 +217,12 @@ export default {
 
       schoolData: [
         {
-          course_id: 1,
-          course_name: '20209090123',
-          class_type_name: 1360000000,
-          course_price: 888,
-          max_num: 888,
-          max_time: '已付款',
+          // create_time: 1,
+          // order_no: '20209090123',
+          // class_type_name: 1360000000,
+          // course_price: 888,
+          // max_num: 888,
+          // max_time: '已付款',
         },
         {
           course_id: 1,
@@ -218,22 +232,7 @@ export default {
           max_num: 888,
           max_time: '已付款',
         },
-        {
-          course_id: 1,
-          course_name: '20209090123',
-          class_type_name: 18922229898,
-          course_price: 888,
-          max_num: 888,
-          max_time: '已付款',
-        },
-        {
-          course_id: 1,
-          course_name: '20209090123',
-          class_type_name: 19800005959,
-          course_price: 888,
-          max_num: 888,
-          max_time: '已付款',
-        },
+  
       ],
       course_ids: [],
       datas: {},
@@ -493,5 +492,8 @@ export default {
 .dialog-footer {
   display: flex;
   justify-content: center;
+}
+.table_bottom{
+text-align: right;
 }
 </style>
