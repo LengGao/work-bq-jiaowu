@@ -5,14 +5,19 @@
     </div>
     <section class="mainwrap">
       <div class="head-search">
-        <search2
+        <!-- <search2
           :courseTypeShow="true"
           :contentShow="true"
           typeTx="punch"
           api="getHomeclassifiList"
           inputText="教材名称"
           @getTable="getTableList"
-        ></search2>
+        ></search2> -->
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <el-button type="primary" @click="projectDialog">
           添加项目
         </el-button>
@@ -96,15 +101,13 @@
             </template>
           </el-table-column>
         </el-table>
-        <!-- <div class="table_bottom">
         <div class="table_bottom">
           <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
           />
         </div>
-      </div> -->
       </div>
       <!--添加项目弹框-->
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%">
@@ -241,11 +244,19 @@
 </template>
 
 <script>
+import { getCateList } from '@/api/sou'
 export default {
   name: 'projectManage',
   data() {
     return {
       dialogTitle: '添加项目',
+      selectData: [],
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        category_id: [],
+        keyboard: '',
+      },
       ruleForm: {
         project_name: '',
         category_id: '',
@@ -261,6 +272,22 @@ export default {
         applay: '',
         school: '',
       },
+      searchOptions: [
+        {
+          key: 'category_id',
+          type: 'cascader',
+          attrs: {
+            clearable: true,
+            options: [{ value: 1, label: 'test' }],
+          },
+        },
+        {
+          key: 'keyboard',
+          attrs: {
+            placeholder: '项目名称',
+          },
+        },
+      ],
       rules: {
         project_name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -297,9 +324,38 @@ export default {
     }
   },
   created() {
+    this.getCateList()
     this.$api.getProjectList(this, 'schoolData')
   },
   methods: {
+    handlePageChange(val) {
+      this.pageNum = val
+      this.$api.getProjectList(this, 'schoolData')
+    },
+    handleSearch(data) {
+      this.pageNum = 1
+      this.searchData = data
+      this.$api.getProjectList(this, 'schoolData')
+    },
+    async getCateList() {
+      const data = { list: true }
+      const res = await getCateList(data)
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData)
+        this.searchOptions[0].attrs.options = this.selectData
+      }
+    },
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {}
+        newData[index].value = item.category_id
+        newData[index].label = item.category_name
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
+      })
+    },
     choseServicetype(ab) {
       switch (ab) {
         case 1:
