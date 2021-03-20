@@ -234,8 +234,10 @@ let resource = {
   //项目列表
   getProjectList(self, name) {
     let config = {
-      // id: id,
-      // sort: sort,
+      // page: 1,
+      // page: self.pageNum,
+      // ...self.searchData,
+      // category_id: self.searchData.category_id.pop(),
     }
     console.log(config)
     axiosHttp({

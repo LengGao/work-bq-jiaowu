@@ -3,11 +3,11 @@ import Vue from 'vue'
 import { type } from 'jquery'
 
 let Finance = {
-    
-//订单管理
-orderindex(self, name) {
+  //订单管理
+  orderindex(self, name) {
     let config = {
-      // search_box: ruleForm.search_box,
+      all: self.all,
+      ...self.searchData,
       page: self.page,
     }
     console.log(config)
@@ -25,15 +25,14 @@ orderindex(self, name) {
       },
     })
   },
-  
-   //订单详情
-   orderdetail(self, name) {
+
+  //订单详情
+  orderdetail(self, name) {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
-      order_id:self.$route.query.order_id	
+      order_id: self.$route.query.order_id,
       //order_id赋值：上一级路由的order_id
-
     }
     console.log(config)
     axiosHttp({
@@ -50,8 +49,6 @@ orderindex(self, name) {
       },
     })
   },
-  
-
 }
 
 export default Finance
