@@ -461,7 +461,17 @@
             </template>
           </el-table-column>
       </el-table>
-
+ <el-dialog
+              title="提示"
+              :visible.sync="dialogVisible"
+              width="25%"
+             >
+              <span style="font-size:20px;">是否将此笔订单入账？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+              </span>
+      </el-dialog>
     </div>
     <!--经办信息-->
     <div style="margin-top:20px">
@@ -502,17 +512,7 @@
         ></el-table-column>
       </el-table>
     </div>
-      <el-dialog
-              title="提示"
-              :visible.sync="dialogVisible"
-              width="25%"
-             >
-              <span style="font-size:20px;">是否将此笔订单入账？</span>
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-              </span>
-      </el-dialog>
+     
    
     <!--关闭-->
     <!-- <div
@@ -529,10 +529,11 @@
 export default {
   data() {
     return {
-       dialogFormVisible: false,
+      dialogFormVisible: false,
       refundFormVisible: false,
       voidFormVisible: false,
       dialogVisible: false,
+      order_id:'',
        form: {
           name: '',
           region: '',
@@ -584,7 +585,9 @@ export default {
   },
   mounted() {
     // let status = 3
+    this.order_id = this.$route.query.order_id
     this.$api.orderdetail(this, 'schoolData')
+  
   },
 
     methods: {
