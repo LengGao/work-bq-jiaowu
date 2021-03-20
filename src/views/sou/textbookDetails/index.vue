@@ -1,6 +1,6 @@
-  <!-- 库存详情 -->
+  <!-- 教材详情 -->
 <template>
-  <div class="inventory-details">
+  <div class="textbook-details">
     <section class="mainwrap">
       <div class="client_head">
         <SearchList
@@ -24,20 +24,32 @@
           :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
-            prop="storage_name"
-            label="仓库名称"
+            prop="book_id"
+            label="ID"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="institution_name"
-            label="关联机构"
+            prop="book_name"
+            label="教材名称"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="book_price"
+            label="价格"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="number"
-            label="教材数量"
+            label="库存数量"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
@@ -62,9 +74,10 @@
 
 <script>
 import SearchList from "@/components/SearchList/index";
-import { getbookinstorage, getInstitutionSelectData } from "@/api/sou";
+import { getstoragebook, getCateList } from "@/api/sou";
 
 export default {
+  name: "TextbookDetails",
   components: {
     SearchList,
   },
@@ -75,12 +88,12 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        organization_id: [],
+        category_id: [],
         keyboard: "",
       },
       searchOptions: [
         {
-          key: "organization_id",
+          key: "category_id",
           type: "cascader",
           attrs: {
             placeholder: "所属分类",
@@ -91,7 +104,7 @@ export default {
         {
           key: "keyboard",
           attrs: {
-            placeholder: "仓库名称",
+            placeholder: "教材名称",
           },
         },
       ],
@@ -100,24 +113,24 @@ export default {
   },
 
   created() {
-    this.getbookinstorage();
-    this.getInstitutionSelectData();
+    this.getstoragebook();
+    this.getCateList();
   },
 
   methods: {
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;
-      this.getbookinstorage();
+      this.getstoragebook();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getbookinstorage();
+      this.getstoragebook();
     },
     // 获取搜索选项
-    async getInstitutionSelectData() {
+    async getCateList() {
       const data = { list: true };
-      const res = await getInstitutionSelectData(data);
+      const res = await getCateList(data);
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData);
         this.searchOptions[0].attrs.options = this.selectData;
@@ -126,23 +139,23 @@ export default {
     cloneData(data, newData) {
       data.forEach((item, index) => {
         newData[index] = {};
-        newData[index].value = item.institution_id;
-        newData[index].label = item.institution_name;
-        if (item.children && item.children.length) {
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
+        if (item.son && item.son.length) {
           newData[index].children = [];
-          this.cloneData(item.children, newData[index].children);
+          this.cloneData(item.son, newData[index].children);
         }
       });
     },
-    async getbookinstorage() {
+    async getstoragebook() {
       const data = {
-        book_id: this.$route.query.id,
+        storage_id: this.$route.query.id,
         page: this.pageNum,
         ...this.searchData,
-        organization_id: this.searchData.organization_id.pop(),
+        category_id: this.searchData.category_id.pop(),
       };
       this.listLoading = true;
-      const res = await getbookinstorage(data);
+      const res = await getstoragebook(data);
       this.listLoading = false;
       this.listData = res.data.data;
       this.listTotal = res.data.total;
@@ -152,7 +165,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.inventory-details {
+.textbook-details {
   /deep/.el-table__header th,
   .el-table__header tr {
     background-color: #f8f8f8;

@@ -1,11 +1,11 @@
 <template>
-  <!--入库弹框-->
+  <!--调拨弹框-->
   <el-dialog
-    title="入库"
+    title="调拨"
     :visible.sync="visible"
     width="1000px"
     top="30px"
-    class="put-in-storage"
+    class="allocation-storage"
     @open="handleOpen"
     @closed="resetForm('ruleForm')"
   >
@@ -49,13 +49,6 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="book_isbn"
-          label="教材条码ISBN"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-
-        <el-table-column
           prop="number"
           label="库存数量"
           min-width="110"
@@ -63,7 +56,7 @@
         ></el-table-column>
         <el-table-column
           prop="number"
-          label="入库数量"
+          label="调拨数量"
           min-width="110"
           show-overflow-tooltip
         >
@@ -71,7 +64,7 @@
             <el-input
               type="number"
               v-model="row.putNumber"
-              placeholder="请输入入库数量"
+              placeholder="请输入调拨数量"
               v-if="row.isChecked"
               size="mini"
             ></el-input>
@@ -80,9 +73,33 @@
         </el-table-column>
       </el-table>
       <div class="table-remark">
-        <el-form label-width="80px" :model="formData" ref="ruleForm">
+        <el-form
+          label-width="80px"
+          :model="formData"
+          :rules="rules"
+          ref="ruleForm"
+        >
           <el-row>
-            <el-col :lg="24" :sm="24" :xs="24" :md="24">
+            <el-col :lg="12" :sm="12" :xs="12" :md="12">
+              <el-form-item label="调入仓库" prop="to_storage_id">
+                <el-select
+                  clearable
+                  filterable
+                  style="width: 100%"
+                  placeholder="请选择关联机构"
+                  v-model="formData.to_storage_id"
+                >
+                  <el-option
+                    v-for="item in storageOptions"
+                    :key="item.id"
+                    :label="item.storage_name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="调拨备注">
                 <el-input
                   maxlength="30"
@@ -109,7 +126,7 @@
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
       <el-button type="primary" @click="submitForm('ruleForm')"
-        >入 库</el-button
+        >调 拨</el-button
       >
     </span>
   </el-dialog>
@@ -117,7 +134,12 @@
 
 <script>
 import SearchList from "@/components/SearchList/index";
-import { getBookList, getCateList, textbooksputstorage } from "@/api/sou";
+import {
+  getstoragebook,
+  getCateList,
+  mobilizestorage,
+  getStorageOptions,
+} from "@/api/sou";
 export default {
   components: {
     SearchList,
@@ -135,13 +157,22 @@ export default {
       type: [String, Number],
       default: "",
     },
+    selectData: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
-      selectData: [], // 搜索项
       visible: this.value,
       formData: {
+        to_storage_id: "",
         common: "",
+      },
+      rules: {
+        to_storage_id: [
+          { required: true, message: "请选择仓库", trigger: "change" },
+        ],
       },
       listData: [],
       listLoading: false,
@@ -164,11 +195,12 @@ export default {
         {
           key: "keyboard",
           attrs: {
-            placeholder: "教材名称/教材条码",
+            placeholder: "教材名称",
           },
         },
       ],
       selection: [],
+      storageOptions: [],
     };
   },
   watch: {
@@ -194,11 +226,12 @@ export default {
       this.selection = selection;
     },
     handleOpen() {
-      this.getBookList();
+      this.getStorageOptions();
+      this.getstoragebook();
       this.getCateList();
     },
-    // 入库
-    async textbooksputstorage() {
+    // 调拨
+    async mobilizestorage() {
       const books = this.selection.map((item) => {
         return {
           book_id: item.book_id,
@@ -208,11 +241,11 @@ export default {
       const data = {
         storage_id: this.id,
         ...this.formData,
-        book_info: JSON.stringify(books),
+        book: JSON.stringify(books),
       };
-      const res = await textbooksputstorage(data);
+      const res = await mobilizestorage(data);
       if (res.code === 0) {
-        this.$message.success(`入库成功`);
+        this.$message.success(`调拨成功`);
         this.hanldeCancel();
         this.$emit("on-success");
       }
@@ -237,42 +270,55 @@ export default {
         }
       });
     },
+    //获取仓库下拉
+    async getStorageOptions() {
+      const res = await getStorageOptions();
+      if (res.code === 0) {
+        this.storageOptions = res.data?.data || [];
+      }
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;
-      this.getBookList();
+      this.getstoragebook();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getBookList();
+      this.getstoragebook();
     },
-    async getBookList() {
+    async getstoragebook() {
       this.selection = [];
       const data = {
+        storage_id: this.id,
         page: this.pageNum,
         limit: 10,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
       };
       this.listLoading = true;
-      const res = await getBookList(data);
+      const res = await getstoragebook(data);
       this.listLoading = false;
       this.listData = res.data.data.map((item) => ({ ...item, putNumber: "" }));
       this.listTotal = res.data.total;
     },
 
-    submitForm() {
+    submitForm(formName) {
       if (!this.selection.length) {
-        this.$message.warning("请选择需要入库的教材!");
+        this.$message.warning("请选择需要调拨的教材!");
         return false;
       }
       if (this.selection.some((item) => item.putNumber < 1)) {
-        this.$message.warning("请填写正确的入库数量!");
+        this.$message.warning("请填写正确的调拨数量!");
         return false;
       }
-      this.textbooksputstorage();
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.mobilizestorage();
+        }
+      });
     },
-    resetForm() {
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
       for (const k in this.formData) {
         this.formData[k] = "";
       }

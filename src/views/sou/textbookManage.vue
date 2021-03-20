@@ -126,9 +126,9 @@
 </template>
 
 <script>
-import SearchList from '@/components/SearchList/index'
-import AddTeachingMaterial from './components/AddTeachingMaterial'
-import { getBookList, getCateList } from '@/api/sou'
+import SearchList from "@/components/SearchList/index";
+import AddTeachingMaterial from "./components/AddTeachingMaterial";
+import { getBookList, getCateList } from "@/api/sou";
 
 export default {
   components: {
@@ -143,99 +143,100 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        keyboard: '',
+        keyboard: "",
       },
       searchOptions: [
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
           attrs: {
+            placeholder: "所属分类",
             clearable: true,
-            options: [{ value: 1, label: 'test' }],
+            options: [],
           },
         },
         {
-          key: 'keyboard',
+          key: "keyboard",
           attrs: {
-            placeholder: '教材名称/教材条码',
+            placeholder: "教材名称/教材条码",
           },
         },
       ],
       addDialog: false,
-      dialogTitle: '添加教材',
-      currentId: '',
-      previewSrc: '',
+      dialogTitle: "添加教材",
+      currentId: "",
+      previewSrc: "",
       previewDialog: false,
       selectData: [],
-    }
+    };
   },
 
   created() {
-    this.getBookList()
-    this.getCateList()
+    this.getBookList();
+    this.getCateList();
   },
 
   methods: {
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
+        this.cloneData(res.data, this.selectData);
+        this.searchOptions[0].attrs.options = this.selectData;
       }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
     link(id) {
-      this.$router.push({ name: 'inventoryDetails', query: { id } })
+      this.$router.push({ name: "inventoryDetails", query: { id } });
     },
     openEdit(id) {
-      this.dialogTitle = '编辑教材'
-      this.currentId = id
-      this.addDialog = true
+      this.dialogTitle = "编辑教材";
+      this.currentId = id;
+      this.addDialog = true;
     },
     openAdd() {
-      this.currentId = ''
-      this.dialogTitle = '添加教材'
-      this.addDialog = true
+      this.currentId = "";
+      this.dialogTitle = "添加教材";
+      this.addDialog = true;
     },
     handlePreview(src) {
-      this.previewDialog = true
-      this.previewSrc = src
+      this.previewDialog = true;
+      this.previewSrc = src;
     },
 
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.getBookList()
+      this.pageNum = 1;
+      this.searchData = data;
+      this.getBookList();
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getBookList()
+      this.pageNum = val;
+      this.getBookList();
     },
     async getBookList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
-      }
-      this.listLoading = true
-      const res = await getBookList(data)
-      this.listLoading = false
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      };
+      this.listLoading = true;
+      const res = await getBookList(data);
+      this.listLoading = false;
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

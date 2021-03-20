@@ -157,6 +157,20 @@ export const asyncRouterMap = [
         component: () => import('@/views/sou/warehouseManage.vue'),
         meta: { title: '仓库管理', icon: 'product-add' },
       },
+      {
+        path: 'textbookDetails',
+        name: 'textbookDetails',
+        component: () => import('@/views/sou/textbookDetails/index.vue'),
+        meta: { title: '教材详情', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'storageLog',
+        name: 'storageLog',
+        component: () => import('@/views/sou/storageLog/index.vue'),
+        meta: { title: '仓库日志', icon: 'product-add' },
+        hidden: true,
+      },
       //仓库管理组件开始
       {
         path: 'warehouseRecord',
