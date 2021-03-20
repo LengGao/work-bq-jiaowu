@@ -29,6 +29,8 @@ let system = {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
+
+
     }
     console.log(config)
     axiosHttp({
@@ -36,20 +38,28 @@ let system = {
       data: config,
       method: 'GET',
       then(res) {
-        console.log(res.data.data.list)
-        let data = res.data.data.list
+        console.log(res.data.data)
+        let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
+          
         }
       },
     })
   },
 
-  //编辑公告
-  createlist(self, id) {
+  //添加公告
+  createlist(self, ruleForm) {
     let config = {
       // search_box: ruleForm.search_box,
-      id,
+
+      title: ruleForm.title,
+      content: ruleForm.content,
+      digest: ruleForm.digest,
+      receiver: ruleForm.receiver,
+      send_sms: ruleForm.send_sms,
+
+      page: self.page,
     }
     console.log(config)
     axiosHttp({
@@ -57,14 +67,17 @@ let system = {
       data: config,
       method: 'POST',
       then(res) {
-        console.log(res.data.data.list)
-        let data = res.data.data.list
+        console.log(res.data.data)
+        let data = res.data.Data
         if (res.data.code == 0) {
           self[name] = data
+          self.dialogVisible=false
+          self.$api.noticelist(self, 'schoolData')
         }
       },
     })
   },
+
 
   //删除公告
   deletenoticelist(self, id) {
