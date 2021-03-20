@@ -19,6 +19,7 @@ let system = {
         let data = res.data.data.list
         if (res.data.code == 0) {
           self[name] = data
+          
         }
       },
     })

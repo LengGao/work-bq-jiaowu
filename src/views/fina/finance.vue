@@ -262,7 +262,6 @@
                 <el-button type="text" @click="voidFormVisible = true">作废</el-button>
               </div>
             </template>
-            
           </el-table-column>
         </el-table>
 
@@ -570,6 +569,9 @@ export default {
   data() {
     
     return {
+      page: 1,
+      status: 1,
+      datas: {},
       xmname:'',
       inputfl:'',
       startend:'',
@@ -586,7 +588,10 @@ export default {
           ],
       },
       schoolData: [
-     
+          {
+
+          },
+          
       ],  
       
       panelData:{
@@ -628,11 +633,6 @@ export default {
           name: '已作废',
         },
       ],
-      page: 1,
-      status: 1,
-      datas: {},
-
-
         dialogFormVisible: false,
         refundFormVisible: false,
         voidFormVisible: false,
@@ -732,6 +732,7 @@ export default {
       this.$api.orderindex(this, 'schoolData', this.datas)
     },
 
+
       addCustomer() {
       //添加用户弹框打开
       this.importVisible = true
@@ -739,9 +740,7 @@ export default {
     batchImport() {
       this.importVisible = true
     },
-      doPageChange(){
-
-      },
+    
       toOrderManage() {
       this.$router.push({
         path: '/eda/orderManage',
@@ -1003,5 +1002,8 @@ header {
       font-size: 20px;
     }
   }
+}
+.table_bottom{
+text-align: right;
 }
 </style>

@@ -9,6 +9,7 @@ orderindex(self, name) {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
+      all:1,
     }
     console.log(config)
     axiosHttp({
@@ -21,6 +22,7 @@ orderindex(self, name) {
         if (res.data.code == 0) {
           self[name] = data
           self.panelData = res.data.data.count[0]
+ 
         }
       },
     })
