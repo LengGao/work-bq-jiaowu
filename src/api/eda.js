@@ -36,3 +36,15 @@ export function dispenseLog(params) {
         params,
     })
 }
+// 学生中心====================
+/**
+ * 学生列表
+ * @param {*} params 
+ */
+export function getStudentList(params) {
+    return request({
+        url: '/classstudents/studentmanage',
+        method: 'get',
+        params,
+    })
+}

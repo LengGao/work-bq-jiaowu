@@ -115,7 +115,7 @@ import AddWarehouse from "./components/AddWarehouse";
 import PutInStorage from "./components/PutInStorage";
 import AllocationStorage from "./components/AllocationStorage";
 import { getStorageList, getInstitutionSelectData } from "@/api/sou";
-
+import { cloneOptions } from "@/utils/index";
 export default {
   components: {
     SearchList,
@@ -170,20 +170,13 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData);
-        this.searchOptions[0].attrs.options = this.selectData;
+        this.searchOptions[0].attrs.options = this.selectData = cloneOptions(
+          res.data,
+          "institution_name",
+          "institution_id",
+          "children"
+        );
       }
-    },
-    cloneData(data, newData) {
-      data.forEach((item, index) => {
-        newData[index] = {};
-        newData[index].value = item.institution_id;
-        newData[index].label = item.institution_name;
-        if (item.children && item.children.length) {
-          newData[index].children = [];
-          this.cloneData(item.children, newData[index].children);
-        }
-      });
     },
     link(id, name) {
       this.$router.push({ name, query: { id } });

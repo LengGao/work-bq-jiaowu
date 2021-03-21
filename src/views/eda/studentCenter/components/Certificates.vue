@@ -1,14 +1,11 @@
 <template>
-  <el-dialog
-    title="编辑资料"
-    :visible.sync="visible"
-    width="600px"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :show-close="false"
-    @open="getCertificateInfo"
-  >
-    <div class="uploads">
+  <!-- 证件资料 -->
+  <div class="certificates">
+    <div class="certificates-header">
+      <el-button>查看大图</el-button>
+      <el-button>打包下载</el-button>
+    </div>
+    <div class="certificates-uploads">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
         <el-upload
           name="image"
@@ -28,31 +25,13 @@
         <p>{{ item.name }}</p>
       </div>
     </div>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="handleCancel">取 消</el-button>
-      <el-button type="primary" @click="handleOk">确 定</el-button>
-    </span>
-  </el-dialog>
+  </div>
 </template>
 
 <script>
-import {
-  uploadImageUrl,
-  modifyCertificate,
-  getCertificateInfo,
-} from "@/api/educational";
+import { uploadImageUrl } from "@/api/educational";
 export default {
-  name: "AddPhoto",
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-    uid: {
-      type: [String, Number],
-      default: "",
-    },
-  },
+  name: "certificates",
   data() {
     return {
       uploadImageUrl,
@@ -96,31 +75,6 @@ export default {
     };
   },
   methods: {
-    // 获取
-    async getCertificateInfo() {
-      const data = {
-        uid: this.uid,
-      };
-      const res = await getCertificateInfo(data);
-      if (res.code === 0) {
-        for (const k in this.photoData) {
-          this.photoData[k] = res.data[k];
-        }
-      }
-    },
-    // 修改
-    async modifyCertificate() {
-      const data = {
-        uid: this.uid,
-        ...this.photoData,
-      };
-      const res = await modifyCertificate(data);
-      if (res.code === 0) {
-        this.$message.success("资料修改成功");
-        this.handleCancel();
-        this.$emit("on-success");
-      }
-    },
     handleAvatarSuccess(res, file, key) {
       this.photoData[key] = res.data?.data?.url || "";
     },
@@ -136,50 +90,53 @@ export default {
       }
       return isLt2M;
     },
-    handleOk() {
-      // this.$emit("on-ok", ids);
-      this.modifyCertificate();
-    },
-    handleCancel() {
-      this.$emit("update:visible", false);
-    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.uploads {
-  display: flex;
-  text-align: center;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  .upload-item {
-    position: relative;
-    margin: 0 16px 16px 0;
+.certificates {
+  .certificates-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
   }
-  .upload-item /deep/.el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .upload-item /deep/.el-upload:hover {
-    border-color: #409eff;
-  }
-  .upload-item-icon {
-    font-size: 28px;
-    color: hsl(215, 8%, 58%);
-    width: 130px;
-    height: 130px;
-    line-height: 130px;
+  .certificates-uploads {
+    display: flex;
     text-align: center;
-  }
-  .img {
-    padding: 5px;
-    width: 130px;
-    height: 130px;
-    display: block;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    .upload-item {
+      position: relative;
+      margin: 0 16px 16px 0;
+      width: calc(100% / 4);
+    }
+    .upload-item /deep/.el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-item /deep/.el-upload:hover {
+      border-color: #409eff;
+    }
+    .upload-item-icon {
+      font-size: 28px;
+      color: hsl(215, 8%, 58%);
+      width: 300px;
+      height: 200px;
+      line-height: 200px;
+      text-align: center;
+    }
+    .img {
+      padding: 5px;
+      width: 300px;
+      height: 200px;
+      display: block;
+    }
   }
 }
 </style>

@@ -103,3 +103,19 @@ function getAge(cardId) {
   }
   return age
 }
+export function cloneOptions(data, optionLabel, optionValue, childrenName) {
+  const newData = []
+  const deep = (data, newData) => {
+    data.forEach((item, index) => {
+      newData[index] = {};
+      newData[index].value = item[optionValue];
+      newData[index].label = item[optionLabel];
+      if (item[childrenName] && item[childrenName].length) {
+        newData[index].children = [];
+        deep(item[childrenName], newData[index].children);
+      }
+    });
+  }
+  data && deep(data, newData)
+  return newData
+}
