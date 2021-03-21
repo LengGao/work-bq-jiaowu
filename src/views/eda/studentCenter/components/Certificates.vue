@@ -79,16 +79,16 @@ export default {
       this.photoData[key] = res.data?.data?.url || "";
     },
     beforeAvatarUpload(file) {
-      // const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 20;
+      const isImg = file.type.indexOf("image") !== -1;
+      const isLt20M = file.size / 1024 / 1024 < 20;
 
-      // if (!isJPG) {
-      //   this.$message.error("上传头像图片只能是 JPG 格式!");
-      // }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 20MB!");
+      if (!isImg) {
+        this.$message.error("请上传图片");
       }
-      return isLt2M;
+      if (!isLt20M) {
+        this.$message.error("上传图片大小不能超过 20MB!");
+      }
+      return isLt20M && isImg;
     },
   },
 };

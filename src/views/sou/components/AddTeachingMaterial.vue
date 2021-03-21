@@ -108,7 +108,10 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')"
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('ruleForm')"
         >确 定</el-button
       >
     </span>
@@ -161,6 +164,7 @@ export default {
           { required: true, message: "请选择分类", trigger: "change" },
         ],
       },
+      addLoading: false,
     };
   },
   watch: {
@@ -201,8 +205,12 @@ export default {
       if (this.id) {
         data.book_id = this.id;
       }
+      this.addLoading = true;
       const api = this.id ? editBook : addBook;
-      const res = await api(data);
+      const res = await api(data).catch(() => {
+        this.addLoading = false;
+      });
+      this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(`教材${this.id ? "编辑" : "新增"}成功`);
         this.hanldeCancel();
@@ -231,12 +239,15 @@ export default {
       this.formData.book_cover = res.data?.data?.url || "";
     },
     beforeAvatarUpload(file) {
-      // const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 20;
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 20MB!");
+      const isImg = file.type.indexOf("image") !== -1;
+      const isLt20M = file.size / 1024 / 1024 < 20;
+      if (!isImg) {
+        this.$message.error("请上传图片");
       }
-      return isLt2M;
+      if (!isLt20M) {
+        this.$message.error("上传图片大小不能超过 20MB!");
+      }
+      return isLt20M && isImg;
     },
   },
 };
