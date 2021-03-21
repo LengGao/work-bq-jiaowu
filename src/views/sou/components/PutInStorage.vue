@@ -127,10 +127,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    title: {
-      type: String,
-      default: "",
-    },
     id: {
       type: [String, Number],
       default: "",

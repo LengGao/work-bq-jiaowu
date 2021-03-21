@@ -1,21 +1,22 @@
 <template>
   <section class="mainwrap">
-    <search
-      :organHide="false"
-      :schoolHide="false"
-      :classNameHide="false"
-      :dealStatusHide="false"
-      :teacherHide="false"
-      @getTable="getTableList"
-      api="getMyclient"
-      :statusNum="3"
-    ></search>
+    <div class="header">
+      <SearchList
+        :options="searchOptions"
+        :data="searchData"
+        @on-search="handleSearch"
+      />
+    </div>
     <!--表格-->
     <div class="userTable">
       <el-table
         ref="multipleTable"
-        :data="schoolData.list"
+        :data="listData"
         tooltip-effect="light"
+        v-loading="listLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
         stripe
         style="width: 100%"
         class="min_table"
@@ -23,45 +24,45 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="dispense_id"
-          label="序号"
+          prop="id"
+          label="学员编号"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
-
         <el-table-column
           prop="create_time"
           label="操作时间"
-          show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
-        <el-table-column
-          prop="books_name"
-          label="教材名称"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop=""
-          label="仓库名称"
-          min-width="150"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="num"
-          label="发放数量"
-          min-width="150"
+          prop="books_name"
+          label="教材名称"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
 
+        <el-table-column
+          prop="category_name"
+          label="仓库名称"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+
+        <el-table-column
+          prop="num"
+          label="发放数量"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
         <el-table-column
           prop="type"
           label="发放形式"
           min-width="100"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">
-            {{ scope.row.type | dealType }}
+          <template slot-scope="{ row }">
+            <span>{{ types[row.rype] }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -70,7 +71,6 @@
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
-
         <el-table-column
           prop="remark"
           label="备注信息"
@@ -79,76 +79,92 @@
         ></el-table-column>
       </el-table>
       <div class="table_bottom">
-        <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
-        </div>
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
   </section>
 </template>
 
 <script>
+import SearchList from "@/components/SearchList/index";
+import { dispenseLog } from "@/api/eda";
 export default {
-  name: 'seaStudent',
+  name: "materialJournal",
+  components: {
+    SearchList,
+  },
   data() {
     return {
-      schoolData: [],
-      page: 1,
-      status: 3,
-      datas: {},
-    }
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      types: {
+        1: "现场发放",
+        2: "快递发放",
+      },
+      searchData: {
+        date: "",
+        staff_name: "",
+      },
+      searchOptions: [
+        {
+          key: "date",
+          type: "datePicker",
+          attrs: {
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
+          },
+        },
+        {
+          key: "staff_name",
+          attrs: {
+            placeholder: "操作人",
+          },
+        },
+      ],
+    };
   },
-  mounted() {
-    this.$api.getDispenseLog(this, 'schoolData')
-  },
-  filters: {
-    dealType(type) {
-      switch (type) {
-        case 1:
-          return '现场发放'
-          break
-        case 2:
-          return '快递'
-          break
-        default:
-          return '未知'
-      }
-    },
+  created() {
+    this.dispenseLog();
   },
   methods: {
-    getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
-      }
+    handleSearch(data) {
+      const times = data.date || ["", ""];
+      this.pageNum = 1;
+      delete data.date;
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+      };
+      this.dispenseLog();
     },
-
-    toStudentDetail(zx) {
-      console.log(zx)
-      let intent_id = zx.intent_id
-      this.$router.push({
-        path: '/etm/studentDetail',
-        query: { intent_id: intent_id, uid: zx.uid },
-      })
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.dispenseLog();
     },
-    receiveStudent(zx) {
-      console.log(zx)
-      this.$api.receive(this, zx.intent_id)
-    },
-    doPageChange(page) {
-      this.page = page
-      // this.$api.getMyclient(this, 'myclient', status)
-      this.$api.getDispenseLog(this, 'schoolData')
+    //教材发放日志
+    async dispenseLog() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await dispenseLog(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,
@@ -164,10 +180,10 @@ export default {
 .userTable {
   margin-top: 20px;
 }
-/deep/.timeCard {
-  color: #666666;
-}
-/deep/.studentTag ul li {
-  color: #666666;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
