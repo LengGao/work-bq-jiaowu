@@ -108,7 +108,10 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')"
+      <el-button
+        type="primary"
+        :loading="btnLoading"
+        @click="submitForm('ruleForm')"
         >入 库</el-button
       >
     </span>
@@ -126,10 +129,6 @@ export default {
     value: {
       type: Boolean,
       default: false,
-    },
-    title: {
-      type: String,
-      default: "",
     },
     id: {
       type: [String, Number],
@@ -169,6 +168,7 @@ export default {
         },
       ],
       selection: [],
+      btnLoading: false,
     };
   },
   watch: {
@@ -210,7 +210,11 @@ export default {
         ...this.formData,
         book_info: JSON.stringify(books),
       };
-      const res = await textbooksputstorage(data);
+      this.btnLoading = true;
+      const res = await textbooksputstorage(data).catch(() => {
+        this.btnLoading = false;
+      });
+      this.btnLoading = false;
       if (res.code === 0) {
         this.$message.success(`入库成功`);
         this.hanldeCancel();

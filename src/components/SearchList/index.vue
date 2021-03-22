@@ -23,8 +23,8 @@
       </component>
     </div>
     <div class="search-btns">
-      <el-button @click="handleReset">重置</el-button>
-      <el-button @click="handleSearch">搜索</el-button>
+      <el-button type="success" @click="handleSearch">搜索</el-button>
+      <el-button type="primary" @click="handleReset">重置</el-button>
     </div>
   </div>
 </template>

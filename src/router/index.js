@@ -252,7 +252,7 @@ export const asyncRouterMap = [
       {
         path: 'studentDetail',
         name: 'studentDetail',
-        component: () => import('@/views/eda/studentCenter/studentDetail.vue'),
+        component: () => import('@/views/eda/studentCenter/index.vue'),
         meta: { title: '学生详情', icon: 'product-cate' },
         hidden: true,
       },

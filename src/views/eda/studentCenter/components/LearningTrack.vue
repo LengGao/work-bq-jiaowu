@@ -1,0 +1,72 @@
+<template>
+  <div class="learning-track">
+    <!--学习轨迹-->
+    <div class="userTable">
+      <el-table
+        ref="multipleTable"
+        :data="listData"
+        tooltip-effect="light"
+        v-loading="listLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
+        stripe
+        style="width: 100%"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column
+          prop="id"
+          label="序号"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="nickname"
+          label="操作时间"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="category_name"
+          label="操作详情"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+      </el-table>
+    </div>
+  </div>
+</template>
+
+<script>
+import { dispenseList } from "@/api/eda";
+export default {
+  name: "learningTrack",
+  data() {
+    return {
+      listData: [],
+      listLoading: false,
+    };
+  },
+  created() {
+    this.dispenseList();
+  },
+  methods: {
+    linkTo(id) {
+      console.log(id);
+    },
+    //教材发放列表
+    async dispenseList() {
+      this.checkedIds = [];
+      this.listLoading = true;
+      const res = await dispenseList();
+      this.listLoading = false;
+      this.listData = res.data.list;
+    },
+  },
+};
+</script>
+
+<style>
+</style>
