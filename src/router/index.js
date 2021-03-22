@@ -38,6 +38,21 @@ export const constantRouterMap = [
     ],
   },
 ]
+// const asyncRouterMaps = {
+//   sou: {
+//     path: '/sou',
+//     component: Layout,
+//     redirect: '/sou/classifiSetting',
+//     meta: { title: '资源配置', icon: 'zhaoshengguanli' },
+//     name: 'sou',
+//   },
+//   classifiSetting: {
+//     path: 'classifiSetting',
+//     name: 'classifiSetting',
+//     component: () => import('@/views/sou/classifiSetting.vue'),
+//     meta: { title: '分类设置', icon: 'product-add' },
+//   },
+// }
 export const asyncRouterMap = [
   {
     path: '/sou',
@@ -579,6 +594,9 @@ export const asyncRouterMap = [
 
   { path: '*', redirect: '/404' },
 ]
+
+
+
 export default new VueRouter({
   // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
