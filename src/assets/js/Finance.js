@@ -27,6 +27,7 @@ let Finance = {
       },
     })
   },
+
   //订单详情
   orderdetail(self, name) {
     let config = {
@@ -50,6 +51,8 @@ let Finance = {
       },
     })
   },
+
+
 }
 
 export default Finance

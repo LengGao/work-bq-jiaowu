@@ -46,17 +46,16 @@ let Examination = {
   //添加科目
   createSubject(self, ruleForm) {
     let config = {
-      // name:name,
-      // exam:exam,
-      // score:score,
-      // qualified:qualified,
-      // desc:desc,
-
       cate_id: ruleForm.cate_id,
+      category_name: ruleForm.category_name,
       subject_name: ruleForm.subject_name,
-      cost: ruleForm.cost,
       total_score: ruleForm.total_score,
       pass_score: ruleForm.pass_score,
+      exam_type: ruleForm.exam_type,
+      credit_hour: ruleForm.credit_hour,
+      cost: ruleForm.cost,
+      period: ruleForm.period,
+      from_organization_id: ruleForm.from_organization_id,
 
       // search_box: ruleForm.search_box,
 
@@ -79,6 +78,53 @@ let Examination = {
     })
   },
 
+  //修改科目
+  updateSubject(self, ruleForm) {
+    let config = {
+      cate_id: ruleForm.cate_id,
+
+      // search_box: ruleForm.search_box,
+      page: self.page,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.updateSubject,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+          self.dialogVisible=false
+          self.$api.updateList(self, 'subjectData')
+        }
+      },
+    })
+  },
+
+    //删除科目
+    deleteSubject(self, id) {
+      let config = {
+        // search_box: ruleForm.search_box,
+        id:id,
+      }
+      console.log(config)
+      axiosHttp({
+        url: url.deleteSubject,
+        data: config,
+        method: 'POST',
+        then(res) {
+          console.log(res.data.data)
+          let data = res.data.data
+          if (res.data.code == 0) {
+            self[name] = data
+            self.dialogVisible=false
+            self.$api.subjectList(self, 'subjectData')
+          }
+        },
+      })
+    },
 
   //授课老师下拉列表
   getTeacherDrop(self, name, data = {}) {

@@ -7,7 +7,7 @@
         <el-col :lg="21" :sm="21" :xs="21" :md="21">
           <div class="order-header">
             <h3 style="height:21px;margin-top:4px">订单信息</h3>
-            <el-button type="primary">待入账</el-button>
+            <el-button type="primary" @click="dialogVisible = true">待入账</el-button>
           </div>
 
           <el-form

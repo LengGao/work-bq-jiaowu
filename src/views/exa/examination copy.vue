@@ -51,9 +51,9 @@
            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm">
             <el-form-item label="所属分类" prop="cate_id">
               <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类">
-                <el-option label="学历教育" value="1"></el-option>
-                <el-option label="职称考证" value="2"></el-option>
-                <el-option label="特种作业" value="3"></el-option>
+                <el-option label="学历教育" value="xueli"></el-option>
+                <el-option label="职称考证" value="zhicheng"></el-option>
+                <el-option label="特种作业" value="tezhong"></el-option>
               </el-select>
             </el-form-item>
 
@@ -135,135 +135,54 @@
          <div>
           <el-button type="primary" @click="addSubject">添加科目</el-button>
           <el-dialog
-          :title="classTitle"
+          title="添加科目"
           :visible.sync="dialogVisible"
-          width="43%"
+          width="50%"
           >
-
-          <el-form
-            label-width="100px"
-            class="demo-ruleForm"
-            :show-message="true"
-            :model="ruleForm"
-            :rules="rules"
-            ref="ruleForm"
-           
-          >
-            <el-row>
-              <el-col :lg="11">
-                <el-form-item label="所属分类" prop="category_name">
-              <el-select v-model="ruleForm.category_name" placeholder="请选择所属分类" style="width:100%">
+          <div>
+           <el-form :model="ruleForm" 
+           :rules="rules" 
+           ref="ruleForm" 
+           label-width="300px" 
+           class="demo-ruleForm"
+          
+           >
+            <el-form-item label="所属分类" prop="cate_id">
+              <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类">
                 <el-option label="学历教育" value="1"></el-option>
                 <el-option label="职称考证" value="2"></el-option>
                 <el-option label="特种作业" value="3"></el-option>
               </el-select>
             </el-form-item>
-              </el-col>
-              <el-col :lg="11">
-                <el-form-item label="科目名称" prop="subject_name">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.subject_name"
-                    placeholder="请选择科目名称"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :lg="11">
-                <el-form-item label="考试总分" prop="total_score" >
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.total_score"
-                    placeholder="请选择考试总分"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="11" class="pass_score">
-                <el-form-item label="合格分数" prop="pass_score">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.pass_score"
-                    placeholder="请选择合格分数"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-             
-            </el-row>
-            <el-row>
-              <el-col :lg="11">
-                 <el-form-item label="科目性质" prop="exam_type">
-              <el-select v-model="ruleForm.exam_type" placeholder="请选择科目性质" style="width:100%">
-                <el-option label="必考" value="1"></el-option>
-                <el-option label="选考" value="2"></el-option>
-              </el-select>
+
+             <el-form-item label="科目名称">
+              <el-input v-model="ruleForm.subject_name" placeholder="请输入科目名称" style="width:220px"></el-input>
             </el-form-item>
-              </el-col>
-             <el-col :lg="11">
-                <el-form-item label="科目学分" prop="credit_hour">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.credit_hour"
-                    placeholder="请选择科目学分"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
+
+             <el-form-item label="补考费用" prop="cost">
+              <el-input v-model="ruleForm.cost" placeholder="请输入补考费用" style="width:220px"></el-input>
+            </el-form-item>
+
+            <el-form-item label="考试总分" prop="total_score">
+              <el-input v-model="ruleForm.total_score" placeholder="请输入考试总分" style="width:220px"></el-input>
+            </el-form-item>
+
+            <el-form-item label="合格分数" prop="pass_score">
+              <el-input v-model="ruleForm.pass_score" placeholder="请输入合格分数" style="width:220px"></el-input>
+            </el-form-item>
             
-            <el-row>
-              <el-col :lg="11">
-                <el-form-item label="补考费用" prop="cost">
-                  <el-input
-                    class="input-width"
-                    placeholder="请输入补考费用"
-                    v-model="ruleForm.cost"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="成绩有效期" prop="marry" >
-                  <div style="display:flex;align-items: center;">
-                  <el-radio-group v-model="ruleForm.period" style="width:250px">
-                    <el-radio :label="2" value="0">永久</el-radio>
-                    <el-radio :label="1">
-                      <span>不超过</span>
-                       <input class="inputach"></input>
-                    <span>年</span>
-                      </el-radio>
-                  </el-radio-group>
-                   
-                    </div>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :lg="15" >
-                <el-form-item label="考评项目1" prop="from_organization_id">
-                  <el-input
-                    class="input-width"
-                    placeholder="请输入考评项目"
-                    v-model="ruleForm.from_organization_id"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            <el-button style="margin-left:10px">删除</el-button>
-            </el-row>
-
-            <el-row>
-              <el-col>
-                 <el-form-item>
-                <el-button style="border:1px dashed skyblue;color:skyblue;width:470px">+ 添加考勤项目</el-button>
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <!-- <el-form-item label="补考规则" prop="desc">
+              分数小于
+               <el-input v-model="ruleForm.desc" style="width:50px"></el-input>
+               分时需要补考
+            </el-form-item> -->
+            
           </el-form>
-            <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="submitForm('ruleForm')"
-              >保 存</el-button
-            >
-          </span>
+          <span slot="footer" class="dialog-footer">
+               <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+            </span>
+          </div>
 
         </el-dialog>
         </div>
@@ -355,11 +274,11 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="editNotice(scope.row)"
+                <el-button type="text" @click="toCreateClass(scope.row)"
                   >编辑</el-button
                 >
                 
-                <el-button type="text" @click="handleDelete(scope.row)"
+                <el-button type="text" @click="toCreateClass(scope.row)"
                   >删除</el-button
                 >
               </div>
@@ -440,10 +359,10 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="editNotice(scope.row)"
+                <el-button type="text" @click="toCreateClass(scope.row)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="handleDelete(scope.row)"
+                <el-button type="text" @click="toCreateClass(scope.row)"
                   >删除</el-button
                 >
               </div>
@@ -482,7 +401,7 @@ export default {
       end_time:'',
       start_time:'',
       startTime:'',
-      classTitle: '新建科目',
+      
       pickerOptions: {
           shortcuts: [{
             onClick(picker) {
@@ -513,37 +432,67 @@ export default {
         value2: '',
 
       ruleForm: {
-          id:'',
-          category_name:'',
-          subject_name:'',
-          cate_id: '',
-          cost: '',
+          // name: '',
+          // exam: '',
+          // score: '',
+          // delivery: false,
+          // type: [],
+          // qualified: '',
+          // desc: '',
+
+          cate_id:'',
+          subject_name: '',
           total_score: '',
-          pass_score: ''
+          pass_score: '',
+          exam_type: '',
+          credit_hour: '',
+          cost: '',
+          period: '',
+          from_organization_id: ''
+
         },    
         rules: {
-          
-          category_name: [
+          cate_id: [
             { required: true, message: '请选择所属分类', trigger: 'blur' },
           ],
           subject_name: [
             { required: true, message: '请输入科目名称', trigger: 'blur' },
           ],
+          cost: [
+            { required: true, message: '请输入补考费用', trigger: 'change' }
+          ],
           total_score: [
-            { required: true, message: '请输入考试总分', trigger: 'blur' },
+            { required: true, message: '请输入考试总分', trigger: 'change' }
           ],
           pass_score: [
-            { required: true, message: '请输入合格分数', trigger: 'blur' },
+            { message: '请输入合格分数', trigger: 'change' }
           ],
-          exam_type: [
-            { required: true, message: '', trigger: 'blur' },
+
+          max_num: [
+            {required: true, message: '请选择报考省市', trigger: 'blur' }
           ],
-          credit_hour: [
-            { required: true, message: '请输入科目学分', trigger: 'blur' },
+          photo: [
+            {required: true, message: '请选择个人照片', trigger: 'blur' }
           ],
-          cost: [
-            { required: true, message: '请输入补考费用', trigger: 'blur' },
-          ]
+          ID: [
+            {required: true, message: '请选择身份证件', trigger: 'blur' }
+          ],
+          age: [
+            {required: true, message: '请选择年龄段', trigger: 'blur' }
+          ],
+          place: [
+            {required: true, message: '请选择籍贯', trigger: 'blur' }
+          ],
+          edu: [
+            {required: true, message: '请选择学历', trigger: 'blur' }
+          ],
+          years: [
+            {required: true, message: '请选择', trigger: 'blur' }
+          ],
+          healthy: [
+            {required: true, message: '请选择', trigger: 'blur' }
+          ],
+       
         },
 
       dialogVisible: false,
@@ -571,9 +520,7 @@ export default {
 
   mounted() {
     this.$api.ruleList(this, 'schoolData'),
-    this.$api.subjectList(this, 'subjectData'),
-    this.$api.updateSubject(this, 'subjectData')
-
+    this.$api.subjectList(this, 'subjectData')
   },
     methods: {
       
@@ -600,7 +547,7 @@ export default {
           if (valid) {
            if (this.ruleForm.id) {
             //修改
-            this.$api.updateSubject(this, this.ruleForm)
+            this.$api.updateRoom(this, this.ruleForm)
           } else {
             //添加科目
             this.$api.createSubject(this, this.ruleForm)
@@ -615,7 +562,7 @@ export default {
     addSubject(){
        this.ruleForm = {
         subject_name:'',
-          category_name: '',
+          cate_id: '',
           cost: '',
           total_score: '',
           pass_score: ''
@@ -623,30 +570,10 @@ export default {
       this.dialogVisible = true
     },
 
-    handleDelete(ab) {
-      console.log(ab)
-      this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          console.log(ab.id)
-          this.$api.deleteSubject(this, ab.id)
-
-
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
-    },
-
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
+
 
     statusSwitch(ab) {
       this.isTagactive = ab.id
@@ -700,14 +627,76 @@ export default {
         this.$api.updateCourseSort(id, sorts, this)
       }
     },
- 
-
-    editNotice(ab) {
+    batchRelease() {
+      if (this.course_ids.length > 0) {
+        let status = 2
+        this.$api.bashPublish(this, this.course_ids, status)
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请先勾选你想发布的项',
+        })
+      }
+    },
+    batchClose() {
+      if (this.course_ids.length > 0) {
+        let status = 1
+        this.$api.bashPublish(this, this.course_ids, status)
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请先勾选你想关闭的项',
+        })
+      }
+    },
+    batchDeletion() {
+      if (this.course_ids.length > 0) {
+        this.$confirm(
+          '你正在批量删除该条数据,数据删除后将无法恢复,请谨慎操作?',
+          '提示',
+          {
+            confirmButtonText: '删除',
+            cancelButtonText: '取消',
+            type: 'warning',
+          }
+        )
+          .then(() => {
+            this.$api.bashDelete(this, this.course_ids)
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除',
+            })
+          })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请先勾选你想删除的项',
+        })
+      }
+    },
+    handleDelete(ab) {
       console.log(ab)
-      this.classTitle = '编辑科目'
-      this.ruleForm = ab
-      this.dialogVisible = true
-    
+      let course_id = ab.course_id
+      this.$confirm(
+        '你正在删除该条数据,数据删除后将无法恢复,请谨慎操作?',
+        '提示',
+        {
+          confirmButtonText: '删除',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          this.$api.deleteCourses(this, ab.course_id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
   },
 
@@ -735,7 +724,6 @@ export default {
   padding: 20px;
   margin: 20px;
   background: #fff;
- 
 }
 
 .head_remind {
@@ -821,20 +809,7 @@ export default {
 .table_bottom{
   text-align: right;
 }
-.colright{
-  text-align: right;
-}
-/deep/.el-radio-group{
-  display: flex;
-  align-items: center;
-}
-.inputach{
-  width:32px;
-  height:28px;
-  border:1px solid #ccc;
-  text-align: center;
-  margin: 0 10px;
-}
+
 
 </style>
 

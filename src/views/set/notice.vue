@@ -71,6 +71,14 @@
           <el-pagination background layout="prev, pager, next" :total="1000">
           </el-pagination>
         </el-table>
+
+          <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
       </div>
 
       <el-dialog :title="classTitle" :visible.sync="dialogVisible" width="45%">
@@ -95,7 +103,7 @@
               v-model="content"
               prop="content"
               :options="editorOption"
-              style="display:block;height:280px;margin-bottom:40px"
+              style="display:block;height:280px;margin-bottom:40px;margin-top:20px"
             ></quill-editor>
 
             <el-form-item
@@ -183,6 +191,7 @@ export default {
       value1: [],
 
       radio2: 1,
+      listTotal: 0,
       inputValue: '',
       radio: '0',
       radio3: '0',
@@ -199,7 +208,7 @@ export default {
         type: [],
       },
       rules: {
-        name: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
+        title: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
         abstract: [
           { required: true, message: '请输入公告摘要', trigger: 'blur' },
         ],
@@ -272,10 +281,10 @@ export default {
       this.classTitle = '编辑公告'
       this.ruleForm = ab
       this.dialogVisible = true
+    
     },
     doPageChange(page) {
       this.page = page
-      // this.$api.getMyclient(this, 'myclient', status)
       this.$api.noticelist(this, 'schoolData', this.datas)
     },
     onEditorChange({ editor, html, text }) {
@@ -331,5 +340,8 @@ export default {
 .abstract {
   width: 50%;
   float: left;
+}
+.table_bottom{
+  text-align: right;
 }
 </style>
