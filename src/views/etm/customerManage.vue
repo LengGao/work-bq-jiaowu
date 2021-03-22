@@ -298,10 +298,15 @@
               </el-col>
               <el-col :lg="8">
                 <el-form-item label="籍贯" prop="province">
-                  <el-input
+                  <el-cascader
+                    v-model="value"
+                    :options="options"
+                    :props="{ expandTrigger: 'hover' }"
+                  ></el-cascader>
+                  <!-- <el-input
                     class="input-width"
                     v-model="ruleForm.province"
-                  ></el-input>
+                  ></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8">
@@ -618,10 +623,12 @@ export default {
   created() {
     // this.getCateList()
     this.$api.getCustomerList(this, 'schoolData')
+    this.$api.getcategorytree(this, 1) //分类下拉列表
+    this.$api.getProinvceList(this, 1) //获取省市区
   },
   mounted() {
     this.status = 1
-    this.$api.getcategorytree(this, 1) //分类下拉列表
+
     this.$api.getProjectSub(this, 2) //项目下拉列表
   },
   filters: {

@@ -10,6 +10,7 @@ export default {
   getUserDetail: '/UserArchives/detail',
   modifyUserDetail: '/UserArchives/modify',
   getUserRecord: '/UserArchivesRecord/index',
+  getProinvceList: 'region/elment.json',
   //资源配置
   getCategoryList: '/courseCategory/getCategoryList',
   updateCategorySort: '/courseCategory/updateCategorySort',
@@ -87,6 +88,14 @@ export default {
   getAdminOperationDetail: '/AdminOperationRecord/getAdminOperationDetail',
   rollBackOperation: '/AdminOperationRecord/rollBackOperation',
   getActionSelectList: '/AdminOperationRecord/getActionSelectList',
+  getMenuList: '/AdminMenu/getMenuList',
+  getMenuDetail: 'AdminMenu/detail',
+  getThumbMenuList: '/AdminMenu/getThumbMenuList',
+  createMenuData: '/AdminMenu/createMenuData',
+  deleteMenuData: '/AdminMenu/deleteMenuData',
+  updateMenuData: '/AdminMenu/updateMenuData',
+  updateStatus: '/AdminMenu/updateStatus',
+  updateSort: '/AdminMenu/updateSort',
 
   //清除缓存
   clearCache: '/passport/clearCache',

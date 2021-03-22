@@ -168,6 +168,26 @@ let enrollStu = {
       },
     })
   },
+  //2.0 返回省/市/区县三级联动数据json数据
+  getProinvceList(self, name) {
+    let config = {
+      // search_box: ruleForm.search_box,
+      // page: self.page,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getProinvceList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+        }
+      },
+    })
+  },
   //1.4 用户详情 用户资料详情 用户档案详情
   getUserDetail(self, name) {
     let config = {

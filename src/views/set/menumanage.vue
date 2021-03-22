@@ -1,118 +1,114 @@
 <template>
-  <div>
-    <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
-    </div>
-
-    <section class="mainwrap">
-      <div class="client_head">
-        <search2
-          :contentShow="true"
-          api="getHomeclassifiList"
-          inputText="菜单名称"
-          @getTable="getTableList"
-        ></search2>
-        <el-button type="primary" @click="addClassiFion">添加菜单</el-button>
+  <section class="mainwrap">
+    <div class="client_head">
+      <!-- <search2
+        :contentShow="true"
+        api="getHomeclassifiList"
+        inputText="分类名称"
+        @getTable="getTableList"
+      ></search2> -->
+      <div></div>
+      <div>
+        <el-button type="primary" @click="addMenu">添加菜单</el-button>
+        <el-button type="success" @click="addFunction">添加功能</el-button>
       </div>
-      <!--表格-->
-      <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="schoolData.list"
-          style="width: 100%"
-          class="min_table"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
+    </div>
+    <!--表格-->
+    <div class="userTable">
+      <el-table
+        ref="multipleTable"
+        :data="schoolData"
+        row-key="id"
+        style="width: 100%"
+        :tree-props="{ children: 'children' }"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column
+          label="菜单名称"
+          show-overflow-tooltip
+          min-width="120"
+          prop="menu_name"
         >
+        </el-table-column>
+        <el-table-column label="排序" min-width="60" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <el-col :span="12" v-if="scope.row.menu_type == 1">
+              <el-input
+                style="width:56px"
+                v-model="scope.row.sort"
+                placeholder
+                size="small"
+                @blur="scopes(scope.row.id, scope.row.sort)"
+              ></el-input>
+            </el-col>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="menu_type_name"
+          label="类型"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
 
-        <el-table-column label="排序" min-width="100" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
-                <el-col :span="12">
-                  <el-input
-                    v-model="scope.row.sort"
-                    placeholder
-                    size="small"
-                    @blur="scopes(scope.row.category_id, scope.row.sort)"
-                  ></el-input>
-                </el-col>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="category_name"
-            label="菜单名称"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            label="类型"
-            show-overflow-tooltip
-            min-width="90"
-            prop="category_id"
-          >
-          </el-table-column>
-          
-
-          <el-table-column
-            label="图标"
-            min-width="150"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <div style="margin:0 auto;width:50px ;height:50px;">
-                <img :src="scope.row.icon" alt class="school_class_box" />
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="接口地址"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
-
-          <el-table-column
-            prop="mobile"
-            label="前端标识"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
-          
-          
-          <el-table-column
-            prop="status"
-            label="是否启用"
-            min-width="150"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <el-switch
-                active-color="#13ce66"
-                v-model="scope.row.account_status"
-                :active-value="1"
-                :inactive-value="2"
-                @change="changeSwitch(scope.row)"
+        <!-- <el-table-column
+          prop="icon"
+          label="分类图标"
+          min-width="150"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope" v-if="scope.row.menu_type == 1">
+            <div style="margin:0 auto;width:50px ;height:50px;">
+              <img :src="scope.row.icon" alt class="school_class_box" />
+            </div>
+          </template>
+        </el-table-column> -->
+        <el-table-column
+          prop="auth"
+          label="接口地址"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="node"
+          label="前端标识"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="index_category_name"
+          label="是否显示"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <!-- <el-switch :active-value="1" :inactive-value="0"></el-switch> -->
+            <el-switch
+              v-model="scope.row.menu_status"
+              :active-value="1"
+              :inactive-value="0"
+              @change="switchStatus(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" min-width="200">
+          <template slot-scope="scope">
+            <div style="display:flex;justify-content:center">
+              <el-button type="text" @click="topayment(scope.row)"
+                >编辑</el-button
               >
-              </el-switch>
-            </template>
-          </el-table-column>
-
-          <el-table-column label="操作" fixed="right" min-width="200">
-            <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
-                <el-button type="text" @click="topayment(scope.row)"
-                  >编辑</el-button
-                >
-                 <el-button type="text" @click="topayment(scope.row)"
-                  >删除</el-button
-                >
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        
-    
+              <el-button
+                type="text"
+                style="padding-left:40px"
+                @click="delbtn(scope.row)"
+                >删除</el-button
+              >
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- <div class="table_bottom">
         <div class="table_bottom">
           <page
             :data="schoolData.total"
@@ -120,73 +116,111 @@
             @pageChange="doPageChange"
           />
         </div>
-
-      </div>
-      <!--弹框-->
-      <el-dialog
-        :title="dialogTitle"
-        :visible.sync="dialogVisible"
-        width="576px"
-      >
-        <el-form label-width="100px">
-          <el-form-item label="所属分类">
-            <el-select
-              v-model="ruleForm.category_name"
-              placeholder="请选择所属分类"
-              style="width:240px"
-            >
-              <el-option
-                v-for="item in schoolData.list"
-                :key="item.category_id"
-                :label="item.category_name"
-                :value="item.category_name"
-              >
-              </el-option>
-            </el-select>
-            <!-- <el-input
-              placeholder="请输入分类名称"
-              v-model="ruleForm.index_category_name"
-              class="input-width"
-            ></el-input> -->
-          </el-form-item>
-          <el-form-item label="分类名称：">
-            <el-input
-              placeholder="请输入分类名称"
-              v-model="ruleForm.index_category_name"
-              class="input-width"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="分类排序：">
-            <el-input
-              v-model="ruleForm.sort"
-              class="input-width"
-              placeholder=" 排序数字越大分类越靠前"
-              type="number"
-            ></el-input>
-            <!-- <p style="color:#aaa;ling-height:20px">
+      </div> -->
+    </div>
+    <!--弹框-->
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="576px">
+      <el-form label-width="100px">
+        <el-form-item label="上级菜单">
+          <el-cascader
+            v-model="parent_id_arr"
+            :options="ThumbData"
+            :props="optionProps"
+            clearable
+            @change="checkDepart"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item
+          :label="ruleForm.menu_type == 1 ? '菜单名称' : '功能名称'"
+        >
+          <el-input
+            :placeholder="
+              ruleForm.menu_type == 1 ? '请输入菜单名称' : '请输入功能名称'
+            "
+            v-model="ruleForm.menu_name"
+            class="input-width"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="接口地址">
+          <el-input
+            placeholder="请输入接口地址"
+            v-model="ruleForm.auth"
+            class="input-width"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="前端标识">
+          <el-input
+            placeholder="请输入前端标识"
+            v-model="ruleForm.node"
+            class="input-width"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="切换功能" prop="resource">
+          <el-radio-group v-model="ruleForm.menu_type">
+            <el-radio :label="1">菜单</el-radio>
+            <el-radio :label="0">功能</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label="菜单排序"
+          prop="sort"
+          v-if="ruleForm.menu_type == 1"
+        >
+          <el-input
+            placeholder="请输入菜单排序"
+            v-model="ruleForm.sort"
+            class="input-width"
+            type="number"
+          ></el-input>
+          <p style="color:#aaa;ling-height:20px">
             排序数字越大分类越靠前,最小值为1
-          </p> -->
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleConfirm">确 定</el-button>
-        </span>
-      </el-dialog>
-    </section>
-  </div>
+          </p>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleConfirm">保 存</el-button>
+      </span>
+    </el-dialog>
+    <!-- <imgDialog
+      v-if="pictureVisible"
+      @closeImg="closeImg"
+      @clearUrl="clearUrl"
+    ></imgDialog> -->
+  </section>
 </template>
 
 <script>
 export default {
-  name: 'role',
   data() {
     return {
+      funShow: false,
+      parent_id_arr: [],
+      nameLabel: '',
+      nameInputword: '',
+      optionProps: {
+        label: 'menu_name',
+        value: 'id',
+        children: 'children',
+        checkStrictly: true,
+      },
+      menu_status: '',
+      ruleForm: {
+        id: '',
+        menu_name: '',
+        parent_id: [],
+        node: '',
+        auth: '',
+        icon: '',
+        sort: '',
+        menu_type: '',
+      },
       schoolData: [],
+      ThumbData: [],
       index_category_id: '',
       dialogTitle: '',
-      ruleForm: {
-        category_name: '',
+      addClassify: {
+        index_category_name: '',
         sort: '',
       },
       datas: {},
@@ -197,12 +231,38 @@ export default {
       dialogVisible: false,
     }
   },
-
-  created() {
-    this.$api.getCategoryList(this, 'schoolData')
+  mounted() {
+    this.$api.getMenuList(this, 'schoolData')
+    this.$api.getThumbMenuList(this, 'ThumbData')
   },
-
+  created() {
+    // this.$api.getHomeclassifiList(this, 'schoolData')
+  },
+  // activated: function() {
+  //   console.log(JSON.parse(this.$route.query.url))
+  //   if (this.$route.query.url != undefined) {
+  //     this.url = JSON.parse(this.$route.query.url)
+  //     this.haschoose = true
+  //   }
+  // },
   methods: {
+    checkDepart(ab) {
+      console.log(ab)
+      let end = ab[ab.length - 1]
+      console.log(end)
+      // this.ruleForm.parent_id = end
+    },
+    switchStatus(ab) {
+      console.log(ab)
+      this.menu_status = ab.menu_status
+      this.ruleForm.id = ab.id
+      this.$api.updateStatus(this, this.ruleForm)
+    },
+    // doPageChange(page) {
+    //   this.page = page
+    //   this.$api.getHomeclassifiList(this, 'schoolData', this.datas)
+    // },
+    // 获取数据
     getTableList(state, val, datas) {
       console.log(state, val)
       if (state == 'page') {
@@ -212,7 +272,19 @@ export default {
         this.schoolData = val
       }
     },
+    topayment(zx) {
+      console.log(zx)
+      this.ruleForm.menu_type = zx.menu_type
+      if (this.ruleForm.menu_type == 1) {
+        this.dialogTitle = '编辑菜单'
+      } else {
+        this.dialogTitle = '编辑功能'
+      }
 
+      this.ruleForm.id = zx.id
+      this.dialogVisible = true
+      this.$api.getMenuDetail(this, zx.id)
+    },
     scopes(id, sorts) {
       var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
       var re = new RegExp(regu)
@@ -220,23 +292,93 @@ export default {
         this.$message.error('请输入正确的排序！')
         return false
       } else {
-        this.$api.updateCategorySort(id, sorts, this)
+        this.$api.updateSort(id, sorts, this)
       }
     },
+    toStudentDetail() {
+      this.$router.push({
+        name: 'studentDetail',
+      })
+    },
+    delbtn(ab) {
+      var warnTitle = ''
+      ab.menu_type == 1
+        ? (warnTitle = '确定要删除当前菜单吗?')
+        : (warnTitle = '确定要删除当前功能吗?')
+      this.$confirm(warnTitle, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$api.deleteMenuData(this, ab.id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
 
-    addClassiFion() {
-      this.dialogTitle = '添加分类'
+    addFunction() {
+      this.$api.getThumbMenuList(this, 'ThumbData') //获取下拉数据
+      //添加功能按钮
+      this.dialogTitle = '添加功能'
+      this.nameLabel = '功能名称'
+      this.nameInputword = '请输入功能名称'
+      // this.funShow = true
+      this.parent_id_arr = []
+      for (let key in this.ruleForm) {
+        this.ruleForm[key] = ''
+      }
+
+      this.ruleForm.menu_type = 0
+      this.dialogVisible = true
+    },
+    addMenu() {
+      // this.funShow = false
+      this.$api.getThumbMenuList(this, 'ThumbData') //获取下拉数据
+      //添加菜单按钮
+      this.dialogTitle = '添加菜单'
+      this.nameLabel = '菜单名称'
+      this.nameInputword = '请输入菜单名称'
+      this.parent_id_arr = []
+      for (let key in this.ruleForm) {
+        this.ruleForm[key] = ''
+      }
+      this.ruleForm.menu_type = 1
+
       this.dialogVisible = true
     },
     handleConfirm() {
-      console.log(this.ruleForm)
-      console.log(this.index_category_id == '')
-      if (this.index_category_id == '' || this.index_category_id == undefined) {
-        this.$api.insertCategory(this, 'ruleForm')
+      console.log(this.ruleForm.id)
+      if (this.ruleForm.id != '' && this.ruleForm.id != undefined) {
+        this.$api.updateMenuData(this, this.ruleForm)
       } else {
-        this.$api.insertCategory(this, 'ruleForm')
+        let end = this.parent_id_arr[this.parent_id_arr.length - 1] //添加时取最后一位为父级
+        this.ruleForm.parent_id = end
+        this.$api.createMenuData(this, this.ruleForm)
       }
     },
+    // clearUrl() {
+
+    //   this.pictureVisible = false
+    // },
+    // closeImg(radioUrl) {
+    //   // console.log(radioUrl + '我好睡')
+    //   this.pictureVisible = false
+    //   if (radioUrl != undefined) {
+    //     this.haschoose = true
+    //     this.url = radioUrl
+    //   } else {
+    //     this.url = ''
+    //     this.haschoose = false
+    //   }
+    // },
+    // addIcon() {
+    //   this.pictureVisible = true
+    // },
   },
 }
 </script>
@@ -248,21 +390,12 @@ export default {
   color: #909399;
 }
 .input-width {
-  width: 240px;
+  width: 280px;
 }
 .main {
   padding: 20px;
   margin: 20px;
   background: #fff;
-}
-.head_remind {
-  padding: 20px;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 16px;
-  color: #909399;
-  width: 100%;
-  border-bottom: 15px solid #f2f6fc;
 }
 .client_head {
   display: flex;
@@ -314,11 +447,5 @@ export default {
 
 .imageBox:hover i {
   display: block;
-}
-
-.table_bottom{
-  width: 50%;
-  float: right;
-  text-align: right;
 }
 </style>

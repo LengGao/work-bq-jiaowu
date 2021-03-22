@@ -234,10 +234,10 @@ let resource = {
   //项目列表
   getProjectList(self, name) {
     let config = {
-      // page: 1,
-      // page: self.pageNum,
-      // ...self.searchData,
-      // category_id: self.searchData.category_id.pop(),
+      page: 1,
+      page: self.pageNum,
+      ...self.searchData,
+      category_id: self.searchData.category_id.pop(),
     }
     console.log(config)
     axiosHttp({
@@ -282,7 +282,9 @@ let resource = {
   createProject(self, ruleForm) {
     let config = {
       project_name: ruleForm.project_name,
-      category_id: parseInt(ruleForm.category_id),
+      category_id: Array.isArray(self.ruleForm.category_id)
+        ? self.ruleForm.category_id.pop()
+        : self.ruleForm.category_id,
       price: parseFloat(ruleForm.price),
       lowest_price: parseFloat(ruleForm.lowest_price),
       service_type: ruleForm.service_type,
@@ -345,7 +347,7 @@ let resource = {
       }
     } else {
       config = {
-        project_id: ruleForm.id,
+        project_id: ruleForm.id || ruleForm.project_id,
         project_name: ruleForm.project_name,
         category_id: parseInt(ruleForm.category_id),
         price: parseFloat(ruleForm.price),
@@ -363,7 +365,7 @@ let resource = {
       }
     }
 
-    // console.log(config)
+    console.log(config)
     axiosHttp({
       url: url.editProject,
       data: config,
