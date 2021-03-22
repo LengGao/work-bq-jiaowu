@@ -144,10 +144,10 @@
         <el-form-item label="图标">
           <div class="form-select-icon">
             <i
-              v-if="activeIcon"
+              v-if="ruleForm.icon"
               style="font-size: 40px; margin-right: 10px"
               class="iconfont"
-              :class="activeIcon"
+              :class="ruleForm.icon"
             ></i>
             <el-button @click="iconDialog = true">选择图标</el-button>
           </div>
@@ -209,7 +209,7 @@
         <li
           v-for="(icon, index) in iconList"
           :key="index"
-          :class="icon === activeIcon ? 'active' : ''"
+          :class="icon === ruleForm.icon ? 'active' : ''"
           @click="handleIconChange(icon)"
         >
           <i :class="['iconfont', icon]"></i>
@@ -294,7 +294,6 @@ export default {
         "icon15mianshouyueke",
       ],
       iconDialog: false,
-      activeIcon: "",
     };
   },
   mounted() {
@@ -313,7 +312,6 @@ export default {
   // },
   methods: {
     handleIconChange(icon) {
-      this.activeIcon = icon;
       this.ruleForm.icon = icon;
       this.iconDialog = false;
     },
@@ -324,7 +322,6 @@ export default {
       // this.ruleForm.parent_id = end
     },
     switchStatus(ab) {
-      console.log(ab);
       this.menu_status = ab.menu_status;
       this.ruleForm.id = ab.id;
       this.$api.updateStatus(this, this.ruleForm);
@@ -355,6 +352,7 @@ export default {
       this.ruleForm.id = zx.id;
       this.dialogVisible = true;
       this.$api.getMenuDetail(this, zx.id);
+      console.log(this.ruleForm);
     },
     scopes(id, sorts) {
       var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/;
