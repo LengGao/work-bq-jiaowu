@@ -22,7 +22,6 @@ let Finance = {
         if (res.data.code == 0) {
           self[name] = data
           self.panelData = res.data.data.count[0]
- 
         }
       },
     })
@@ -34,7 +33,7 @@ let Finance = {
       // search_box: ruleForm.search_box,
       page: self.page,
       order_id: self.$route.query.order_id,
-      //order_id赋值：上一级路由的order_id
+      //order_id赋值：order_id
     }
     console.log(config)
     axiosHttp({

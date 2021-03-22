@@ -7,7 +7,9 @@ export default {
   onlineUserList: '/Enrollment/onlineUserList',
   getSchoolList: '/School/list',
   changeUpdateSort: '/School/updateSort',
-
+  getUserDetail: '/UserArchives/detail',
+  modifyUserDetail: '/UserArchives/modify',
+  getUserRecord: '/UserArchivesRecord/index',
   //资源配置
   getCategoryList: '/courseCategory/getCategoryList',
   updateCategorySort: '/courseCategory/updateCategorySort',

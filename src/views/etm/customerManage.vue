@@ -161,7 +161,9 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text">客户详情</el-button>
+                <el-button type="text" @click="toCusDetail(scope.row)"
+                  >客户详情</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -634,6 +636,14 @@ export default {
     // },
   },
   methods: {
+    toCusDetail(ab) {
+      this.$router.push({
+        path: '/fina/cusdetail',
+        query: {
+          uid: ab.uid,
+        },
+      })
+    },
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)

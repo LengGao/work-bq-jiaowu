@@ -220,7 +220,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <div class="coursename" @click="coursDetail">
+              <div class="coursename" @click="coursDetail(scope.row)">
                 {{ scope.row.surname }}
               </div>
             </template>
@@ -269,13 +269,13 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="dialogFormVisible = true"
+                <el-button type="text" @click="handledialog(scope.row)"
                   >收款</el-button
                 >
-                <el-button type="text" @click="refundFormVisible = true"
+                <el-button type="text" @click="handlerefund(scope.row)"
                   >退款</el-button
                 >
-                <el-button type="text" @click="voidFormVisible = true"
+                <el-button type="text" @click="handlevoid(scope.row)"
                   >作废</el-button
                 >
               </div>
@@ -643,7 +643,6 @@
 <script>
 export default {
   name: 'finance',
-
   data() {
     return {
       searchData: {
@@ -665,62 +664,6 @@ export default {
             'value-format': 'yyyy-MM-dd',
           },
         },
-        // {
-        //   key: 'name1',
-        //   type: 'select',
-        //   options: [
-        //     {
-        //       value: '1',
-        //       label: 'test',
-        //     },
-        //   ],
-        //   attrs: {
-        //     clearable: true,
-        //     placeholder: '所属分类',
-        //   },
-        // },
-        // {
-        //   key: 'name1',
-        //   type: 'select',
-        //   options: [
-        //     {
-        //       value: '1',
-        //       label: 'test',
-        //     },
-        //   ],
-        //   attrs: {
-        //     clearable: true,
-        //     placeholder: '所属项目',
-        //   },
-        // },
-        // {
-        //   key: 'name1',
-        //   type: 'select',
-        //   options: [
-        //     {
-        //       value: '1',
-        //       label: 'test',
-        //     },
-        //   ],
-        //   attrs: {
-        //     clearable: true,
-        //     placeholder: '所属班级',
-        //   },
-        // },
-        // {
-        //   key: 'name1',
-        //   type: 'select',
-        //   options: [
-        //     {
-        //       value: '1',
-        //       label: 'test',
-        //     },
-        //   ],
-        //   attrs: {
-        //     clearable: true,
-        //     placeholder: '推荐机构',
-        //   },
-        // },
         {
           key: 'keyword',
           attrs: {
@@ -748,7 +691,6 @@ export default {
         cate_id: [{ required: true, message: '', trigger: 'change' }],
       },
       schoolData: [],
-
       panelData: {
         total: '',
         order_money: '',
@@ -758,13 +700,15 @@ export default {
       },
 
       ruleForm: {
-        // order_id: '',
-        // verify_time: '',
-        // surname: '',
-        // order_money: 0,
-        // pay_money: '',
-        // reduction: 0,
-      },
+          order_no:'',
+          verify_time:'',
+          surname:'',
+          order_money:'',
+          reduction:'',
+          pay_money:'',
+          reduction:'',
+          account:{}
+        },
       curstomerVisible: false,
 
       isTagactive: 1,
@@ -789,7 +733,6 @@ export default {
       page: 1,
       status: 1,
       datas: {},
-      all: 1,
 
       dialogFormVisible: false,
       refundFormVisible: false,
@@ -812,10 +755,21 @@ export default {
   },
   mounted() {
     this.$api.orderindex(this, 'schoolData')
-   
+
   },
   filters: {},
   methods: {
+    handledialog(){
+      this.dialogFormVisible = true,
+      this.$api.orderdetail(this, 'schoolData')
+      // this.pay_status = 1
+    },
+    handlerefund(){
+      this.refundFormVisible = true
+    },
+    handlevoid(){
+      this.voidFormVisible = true
+    },
     handlePageChange(val) {
       this.pageNum = val
       this.$api.orderindex(this, 'schoolData')
@@ -876,9 +830,13 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    coursDetail() {
+    coursDetail(ab) {
       this.$router.push({
         path: '/fina/cusdetail',
+        // query: {
+        //   surname: ab.surname,
+        // },
+
       })
     },
     orderDetail(ab) {

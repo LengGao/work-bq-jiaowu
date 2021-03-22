@@ -168,6 +168,87 @@ let enrollStu = {
       },
     })
   },
+  //1.4 用户详情 用户资料详情 用户档案详情
+  getUserDetail(self, name) {
+    let config = {
+      order_token: Math.floor(Math.random() * 1000000 + 1) + '',
+      uid: self.$route.query.uid,
+      // search_box: ruleForm.search_box,
+      // page: self.page,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getUserDetail,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+        }
+      },
+    })
+  },
+  //1.5 招生修改学员信息、修改学员档案（客户管理、修改客户资料、客户报名）
+  modifyUserDetail(self, formData) {
+    let config = {
+      id: formData.id,
+      surname: formData.surname,
+      mobile: formData.mobile,
+      id_card_number: formData.id_card_number,
+      sex: formData.sex,
+      birthday: formData.birthday,
+      marry: formData.marry,
+      qq: formData.qq,
+      email: formData.email,
+      culture: formData.culture,
+      province: formData.province,
+      city: formData.city,
+      from_organization_id: formData.from_organization_id,
+      sources: formData.sources,
+      tips: formData.tips,
+      uid: formData.uid,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.modifyUserDetail,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.editorInfoShow = false
+          self.$api.getUserDetail(self, 'ruleForm')
+          // self[name] = data
+        }
+      },
+    })
+  },
+  //1.8 用户跟进记录 跟进详情 跟进动作
+  getUserRecord(self, name) {
+    let config = {
+      uid: self.ruleForm.uid,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getUserRecord,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+        }
+      },
+    })
+  },
   //公海客户列表
   getCommonUserList(self, name) {
     let config = {
