@@ -43,7 +43,10 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')"
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('ruleForm')"
         >确 定</el-button
       >
     </span>
@@ -86,6 +89,7 @@ export default {
           { required: true, message: "请选择机构", trigger: "change" },
         ],
       },
+      addLoading: false,
     };
   },
   watch: {
@@ -127,7 +131,11 @@ export default {
         data.storage_id = this.id;
       }
       const api = this.id ? editstorage : addstorage;
-      const res = await api(data);
+      this.addLoading = true;
+      const res = await api(data).catch(() => {
+        this.addLoading = false;
+      });
+      this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(`仓库${this.id ? "编辑" : "新增"}成功`);
         this.hanldeCancel();

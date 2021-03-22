@@ -1,214 +1,312 @@
 <template>
-  <section class="mainwrap">
-    <div class="header">
-      <search
-        :organHide="false"
-        :schoolHide="false"
-        :classNameHide="false"
-        :dealStatusHide="false"
-        :teacherHide="false"
-        @getTable="getTableList"
-        api="getMyclient"
-        :statusNum="3"
-      ></search>
-      <div>
-        <el-checkbox v-model="checked">显示未归档学生</el-checkbox>
-        <!-- <el-button type="primary" style="margin-left:20px">批量发放</el-button> -->
-      </div>
-    </div>
-
-    <!--表格-->
-    <div class="userTable">
-      <el-table
-        ref="multipleTable"
-        :data="schoolData.list"
-        tooltip-effect="light"
-        stripe
-        style="width: 100%;"
-        class="min_table"
-        :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
-      >
-        <el-table-column
-          prop="uid"
-          label="学员编号"
-          show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
-        <el-table-column
-          prop="nickname"
-          label="学生姓名"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="mobile"
-          label="手机号码"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-
-        <el-table-column
-          prop="category_name"
-          label="所属分类"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-
-        <el-table-column
-          prop="project_name"
-          label="所属项目"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="classroom_id"
-          label="所属班级"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="total_books"
-          label="应发教材"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="not_issued"
-          label="欠发教材"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="update_time"
-          label="最后更新时间"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="200"
-          max-width="200"
-        >
-          <template slot-scope="scope">
-            <div class="operation_btn">
-              <el-button type="text" @click="handleAdd(scope.row)"
-                >教材发放</el-button
-              >
-              <el-button type="text" @click="toMaterialJournal(scope.row)"
-                >日志</el-button
-              >
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-dialog title="发放教材" :visible.sync="dialogVisible" width="30%">
-        <!-- <span>这是一段信息</span> -->
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="仓库名称" prop="name">
-            <el-select v-model="ruleForm.value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="发放教材" prop="name">
-            <el-table :data="schoolData" style="width: 100%">
-              <el-table-column type="selection" width="55"> </el-table-column>
-              <el-table-column prop="date" label="日期" width="180">
-              </el-table-column>
-              <el-table-column prop="date" label="日期" width="180">
-              </el-table-column>
-            </el-table>
-            <!-- <el-input v-model="ruleForm.name"></el-input> -->
-          </el-form-item>
-          <el-form-item label="发放形式" prop="name">
-            <el-radio-group v-model="ruleForm.radio">
-              <el-radio :label="3">备选项</el-radio>
-              <el-radio :label="6">备选项</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="备注信息" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false"
-            >确 定</el-button
-          >
-        </span>
-      </el-dialog>
-      <div class="table_bottom">
-        <page
-          :data="schoolData.total"
-          :curpage="page"
-          @pageChange="doPageChange"
+  <div>
+    <div class="head_remind">*管理不同机构的仓库和仓库出入库。</div>
+    <section class="mainwrap">
+      <div class="header">
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
         />
+        <div>
+          <el-button
+            type="primary"
+            style="margin-right: 20px"
+            @click="handleBatchAdd"
+            >批量发放</el-button
+          >
+          <el-checkbox v-model="checked" @change="handleChecked"
+            >显示欠教材学生</el-checkbox
+          >
+        </div>
       </div>
-    </div>
-  </section>
+
+      <!--表格-->
+      <div class="userTable">
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          stripe
+          style="width: 100%"
+          class="min_table"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
+        >
+          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            prop="id"
+            label="学员编号"
+            show-overflow-tooltip
+            min-width="90"
+          ></el-table-column>
+          <el-table-column
+            prop="nickname"
+            label="学生姓名"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号码"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+
+          <el-table-column
+            prop="project_name"
+            label="所属项目"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="classroom_id"
+            label="所属班级"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="total_books"
+            label="应发教材"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="not_issued"
+            label="欠发教材"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="update_time"
+            label="最后更新时间"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+
+          <el-table-column
+            label="操作"
+            fixed="right"
+            min-width="200"
+            max-width="200"
+          >
+            <template slot-scope="{ row }">
+              <div class="operation_btn">
+                <el-button type="text" @click="handleAdd(row.id)"
+                  >教材发放</el-button
+                >
+                <el-button type="text" @click="toMaterialJournal(row.id)"
+                  >日志</el-button
+                >
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
+      </div>
+      <!-- 发放教材 -->
+      <GrantTeachMaterials
+        v-model="dialogVisible"
+        :ids="checkedIds"
+        @on-success="dispenseList"
+      />
+    </section>
+  </div>
 </template>
 
 <script>
+import SearchList from "@/components/SearchList/index";
+import GrantTeachMaterials from "./components/GrantTeachMaterials";
+import { dispenseList } from "@/api/eda";
+import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
 export default {
-  name: 'seaStudent',
+  name: "teachMaterial",
+  components: {
+    SearchList,
+    GrantTeachMaterials,
+  },
   data() {
     return {
-      rules: {},
-      options: [],
-      ruleForm: {},
       dialogVisible: false,
-      schoolData: [],
-      page: 1,
-      status: 3,
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      checkedIds: [],
+      searchData: {
+        date: "",
+        category_id: [],
+        project_id: "",
+        classroom_id: "",
+        organization_id: [],
+        value: "",
+      },
+      searchOptions: [
+        {
+          key: "date",
+          type: "datePicker",
+          attrs: {
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
+          },
+        },
+        {
+          key: "category_id",
+          type: "cascader",
+          attrs: {
+            placeholder: "所属分类",
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: "project_id",
+          type: "select",
+          options: [],
+          attrs: {
+            placeholder: "所属项目",
+            clearable: true,
+          },
+        },
+        {
+          key: "classroom_id",
+          type: "select",
+          options: [],
+          attrs: {
+            placeholder: "所属班级",
+            clearable: true,
+          },
+        },
+        {
+          key: "organization_id",
+          type: "cascader",
+          attrs: {
+            placeholder: "推荐机构",
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: "value",
+          attrs: {
+            placeholder: "学生姓名/手机号码",
+          },
+        },
+      ],
       datas: {},
-      checked: '',
-    }
+      checked: "",
+    };
   },
-  mounted() {
-    this.$api.dispenseList(this, 'schoolData')
-    this.$api.getTeachBooksList(this, 'schoolData')
+  created() {
+    this.getInstitutionSelectData();
+    this.getCateList();
+    this.dispenseList();
   },
   methods: {
+    handleSearch(data) {
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        category_id: data.category_id.pop(),
+        organization_id: data.organization_id.pop(),
+        start_time: times[0],
+        end_time: times[1],
+      };
+      this.dispenseList();
+    },
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.id);
+    },
+    handleChecked() {
+      this.dispenseList();
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.dispenseList();
+    },
     toMaterialJournal(ab) {
-      console.log(ab)
+      console.log(ab);
       this.$router.push({
-        path: '/eda/materialJournal',
+        path: "/eda/materialJournal",
         query: { id: ab.id },
-      })
+      });
     },
-    handleAdd() {
-      this.dialogVisible = true
+    handleBatchAdd() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择学生！");
+        return;
+      }
+      this.dialogVisible = true;
     },
-    getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+    handleAdd(id) {
+      this.checkedIds = [id];
+      this.dialogVisible = true;
+    },
+    // 获取教材分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          "category_name",
+          "category_id",
+          "son"
+        );
       }
     },
-
-    doPageChange(page) {
-      this.page = page
-      this.$api.dispenseList(this, 'schoolData')
+    // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
+      if (res.code === 0) {
+        this.searchOptions[4].attrs.options = cloneOptions(
+          res.data,
+          "institution_name",
+          "institution_id",
+          "children"
+        );
+      }
+    },
+    //教材发放列表
+    async dispenseList() {
+      this.checkedIds = [];
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await dispenseList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,
@@ -229,10 +327,5 @@ export default {
 }
 /deep/.studentTag ul li {
   color: #666666;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

@@ -125,7 +125,10 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')"
+      <el-button
+        type="primary"
+        :loading="btnLoading"
+        @click="submitForm('ruleForm')"
         >调 拨</el-button
       >
     </span>
@@ -201,6 +204,7 @@ export default {
       ],
       selection: [],
       storageOptions: [],
+      btnLoading: false,
     };
   },
   watch: {
@@ -243,7 +247,11 @@ export default {
         ...this.formData,
         book: JSON.stringify(books),
       };
-      const res = await mobilizestorage(data);
+      this.btnLoading = true;
+      const res = await mobilizestorage(data).catch(() => {
+        this.btnLoading = false;
+      });
+      this.btnLoading = false;
       if (res.code === 0) {
         this.$message.success(`调拨成功`);
         this.hanldeCancel();
