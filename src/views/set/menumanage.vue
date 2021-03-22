@@ -391,6 +391,9 @@ export default {
     },
 
     addFunction() {
+      console.log(this.$router);
+      this.$router.push({ path: "/sou/textbookManage" });
+      return;
       this.$api.getThumbMenuList(this, "ThumbData"); //获取下拉数据
       //添加功能按钮
       this.dialogTitle = "添加功能";
