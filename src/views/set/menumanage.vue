@@ -36,7 +36,7 @@
           <template slot-scope="scope">
             <el-col :span="12" v-if="scope.row.menu_type == 1">
               <el-input
-                style="width:56px"
+                style="width: 56px"
                 v-model="scope.row.sort"
                 placeholder
                 size="small"
@@ -52,18 +52,16 @@
           show-overflow-tooltip
         ></el-table-column>
 
-        <!-- <el-table-column
+        <el-table-column
           prop="icon"
-          label="分类图标"
-          min-width="150"
+          label="菜单图标"
+          min-width="120"
           show-overflow-tooltip
         >
-          <template slot-scope="scope" v-if="scope.row.menu_type == 1">
-            <div style="margin:0 auto;width:50px ;height:50px;">
-              <img :src="scope.row.icon" alt class="school_class_box" />
-            </div>
+          <template slot-scope="{ row }" v-if="row.menu_type == 1">
+            <i :class="['iconfont', row.icon]" style="font-size: 22px"></i>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column
           prop="auth"
           label="接口地址"
@@ -78,7 +76,7 @@
         ></el-table-column>
         <el-table-column
           prop="index_category_name"
-          label="是否显示"
+          label="启用状态"
           min-width="110"
           show-overflow-tooltip
         >
@@ -92,15 +90,31 @@
             ></el-switch>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="index_category_name"
+          label="是否在菜单显示"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <!-- <el-switch :active-value="1" :inactive-value="0"></el-switch> -->
+            <el-switch
+              :active-value="1"
+              :inactive-value="0"
+              v-model="row.show_at_list"
+              @change="updateShowStatus(row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
-            <div style="display:flex;justify-content:center">
+            <div style="display: flex; justify-content: center">
               <el-button type="text" @click="topayment(scope.row)"
                 >编辑</el-button
               >
               <el-button
                 type="text"
-                style="padding-left:40px"
+                style="padding-left: 40px"
                 @click="delbtn(scope.row)"
                 >删除</el-button
               >
@@ -141,6 +155,17 @@
             class="input-width"
           ></el-input>
         </el-form-item>
+        <el-form-item label="图标" v-if="ruleForm.menu_type == 1">
+          <div class="form-select-icon">
+            <i
+              v-if="ruleForm.icon"
+              style="font-size: 40px; margin-right: 10px"
+              class="iconfont"
+              :class="ruleForm.icon"
+            ></i>
+            <el-button @click="iconDialog = true">选择图标</el-button>
+          </div>
+        </el-form-item>
         <el-form-item label="接口地址">
           <el-input
             placeholder="请输入接口地址"
@@ -172,7 +197,7 @@
             class="input-width"
             type="number"
           ></el-input>
-          <p style="color:#aaa;ling-height:20px">
+          <p style="color: #aaa; ling-height: 20px">
             排序数字越大分类越靠前,最小值为1
           </p>
         </el-form-item>
@@ -187,53 +212,109 @@
       @closeImg="closeImg"
       @clearUrl="clearUrl"
     ></imgDialog> -->
+    <el-dialog
+      title="选择图标"
+      :visible.sync="iconDialog"
+      width="400px"
+      top="30px"
+      class="grant-teach-materials"
+    >
+      <ul class="icon-list">
+        <li
+          v-for="(icon, index) in iconList"
+          :key="index"
+          :class="icon === ruleForm.icon ? 'active' : ''"
+          @click="handleIconChange(icon)"
+        >
+          <i :class="['iconfont', icon]"></i>
+        </li>
+      </ul>
+    </el-dialog>
   </section>
 </template>
 
 <script>
+import { createMenuData, updateMenuData, updateShowStatus } from "@/api/login";
+import { createUserRouter } from "@/router";
 export default {
   data() {
     return {
       funShow: false,
       parent_id_arr: [],
-      nameLabel: '',
-      nameInputword: '',
+      nameLabel: "",
+      nameInputword: "",
       optionProps: {
-        label: 'menu_name',
-        value: 'id',
-        children: 'children',
+        label: "menu_name",
+        value: "id",
+        children: "children",
         checkStrictly: true,
       },
-      menu_status: '',
+      menu_status: "",
       ruleForm: {
-        id: '',
-        menu_name: '',
+        id: "",
+        menu_name: "",
         parent_id: [],
-        node: '',
-        auth: '',
-        icon: '',
-        sort: '',
-        menu_type: '',
+        node: "",
+        auth: "",
+        icon: "",
+        sort: "",
+        menu_type: "",
       },
       schoolData: [],
       ThumbData: [],
-      index_category_id: '',
-      dialogTitle: '',
+      index_category_id: "",
+      dialogTitle: "",
       addClassify: {
-        index_category_name: '',
-        sort: '',
+        index_category_name: "",
+        sort: "",
       },
       datas: {},
-      url: '',
+      url: "",
       pictureVisible: false,
       haschoose: false,
       page: 1,
       dialogVisible: false,
-    }
+      iconList: [
+        "icon21zhangjielianxi",
+        "icon20meiridaka",
+        "icon23shuatitiaozhan",
+        "icon18dingdanguanli",
+        "icon06shouyefenlei",
+        "icon26kechenglubo",
+        "icon24monikaoshi",
+        "icon25zizhuchuti",
+        "icon29jigouxueyuan",
+        "icon27zhibohuigu",
+        "icon22linianzhenti",
+        "icon34xiaoxihudong",
+        "icon33pc",
+        "icon28mianshouyueke",
+        "icon30tupiankongjian",
+        "icon19caozuorizhi",
+        "iconshuiyin",
+        "icon32xiaochengxu",
+        "icon01wodekehu",
+        "icon05kechengfenlei",
+        "icon04kehuziduan",
+        "icon08tikuguanli",
+        "icon02gonghaixueyuan",
+        "icon09kaoshipeizhi",
+        "icon07shipinguanli",
+        "icon03chaxunxueyuan",
+        "icon10zhiboguanli",
+        "icon11kechengguanli",
+        "icon13xueyuanguanli",
+        "icon16jiaoseguanli",
+        "icon17yuangongguanli",
+        "icon14banjiguanli",
+        "icon15mianshouyueke",
+      ],
+      iconDialog: false,
+    };
   },
   mounted() {
-    this.$api.getMenuList(this, 'schoolData')
-    this.$api.getThumbMenuList(this, 'ThumbData')
+    this.$api.getMenuList(this, "schoolData");
+    this.$api.getThumbMenuList(this, "ThumbData");
   },
   created() {
     // this.$api.getHomeclassifiList(this, 'schoolData')
@@ -246,17 +327,20 @@ export default {
   //   }
   // },
   methods: {
+    handleIconChange(icon) {
+      this.ruleForm.icon = icon;
+      this.iconDialog = false;
+    },
     checkDepart(ab) {
-      console.log(ab)
-      let end = ab[ab.length - 1]
-      console.log(end)
+      console.log(ab);
+      let end = ab[ab.length - 1];
+      console.log(end);
       // this.ruleForm.parent_id = end
     },
     switchStatus(ab) {
-      console.log(ab)
-      this.menu_status = ab.menu_status
-      this.ruleForm.id = ab.id
-      this.$api.updateStatus(this, this.ruleForm)
+      this.menu_status = ab.menu_status;
+      this.ruleForm.id = ab.id;
+      this.$api.updateStatus(this, this.ruleForm);
     },
     // doPageChange(page) {
     //   this.page = page
@@ -264,102 +348,143 @@ export default {
     // },
     // 获取数据
     getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+      console.log(state, val);
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.schoolData = val;
       }
     },
     topayment(zx) {
-      console.log(zx)
-      this.ruleForm.menu_type = zx.menu_type
+      console.log(zx);
+      this.ruleForm.menu_type = zx.menu_type;
       if (this.ruleForm.menu_type == 1) {
-        this.dialogTitle = '编辑菜单'
+        this.dialogTitle = "编辑菜单";
       } else {
-        this.dialogTitle = '编辑功能'
+        this.dialogTitle = "编辑功能";
       }
 
-      this.ruleForm.id = zx.id
-      this.dialogVisible = true
-      this.$api.getMenuDetail(this, zx.id)
+      this.ruleForm.id = zx.id;
+      this.dialogVisible = true;
+      this.$api.getMenuDetail(this, zx.id);
+      console.log(this.ruleForm);
     },
     scopes(id, sorts) {
-      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      var re = new RegExp(regu)
+      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/;
+      var re = new RegExp(regu);
       if (!re.test(sorts)) {
-        this.$message.error('请输入正确的排序！')
-        return false
+        this.$message.error("请输入正确的排序！");
+        return false;
       } else {
-        this.$api.updateSort(id, sorts, this)
+        this.$api.updateSort(id, sorts, this);
       }
     },
     toStudentDetail() {
       this.$router.push({
-        name: 'studentDetail',
-      })
+        name: "studentDetail",
+      });
     },
     delbtn(ab) {
-      var warnTitle = ''
+      var warnTitle = "";
       ab.menu_type == 1
-        ? (warnTitle = '确定要删除当前菜单吗?')
-        : (warnTitle = '确定要删除当前功能吗?')
-      this.$confirm(warnTitle, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+        ? (warnTitle = "确定要删除当前菜单吗?")
+        : (warnTitle = "确定要删除当前功能吗?");
+      this.$confirm(warnTitle, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.deleteMenuData(this, ab.id)
+          this.$api.deleteMenuData(this, ab.id);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
 
     addFunction() {
-      this.$api.getThumbMenuList(this, 'ThumbData') //获取下拉数据
+      this.$api.getThumbMenuList(this, "ThumbData"); //获取下拉数据
       //添加功能按钮
-      this.dialogTitle = '添加功能'
-      this.nameLabel = '功能名称'
-      this.nameInputword = '请输入功能名称'
+      this.dialogTitle = "添加功能";
+      this.nameLabel = "功能名称";
+      this.nameInputword = "请输入功能名称";
       // this.funShow = true
-      this.parent_id_arr = []
+      this.parent_id_arr = [];
       for (let key in this.ruleForm) {
-        this.ruleForm[key] = ''
+        this.ruleForm[key] = "";
       }
 
-      this.ruleForm.menu_type = 0
-      this.dialogVisible = true
+      this.ruleForm.menu_type = 0;
+      this.dialogVisible = true;
     },
     addMenu() {
       // this.funShow = false
-      this.$api.getThumbMenuList(this, 'ThumbData') //获取下拉数据
+      this.$api.getThumbMenuList(this, "ThumbData"); //获取下拉数据
       //添加菜单按钮
-      this.dialogTitle = '添加菜单'
-      this.nameLabel = '菜单名称'
-      this.nameInputword = '请输入菜单名称'
-      this.parent_id_arr = []
+      this.dialogTitle = "添加菜单";
+      this.nameLabel = "菜单名称";
+      this.nameInputword = "请输入菜单名称";
+      this.parent_id_arr = [];
       for (let key in this.ruleForm) {
-        this.ruleForm[key] = ''
+        this.ruleForm[key] = "";
       }
-      this.ruleForm.menu_type = 1
+      this.ruleForm.menu_type = 1;
 
-      this.dialogVisible = true
+      this.dialogVisible = true;
     },
-    handleConfirm() {
-      console.log(this.ruleForm.id)
-      if (this.ruleForm.id != '' && this.ruleForm.id != undefined) {
-        this.$api.updateMenuData(this, this.ruleForm)
-      } else {
-        let end = this.parent_id_arr[this.parent_id_arr.length - 1] //添加时取最后一位为父级
-        this.ruleForm.parent_id = end
-        this.$api.createMenuData(this, this.ruleForm)
+    updateRouter() {
+      this.$store.dispatch("GetInfo").then((res) => {
+        // 拉取用户信息,获取权限菜单
+        const { userRouter, menuList } = createUserRouter(res);
+        // 设置路由
+        this.$store.dispatch("resetRouter", userRouter);
+        // 设置菜单数据
+        this.$store.dispatch("setMenus", menuList);
+      });
+    },
+    // 是否中菜单中展示
+    async updateShowStatus({ id, show_at_list }) {
+      const data = {
+        id,
+        show_at_list,
+      };
+      const res = await updateShowStatus(data);
+      if (res.code === 0) {
+        this.$message.success("菜单状态修改成功！");
+        this.$api.getMenuList(this, "schoolData");
+        this.updateRouter();
       }
+    },
+    async handleConfirm() {
+      const api = this.ruleForm.id ? updateMenuData : createMenuData;
+      if (!this.ruleForm.id) {
+        let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
+        this.ruleForm.parent_id = end;
+      }
+      const data = {
+        ...this.ruleForm,
+      };
+      const res = await api(data);
+      if (res.code === 0) {
+        this.dialogVisible = false;
+        this.$message.success(
+          `菜单${this.ruleForm.id ? "修改" : "新增"}成功！`
+        );
+        this.$api.getMenuList(this, "schoolData");
+        this.updateRouter();
+      }
+
+      // if (this.ruleForm.id != "" && this.ruleForm.id != undefined) {
+      //   this.$api.updateMenuData(this, this.ruleForm);
+      // } else {
+      //   let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
+      //   this.ruleForm.parent_id = end;
+      //   this.$api.createMenuData(this, this.ruleForm);
+      // }
     },
     // clearUrl() {
 
@@ -380,7 +505,7 @@ export default {
     //   this.pictureVisible = true
     // },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -447,5 +572,32 @@ export default {
 
 .imageBox:hover i {
   display: block;
+}
+.form-select-icon {
+  display: flex;
+  align-items: center;
+}
+.icon-list {
+  display: flex;
+  flex-wrap: wrap;
+  li {
+    width: 50px;
+    text-align: center;
+    border: 2px solid #fff;
+    .iconfont {
+      font-size: 40px;
+      cursor: pointer;
+      &:hover {
+        color: #199fff;
+      }
+    }
+    &.active {
+      border-color: #199fff;
+      border-radius: 10px;
+      .iconfont {
+        color: #199fff;
+      }
+    }
+  }
 }
 </style>
