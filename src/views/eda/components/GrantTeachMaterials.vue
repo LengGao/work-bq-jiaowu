@@ -36,6 +36,7 @@
           :data="listData"
           style="width: 100%"
           @selection-change="handleSeletChange"
+          v-loading="listLoading"
         >
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
@@ -124,6 +125,7 @@ export default {
         ],
       },
       listData: [],
+      listLoading: false,
       addLoading: false,
     };
   },
@@ -173,8 +175,14 @@ export default {
         bind_project: this.projectId, //获取已绑定项目的教材
         storage_id: this.ruleForm.storage_id,
       };
-      const res = await getstoragebook(data);
-      this.listData = res.data.data;
+      this.listLoading = true;
+      const res = await getstoragebook(data).catch(() => {
+        this.listLoading = false;
+      });
+      this.listLoading = false;
+      if (res.code === 0) {
+        this.listData = res.data.data;
+      }
     },
     // handlePageChange(val) {
     //   this.pageNum = val;

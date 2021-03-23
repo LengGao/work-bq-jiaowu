@@ -9,10 +9,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button
-            type="primary"
-            style="margin-right: 20px"
-            @click="handleBatchAdd"
+          <el-button style="margin-right: 20px" @click="handleBatchAdd"
             >批量发放</el-button
           >
           <el-checkbox v-model="checked" @change="handleChecked"
@@ -138,7 +135,7 @@
 <script>
 import SearchList from "@/components/SearchList/index";
 import GrantTeachMaterials from "./components/GrantTeachMaterials";
-import { dispenseList } from "@/api/eda";
+import { dispenseList, getproject, getcourseallclass } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
@@ -178,6 +175,9 @@ export default {
         {
           key: "category_id",
           type: "cascader",
+          events: {
+            change: this.handleTypeChange,
+          },
           attrs: {
             placeholder: "所属分类",
             clearable: true,
@@ -188,6 +188,8 @@ export default {
           key: "project_id",
           type: "select",
           options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
           attrs: {
             placeholder: "所属项目",
             clearable: true,
@@ -197,6 +199,8 @@ export default {
           key: "classroom_id",
           type: "select",
           options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
           attrs: {
             placeholder: "所属班级",
             clearable: true,
@@ -226,6 +230,7 @@ export default {
     this.getInstitutionSelectData();
     this.getCateList();
     this.dispenseList();
+    this.getproject();
   },
   methods: {
     handleSearch(data) {
@@ -275,6 +280,31 @@ export default {
       this.checkedIds = [id];
       this.dialogVisible = true;
     },
+    // 当分类选择时
+    handleTypeChange(ids) {
+      console.log(ids);
+      const id = ids ? ids.pop() : "";
+      this.getcourseallclass(id);
+      this.getproject(id);
+    },
+    // 获取班级下拉
+    async getcourseallclass(category_id) {
+      const data = { category_id };
+      const res = await getcourseallclass(data);
+      if (res.code === 0) {
+        this.searchOptions[3].options = res.data;
+      }
+    },
+    // 获取项目下拉
+    async getproject(category_id = "") {
+      const data = {
+        category_id,
+      };
+      const res = await getproject(data);
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data;
+      }
+    },
     // 获取教材分类
     async getCateList() {
       const data = { list: true };
@@ -305,10 +335,12 @@ export default {
     async dispenseList() {
       this.checkedIds = [];
       this.projectId = "";
+      console.log(this.searchData);
       const data = {
         page: this.pageNum,
         ...this.searchData,
       };
+      delete data.date;
       this.listLoading = true;
       const res = await dispenseList(data);
       this.listLoading = false;

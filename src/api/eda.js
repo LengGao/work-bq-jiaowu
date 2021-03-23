@@ -36,6 +36,28 @@ export function dispenseLog(params) {
         params,
     })
 }
+/**
+ * 获取项目下拉菜单
+ * @param {*} params 
+ */
+export function getproject(params) {
+    return request({
+        url: '/project/getproject',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 获取班级下拉
+ * @param {*} params 
+ */
+export function getcourseallclass(params) {
+    return request({
+        url: '/classroom/getcourseallclass',
+        method: 'get',
+        params,
+    })
+}
 // 学生中心====================
 /**
  * 学生列表
