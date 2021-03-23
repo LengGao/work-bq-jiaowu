@@ -107,6 +107,10 @@ export default {
       };
       const res = await addUserArchivesRecord(data);
       if (res.code === 0) {
+        this.ruleForm = {
+          desc: "",
+          todo_time: "",
+        };
         this.$message.success(res.message);
         this.userArchivesRecord();
       }
