@@ -78,3 +78,20 @@ export function allocRole(data) {
     data: data
   })
 }
+//添加菜单
+export function createMenuData(data) {
+  return request({
+    url: '/AdminMenu/createMenuData',
+    method: 'post',
+    data: data
+  })
+}
+//修改菜单
+export function updateMenuData(data) {
+  return request({
+    url: '/AdminMenu/updateMenuData',
+    method: 'post',
+    data: data
+  })
+}
+

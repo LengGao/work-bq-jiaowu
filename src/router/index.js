@@ -44,17 +44,7 @@ export const constantRouterMap = [
   //   ],
   // },
 ]
-// visualization 默认路由
-export const indexRoute = (route) => {
-  return {
-    path: '',
-    component: Layout,
-    redirect: '/visualization',
-    children: [
-      route
-    ],
-  }
-}
+
 export const asyncRouter = [
   {
     path: 'visualization',
@@ -618,10 +608,70 @@ const routeToMap = (routers) => {
   deep(routers, routerMap)
   return routerMap
 }
-export const asyncRouterMap = routeToMap(asyncRouter)
+const asyncRouterMap = routeToMap(asyncRouter)
+// visualization 默认路由
+const indexRoute = (route) => {
+  return {
+    path: '',
+    component: Layout,
+    redirect: '/visualization',
+    children: [
+      route
+    ],
+  }
+}
+// 根据接口返回的数据创建路由
+export const createUserRouter = (data) => {
+  const userRouter = []
+  const menuList = []
+  const deepCreate = (data, userRouter, menuList) => {
+    data.forEach(item => {
+      // 获取asyncRouterMap里对应点路由
+      const route = asyncRouterMap[item.node]
+      if (route) {
+        // 如果接口有返回icon,menu_name 就重写
+        item.icon && (route.meta.icon = item.icon);
+        item.menu_name && (route.meta.title = item.menu_name);
+        // 设置菜单要用的数据
+        const menu = {
+          name: item.menu_name,
+          path: route.path,
+          icon: item.icon
+        }
+        // 对 visualization 特殊处理
+        if (item.node === 'visualization') {
+          userRouter.push(indexRoute(route))
+        } else {
+          userRouter.push(route)
+        }
+        menuList.push(menu)
+        // 递归子节点
+        if (item.children && item.children.length) {
+          route.children = []
+          menu.children = []
+          deepCreate(item.children, route.children, menu.children)
+        }
+      }
+    })
+  }
+  deepCreate(data, userRouter, menuList)
+  // 添加 重定向 404
+  userRouter.push({ path: '*', redirect: '/404' },)
+  return { userRouter, menuList }
+}
 
-export default new VueRouter({
-  // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap,
-})
+const createRouter = () => {
+  return new VueRouter({
+    // mode: 'history', //后端支持可开
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRouterMap,
+  })
+}
+const router = createRouter()
+
+export const resetRouter = () => {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher
+}
+
+export default router

@@ -1,5 +1,4 @@
-import { asyncRouterMap, constantRouterMap } from '@/router/index'
-
+import defaultRouter, { asyncRouterMap, indexRoute, resetRouter } from '@/router'
 //判断是否有权限访问该菜单
 function hasPermission(menus, route) {
   if (route.name) {
@@ -63,54 +62,76 @@ function compare(p) {
   }
 }
 
+// 根据接口返回的数据创建路由
+const createUserRouter = (data) => {
+  const userRouter = []
+  const menuList = []
+  const deepCreate = (data, userRouter, menuList) => {
+    data.forEach(item => {
+      // 获取asyncRouterMap里对应点路由
+      const route = asyncRouterMap[item.node]
+      if (route) {
+        // 如果接口有返回icon,menu_name 就重写
+        item.icon && (route.meta.icon = item.icon);
+        item.menu_name && (route.meta.title = item.menu_name);
+        // 设置菜单要用的数据
+        const menu = {
+          name: item.menu_name,
+          path: route.path,
+          icon: item.icon
+        }
+        // 对 visualization 特殊处理
+        if (item.node === 'visualization') {
+          userRouter.push(indexRoute(route))
+        } else {
+          userRouter.push(route)
+        }
+        menuList.push(menu)
+        // 递归子节点
+        if (item.children && item.children.length) {
+          route.children = []
+          menu.children = []
+          deepCreate(item.children, route.children, menu.children)
+        }
+      }
+    })
+  }
+  deepCreate(data, userRouter, menuList)
+  // 添加 重定向 404
+  userRouter.push({ path: '*', redirect: '/404' },)
+  return { userRouter, menuList }
+}
+
+
 const permission = {
   state: {
-    routers: constantRouterMap,
-    addRouters: [],
+    userRouter: [],
     menus: []
   },
   mutations: {
     SET_MENUS: (state, menus) => {
       state.menus = menus
     },
-    SET_ROUTERS: (state, routers) => {
+    SET_USER_ROUTERS: (state, routers) => {
       console.log(routers)
-      state.addRouters = routers
-      state.routers = constantRouterMap.concat(routers)
+      state.userRouter = routers
     },
   },
   actions: {
     setMenus({ commit }, menus) {
       commit('SET_MENUS', menus)
     },
-    GenerateRoutes({ commit }, data) {
-      console.log(data)
-      return new Promise((resolve) => {
-        const { menus } = data
-
-        const accessedRouters = asyncRouterMap.filter((v) => {
-          if (hasPermission(menus, v)) {
-            if (v.children && v.children.length > 0) {
-              v.children = v.children.filter((child) => {
-                if (hasPermission(menus, child)) {
-                  return child
-                }
-                return false
-              })
-              return v
-            } else {
-              return v
-            }
-          }
-          return false
-        })
-        console.log(accessedRouters)
-        //对菜单进行排序
-        sortRouters(accessedRouters)
-        commit('SET_ROUTERS', accessedRouters)
-        resolve()
-      })
+    addRouter({ commit }, router) {
+      console.log(defaultRouter)
+      defaultRouter.addRoutes(router)
+      commit('SET_USER_ROUTERS', router)
     },
+    resetRouter({ commit }, router) {
+      resetRouter()
+      defaultRouter.addRoutes(router)
+      commit('SET_USER_ROUTERS', router)
+    }
+
   },
 }
 

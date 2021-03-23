@@ -220,6 +220,8 @@
 </template>
 
 <script>
+import { createMenuData, updateMenuData } from "@/api/login";
+import { createUserRouter } from "@/router";
 export default {
   data() {
     return {
@@ -391,9 +393,6 @@ export default {
     },
 
     addFunction() {
-      console.log(this.$router);
-      this.$router.push({ path: "/sou/textbookManage" });
-      return;
       this.$api.getThumbMenuList(this, "ThumbData"); //获取下拉数据
       //添加功能按钮
       this.dialogTitle = "添加功能";
@@ -423,15 +422,42 @@ export default {
 
       this.dialogVisible = true;
     },
-    handleConfirm() {
-      console.log(this.ruleForm.id);
-      if (this.ruleForm.id != "" && this.ruleForm.id != undefined) {
-        this.$api.updateMenuData(this, this.ruleForm);
-      } else {
+    updateRouter() {
+      this.$store.dispatch("GetInfo").then((res) => {
+        // 拉取用户信息,获取权限菜单
+        const { userRouter, menuList } = createUserRouter(res);
+        // 设置路由
+        this.$store.dispatch("resetRouter", userRouter);
+        // 设置菜单数据
+        this.$store.dispatch("setMenus", menuList);
+      });
+    },
+    async handleConfirm() {
+      const api = this.ruleForm.id ? updateMenuData : createMenuData;
+      if (!this.ruleForm.id) {
         let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
         this.ruleForm.parent_id = end;
-        this.$api.createMenuData(this, this.ruleForm);
       }
+      const data = {
+        ...this.ruleForm,
+      };
+      const res = await api(data);
+      if (res.code === 0) {
+        this.dialogVisible = false;
+        this.$message.success(
+          `菜单${this.ruleForm.id ? "修改" : "新增"}成功！`
+        );
+        this.$api.getMenuList(this, "schoolData");
+        this.updateRouter();
+      }
+
+      // if (this.ruleForm.id != "" && this.ruleForm.id != undefined) {
+      //   this.$api.updateMenuData(this, this.ruleForm);
+      // } else {
+      //   let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
+      //   this.ruleForm.parent_id = end;
+      //   this.$api.createMenuData(this, this.ruleForm);
+      // }
     },
     // clearUrl() {
 

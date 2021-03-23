@@ -711,6 +711,7 @@ let minipro = {
           })
           // self.dialogVisible = false
           self.$api.getMenuList(self, 'schoolData')
+          self.updateRouter()
         }
       },
     })
@@ -732,6 +733,7 @@ let minipro = {
             message: res.data.message,
           })
           self.$api.getMenuList(self, 'schoolData')
+          self.updateRouter()
         }
         // console.log(res.data.data)
         // let data = res.data.data
@@ -758,6 +760,7 @@ let minipro = {
             message: res.data.message,
           })
           self.$api.getMenuList(self, 'schoolData')
+          self.updateRouter()
         }
       },
     })
