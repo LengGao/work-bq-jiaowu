@@ -16,12 +16,13 @@
         ></el-input>
       </el-form-item>
       <div class="add-record-actions">
-        <el-form-item label="出生日期">
+        <el-form-item label="下次跟进时间">
           <el-date-picker
             class="w-100"
             type="date"
+            value-format="yyyy-MM-dd"
             placeholder="选择日期"
-            v-model="ruleForm.date1"
+            v-model="ruleForm.todo_time"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
@@ -33,36 +34,36 @@
     </el-form>
     <div class="record-list">
       <ul>
-        <li>
-          <el-card class="box-card">
+        <li v-for="item in recordData" :key="item.id">
+          <el-card class="box-card" shadow="never">
             <div class="list-row">
               <div class="list-row-col">
                 <span class="col-name">跟进时间：</span>
-                <span>2020-05-26 17:21:01 </span>
+                <span>{{ item.create_time }}</span>
               </div>
               <div class="list-row-col">
-                <span class="col-name">跟进人</span>
-                <span>admin </span>
+                <span class="col-name">跟进人：</span>
+                <span>{{ item.staff_name || "--" }} </span>
               </div>
-              <div class="list-row-col">
+              <!-- <div class="list-row-col">
                 <span class="col-name">部门：</span>
-                <span>招生部 </span>
-              </div>
-              <div class="list-row-col">
+                <span>{{ item.staff_name }} </span>
+              </div> -->
+              <!-- <div class="list-row-col">
                 <span class="col-name">角色：</span>
                 <span>教务</span>
-              </div>
+              </div> -->
             </div>
             <div class="list-row">
               <div class="list-row-col">
                 <span class="col-name">跟进内容：</span>
-                <span>2020-05-26 17:21:01 </span>
+                <span>{{ item.desc }} </span>
               </div>
             </div>
             <div class="list-row">
               <div class="list-row-col">
                 <span class="col-name">下次跟进时间：</span>
-                <span>2020-05-26 17:21:01 </span>
+                <span>{{ item.todo_time }}</span>
               </div>
             </div>
           </el-card>
@@ -73,26 +74,55 @@
 </template>
 
 <script>
+import { userArchivesRecord, addUserArchivesRecord } from "@/api/eda";
 export default {
   name: "followUpRecord",
+  props: {
+    datas: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data() {
     return {
       ruleForm: {
         desc: "",
+        todo_time: "",
       },
       rules: {
         desc: [{ required: true, message: "请输入客户名称", trigger: "blur" }],
       },
+      recordData: [],
     };
   },
+  created() {
+    this.userArchivesRecord();
+  },
   methods: {
+    // 添加跟进记录
+    async addUserArchivesRecord() {
+      const data = {
+        ...this.ruleForm,
+        uid: this.datas.uid,
+      };
+      const res = await addUserArchivesRecord(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.userArchivesRecord();
+      }
+    },
+    // 跟进记录
+    async userArchivesRecord() {
+      const data = { uid: this.datas.uid };
+      const res = await userArchivesRecord(data);
+      if (res.code === 0) {
+        this.recordData = res.data.list;
+      }
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
+          this.addUserArchivesRecord();
         }
       });
     },
@@ -113,6 +143,8 @@ export default {
   }
   .record-list {
     font-size: 14px;
+    height: 590px;
+    overflow-y: auto;
     li {
       margin-bottom: 10px;
     }

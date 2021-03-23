@@ -70,3 +70,58 @@ export function getStudentList(params) {
         params,
     })
 }
+/**
+ * 学生详情-基本信息
+ * @param {*} params 
+ */
+export function getStudentBasicDetail(params) {
+    return request({
+        url: '/UserArchives/detail',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 修改学生基本信息
+ * @param {*} params 
+ */
+export function updateStudentBasicInfo(data) {
+    return request({
+        url: '/UserArchives/modify',
+        method: 'post',
+        data,
+    })
+}
+/**
+ * 学习轨迹
+ * @param {*} params 
+ */
+export function studentBehaviorRecord(params) {
+    return request({
+        url: 'StudentBehaviorRecord/index',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 学生跟进记录
+ * @param {*} params 
+ */
+export function userArchivesRecord(params) {
+    return request({
+        url: '/UserArchivesRecord/index',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 添加跟进记录
+ * @param {*} data 
+ */
+export function addUserArchivesRecord(data) {
+    return request({
+        url: '/UserArchivesRecord/add',
+        method: 'post',
+        data,
+    })
+}

@@ -62,46 +62,6 @@ function compare(p) {
   }
 }
 
-// 根据接口返回的数据创建路由
-const createUserRouter = (data) => {
-  const userRouter = []
-  const menuList = []
-  const deepCreate = (data, userRouter, menuList) => {
-    data.forEach(item => {
-      // 获取asyncRouterMap里对应点路由
-      const route = asyncRouterMap[item.node]
-      if (route) {
-        // 如果接口有返回icon,menu_name 就重写
-        item.icon && (route.meta.icon = item.icon);
-        item.menu_name && (route.meta.title = item.menu_name);
-        // 设置菜单要用的数据
-        const menu = {
-          name: item.menu_name,
-          path: route.path,
-          icon: item.icon
-        }
-        // 对 visualization 特殊处理
-        if (item.node === 'visualization') {
-          userRouter.push(indexRoute(route))
-        } else {
-          userRouter.push(route)
-        }
-        menuList.push(menu)
-        // 递归子节点
-        if (item.children && item.children.length) {
-          route.children = []
-          menu.children = []
-          deepCreate(item.children, route.children, menu.children)
-        }
-      }
-    })
-  }
-  deepCreate(data, userRouter, menuList)
-  // 添加 重定向 404
-  userRouter.push({ path: '*', redirect: '/404' },)
-  return { userRouter, menuList }
-}
-
 
 const permission = {
   state: {

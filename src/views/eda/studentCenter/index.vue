@@ -8,12 +8,16 @@
             src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3446442004,2207547936&fm=26&gp=0.jpg"
             alt=""
           />
-          <span class="name">张小北</span>
+          <span class="name">{{ detailData.surname || "--" }}</span>
         </div>
-        <div class="header-item">ID：89757</div>
-        <div class="header-item">手机号码：13535019963</div>
-        <div class="header-item">身份证码：445454565656554565</div>
-        <div class="header-item">注册日期：2020-05-30</div>
+        <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
+        <div class="header-item">手机号码：{{ detailData.mobile || "--" }}</div>
+        <div class="header-item">
+          身份证码：{{ detailData.id_card_number || "--" }}
+        </div>
+        <div class="header-item">
+          注册日期：{{ detailData.create_time || "--" }}
+        </div>
         <div class="header-item">
           <el-button type="primary">报名</el-button>
         </div>
@@ -27,23 +31,44 @@
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
         <el-tab-pane label="跟进记录" name="FollowUpRecord"></el-tab-pane>
       </el-tabs>
-      <component :is="getComponent" />
+      <component
+        :is="getComponent"
+        @on-basic-success="getStudentBasicDetail"
+        :datas="detailData"
+      />
     </section>
   </div>
 </template>
 
 <script>
+import { getStudentBasicDetail } from "@/api/eda";
 export default {
   name: "studentDetail",
   data() {
     return {
       activeName: "BasicInfo",
+      detailData: {},
     };
   },
   computed: {
     getComponent() {
       if (this.activeName) {
         return () => import(`./components/${this.activeName}.vue`);
+      }
+    },
+  },
+  created() {
+    this.getStudentBasicDetail();
+  },
+  methods: {
+    //学生基本信息
+    async getStudentBasicDetail() {
+      const data = {
+        uid: this.$route.query?.id || "",
+      };
+      const res = await getStudentBasicDetail(data);
+      if (res.code === 0) {
+        this.detailData = res.data;
       }
     },
   },

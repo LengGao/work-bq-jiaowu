@@ -40,9 +40,15 @@
 </template>
 
 <script>
-import { dispenseList } from "@/api/eda";
+import { studentBehaviorRecord } from "@/api/eda";
 export default {
   name: "learningTrack",
+  props: {
+    datas: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data() {
     return {
       listData: [],
@@ -50,17 +56,19 @@ export default {
     };
   },
   created() {
-    this.dispenseList();
+    this.studentBehaviorRecord();
   },
   methods: {
     linkTo(id) {
       console.log(id);
     },
     //教材发放列表
-    async dispenseList() {
-      this.checkedIds = [];
+    async studentBehaviorRecord() {
+      const data = {
+        uid: this.datas.uid,
+      };
       this.listLoading = true;
-      const res = await dispenseList();
+      const res = await studentBehaviorRecord(data);
       this.listLoading = false;
       this.listData = res.data.list;
     },
