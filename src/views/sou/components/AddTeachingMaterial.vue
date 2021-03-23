@@ -119,8 +119,8 @@
 </template>
 
 <script>
-import { uploadImageUrl } from "@/api/educational";
-import { addBook, getBookById, editBook } from "@/api/sou";
+import { uploadImageUrl } from '@/api/educational'
+import { addBook, getBookById, editBook } from '@/api/sou'
 export default {
   props: {
     value: {
@@ -129,11 +129,11 @@ export default {
     },
     title: {
       type: String,
-      default: "",
+      default: '',
     },
     id: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
     selectData: {
       type: Array,
@@ -148,109 +148,113 @@ export default {
       },
       visible: this.value,
       formData: {
-        book_name: "",
-        category_id: "",
-        book_cover: "",
-        chief_editor: "",
-        book_price: "",
-        book_isbn: "",
-        press: "",
+        book_name: '',
+        category_id: '',
+        book_cover: '',
+        chief_editor: '',
+        book_price: '',
+        book_isbn: '',
+        press: '',
       },
       rules: {
         book_name: [
-          { required: true, message: "请输入教材名称", trigger: "blur" },
+          { required: true, message: '请输入教材名称', trigger: 'blur' },
         ],
         category_id: [
-          { required: true, message: "请选择分类", trigger: "change" },
+          { required: true, message: '请选择分类', trigger: 'change' },
         ],
       },
       addLoading: false,
-    };
+    }
   },
   watch: {
     value(val) {
-      this.visible = val;
+      this.visible = val
     },
   },
   methods: {
     handleOpen() {
       if (this.id) {
-        this.getBookById();
+        this.getBookById()
       } else {
-        this.formData.category_id = 1;
+        this.formData.category_id = 1
         // 为了清空cascader的值
         setTimeout(() => {
-          this.formData.category_id = "";
-        }, 10);
+          this.formData.category_id = ''
+        }, 10)
       }
     },
     async getBookById() {
       const data = {
         book_id: this.id,
-      };
-      const res = await getBookById(data);
+      }
+      const res = await getBookById(data)
+
       if (res.code === 0) {
         for (const k in this.formData) {
-          this.formData[k] = res.data[k];
+          this.formData[k] = res.data[k]
         }
+        console.log(this.formData)
       }
     },
     async submit() {
+      console.log(this.formData)
       const data = {
         ...this.formData,
         category_id: Array.isArray(this.formData.category_id)
           ? this.formData.category_id.pop()
           : this.formData.category_id,
-      };
-      if (this.id) {
-        data.book_id = this.id;
       }
-      this.addLoading = true;
-      const api = this.id ? editBook : addBook;
+      if (this.id) {
+        data.book_id = this.id
+      }
+      this.addLoading = true
+      const api = this.id ? editBook : addBook
       const res = await api(data).catch(() => {
-        this.addLoading = false;
-      });
-      this.addLoading = false;
+        console.log(res)
+        this.addLoading = false
+      })
+      this.addLoading = false
       if (res.code === 0) {
-        this.$message.success(`教材${this.id ? "编辑" : "新增"}成功`);
-        this.hanldeCancel();
-        this.$emit("on-success");
+        this.$message.success(`教材${this.id ? '编辑' : '新增'}成功`)
+        this.hanldeCancel()
+        this.$emit('on-success')
       }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.submit()
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
       for (const k in this.formData) {
-        this.formData[k] = "";
+        this.formData[k] = ''
       }
-      this.hanldeCancel();
+      this.hanldeCancel()
     },
     hanldeCancel() {
-      this.$emit("input", false);
+      this.$emit('input', false)
     },
     handleAvatarSuccess(res, file) {
-      console.log(res);
-      this.formData.book_cover = res.data?.data?.url || "";
+      console.log(res)
+      this.formData.book_cover = res.data?.data?.url || ''
     },
     beforeAvatarUpload(file) {
-      const isImg = file.type.indexOf("image") !== -1;
-      const isLt20M = file.size / 1024 / 1024 < 20;
+      const isImg = file.type.indexOf('image') !== -1
+      const isLt20M = file.size / 1024 / 1024 < 20
       if (!isImg) {
-        this.$message.error("请上传图片");
+        this.$message.error('请上传图片')
       }
       if (!isLt20M) {
-        this.$message.error("上传图片大小不能超过 20MB!");
+        this.$message.error('上传图片大小不能超过 20MB!')
       }
-      return isLt20M && isImg;
+      return isLt20M && isImg
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -16,9 +16,9 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="仓库名称" prop="storageId">
+      <el-form-item label="仓库名称" prop="storage_id">
         <el-select
-          v-model="ruleForm.storageId"
+          v-model="ruleForm.storage_id"
           placeholder="请选择"
           @change="handleStorageChange"
         >
@@ -97,7 +97,7 @@ export default {
       visible: this.value,
       storageOptions: [],
       ruleForm: {
-        storageId: "",
+        storage_id: "",
         remark: "",
         type: "",
         books_id_arr: [],
@@ -111,7 +111,7 @@ export default {
           },
         ],
         type: [{ required: true, message: "请选择", trigger: "change" }],
-        storageId: [
+        storage_id: [
           {
             required: true,
             message: "请选择",
@@ -144,7 +144,6 @@ export default {
         id_arr: this.ids,
         ...this.ruleForm,
       };
-      delete data.storageId;
       this.addLoading = true;
       const res = await dispenseBooks(data).catch(() => {
         this.addLoading = false;
@@ -167,7 +166,7 @@ export default {
     async getstoragebook() {
       this.ruleForm.books_id_arr = [];
       const data = {
-        storage_id: this.ruleForm.storageId,
+        storage_id: this.ruleForm.storage_id,
       };
       const res = await getstoragebook(data);
       this.listData = res.data.data;

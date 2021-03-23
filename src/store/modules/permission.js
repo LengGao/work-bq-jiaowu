@@ -56,7 +56,7 @@ function sortRouters(accessedRouters) {
 
 //降序比较函数
 function compare(p) {
-  return function(m, n) {
+  return function (m, n) {
     let a = m[p]
     let b = n[p]
     return b - a
@@ -67,8 +67,12 @@ const permission = {
   state: {
     routers: constantRouterMap,
     addRouters: [],
+    menus: []
   },
   mutations: {
+    SET_MENUS: (state, menus) => {
+      state.menus = menus
+    },
     SET_ROUTERS: (state, routers) => {
       console.log(routers)
       state.addRouters = routers
@@ -76,6 +80,9 @@ const permission = {
     },
   },
   actions: {
+    setMenus({ commit }, menus) {
+      commit('SET_MENUS', menus)
+    },
     GenerateRoutes({ commit }, data) {
       console.log(data)
       return new Promise((resolve) => {

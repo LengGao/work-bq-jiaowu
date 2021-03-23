@@ -72,7 +72,7 @@
           ></el-table-column>
 
           <el-table-column
-            label="是否上架"
+            label="是否启用"
             min-width="150"
             show-overflow-tooltip
           >
@@ -133,11 +133,16 @@
             </el-col>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="所属分类" prop="category_id">
-                <el-input
+                <el-cascader
+                  v-model="ruleForm.category_id"
+                  :options="selectData"
+                  @change="handleChange"
+                ></el-cascader>
+                <!-- <el-input
                   placeholder="请输入分类名称"
                   v-model="ruleForm.category_id"
                   class="input-width"
-                ></el-input>
+                ></el-input> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -195,15 +200,15 @@
                 </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :lg="12" :sm="12" :xs="12" :md="12">
+            <!-- <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="适用范围">
                 <el-radio-group v-model="ruleForm.applay">
                   <el-radio :label="1">当前校区</el-radio>
                   <el-radio :label="2">全部校区</el-radio>
-                  <!-- <el-radio :label="3">指定校区</el-radio> -->
+              
                 </el-radio-group>
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-row>
 
           <el-row>
@@ -221,9 +226,31 @@
         <h3 class="project-h3" style="margin-bottom:20px">
           项目配置
         </h3>
-        <ul class="project-ul" v-for="item in 3" :key="item">
+        <ul class="project-ul">
           <li>
             课程
+          </li>
+          <li style="width:100%;list-style:none;padding-left:20px">
+            <el-tag>家</el-tag>
+          </li>
+          <li @click="courseDialogShow" style="cursor:pointer">
+            选择
+          </li>
+        </ul>
+        <ul class="project-ul">
+          <li>
+            题库
+          </li>
+          <li style="width:100%;list-style:none;padding-left:20px">
+            <el-tag>家</el-tag>
+          </li>
+          <li>
+            选择
+          </li>
+        </ul>
+        <ul class="project-ul">
+          <li>
+            教材
           </li>
           <li style="width:100%;list-style:none;padding-left:20px">
             <el-tag>家</el-tag>
@@ -239,14 +266,19 @@
           >
         </span>
       </el-dialog>
+      <courseDialog v-if="showCourse" />
     </section>
   </div>
 </template>
 
 <script>
 import { getCateList } from '@/api/sou'
+import courseDialog from './components/courseDialog'
 export default {
   name: 'projectManage',
+  components: {
+    courseDialog,
+  },
   data() {
     return {
       dialogTitle: '添加项目',
@@ -321,6 +353,7 @@ export default {
       ],
       schoolData: [],
       dialogVisible: false,
+      showCourse: false,
     }
   },
   created() {
@@ -328,6 +361,24 @@ export default {
     this.$api.getProjectList(this, 'schoolData')
   },
   methods: {
+    courseDialogShow() {
+      this.showCourse = true
+    },
+    handleChange() {
+      console.log(this.ruleForm.category_id)
+    },
+    changeSwitch(ab) {
+      console.log(ab)
+      let formData = {
+        project_id: ab.project_id,
+        project_name: ab.project_name,
+        category_id: ab.category_id,
+        price: ab.project_price,
+        lowest_price: ab.lowest_price,
+        status: ab.project_status,
+      }
+      this.$api.editProject(this, formData, 'POST')
+    },
     handlePageChange(val) {
       this.pageNum = val
       this.$api.getProjectList(this, 'schoolData')
