@@ -104,7 +104,9 @@
           >
             <template slot-scope="{ row }">
               <div class="operation_btn">
-                <el-button type="text" @click="handleAdd(row.id)"
+                <el-button
+                  type="text"
+                  @click="handleAdd(row.id, row.project_id)"
                   >教材发放</el-button
                 >
                 <el-button type="text" @click="toMaterialJournal(row.id)"
@@ -126,6 +128,7 @@
       <GrantTeachMaterials
         v-model="dialogVisible"
         :ids="checkedIds"
+        :projectId="projectId"
         @on-success="dispenseList"
       />
     </section>
@@ -239,6 +242,7 @@ export default {
       this.dispenseList();
     },
     handleSeletChange(selection) {
+      this.projectId = selection[0].project_id;
       this.checkedIds = selection.map((item) => item.id);
     },
     handleChecked() {
@@ -256,13 +260,18 @@ export default {
       });
     },
     handleBatchAdd() {
+      if (!this.projectId) {
+        this.$message.warning("请先选择项目！");
+        return;
+      }
       if (!this.checkedIds.length) {
         this.$message.warning("请选择学生！");
         return;
       }
       this.dialogVisible = true;
     },
-    handleAdd(id) {
+    handleAdd(id, projectId) {
+      this.projectId = projectId;
       this.checkedIds = [id];
       this.dialogVisible = true;
     },
@@ -295,6 +304,7 @@ export default {
     //教材发放列表
     async dispenseList() {
       this.checkedIds = [];
+      this.projectId = "";
       const data = {
         page: this.pageNum,
         ...this.searchData,

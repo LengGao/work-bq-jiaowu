@@ -91,6 +91,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    projectId: {
+      type: [String, Number],
+      default: "",
+    },
   },
   data() {
     return {
@@ -166,6 +170,7 @@ export default {
     async getstoragebook() {
       this.ruleForm.books_id_arr = [];
       const data = {
+        bind_project: this.projectId, //获取已绑定项目的教材
         storage_id: this.ruleForm.storage_id,
       };
       const res = await getstoragebook(data);
