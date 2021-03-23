@@ -282,6 +282,7 @@ let resource = {
   createProject(self, ruleForm) {
     let config = {
       project_name: ruleForm.project_name,
+
       category_id: Array.isArray(self.ruleForm.category_id)
         ? self.ruleForm.category_id.pop()
         : self.ruleForm.category_id,

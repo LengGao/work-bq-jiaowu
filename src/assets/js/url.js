@@ -10,7 +10,7 @@ export default {
   getUserDetail: '/UserArchives/detail',
   modifyUserDetail: '/UserArchives/modify',
   getUserRecord: '/UserArchivesRecord/index',
-  getProinvceList: 'region/elment.json',
+  getProinvceList: '/region/element.json',
   //资源配置
   getCategoryList: '/courseCategory/getCategoryList',
   updateCategorySort: '/courseCategory/updateCategorySort',

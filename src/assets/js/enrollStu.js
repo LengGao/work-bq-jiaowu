@@ -171,6 +171,7 @@ let enrollStu = {
   //2.0 返回省/市/区县三级联动数据json数据
   getProinvceList(self, name) {
     let config = {
+      type: 'province',
       // search_box: ruleForm.search_box,
       // page: self.page,
     }

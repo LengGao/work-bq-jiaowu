@@ -27,19 +27,15 @@
           <el-button type="primary" @click="toCreateClass">资源中心</el-button>
         </div>
         <div v-if="isTagactive === 1">
-          <el-button type="primary" @click="toCreateClass"
-            >导入</el-button
-          >
-          <el-button type="primary" @click="toCreateClass('2')"
-            >添加</el-button
-          >
+          <el-button type="primary" @click="toCreateClass">导入</el-button>
+          <el-button type="primary" @click="toCreateClass('2')">添加</el-button>
         </div>
       </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
+          :data="schoolData"
           tooltip-effect="light"
           stripe
           @selection-change="handleSelectionChange"
@@ -55,7 +51,7 @@
             show-overflow-tooltip
             min-width="80"
           ></el-table-column>
-         
+
           <el-table-column
             prop="course_name"
             label="学员姓名"
@@ -81,38 +77,41 @@
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
-          
+
           <el-table-column
             label="课程代码"
             min-width="100"
             show-overflow-tooltip
-          > 
+          >
           </el-table-column>
 
           <el-table-column
             label="课程名称"
             min-width="150"
             show-overflow-tooltip
-          > 
+          >
           </el-table-column>
 
-          <el-table-column
-            label="学分"
-            min-width="100"
-            show-overflow-tooltip
-          > 
+          <el-table-column label="学分" min-width="100" show-overflow-tooltip>
           </el-table-column>
 
           <el-table-column
             label="总评成绩"
             min-width="100"
             show-overflow-tooltip
-          > 
+          >
+          </el-table-column
+          >\
+          <el-table-column label="操作" fixed="right" min-width="200">
+            <template slot-scope="{ row }">
+              <div style="display: flex; justify-content: center">
+                <el-button type="text" @click="toAchieveDetail(row.book_id)"
+                  >成绩详情</el-button
+                >
+              </div>
+            </template>
           </el-table-column>
-
-         
         </el-table>
-        
       </div>
     </section>
   </div>
@@ -144,10 +143,8 @@ export default {
       ],
 
       page: 1,
-      
-      schoolData: [
-      
-      ],
+
+      schoolData: [{ course_price: 132323 }],
       course_ids: [],
       datas: {},
       selectData: [],
@@ -160,6 +157,11 @@ export default {
   },
 
   methods: {
+    toAchieveDetail() {
+      this.$router.push({
+        path: '/exa/achieveDetail',
+      })
+    },
     statusSwitch(ab) {
       this.isTagactive = ab.id
     },

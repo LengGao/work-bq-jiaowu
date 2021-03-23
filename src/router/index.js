@@ -40,6 +40,20 @@ export const constantRouterMap = [
 ]
 export const asyncRouterMap = [
   {
+    path: '/yx',
+    component: Layout,
+    redirect: '/yx/visualization',
+    name: 'yx',
+    children: [
+      {
+        path: 'visualization',
+        name: 'visualization',
+        component: () => import('@/views/pms/visualization.vue'),
+        meta: { title: '工作台', icon: 'shujukanban' },
+      },
+    ],
+  },
+  {
     path: '/sou',
     component: Layout,
     redirect: '/sou/classifiSetting',
@@ -448,6 +462,15 @@ export const asyncRouterMap = [
         component: () => import('@/views/exa/achievement.vue'),
         meta: { title: '成绩管理', icon: 'product-add' },
       },
+      //成绩管理组件开始
+      {
+        path: 'achieveDetail',
+        name: 'achieveDetail',
+        component: () => import('@/views/exa/achievement/achieveDetail.vue'),
+        meta: { title: '成绩管理', icon: 'product-add' },
+        hidden: true,
+      },
+      //成绩管理组件开始
       {
         path: 'graduation',
         name: 'graduation',

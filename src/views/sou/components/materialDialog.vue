@@ -1,10 +1,10 @@
 <template>
   <el-dialog
-    title="选择课程"
+    title="选择教材"
     :visible.sync="dialogVisible"
     width="70%"
     append-to-body
-    :before-close="closeCourse"
+    :before-close="closeMaterial"
   >
     <SearchList
       :options="searchOptions"
@@ -28,22 +28,15 @@
         >
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
-            label="课程名称"
+            label="教材名称"
             show-overflow-tooltip
             min-width="90"
-            prop="course_name"
+            prop="book_name"
           >
           </el-table-column>
           <el-table-column
             prop="category_name"
             label="所属分类"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-
-          <el-table-column
-            prop="category_name"
-            label="课程属性"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
@@ -64,8 +57,8 @@
           </p>
         </div>
         <ul>
-          <li v-for="(item, index) in choseCourse" :key="item.course_id">
-            <p>{{ item.course_name }}</p>
+          <li v-for="(item, index) in choseCourse" :key="item.book_id">
+            <p>{{ item.book_name }}</p>
             <i class="el-icon-delete" @click="deleteCourse(index)"></i>
           </li>
         </ul>
@@ -74,14 +67,14 @@
     <!-- <span>这是一段信息</span> -->
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="closeCourse">取 消</el-button>
+      <el-button @click="closeMaterial">取 消</el-button>
       <el-button type="primary" @click="handleconfirm">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { getCourseList, getCateList } from '@/api/sou'
+import { getBookList, getCateList } from '@/api/sou'
 export default {
   data() {
     return {
@@ -123,13 +116,12 @@ export default {
   },
   created() {
     this.getCateList()
-    console.log(this.selectData)
-    this.getCourseList()
+    this.getBookList()
   },
   methods: {
     handleconfirm() {
-      this.$emit('courseArr', this.choseCourse)
-      this.closeCourse()
+      this.$emit('materialArr', this.choseCourse)
+      this.closeMaterial()
     },
     deleteCourse(index) {
       this.choseCourse.splice(index, 1)
@@ -138,8 +130,8 @@ export default {
       console.log(val)
       this.choseCourse = val
     },
-    closeCourse() {
-      this.$emit('closeCourse')
+    closeMaterial() {
+      this.$emit('closeMaterial')
     },
     async getCateList() {
       const data = { list: true }
@@ -161,26 +153,25 @@ export default {
         }
       })
     },
-    handlePageChange(val) {
-      this.pageNum = val
-      this.getCourseList()
-    },
     handleSearch(data) {
       this.pageNum = 1
       this.searchData = data
-      this.getCourseList()
+      this.getBookList()
     },
-    async getCourseList() {
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getBookList()
+    },
+    async getBookList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        course_category_id: this.searchData.category_id.pop(),
+        category_id: this.searchData.category_id.pop(),
       }
-      console.log(data)
       this.listLoading = true
-      const res = await getCourseList(data)
+      const res = await getBookList(data)
       this.listLoading = false
-      this.listData = res.data.list
+      this.listData = res.data.data
       this.listTotal = res.data.total
     },
   },
@@ -194,6 +185,7 @@ export default {
   .userTable {
     border: 1px solid rgb(220, 223, 230);
     flex: 1;
+    width: 0;
   }
   .main-right {
     width: 317px;
