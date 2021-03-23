@@ -4,109 +4,23 @@
       *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
     </div>
     <div class="mainPart">
-      <ul class="customer_navigation">
+      <!-- <ul class="customer_navigation">
         <li v-for="item in tabFun" :key="item.id">{{ item.name }}</li>
-      </ul>
+      </ul> -->
       <!--搜索模块-->
       <header>
-        <div class="searchModule">
-          <el-date-picker
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          >
-          </el-date-picker>
-
-          <el-select
-            filterable
-            style="width:130px;margin:0 10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="所属项目"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="推荐机构"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="渠道来源"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="成交状态"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-select
-            filterable
-            style="width:130px;margin-right:10px"
-            v-model="ruleForm.institution_id"
-            slot="prepend"
-            placeholder="所属校区"
-            clearable
-          >
-            <!-- <el-option
-            :label="item.institution_name"
-            :value="item.institution_id"
-            v-for="(item, index) in campusData.list"
-            :key="index"
-          ></el-option> -->
-          </el-select>
-          <el-input
-            v-model="ruleForm.institution_id"
-            placeholder="客户姓名/手机号码"
-            style="width:200px;margin-right:10px;"
-          ></el-input>
-          <el-button type="primary">搜索</el-button>
-        </div>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <div>
           <el-button
             type="primary"
             style="height:40px"
             @click="toOnlineStudents"
           >
-            网课学生</el-button
+            学生导入</el-button
           >
           <el-button type="primary" style="height:40px" @click="addCustomer">
             添加客户</el-button
@@ -120,7 +34,7 @@
               <div>
                 <h3>客户总数</h3>
                 <div class="time_num">
-                  2000000
+                  {{ analysis.total_count }}
                   <!-- <span>{{ panelData.day }}</span -->
                 </div>
               </div>
@@ -131,6 +45,7 @@
               <div>
                 <h3>报名客户</h3>
                 <div class="time_num">
+                  {{ analysis.total_refund_money }}
                   <!-- <span>{{ panelData.use_time }}</span> -->
                 </div>
               </div>
@@ -141,6 +56,7 @@
               <div>
                 <h3>复购客户</h3>
                 <div class="time_num">
+                  {{ analysis.total_repurchase }}
                   <!-- <span>{{ panelData.total_problem }}</span> -->
                 </div>
               </div>
@@ -151,6 +67,7 @@
               <div>
                 <h3>订单金额</h3>
                 <div class="time_num">
+                  {{ analysis.total_order_money }}
                   <!-- <span>{{ panelData.accuracy }}</span
                   ><em>%</em> -->
                 </div>
@@ -162,6 +79,7 @@
               <div>
                 <h3>汇款金额</h3>
                 <div class="time_num">
+                  {{ analysis.total_pay_money }}
                   <!-- <span>{{ panelData.accuracy }}</span
                   ><em>%</em> -->
                 </div>
@@ -201,14 +119,13 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="birthday"
-            label="出生日期"
+            prop="sex"
+            label="性别"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="sex"
-            label="性别"
+            label="报读项目"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
@@ -241,11 +158,20 @@
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="200">
+            <template slot-scope="scope">
+              <div style="display: flex; justify-content:center;">
+                <el-button type="text" @click="toCusDetail(scope.row)"
+                  >客户详情</el-button
+                >
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
         <div class="table_bottom">
           <page
             :data="schoolData.total"
-            :curpage="page"
+            :curpage="pageNum"
             @pageChange="doPageChange"
           />
         </div>
@@ -372,10 +298,15 @@
               </el-col>
               <el-col :lg="8">
                 <el-form-item label="籍贯" prop="province">
-                  <el-input
+                  <el-cascader
+                    v-model="value"
+                    :options="options"
+                    :props="{ expandTrigger: 'hover' }"
+                  ></el-cascader>
+                  <!-- <el-input
                     class="input-width"
                     v-model="ruleForm.province"
-                  ></el-input>
+                  ></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8">
@@ -439,6 +370,7 @@
 
 <script>
 import { getBirth, getSex } from '@/utils/index'
+import { getCateList } from '@/api/sou'
 export default {
   name: 'myClients',
 
@@ -456,6 +388,148 @@ export default {
       }
     }
     return {
+      analysis: {},
+      searchData: {
+        category_id: '',
+        date: '',
+        project_id: '',
+        from_org: '',
+        keyword: '',
+        sources: '',
+        online_user: '',
+        all: '',
+        all_in: '',
+      },
+      pageNum: 1,
+      listTotal: 0,
+      searchOptions: [
+        {
+          key: 'date',
+          type: 'datePicker',
+          attrs: {
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            format: 'yyyy-MM-dd',
+            'value-format': 'yyyy-MM-dd',
+          },
+        },
+        {
+          key: 'category_id',
+          type: 'cascader',
+          width: 120,
+          attrs: {
+            placeholder: '所属分类',
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: 'project_id',
+          type: 'select',
+          width: 120,
+          options: [],
+          attrs: {
+            clearable: true,
+            placeholder: '所属项目',
+          },
+        },
+        {
+          key: 'from_org',
+          type: 'select',
+          width: 120,
+          options: [
+            {
+              value: '1',
+              label: 'test',
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: '推荐机构',
+          },
+        },
+        {
+          key: 'sources',
+          type: 'select',
+          width: 120,
+          options: [
+            {
+              value: '1',
+              label: 'test',
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: '渠道来源',
+          },
+        },
+        {
+          key: 'pay_status',
+          type: 'select',
+          width: 120,
+          options: [
+            {
+              value: '0',
+              label: '待验证/等待付款 ',
+            },
+            {
+              value: '1',
+              label: '新订单/待入账/已付款',
+            },
+            {
+              value: '2',
+              label: '部分入账',
+            },
+            {
+              value: '3',
+              label: '已入账',
+            },
+            {
+              value: '4',
+              label: '已作废',
+            },
+            {
+              value: '5',
+              label: '已退款',
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: '成交状态',
+          },
+        },
+        {
+          key: 'online_user',
+          type: 'select',
+          width: 120,
+          options: [
+            // {
+            //   value: '1',
+            //   label: '全部',
+            // },
+            {
+              value: '1',
+              label: '网课学生',
+            },
+            {
+              value: '0',
+              label: '非网课学生',
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: '学生类型',
+          },
+        },
+        {
+          key: 'keyword',
+          attrs: {
+            placeholder: '客户姓名/手机号码',
+          },
+        },
+      ],
       cultures: [
         {
           value: 1,
@@ -542,13 +616,20 @@ export default {
       page: 1,
       status: 1,
       datas: {},
+      selectData: [],
+      projectData: [],
     }
   },
   created() {
-    this.status = 1
+    // this.getCateList()
+    this.$api.getCustomerList(this, 'schoolData')
+    this.$api.getcategorytree(this, 1) //分类下拉列表
+    this.$api.getProinvceList(this, 1) //获取省市区
   },
   mounted() {
-    this.$api.getCustomerList(this, 'schoolData')
+    this.status = 1
+
+    this.$api.getProjectSub(this, 2) //项目下拉列表
   },
   filters: {
     // dealType(is_verify) {
@@ -562,6 +643,47 @@ export default {
     // },
   },
   methods: {
+    toCusDetail(ab) {
+      this.$router.push({
+        path: '/fina/cusdetail',
+        query: {
+          uid: ab.uid,
+        },
+      })
+    },
+    async getCateList() {
+      const data = { list: true }
+      const res = await getCateList(data)
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData)
+        this.$set(this.searchOptions[1].attrs, 'options', this.selectData)
+        // console.log(this.searchOptions[1])
+        // this.searchOptions[1].attrs.options = this.selectData
+        console.log(this.searchOptions[1])
+      }
+    },
+    cloneData(data, newData, val, lab) {
+      data.forEach((item, index) => {
+        console.log(item)
+        newData[index] = {}
+        newData[index].value = item[val]
+        newData[index].label = item[lab]
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
+      })
+    },
+    handleSearch(data) {
+      console.log(data)
+      if (data.date && data.date.length) {
+        data.date = data.date[0] + '-' + data.date[1]
+      }
+
+      this.pageNum = 1
+      this.searchData = data
+      this.$api.getCustomerList(this, 'schoolData')
+    },
     toOnlineStudents() {
       this.$router.push({
         path: '/etm/onlineStudents',

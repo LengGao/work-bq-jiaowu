@@ -3,6 +3,12 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 import Layout from '../views/layout/Layout'
 
+// 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 export const constantRouterMap = [
   {
     path: '/login',
@@ -23,22 +29,39 @@ export const constantRouterMap = [
   //   meta: { title: '重置密码' },
   // },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-  {
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   redirect: '/visualization',
+  //   // name: 'pms',
+  //   children: [
+  //     {
+  //       path: 'visualization',
+  //       name: 'visualization',
+  //       component: () => import('@/views/pms/visualization.vue'),
+  //       meta: { title: '工作台', icon: 'shujukanban' },
+  //     },
+  //   ],
+  // },
+]
+// visualization 默认路由
+export const indexRoute = (route) => {
+  return {
     path: '',
     component: Layout,
     redirect: '/visualization',
-    // name: 'pms',
     children: [
-      {
-        path: 'visualization',
-        name: 'visualization',
-        component: () => import('@/views/pms/visualization.vue'),
-        meta: { title: '工作台', icon: 'shujukanban' },
-      },
+      route
     ],
+  }
+}
+export const asyncRouter = [
+  {
+    path: 'visualization',
+    name: 'visualization',
+    component: () => import('@/views/pms/visualization.vue'),
+    meta: { title: '工作台', icon: 'shujukanban' },
   },
-]
-export const asyncRouterMap = [
   {
     path: '/sou',
     component: Layout,
@@ -579,6 +602,24 @@ export const asyncRouterMap = [
 
   { path: '*', redirect: '/404' },
 ]
+// 把路由表改成 键值对的形式
+const routeToMap = (routers) => {
+  const routerMap = {}
+  const deep = (routers, routesMap) => {
+    routers.forEach(route => {
+      const { children, ...reset } = route
+      routesMap[route.name] = reset
+      if (route.children && route.children.length) {
+        deep(route.children, routesMap)
+      }
+    });
+
+  }
+  deep(routers, routerMap)
+  return routerMap
+}
+export const asyncRouterMap = routeToMap(asyncRouter)
+
 export default new VueRouter({
   // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),

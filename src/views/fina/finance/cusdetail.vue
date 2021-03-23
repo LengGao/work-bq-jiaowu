@@ -1,24 +1,24 @@
- <template>
+<template>
   <section class="mainwrap">
-    <el-row style="min-width:1100px">
-      <el-col :lg="15" :md="15" :sm="15" :xs="15">
+    <el-row>
+      <el-col :lg="21" :md="21" :sm="21" :xs="21">
         <el-row>
           <el-col :lg="6" :md="6" :sm="6" :xs="6">
             <div class="detail-name">
               <img alt="" style="width:50px;height:50px;border-radius:40%" />
-              <div style="padding-left:10px">张小北</div>
+              <div style="padding-left:10px">{{ ruleForm.surname }}</div>
             </div>
           </el-col>
           <el-col :lg="6" :md="6" :sm="6" :xs="6">
             <div class="detail-info">
               <div class="detail-label">ID:</div>
-              <div class="detail-con">56935</div>
+              <div class="detail-con">{{ ruleForm.id }}</div>
             </div>
           </el-col>
           <el-col :lg="6" :md="6" :sm="6" :xs="6">
             <div class="detail-info">
               <div class="detail-label">手机号码:</div>
-              <div class="detail-con">56935</div>
+              <div class="detail-con">{{ ruleForm.mobile }}</div>
             </div>
           </el-col>
           <el-col :lg="6" :md="6" :sm="6" :xs="6">
@@ -37,8 +37,8 @@
     </el-row>
 
     <section class="main-contain">
-      <el-row style="min-width:1100px">
-        <el-col :lg="18" :md="18" :sm="18" :xs="18">
+      <el-row>
+        <el-col :lg="24" :md="24" :sm="24" :xs="24">
           <div class="navigationBox">
             <ul class="navigation">
               <li
@@ -52,8 +52,8 @@
             </ul>
             <div style="margin-bottom:10px" v-if="isTagactive == 1">
               <div v-show="editorInfoShow">
-                <el-button>取消</el-button>
-                <el-button type="primary" @click="editorInfo">保存</el-button>
+                <el-button @click="editorInfoShow = false">取消</el-button>
+                <el-button type="primary" @click="handleSave">保存</el-button>
               </div>
 
               <el-button v-show="!editorInfoShow" @click="editorInfo"
@@ -82,12 +82,12 @@
               <el-row class="detailLine">
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="客户姓名" prop="uid">
-                    <div class="ruleWord">{{ ruleForm.uid }}</div>
+                    <div class="ruleWord">{{ ruleForm.surname }}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="手机号码" prop="create_time">
-                    <div class="ruleWord">{{ ruleForm.create_time }}</div>
+                  <el-form-item label="手机号码" prop="mobile">
+                    <div class="ruleWord">{{ ruleForm.mobile }}</div>
                   </el-form-item>
                 </el-col>
 
@@ -97,8 +97,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="身份证号" prop="realname">
-                    <div class="ruleWord">{{ ruleForm.realname }}sdfdsfsdf</div>
+                  <el-form-item label="身份证号">
+                    <div class="ruleWord">{{ ruleForm.id_card_number }}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
@@ -108,34 +108,50 @@
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="学员性别" prop="mobile">
-                    <div class="ruleWord">{{ ruleForm.mobile }}</div>
+                    <div class="ruleWord">
+                      {{
+                        ruleForm.sex == 0
+                          ? '未知'
+                          : ruleForm.sex == 1
+                          ? '男'
+                          : '女'
+                      }}
+                    </div>
                   </el-form-item>
                 </el-col>
 
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="出生日期" prop="name">
-                    <div class="ruleWord">{{ ruleForm.name }}</div>
+                    <div class="ruleWord">{{ ruleForm.birthday }}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="QQ" prop="identity_card">
-                    <div class="ruleWord">{{ ruleForm.identity_card }}</div>
+                  <el-form-item label="QQ" prop="qq">
+                    <div class="ruleWord">
+                      {{ ruleForm.qq ? ruleForm.qq : '无' }}
+                    </div>
                   </el-form-item>
                 </el-col>
 
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="邮箱地址" prop="organization_id">
-                    <div class="ruleWord">{{ ruleForm.organization_id }}</div>
+                    <div class="ruleWord">
+                      {{ ruleForm.email ? ruleForm.email : '无' }}
+                    </div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="文化程度" prop="name">
-                    <div class="ruleWord">{{ ruleForm.name }}</div>
+                    <div class="ruleWord">
+                      {{ ruleForm.culture ? ruleForm.culture : '未知' }}
+                    </div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="籍贯" prop="pay_amount">
-                    <div class="ruleWord">{{ ruleForm.pay_amount }}</div>
+                    <div class="ruleWord">
+                      {{ ruleForm.city ? ruleForm.city : '未知' }}
+                    </div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
@@ -146,17 +162,27 @@
 
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="渠道来源" prop="update_time">
-                    <div class="ruleWord">{{ ruleForm.update_time }}</div>
+                    <div class="ruleWord">
+                      {{ ruleForm.sources | sourcestype }}
+                    </div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="所属机构" prop="update_time">
-                    <div class="ruleWord">{{ ruleForm.update_time }}</div>
+                    <div class="ruleWord">
+                      {{
+                        ruleForm.from_organization_name
+                          ? ruleForm.from_organization_name
+                          : '未知'
+                      }}
+                    </div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="备注信息" prop="update_time">
-                    <div class="ruleWord">{{ ruleForm.update_time }}</div>
+                    <div class="ruleWord">
+                      {{ ruleForm.tips ? ruleForm.tips : '无' }}
+                    </div>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -173,17 +199,17 @@
             >
               <el-row class="detailLine">
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="学生号码" prop="uid">
+                  <el-form-item label="学生姓名" prop="surname">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.surname"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="手机号码" prop="create_time">
+                  <el-form-item label="手机号码" prop="mobile">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.mobile"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
@@ -198,9 +224,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="身份证号" prop="realname">
+                  <el-form-item label="身份证号" prop="id_card_number">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.id_card_number"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
@@ -214,9 +240,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="学员性别" prop="mobile">
+                  <el-form-item label="学员性别" prop="sex">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.sex"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
@@ -231,17 +257,21 @@
                   </el-form-item>
                 </el-col> -->
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="出生日期" prop="name">
-                    <el-input
-                      v-model="ruleForm.create_time"
-                      style="width:240px"
-                    ></el-input>
+                  <el-form-item label="出生日期" prop="birthday">
+                    <el-date-picker
+                      v-model="ruleForm.birthday"
+                      type="date"
+                      format="yyyy-MM-dd "
+                      value-format="yyyy-MM-dd "
+                      placeholder="选择日期"
+                    >
+                    </el-date-picker>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="QQ" prop="type">
+                  <el-form-item label="QQ" prop="qq">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.qq"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
@@ -256,33 +286,45 @@
                 </el-col> -->
 
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="邮箱地址" prop="organization_id">
+                  <el-form-item label="邮箱地址" prop="email">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.email"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="文化程度" prop="name">
+                  <el-form-item label="文化程度" prop="culture">
+                    <!-- <el-input
+                      v-model="ruleForm.culture"
+                      style="width:240px"
+                    ></el-input> -->
+                    <el-select
+                      v-model="ruleForm.culture"
+                      placeholder="请选择文化程度"
+                    >
+                      <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.label"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                  <el-form-item label="籍贯" prop="province">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.province"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="籍贯" prop="pay_amount">
+                  <el-form-item label="常住地" prop="city">
                     <el-input
-                      v-model="ruleForm.create_time"
-                      style="width:240px"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="常住地" prop="pay_amount">
-                    <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.city"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
@@ -296,9 +338,9 @@
                   </el-form-item>
                 </el-col> -->
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="渠道来源" prop="update_time">
+                  <el-form-item label="渠道来源" prop="sources">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.sources"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
@@ -312,9 +354,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                  <el-form-item label="备注信息" prop="update_time">
+                  <el-form-item label="备注信息" prop="tips">
                     <el-input
-                      v-model="ruleForm.create_time"
+                      v-model="ruleForm.tips"
                       style="width:240px"
                     ></el-input>
                   </el-form-item>
@@ -357,7 +399,7 @@
               </el-col>
             </el-row>
           </div>
-         
+
           <!--订单记录-->
           <div v-if="isTagactive == 3">
             <!--表格-->
@@ -416,18 +458,30 @@
               </div>
               <el-button type="primary">发布</el-button>
             </div>
-            <div class="record-box" v-for="item in 4" :key="item">
+            <div class="record-box" v-for="item in recordData.list" :key="item">
               <div class="record-title">
-                <p>跟进时间<span>2020-05-26 17:21:01</span></p>
-                <p>更进人<span>admin</span></p>
+                <p>
+                  跟进时间<span>{{ item.create_time }}</span>
+                </p>
+                <p>
+                  更进人<span>{{
+                    item.staff_name ? item.staff_name : '无'
+                  }}</span>
+                </p>
                 <p>部门<span>招生部</span></p>
                 <p>角色<span>教务</span></p>
               </div>
               <div class="record-content">
-                <p>更进内容<span>2020-05-26 17:21:01</span></p>
+                <p>
+                  更进内容<span>{{ item.desc }}</span>
+                </p>
               </div>
               <div class="record-content">
-                <p>下次跟进时间<span>未设置</span></p>
+                <p>
+                  下次跟进时间<span>
+                    {{ item.todo_time ? item.todo_time : '未设置' }}
+                  </span>
+                </p>
               </div>
             </div>
           </div>
@@ -442,9 +496,46 @@ export default {
   data() {
     return {
       isTagactive: 1,
+      active: 1,
       schoolData: [],
       editorInfoShow: false,
       ruleForm: {},
+      formData: {
+        id: '',
+        surname: '',
+        mobile: '',
+        id_card_number: '',
+        sex: '',
+        birthday: '',
+        marry: '',
+        qq: '',
+        email: '',
+        culture: '',
+        province: '',
+        city: '',
+        from_organization_id: '',
+        sources: '',
+        tips: '',
+        uid: '',
+      },
+      options: [
+        {
+          value: 1,
+          label: '高中毕业',
+        },
+        {
+          value: 2,
+          label: '大专毕业',
+        },
+        {
+          value: 3,
+          label: '本科毕业',
+        },
+        {
+          value: 4,
+          label: '研究生毕业',
+        },
+      ],
       tabFun: [
         {
           id: 1,
@@ -463,14 +554,51 @@ export default {
           name: '跟进记录',
         },
       ],
+      recordData: [],
     }
   },
+  created() {
+    this.$api.getUserDetail(this, 'ruleForm')
+  },
+  filters: {
+    sourcestype(sources) {
+      console.log(sources)
+      switch (sources) {
+        case null:
+          return '未知'
+          break
+        case '0':
+          return '未知'
+          break
+        case '1':
+          return '小程序'
+          break
+        case '2':
+          return '后台录入'
+          break
+        case '4':
+          return '教务系统录入'
+          break
+        case '3':
+          return '业务员录入'
+          break
+      }
+    },
+  },
   methods: {
+    handleSave() {
+      this.$api.modifyUserDetail(this, this.ruleForm)
+    },
     editorInfo() {
       this.editorInfoShow = !this.editorInfoShow
     },
     statusSwitch(ab) {
       this.isTagactive = ab.id
+      switch (ab.id) {
+        case 4:
+          this.$api.getUserRecord(this, 'recordData')
+          break
+      }
     },
   },
 }

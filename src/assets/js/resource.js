@@ -234,10 +234,10 @@ let resource = {
   //项目列表
   getProjectList(self, name) {
     let config = {
-      // page: 1,
-      // page: self.pageNum,
-      // ...self.searchData,
-      // category_id: self.searchData.category_id.pop(),
+      page: 1,
+      page: self.pageNum,
+      ...self.searchData,
+      category_id: self.searchData.category_id.pop(),
     }
     console.log(config)
     axiosHttp({
@@ -253,11 +253,38 @@ let resource = {
       },
     })
   },
+  //项目不带分页
+  getProjectSub(self, index) {
+    let config = {
+      // page: 1,
+      // page: self.pageNum,
+      // ...self.searchData,
+      // category_id: self.searchData.category_id.pop(),
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getProjectSub,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        if (res.data.code == 0) {
+          console.log(res.data.data)
+          self.cloneData(data, self.projectData, 'project_id', 'project_name')
+          console.log(self.projectData)
+          self.searchOptions[index].options = self.projectData
+          console.log(self.searchOptions[index], index)
+        }
+      },
+    })
+  },
   //添加项目
   createProject(self, ruleForm) {
     let config = {
       project_name: ruleForm.project_name,
-      category_id: parseInt(ruleForm.category_id),
+      category_id: Array.isArray(self.ruleForm.category_id)
+        ? self.ruleForm.category_id.pop()
+        : self.ruleForm.category_id,
       price: parseFloat(ruleForm.price),
       lowest_price: parseFloat(ruleForm.lowest_price),
       service_type: ruleForm.service_type,
@@ -320,7 +347,7 @@ let resource = {
       }
     } else {
       config = {
-        project_id: ruleForm.id,
+        project_id: ruleForm.id || ruleForm.project_id,
         project_name: ruleForm.project_name,
         category_id: parseInt(ruleForm.category_id),
         price: parseFloat(ruleForm.price),
@@ -338,7 +365,7 @@ let resource = {
       }
     }
 
-    // console.log(config)
+    console.log(config)
     axiosHttp({
       url: url.editProject,
       data: config,
@@ -357,6 +384,31 @@ let resource = {
             self.$api.getProjectList(self, 'schoolData')
             self.dialogVisible = false
           }
+        }
+      },
+    })
+  },
+  //分类下拉列表
+  getcategorytree(self, index) {
+    let config = {
+      // page: self.page,
+      // index_category_name: index_category_name,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getcategorytree,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        if (res.data.code == 0) {
+          console.log(res.data.data)
+          self.cloneData(data, self.selectData, 'category_id', 'category_name')
+
+          self.$set(self.searchOptions[index].attrs, 'options', self.selectData)
+          console.log(self.selectData)
+          // self.searchOptions[index].options = self.selectData
+          console.log(self.searchOptions[index], index)
         }
       },
     })
