@@ -11,13 +11,8 @@ module.exports = {
       '/ai': {
         // target: 'http://120.27.63.9:8080',
         // target: 'http://dongpei.kaifa',
-<<<<<<< HEAD
         target: 'http://sc.dp.com', //超
-        // target: 'http://thing.com',
-=======
-        // target: 'http://sc.dp.com', //超
         //target: 'http://thing.com',
->>>>>>> dev
         //target: 'http://testadmin.beiqujy.com/apidata', //测试
         //target: 'http://dpadmin.beiqujy.com/apidata', //测试
         // target: 'http://dongpei.local', //孝华
