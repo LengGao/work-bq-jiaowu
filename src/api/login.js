@@ -94,4 +94,12 @@ export function updateMenuData(data) {
     data: data
   })
 }
+//修改页面是否在菜单显示
+export function updateShowStatus(data) {
+  return request({
+    url: '/AdminMenu/updateShowStatus',
+    method: 'post',
+    data: data
+  })
+}
 

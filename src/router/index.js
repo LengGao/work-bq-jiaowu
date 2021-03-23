@@ -644,7 +644,8 @@ export const createUserRouter = (data) => {
         } else {
           userRouter.push(route)
         }
-        menuList.push(menu)
+        // 添加到菜单
+        item.show_at_list === 1 && menuList.push(menu)
         // 递归子节点
         if (item.children && item.children.length) {
           route.children = []

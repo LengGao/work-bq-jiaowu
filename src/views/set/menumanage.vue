@@ -52,18 +52,16 @@
           show-overflow-tooltip
         ></el-table-column>
 
-        <!-- <el-table-column
+        <el-table-column
           prop="icon"
-          label="分类图标"
-          min-width="150"
+          label="菜单图标"
+          min-width="120"
           show-overflow-tooltip
         >
-          <template slot-scope="scope" v-if="scope.row.menu_type == 1">
-            <div style="margin:0 auto;width:50px ;height:50px;">
-              <img :src="scope.row.icon" alt class="school_class_box" />
-            </div>
+          <template slot-scope="{ row }" v-if="row.menu_type == 1">
+            <i :class="['iconfont', row.icon]" style="font-size: 22px"></i>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column
           prop="auth"
           label="接口地址"
@@ -78,7 +76,7 @@
         ></el-table-column>
         <el-table-column
           prop="index_category_name"
-          label="是否显示"
+          label="启用状态"
           min-width="110"
           show-overflow-tooltip
         >
@@ -89,6 +87,22 @@
               :active-value="1"
               :inactive-value="0"
               @change="switchStatus(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="index_category_name"
+          label="是否在菜单显示"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <!-- <el-switch :active-value="1" :inactive-value="0"></el-switch> -->
+            <el-switch
+              :active-value="1"
+              :inactive-value="0"
+              v-model="row.show_at_list"
+              @change="updateShowStatus(row)"
             ></el-switch>
           </template>
         </el-table-column>
@@ -141,7 +155,7 @@
             class="input-width"
           ></el-input>
         </el-form-item>
-        <el-form-item label="图标">
+        <el-form-item label="图标" v-if="ruleForm.menu_type == 1">
           <div class="form-select-icon">
             <i
               v-if="ruleForm.icon"
@@ -220,7 +234,7 @@
 </template>
 
 <script>
-import { createMenuData, updateMenuData } from "@/api/login";
+import { createMenuData, updateMenuData, updateShowStatus } from "@/api/login";
 import { createUserRouter } from "@/router";
 export default {
   data() {
@@ -431,6 +445,19 @@ export default {
         // 设置菜单数据
         this.$store.dispatch("setMenus", menuList);
       });
+    },
+    // 是否中菜单中展示
+    async updateShowStatus({ id, show_at_list }) {
+      const data = {
+        id,
+        show_at_list,
+      };
+      const res = await updateShowStatus(data);
+      if (res.code === 0) {
+        this.$message.success("菜单状态修改成功！");
+        this.$api.getMenuList(this, "schoolData");
+        this.updateRouter();
+      }
     },
     async handleConfirm() {
       const api = this.ruleForm.id ? updateMenuData : createMenuData;
