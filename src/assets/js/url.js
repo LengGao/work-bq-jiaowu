@@ -11,6 +11,7 @@ export default {
   modifyUserDetail: '/UserArchives/modify',
   getUserRecord: '/UserArchivesRecord/index',
   getProinvceList: '/region/element.json',
+  getfieldinfo: '/Customfield/getfieldinfo',
   //资源配置
   getCategoryList: '/courseCategory/getCategoryList',
   updateCategorySort: '/courseCategory/updateCategorySort',

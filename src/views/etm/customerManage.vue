@@ -176,7 +176,10 @@
           />
         </div>
 
-        <addCustomeDialog :innerVisible="innerVisible" />
+        <addCustomeDialog
+          :innerVisible="innerVisible"
+          v-on:innerDialog="getInnerStatus($event)"
+        />
       </div>
     </div>
   </section>
@@ -348,62 +351,9 @@ export default {
           },
         },
       ],
-      cultures: [
-        {
-          value: 1,
-          label: '高中毕业',
-        },
-        {
-          value: 2,
-          label: '大专毕业',
-        },
-        {
-          value: 3,
-          label: '本科毕业',
-        },
-        {
-          value: 4,
-          label: '研究生毕业',
-        },
-      ],
+
       schoolData: [],
-      rules: {
-        surname: [
-          { required: true, message: '请填写学生姓名', trigger: 'blur' },
-        ],
-        // mail: [{ validator: validMail, trigger: 'blur', required: true }],
-        // mobile: [
-        //   { required: true, message: '请输入手机号码', trigger: 'blur' },
-        //   {
-        //     validator: function(rule, value, callback) {
-        //       if (/^1\d\d{9}$/.test(value) == false) {
-        //         callback(new Error('请输入正确的手机号'))
-        //       } else {
-        //         callback()
-        //       }
-        //     },
-        //     trigger: 'blur',
-        //   },
-        // ],
-        id_card_number: [
-          { required: true, message: '请输入身份证ID', trigger: 'blur' },
-          {
-            validator: function(rule, value, callback) {
-              if (
-                /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) == false
-              ) {
-                callback(new Error('你的身份证格式不正确'))
-              } else {
-                callback()
-              }
-            },
-            trigger: 'blur',
-          },
-        ],
-        // sources: [
-        //   { required: true, message: '请填写渠道来源', trigger: 'change' },
-        // ],
-      },
+
       ruleForm: {
         surname: '',
         mobile: '',
@@ -442,7 +392,7 @@ export default {
     // this.getCateList()
     this.$api.getCustomerList(this, 'schoolData')
     this.$api.getcategorytree(this, 1) //分类下拉列表
-    this.$api.getProinvceList(this, 1) //获取省市区
+    // this.$api.getProinvceList(this, 1) //获取省市区
   },
   mounted() {
     this.status = 1
@@ -495,7 +445,7 @@ export default {
     handleSearch(data) {
       console.log(data)
       if (data.date && data.date.length) {
-        data.date = data.date[0] + '-' + data.date[1]
+        data.date = data.date[0] + ' - ' + data.date[1]
       }
 
       this.pageNum = 1
@@ -535,16 +485,18 @@ export default {
         path: '/etm/customeRegist',
       })
     },
-
-    addCustomer() {
+    getInnerStatus(status) {
       this.innerVisible = status
-      console.log(this.ruleForm)
-      for (var i in this.ruleForm) {
-        console.log(i)
-        this.ruleForm[i] = ''
-      }
-      //添加用户弹框打开
-      this.curstomerVisible = true
+    },
+    addCustomer() {
+      this.innerVisible = true
+      // console.log(this.ruleForm)
+      // for (var i in this.ruleForm) {
+      //   console.log(i)
+      //   this.ruleForm[i] = ''
+      // }
+      // //添加用户弹框打开
+      // this.curstomerVisible = true
     },
     doPageChange(page) {
       this.page = page

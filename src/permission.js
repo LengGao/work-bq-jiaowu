@@ -20,7 +20,7 @@ router.beforeEach((to, from, next) => {
             // 拉取用户信息,获取权限菜单
             // let menus = res
             let menus = [
-              { name: 'yx' },
+              // { name: 'yx' },
               { name: 'sou' }, //包含了资源设置
               { name: 'homeClassifi' }, //资源分类>首页分类
               { name: 'classifiSetting' }, //资源设置>分类设置

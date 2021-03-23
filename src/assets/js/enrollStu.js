@@ -295,6 +295,22 @@ let enrollStu = {
       },
     })
   },
+  //根据字段名称获取字段信息接口
+  getfieldinfo(self, name, field_text) {
+    let config = {
+      field_text: field_text,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getfieldinfo,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
 }
 
 export default enrollStu

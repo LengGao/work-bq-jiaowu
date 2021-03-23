@@ -39,20 +39,20 @@ export const constantRouterMap = [
   },
 ]
 export const asyncRouterMap = [
-  {
-    path: '/yx',
-    component: Layout,
-    redirect: '/yx/visualization',
-    name: 'yx',
-    children: [
-      {
-        path: 'visualization',
-        name: 'visualization',
-        component: () => import('@/views/pms/visualization.vue'),
-        meta: { title: '工作台', icon: 'shujukanban' },
-      },
-    ],
-  },
+  // {
+  //   path: '/yx',
+  //   component: Layout,
+  //   redirect: '/yx/visualization',
+  //   name: 'yx',
+  //   children: [
+  //     {
+  //       path: 'visualization',
+  //       name: 'visualization',
+  //       component: () => import('@/views/pms/visualization.vue'),
+  //       meta: { title: '工作台', icon: 'shujukanban' },
+  //     },
+  //   ],
+  // },
   {
     path: '/sou',
     component: Layout,
