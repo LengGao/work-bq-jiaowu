@@ -42,7 +42,126 @@
         <div v-if="isTagactive === 2">
           <el-button type="primary" @click="guizeVisible = true">添加报考规则</el-button>
           
-          <el-dialog
+          <!--添加报考规则弹框--->
+        <el-dialog
+          title="添加报考规则"
+          :visible.sync="guizeVisible"
+          width="50%"
+          style="min-width:1070px"
+        >
+          <el-form
+            label-width="100px"
+            class="demo-ruleForm"
+            :show-message="true"
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+          >
+          <h3>基本信息</h3>
+            <el-row>
+              <el-col :lg="11">
+                <el-form-item label="所属分类" prop="category_name">
+              <el-select v-model="ruleForm.category_name" placeholder="请选择所属分类" style="width:100%">
+                <el-option label="学历教育" value="1"></el-option>
+                <el-option label="职称考证" value="2"></el-option>
+                <el-option label="特种作业" value="3"></el-option>
+              </el-select>
+            </el-form-item>
+              </el-col>
+              <el-col :lg="12">
+                <el-form-item label="规则名称" prop="subject_name">
+                  <el-input
+                    class="input-width"
+                    v-model="ruleForm.subject_name"
+                    placeholder="请选择规则名称"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :lg="11">
+                 <el-form-item label="考试科目" prop="exam_type">
+              <el-select v-model="ruleForm.exam_type" placeholder="请选择考试科目（多选）" style="width:100%">
+                <el-option label="系统集成基础知识" value="1"></el-option>
+                <el-option label="系统集成应用技术" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+              </el-col>
+             <el-col :lg="11">
+                <el-form-item label="报考省市" prop="credit_hour">
+                  <el-cascader
+                    size="large"
+                    :options="options"
+                    v-model="selectedOptions"
+                    @change="handleChange">
+                  </el-cascader>
+                
+                </el-form-item>
+              </el-col>
+            </el-row>
+            
+            <el-row>
+              <el-col :lg="11">
+                <el-form-item label="补考费用" prop="cost">
+                  <el-input
+                    class="input-width"
+                    placeholder="请输入补考费用"
+                    v-model="ruleForm.cost"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :lg="8">
+                <el-form-item label="成绩有效期" prop="marry">
+                  <div style="display:flex;align-items: center;margin-top:8px">
+                  <el-radio-group v-model="ruleForm.period" style="width:250px">
+                    <el-radio :label="2" value="0">永久</el-radio>
+                    <el-radio :label="1">
+                      <span>不超过</span>
+                       <input class="inputach"></input>
+                    <span>年</span>
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :lg="17" >
+                <el-form-item label="考评项目" prop="from_organization_id" v-for="(item,index) in projectData" :key="index">
+                  <el-input
+                    class="input-width"
+                    placeholder="请输入考评项目"
+                    v-model="item.from_organization_id"
+                  ></el-input>
+                     <el-button style="margin-left:10px " @click="deleteOneClass(index)" >删除</el-button>
+                </el-form-item>
+                 
+              </el-col>
+        
+            </el-row>
+
+            <el-row>
+              <el-col>
+                 <el-form-item>
+                <el-button @click="addOneClass" style="border:1px dashed skyblue;color:skyblue;width:460px">+ 添加考勤项目</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <!-- <span>这是一段信息</span> -->
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="curstomerVisible = false">取 消</el-button>
+            <el-button type="primary" @click="preserve('ruleForm')"
+              >保 存</el-button
+            >
+            <el-button type="primary" @click="preserve('ruleForm', 2)"
+              >保存并报名</el-button
+            >
+          </span>
+        </el-dialog>
+          <!-- <el-dialog
           title="添加报考规则"
           :visible.sync="guizeVisible"
           width="30%"
@@ -128,7 +247,7 @@
 
           </div>
 
-        </el-dialog>
+        </el-dialog> -->
         </div>
 
         <div v-if="isTagactive === 1">
@@ -159,7 +278,7 @@
               </el-select>
             </el-form-item>
               </el-col>
-              <el-col :lg="11">
+              <el-col :lg="12">
                 <el-form-item label="科目名称" prop="subject_name">
                   <el-input
                     class="input-width"
@@ -221,8 +340,8 @@
                 </el-form-item>
               </el-col>
               <el-col :lg="8">
-                <el-form-item label="成绩有效期" prop="marry" >
-                  <div style="display:flex;align-items: center;">
+                <el-form-item label="成绩有效期" prop="marry">
+                  <div style="display:flex;align-items: center;margin-top:8px">
                   <el-radio-group v-model="ruleForm.period" style="width:250px">
                     <el-radio :label="2" value="0">永久</el-radio>
                     <el-radio :label="1">
@@ -231,29 +350,30 @@
                     <span>年</span>
                       </el-radio>
                   </el-radio-group>
-                   
                     </div>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
-              <el-col :lg="15" >
-                <el-form-item label="考评项目1" prop="from_organization_id">
+              <el-col :lg="17" >
+                <el-form-item label="考评项目" prop="from_organization_id" v-for="(item,index) in projectData" :key="index">
                   <el-input
                     class="input-width"
                     placeholder="请输入考评项目"
-                    v-model="ruleForm.from_organization_id"
+                    v-model="item.from_organization_id"
                   ></el-input>
+                     <el-button style="margin-left:10px " @click="deleteOneClass(index)" >删除</el-button>
                 </el-form-item>
+                 
               </el-col>
-            <el-button style="margin-left:10px">删除</el-button>
+        
             </el-row>
 
             <el-row>
               <el-col>
                  <el-form-item>
-                <el-button style="border:1px dashed skyblue;color:skyblue;width:470px">+ 添加考勤项目</el-button>
+                <el-button @click="addOneClass" style="border:1px dashed #199fff;color:#199fff;width:460px">+ 添加考勤项目</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -466,12 +586,15 @@
 </template>
 
 <script>
+import { regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+
 export default {
     name: 'examination',
 
     data() {
-      
     return {
+       options: regionDataPlus,
+       selectedOptions: [],
       radio: '0',
       radio1: '0',
       radio2: '0',
@@ -483,9 +606,10 @@ export default {
       start_time:'',
       startTime:'',
       classTitle: '新建科目',
+      projectData:[],
       pickerOptions: {
-          shortcuts: [{
-            onClick(picker) {
+      shortcuts: [{
+      onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -509,8 +633,8 @@ export default {
             }
           }]
         },
-        value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
-        value2: '',
+      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      value2: '',
 
       ruleForm: {
           id:'',
@@ -571,12 +695,27 @@ export default {
 
   mounted() {
     this.$api.ruleList(this, 'schoolData'),
-    this.$api.subjectList(this, 'subjectData'),
-    this.$api.updateSubject(this, 'subjectData')
+    this.$api.subjectList(this, 'subjectData')
+    // this.$api.updateSubject(this, 'subjectData')
 
   },
     methods: {
-      
+      handleChange (value) {
+        console.log(this.selectedOptions)
+        console.log(value)
+        console.log(CodeToText[value[0]], CodeToText[value[1]], CodeToText[value[2]]);
+      },
+
+      deleteOneClass(index){
+        this.projectData.splice(index,1)
+      },
+    
+      addOneClass() {
+      var obj = {
+      }
+      this.projectData.push(obj)
+    },
+
       receiveStudent(zx) {
       console.log(zx)
       this.$api.receive(this, zx.intent_id)
@@ -835,6 +974,17 @@ export default {
   text-align: center;
   margin: 0 10px;
 }
-
+/deep/.el-form-item__content{
+  display: flex;
+}
+.demo-ruleForm h3{
+  border-left: 4px solid #199fff;
+  font-size: 16px;
+  font-weight: normal;
+  padding-left: 8px;
+  color: #444;
+  margin-bottom: 15px;
+  margin-left: 20px;
+}
 </style>
 
