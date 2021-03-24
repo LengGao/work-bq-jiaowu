@@ -333,7 +333,7 @@ export const asyncRouter = [
         name: 'materialJournal',
         component: () =>
           import('@/views/eda/teachMaterial/materialJournal.vue'),
-        meta: { title: '日志', icon: 'product-cate' },
+        meta: { title: '教材发放日志', icon: 'product-cate' },
         hidden: true,
       },
       //教材发放组件结束
@@ -409,7 +409,7 @@ export const asyncRouter = [
         name: 'certificatesLog',
         component: () =>
           import('@/views/eda/certificates/certificatesLog/index.vue'),
-        meta: { title: '日志', icon: 'product-cate' },
+        meta: { title: '证件资料日志', icon: 'product-cate' },
         hidden: true,
       },
     ],

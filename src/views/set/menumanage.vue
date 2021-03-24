@@ -133,7 +133,12 @@
       </div> -->
     </div>
     <!--弹框-->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="576px">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="576px"
+    >
       <el-form label-width="100px">
         <el-form-item label="上级菜单">
           <el-cascader
@@ -460,8 +465,9 @@ export default {
       }
     },
     async handleConfirm() {
+      console.log(this.parent_id_arr);
       const api = this.ruleForm.id ? updateMenuData : createMenuData;
-      if (!this.ruleForm.id) {
+      if (Array.isArray(this.parent_id_arr)) {
         let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
         this.ruleForm.parent_id = end;
       }
