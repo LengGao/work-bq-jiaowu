@@ -11,14 +11,8 @@
         @on-search="handleSearch"
       />
       <div>
-        <el-button
-          type="primary"
-          style="margin-right: 20px"
-          @click="handleBatch"
+        <el-button style="margin-right: 20px" @click="handleBatch"
           >批量分班</el-button
-        >
-        <el-button type="primary" style="margin-right: 20px"
-          >导出数据</el-button
         >
         <el-checkbox v-model="checked" @change="handleChecked"
           >未分班学生</el-checkbox
@@ -109,6 +103,37 @@
         />
       </div>
     </div>
+    <el-dialog
+      title="批量分班"
+      :visible.sync="dialogVisible"
+      width="500px"
+      class="add-warehouse"
+      @closed="resetForm('ruleForm')"
+    >
+      <el-form
+        label-width="100px"
+        :model="formData"
+        :rules="rules"
+        ref="ruleForm"
+      >
+        <el-form-item label="班级名称" prop="name">
+          <el-select
+            placeholder="请选择"
+            v-model.trim="formData.name"
+            class="input-width"
+          ></el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          :loading="submitLoading"
+          @click="submitForm('ruleForm')"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </section>
 </template>
 
@@ -128,6 +153,7 @@ export default {
       listTotal: 0,
       checkedIds: [],
       searchData: {
+        type: 0,
         date: "",
         course_category_id: [],
         project_id: "",
@@ -211,6 +237,14 @@ export default {
         },
       ],
       checked: "",
+      submitLoading: false,
+      dialogVisible: false,
+      formData: {
+        name: "",
+      },
+      rules: {
+        name: [{ required: true, message: "请选择", trigger: "blur" }],
+      },
     };
   },
 
@@ -222,9 +256,26 @@ export default {
   },
 
   methods: {
-    handleBatch() {},
-    handleChecked() {
+    handleBatch() {
+      this.dialogVisible = true;
+    },
+    handleChecked(val) {
+      this.searchData.type = val ? 2 : 0;
       this.getStudentList();
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.submit();
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+      for (const k in this.formData) {
+        this.formData[k] = "";
+      }
+      this.dialogVisible = false;
     },
     // 当分类选择时
     handleTypeChange(ids) {

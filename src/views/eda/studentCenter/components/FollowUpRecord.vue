@@ -32,7 +32,7 @@
         </el-form-item>
       </div>
     </el-form>
-    <div class="record-list">
+    <div class="record-list" v-loading="listLoading">
       <ul>
         <li v-for="item in listData" :key="item.id">
           <el-card class="box-card" shadow="never">
@@ -84,11 +84,11 @@
 import { userArchivesRecord, addUserArchivesRecord } from "@/api/eda";
 export default {
   name: "followUpRecord",
-  props:{
-    uid:{
-      type:[String,Number],
-      default:''
-    }
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
   },
   data() {
     return {
@@ -128,9 +128,11 @@ export default {
     async userArchivesRecord() {
       const data = {
         page: this.pageNum,
-        uid: this.datas.uid,
+        uid: this.uid,
       };
+      this.listLoading = true;
       const res = await userArchivesRecord(data);
+      this.listLoading = false;
       if (res.code === 0) {
         this.listData = res.data.list;
         this.listTotal = res.data.total;
