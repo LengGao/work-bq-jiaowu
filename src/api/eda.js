@@ -147,3 +147,51 @@ export function getOrderList(params) {
         params,
     })
 }
+// 获取班级列表
+export function getClassList(params) {
+    return request({
+        url: '/classroom/index',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 获取班主任下拉列表
+ * @param {*} params 
+ */
+export function getHeadMasters(params) {
+    return request({
+        url: '/staff/headMasters',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 添加班级
+ * @param {*} data 
+ */
+export function addClassroom(data) {
+    return request({
+        url: '/classroom/add',
+        method: 'post',
+        data,
+    })
+}
+/**
+ * 编辑编辑
+ * @param {*} data 
+ */
+export function editClassroom(data) {
+    return request({
+        url: '/classroom/edit',
+        method: 'post',
+        data,
+    })
+}
+export function getClassroomDetail(params) {
+    return request({
+        url: '/classroom/edit',
+        method: 'get',
+        params,
+    })
+}
