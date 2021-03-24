@@ -5,6 +5,7 @@
       title="添加客户"
       :visible.sync="openStatus"
       width="70%"
+      :close-on-click-modal="false"
       @close="doClose"
       style="min-width:1044px"
     >
@@ -34,8 +35,11 @@
             </el-form-item>
           </el-col>
           <el-col :lg="8">
-            <el-form-item label="备用号码" prop="name">
-              <el-input class="input-width" v-model="ruleForm.name"></el-input>
+            <el-form-item label="备用号码" prop="second_mobile">
+              <el-input
+                class="input-width"
+                v-model="ruleForm.second_mobile"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -83,7 +87,7 @@
             <el-form-item label="微信">
               <el-input
                 class="input-width"
-                v-model="ruleForm.id_card_number"
+                v-model="ruleForm.wechat"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -125,7 +129,7 @@
               <el-cascader
                 size="large"
                 class="input-width"
-                :options="options"
+                :options="provinceAndCityData"
                 v-model="selectedOptions"
                 @change="handleChange"
               >
@@ -134,7 +138,18 @@
           </el-col>
           <el-col :lg="8">
             <el-form-item label="常住地" prop="city">
-              <el-input class="input-width" v-model="ruleForm.city"></el-input>
+              <el-cascader
+                size="large"
+                class="input-width"
+                :options="provinceAndCityData"
+                v-model="selectedOptionsLocal"
+                @change="handleLocal"
+              >
+              </el-cascader>
+              <!-- <el-input
+                class="input-width"
+                v-model="ruleForm.location"
+              ></el-input> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -186,25 +201,33 @@
       </el-form>
       <!-- <span>这是一段信息</span> -->
       <span slot="footer" class="dialog-footer">
-        <el-button @click="curstomerVisible = false">取 消</el-button>
-        <el-button type="primary" @click="preserve('ruleForm')"
+        <el-button @click="doClose">取 消</el-button>
+        <el-button type="primary" @click="preserve('ruleForm', 2)"
           >保 存</el-button
         >
-        <el-button type="primary" @click="preserve('ruleForm', 2)"
+        <el-button type="primary" @click="preserve('ruleForm')"
           >保存并报名</el-button
         >
       </span>
     </el-dialog>
     <customeRegist
       :addVisible="addVisible"
+      :userInfo="userInfo"
       v-on:addDialog="getaddStatus($event)"
     />
   </section>
 </template>
 
 <script>
-import { regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+import {
+  regionDataPlus,
+  CodeToText,
+  regionData,
+  provinceAndCityData,
+  TextToCode,
+} from 'element-china-area-data'
 import customeRegist from './customeRegist'
+import { getBirth, getSex } from '@/utils/index'
 export default {
   components: {
     customeRegist,
@@ -214,13 +237,25 @@ export default {
       type: Boolean,
       default: false,
     },
+    seaUserInfo: {
+      type: Object,
+      default: function() {
+        return {}
+      },
+    },
   },
   data() {
     return {
-      options: regionDataPlus,
+      userInfo: {},
+      regionData: regionData,
+      provinceAndCityData: provinceAndCityData,
       selectedOptions: [],
+      selectedOptionsLocal: [],
       organData: {},
       ruleForm: {
+        wechat: '',
+        second_mobile: '',
+        location: '',
         surname: '',
         mobile: '',
         id_card_number: '',
@@ -308,6 +343,12 @@ export default {
     innerVisible(val) {
       this.openStatus = val
     },
+    seaUserInfo(val) {
+      console.log(this.seaUserInfo)
+      this.ruleForm.uid = this.seaUserInfo.uid
+      this.ruleForm.mobile = this.seaUserInfo.mobile
+      this.ruleForm.surname = this.seaUserInfo.realname
+    },
   },
   created() {
     //渠道来源
@@ -321,18 +362,24 @@ export default {
       console.log(this.selectedOptions)
       console.log(value) // ["110000", "110100", "110101"]
       //CodeToText是个大对象，属性是区域码，属性值是汉字 用法例如：CodeToText['110000']输出北京市
-      console.log(
-        CodeToText[value[0]],
-        CodeToText[value[1]],
-        CodeToText[value[2]]
-      ) //北京市 市辖区 东城区
+      // console.log(
+      //   CodeToText[value[0]],
+      //   CodeToText[value[1]],
+      //   CodeToText[value[2]]
+      // ) //北京市 市辖区 东城区
+      this.ruleForm.province = value[0]
+      this.ruleForm.city = value[1]
     },
-
+    handleLocal(value) {
+      console.log(value)
+      this.ruleForm.location = CodeToText[value[0]] + CodeToText[value[1]]
+    },
     getaddStatus(status) {
       this.addVisible = status
     },
-    preserve(ormName, num) {
-      // this.addVisible = true//客户报名弹框显示
+    preserve(formName, num) {
+      console.log(this.ruleForm)
+      // this.addVisible = true //客户报名弹框显示
       //没有自动填充生日
       if (this.ruleForm.birthday == '') {
         this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number)
@@ -341,18 +388,21 @@ export default {
       if (this.ruleForm.sex == '') {
         this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
       }
-      console.log(this.ruleForm)
-      // this.$refs[formName].validate((valid) => {
-      //   if (valid) {
-      //     this.$api.addCustomers(this, this.ruleForm, num)
-      //     // alert('submit!');
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
+
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$api.addCustomers(this, this.ruleForm, num)
+          // alert('submit!');
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     doClose() {
+      for (var item in this.ruleForm) {
+        this.ruleForm[item] = ''
+      }
       this.$emit('innerDialog', false)
     },
   },

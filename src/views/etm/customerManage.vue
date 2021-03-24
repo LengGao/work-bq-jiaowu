@@ -186,8 +186,8 @@
 </template>
 
 <script>
-import { getBirth, getSex } from '@/utils/index'
 import { getCateList } from '@/api/sou'
+import { cloneOptions } from '@/utils/index'
 import addCustomeDialog from './components/addCustomeDialog'
 export default {
   name: 'myClients',
@@ -389,9 +389,9 @@ export default {
     }
   },
   created() {
-    // this.getCateList()
-    this.$api.getCustomerList(this, 'schoolData')
-    this.$api.getcategorytree(this, 1) //分类下拉列表
+    this.getCateList()
+    // this.$api.getCustomerList(this, 'schoolData')
+    // this.$api.getcategorytree(this, 1) //分类下拉列表
     // this.$api.getProinvceList(this, 1) //获取省市区
   },
   mounted() {
@@ -423,16 +423,22 @@ export default {
       const data = { list: true }
       const res = await getCateList(data)
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        this.$set(this.searchOptions[1].attrs, 'options', this.selectData)
+        // this.cloneData(res.data, this.selectData)
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          'category_name',
+          'category_id',
+          'son'
+        )
+        // this.$set(this.searchOptions[1].attrs, 'options', this.selectData)
+        // // console.log(this.searchOptions[1])
+        // // this.searchOptions[1].attrs.options = this.selectData
         // console.log(this.searchOptions[1])
-        // this.searchOptions[1].attrs.options = this.selectData
-        console.log(this.searchOptions[1])
       }
     },
     cloneData(data, newData, val, lab) {
       data.forEach((item, index) => {
-        console.log(item)
+        // console.log(item)
         newData[index] = {}
         newData[index].value = item[val]
         newData[index].label = item[lab]
@@ -447,9 +453,11 @@ export default {
       if (data.date && data.date.length) {
         data.date = data.date[0] + ' - ' + data.date[1]
       }
-
       this.pageNum = 1
-      this.searchData = data
+      this.searchData = {
+        ...data,
+        category_id: data.category_id.pop(),
+      }
       this.$api.getCustomerList(this, 'schoolData')
     },
     toOnlineStudents() {

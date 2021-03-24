@@ -71,13 +71,12 @@ let enrollStu = {
     //   field_name = data.name
     // }
     let config = {
-      page: self.page,
       surname: ruleForm.surname,
       mobile: ruleForm.mobile,
       id_card_number: ruleForm.id_card_number,
       sex: ruleForm.sex,
       birthday: ruleForm.birthday,
-      marry: ruleForm.marry,
+      // marry: ruleForm.marry,
       qq: ruleForm.qq,
       email: ruleForm.email,
       culture: ruleForm.culture,
@@ -94,16 +93,16 @@ let enrollStu = {
       then(res) {
         console.log(res.data.data)
         if (res.data.code == 0) {
-          self.curstomerVisible = false
           self.$message({
             type: 'success',
             message: res.data.message,
           })
-          let param = JSON.stringify(res.data.data)
-
+          self.addVisible = true //客户报名弹框显示
+          self.userInfo = res.data.data
           if (num) {
+            // let param = JSON.stringify(res.data.data)
             self.$router.push({
-              path: '/etm/customeRegist',
+              path: '/fina/cusdetail',
               query: { param: param },
             })
           }
@@ -116,18 +115,24 @@ let enrollStu = {
   createOrder(self, ruleForm) {
     let config = {
       order_token: ruleForm.order_token,
-      aid: ruleForm.aid,
-      uid: ruleForm.uid,
-      id_card_number: ruleForm.id_card_number,
-      todo_id: ruleForm.todo_id,
+      wechat: ruleForm.wechat,
+      second_mobile: ruleForm.second_mobile,
+      location: ruleForm.location,
+      // aid: ruleForm.aid,
+      project: ruleForm.project,
+      // uid: ruleForm.uid,
+      // id_card_number: ruleForm.id_card_number,
+      // todo_id: ruleForm.todo_id,
       pay_type: ruleForm.pay_type,
       pay_money: ruleForm.pay_money,
       order_money: ruleForm.order_money,
       reduction: ruleForm.reduction,
       overdue_money: ruleForm.overdue_money,
-      surname: ruleForm.surname,
-      mobile: ruleForm.mobile,
-      id_card_number: ruleForm.id_card_number,
+      // surname: ruleForm.surname,
+      // mobile: ruleForm.mobile,
+      ...self.userInfo,
+      aid: self.userInfo.id,
+
       supplement_time: ruleForm.supplement_time,
       receipt_file: ruleForm.receipt_file,
     }
@@ -138,8 +143,11 @@ let enrollStu = {
       // method: 'GET',
       then(res) {
         console.log(res.data.data)
+
         if (res.data.code == 0) {
-          self.orderVisible = true
+          let data = res.data.data
+          self.orderVisible = true //订单详情弹框呈现
+          self.orderInfo = data
           self.$message({
             type: 'success',
             message: res.data.message,
@@ -164,6 +172,46 @@ let enrollStu = {
         let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
+        }
+      },
+    })
+  },
+  getOrderDetail(self, name) {
+    let config = {
+      order_id: self.orderInfo.order_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getOrderDetail,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        // for (var item of data) {
+        //   if (item.create_time != 0 || item.create_time != '') {
+        //     item.create_time = self.$moment
+        //       .unix(item.create_time)
+        //       .format('YYYY-MM-DD HH:mm:ss')
+        //   } else {
+        //     item.create_time = '---'
+        //   }
+        // }
+        if (res.data.code == 0) {
+          self[name] = data
+          self.projectData = JSON.parse(data.project)
+          // for (var item of self.projectData) {
+          //   if (item.create_time != 0 || item.create_time != '') {
+          //     item.create_time = self.$moment
+          //       .unix(item.create_time)
+          //       .format('YYYY-MM-DD HH:mm:ss')
+          //   } else {
+          //     item.create_time = '---'
+          //   }
+          // }
+          console.log(self.projectData)
+          self.pay_log = data.pay_log
+          console.log(self.pay_log)
         }
       },
     })
@@ -274,6 +322,7 @@ let enrollStu = {
   getCommonUserList(self, name) {
     let config = {
       // search_box: ruleForm.search_box,
+      ...self.searchData,
       page: self.page,
     }
     console.log(config)

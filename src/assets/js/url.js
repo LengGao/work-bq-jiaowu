@@ -153,6 +153,7 @@ export default {
   orderindex: '/order/index',
   //订单详情
   orderdetail: '/order/detail',
+  getOrderDetail: '/order/detail',
   //角色权限
   roleperm: '/role/index',
   //通知公告

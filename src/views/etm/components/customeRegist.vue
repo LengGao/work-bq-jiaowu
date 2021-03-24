@@ -1,11 +1,12 @@
 <template>
   <section>
     <el-dialog
-      title="添加客户"
+      title="客户报名"
       :visible.sync="openStatus"
       @close="doClose"
       append-to-body
       width="70%"
+      class="add-teaching-material"
       style="min-width:1070px"
     >
       <el-form
@@ -22,7 +23,7 @@
                 <el-input
                   class="input-width"
                   disabled
-                  v-model="ruleForm.surname"
+                  v-model="userInfo.surname"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -31,7 +32,7 @@
                 <el-input
                   disabled
                   class="input-width"
-                  v-model="ruleForm.mobile"
+                  v-model="userInfo.mobile"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -40,7 +41,7 @@
                 <el-input
                   class="input-width"
                   disabled
-                  v-model="ruleForm.id_card_number"
+                  v-model="userInfo.id_card_number"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -78,7 +79,7 @@
                     show-overflow-tooltip
                   ></el-table-column>
                   <el-table-column
-                    prop="lower_price"
+                    prop="lowest_price"
                     label="最低价格"
                     min-width="150"
                     show-overflow-tooltip
@@ -93,6 +94,12 @@
                       <el-col :span="12">
                         <el-input
                           v-model="scope.row.save_price"
+                          type="number"
+                          min="0"
+                          :max="
+                            parseFloat(scope.row.project_price) -
+                              parseFloat(scope.row.lowest_price)
+                          "
                           placeholder
                           size="small"
                           @blur="
@@ -160,7 +167,11 @@
             <el-row>
               <el-col :sm="4">
                 <div class="expense_summary_label">
-                  订单总价<span>￥{{ ruleForm.order_money }}</span>
+                  订单总价<span
+                    >￥{{
+                      ruleForm.order_money ? ruleForm.order_money : ''
+                    }}</span
+                  >
                 </div>
               </el-col>
               <el-col :sm="4">
@@ -171,7 +182,7 @@
               <el-col :sm="4">
                 <div class="expense_summary_label">
                   应收金额<span style="color: #fd6500"
-                    >￥{{ receivableMoney }}</span
+                    >￥{{ receivableMoney ? receivableMoney : '' }}</span
                   >
                 </div>
               </el-col>
@@ -183,12 +194,15 @@
           <el-row class="wrap">
             <el-col :sm="8">
               <el-form-item label="支付方式">
-                <el-select v-model="ruleForm.pay_type" placeholder="请选择">
+                <el-select
+                  v-model="ruleForm.pay_type"
+                  placeholder="请选择支付方式"
+                >
                   <el-option
                     v-for="item in payWays"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value"
+                    :value="item.label"
                   >
                   </el-option>
                 </el-select>
@@ -201,12 +215,24 @@
                   class="input-width"
                   type="number"
                   v-model="ruleForm.pay_money"
+                  @change="payNum"
                 ></el-input>
               </el-form-item>
             </el-col>
             <el-col :sm="8">
-              <el-form-item label="上传收据">
-                <el-upload></el-upload>
+              <el-form-item label="上传收据" class="receiptUpLoad">
+                <el-upload
+                  name="image"
+                  :headers="headers"
+                  :action="uploadImageUrl"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload"
+                >
+                  <!-- {{ ruleForm.receipt_file }} -->
+                  <img v-if="imgSrc" :src="imgSrc" class="img" />
+                  <i v-else class="el-icon-plus upload-cover-icon"></i>
+                </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
@@ -221,7 +247,11 @@
               </div>
               <div class="expense_summary_label">
                 欠费金额<span
-                  >￥{{ receivableMoney - ruleForm.pay_money }}</span
+                  >￥{{
+                    receivableMoney - ruleForm.pay_money
+                      ? receivableMoney - ruleForm.pay_money
+                      : ''
+                  }}</span
                 >
               </div>
             </el-col>
@@ -229,7 +259,7 @@
             <el-col :sm="8">
               <el-form-item label="补缴时间">
                 <el-date-picker
-                  v-model="ruleForm.birthday"
+                  v-model="ruleForm.supplement_time"
                   type="date"
                   format="yyyy-MM-dd "
                   value-format="yyyy-MM-dd "
@@ -256,26 +286,51 @@
     </el-dialog>
     <orderDialog
       :orderVisible="orderVisible"
+      :orderInfo="orderInfo"
       v-on:orderDialog="getorderStatus($event)"
     ></orderDialog>
+    <projectDialog
+      :projectVisible="projectVisible"
+      @courseArr="getCourseArr"
+      v-on:projectDialog="getprojectStatus($event)"
+    ></projectDialog>
   </section>
 </template>
 
 <script>
 import orderDialog from './orderDialog'
+import { uploadImageUrl } from '@/api/educational'
+import projectDialog from './projectDialog'
 export default {
   components: {
     orderDialog,
+    projectDialog,
   },
   props: {
     addVisible: {
       type: Boolean,
       default: false,
     },
+    userInfo: {
+      type: Object,
+      default: {
+        // id: '44',
+        // id_card_number: '513436200003236818',
+        // mobile: '12877999082',
+        // surname: '王二',
+        // todo_id: '27',
+        // uid: '39228',
+      },
+    },
   },
 
   data() {
     return {
+      uploadImageUrl,
+      orderInfo: {},
+      headers: {
+        token: this.$store.state.user.token,
+      },
       openStatus: this.addVisible,
       schoolData: [],
       payWays: [
@@ -294,6 +349,14 @@ export default {
         {
           value: 4,
           label: '聚合收单',
+        },
+        {
+          value: 5,
+          label: '银行转账',
+        },
+        {
+          value: 6,
+          label: '收钱吧',
         },
       ],
       ruleForm: {
@@ -316,23 +379,15 @@ export default {
       customerInfo: {},
       receivableMoney: 0,
       orderVisible: false,
+      projectVisible: false,
       projectData: [],
       page: 1,
+      imgSrc: '',
     }
   },
 
-  created() {
-    // this.customerInfo = JSON.parse(this.$route.query)
-    let query = this.$route.query
-    let customerInfo = JSON.parse(query.param)
-    console.log(customerInfo)
-    this.ruleForm.id_card_number = customerInfo.id_card_number
-    this.ruleForm.mobile = customerInfo.mobile
-    this.ruleForm.surname = customerInfo.surname
-    this.ruleForm.todo_id = customerInfo.todo_id
-    this.ruleForm.uid = customerInfo.uid
-    this.ruleForm.aid = customerInfo.id
-  },
+  created() {},
+  mounted() {},
 
   watch: {
     addVisible(val) {
@@ -344,9 +399,9 @@ export default {
       var reduction = 0 //优惠总额
       var receivableMoney = 0 //应收金额
       this.projectData.forEach((i) => {
-        order_money = order_money + i.project_price
-        reduction = reduction + i.save_price
-        receivableMoney = receivableMoney + i.pay_price
+        order_money = order_money + parseFloat(i.project_price)
+        reduction = reduction + parseFloat(i.save_price ? i.save_price : 0)
+        receivableMoney = receivableMoney + parseFloat(i.pay_price)
       })
       this.ruleForm.order_money = order_money
       this.ruleForm.reduction = reduction
@@ -357,40 +412,82 @@ export default {
     // },
   },
   methods: {
+    payNum() {},
+    handleAvatarSuccess(res, file) {
+      // console.log(res)
+      this.imgSrc = res.data?.data?.url || ''
+      this.ruleForm.receipt_file = this.imgSrc
+      // console.log(this.ruleForm.receipt_file)
+    },
+    beforeAvatarUpload(file) {
+      const isImg = file.type.indexOf('image') !== -1
+      const isLt20M = file.size / 1024 / 1024 < 20
+      if (!isImg) {
+        this.$message.error('请上传图片')
+      }
+      if (!isLt20M) {
+        this.$message.error('上传图片大小不能超过 20MB!')
+      }
+      return isLt20M && isImg
+    },
+    getCourseArr(arr) {
+      console.log(arr)
+      arr.forEach((i) => {
+        i.pay_price = i.project_price
+        i.id = i.project_id
+        i.lower_price = i.lowest_price
+      })
+      this.projectData = arr
+    },
     getorderStatus(status) {
       this.orderVisible = status
+    },
+    getprojectStatus(status) {
+      this.projectVisible = status
     },
     doClose() {
       this.$emit('addDialog', false)
     },
     changeAmount(av, ab) {
       this.projectData[av].save_price = parseFloat(ab)
+      console.log(this.projectData[av].save_price)
       this.projectData[av].pay_price =
         parseFloat(this.projectData[av].project_price) -
         parseFloat(this.projectData[av].save_price)
-
+      //应收金额小于最低金额
+      if (this.projectData[av].pay_price < this.projectData[av].lowest_price) {
+        this.$message.error('该项目优惠金额已超')
+        this.projectData[av].save_price =
+          this.projectData[av].project_price - this.projectData[av].lowest_price
+        this.projectData[av].pay_price = this.projectData[av].lowest_price
+      }
       var order_money = 0 //订单总价
       var reduction = 0 //优惠总额
       var receivableMoney = 0 //应收金额
       this.projectData.forEach((i) => {
-        order_money = order_money + i.project_price
-        receivableMoney = receivableMoney + i.pay_price
-        reduction = reduction + parseFloat(i.save_price)
+        // console.log(i.save_price)
+        // i.save_price? i.save_price:0
+        order_money = order_money + parseFloat(i.project_price)
+        receivableMoney = receivableMoney + parseFloat(i.pay_price)
+        reduction = reduction + parseFloat(i.save_price || 0)
       })
+      console.log(reduction)
       this.ruleForm.order_money = order_money
       this.ruleForm.reduction = reduction
       this.receivableMoney = receivableMoney
+      console.log(order_money, reduction, receivableMoney)
     },
     choseProject() {
-      let obj = {
-        id: 4,
-        project_name: '北区教育系统集成专用教',
-        project_price: 20,
-        lower_price: 20,
-        save_price: 0,
-        pay_price: 20,
-      }
-      this.projectData.push(obj)
+      this.projectVisible = true
+      // let obj = {
+      //   id: 4,
+      //   project_name: '北区教育系统集成专用教',
+      //   project_price: 20,
+      //   lower_price: 20,
+      //   save_price: 0,
+      //   pay_price: 20,
+      // }
+      // this.projectData.push(obj)
     },
     //跳转到客户详情页面
 
@@ -398,18 +495,47 @@ export default {
       rows.splice(index, 1)
     },
     orderDeatilShow() {
-      this.orderVisible = true
-      // this.overdue_money = this.receivableMoney - this.ruleForm.pay_money
-      // this.ruleForm.order_token = Math.floor(Math.random() * 1000000 + 1) + ''
-      // this.ruleForm.project = JSON.stringify(this.projectData)
+      // this.orderVisible = true
+      this.ruleForm.overdue_money =
+        this.receivableMoney - this.ruleForm.pay_money
+      this.ruleForm.order_token = Math.floor(Math.random() * 1000000 + 1) + ''
+      this.projectData.forEach((i) => {})
+      this.ruleForm.project = JSON.stringify(this.projectData)
       // console.log(this.ruleForm)
-      // this.$api.createOrder(this, this.ruleForm)
+      this.$api.createOrder(this, this.ruleForm)
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.receiptUpLoad {
+  .upload-cover /deep/.el-upload {
+    border: 1px dashed #d9d9d9 !important;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .upload-cover /deep/.el-upload:hover {
+    border-color: #409eff;
+  }
+  .upload-cover-icon {
+    font-size: 28px;
+    color: hsl(215, 8%, 58%);
+    width: 130px;
+    height: 130px;
+    line-height: 130px;
+    text-align: center;
+  }
+  .img {
+    padding: 5px;
+    width: 130px;
+    height: 130px;
+    display: block;
+  }
+}
+
 /deep/.el-button.is-circle {
   padding: 7px;
 }
