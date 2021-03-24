@@ -199,8 +199,8 @@ export default {
           key: "classroom_id",
           type: "select",
           options: [],
-          optionValue: "project_id",
-          optionLabel: "project_name",
+          optionValue: "classroom_id",
+          optionLabel: "classroom_name",
           attrs: {
             placeholder: "所属班级",
             clearable: true,
@@ -282,8 +282,7 @@ export default {
     },
     // 当分类选择时
     handleTypeChange(ids) {
-      console.log(ids);
-      const id = ids ? ids.pop() : "";
+      const id = ids ? [...ids].pop() : "";
       this.getcourseallclass(id);
       this.getproject(id);
     },

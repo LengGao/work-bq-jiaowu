@@ -78,7 +78,7 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="course_name"
+            prop="classroom_name"
             label="所属班级"
             min-width="150"
             show-overflow-tooltip
@@ -114,7 +114,7 @@
 
 <script>
 import { cloneOptions } from "@/utils/index";
-import { getStudentList, getproject } from "@/api/eda";
+import { getStudentList, getproject, getcourseallclass } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
   name: "myClients",
@@ -133,7 +133,7 @@ export default {
         project_id: "",
         classroom_id: "",
         organization_id: [],
-        value: "",
+        keyboard: "",
         student_type: 1,
       },
       searchOptions: [
@@ -163,6 +163,9 @@ export default {
         {
           key: "course_category_id",
           type: "cascader",
+          events: {
+            change: this.handleTypeChange,
+          },
           attrs: {
             placeholder: "所属分类",
             clearable: true,
@@ -190,25 +193,18 @@ export default {
           },
         },
         {
-          key: "classroom_id1",
-          type: "select",
-          options: [],
-          attrs: {
-            placeholder: "所属校区",
-            clearable: true,
-          },
-        },
-        {
           key: "classroom_id",
           type: "select",
           options: [],
+          optionValue: "classroom_id",
+          optionLabel: "classroom_name",
           attrs: {
             placeholder: "所属班级",
             clearable: true,
           },
         },
         {
-          key: "value",
+          key: "keyboard",
           attrs: {
             placeholder: "学生姓名/手机号码",
           },
@@ -230,6 +226,20 @@ export default {
     handleChecked() {
       this.getStudentList();
     },
+    // 当分类选择时
+    handleTypeChange(ids) {
+      const id = ids ? [...ids].pop() : "";
+      this.getcourseallclass(id);
+      this.getproject(id);
+    },
+    // 获取班级下拉
+    async getcourseallclass(category_id) {
+      const data = { category_id };
+      const res = await getcourseallclass(data);
+      if (res.code === 0) {
+        this.searchOptions[5].options = res.data;
+      }
+    },
     // 获取项目下拉
     async getproject(category_id = "") {
       const data = {
@@ -241,7 +251,6 @@ export default {
       }
     },
     handleSearch(data) {
-      console.log(data);
       const times = data.date || ["", ""];
       delete data.date;
       this.pageNum = 1;

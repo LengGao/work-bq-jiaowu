@@ -6,7 +6,7 @@
         v-model.trim="searchData[item.key]"
         :is="allComponents[item.type || 'input']"
         v-bind="item.attrs"
-        v-on="{ ...item.events }"
+        v-on="item.events"
         class="search-item"
         :class="{
           'search-item': true,
