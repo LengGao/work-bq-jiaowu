@@ -35,6 +35,7 @@
         :is="getComponent"
         @on-basic-success="getStudentBasicDetail"
         :datas="detailData"
+        :uid="detailData.uid"
       />
     </section>
   </div>

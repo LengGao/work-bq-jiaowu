@@ -34,12 +34,12 @@
     </el-form>
     <div class="record-list">
       <ul>
-        <li v-for="item in recordData" :key="item.id">
+        <li v-for="item in listData" :key="item.id">
           <el-card class="box-card" shadow="never">
             <div class="list-row">
               <div class="list-row-col">
                 <span class="col-name">跟进时间：</span>
-                <span>{{ item.create_time }}</span>
+                <span>{{ item.create_time || "--" }}</span>
               </div>
               <div class="list-row-col">
                 <span class="col-name">跟进人：</span>
@@ -69,6 +69,13 @@
           </el-card>
         </li>
       </ul>
+      <div class="table_bottom">
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -77,11 +84,11 @@
 import { userArchivesRecord, addUserArchivesRecord } from "@/api/eda";
 export default {
   name: "followUpRecord",
-  props: {
-    datas: {
-      type: Object,
-      default: () => ({}),
-    },
+  props:{
+    uid:{
+      type:[String,Number],
+      default:''
+    }
   },
   data() {
     return {
@@ -92,7 +99,9 @@ export default {
       rules: {
         desc: [{ required: true, message: "请输入客户名称", trigger: "blur" }],
       },
-      recordData: [],
+      listData: [],
+      pageNum: 1,
+      listTotal: 0,
     };
   },
   created() {
@@ -103,7 +112,7 @@ export default {
     async addUserArchivesRecord() {
       const data = {
         ...this.ruleForm,
-        uid: this.datas.uid,
+        uid: this.uid,
       };
       const res = await addUserArchivesRecord(data);
       if (res.code === 0) {
@@ -117,11 +126,19 @@ export default {
     },
     // 跟进记录
     async userArchivesRecord() {
-      const data = { uid: this.datas.uid };
+      const data = {
+        page: this.pageNum,
+        uid: this.datas.uid,
+      };
       const res = await userArchivesRecord(data);
       if (res.code === 0) {
-        this.recordData = res.data.list;
+        this.listData = res.data.list;
+        this.listTotal = res.data.total;
       }
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.userArchivesRecord();
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {

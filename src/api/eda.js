@@ -125,3 +125,14 @@ export function addUserArchivesRecord(data) {
         data,
     })
 }
+/**
+ * 获取订单列表
+ * @param {*} params 
+ */
+export function getOrderList(params) {
+    return request({
+        url: '/order/index',
+        method: 'get',
+        params,
+    })
+}

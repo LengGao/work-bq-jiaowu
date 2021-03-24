@@ -17,8 +17,8 @@
           <el-option
             v-for="(option, oIndex) in item.options"
             :key="oIndex"
-            :value="option[item.optionValue]"
-            :label="option[item.optionLabel]"
+            :value="option[item.optionValue || 'value']"
+            :label="option[item.optionLabel || 'label']"
           >
           </el-option>
         </template>
@@ -56,7 +56,6 @@ export default {
     };
   },
   created() {
-    console.log(this.$listeners);
     this.initData();
   },
   methods: {

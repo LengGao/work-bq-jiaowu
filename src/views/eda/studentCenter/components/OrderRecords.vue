@@ -79,9 +79,15 @@
 </template>
 
 <script>
-import { dispenseList } from "@/api/eda";
+import { getOrderList } from "@/api/eda";
 export default {
-  name: "class",
+  name: "orderRecords",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
@@ -89,17 +95,20 @@ export default {
     };
   },
   created() {
-    this.dispenseList();
+    this.getOrderList();
   },
   methods: {
     linkTo(id) {
       console.log(id);
     },
-    //教材发放列表
-    async dispenseList() {
+    //订单列表
+    async getOrderList() {
       this.checkedIds = [];
       this.listLoading = true;
-      const res = await dispenseList();
+      const data = {
+        uid: this.uid,
+      };
+      const res = await getOrderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
     },

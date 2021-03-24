@@ -101,13 +101,20 @@
           </el-table-column>
         </el-table>
       </div>
+      <div class="table_bottom">
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+        />
+      </div>
     </div>
   </section>
 </template>
 
 <script>
 import { cloneOptions } from "@/utils/index";
-import { getStudentList } from "@/api/eda";
+import { getStudentList, getproject } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
   name: "myClients",
@@ -127,6 +134,7 @@ export default {
         classroom_id: "",
         organization_id: [],
         value: "",
+        student_type: 1,
       },
       searchOptions: [
         {
@@ -141,9 +149,12 @@ export default {
           },
         },
         {
-          key: "project_id1",
+          key: "student_type",
           type: "select",
-          options: [],
+          options: [
+            { label: "网课", value: 1 },
+            { label: "非网课", value: 2 },
+          ],
           attrs: {
             placeholder: "学生类型",
             clearable: true,
@@ -162,6 +173,8 @@ export default {
           key: "project_id",
           type: "select",
           options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
           attrs: {
             placeholder: "所属项目",
             clearable: true,
@@ -207,6 +220,7 @@ export default {
 
   created() {
     this.getInstitutionSelectData();
+    this.getproject();
     this.getCateList();
     this.getStudentList();
   },
@@ -215,6 +229,16 @@ export default {
     handleBatch() {},
     handleChecked() {
       this.getStudentList();
+    },
+    // 获取项目下拉
+    async getproject(category_id = "") {
+      const data = {
+        category_id,
+      };
+      const res = await getproject(data);
+      if (res.code === 0) {
+        this.searchOptions[3].options = res.data;
+      }
     },
     handleSearch(data) {
       console.log(data);
@@ -234,7 +258,7 @@ export default {
       this.pageNum = val;
       this.getStudentList();
     },
-    //教材发放列表
+    //学生列表
     async getStudentList() {
       this.checkedIds = [];
       const data = {
