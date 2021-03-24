@@ -33,7 +33,9 @@
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
         >
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             prop="uid"
             label="ID"
@@ -116,12 +118,20 @@
         :rules="rules"
         ref="ruleForm"
       >
-        <el-form-item label="班级名称" prop="name">
+        <el-form-item label="班级名称" prop="classroom_id">
           <el-select
             placeholder="请选择"
-            v-model.trim="formData.name"
+            v-model.trim="formData.classroom_id"
             class="input-width"
-          ></el-select>
+          >
+            <el-option
+              v-for="item in classOptions"
+              :key="item.classroom_id"
+              :label="item.classroom_name"
+              :value="item.classroom_id"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -139,7 +149,12 @@
 
 <script>
 import { cloneOptions } from "@/utils/index";
-import { getStudentList, getproject, getcourseallclass } from "@/api/eda";
+import {
+  getStudentList,
+  getproject,
+  getcourseallclass,
+  addstudents,
+} from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
   name: "myClients",
@@ -155,7 +170,7 @@ export default {
       searchData: {
         type: 0,
         date: "",
-        course_category_id: [],
+        course_category_id: "",
         project_id: "",
         classroom_id: "",
         organization_id: [],
@@ -239,11 +254,12 @@ export default {
       checked: "",
       submitLoading: false,
       dialogVisible: false,
+      classOptions: [], // 班级选项
       formData: {
-        name: "",
+        classroom_id: "",
       },
       rules: {
-        name: [{ required: true, message: "请选择", trigger: "blur" }],
+        classroom_id: [{ required: true, message: "请选择", trigger: "blur" }],
       },
     };
   },
@@ -257,7 +273,32 @@ export default {
 
   methods: {
     handleBatch() {
+      console.log(this.searchData.course_category_id);
+      if (!this.searchData.course_category_id) {
+        this.$message.warning("请先按照 所属分类 搜索！");
+        return;
+      }
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择需要分班的学生！");
+        return;
+      }
       this.dialogVisible = true;
+    },
+    handleSeletChange(selection) {
+      this.intent_id = selection[0]?.intent_id || "";
+      this.checkedIds = selection.map((item) => item.uid);
+    },
+    async addstudents() {
+      const data = {
+        ...this.formData,
+        intent_id: this.intent_id,
+        course_students_id: this.checkedIds,
+      };
+      const res = await addstudents(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getStudentList();
+      }
     },
     handleChecked(val) {
       this.searchData.type = val ? 2 : 0;
@@ -266,7 +307,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.addstudents();
         }
       });
     },
@@ -288,6 +329,7 @@ export default {
       const data = { category_id };
       const res = await getcourseallclass(data);
       if (res.code === 0) {
+        this.classOptions = res.data;
         this.searchOptions[5].options = res.data;
       }
     },
@@ -321,6 +363,7 @@ export default {
     //学生列表
     async getStudentList() {
       this.checkedIds = [];
+      this.intent_id = "";
       const data = {
         page: this.pageNum,
         ...this.searchData,

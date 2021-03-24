@@ -71,6 +71,17 @@ export function getStudentList(params) {
     })
 }
 /**
+ * 批量分班
+ * @param {*} data 
+ */
+export function addstudents(data) {
+    return request({
+        url: '/classstudents/addstudents',
+        method: 'post',
+        data,
+    })
+}
+/**
  * 学生详情-基本信息
  * @param {*} params 
  */

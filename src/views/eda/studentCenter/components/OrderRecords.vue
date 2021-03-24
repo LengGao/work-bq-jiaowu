@@ -17,47 +17,59 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="id"
+          prop="order_no"
           label="订单编号"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="nickname"
+          prop="pay_status"
           label="订单状态"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            {{ statusMap[row.pay_status] }}
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="category_name"
+          prop="order_money"
           label="订单总价"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="mobile"
+          prop="reduction"
           label="优惠金额"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="project_name"
+          prop="order_money"
           label="应收金额"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ (row.order_money - row.reduction).toFixed(2) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="classroom_id"
+          prop="pay_money"
           label="实收金额"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="total_books"
+          prop="overdue_money"
           label="欠缴金额"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span class="overdue-money">{{ row.overdue_money }}</span>
+          </template>
+        </el-table-column>
 
         <el-table-column
           label="操作"
@@ -92,6 +104,14 @@ export default {
     return {
       listData: [],
       listLoading: false,
+      statusMap: {
+        0: "待验证/等待付款",
+        1: "新订单/待入账/已付款",
+        2: "部分入账",
+        3: "已入账",
+        4: "已作废",
+        5: "已退款",
+      },
     };
   },
   created() {
@@ -116,5 +136,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.overdue-money {
+  color: #f67979;
+}
 </style>

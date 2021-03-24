@@ -247,7 +247,7 @@ export default {
       this.dispenseList();
     },
     handleSeletChange(selection) {
-      this.projectId = selection[0].project_id;
+      this.projectId = selection[0]?.project_id || "";
       this.checkedIds = selection.map((item) => item.id);
     },
     handleChecked() {
