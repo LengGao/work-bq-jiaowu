@@ -23,13 +23,13 @@
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="nickname"
+          prop="create_time"
           label="操作时间"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="category_name"
+          prop="description"
           label="操作详情"
           min-width="100"
           show-overflow-tooltip
@@ -44,9 +44,9 @@ import { studentBehaviorRecord } from "@/api/eda";
 export default {
   name: "learningTrack",
   props: {
-    datas: {
-      type: Object,
-      default: () => ({}),
+    uid: {
+      type: [String, Number],
+      default: "",
     },
   },
   data() {
@@ -65,7 +65,7 @@ export default {
     //教材发放列表
     async studentBehaviorRecord() {
       const data = {
-        uid: this.datas.uid,
+        uid: this.uid,
       };
       this.listLoading = true;
       const res = await studentBehaviorRecord(data);

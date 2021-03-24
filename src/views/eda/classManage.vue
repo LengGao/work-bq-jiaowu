@@ -6,23 +6,25 @@
 
     <section class="mainwrap">
       <div class="client_head">
-        <search2
-          :contentShow="true"
-          :courseTypeShow="true"
-          :classTypeShow="true"
-          api="getHomeclassifiList"
-          inputText="分类名称"
-          @getTable="getTableList"
-        ></search2>
-        <el-button type="primary" @click="addClass">添加班级</el-button>
+        <!--搜索模块-->
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
+        <el-button type="primary" @click="openAdd">添加班级</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
+          :data="listData"
           style="width: 100%"
           class="min_table"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
         >
@@ -47,13 +49,13 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="project_name"
             label="项目名称"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="teacher_name"
+            prop="staff_name"
             label="班主任"
             min-width="110"
             show-overflow-tooltip
@@ -67,9 +69,12 @@
 
           <el-table-column label="操作" fixed="right" min-width="300">
             <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
-                <el-button type="text" @click="handleEdit(scope.row)"
+              <div style="display: flex; justify-content: center">
+                <el-button type="text" @click="openEdit(scope.row.classroom_id)"
                   >编辑</el-button
+                >
+                <el-button type="text" @click="topayment(scope.row)"
+                  >班级详情</el-button
                 >
                 <el-button type="text" @click="toLearnerManage(scope.row)"
                   >学生管理</el-button
@@ -77,12 +82,6 @@
 
                 <el-button type="text" @click="toMassMessage(scope.row)"
                   >群发消息</el-button
-                >
-                <el-button type="text" @click="topayment(scope.row)"
-                  >排课管理</el-button
-                >
-                <el-button type="text" @click="topayment(scope.row)"
-                  >考试统计</el-button
                 >
               </div>
             </template>
@@ -99,205 +98,161 @@
       </div> -->
       </div>
       <!--弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%">
-        <el-form label-width="100px">
-          <el-row>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="所属分类">
-                <el-select
-                  v-model="ruleForm.category_id"
-                  placeholder="请选择所属分类"
-                >
-                  <el-option
-                    v-for="item in classifyData.list"
-                    :key="item.category_id"
-                    :label="item.category_name"
-                    :value="item.category_id"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <!-- <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="所属项目">
-                <el-input
-                  placeholder="请输入所属项目"
-                  v-model="ruleForm.index_category_name"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col> -->
-          </el-row>
-          <el-row>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="班级名称">
-                <el-input
-                  placeholder="请输入班级名称"
-                  v-model="ruleForm.classroom_name"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="班主任">
-                <el-select
-                  v-model="ruleForm.master_teacher_id"
-                  placeholder="请选择"
-                >
-                  <!-- <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option> -->
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label="班级封面">
-            <div v-show="!haschoose">
-              <div class="headPortrait el-icon-plus" @click="addIcon"></div>
-              <div style="color:#aaa;ling-height:20px">
-                <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
-                <p><span> 2. 推荐尺寸750*420px或者16:9</span></p>
-              </div>
-            </div>
-            <div v-show="haschoose" class=" imageBox ">
-              <i class=" iconjia el-icon-plus" @click="addIcon"></i>
-              <img
-                style="width:100%;height:100%; border-radius: 3px"
-                :src="url"
-                alt=""
-              />
-            </div>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleConfirm">确 定</el-button>
-        </span>
-      </el-dialog>
+      <AddClass
+        v-model="dialogVisible"
+        :title="dialogTitle"
+        :id="currentId"
+        :typeOptions="typeOptions"
+        @on-success="getClassList"
+      />
     </section>
   </div>
 </template>
 
 <script>
+import { getClassList, getproject } from "@/api/eda";
+import { getCateList } from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
+import AddClass from "./components/AddClass";
 export default {
+  components: {
+    AddClass,
+  },
   data() {
     return {
-      schoolData: [],
-      classifyData: [],
-      index_category_id: '',
-      dialogTitle: '添加班级',
-      ruleForm: {
-        classroom_name: '',
-        teacher_id: '',
-        master_teacher_id: 1,
-        course_id: '',
-        class_icon:
-          'http://dpsystem.oss-cn-shenzhen.aliyuncs.com/moren1607659060/35b5e665b81ee8be42812abdb9a40256',
-        describe: '',
-        category_id: '',
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        category_id: [],
+        project_id: "",
+        keyboard: "",
       },
-      datas: {},
-      url: '',
-      pictureVisible: false,
-      haschoose: false,
-      page: 1,
+      searchOptions: [
+        {
+          key: "category_id",
+          type: "cascader",
+          events: {
+            change: this.handleTypeChange,
+          },
+          attrs: {
+            placeholder: "所属分类",
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
+          attrs: {
+            placeholder: "所属项目",
+            clearable: true,
+          },
+        },
+        {
+          key: "keyboard",
+          attrs: {
+            placeholder: "班级名称、班主任",
+          },
+        },
+      ],
+
+      currentId: "",
+      dialogTitle: "添加班级",
       dialogVisible: false,
-    }
+      typeOptions: [],
+    };
   },
 
-  created() {},
-  mounted() {
-    this.$api.getClassroomList(this, 'schoolData')
-    this.$api.getCategoryList(this, 'classifyData')
+  created() {
+    this.getClassList();
+    this.getCateList();
+    this.getproject();
   },
 
   methods: {
-    handleEdit(ab) {
-      this.dialogVisible = true
-      this.ruleForm.classroom_id = ab.classroom_id
-      this.ruleForm.classroom_name = ab.classroom_name
-      this.ruleForm.teacher_id = ab.teacher_id
-      this.ruleForm.master_teacher_id = ab.master_teacher_id
-      this.ruleForm.class_icon = ab.class_icon
-
-      // console.log(ab)
+    openEdit(id) {
+      this.dialogTitle = "编辑班级";
+      this.currentId = id;
+      this.dialogVisible = true;
+    },
+    openAdd() {
+      this.currentId = "";
+      this.dialogTitle = "添加班级";
+      this.dialogVisible = true;
+    },
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        category_id: data.category_id.pop(),
+      };
+      this.getClassList();
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.getClassList();
+    },
+    async getClassList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await getClassList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
+    },
+    // 当分类选择时
+    handleTypeChange(ids) {
+      const id = ids ? [...ids].pop() : "";
+      this.getproject(id);
+    },
+    // 获取项目下拉
+    async getproject(category_id = "") {
+      const data = {
+        category_id,
+      };
+      const res = await getproject(data);
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
+      }
+    },
+    // 获取教材分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[0].attrs.options = this.typeOptions = cloneOptions(
+          res.data,
+          "category_name",
+          "category_id",
+          "son"
+        );
+      }
     },
     toClassDetail() {
       this.$router.push({
-        path: '/eda/classDetail',
-      })
+        path: "/eda/classDetail",
+      });
     },
-    addIcon() {},
     toMassMessage() {
       this.$router.push({
-        path: '/eda/massMessage',
-      })
+        path: "/eda/massMessage",
+      });
     },
     toLearnerManage() {
       this.$router.push({
-        path: '/eda/learnerManage',
-      })
-    },
-    // doPageChange(page) {
-    //   this.page = page
-    //   this.$api.getHomeclassifiList(this, 'schoolData', this.datas)
-    // },
-    // 获取数据
-    getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
-      }
-    },
-    topayment(zx) {
-      //   this.dialogTitle = '编辑首页分类'
-      //   console.log(zx)
-      //   this.dialogVisible = true
-      //   this.haschoose = true
-      //   this.index_category_id = zx.index_category_id
-      //   this.$api.getHomeclassifiDetail(this, this.index_category_id)
-    },
-    scopes(index_category_id, sorts) {
-      //   var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      //   var re = new RegExp(regu)
-      //   if (!re.test(sorts)) {
-      //     this.$message.error('请输入正确的排序！')
-      //     return false
-      //   } else {
-      //     this.$api.updateHomeClassifiSort(index_category_id, sorts, this)
-      //   }
-    },
-
-    addClass() {
-      this.dialogTitle = '添加班级'
-      for (let key in this.ruleForm) {
-        this.ruleForm[key] = ''
-      }
-      //   this.url = ''
-      //   this.haschoose = false
-      this.dialogVisible = true
-    },
-    handleConfirm() {
-      console.log(this.ruleForm)
-      console.log(this.ruleForm.classroom_id == '')
-      if (
-        this.ruleForm.classroom_id == '' ||
-        this.ruleForm.classroom_id == undefined
-      ) {
-        this.$api.addClasses(this, this.ruleForm)
-      } else {
-        this.$api.modifyClasses(this, this.ruleForm)
-      }
+        path: "/eda/learnerManage",
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

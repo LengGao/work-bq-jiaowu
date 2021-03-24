@@ -1,9 +1,9 @@
 <template>
   <!-- 证件资料 -->
-  <div class="certificates">
+  <div class="certificates" v-loading="loading">
     <div class="certificates-header">
       <el-button>查看大图</el-button>
-      <el-button>打包下载</el-button>
+      <el-button @click="zipDownload">打包下载</el-button>
     </div>
     <div class="certificates-uploads">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
@@ -12,15 +12,24 @@
           :headers="headers"
           :action="uploadImageUrl"
           :show-file-list="false"
-          :on-success="(res, file) => handleAvatarSuccess(res, file, item.key)"
-          :before-upload="beforeAvatarUpload"
+          :on-error="() => handleUploadError(index)"
+          :on-success="
+            (res, file) => handleUploadSuccess(res, file, item.key, index)
+          "
+          :before-upload="(file) => beforeUpload(file, index)"
         >
-          <img
-            v-if="photoData[item.key]"
-            :src="photoData[item.key]"
-            class="img"
-          />
-          <i v-else class="el-icon-plus upload-item-icon"></i>
+          <div v-if="photoData[item.key]" class="imgs">
+            <img :src="photoData[item.key]" />
+            <i
+              class="del el-icon-close"
+              @click.stop="hanldeDelete(item.key)"
+            ></i>
+          </div>
+          <i
+            v-if="!item.loading && !photoData[item.key]"
+            class="el-icon-plus upload-item-icon"
+          ></i>
+          <i class="el-icon-loading upload-loading" v-if="item.loading"></i>
         </el-upload>
         <p>{{ item.name }}</p>
       </div>
@@ -29,37 +38,55 @@
 </template>
 
 <script>
-import { uploadImageUrl } from "@/api/educational";
+import {
+  zipDownload,
+  uploadImageUrl,
+  modifyCertificate,
+  getCertificateInfo,
+} from "@/api/educational";
 export default {
   name: "certificates",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       uploadImageUrl,
       headers: {
         token: this.$store.state.user.token,
       },
+      loading: false,
       uploads: [
         {
+          loading: false,
           key: "portrait",
           name: "免冠正面照",
         },
         {
+          loading: false,
           key: "photo_id_card",
           name: "身份证扫描件",
         },
         {
+          loading: false,
           key: "photo_residence_permit",
           name: "社保卡/居住证",
         },
         {
+          loading: false,
           key: "graduation_certificate",
           name: "毕业证扫描件",
         },
         {
+          loading: false,
           key: "photo_commitment",
           name: "工作年限承诺书",
         },
         {
+          loading: false,
           key: "photo_health",
           name: "个人健康承诺书",
         },
@@ -74,21 +101,74 @@ export default {
       },
     };
   },
+  created() {
+    this.getCertificateInfo();
+  },
   methods: {
-    handleAvatarSuccess(res, file, key) {
-      this.photoData[key] = res.data?.data?.url || "";
+    // 下载
+    async zipDownload() {
+      const data = {
+        uid: this.uid,
+      };
+      const res = await zipDownload(data);
+      if (res.code === 0) {
+        window.open(res.data.url);
+      }
     },
-    beforeAvatarUpload(file) {
+    // 修改
+    async modifyCertificate() {
+      const data = {
+        uid: this.uid,
+        ...this.photoData,
+      };
+      const res = await modifyCertificate(data);
+      if (res.code === 0) {
+        this.$message.success("资料修改成功");
+        this.getCertificateInfo();
+      }
+    },
+    // 获取
+    async getCertificateInfo() {
+      this.loading = true;
+      const data = {
+        uid: this.uid,
+      };
+      const res = await getCertificateInfo(data).catch(() => {
+        this.loading = false;
+      });
+      this.loading = false;
+      if (res.code === 0) {
+        for (const k in this.photoData) {
+          this.photoData[k] = res.data[k];
+        }
+      }
+    },
+
+    handleUploadSuccess(res, file, key, index) {
+      this.uploads[index].loading = false;
+      this.photoData[key] = res.data?.data?.url || "";
+      this.modifyCertificate();
+    },
+    handleUploadError(index) {
+      this.uploads[index].loading = false;
+    },
+    hanldeDelete(key) {
+      this.photoData[key] = "";
+      this.modifyCertificate();
+    },
+    beforeUpload(file, index) {
       const isImg = file.type.indexOf("image") !== -1;
       const isLt20M = file.size / 1024 / 1024 < 20;
 
       if (!isImg) {
         this.$message.error("请上传图片");
+        return false;
       }
       if (!isLt20M) {
         this.$message.error("上传图片大小不能超过 20MB!");
+        return false;
       }
-      return isLt20M && isImg;
+      this.uploads[index].loading = true;
     },
   },
 };
@@ -123,7 +203,8 @@ export default {
     .upload-item /deep/.el-upload:hover {
       border-color: #409eff;
     }
-    .upload-item-icon {
+    .upload-item-icon,
+    .upload-loading {
       font-size: 28px;
       color: hsl(215, 8%, 58%);
       width: 300px;
@@ -131,11 +212,27 @@ export default {
       line-height: 200px;
       text-align: center;
     }
-    .img {
+    .imgs {
       padding: 5px;
       width: 300px;
       height: 200px;
-      display: block;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .del {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: 20px;
+      }
+      &:hover {
+        .del {
+          color: #333;
+          display: block;
+        }
+      }
     }
   }
 }

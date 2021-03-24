@@ -4,10 +4,7 @@
     <section class="mainwrap">
       <div class="detail-header">
         <div class="header-item header-user">
-          <img
-            src="https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3446442004,2207547936&fm=26&gp=0.jpg"
-            alt=""
-          />
+          <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
           <span class="name">{{ detailData.surname || "--" }}</span>
         </div>
         <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
@@ -35,6 +32,7 @@
         :is="getComponent"
         @on-basic-success="getStudentBasicDetail"
         :datas="detailData"
+        :uid="detailData.uid"
       />
     </section>
   </div>

@@ -11,14 +11,8 @@
         @on-search="handleSearch"
       />
       <div>
-        <el-button
-          type="primary"
-          style="margin-right: 20px"
-          @click="handleBatch"
+        <el-button style="margin-right: 20px" @click="handleBatch"
           >批量分班</el-button
-        >
-        <el-button type="primary" style="margin-right: 20px"
-          >导出数据</el-button
         >
         <el-checkbox v-model="checked" @change="handleChecked"
           >未分班学生</el-checkbox
@@ -39,7 +33,9 @@
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
         >
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             prop="uid"
             label="ID"
@@ -78,7 +74,7 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="course_name"
+            prop="classroom_name"
             label="所属班级"
             min-width="150"
             show-overflow-tooltip
@@ -101,13 +97,64 @@
           </el-table-column>
         </el-table>
       </div>
+      <div class="table_bottom">
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+        />
+      </div>
     </div>
+    <el-dialog
+      title="批量分班"
+      :visible.sync="dialogVisible"
+      width="500px"
+      class="add-warehouse"
+      @closed="resetForm('ruleForm')"
+    >
+      <el-form
+        label-width="100px"
+        :model="formData"
+        :rules="rules"
+        ref="ruleForm"
+      >
+        <el-form-item label="班级名称" prop="classroom_id">
+          <el-select
+            placeholder="请选择"
+            v-model.trim="formData.classroom_id"
+            class="input-width"
+          >
+            <el-option
+              v-for="item in classOptions"
+              :key="item.classroom_id"
+              :label="item.classroom_name"
+              :value="item.classroom_id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          :loading="submitLoading"
+          @click="submitForm('ruleForm')"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </section>
 </template>
 
 <script>
 import { cloneOptions } from "@/utils/index";
-import { getStudentList } from "@/api/eda";
+import {
+  getStudentList,
+  getproject,
+  getcourseallclass,
+  addstudents,
+} from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
   name: "myClients",
@@ -121,12 +168,14 @@ export default {
       listTotal: 0,
       checkedIds: [],
       searchData: {
+        type: 0,
         date: "",
-        course_category_id: [],
+        course_category_id: "",
         project_id: "",
         classroom_id: "",
         organization_id: [],
-        value: "",
+        keyboard: "",
+        student_type: 1,
       },
       searchOptions: [
         {
@@ -141,9 +190,12 @@ export default {
           },
         },
         {
-          key: "project_id1",
+          key: "student_type",
           type: "select",
-          options: [],
+          options: [
+            { label: "网课", value: 1 },
+            { label: "非网课", value: 2 },
+          ],
           attrs: {
             placeholder: "学生类型",
             clearable: true,
@@ -152,6 +204,9 @@ export default {
         {
           key: "course_category_id",
           type: "cascader",
+          events: {
+            change: this.handleTypeChange,
+          },
           attrs: {
             placeholder: "所属分类",
             clearable: true,
@@ -162,6 +217,8 @@ export default {
           key: "project_id",
           type: "select",
           options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
           attrs: {
             placeholder: "所属项目",
             clearable: true,
@@ -177,47 +234,116 @@ export default {
           },
         },
         {
-          key: "classroom_id1",
-          type: "select",
-          options: [],
-          attrs: {
-            placeholder: "所属校区",
-            clearable: true,
-          },
-        },
-        {
           key: "classroom_id",
           type: "select",
           options: [],
+          optionValue: "classroom_id",
+          optionLabel: "classroom_name",
           attrs: {
             placeholder: "所属班级",
             clearable: true,
           },
         },
         {
-          key: "value",
+          key: "keyboard",
           attrs: {
             placeholder: "学生姓名/手机号码",
           },
         },
       ],
       checked: "",
+      submitLoading: false,
+      dialogVisible: false,
+      classOptions: [], // 班级选项
+      formData: {
+        classroom_id: "",
+      },
+      rules: {
+        classroom_id: [{ required: true, message: "请选择", trigger: "blur" }],
+      },
     };
   },
 
   created() {
     this.getInstitutionSelectData();
+    this.getproject();
     this.getCateList();
     this.getStudentList();
   },
 
   methods: {
-    handleBatch() {},
-    handleChecked() {
+    handleBatch() {
+      console.log(this.searchData.course_category_id);
+      if (!this.searchData.course_category_id) {
+        this.$message.warning("请先按照 所属分类 搜索！");
+        return;
+      }
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择需要分班的学生！");
+        return;
+      }
+      this.dialogVisible = true;
+    },
+    handleSeletChange(selection) {
+      this.intent_id = selection[0]?.intent_id || "";
+      this.checkedIds = selection.map((item) => item.uid);
+    },
+    async addstudents() {
+      const data = {
+        ...this.formData,
+        intent_id: this.intent_id,
+        course_students_id: this.checkedIds,
+      };
+      const res = await addstudents(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getStudentList();
+      }
+    },
+    handleChecked(val) {
+      this.searchData.type = val ? 2 : 0;
       this.getStudentList();
     },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.addstudents();
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+      for (const k in this.formData) {
+        this.formData[k] = "";
+      }
+      this.dialogVisible = false;
+    },
+    // 当分类选择时
+    handleTypeChange(ids) {
+      const id = ids ? [...ids].pop() : "";
+      this.getcourseallclass(id);
+      this.getproject(id);
+    },
+    // 获取班级下拉
+    async getcourseallclass(category_id) {
+      const data = { category_id };
+      const res = await getcourseallclass(data);
+      if (res.code === 0) {
+        this.classOptions = res.data;
+        this.searchOptions[5].options = res.data;
+      }
+    },
+    // 获取项目下拉
+    async getproject(category_id = "") {
+      const data = {
+        category_id,
+      };
+      const res = await getproject(data);
+      if (res.code === 0) {
+        this.searchOptions[3].options = res.data;
+      }
+    },
     handleSearch(data) {
-      console.log(data);
       const times = data.date || ["", ""];
       delete data.date;
       this.pageNum = 1;
@@ -234,9 +360,10 @@ export default {
       this.pageNum = val;
       this.getStudentList();
     },
-    //教材发放列表
+    //学生列表
     async getStudentList() {
       this.checkedIds = [];
+      this.intent_id = "";
       const data = {
         page: this.pageNum,
         ...this.searchData,
