@@ -1,0 +1,108 @@
+<template>
+  <div class="student-detail">
+    <div class="head_remind"></div>
+    <section class="mainwrap">
+      <div class="detail-header">
+        <div class="header-item header-user">
+          <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
+          <span class="name">{{ detailData.surname || '--' }}</span>
+        </div>
+        <div class="header-item">ID：{{ detailData.uid || '--' }}</div>
+        <div class="header-item">手机号码：{{ detailData.mobile || '--' }}</div>
+        <div class="header-item">
+          身份证码：{{ detailData.id_card_number || '--' }}
+        </div>
+        <div class="header-item">
+          注册日期：{{ detailData.create_time || '--' }}
+        </div>
+        <div class="header-item">
+          <el-button type="primary">报名</el-button>
+        </div>
+      </div>
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
+        <el-tab-pane label="证件资料" name="Certificates"></el-tab-pane>
+        <!-- <el-tab-pane label="报读班级" name="Class"></el-tab-pane>
+        <el-tab-pane label="学习记录" name="LearningRecords"></el-tab-pane>
+        <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane> -->
+        <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
+        <el-tab-pane label="跟进记录" name="FollowUpRecord"></el-tab-pane>
+      </el-tabs>
+      <component
+        :is="getComponent"
+        @on-basic-success="getStudentBasicDetail"
+        :datas="detailData"
+        :uid="detailData.uid"
+      />
+    </section>
+  </div>
+</template>
+
+<script>
+import { getStudentBasicDetail } from '@/api/eda'
+
+export default {
+  name: 'studentDetail',
+  data() {
+    return {
+      activeName: 'BasicInfo',
+      detailData: {},
+    }
+  },
+  computed: {
+    getComponent() {
+      if (this.activeName) {
+        return () =>
+          import(`../../eda/studentCenter/components/${this.activeName}.vue`)
+      }
+    },
+  },
+  created() {
+    this.getStudentBasicDetail()
+  },
+  methods: {
+    //学生基本信息
+    async getStudentBasicDetail() {
+      const data = {
+        uid: this.$route.query?.uid || '',
+      }
+      const res = await getStudentBasicDetail(data)
+      if (res.code === 0) {
+        console
+        this.detailData = res.data
+      }
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.student-detail {
+  .head_remind {
+    padding: 0;
+  }
+  .detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #606266;
+    font-size: 14px;
+    margin-bottom: 20px;
+    .header-user {
+      display: flex;
+      align-items: center;
+      .name {
+        font-weight: 550;
+        margin-left: 16px;
+        font-size: 16px;
+        color: #303133;
+      }
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+</style>

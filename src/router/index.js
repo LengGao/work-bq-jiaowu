@@ -276,7 +276,6 @@ export const asyncRouter = [
         meta: { title: '订单管理', icon: 'product-cate' },
         hidden: true,
       },
-
       //学生中心组件结束
       {
         path: 'classManage',
@@ -515,7 +514,7 @@ export const asyncRouter = [
       {
         path: 'cusdetail',
         name: 'cusdetail',
-        component: () => import('@/views/fina/finance/cusdetail.vue'),
+        component: () => import('@/views/fina/finance/index.vue'),
         meta: { title: '客户详情', icon: 'product-cate' },
         hidden: true,
       },
