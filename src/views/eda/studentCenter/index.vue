@@ -5,15 +5,17 @@
       <div class="detail-header">
         <div class="header-item header-user">
           <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
-          <span class="name">{{ detailData.surname || '--' }}</span>
+          <span class="name">{{ detailData.surname || "--" }}</span>
         </div>
-        <div class="header-item">ID：{{ detailData.uid || '--' }}</div>
-        <div class="header-item">手机号码：{{ detailData.mobile || '--' }}</div>
+        <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
         <div class="header-item">
-          身份证码：{{ detailData.id_card_number || '--' }}
+          手机号码：{{ detailData.mobile | filterPhone }}
         </div>
         <div class="header-item">
-          注册日期：{{ detailData.create_time || '--' }}
+          身份证码：{{ detailData.id_card_number | filterIdCard }}
+        </div>
+        <div class="header-item">
+          注册日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
           <el-button type="primary">报名</el-button>
@@ -39,38 +41,38 @@
 </template>
 
 <script>
-import { getStudentBasicDetail } from '@/api/eda'
+import { getStudentBasicDetail } from "@/api/eda";
 export default {
-  name: 'studentDetail',
+  name: "studentDetail",
   data() {
     return {
-      activeName: 'BasicInfo',
+      activeName: "BasicInfo",
       detailData: {},
-    }
+    };
   },
   computed: {
     getComponent() {
       if (this.activeName) {
-        return () => import(`./components/${this.activeName}.vue`)
+        return () => import(`./components/${this.activeName}.vue`);
       }
     },
   },
   created() {
-    this.getStudentBasicDetail()
+    this.getStudentBasicDetail();
   },
   methods: {
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {
-        uid: this.$route.query?.id || '',
-      }
-      const res = await getStudentBasicDetail(data)
+        uid: this.$route.query?.id || "",
+      };
+      const res = await getStudentBasicDetail(data);
       if (res.code === 0) {
-        this.detailData = res.data
+        this.detailData = res.data;
       }
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

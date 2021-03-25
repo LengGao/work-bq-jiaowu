@@ -24,7 +24,7 @@
         </li>
       </ul>
       <div class="container-components">
-        <component :is="getComponent" />
+        <component :is="getComponent" :uid="uid" />
       </div>
     </div>
   </div>

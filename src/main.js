@@ -15,6 +15,7 @@ import _ from 'lodash' //引入lodash
 import '@/icons' // icon
 import '@/permission' // permission control
 import VueQuillEditor from 'vue-quill-editor'
+import '@/utils/filters'
 
 // import './mock/mock'
 moment.locale('zh-cn') //设置语言 或 moment.lang('zh-cn');
@@ -28,37 +29,37 @@ Vue.prototype._ = _ //lodash相关https://www.lodashjs.com/
 Vue.prototype.rootDir = process.env.VUE_APP_LOACTION //上传地址
 Vue.prototype.downLoad = process.env.VUE_APP_downLoad //下载图片地址
 Vue.prototype.Base64 = Base64
-// 节流自定义全局命令
-;(function() {
-  let openDelay = false
-  Vue.directive('intervalclick', function(el, binding) {
-    el.onclick = function(e) {
-      if (openDelay) return
-      openDelay = !openDelay
-      if (!binding.value) {
-        alert('未传入Value数据！')
-        return
-      }
-      let func = binding.value['func']
-      let time = binding.value['time']
-      if (typeof time !== 'number') {
-        alert('传入等待时间错误')
-        return
-      }
-      let args = []
-      for (const key in binding.value) {
-        if (binding.value.hasOwnProperty(key)) {
-          if (key === 'func' || key === 'time') continue
-          args.push(binding.value[key])
-        }
-      }
-      setTimeout(() => {
+  // 节流自定义全局命令
+  ; (function () {
+    let openDelay = false
+    Vue.directive('intervalclick', function (el, binding) {
+      el.onclick = function (e) {
+        if (openDelay) return
         openDelay = !openDelay
-      }, time)
-      func(...args)
-    }
-  })
-})()
+        if (!binding.value) {
+          alert('未传入Value数据！')
+          return
+        }
+        let func = binding.value['func']
+        let time = binding.value['time']
+        if (typeof time !== 'number') {
+          alert('传入等待时间错误')
+          return
+        }
+        let args = []
+        for (const key in binding.value) {
+          if (binding.value.hasOwnProperty(key)) {
+            if (key === 'func' || key === 'time') continue
+            args.push(binding.value[key])
+          }
+        }
+        setTimeout(() => {
+          openDelay = !openDelay
+        }, time)
+        func(...args)
+      }
+    })
+  })()
 
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */

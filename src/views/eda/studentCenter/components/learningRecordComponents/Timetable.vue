@@ -4,18 +4,24 @@
     <Title text="课表信息" />
     <div class="calendar">
       <div class="date-select">
-        <el-select v-model="year">
-          <el-option value="2021" label="2021年"></el-option>
-          <el-option value="2020" label="2020年"></el-option>
-          <el-option value="2019" label="2019年"></el-option>
+        <el-select v-model="checkedYear">
+          <el-option
+            :value="year"
+            :label="year + '年'"
+            v-for="year in years"
+            :key="year"
+          ></el-option>
         </el-select>
-        <el-select v-model="mouth">
-          <el-option value="1" label="1月"></el-option>
-          <el-option value="2" label="2月"></el-option>
-          <el-option value="3" label="3月"></el-option>
+        <el-select v-model="checkedMonth">
+          <el-option
+            :value="item"
+            :label="item + '月'"
+            v-for="item in months"
+            :key="item"
+          ></el-option>
         </el-select>
       </div>
-      <el-calendar :range="['2019-03-04', '2019-03-31']">
+      <el-calendar :value="calendarDate">
         <template slot="dateCell" slot-scope="{ date, data }">
           <p :class="data.isSelected ? 'is-selected' : ''">
             {{ data.day.split("-").slice(1).join("-") }}
@@ -32,10 +38,34 @@ export default {
   name: "Timetable",
   data() {
     return {
-      year: 2019,
-      //   mouth: new Date().getMonth() + 1,
-      mouth: 1,
+      years: [],
+      months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      checkedYear: new Date().getFullYear(),
+      checkedMonth: new Date().getMonth() + 1,
     };
+  },
+  computed: {
+    calendarDate() {
+      return `${this.checkedYear}-${this.checkedMonth}`;
+    },
+  },
+  created() {
+    this.createYears();
+  },
+  methods: {
+    createYears() {
+      const years = [];
+      let startYear = 2019;
+      const currentYear = new Date().getFullYear();
+      const deepAdd = () => {
+        if (startYear <= currentYear) {
+          years.push(startYear++);
+          deepAdd();
+        }
+      };
+      deepAdd();
+      this.years = [...years];
+    },
   },
 };
 </script>
@@ -44,6 +74,9 @@ export default {
 .timetable {
   .calendar {
     position: relative;
+    /deep/.el-calendar__button-group {
+      display: none;
+    }
     .date-select {
       top: 0;
       right: 0;

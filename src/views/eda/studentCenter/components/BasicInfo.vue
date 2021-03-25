@@ -40,7 +40,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.mobile || "--" }}</span>
+          <span v-else>{{ datas.mobile | filterPhone }}</span>
         </el-form-item>
         <el-form-item label="备用号码">
           <el-input
@@ -48,7 +48,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.second_mobile || "--" }}</span>
+          <span v-else>{{ datas.second_mobile | filterPhone }}</span>
         </el-form-item>
         <el-form-item label="身份证号">
           <el-input
@@ -56,7 +56,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.id_card_number || "--" }}</span>
+          <span v-else>{{ datas.id_card_number | filterIdCard }}</span>
         </el-form-item>
         <el-form-item label="微信">
           <el-input

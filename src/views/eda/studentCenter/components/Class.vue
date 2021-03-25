@@ -24,7 +24,7 @@
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="nickname"
+          prop="project_name"
           label="项目名称"
           min-width="110"
           show-overflow-tooltip
@@ -36,7 +36,7 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="mobile"
+          prop="price"
           label="项目价格"
           min-width="100"
           show-overflow-tooltip
@@ -46,21 +46,45 @@
           label="课程"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{
+              row.course.length
+                ? row.course.map((item) => item.course_name).join(",")
+                : "--"
+            }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="classroom_id"
           label="题库"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{
+              row.problem && row.problem.length
+                ? row.problem.map((item) => item.title).join(",")
+                : "--"
+            }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="total_books"
           label="教材"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{
+              row.textbook && row.textbook.length
+                ? row.textbook.map((item) => item.book_name).join(",")
+                : "--"
+            }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="total_books"
+          prop="create_time"
           label="报名时间"
           min-width="100"
           show-overflow-tooltip
@@ -102,7 +126,7 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="mobile"
+          prop="project_name"
           label="项目名称"
           min-width="100"
           show-overflow-tooltip
@@ -133,7 +157,7 @@
         >
           <template slot-scope="{ row }">
             <div class="operation_btn">
-              <el-button type="text" @click="linkTo(row.id)"
+              <el-button type="text" @click="toClassDetail(row.classroom_id)"
                 >班级详情</el-button
               >
             </div>
@@ -145,7 +169,7 @@
 </template>
 
 <script>
-import { getstudendclass } from "@/api/eda";
+import { getstudendclass, getuserproject } from "@/api/eda";
 export default {
   name: "class",
   props: {
@@ -164,10 +188,26 @@ export default {
   },
   created() {
     this.getstudendclass();
+    this.getuserproject();
   },
   methods: {
-    linkTo(id) {
-      console.log(id);
+    toClassDetail(id) {
+      this.$router.push({
+        path: "/eda/classDetail",
+        query: {
+          id,
+        },
+      });
+    },
+    //学生所在项目列表
+    async getuserproject() {
+      const data = {
+        uid: this.uid,
+      };
+      this.listLoading = true;
+      const res = await getuserproject(data);
+      this.listLoading = false;
+      this.listData = res.data;
     },
     //学生所在班级列表
     async getstudendclass() {
@@ -177,7 +217,7 @@ export default {
       this.classLoading = true;
       const res = await getstudendclass(data);
       this.classLoading = false;
-      this.classData = res.data.list;
+      this.classData = res.data;
     },
   },
 };

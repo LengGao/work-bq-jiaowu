@@ -87,21 +87,27 @@
           show-overflow-tooltip
         ></el-table-column>
       </el-table>
-        <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="getClassList"
-          />
-        </div>
+      <div class="table_bottom">
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="getAttendanceList"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
+import { getAttendanceList } from "@/api/eda";
 export default {
   name: "AttendanceStatistics",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
@@ -111,7 +117,6 @@ export default {
       searchData: {
         category_id: [],
         project_id: "",
-        keyboard: "",
       },
       searchOptions: [
         {
@@ -147,7 +152,7 @@ export default {
     };
   },
   created() {
-    this.getClassList();
+    this.getAttendanceList();
   },
   methods: {
     handleSearch(data) {
@@ -159,19 +164,20 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
-      this.getClassList();
+      this.getAttendanceList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.getAttendanceList();
     },
-    async getClassList() {
+    async getAttendanceList() {
       const data = {
         page: this.pageNum,
+        uid: this.uid,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await getAttendanceList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
