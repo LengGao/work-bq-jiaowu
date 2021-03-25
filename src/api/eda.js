@@ -229,4 +229,26 @@ export function getuserproject(params) {
         params,
     })
 }
+/**
+ * 获取班级学生
+ * @param {*} params 
+ */
+export function getClassstudentList(params) {
+    return request({
+        url: '/classstudents/index',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 班级考勤统计
+ * @param {*} params 
+ */
+export function classAttendanceStatistics(params) {
+    return request({
+        url: '/classroom/attendanceStatistics',
+        method: 'get',
+        params,
+    })
+}
 

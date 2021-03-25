@@ -73,7 +73,9 @@
                 <el-button type="text" @click="openEdit(scope.row.classroom_id)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="toClassDetail(scope.row)"
+                <el-button
+                  type="text"
+                  @click="toClassDetail(scope.row.classroom_id)"
                   >班级详情</el-button
                 >
                 <el-button type="text" @click="toLearnerManage(scope.row)"
@@ -234,9 +236,12 @@ export default {
         );
       }
     },
-    toClassDetail() {
+    toClassDetail(id) {
       this.$router.push({
         path: "/eda/classDetail",
+        query: {
+          id,
+        },
       });
     },
     toMassMessage() {

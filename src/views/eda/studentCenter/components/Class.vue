@@ -192,6 +192,7 @@ export default {
   },
   methods: {
     toClassDetail(id) {
+      console.log(id);
       this.$router.push({
         path: "/eda/classDetail",
         query: {
