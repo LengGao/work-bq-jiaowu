@@ -303,14 +303,14 @@ export const asyncRouter = [
         path: 'massMessage',
         name: 'massMessage',
         component: () => import('@/views/eda/classManage/massMessage.vue'),
-        meta: { title: '', icon: 'product-cate' },
+        meta: { title: '群发信息', icon: 'product-cate' },
         hidden: true,
       },
       {
         path: 'classDetail',
         name: 'classDetail',
         component: () => import('@/views/eda/classManage/classDetail.vue'),
-        meta: { title: '', icon: 'product-cate' },
+        meta: { title: '班级详情', icon: 'product-cate' },
         hidden: true,
       },
       {

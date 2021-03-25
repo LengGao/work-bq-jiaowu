@@ -71,9 +71,9 @@
     <div class="userTable">
       <el-table
         ref="multipleTable"
-        :data="listData"
+        :data="classData"
         tooltip-effect="light"
-        v-loading="listLoading"
+        v-loading="classLoading"
         element-loading-text="loading"
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
@@ -84,13 +84,13 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="id"
+          prop="class_id"
           label="编号"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="nickname"
+          prop="classroom_name"
           label="班级名称"
           min-width="110"
           show-overflow-tooltip
@@ -108,19 +108,19 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="project_name"
+          prop="staff_name"
           label="班主任"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="classroom_id"
+          prop="student_number"
           label="班级人数"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="total_books"
+          prop="add_time"
           label="加入时间"
           min-width="100"
           show-overflow-tooltip
@@ -145,29 +145,39 @@
 </template>
 
 <script>
-import { dispenseList } from "@/api/eda";
+import { getstudendclass } from "@/api/eda";
 export default {
   name: "class",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
       listLoading: false,
+      classData: [],
+      classLoading: false,
     };
   },
   created() {
-    this.dispenseList();
+    this.getstudendclass();
   },
   methods: {
     linkTo(id) {
       console.log(id);
     },
-    //教材发放列表
-    async dispenseList() {
-      this.checkedIds = [];
-      this.listLoading = true;
-      const res = await dispenseList();
-      this.listLoading = false;
-      this.listData = res.data.list;
+    //学生所在班级列表
+    async getstudendclass() {
+      const data = {
+        uid: this.uid,
+      };
+      this.classLoading = true;
+      const res = await getstudendclass(data);
+      this.classLoading = false;
+      this.classData = res.data.list;
     },
   },
 };

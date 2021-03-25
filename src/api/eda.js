@@ -188,6 +188,10 @@ export function editClassroom(data) {
         data,
     })
 }
+/**
+ * 班级详情
+ * @param {*} params 
+ */
 export function getClassroomDetail(params) {
     return request({
         url: '/classroom/edit',
@@ -195,3 +199,15 @@ export function getClassroomDetail(params) {
         params,
     })
 }
+/**
+ * 获取学生所有班级
+ * @param {*} params 
+ */
+export function getstudendclass(params) {
+    return request({
+        url: '/classstudents/getstudendclass',
+        method: 'get',
+        params,
+    })
+}
+

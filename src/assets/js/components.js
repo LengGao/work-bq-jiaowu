@@ -7,6 +7,7 @@ import Eachertbar from '@/components/Eachertbar'
 import Search from '@/components/Search'
 import Search2 from '@/components/Search2'
 import SearchList from '@/components/SearchList/index'
+import Title from '@/components/Title'
 import imgDialog from '@/components/imgDialog'
 import page from '@/components/page'
 import pageConfig from '@/components/Pageconfig'
@@ -25,6 +26,7 @@ Vue.component('Eachertbar', Eachertbar)
 Vue.component('Search', Search)
 Vue.component('Search2', Search2)
 Vue.component('SearchList', SearchList)
+Vue.component('Title', Title)
 Vue.component('imgDialog', imgDialog)
 Vue.component('page', page)
 Vue.component('FileUpload', FileUpload)

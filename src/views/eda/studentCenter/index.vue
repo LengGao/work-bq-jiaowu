@@ -22,7 +22,7 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
         <el-tab-pane label="证件资料" name="Certificates"></el-tab-pane>
-        <el-tab-pane label="报读班级" name="Class"></el-tab-pane>
+        <el-tab-pane label="项目班级" name="Class"></el-tab-pane>
         <el-tab-pane label="学习记录" name="LearningRecords"></el-tab-pane>
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
