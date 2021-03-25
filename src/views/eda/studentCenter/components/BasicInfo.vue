@@ -27,7 +27,7 @@
             v-model="ruleForm.surname"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.surname || "--" }}</span>
+          <span v-else>{{ datas.surname || '--' }}</span>
         </el-form-item>
         <el-form-item label="手机号码">
           <el-input
@@ -35,7 +35,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.mobile || "--" }}</span>
+          <span v-else>{{ datas.mobile || '--' }}</span>
         </el-form-item>
         <el-form-item label="备用号码">
           <el-input
@@ -43,7 +43,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.second_mobile || "--" }}</span>
+          <span v-else>{{ datas.second_mobile || '--' }}</span>
         </el-form-item>
         <el-form-item label="身份证号">
           <el-input
@@ -51,7 +51,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.id_card_number || "--" }}</span>
+          <span v-else>{{ datas.id_card_number || '--' }}</span>
         </el-form-item>
         <el-form-item label="微信">
           <el-input
@@ -59,7 +59,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.wechat || "--" }}</span>
+          <span v-else>{{ datas.wechat || '--' }}</span>
         </el-form-item>
         <el-form-item label="学员性别">
           <el-radio-group v-if="isEdit" v-model="ruleForm.sex" class="w-100">
@@ -76,7 +76,7 @@
             placeholder="选择日期"
             v-model="ruleForm.birthday"
           ></el-date-picker>
-          <span v-else>{{ datas.birthday || "--" }}</span>
+          <span v-else>{{ datas.birthday || '--' }}</span>
         </el-form-item>
         <el-form-item label="QQ">
           <el-input
@@ -84,7 +84,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.qq || "--" }}</span>
+          <span v-else>{{ datas.qq || '--' }}</span>
         </el-form-item>
         <el-form-item label="邮箱地址">
           <el-input
@@ -92,7 +92,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.email || "--" }}</span>
+          <span v-else>{{ datas.email || '--' }}</span>
         </el-form-item>
 
         <el-form-item label="文化程度">
@@ -109,7 +109,7 @@
               :key="index"
             ></el-option>
           </el-select>
-          <span v-else>{{ datas.culture || "--" }}</span>
+          <span v-else>{{ datas.culture || '--' }}</span>
         </el-form-item>
         <el-form-item label="籍贯">
           <el-cascader
@@ -123,8 +123,8 @@
           </el-cascader>
           <span v-else>{{
             datas.city
-              ? (CodeToText[datas.province] || "") + CodeToText[datas.city]
-              : "--"
+              ? (CodeToText[datas.province] || '') + CodeToText[datas.city]
+              : '--'
           }}</span>
         </el-form-item>
         <el-form-item label="常住地">
@@ -137,7 +137,7 @@
             :options="cityOptions"
           >
           </el-cascader>
-          <span v-else>{{ CodeToText[datas.location] || "--" }}</span>
+          <span v-else>{{ CodeToText[datas.location] || '--' }}</span>
         </el-form-item>
         <el-form-item label="渠道来源">
           <el-select
@@ -153,7 +153,7 @@
               :key="index"
             ></el-option>
           </el-select>
-          <span v-else>{{ datas.sources || "--" }}</span>
+          <span v-else>{{ datas.sources || '--' }}</span>
         </el-form-item>
         <el-form-item label="所属机构">
           <el-cascader
@@ -172,7 +172,7 @@
             v-if="isEdit"
             disabled
           ></el-input>
-          <span v-else>{{ datas.admin_name || "--" }}</span>
+          <span v-else>{{ datas.admin_name || '--' }}</span>
         </el-form-item>
 
         <el-form-item label="备注信息" class="desc">
@@ -182,7 +182,7 @@
             placeholder="请输入"
             v-model="ruleForm.tips"
           ></el-input>
-          <span v-else>{{ datas.tips || "--" }}</span>
+          <span v-else>{{ datas.tips || '--' }}</span>
         </el-form-item>
       </el-form>
     </div>
@@ -190,12 +190,12 @@
 </template>
 
 <script>
-import { provinceAndCityData, CodeToText } from "element-china-area-data";
-import { getInstitutionSelectData } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
-import { updateStudentBasicInfo } from "@/api/eda";
+import { provinceAndCityData, CodeToText } from 'element-china-area-data'
+import { getInstitutionSelectData } from '@/api/sou'
+import { cloneOptions } from '@/utils/index'
+import { updateStudentBasicInfo } from '@/api/eda'
 export default {
-  name: "basicInfo",
+  name: 'basicInfo',
   props: {
     datas: {
       type: Object,
@@ -206,146 +206,146 @@ export default {
     return {
       isEdit: false,
       sexMap: {
-        0: "保密",
-        1: "男",
-        2: "女",
+        0: '保密',
+        1: '男',
+        2: '女',
       },
       CodeToText,
       sourcesOptions: [
         {
-          label: "百度推广",
-          value: "百度推广",
+          label: '百度推广',
+          value: '百度推广',
         },
         {
-          label: "上门咨询",
-          value: "上门咨询",
+          label: '上门咨询',
+          value: '上门咨询',
         },
         {
-          label: "老学员介绍",
-          value: "老学员介绍",
+          label: '老学员介绍',
+          value: '老学员介绍',
         },
         {
-          label: "机构推荐",
-          value: "机构推荐",
+          label: '机构推荐',
+          value: '机构推荐',
         },
       ],
       educationOptions: [
         {
-          label: "高中毕业",
-          value: "高中毕业",
+          label: '高中毕业',
+          value: '高中毕业',
         },
         {
-          label: "大专毕业",
-          value: "大专毕业",
+          label: '大专毕业',
+          value: '大专毕业',
         },
         {
-          label: "本科毕业",
-          value: "本科毕业",
+          label: '本科毕业',
+          value: '本科毕业',
         },
         {
-          label: "研究生毕业",
-          value: "研究生毕业",
+          label: '研究生毕业',
+          value: '研究生毕业',
         },
       ],
       cityOptions: provinceAndCityData,
       ruleForm: {
-        surname: "",
-        mobile: "",
-        second_mobile: "",
-        id_card_number: "",
-        wechat: "",
-        qq: "",
-        email: "",
-        sex: "",
-        birthday: "",
-        culture: "",
-        province: "", // 籍贯
-        city: "",
-        location: "",
-        sources: "",
-        from_organization_id: "",
-        tips: "",
+        surname: '',
+        mobile: '',
+        second_mobile: '',
+        id_card_number: '',
+        wechat: '',
+        qq: '',
+        email: '',
+        sex: '',
+        birthday: '',
+        culture: '',
+        province: '', // 籍贯
+        city: '',
+        location: '',
+        sources: '',
+        from_organization_id: '',
+        tips: '',
       },
       rules: {
         surname: [
-          { required: true, message: "请输入客户名称", trigger: "blur" },
+          { required: true, message: '请输入客户名称', trigger: 'blur' },
         ],
       },
       selectOptions: [],
-      city2: "",
-      city1: "",
-    };
+      city2: '',
+      city1: '',
+    }
   },
   created() {
-    this.getInstitutionSelectData();
+    this.getInstitutionSelectData()
   },
   methods: {
     // 修改基本信息
     async updateStudentBasicInfo() {
-      let from_organization_id = this.ruleForm.from_organization_id;
+      let from_organization_id = this.ruleForm.from_organization_id
       if (Array.isArray(this.ruleForm.from_organization_id)) {
         from_organization_id = this.ruleForm.from_organization_id[
           this.ruleForm.from_organization_id.length - 1
-        ];
+        ]
       }
       const data = {
         ...this.ruleForm,
         id: this.datas.id,
         from_organization_id,
-      };
-      const res = await updateStudentBasicInfo(data);
+      }
+      const res = await updateStudentBasicInfo(data)
       if (res.code === 0) {
-        this.$message.success(res.message);
-        this.$emit("on-basic-success");
-        this.isEdit = false;
+        this.$message.success(res.message)
+        this.$emit('on-basic-success')
+        this.isEdit = false
       }
     },
     // 选择城市 1：籍贯 2：常驻地
     handleCityChange(val, type) {
       if (type === 1) {
-        this.ruleForm.province = val[0];
-        this.ruleForm.city = val[1];
+        this.ruleForm.province = val[0]
+        this.ruleForm.city = val[1]
       } else {
-        this.ruleForm.location = val[1];
+        this.ruleForm.location = val[1]
       }
-      console.log(this.ruleForm);
-      console.log(val, type);
+      console.log(this.ruleForm)
+      console.log(val, type)
     },
     // 机构下拉
     async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
+      const data = { list: true }
+      const res = await getInstitutionSelectData(data)
       if (res.code === 0) {
         this.selectOptions = cloneOptions(
           res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
+          'institution_name',
+          'institution_id',
+          'children'
+        )
       }
     },
     handleEdit() {
-      this.isEdit = true;
-      this.initDatas();
+      this.isEdit = true
+      this.initDatas()
     },
     initDatas() {
       for (const key in this.ruleForm) {
-        this.ruleForm[key] = this.datas[key] || "";
+        this.ruleForm[key] = this.datas[key] || ''
       }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.updateStudentBasicInfo();
+          this.updateStudentBasicInfo()
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.isEdit = false;
-      this.$refs[formName].resetFields();
+      this.isEdit = false
+      this.$refs[formName].resetFields()
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

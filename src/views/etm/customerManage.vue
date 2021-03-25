@@ -390,7 +390,7 @@ export default {
   },
   created() {
     this.getCateList()
-    // this.$api.getCustomerList(this, 'schoolData')
+    this.$api.getCustomerList(this, 'schoolData')
     // this.$api.getcategorytree(this, 1) //分类下拉列表
     // this.$api.getProinvceList(this, 1) //获取省市区
   },
