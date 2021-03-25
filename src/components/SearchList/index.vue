@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  name: "SearchList",
+  name: 'SearchList',
   props: {
     options: {
       type: Array,
@@ -45,48 +45,48 @@ export default {
   data() {
     return {
       allComponents: {
-        input: "el-input",
-        select: "el-select",
-        datePicker: "el-date-picker",
-        cascader: "el-cascader",
+        input: 'el-input',
+        select: 'el-select',
+        datePicker: 'el-date-picker',
+        cascader: 'el-cascader',
       },
       searchData: {},
-    };
+    }
   },
   created() {
-    this.initData();
+    this.initData()
   },
   methods: {
     initData() {
-      this.searchData = { ...this.data };
+      this.searchData = { ...this.data }
     },
     handleReset() {
       for (const key in this.searchData) {
-        if (typeof this.searchData[key] === "object") {
-          this.searchData[key] = Array.isArray(this.searchData[key]) ? [] : {};
+        if (typeof this.searchData[key] === 'object') {
+          this.searchData[key] = Array.isArray(this.searchData[key]) ? [] : {}
         } else {
-          this.searchData[key] = "";
+          this.searchData[key] = ''
         }
       }
-      this.handleSearch();
+      this.handleSearch()
     },
     deepClone(data, newData) {
       for (const key in data) {
-        if (typeof data[key] === "object") {
-          newData[key] = Array.isArray(data[key]) ? [] : {};
-          this.deepClone(data[key], newData[key]);
+        if (typeof data[key] === 'object') {
+          newData[key] = Array.isArray(data[key]) ? [] : {}
+          this.deepClone(data[key], newData[key])
         } else {
-          newData[key] = data[key];
+          newData[key] = data[key]
         }
       }
     },
     handleSearch() {
-      const data = {};
-      this.deepClone(this.searchData, data);
-      this.$emit("on-search", data);
+      const data = {}
+      this.deepClone(this.searchData, data)
+      this.$emit('on-search', data)
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -28,6 +28,7 @@ let Examination = {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
+  
     }
     console.log(config)
     axiosHttp({
@@ -84,7 +85,7 @@ let Examination = {
     },
   //添加科目
   createSubject(self, ruleForm) {
-    let config = {
+      let config = {
       cate_id: ruleForm.cate_id,
       category_name: ruleForm.category_name,
       subject_name: ruleForm.subject_name,

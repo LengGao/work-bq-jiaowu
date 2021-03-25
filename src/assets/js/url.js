@@ -7,14 +7,17 @@ export default {
   onlineUserList: '/Enrollment/onlineUserList',
   getSchoolList: '/School/list',
   changeUpdateSort: '/School/updateSort',
-
+  getUserDetail: '/UserArchives/detail',
+  modifyUserDetail: '/UserArchives/modify',
+  getUserRecord: '/UserArchivesRecord/index',
+  getProinvceList: 'region/elment.json',
   //资源配置
   getCategoryList: '/courseCategory/getCategoryList',
   updateCategorySort: '/courseCategory/updateCategorySort',
   insertCategory: '/courseCategory/insertCategory',
   getTeachBooksList: '/books/index',
   getRoomList: '/Schoolroom/roomList',
-  getRoomSelect: '/Schoolroom/getRoomSelect',
+
   createRoom: '/Schoolroom/createRoom',
   updateRoom: '/Schoolroom/updateRoom',
   deleteRoom: '/Schoolroom/deleteRoom',
@@ -46,7 +49,7 @@ export default {
   getDispenseLog: '/books/dispenseLog',
   classroomList: 'arrange/classroomList',
   getTeacherList: '/teacher/index',
-  getTeacherSublist: '/teacher/getList',
+
   changeTeacherStatus: '/teacher/ajaxStatus',
   getTeacherDrop: '/teacher/getList',
   addTeacher: '/teacher/add',
@@ -85,6 +88,14 @@ export default {
   getAdminOperationDetail: '/AdminOperationRecord/getAdminOperationDetail',
   rollBackOperation: '/AdminOperationRecord/rollBackOperation',
   getActionSelectList: '/AdminOperationRecord/getActionSelectList',
+  getMenuList: '/AdminMenu/getMenuList',
+  getMenuDetail: 'AdminMenu/detail',
+  getThumbMenuList: '/AdminMenu/getThumbMenuList',
+  createMenuData: '/AdminMenu/createMenuData',
+  deleteMenuData: '/AdminMenu/deleteMenuData',
+  updateMenuData: '/AdminMenu/updateMenuData',
+  updateStatus: '/AdminMenu/updateStatus',
+  updateSort: '/AdminMenu/updateSort',
 
   //清除缓存
   clearCache: '/passport/clearCache',
@@ -169,5 +180,12 @@ export default {
   updateMasterStaff: '/staff/updateMaster',
   getStaffInfo: '/staff/info',
   modifyStaff: '/staff/modify',
-  getStaffSelect: '/staff/getStaffSelect',
+
+  //搜索不带分页
+  getProjectSub: '/project/getproject', //项目
+  getTeacherSublist: '/teacher/getList', //老师
+  getStaffSelect: '/staff/getStaffSelect', //员工
+  getcourseallclass: '/classroom/getcourseallclass', ///班级
+  getRoomSelect: '/Schoolroom/getRoomSelect', //教室
+  getcategorytree: '/courseCategory/getcategorytree', //分类
 }

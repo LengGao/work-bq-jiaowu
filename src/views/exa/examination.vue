@@ -39,8 +39,132 @@
         <div v-if="isTagactive === 2">
           <el-button type="primary" @click="guizeVisible = true">添加报考规则</el-button>
           
+<<<<<<< HEAD
           <el-dialog
           :title="ruleTitle"
+=======
+          <!--添加报考规则弹框--->
+        <el-dialog
+          title="添加报考规则"
+          :visible.sync="guizeVisible"
+          width="50%"
+          style="min-width:1070px"
+        >
+          <el-form
+            label-width="100px"
+            class="demo-ruleForm"
+            :show-message="true"
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+          >
+          <h3>基本信息</h3>
+            <el-row>
+              <el-col :lg="11">
+                <el-form-item label="所属分类" prop="category_name">
+              <el-select v-model="ruleForm.category_name" placeholder="请选择所属分类" style="width:100%">
+                <el-option label="学历教育" value="1"></el-option>
+                <el-option label="职称考证" value="2"></el-option>
+                <el-option label="特种作业" value="3"></el-option>
+              </el-select>
+            </el-form-item>
+              </el-col>
+              <el-col :lg="12">
+                <el-form-item label="规则名称" prop="subject_name">
+                  <el-input
+                    class="input-width"
+                    v-model="ruleForm.subject_name"
+                    placeholder="请选择规则名称"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :lg="11">
+                 <el-form-item label="考试科目" prop="exam_type">
+              <el-select v-model="ruleForm.exam_type" placeholder="请选择考试科目（多选）" style="width:100%">
+                <el-option label="系统集成基础知识" value="1"></el-option>
+                <el-option label="系统集成应用技术" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+              </el-col>
+             <el-col :lg="11">
+                <el-form-item label="报考省市" prop="credit_hour">
+                  <el-cascader
+                    size="large"
+                    :options="options"
+                    v-model="selectedOptions"
+                    @change="handleChange">
+                  </el-cascader>
+                
+                </el-form-item>
+              </el-col>
+            </el-row>
+            
+            <el-row>
+              <el-col :lg="11">
+                <el-form-item label="补考费用" prop="cost">
+                  <el-input
+                    class="input-width"
+                    placeholder="请输入补考费用"
+                    v-model="ruleForm.cost"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :lg="8">
+                <el-form-item label="成绩有效期" prop="marry">
+                  <div style="display:flex;align-items: center;margin-top:8px">
+                  <el-radio-group v-model="ruleForm.period" style="width:250px">
+                    <el-radio :label="2" value="0">永久</el-radio>
+                    <el-radio :label="1">
+                      <span>不超过</span>
+                       <input class="inputach"></input>
+                    <span>年</span>
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :lg="17" >
+                <el-form-item label="考评项目" prop="from_organization_id" v-for="(item,index) in projectData" :key="index">
+                  <el-input
+                    class="input-width"
+                    placeholder="请输入考评项目"
+                    v-model="item.from_organization_id"
+                  ></el-input>
+                     <el-button style="margin-left:10px " @click="deleteOneClass(index)" >删除</el-button>
+                </el-form-item>
+                 
+              </el-col>
+        
+            </el-row>
+
+            <el-row>
+              <el-col>
+                 <el-form-item>
+                <el-button @click="addOneClass" style="border:1px dashed skyblue;color:skyblue;width:460px">+ 添加考勤项目</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <!-- <span>这是一段信息</span> -->
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="curstomerVisible = false">取 消</el-button>
+            <el-button type="primary" @click="preserve('ruleForm')"
+              >保 存</el-button
+            >
+            <el-button type="primary" @click="preserve('ruleForm', 2)"
+              >保存并报名</el-button
+            >
+          </span>
+        </el-dialog>
+          <!-- <el-dialog
+          title="添加报考规则"
+>>>>>>> f4f6ca12d1d236dd9699b225d0270626f486c664
           :visible.sync="guizeVisible"
           width="46%"
           >
@@ -242,7 +366,7 @@
             >
           </span>
 
-        </el-dialog>
+        </el-dialog> -->
         </div>
 
         <div v-if="isTagactive === 1">
@@ -273,7 +397,7 @@
               </el-select>
             </el-form-item>
               </el-col>
-              <el-col :lg="11">
+              <el-col :lg="12">
                 <el-form-item label="科目名称" prop="subject_name">
                   <el-input
                     class="input-width"
@@ -335,7 +459,11 @@
                 </el-form-item>
               </el-col>
               <el-col :lg="8">
+<<<<<<< HEAD
                 <el-form-item label="成绩有效期" prop="marry" >
+=======
+                <el-form-item label="成绩有效期" prop="marry">
+>>>>>>> f4f6ca12d1d236dd9699b225d0270626f486c664
                   <div style="display:flex;align-items: center;margin-top:8px">
                   <el-radio-group v-model="ruleForm.period" style="width:250px">
                     <el-radio :label="2" value="0">永久</el-radio>
@@ -345,7 +473,6 @@
                     <span>年</span>
                       </el-radio>
                   </el-radio-group>
-                   
                     </div>
                 </el-form-item>
               </el-col>
@@ -353,6 +480,7 @@
 
             <el-row>
               <el-col :lg="17" >
+<<<<<<< HEAD
                 <el-form-item label="考评项目" 
                 prop="sub_subject"
                 v-for="(item,index) in data"
@@ -364,15 +492,33 @@
                     v-model="data.sub_subject"
                   ></el-input>
                   <el-button style="margin-left:10px" @click="deleteOneClass(index)">删除</el-button>
+=======
+                <el-form-item label="考评项目" prop="from_organization_id" v-for="(item,index) in projectData" :key="index">
+                  <el-input
+                    class="input-width"
+                    placeholder="请输入考评项目"
+                    v-model="item.from_organization_id"
+                  ></el-input>
+                     <el-button style="margin-left:10px " @click="deleteOneClass(index)" >删除</el-button>
+>>>>>>> f4f6ca12d1d236dd9699b225d0270626f486c664
                 </el-form-item>
+                 
               </el-col>
+<<<<<<< HEAD
             
+=======
+        
+>>>>>>> f4f6ca12d1d236dd9699b225d0270626f486c664
             </el-row>
 
             <el-row>
               <el-col>
                  <el-form-item>
+<<<<<<< HEAD
                 <el-button style="border:1px dashed skyblue;color:skyblue;width:460px" @click="addOneClass">+ 添加考勤项目</el-button>
+=======
+                <el-button @click="addOneClass" style="border:1px dashed #199fff;color:#199fff;width:460px">+ 添加考勤项目</el-button>
+>>>>>>> f4f6ca12d1d236dd9699b225d0270626f486c664
                 </el-form-item>
               </el-col>
             </el-row>
@@ -584,79 +730,15 @@
 </template>
 
 <script>
+import { regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
 
-import { provinceAndCityData } from 'element-china-area-data'
 export default {
     name: 'examination',
 
     data() {
-
     return {
-      searchData: {
-        date: '',
-        keyword: '',
-      },
-      searchOptions: [
-        // {
-        //   key: 'date',
-        //   type: 'datePicker',
-        //   attrs: {
-        //     type: 'daterange',
-        //     'range-separator': '至',
-        //     'start-placeholder': '开始日期',
-        //     'end-placeholder': '结束日期',
-        //     format: 'yyyy-MM-dd',
-        //     'value-format': 'yyyy-MM-dd',
-        //   },
-        // },
-        {
-          key: "course_category_id",
-          type: "cascader",
-          attrs: {
-            placeholder: "所属分类",
-            clearable: true,
-            options: [],
-          },
-        },
-        {
-          key: 'keyword',
-          attrs: {
-            placeholder: '考试科目名称',
-          },
-        },
-      ],
-    
-      value1: [],
-      edus:[
-         {
-          value: '选项1',
-          label: '小学',
-        },
-        {
-          value: '选项2',
-          label: '初中',
-        },
-        {
-          value: '选项3',
-          label: '高中',
-        },
-      ],
-      kmdata: [
-        {
-          value: '选项1',
-          label: '学历教育',
-        },
-        {
-          value: '选项2',
-          label: '职称考证',
-        },
-        {
-          value: '选项3',
-          label: '特种作业',
-        },
-      ],
-      data:[],
-      sub_subject:'',
+       options: regionDataPlus,
+       selectedOptions: [],
       radio: '0',
       radio1: '0',
       radio2: '0',
@@ -668,10 +750,10 @@ export default {
       start_time:'',
       startTime:'',
       classTitle: '新建科目',
-      ruleTitle: '添加报考规则',
+      projectData:[],
       pickerOptions: {
-          shortcuts: [{
-            onClick(picker) {
+      shortcuts: [{
+      onClick(picker) {
               const end = new Date();
               const start = new Date();
               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -695,7 +777,8 @@ export default {
             }
           }]
         },
-        value2: '',
+      value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+      value2: '',
 
       ruleForm: {
           rule_name:'',
@@ -788,6 +871,7 @@ export default {
   },
 
   mounted() {
+<<<<<<< HEAD
     this.$api.ruleList(this, 'schoolData'),  //报考规则列表
     this.$api.subjectList(this, 'subjectData')  //考试科目列表
     // this.$api.updateSubject(this, 'subjectData')
@@ -824,6 +908,30 @@ export default {
       var obj = {}
       this.data.push(obj)
     },
+=======
+    this.$api.ruleList(this, 'schoolData'),
+    this.$api.subjectList(this, 'subjectData')
+    // this.$api.updateSubject(this, 'subjectData')
+
+  },
+    methods: {
+      handleChange (value) {
+        console.log(this.selectedOptions)
+        console.log(value)
+        console.log(CodeToText[value[0]], CodeToText[value[1]], CodeToText[value[2]]);
+      },
+
+      deleteOneClass(index){
+        this.projectData.splice(index,1)
+      },
+    
+      addOneClass() {
+      var obj = {
+      }
+      this.projectData.push(obj)
+    },
+
+>>>>>>> f4f6ca12d1d236dd9699b225d0270626f486c664
       receiveStudent(zx) {
       console.log(zx)
       this.$api.receive(this, zx.intent_id)
@@ -1111,6 +1219,7 @@ export default {
 /deep/.el-form-item__content{
   display: flex;
 }
+<<<<<<< HEAD
 .gztitle{
   border-left:4px solid #199fff;
   padding-left: 8px;
@@ -1130,6 +1239,16 @@ display:flex;align-items: center;margin-top:13px;
   width: 200px;
   margin: 0 auto;
   padding-bottom: 30px;
+=======
+.demo-ruleForm h3{
+  border-left: 4px solid #199fff;
+  font-size: 16px;
+  font-weight: normal;
+  padding-left: 8px;
+  color: #444;
+  margin-bottom: 15px;
+  margin-left: 20px;
+>>>>>>> f4f6ca12d1d236dd9699b225d0270626f486c664
 }
 </style>
 
