@@ -1,5 +1,4 @@
-import { asyncRouterMap, constantRouterMap } from '@/router/index'
-
+import defaultRouter, { asyncRouterMap, indexRoute, resetRouter } from '@/router'
 //判断是否有权限访问该菜单
 function hasPermission(menus, route) {
   if (route.name) {
@@ -63,54 +62,36 @@ function compare(p) {
   }
 }
 
+
 const permission = {
   state: {
-    routers: constantRouterMap,
-    addRouters: [],
+    userRouter: [],
     menus: []
   },
   mutations: {
     SET_MENUS: (state, menus) => {
       state.menus = menus
     },
-    SET_ROUTERS: (state, routers) => {
+    SET_USER_ROUTERS: (state, routers) => {
       console.log(routers)
-      state.addRouters = routers
-      state.routers = constantRouterMap.concat(routers)
+      state.userRouter = routers
     },
   },
   actions: {
     setMenus({ commit }, menus) {
       commit('SET_MENUS', menus)
     },
-    GenerateRoutes({ commit }, data) {
-      console.log(data)
-      return new Promise((resolve) => {
-        const { menus } = data
-
-        const accessedRouters = asyncRouterMap.filter((v) => {
-          if (hasPermission(menus, v)) {
-            if (v.children && v.children.length > 0) {
-              v.children = v.children.filter((child) => {
-                if (hasPermission(menus, child)) {
-                  return child
-                }
-                return false
-              })
-              return v
-            } else {
-              return v
-            }
-          }
-          return false
-        })
-        console.log(accessedRouters)
-        //对菜单进行排序
-        sortRouters(accessedRouters)
-        commit('SET_ROUTERS', accessedRouters)
-        resolve()
-      })
+    addRouter({ commit }, router) {
+      console.log(defaultRouter)
+      defaultRouter.addRoutes(router)
+      commit('SET_USER_ROUTERS', router)
     },
+    resetRouter({ commit }, router) {
+      resetRouter()
+      defaultRouter.addRoutes(router)
+      commit('SET_USER_ROUTERS', router)
+    }
+
   },
 }
 

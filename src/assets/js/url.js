@@ -10,7 +10,8 @@ export default {
   getUserDetail: '/UserArchives/detail',
   modifyUserDetail: '/UserArchives/modify',
   getUserRecord: '/UserArchivesRecord/index',
-  getProinvceList: 'region/elment.json',
+  getProinvceList: '/region/element.json',
+  getfieldinfo: '/Customfield/getfieldinfo',
   //资源配置
   getCategoryList: '/courseCategory/getCategoryList',
   updateCategorySort: '/courseCategory/updateCategorySort',
@@ -158,6 +159,7 @@ export default {
   orderindex: '/order/index',
   //订单详情
   orderdetail: '/order/detail',
+  getOrderDetail: '/order/detail',
   //角色权限
   roleperm: '/role/index',
   //通知公告

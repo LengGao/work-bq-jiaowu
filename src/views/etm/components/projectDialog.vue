@@ -1,10 +1,10 @@
 <template>
   <el-dialog
-    title="选择课程"
-    :visible.sync="dialogVisible"
+    title="选择项目"
+    :visible.sync="openStatus"
+    @close="doClose"
     width="70%"
     append-to-body
-    :before-close="closeCourse"
   >
     <SearchList
       :options="searchOptions"
@@ -16,7 +16,7 @@
         <el-table
           @selection-change="handleSelectionChange"
           ref="multipleTable"
-          :data="listData"
+          :data="listData.data"
           v-loading="listLoading"
           element-loading-text="loading"
           element-loading-spinner="el-icon-loading"
@@ -28,10 +28,10 @@
         >
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
-            label="课程名称"
+            label="项目名称"
             show-overflow-tooltip
             min-width="90"
-            prop="course_name"
+            prop="project_name"
           >
           </el-table-column>
           <el-table-column
@@ -42,11 +42,17 @@
           ></el-table-column>
 
           <el-table-column
-            prop="category_name"
-            label="课程属性"
+            prop="project_price"
+            label="项目价格"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
+          <!-- <el-table-column
+            prop="category_name"
+            label="适用校区"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column> -->
         </el-table>
         <div class="table_bottom" style="display:flex;justify-content:flex-end">
           <page
@@ -65,7 +71,7 @@
         </div>
         <ul>
           <li v-for="(item, index) in choseCourse" :key="item.course_id">
-            <p>{{ item.course_name }}</p>
+            <p>{{ item.project_name }}</p>
             <i class="el-icon-delete" @click="deleteCourse(index)"></i>
           </li>
         </ul>
@@ -74,7 +80,7 @@
     <!-- <span>这是一段信息</span> -->
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="closeCourse">取 消</el-button>
+      <el-button @click="doClose">取 消</el-button>
       <el-button type="primary" @click="handleconfirm">确 定</el-button>
     </span>
   </el-dialog>
@@ -83,8 +89,15 @@
 <script>
 import { getCourseList, getCateList } from '@/api/sou'
 export default {
+  props: {
+    projectVisible: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
+      openStatus: this.projectVisible,
       listData: [],
       listLoading: false,
       dialogVisible: true,
@@ -115,21 +128,23 @@ export default {
       listData: [],
     }
   },
-  props: {
-    // selectData: {
-    //   type: Array,
-    //   default: () => [],
-    // },
+  watch: {
+    projectVisible(val) {
+      this.openStatus = val
+    },
   },
   created() {
     this.getCateList()
-    console.log(this.selectData)
-    this.getCourseList()
+    // console.log(this.selectData)
+    this.$api.getProjectList(this, 'listData')
   },
   methods: {
+    doClose() {
+      this.$emit('projectDialog', false)
+    },
     handleconfirm() {
+      this.doClose()
       this.$emit('courseArr', this.choseCourse)
-      this.closeCourse()
     },
     deleteCourse(index) {
       this.choseCourse.splice(index, 1)
@@ -138,9 +153,9 @@ export default {
       console.log(val)
       this.choseCourse = val
     },
-    closeCourse() {
-      this.$emit('closeCourse')
-    },
+    // closeCourse() {
+    //   this.$emit('closeCourse')
+    // },
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
@@ -163,12 +178,12 @@ export default {
     },
     handlePageChange(val) {
       this.pageNum = val
-      this.getCourseList()
+      this.$api.getProjectList(this, 'schoolData')
     },
     handleSearch(data) {
       this.pageNum = 1
       this.searchData = data
-      this.getCourseList()
+      this.$api.getProjectList(this, 'schoolData')
     },
     async getCourseList() {
       const data = {

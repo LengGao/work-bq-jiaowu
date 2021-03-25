@@ -26,7 +26,7 @@
         style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'left' }"
         @selection-change="handleAllSelect"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
@@ -51,13 +51,6 @@
         <el-table-column
           prop="book_isbn"
           label="教材条码ISBN"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-
-        <el-table-column
-          prop="number"
-          label="库存数量"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>

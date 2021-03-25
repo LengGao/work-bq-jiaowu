@@ -52,18 +52,16 @@
           show-overflow-tooltip
         ></el-table-column>
 
-        <!-- <el-table-column
+        <el-table-column
           prop="icon"
-          label="分类图标"
-          min-width="150"
+          label="菜单图标"
+          min-width="120"
           show-overflow-tooltip
         >
-          <template slot-scope="scope" v-if="scope.row.menu_type == 1">
-            <div style="margin:0 auto;width:50px ;height:50px;">
-              <img :src="scope.row.icon" alt class="school_class_box" />
-            </div>
+          <template slot-scope="{ row }" v-if="row.menu_type == 1">
+            <i :class="['iconfont', row.icon]" style="font-size: 22px"></i>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column
           prop="auth"
           label="接口地址"
@@ -78,7 +76,7 @@
         ></el-table-column>
         <el-table-column
           prop="index_category_name"
-          label="是否显示"
+          label="启用状态"
           min-width="110"
           show-overflow-tooltip
         >
@@ -89,6 +87,22 @@
               :active-value="1"
               :inactive-value="0"
               @change="switchStatus(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="index_category_name"
+          label="是否在菜单显示"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <!-- <el-switch :active-value="1" :inactive-value="0"></el-switch> -->
+            <el-switch
+              :active-value="1"
+              :inactive-value="0"
+              v-model="row.show_at_list"
+              @change="updateShowStatus(row)"
             ></el-switch>
           </template>
         </el-table-column>
@@ -119,7 +133,12 @@
       </div> -->
     </div>
     <!--弹框-->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="576px">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="576px"
+    >
       <el-form label-width="100px">
         <el-form-item label="上级菜单">
           <el-cascader
@@ -141,7 +160,7 @@
             class="input-width"
           ></el-input>
         </el-form-item>
-        <el-form-item label="图标">
+        <el-form-item label="图标" v-if="ruleForm.menu_type == 1">
           <div class="form-select-icon">
             <i
               v-if="ruleForm.icon"
@@ -220,6 +239,8 @@
 </template>
 
 <script>
+import { createMenuData, updateMenuData, updateShowStatus } from "@/api/login";
+import { createUserRouter } from "@/router";
 export default {
   data() {
     return {
@@ -391,9 +412,6 @@ export default {
     },
 
     addFunction() {
-      console.log(this.$router);
-      this.$router.push({ path: "/sou/textbookManage" });
-      return;
       this.$api.getThumbMenuList(this, "ThumbData"); //获取下拉数据
       //添加功能按钮
       this.dialogTitle = "添加功能";
@@ -423,15 +441,56 @@ export default {
 
       this.dialogVisible = true;
     },
-    handleConfirm() {
-      console.log(this.ruleForm.id);
-      if (this.ruleForm.id != "" && this.ruleForm.id != undefined) {
-        this.$api.updateMenuData(this, this.ruleForm);
-      } else {
+    updateRouter() {
+      this.$store.dispatch("GetInfo").then((res) => {
+        // 拉取用户信息,获取权限菜单
+        const { userRouter, menuList } = createUserRouter(res);
+        // 设置路由
+        this.$store.dispatch("resetRouter", userRouter);
+        // 设置菜单数据
+        this.$store.dispatch("setMenus", menuList);
+      });
+    },
+    // 是否中菜单中展示
+    async updateShowStatus({ id, show_at_list }) {
+      const data = {
+        id,
+        show_at_list,
+      };
+      const res = await updateShowStatus(data);
+      if (res.code === 0) {
+        this.$message.success("菜单状态修改成功！");
+        this.$api.getMenuList(this, "schoolData");
+        this.updateRouter();
+      }
+    },
+    async handleConfirm() {
+      console.log(this.parent_id_arr);
+      const api = this.ruleForm.id ? updateMenuData : createMenuData;
+      if (Array.isArray(this.parent_id_arr)) {
         let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
         this.ruleForm.parent_id = end;
-        this.$api.createMenuData(this, this.ruleForm);
       }
+      const data = {
+        ...this.ruleForm,
+      };
+      const res = await api(data);
+      if (res.code === 0) {
+        this.dialogVisible = false;
+        this.$message.success(
+          `菜单${this.ruleForm.id ? "修改" : "新增"}成功！`
+        );
+        this.$api.getMenuList(this, "schoolData");
+        this.updateRouter();
+      }
+
+      // if (this.ruleForm.id != "" && this.ruleForm.id != undefined) {
+      //   this.$api.updateMenuData(this, this.ruleForm);
+      // } else {
+      //   let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
+      //   this.ruleForm.parent_id = end;
+      //   this.$api.createMenuData(this, this.ruleForm);
+      // }
     },
     // clearUrl() {
 

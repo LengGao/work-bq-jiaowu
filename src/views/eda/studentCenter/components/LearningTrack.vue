@@ -23,13 +23,13 @@
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="nickname"
+          prop="create_time"
           label="操作时间"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="category_name"
+          prop="description"
           label="操作详情"
           min-width="100"
           show-overflow-tooltip
@@ -40,9 +40,15 @@
 </template>
 
 <script>
-import { dispenseList } from "@/api/eda";
+import { studentBehaviorRecord } from "@/api/eda";
 export default {
   name: "learningTrack",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
@@ -50,17 +56,19 @@ export default {
     };
   },
   created() {
-    this.dispenseList();
+    this.studentBehaviorRecord();
   },
   methods: {
     linkTo(id) {
       console.log(id);
     },
     //教材发放列表
-    async dispenseList() {
-      this.checkedIds = [];
+    async studentBehaviorRecord() {
+      const data = {
+        uid: this.uid,
+      };
       this.listLoading = true;
-      const res = await dispenseList();
+      const res = await studentBehaviorRecord(data);
       this.listLoading = false;
       this.listData = res.data.list;
     },

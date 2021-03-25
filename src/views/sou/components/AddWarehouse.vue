@@ -2,6 +2,7 @@
   <!--添加仓库弹框-->
   <el-dialog
     :title="title"
+    :close-on-click-modal="false"
     :visible.sync="visible"
     width="500px"
     class="add-warehouse"

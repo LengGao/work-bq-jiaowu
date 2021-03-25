@@ -6,6 +6,12 @@
 <script>
 export default {
   name: "followUpRecord",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {};
   },

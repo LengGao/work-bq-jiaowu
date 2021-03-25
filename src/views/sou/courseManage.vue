@@ -301,7 +301,9 @@ export default {
       this.pageNum = val
       this.getCourseList()
     },
-    handleSearch() {
+    handleSearch(data) {
+      this.pageNum = 1
+      this.searchData = data
       this.getCourseList()
     },
     async getCourseList() {
@@ -309,7 +311,7 @@ export default {
         page: this.pageNum,
 
         ...this.searchData,
-        category_id: this.searchData.category_id.pop(),
+        course_category_id: this.searchData.category_id.pop(),
       }
       this.listLoading = true
       const res = await getCourseList(data)

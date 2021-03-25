@@ -189,16 +189,13 @@ export default {
         book_id: this.id,
       }
       const res = await getBookById(data)
-
       if (res.code === 0) {
         for (const k in this.formData) {
           this.formData[k] = res.data[k]
         }
-        console.log(this.formData)
       }
     },
     async submit() {
-      console.log(this.formData)
       const data = {
         ...this.formData,
         category_id: Array.isArray(this.formData.category_id)
@@ -211,7 +208,6 @@ export default {
       this.addLoading = true
       const api = this.id ? editBook : addBook
       const res = await api(data).catch(() => {
-        console.log(res)
         this.addLoading = false
       })
       this.addLoading = false

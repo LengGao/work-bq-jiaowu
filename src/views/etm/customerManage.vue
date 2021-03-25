@@ -175,205 +175,25 @@
             @pageChange="doPageChange"
           />
         </div>
-        <!--添加客户弹框--->
 
-        <el-dialog
-          title="添加客户"
-          :visible.sync="curstomerVisible"
-          width="70%"
-          style="min-width:1070px"
-        >
-          <el-form
-            label-width="110px"
-            class="demo-ruleForm"
-            :show-message="true"
-            :model="ruleForm"
-            :rules="rules"
-            ref="ruleForm"
-          >
-            <el-row>
-              <el-col :lg="8">
-                <el-form-item label="客户姓名" prop="surname">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.surname"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="手机号码" prop="mobile">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.mobile"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="备用号码" prop="name">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.name"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :lg="8">
-                <el-form-item label="身份证号" prop="id_card_number">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.id_card_number"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="性别" prop="sex">
-                  <el-radio-group v-model="ruleForm.sex">
-                    <el-radio :label="1">男</el-radio>
-                    <el-radio :label="2">女</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="婚姻状况" prop="marry">
-                  <el-radio-group v-model="ruleForm.marry">
-                    <el-radio :label="2">未婚</el-radio>
-                    <el-radio :label="1">已婚</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :lg="8">
-                <el-form-item label="出生日期" prop="birthday">
-                  <el-date-picker
-                    v-model="ruleForm.birthday"
-                    type="date"
-                    format="yyyy-MM-dd "
-                    value-format="yyyy-MM-dd "
-                    class="input-width"
-                    placeholder="选择日期"
-                  >
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="QQ" prop="qq">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.qq"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="邮箱地址" prop="email">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.email"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :lg="8">
-                <el-form-item label="文化程度" prop="culture">
-                  <!-- <el-input
-                   class="input-width"
-                    v-model="ruleForm.culture"
-                  ></el-input> -->
-                  <el-select
-                    v-model="ruleForm.value"
-                    placeholder="请选择文化程度"
-                    class="input-width"
-                  >
-                    <el-option
-                      v-for="item in cultures"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.label"
-                    >
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="籍贯" prop="province">
-                  <el-cascader
-                    v-model="value"
-                    :options="options"
-                    :props="{ expandTrigger: 'hover' }"
-                  ></el-cascader>
-                  <!-- <el-input
-                    class="input-width"
-                    v-model="ruleForm.province"
-                  ></el-input> -->
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="常住地" prop="city">
-                  <el-input
-                    class="input-width"
-                    v-model="ruleForm.city"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :lg="8">
-                <el-form-item label="推荐机构" prop="from_organization_id">
-                  <el-input
-                    class="input-width"
-                    placeholder="请选择推荐机构"
-                    v-model="ruleForm.from_organization_id"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :lg="8">
-                <el-form-item label="渠道来源" prop="sources">
-                  <el-input
-                    class="input-width"
-                    placeholder="请选择渠道来源"
-                    v-model="ruleForm.sources"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <!-- <el-col :lg="8">
-                <el-form-item label="是否跨区报考" prop="name">
-                  <el-input
-                   class="input-width"
-                    v-model="ruleForm.name"
-                  ></el-input>
-                </el-form-item>
-              </el-col> -->
-            </el-row>
-            <el-row>
-              <el-form-item label="备注信息" prop="tips">
-                <el-input v-model="ruleForm.tips" type="textarea"></el-input>
-              </el-form-item>
-            </el-row>
-          </el-form>
-          <!-- <span>这是一段信息</span> -->
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="curstomerVisible = false">取 消</el-button>
-            <el-button type="primary" @click="preserve('ruleForm')"
-              >保 存</el-button
-            >
-            <el-button type="primary" @click="preserve('ruleForm', 2)"
-              >保存并报名</el-button
-            >
-          </span>
-        </el-dialog>
+        <addCustomeDialog
+          :innerVisible="innerVisible"
+          v-on:innerDialog="getInnerStatus($event)"
+        />
       </div>
     </div>
   </section>
 </template>
 
 <script>
-import { getBirth, getSex } from '@/utils/index'
 import { getCateList } from '@/api/sou'
+import { cloneOptions } from '@/utils/index'
+import addCustomeDialog from './components/addCustomeDialog'
 export default {
   name: 'myClients',
-
+  components: {
+    addCustomeDialog,
+  },
   data() {
     let validMail = (rule, value, callback) => {
       if (value == '' || value == undefined) {
@@ -389,6 +209,7 @@ export default {
     }
     return {
       analysis: {},
+      innerVisible: false,
       searchData: {
         category_id: '',
         date: '',
@@ -530,62 +351,9 @@ export default {
           },
         },
       ],
-      cultures: [
-        {
-          value: 1,
-          label: '高中毕业',
-        },
-        {
-          value: 2,
-          label: '大专毕业',
-        },
-        {
-          value: 3,
-          label: '本科毕业',
-        },
-        {
-          value: 4,
-          label: '研究生毕业',
-        },
-      ],
+
       schoolData: [],
-      rules: {
-        surname: [
-          { required: true, message: '请填写学生姓名', trigger: 'blur' },
-        ],
-        // mail: [{ validator: validMail, trigger: 'blur', required: true }],
-        // mobile: [
-        //   { required: true, message: '请输入手机号码', trigger: 'blur' },
-        //   {
-        //     validator: function(rule, value, callback) {
-        //       if (/^1\d\d{9}$/.test(value) == false) {
-        //         callback(new Error('请输入正确的手机号'))
-        //       } else {
-        //         callback()
-        //       }
-        //     },
-        //     trigger: 'blur',
-        //   },
-        // ],
-        id_card_number: [
-          { required: true, message: '请输入身份证ID', trigger: 'blur' },
-          {
-            validator: function(rule, value, callback) {
-              if (
-                /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) == false
-              ) {
-                callback(new Error('你的身份证格式不正确'))
-              } else {
-                callback()
-              }
-            },
-            trigger: 'blur',
-          },
-        ],
-        // sources: [
-        //   { required: true, message: '请填写渠道来源', trigger: 'change' },
-        // ],
-      },
+
       ruleForm: {
         surname: '',
         mobile: '',
@@ -621,10 +389,10 @@ export default {
     }
   },
   created() {
-    // this.getCateList()
-    this.$api.getCustomerList(this, 'schoolData')
-    this.$api.getcategorytree(this, 1) //分类下拉列表
-    this.$api.getProinvceList(this, 1) //获取省市区
+    this.getCateList()
+    // this.$api.getCustomerList(this, 'schoolData')
+    // this.$api.getcategorytree(this, 1) //分类下拉列表
+    // this.$api.getProinvceList(this, 1) //获取省市区
   },
   mounted() {
     this.status = 1
@@ -655,16 +423,22 @@ export default {
       const data = { list: true }
       const res = await getCateList(data)
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        this.$set(this.searchOptions[1].attrs, 'options', this.selectData)
+        // this.cloneData(res.data, this.selectData)
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          'category_name',
+          'category_id',
+          'son'
+        )
+        // this.$set(this.searchOptions[1].attrs, 'options', this.selectData)
+        // // console.log(this.searchOptions[1])
+        // // this.searchOptions[1].attrs.options = this.selectData
         // console.log(this.searchOptions[1])
-        // this.searchOptions[1].attrs.options = this.selectData
-        console.log(this.searchOptions[1])
       }
     },
     cloneData(data, newData, val, lab) {
       data.forEach((item, index) => {
-        console.log(item)
+        // console.log(item)
         newData[index] = {}
         newData[index].value = item[val]
         newData[index].label = item[lab]
@@ -677,11 +451,13 @@ export default {
     handleSearch(data) {
       console.log(data)
       if (data.date && data.date.length) {
-        data.date = data.date[0] + '-' + data.date[1]
+        data.date = data.date[0] + ' - ' + data.date[1]
       }
-
       this.pageNum = 1
-      this.searchData = data
+      this.searchData = {
+        ...data,
+        category_id: data.category_id.pop(),
+      }
       this.$api.getCustomerList(this, 'schoolData')
     },
     toOnlineStudents() {
@@ -700,16 +476,16 @@ export default {
       if (this.ruleForm.sex == '') {
         this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
       }
-      console.log(this.ruleForm)
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.$api.addCustomers(this, this.ruleForm, num)
-          // alert('submit!');
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      // console.log(this.ruleForm)
+      // this.$refs[formName].validate((valid) => {
+      //   if (valid) {
+      //     this.$api.addCustomers(this, this.ruleForm, num)
+      //     // alert('submit!');
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
     },
 
     toCustomeRegist() {
@@ -717,15 +493,18 @@ export default {
         path: '/etm/customeRegist',
       })
     },
-
+    getInnerStatus(status) {
+      this.innerVisible = status
+    },
     addCustomer() {
-      console.log(this.ruleForm)
-      for (var i in this.ruleForm) {
-        console.log(i)
-        this.ruleForm[i] = ''
-      }
-      //添加用户弹框打开
-      this.curstomerVisible = true
+      this.innerVisible = true
+      // console.log(this.ruleForm)
+      // for (var i in this.ruleForm) {
+      //   console.log(i)
+      //   this.ruleForm[i] = ''
+      // }
+      // //添加用户弹框打开
+      // this.curstomerVisible = true
     },
     doPageChange(page) {
       this.page = page

@@ -108,22 +108,22 @@ export function editCourse(data) {
  * @param {*} data
  */
 export function getCoursesDetail(params) {
-  return request({
-    url: '/course/info',
-    method: 'get',
-    params,
-  })
+    return request({
+        url: '/course/info',
+        method: 'get',
+        params,
+    })
 }
 /**
  *是否上架
  * @param {*} data
  */
 export function bashPublish(data) {
-  return request({
-    url: '/course/bashPublish',
-    method: 'post',
-    data,
-  })
+    return request({
+        url: '/course/bashPublish',
+        method: 'post',
+        data,
+    })
 }
 
 /**
@@ -158,6 +158,16 @@ export function editstorage(data) {
         url: '/storage/editstorage',
         method: 'post',
         data,
+    })
+}
+/**
+ * 仓库日志
+ */
+export function getstoragelog(params) {
+    return request({
+        url: '/storage/getstoragelog',
+        method: 'get',
+        params
     })
 }
 /**

@@ -1,6 +1,73 @@
 <template>
   <div class="class">
-    <!--报读班级-->
+    <!--项目班级-->
+    <h4 class="table-title">报读项目</h4>
+    <div class="userTable">
+      <el-table
+        ref="multipleTable"
+        :data="listData"
+        tooltip-effect="light"
+        v-loading="listLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
+        stripe
+        style="width: 100%"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column
+          prop="id"
+          label="编号"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="nickname"
+          label="项目名称"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="category_name"
+          label="所属分类"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="项目价格"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="project_name"
+          label="课程"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="classroom_id"
+          label="题库"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="total_books"
+          label="教材"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="total_books"
+          label="报名时间"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+      </el-table>
+    </div>
+    <h4 class="table-title">归属班级</h4>
     <div class="userTable">
       <el-table
         ref="multipleTable"
@@ -36,7 +103,7 @@
         ></el-table-column>
         <el-table-column
           prop="mobile"
-          label="课程名称"
+          label="项目名称"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
@@ -106,5 +173,21 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.class {
+  .table-title {
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    color: #606266;
+    &::before {
+      display: block;
+      content: "";
+      width: 4px;
+      height: 16px;
+      background-color: #199fff;
+      margin-right: 10px;
+    }
+  }
+}
 </style>

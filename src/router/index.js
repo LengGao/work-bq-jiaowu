@@ -6,7 +6,7 @@ import Layout from '../views/layout/Layout'
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
+  return originalPush.call(this, location).catch((err) => err)
 }
 
 export const constantRouterMap = [
@@ -44,17 +44,7 @@ export const constantRouterMap = [
   //   ],
   // },
 ]
-// visualization 默认路由
-export const indexRoute = (route) => {
-  return {
-    path: '',
-    component: Layout,
-    redirect: '/visualization',
-    children: [
-      route
-    ],
-  }
-}
+
 export const asyncRouter = [
   {
     path: 'visualization',
@@ -343,7 +333,7 @@ export const asyncRouter = [
         name: 'materialJournal',
         component: () =>
           import('@/views/eda/teachMaterial/materialJournal.vue'),
-        meta: { title: '日志', icon: 'product-cate' },
+        meta: { title: '教材发放日志', icon: 'product-cate' },
         hidden: true,
       },
       //教材发放组件结束
@@ -419,7 +409,7 @@ export const asyncRouter = [
         name: 'certificatesLog',
         component: () =>
           import('@/views/eda/certificates/certificatesLog/index.vue'),
-        meta: { title: '日志', icon: 'product-cate' },
+        meta: { title: '证件资料日志', icon: 'product-cate' },
         hidden: true,
       },
     ],
@@ -471,6 +461,15 @@ export const asyncRouter = [
         component: () => import('@/views/exa/achievement.vue'),
         meta: { title: '成绩管理', icon: 'product-add' },
       },
+      //成绩管理组件开始
+      {
+        path: 'achieveDetail',
+        name: 'achieveDetail',
+        component: () => import('@/views/exa/achievement/achieveDetail.vue'),
+        meta: { title: '成绩管理', icon: 'product-add' },
+        hidden: true,
+      },
+      //成绩管理组件开始
       {
         path: 'graduation',
         name: 'graduation',
@@ -606,22 +605,80 @@ export const asyncRouter = [
 const routeToMap = (routers) => {
   const routerMap = {}
   const deep = (routers, routesMap) => {
-    routers.forEach(route => {
+    routers.forEach((route) => {
       const { children, ...reset } = route
       routesMap[route.name] = reset
       if (route.children && route.children.length) {
         deep(route.children, routesMap)
       }
-    });
-
+    })
   }
   deep(routers, routerMap)
   return routerMap
 }
-export const asyncRouterMap = routeToMap(asyncRouter)
+const asyncRouterMap = routeToMap(asyncRouter)
+// visualization 默认路由
+const indexRoute = (route) => {
+  return {
+    path: '',
+    component: Layout,
+    redirect: '/visualization',
+    children: [route],
+  }
+}
+// 根据接口返回的数据创建路由
+export const createUserRouter = (data) => {
+  const userRouter = []
+  const menuList = []
+  const deepCreate = (data, userRouter, menuList) => {
+    data.forEach((item) => {
+      // 获取asyncRouterMap里对应点路由
+      const route = asyncRouterMap[item.node]
+      if (route) {
+        // 如果接口有返回icon,menu_name 就重写
+        item.icon && (route.meta.icon = item.icon)
+        item.menu_name && (route.meta.title = item.menu_name)
+        // 设置菜单要用的数据
+        const menu = {
+          name: item.menu_name,
+          path: route.path,
+          icon: item.icon,
+        }
+        // 对 visualization 特殊处理
+        if (item.node === 'visualization') {
+          userRouter.push(indexRoute(route))
+        } else {
+          userRouter.push(route)
+        }
+        // 添加到菜单
+        item.show_at_list === 1 && menuList.push(menu)
+        // 递归子节点
+        if (item.children && item.children.length) {
+          route.children = []
+          menu.children = []
+          deepCreate(item.children, route.children, menu.children)
+        }
+      }
+    })
+  }
+  deepCreate(data, userRouter, menuList)
+  // 添加 重定向 404
+  userRouter.push({ path: '*', redirect: '/404' })
+  return { userRouter, menuList }
+}
 
-export default new VueRouter({
-  // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap,
-})
+const createRouter = () => {
+  return new VueRouter({
+    // mode: 'history', //后端支持可开
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRouterMap,
+  })
+}
+const router = createRouter()
+
+export const resetRouter = () => {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher
+}
+
+export default router

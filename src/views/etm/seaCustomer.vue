@@ -1,15 +1,10 @@
 <template>
   <section class="mainwrap">
-    <search
-      :organHide="false"
-      :schoolHide="false"
-      :classNameHide="false"
-      :dealStatusHide="false"
-      :teacherHide="false"
-      @getTable="getTableList"
-      api="getMyclient"
-      :statusNum="3"
-    ></search>
+    <SearchList
+      :options="searchOptions"
+      :data="searchData"
+      @on-search="handleSearch"
+    />
     <!--表格-->
     <div class="userTable">
       <el-table
@@ -77,13 +72,19 @@
             <div style="display:flex;justify-content:center">
               <el-button
                 type="text"
+                @click="enroll(scope.row)"
+                style="padding-right:20px"
+                >报名</el-button
+              >
+              <!-- <el-button
+                type="text"
                 @click="toStudentDetail(scope.row)"
                 style="padding-right:20px"
                 >详情</el-button
               >
               <el-button type="text" @click="receiveStudent(scope.row)"
                 >领取</el-button
-              >
+              > -->
             </div>
           </template>
         </el-table-column>
@@ -98,28 +99,116 @@
         </div>
       </div>
     </div>
+    <addCustomeDialog
+      :innerVisible="innerVisible"
+      :seaUserInfo="seaUserInfo"
+      v-on:innerDialog="getInnerStatus($event)"
+    />
   </section>
 </template>
 
 <script>
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
-
+import addCustomeDialog from './components/addCustomeDialog'
+import { getCateList } from '@/api/sou'
 export default {
   name: 'seaStudent',
+  components: {
+    addCustomeDialog,
+  },
   data() {
     return {
       schoolData: [],
+      seaUserInfo: {},
+      selectData: [],
+      innerVisible: false,
       page: 1,
       status: 3,
       datas: {},
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        category_id: '',
+        date: '',
+      },
+      searchOptions: [
+        {
+          key: 'date',
+          type: 'datePicker',
+          attrs: {
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            format: 'yyyy-MM-dd',
+            'value-format': 'yyyy-MM-dd',
+          },
+        },
+        {
+          key: 'category_id',
+          type: 'cascader',
+          width: 120,
+          attrs: {
+            placeholder: '所属分类',
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: 'keyword',
+          attrs: {
+            placeholder: '客户姓名/手机号码',
+          },
+        },
+      ],
     }
+  },
+  created() {
+    this.getCateList()
   },
   mounted() {
     // let status = 3
     this.$api.getCommonUserList(this, 'schoolData')
   },
   methods: {
+    handleSearch(data) {
+      console.log(data)
+      if (data.date && data.date.length) {
+        data.date = data.date[0] + ' - ' + data.date[1]
+      }
+
+      this.pageNum = 1
+      this.searchData = data
+      this.$api.getCommonUserList(this, 'schoolData')
+    },
+    async getCateList() {
+      const data = { list: true }
+      const res = await getCateList(data)
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData)
+        console.log(this.selectData)
+        this.searchOptions[0].attrs.options = this.selectData
+      }
+    },
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {}
+        newData[index].value = item.category_id
+        newData[index].label = item.category_name
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
+      })
+    },
+    enroll(ab) {
+      this.seaUserInfo = ab
+      this.innerVisible = true
+    },
+    getInnerStatus(status) {
+      this.innerVisible = status
+    },
     getTableList(state, val, datas) {
       console.log(state, val)
       if (state == 'page') {
@@ -130,14 +219,6 @@ export default {
       }
     },
 
-    toStudentDetail(zx) {
-      console.log(zx)
-      let intent_id = zx.intent_id
-      this.$router.push({
-        path: '/etm/studentDetail',
-        query: { intent_id: intent_id, uid: zx.uid },
-      })
-    },
     receiveStudent(zx) {
       console.log(zx)
       this.$api.receive(this, zx.intent_id)

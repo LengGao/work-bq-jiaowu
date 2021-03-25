@@ -230,8 +230,13 @@
           <li>
             课程
           </li>
-          <li style="width:100%;list-style:none;padding-left:20px">
-            <el-tag>家</el-tag>
+          <li class="project-tag">
+            <el-tag
+              v-for="item in courseTag"
+              :key="item.course_id"
+              style="margin:0 5px 5px 0"
+              >{{ item.course_name }}</el-tag
+            >
           </li>
           <li @click="courseDialogShow" style="cursor:pointer">
             选择
@@ -241,10 +246,10 @@
           <li>
             题库
           </li>
-          <li style="width:100%;list-style:none;padding-left:20px">
+          <li class="project-tag">
             <el-tag>家</el-tag>
           </li>
-          <li>
+          <li style="cursor:pointer">
             选择
           </li>
         </ul>
@@ -252,10 +257,15 @@
           <li>
             教材
           </li>
-          <li style="width:100%;list-style:none;padding-left:20px">
-            <el-tag>家</el-tag>
+          <li class="project-tag">
+            <el-tag
+              v-for="item in materialTag"
+              :key="item.book_id"
+              style="margin:0 5px 5px 0"
+              >{{ item.book_name }}</el-tag
+            >
           </li>
-          <li>
+          <li @click="materialDialogShow" style="cursor:pointer">
             选择
           </li>
         </ul>
@@ -266,7 +276,16 @@
           >
         </span>
       </el-dialog>
-      <courseDialog v-if="showCourse" />
+      <courseDialog
+        v-if="showCourse"
+        @closeCourse="closeCourse"
+        @courseArr="courseArr"
+      />
+      <materialDialog
+        v-if="showMaterial"
+        @closeMaterial="closeMaterial"
+        @materialArr="materialArr"
+      />
     </section>
   </div>
 </template>
@@ -274,10 +293,12 @@
 <script>
 import { getCateList } from '@/api/sou'
 import courseDialog from './components/courseDialog'
+import materialDialog from './components/materialDialog'
 export default {
   name: 'projectManage',
   components: {
     courseDialog,
+    materialDialog,
   },
   data() {
     return {
@@ -354,6 +375,9 @@ export default {
       schoolData: [],
       dialogVisible: false,
       showCourse: false,
+      courseTag: [],
+      materialTag: [],
+      showMaterial: false,
     }
   },
   created() {
@@ -361,6 +385,22 @@ export default {
     this.$api.getProjectList(this, 'schoolData')
   },
   methods: {
+    materialDialogShow() {
+      this.showMaterial = true
+    },
+    courseArr(arr) {
+      console.log(arr)
+      this.courseTag = arr
+    },
+    materialArr(arr) {
+      this.materialTag = arr
+    },
+    closeCourse() {
+      this.showCourse = false
+    },
+    closeMaterial() {
+      this.showMaterial = false
+    },
     courseDialogShow() {
       this.showCourse = true
     },
@@ -393,6 +433,7 @@ export default {
       const res = await getCateList(data)
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData)
+        console.log(this.selectData)
         this.searchOptions[0].attrs.options = this.selectData
       }
     },
@@ -461,7 +502,16 @@ export default {
       }
     },
     handleConfirm(formName) {
+      //所选课程
+      this.ruleForm.course = this.courseTag.map((i) => {
+        return i.course_id
+      })
+      //所选教材
+      this.ruleForm.textbooks = this.materialTag.map((i) => {
+        return i.book_id
+      })
       console.log(this.ruleForm)
+      console.log(this.ruleForm.course_id)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.id) {
@@ -519,7 +569,7 @@ export default {
   border-right: 1px solid rgba(235, 238, 245, 1);
   display: flex;
   align-items: center;
-  height: 45px;
+  min-height: 45px;
 
   li:first-child {
     list-style: none;
@@ -531,7 +581,7 @@ export default {
 
   li:last-child {
     list-style: none;
-    height: 45px;
+
     width: 100px;
     display: flex;
     align-items: center;
@@ -542,5 +592,12 @@ export default {
 }
 .project-ul:last-child {
   border-bottom: 1px solid rgba(235, 238, 245, 1);
+}
+.project-tag {
+  min-width: 45px;
+  width: 100%;
+  list-style: none;
+  padding-left: 20px;
+  overflow: hidden;
 }
 </style>
