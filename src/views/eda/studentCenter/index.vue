@@ -1,7 +1,6 @@
 <template>
   <div class="student-detail">
-    <div class="head_remind"></div>
-    <section class="mainwrap">
+    <section class="mainwrap" v-loading="detailLoading">
       <div class="detail-header">
         <div class="header-item header-user">
           <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
@@ -48,6 +47,7 @@ export default {
     return {
       activeName: "BasicInfo",
       detailData: {},
+      detailLoading: false,
     };
   },
   computed: {
@@ -66,7 +66,9 @@ export default {
       const data = {
         uid: this.$route.query?.id || "",
       };
+      this.detailLoading = true;
       const res = await getStudentBasicDetail(data);
+      this.detailLoading = false;
       if (res.code === 0) {
         this.detailData = res.data;
       }
