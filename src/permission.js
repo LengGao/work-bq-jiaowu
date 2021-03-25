@@ -52,9 +52,9 @@ router.beforeEach((to, from, next) => {
 
               { name: 'exa' }, //考务管理
               { name: 'teachingManage' }, //考务管理>授课老师
-              { name: 'examination' },
-              { name: 'apply' },
-              { name: 'achievement' },
+              { name: 'examination' },   //考务管理 
+              { name: 'apply' }, 
+              { name: 'achievement' },  
               { name: 'graduation' },
               { name: 'createplan' },
               { name: 'fina' }, //财务管理

@@ -134,6 +134,8 @@ export default {
   subjectList: '/Examination/subjectList',
   //报考规则
   ruleList: '/Examination/ruleList',
+  //添加报考规则
+  createRule: '/Examination/createRule',
   //添加科目
   createSubject: '/Examination/createSubject',
   //编辑科目

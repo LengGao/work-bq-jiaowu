@@ -43,6 +43,45 @@ let Examination = {
       },
     })
   },
+    //添加报考规则
+    createRule(self, ruleForm) {
+      let config = {
+        cate_id: ruleForm.cate_id,
+        rule_name: ruleForm.rule_name,
+        subject_name: ruleForm.subject_name,
+        exam_type: ruleForm.exam_type,
+        credit_hour: ruleForm.credit_hour,
+        exam_type: ruleForm.exam_type,
+        credit_hour: ruleForm.credit_hour,
+        comment: ruleForm.comment,
+        phone: ruleForm.phone,
+        id_card_limit: ruleForm.id_card_limit,
+        place_limit: ruleForm.place_limit,
+        age_limit: ruleForm.age_limit,
+        edu_limit: ruleForm.edu_limit,
+        work_limit: ruleForm.work_limit,
+        health_limit: ruleForm.health_limit,
+
+        // search_box: ruleForm.search_box,
+  
+        page: self.page,
+      }
+      console.log(config)
+      axiosHttp({
+        url: url.createRule,
+        data: config,
+        method: 'POST',
+        then(res) {
+          console.log(res.data.data)
+          let data = res.data.data
+          if (res.data.code == 0) {
+            self[name] = data
+            self.dialogVisible=false
+            self.$api.createRule(self, 'schoolData')
+          }
+        },
+      })
+    },
   //添加科目
   createSubject(self, ruleForm) {
     let config = {

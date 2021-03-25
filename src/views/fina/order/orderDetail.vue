@@ -627,7 +627,7 @@ export default {
   padding:30px;
 }
 .mainwrap{
-  width: 80%;
+  width: 98%;
 } 
 .orderDetail_bottm {
   margin-top: 10px;

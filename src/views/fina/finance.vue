@@ -783,7 +783,7 @@ export default {
     handleSearch(data) {
       console.log(data)
       if (data.date && data.date.length) {
-        data.date = data.date[0] + '-' + data.date[1]
+        data.date = data.date[0] + ' - ' + data.date[1]
       }
       this.pageNum = 1
       this.searchData = data

@@ -16,16 +16,13 @@
       </ul>
 
        <div class="client_head">
-        <search2
-          :courseTypeShow="true"
-          :contentShow="true"
-          typeTx="punch"
-          inputText="考试科目名称"
-          api="getCourseManage"
-          @getTable="getTableList"
-          :selectList="selectData.list"
+
+         <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
           v-if="isTagactive === 1"
-        ></search2>
+        />
 
         <search2
           :courseTypeShow="true"
@@ -43,90 +40,207 @@
           <el-button type="primary" @click="guizeVisible = true">添加报考规则</el-button>
           
           <el-dialog
-          title="添加报考规则"
+          :title="ruleTitle"
           :visible.sync="guizeVisible"
-          width="30%"
+          width="46%"
           >
-          <div>
-           <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm">
-            <el-form-item label="所属分类" prop="cate_id">
-              <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类">
+
+          <el-form
+            label-width="100px"
+            class="demo-ruleForm"
+            :show-message="true"
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+           
+          >
+          <div class="gztitle">
+            基本信息
+          </div>
+            <el-row>
+              <el-col :lg="11">
+                <el-form-item label="所属分类" prop="category_name">
+              <el-select v-model="ruleForm.category_name" placeholder="请选择所属分类" style="width:100%">
                 <el-option label="学历教育" value="1"></el-option>
                 <el-option label="职称考证" value="2"></el-option>
                 <el-option label="特种作业" value="3"></el-option>
               </el-select>
             </el-form-item>
-
-             <el-form-item label="规则名称" prop="name">
-              <el-input v-model="ruleForm.name" style="width:220px"></el-input>
+              </el-col>
+              <el-col :lg="11">
+                <el-form-item label="规则名称" prop="rule_name">
+                  <el-input
+                    class="input-width"
+                    v-model="ruleForm.rule_name"
+                    placeholder="请选择报考规则名称"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+           
+            <el-row>
+              <el-col :lg="11">
+                 <el-form-item label="考试科目" prop="exam_type">
+                   <el-select
+                  v-model="value1"
+                  multiple
+                  placeholder="请选择考试科目（多选）"
+                  style="width:300px"
+                >
+                  <el-option
+                    v-for="item in kmdata"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+         
             </el-form-item>
+              </el-col>
+             <el-col :lg="11">
+                <el-form-item label="报考省市" prop="credit_hour">
+                  <el-cascader
+                  size="large"
+                  :options="options"
+                  v-model="selectedOptions"
+                  @change="handleChange"
+                  style="width:300px">
+                </el-cascader>
+                  <!-- <el-input
+                    class="input-width"
+                    v-model="ruleForm.credit_hour"
+                    placeholder="请选择科目学分"
+                  ></el-input> -->
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-             <el-form-item label="报考省市" prop="max_num">
-              省  市
-            </el-form-item>
+            <el-row>
+              <el-form-item label="备注信息">
+                <el-input type="textarea" v-model="ruleForm.comment" style="width:91%" placeholder="请输入备注信息"></el-input>
+              </el-form-item>
+            </el-row>
 
-            <el-form-item label="个人照片" prop="photo">
-               <el-radio v-model="radio" label="1">白底一寸照</el-radio>
-               <el-radio v-model="radio" label="2">蓝底一寸照</el-radio>
-            </el-form-item>
-
-            <el-form-item label="身份证件" prop="ID">
-               <el-radio v-model="radio1" label="1">无限制</el-radio>
-               <el-radio v-model="radio1" label="2">中国公民</el-radio>
-            </el-form-item>
-
-            <el-form-item label="年龄要求" prop="age">
-               <el-radio v-model="radio2" label="1">无限制</el-radio>
-               <el-radio v-model="radio2" label="2" class="agecon">年满
-                 <el-input v-model="ruleForm.age" class="inputage"></el-input>周岁
-               不超过
-                 <el-input v-model="ruleForm.age" class="inputage"></el-input>周岁
-               </el-radio>
-            </el-form-item>
-
-            <el-form-item label="籍贯生源" prop="place">
-               <el-radio v-model="radio3" label="1">无限制</el-radio>
-               <el-radio v-model="radio3" label="2">本地生源</el-radio>
-            </el-form-item>
-
-             <el-form-item label="学历要求" prop="edu">
-               <el-radio v-model="radio4" label="1">无限制</el-radio>
-               <el-radio v-model="radio4" label="2">
-
-                 <el-select v-model="ruleForm.edu" placeholder="文化程度" style="width:140px">
-                <el-option label="小学" value="primary"></el-option>
-                <el-option label="初中" value="junior"></el-option>
-                <el-option label="高中" value="high"></el-option>
-                <el-option label="专科" value="specialty"></el-option>
-                <el-option label="本科" value="undergraduate"></el-option>
-              </el-select>
-
-               </el-radio>
-            </el-form-item>
-
-             <el-form-item label="工作年限" prop="years">
-               <el-radio v-model="radio5" label="1">无限制</el-radio>
-               <el-radio v-model="radio5" label="2" class="agecon">从事相关工作满
-                 <el-input v-model="ruleForm.age" class="inputage"></el-input>年
-               </el-radio>
-            </el-form-item>
-
-            <el-form-item label="个人健康" prop="healthy">
-               <el-radio v-model="radio6" label="1">无限制</el-radio>
-               <el-radio v-model="radio6" label="2">身体状况良好</el-radio>
-            </el-form-item>
-
-             <el-form-item label="备注信息" prop="remarks">
-                 <el-input v-model="ruleForm.remarks" style="width:80%"></el-input>
-            </el-form-item>
-
-            <el-form-item>
-               <el-button @click="guizeVisible = false">取 消</el-button>
-              <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-            </el-form-item>
-          </el-form>
-
+           <div class="gztitle">
+            资料审核
           </div>
+
+          <el-row>
+            <el-col :lg="11">
+                <el-form-item label="个人照片" prop="phone" class="radiomargin">
+                  <div class="radiocss">
+                  <el-radio-group v-model="ruleForm.phone" style="width:250px">
+                    <el-radio :label="2" value="0">白底一寸照</el-radio>
+                    <el-radio :label="1">蓝底一寸照
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+                </el-col>
+
+                <el-col :lg="11">
+                <el-form-item label="身份证件" prop="id_card_limit" class="radiomargin" >
+                  <div class="radiocss">
+                  <el-radio-group v-model="ruleForm.id_card_limit	" style="width:250px">
+                    <el-radio :label="2" value="0">无限制</el-radio>
+                    <el-radio :label="1">中国公民
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+                </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :lg="11">
+                <el-form-item label="籍贯生源" prop="place_limit" class="radiomargin" >
+                  <div class="radiocss">
+                  <el-radio-group v-model="ruleForm.place_limit" style="width:250px">
+                    <el-radio :label="2" value="0">无限制</el-radio>
+                    <el-radio :label="1">本地生源
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+                </el-col>
+
+                <el-col :lg="11">
+                <el-form-item label="年龄要求" prop="age_limit" class="radiomargin" >
+                  <div style="display:flex;align-items: center;margin-top:8px">
+                  <el-radio-group v-model="ruleForm.age_limit" style="width:250px">
+                    <el-radio :label="2" value="0">无限制</el-radio>
+                    <el-radio :label="1">
+                      <span>年满</span>
+                       <input class="inputach"></input>
+                       <span>周岁 </span>
+                      <span> 不超过</span>
+                       <input class="inputach"></input>
+                    <span>周岁</span>
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+                </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :lg="11">
+               <el-form-item label="学历要求" prop="edu_limit" class="radiomargin">
+                  <div>
+                  <el-radio-group v-model="ruleForm.edu_limit" style="width:220px">
+                    <el-radio :label="2" value="0">无限制</el-radio>
+                    <el-radio :label="1">
+                       <el-select v-model="ruleForm.region" placeholder="请选择">
+                        <el-option label="小学" value="xx"></el-option>
+                        <el-option label="初中" value="cz"></el-option>
+                        <el-option label="高中" value="gz"></el-option>
+                        <el-option label="专科" value="zk"></el-option>
+                        <el-option label="本科" value="bk"></el-option>
+                      </el-select>
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+
+                </el-form-item>
+            </el-col>
+
+            <el-col :lg="11">
+                <el-form-item label="工作年限" prop="work_limit" class="radiomargin" >
+                  <div style="display:flex;align-items: center;margin-top:8px">
+                  <el-radio-group v-model="ruleForm.work_limit" style="width:250px">
+                    <el-radio :label="2" value="0">无限制</el-radio>
+                    <el-radio :label="1">
+                      <span>年满</span>
+                       <input class="inputach"></input>
+                       <span>周岁 </span>
+                      </el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+                </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :lg="11">
+                <el-form-item label="个人健康" prop="health_limit" class="radiomargin" >
+                  <div class="radiocss">
+                  <el-radio-group v-model="ruleForm.health_limit" style="width:250px">
+                    <el-radio :label="2" value="0">无限制</el-radio>
+                    <el-radio :label="1">身体状况良好</el-radio>
+                  </el-radio-group>
+                    </div>
+                </el-form-item>
+                </el-col>
+          </el-row>
+
+          </el-form>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="guizeVisible = false">取 消</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')"
+              >保 存</el-button
+            >
+          </span>
 
         </el-dialog>
         </div>
@@ -222,7 +336,7 @@
               </el-col>
               <el-col :lg="8">
                 <el-form-item label="成绩有效期" prop="marry" >
-                  <div style="display:flex;align-items: center;">
+                  <div style="display:flex;align-items: center;margin-top:8px">
                   <el-radio-group v-model="ruleForm.period" style="width:250px">
                     <el-radio :label="2" value="0">永久</el-radio>
                     <el-radio :label="1">
@@ -238,22 +352,27 @@
             </el-row>
 
             <el-row>
-              <el-col :lg="15" >
-                <el-form-item label="考评项目1" prop="from_organization_id">
+              <el-col :lg="17" >
+                <el-form-item label="考评项目" 
+                prop="sub_subject"
+                v-for="(item,index) in data"
+                :key="index"
+                >
                   <el-input
                     class="input-width"
                     placeholder="请输入考评项目"
-                    v-model="ruleForm.from_organization_id"
+                    v-model="data.sub_subject"
                   ></el-input>
+                  <el-button style="margin-left:10px" @click="deleteOneClass(index)">删除</el-button>
                 </el-form-item>
               </el-col>
-            <el-button style="margin-left:10px">删除</el-button>
+            
             </el-row>
 
             <el-row>
               <el-col>
                  <el-form-item>
-                <el-button style="border:1px dashed skyblue;color:skyblue;width:470px">+ 添加考勤项目</el-button>
+                <el-button style="border:1px dashed skyblue;color:skyblue;width:460px" @click="addOneClass">+ 添加考勤项目</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -271,7 +390,7 @@
       </div>
    
       <!--表格-->
-      <div class="userTable" v-if="isTagactive === 1">
+      <div class="userTable" v-show="isTagactive === 1">
         <el-table
           ref="multipleTable"
           :data="subjectData.list"
@@ -358,7 +477,6 @@
                 <el-button type="text" @click="editNotice(scope.row)"
                   >编辑</el-button
                 >
-                
                 <el-button type="text" @click="handleDelete(scope.row)"
                   >删除</el-button
                 >
@@ -377,7 +495,7 @@
       </div>
 
        <!--表格-->
-      <div class="userTable" v-if="isTagactive === 2">
+      <div class="userTable" v-show="isTagactive === 2">
         <el-table
           ref="multipleTable"
           :data="schoolData.list"
@@ -440,10 +558,10 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="editNotice(scope.row)"
+                <el-button type="text" @click="editrule(scope.row)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="handleDelete(scope.row)"
+                <el-button type="text" @click="deleterule(scope.row)"
                   >删除</el-button
                 >
               </div>
@@ -466,12 +584,79 @@
 </template>
 
 <script>
+
+import { provinceAndCityData } from 'element-china-area-data'
 export default {
     name: 'examination',
 
     data() {
-      
+
     return {
+      searchData: {
+        date: '',
+        keyword: '',
+      },
+      searchOptions: [
+        // {
+        //   key: 'date',
+        //   type: 'datePicker',
+        //   attrs: {
+        //     type: 'daterange',
+        //     'range-separator': '至',
+        //     'start-placeholder': '开始日期',
+        //     'end-placeholder': '结束日期',
+        //     format: 'yyyy-MM-dd',
+        //     'value-format': 'yyyy-MM-dd',
+        //   },
+        // },
+        {
+          key: "course_category_id",
+          type: "cascader",
+          attrs: {
+            placeholder: "所属分类",
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: 'keyword',
+          attrs: {
+            placeholder: '考试科目名称',
+          },
+        },
+      ],
+    
+      value1: [],
+      edus:[
+         {
+          value: '选项1',
+          label: '小学',
+        },
+        {
+          value: '选项2',
+          label: '初中',
+        },
+        {
+          value: '选项3',
+          label: '高中',
+        },
+      ],
+      kmdata: [
+        {
+          value: '选项1',
+          label: '学历教育',
+        },
+        {
+          value: '选项2',
+          label: '职称考证',
+        },
+        {
+          value: '选项3',
+          label: '特种作业',
+        },
+      ],
+      data:[],
+      sub_subject:'',
       radio: '0',
       radio1: '0',
       radio2: '0',
@@ -483,6 +668,7 @@ export default {
       start_time:'',
       startTime:'',
       classTitle: '新建科目',
+      ruleTitle: '添加报考规则',
       pickerOptions: {
           shortcuts: [{
             onClick(picker) {
@@ -509,10 +695,21 @@ export default {
             }
           }]
         },
-        value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
         value2: '',
 
       ruleForm: {
+          rule_name:'',
+
+          phone:'',
+          id_card_limit:'',
+          place_limit:'',
+          age_limit:'',
+          edu_limit:'',
+          work_limit:'',
+          health_limit:'',
+
+          region:'',
+          desc:'',
           id:'',
           category_name:'',
           subject_name:'',
@@ -522,7 +719,28 @@ export default {
           pass_score: ''
         },    
         rules: {
-          
+          phone: [
+            { required: true, message: '', trigger: 'blur' },
+          ],
+          id_card_limit: [
+            { required: true, message: '', trigger: 'blur' },
+          ],
+          place_limit: [
+            { required: true, message: '', trigger: 'blur' },
+          ],
+          age_limit: [
+            { required: true, message: '', trigger: 'blur' },
+          ],
+          edu_limit: [
+            { required: true, message: '', trigger: 'blur' },
+          ],
+          work_limit: [
+            { required: true, message: '', trigger: 'blur' },
+          ],
+          health_limit: [
+            { required: true, message: '', trigger: 'blur' },
+          ],
+
           category_name: [
             { required: true, message: '请选择所属分类', trigger: 'blur' },
           ],
@@ -570,13 +788,42 @@ export default {
   },
 
   mounted() {
-    this.$api.ruleList(this, 'schoolData'),
-    this.$api.subjectList(this, 'subjectData'),
-    this.$api.updateSubject(this, 'subjectData')
-
+    this.$api.ruleList(this, 'schoolData'),  //报考规则列表
+    this.$api.subjectList(this, 'subjectData')  //考试科目列表
+    // this.$api.updateSubject(this, 'subjectData')
+    // this.$api.createRule(this, 'schoolData')  //添加规则
   },
     methods: {
-      
+      handleSearch(data) {
+      console.log(data);
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        organization_id: data.organization_id.pop(),
+        course_category_id: data.course_category_id.pop(),
+        start_time: times[0],
+        end_time: times[1],
+      };
+      this.subjectList();
+    },
+
+        handleChange () {
+        var loc = "";
+        for (let i = 0; i < this.selectedOptions.length; i++) {
+            loc += CodeToText[this.selectedOptions[i]];
+        }
+        console.log(loc)
+      },
+
+      deleteOneClass(index){
+        this.data.splice(index,1)
+      },
+      addOneClass() {
+      var obj = {}
+      this.data.push(obj)
+    },
       receiveStudent(zx) {
       console.log(zx)
       this.$api.receive(this, zx.intent_id)
@@ -624,6 +871,27 @@ export default {
     },
 
     handleDelete(ab) {
+      console.log(ab)
+      this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          console.log(ab.id)
+          this.$api.deleteSubject(this, ab.id)
+
+
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+
+    deleterule(ab) {
       console.log(ab)
       this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -700,14 +968,19 @@ export default {
         this.$api.updateCourseSort(id, sorts, this)
       }
     },
- 
 
     editNotice(ab) {
       console.log(ab)
       this.classTitle = '编辑科目'
       this.ruleForm = ab
       this.dialogVisible = true
+    },
     
+    editrule(ab) {
+      console.log(ab)
+      this.ruleTitle = '编辑报考规则'
+      this.ruleForm = ab
+      this.guizeVisible = true
     },
   },
 
@@ -829,12 +1102,34 @@ export default {
   align-items: center;
 }
 .inputach{
-  width:32px;
+  width:25px;
   height:28px;
   border:1px solid #ccc;
   text-align: center;
   margin: 0 10px;
 }
-
+/deep/.el-form-item__content{
+  display: flex;
+}
+.gztitle{
+  border-left:4px solid #199fff;
+  padding-left: 8px;
+  margin-bottom: 15px;
+  margin-left: 20px;
+  font-size: 16px;
+  color: #444;
+}
+.radiocss{
+display:flex;align-items: center;margin-top:13px;
+}
+.radiomargin{
+  margin-bottom: 12px;
+}
+/deep/.el-dialog__footer{
+  text-align: center;
+  width: 200px;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
 </style>
 
