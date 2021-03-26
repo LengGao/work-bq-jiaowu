@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { classAttendanceStatistics } from "@/api/eda";
+import { classAttendanceStatistics, getTeacherList } from "@/api/eda";
 import CourseListDialog from "./CourseListDialog";
 export default {
   name: "classAttendanceStatistics",
@@ -155,6 +155,8 @@ export default {
         {
           key: "teacher_id",
           type: "select",
+          optionValue: "teacher_id",
+          optionLabel: "teacher_name",
           options: [],
           attrs: {
             placeholder: "上课老师",
@@ -179,15 +181,15 @@ export default {
             clearable: true,
           },
         },
-        {
-          key: "432432",
-          type: "select",
-          options: [],
-          attrs: {
-            placeholder: "状态",
-            clearable: true,
-          },
-        },
+        // {
+        //   key: "432432",
+        //   type: "select",
+        //   options: [],
+        //   attrs: {
+        //     placeholder: "状态",
+        //     clearable: true,
+        //   },
+        // },
       ],
       dialogVisible: false,
       dialogId: "",
@@ -195,6 +197,7 @@ export default {
   },
   created() {
     this.classAttendanceStatistics();
+    this.getTeacherList();
   },
   methods: {
     hanldeOpenDialog(id) {
@@ -215,6 +218,14 @@ export default {
     handlePageChange(val) {
       this.pageNum = val;
       this.classAttendanceStatistics();
+    },
+    // 上课老师下拉
+    async getTeacherList() {
+      const data = {};
+      const res = await getTeacherList(data);
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
+      }
     },
     // 班级考勤列表
     async classAttendanceStatistics() {

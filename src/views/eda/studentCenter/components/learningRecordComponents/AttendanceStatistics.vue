@@ -9,23 +9,23 @@
     <div class="card-list">
       <div class="card-item">
         <p>排课次数</p>
-        <p class="number">100</p>
+        <p class="number">{{ statisticsData.total }}</p>
       </div>
       <div class="card-item">
         <p>出勤次数</p>
-        <p class="number">100</p>
+        <p class="number">{{ statisticsData.attendance_num }}</p>
       </div>
       <div class="card-item">
         <p>缺勤次数</p>
-        <p class="number">100</p>
+        <p class="number">{{ statisticsData.absenteeism_num }}</p>
       </div>
       <div class="card-item">
         <p>未点名次数</p>
-        <p class="number">100</p>
+        <p class="number">{{ statisticsData.not_named_num }}</p>
       </div>
       <div class="card-item">
         <p>出勤率</p>
-        <p class="number">100</p>
+        <p class="number">{{ statisticsData.rate }}</p>
       </div>
     </div>
     <!--表格-->
@@ -46,24 +46,28 @@
           label="序号"
           show-overflow-tooltip
           min-width="90"
-          prop="classroom_id"
+          prop="id"
         >
         </el-table-column>
         <el-table-column
-          prop="classroom_name"
+          prop="date"
           label="上课日期"
           min-width="110"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="category_name"
+          prop="start_time"
           label="上课时间"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.start_time + " ~ " + row.end_time }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="project_name"
+          prop="teacher_name"
           label="上课老师"
           min-width="110"
           show-overflow-tooltip
@@ -73,9 +77,13 @@
           label="授课方式"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ typeMap[row.teaching_type] }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="schoolroom_name"
           label="上课教室"
           min-width="110"
           show-overflow-tooltip
@@ -85,7 +93,13 @@
           label="考勤情况"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span :style="{ color: signTypeMap[row.sign_type].color }">{{
+              signTypeMap[row.sign_type].text
+            }}</span>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
@@ -99,7 +113,7 @@
 </template>
 
 <script>
-import { getAttendanceList } from "@/api/eda";
+import { getAttendanceList, personalAttendanceSummary } from "@/api/eda";
 export default {
   name: "AttendanceStatistics",
   props: {
@@ -110,13 +124,32 @@ export default {
   },
   data() {
     return {
+      typeMap: {
+        1: "面授",
+        2: "直播",
+      },
+      signTypeMap: {
+        0: {
+          text: "未点名",
+          color: "#FEA86F",
+        },
+        1: {
+          text: "缺勤",
+          color: "#FD6500",
+        },
+        2: {
+          text: "出勤",
+          color: "#5FD826",
+        },
+      },
+      statisticsData: {},
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        category_id: [],
-        project_id: "",
+        date: "",
+        teaching_type: "",
       },
       searchOptions: [
         {
@@ -131,28 +164,38 @@ export default {
           },
         },
         {
-          key: "project_id",
+          key: "teaching_type",
           type: "select",
-          options: [],
+          options: [
+            {
+              label: "面授",
+              value: 1,
+            },
+            {
+              label: "直播",
+              value: 2,
+            },
+          ],
           attrs: {
             placeholder: "授课方式",
             clearable: true,
           },
         },
-        {
-          key: "project_id",
-          type: "select",
-          options: [],
-          attrs: {
-            placeholder: "考勤情况",
-            clearable: true,
-          },
-        },
+        // {
+        //   key: "project_id",
+        //   type: "select",
+        //   options: [],
+        //   attrs: {
+        //     placeholder: "考勤情况",
+        //     clearable: true,
+        //   },
+        // },
       ],
     };
   },
   created() {
     this.getAttendanceList();
+    this.personalAttendanceSummary();
   },
   methods: {
     handleSearch(data) {
@@ -170,11 +213,23 @@ export default {
       this.pageNum = val;
       this.getAttendanceList();
     },
+    async personalAttendanceSummary() {
+      const data = {
+        // uid: this.uid,
+        uid: 39174,
+      };
+      const res = await personalAttendanceSummary(data);
+      if (res.code === 0) {
+        this.statisticsData = res.data;
+      }
+    },
     async getAttendanceList() {
       const data = {
         page: this.pageNum,
-        uid: this.uid,
+        // uid: this.uid,
+        uid: 39174,
         ...this.searchData,
+        teaching_type: this.searchData.teaching_type || 0,
       };
       this.listLoading = true;
       const res = await getAttendanceList(data);
