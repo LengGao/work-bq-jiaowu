@@ -691,7 +691,7 @@
           <!-- <p style="color:#ccc">支持@@name@@通配符匹配用户名字</p> -->
         </el-form-item>
 
-        <el-form-item label="提醒时间：">
+        <el-form-item label="提醒时间:">
           <!-- <el-checkbox
             :indeterminate="isIndeterminate"
             v-model="checkAll"

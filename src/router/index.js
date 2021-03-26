@@ -89,8 +89,7 @@ export const asyncRouter = [
       {
         path: 'configureCourses',
         name: 'configureCourses',
-        component: () =>
-          import('@/views/sou/courseManage/configureCourses.vue'),
+        component: () => import('@/views/sou/courseManage/index.vue'),
         meta: { title: '配置课程 ', icon: 'product-cate' },
         hidden: true,
       },
@@ -392,7 +391,7 @@ export const asyncRouter = [
         name: 'timetablePreview',
         component: () =>
           import('@/views/eda/teachSchedule/timetablePreview.vue'),
-        meta: { title: '全部排课', icon: 'product-cate' },
+        meta: { title: '课程预览', icon: 'product-cate' },
         hidden: true,
       },
       //排课管理结束

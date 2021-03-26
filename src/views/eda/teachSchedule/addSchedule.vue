@@ -1,127 +1,115 @@
 <template>
   <section class="mainwrap">
-    <el-form
-      style="max-width:1400px"
-      ref="ruleForm"
-      label-width="100px"
-      label-position="right"
-    >
-      <el-row>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-form-item label="所属分类" prop="region">
-            <el-select
-              v-model="ruleForm.category_id"
-              placeholder="请选择所属分类"
-              @change="categoryChange"
-            >
-              <el-option
-                v-for="item in cateData.list"
-                :key="item.category_id"
-                :label="item.category_name"
-                :value="item.category_id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-form-item label="班级名称" prop="region">
-            <el-select
-              v-model="ruleForm.classroom_id_arr"
-              placeholder="请选择班级名称"
-            >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-form-item label="默认老师" prop="teacher_id">
-            <el-select
-              v-model="ruleForm.teacher_id"
-              placeholder="请选择默认老师"
-            >
-              <el-option
-                v-for="item in teacherData"
-                :key="item.teacher_id"
-                :label="item.teacher_name"
-                :value="item.teacher_id"
-              ></el-option>
-              <!-- <el-option label="区域二" value="beijing"></el-option> -->
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-form-item label="默认方式" prop="region">
-            <el-select v-model="ruleForm.region" placeholder="请选择默认方式">
-              <el-option
-                v-for="item in regionData"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-form-item label="默认教室" prop="schoolroom_id">
-            <el-select
-              v-model="ruleForm.schoolroom_id"
-              placeholder="请选择默认教室"
-            >
-              <el-option
-                v-for="item in roomData"
-                :key="item.id"
-                :label="item.room_name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-form-item label="上课日期" prop="date">
-            <el-date-picker
-              ref="datesRef"
-              :editable="false"
-              v-model="dateArr"
-              type="dates"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              placeholder="选择一个或多个日期"
-            >
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-form-item label="默认上课时间" prop="classTime">
-            <el-time-picker
-              @change="choseTime"
-              is-range
-              v-model="classTimeArr"
-              format="HH:mm"
-              value-format="HH:mm"
-              range-separator="至"
-              start-placeholder="开始时间"
-              end-placeholder="结束时间"
-              placeholder="选择时间范围"
-            >
-            </el-time-picker>
-          </el-form-item>
-        </el-col>
-        <el-col :lg="8" :md="8" :sm="8" :xs="8">
-          <el-button
-            plain
-            type="primary"
-            style="margin-left:50px"
-            @click="createCourse"
-          >
-            生成预排课
-          </el-button>
-        </el-col>
-      </el-row>
+    <el-form ref="ruleForm" label-width="100px" label-position="right">
+      <el-form-item label="所属分类" prop="region">
+        <el-select
+          class="com-width"
+          v-model="ruleForm.category_id"
+          placeholder="请选择所属分类"
+          @change="categoryChange"
+        >
+          <el-option
+            v-for="item in cateData.list"
+            :key="item.category_id"
+            :label="item.category_name"
+            :value="item.category_id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="班级名称" prop="region">
+        <el-select
+          class="com-width"
+          v-model="ruleForm.classroom_id_arr"
+          placeholder="请选择班级名称"
+        >
+          <el-option label="区域一" value="shanghai"></el-option>
+          <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="上课日期" prop="date">
+        <el-date-picker
+          class="com-width"
+          ref="datesRef"
+          :editable="false"
+          v-model="dateArr"
+          type="dates"
+          format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd"
+          placeholder="选择一个或多个日期"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="默认上课时间" prop="classTime">
+        <el-time-picker
+          @change="choseTime"
+          is-range
+          style="width:240px"
+          v-model="classTimeArr"
+          format="HH:mm"
+          value-format="HH:mm"
+          range-separator="至"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          placeholder="选择时间范围"
+        >
+        </el-time-picker>
+      </el-form-item>
+
+      <el-form-item label="默认老师" prop="teacher_id">
+        <el-select
+          v-model="ruleForm.teacher_id"
+          placeholder="请选择默认老师"
+          class="com-width"
+        >
+          <el-option
+            v-for="item in teacherData"
+            :key="item.teacher_id"
+            :label="item.teacher_name"
+            :value="item.teacher_id"
+          ></el-option>
+          <!-- <el-option label="区域二" value="beijing"></el-option> -->
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="默认方式" prop="region">
+        <el-select
+          v-model="ruleForm.region"
+          placeholder="请选择默认方式"
+          class="com-width"
+        >
+          <el-option
+            v-for="item in regionData"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="默认教室" prop="schoolroom_id">
+        <el-select
+          class="com-width"
+          v-model="ruleForm.schoolroom_id"
+          placeholder="请选择默认教室"
+        >
+          <el-option
+            v-for="item in roomData"
+            :key="item.id"
+            :label="item.room_name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-button
+        plain
+        type="primary"
+        style="margin-left:50px"
+        @click="createCourse"
+      >
+        生成预排课
+      </el-button>
     </el-form>
     <!--表格-->
     <div class="userTable">
@@ -355,6 +343,7 @@ export default {
   },
   mounted() {
     // this.$api.classroomList(this, 'classData') //班级列表
+    this.$api.getcourseallclass(this)
     this.$api.getTeacherSublist(this, 'teacherData') //老师列表
     this.$api.getStaffSelect(this, 'staffData') //跟班人员下拉列表
     this.$api.getRoomSelect(this, 'roomData') //教室列表
@@ -384,7 +373,9 @@ export default {
       // console.log(this.schoolData[index])
     },
     delTime(ab, index) {
-      ab.splice(index, 1)
+      if (ab.length > 1) {
+        ab.splice(index, 1)
+      }
     },
     handleSave() {
       //对上课时间进行处理
@@ -480,5 +471,13 @@ footer {
 }
 .common-width {
   width: 90px;
+}
+.com-width {
+  width: 240px;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 </style>

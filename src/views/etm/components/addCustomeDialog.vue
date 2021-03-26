@@ -7,197 +7,145 @@
       width="70%"
       :close-on-click-modal="false"
       @close="doClose"
-      style="min-width:1044px"
     >
       <el-form
         label-width="110px"
-        class="demo-ruleForm"
+        class="info-form"
         :show-message="true"
         :model="ruleForm"
         :rules="rules"
         ref="ruleForm"
       >
-        <el-row>
-          <el-col :lg="8">
-            <el-form-item label="客户姓名" prop="surname">
-              <el-input
-                class="input-width"
-                v-model="ruleForm.surname"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="手机号码" prop="mobile">
-              <el-input
-                class="input-width"
-                v-model="ruleForm.mobile"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="备用号码" prop="second_mobile">
-              <el-input
-                class="input-width"
-                v-model="ruleForm.second_mobile"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :lg="8">
-            <el-form-item label="身份证号" prop="id_card_number">
-              <el-input
-                class="input-width"
-                v-model="ruleForm.id_card_number"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="出生日期" prop="birthday">
-              <el-date-picker
-                v-model="ruleForm.birthday"
-                type="date"
-                format="yyyy-MM-dd "
-                value-format="yyyy-MM-dd "
-                style="width:240px"
-                placeholder="选择日期"
-              >
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="性别" prop="sex">
-              <el-radio-group v-model="ruleForm.sex">
-                <el-radio :label="1">男</el-radio>
-                <el-radio :label="2">女</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!-- <el-col :lg="8">
-            <el-form-item label="婚姻状况" prop="marry">
-              <el-radio-group v-model="ruleForm.marry">
-                <el-radio :label="2">未婚</el-radio>
-                <el-radio :label="1">已婚</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col> -->
-        </el-row>
-        <el-row>
-          <el-col :lg="8">
-            <el-form-item label="微信">
-              <el-input
-                class="input-width"
-                v-model="ruleForm.wechat"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="QQ" prop="qq">
-              <el-input class="input-width" v-model="ruleForm.qq"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="邮箱地址" prop="email">
-              <el-input class="input-width" v-model="ruleForm.email"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :lg="8">
-            <el-form-item label="文化程度" prop="culture">
-              <!-- <el-input
+        <el-form-item label="客户姓名" prop="surname">
+          <el-input class="input-width" v-model="ruleForm.surname"></el-input>
+        </el-form-item>
+
+        <el-form-item label="手机号码" prop="mobile">
+          <el-input class="input-width" v-model="ruleForm.mobile"></el-input>
+        </el-form-item>
+
+        <el-form-item label="备用号码" prop="second_mobile">
+          <el-input
+            class="input-width"
+            v-model="ruleForm.second_mobile"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="身份证号" prop="id_card_number">
+          <el-input
+            class="input-width"
+            v-model="ruleForm.id_card_number"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="出生日期" prop="birthday">
+          <el-date-picker
+            v-model="ruleForm.birthday"
+            type="date"
+            format="yyyy-MM-dd "
+            value-format="yyyy-MM-dd "
+            style="width:240px"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="ruleForm.sex">
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="2">女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="微信">
+          <el-input class="input-width" v-model="ruleForm.wechat"></el-input>
+        </el-form-item>
+
+        <el-form-item label="QQ" prop="qq">
+          <el-input class="input-width" v-model="ruleForm.qq"></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱地址" prop="email">
+          <el-input class="input-width" v-model="ruleForm.email"></el-input>
+        </el-form-item>
+
+        <el-form-item label="文化程度" prop="culture">
+          <!-- <el-input
                    class="input-width"
                     v-model="ruleForm.culture"
                   ></el-input> -->
-              <el-select
-                v-model="ruleForm.culture"
-                placeholder="请选择文化程度"
-                class="input-width"
-              >
-                <el-option
-                  v-for="item in cultures"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="籍贯" prop="province">
-              <el-cascader
-                size="large"
-                class="input-width"
-                :options="provinceAndCityData"
-                v-model="selectedOptions"
-                @change="handleChange"
-              >
-              </el-cascader>
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="常住地" prop="city">
-              <el-cascader
-                size="large"
-                class="input-width"
-                :options="provinceAndCityData"
-                v-model="selectedOptionsLocal"
-                @change="handleLocal"
-              >
-              </el-cascader>
-              <!-- <el-input
+          <el-select
+            v-model="ruleForm.culture"
+            placeholder="请选择文化程度"
+            class="input-width"
+          >
+            <el-option
+              v-for="item in cultures"
+              :key="item.value"
+              :label="item.label"
+              :value="item.label"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="籍贯" prop="province">
+          <el-cascader
+            size="large"
+            class="input-width"
+            :options="provinceAndCityData"
+            v-model="selectedOptions"
+            @change="handleChange"
+          >
+          </el-cascader>
+        </el-form-item>
+
+        <el-form-item label="常住地" prop="city">
+          <el-cascader
+            size="large"
+            class="input-width"
+            :options="provinceAndCityData"
+            v-model="selectedOptionsLocal"
+            @change="handleLocal"
+          >
+          </el-cascader>
+          <!-- <el-input
                 class="input-width"
                 v-model="ruleForm.location"
               ></el-input> -->
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :lg="8">
-            <el-form-item label="推荐机构" prop="from_organization_id">
-              <el-select
-                v-model="ruleForm.from_organization_id"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in organData.list"
-                  :key="item.institution_id"
-                  :label="item.institution_name"
-                  :value="item.institution_id"
-                >
-                </el-option>
-              </el-select>
-              <!-- <el-input
+        </el-form-item>
+
+        <el-form-item label="推荐机构" prop="from_organization_id">
+          <el-select
+            v-model="ruleForm.from_organization_id"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in organData.list"
+              :key="item.institution_id"
+              :label="item.institution_name"
+              :value="item.institution_id"
+            >
+            </el-option>
+          </el-select>
+          <!-- <el-input
                 class="input-width"
                 placeholder="请选择推荐机构"
                 v-model="ruleForm.from_organization_id"
               ></el-input> -->
-            </el-form-item>
-          </el-col>
-          <el-col :lg="8">
-            <el-form-item label="渠道来源" prop="sources">
-              <el-input
-                class="input-width"
-                placeholder="请选择渠道来源"
-                v-model="ruleForm.sources"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <!-- <el-col :lg="8">
-                <el-form-item label="是否跨区报考" prop="name">
-                  <el-input
-                   class="input-width"
-                    v-model="ruleForm.name"
-                  ></el-input>
-                </el-form-item>
-              </el-col> -->
-        </el-row>
-        <el-row>
-          <el-form-item label="备注信息" prop="tips">
-            <el-input v-model="ruleForm.tips" type="textarea"></el-input>
-          </el-form-item>
-        </el-row>
+        </el-form-item>
+
+        <el-form-item label="渠道来源" prop="sources">
+          <el-input
+            class="input-width"
+            placeholder="请选择渠道来源"
+            v-model="ruleForm.sources"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="备注信息" prop="tips" style="width:100%">
+          <el-input v-model="ruleForm.tips" type="textarea"></el-input>
+        </el-form-item>
       </el-form>
       <!-- <span>这是一段信息</span> -->
       <span slot="footer" class="dialog-footer">
@@ -352,9 +300,8 @@ export default {
   },
   created() {
     //渠道来源
-    let field_text = '渠道来源'
-    this.$api.getfieldinfo(this, 'channelData', field_text)
-
+    // let field_text = '渠道来源'
+    // this.$api.getfieldinfo(this, 'channelData', field_text)
     this.$api.getRecommenderSearch(this, 'organData') //推荐机构
   },
   methods: {
@@ -412,5 +359,12 @@ export default {
 <style lang="scss" socped>
 .input-width {
   width: 240px;
+}
+.info-form {
+  display: flex;
+  flex-wrap: wrap;
+  .el-form-item {
+    width: 400px;
+  }
 }
 </style>
