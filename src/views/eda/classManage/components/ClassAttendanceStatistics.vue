@@ -57,10 +57,14 @@
           label="授课方式"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ typeMap[row.teaching_type] }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="staff_name"
-          label="排课属性"
+          prop="class_hour_total"
+          label="课节数"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
@@ -90,7 +94,13 @@
         >
           <template slot-scope="{ row }">
             <div class="operation_btn">
-              <el-button type="text">排课情况</el-button>
+              <el-button
+                type="text"
+                @click="hanldeOpenDialog(row.id)"
+                v-if="row.class_hour_total > 1"
+                >排课详情</el-button
+              >
+              <el-button type="text" v-else>考勤统计</el-button>
             </div>
           </template>
         </el-table-column>
@@ -103,19 +113,28 @@
         />
       </div>
     </div>
+    <CourseListDialog v-model="dialogVisible" :id="dialogId" />
   </div>
 </template>
 
 <script>
 import { classAttendanceStatistics } from "@/api/eda";
+import CourseListDialog from "./CourseListDialog";
 export default {
   name: "classAttendanceStatistics",
+  components: {
+    CourseListDialog,
+  },
   data() {
     return {
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      typeMap: {
+        1: "面授",
+        2: "直播",
+      },
       searchData: {
         teacher_id: "",
         teaching_type: "",
@@ -145,28 +164,43 @@ export default {
         {
           key: "teaching_type",
           type: "select",
-          options: [],
+          options: [
+            {
+              label: "面授",
+              value: 1,
+            },
+            {
+              label: "直播",
+              value: 2,
+            },
+          ],
           attrs: {
             placeholder: "授课方式",
             clearable: true,
           },
         },
         {
-          key: "project_id",
+          key: "432432",
           type: "select",
           options: [],
           attrs: {
-            placeholder: "考勤情况",
+            placeholder: "状态",
             clearable: true,
           },
         },
       ],
+      dialogVisible: false,
+      dialogId: "",
     };
   },
   created() {
     this.classAttendanceStatistics();
   },
   methods: {
+    hanldeOpenDialog(id) {
+      this.dialogId = id;
+      this.dialogVisible = true;
+    },
     handleSearch(data) {
       const times = data.date || ["", ""];
       delete data.date;
@@ -186,6 +220,7 @@ export default {
     async classAttendanceStatistics() {
       const data = {
         classroom_id: this.$route.query?.id,
+        // classroom_id: 55,
         page: this.pageNum,
         ...this.searchData,
       };

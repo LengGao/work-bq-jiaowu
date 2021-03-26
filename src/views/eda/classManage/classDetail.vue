@@ -98,7 +98,7 @@ export default {
       display: flex;
       &-cover {
         img {
-          width: 200px;
+          height: 100px;
         }
       }
       span {

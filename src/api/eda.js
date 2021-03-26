@@ -251,4 +251,23 @@ export function classAttendanceStatistics(params) {
         params,
     })
 }
+/**
+ * 班级排课列表
+ * @param {*} params 
+ */
+export function getClassArrangeList(params) {
+    return request({
+        url: '/arrange/getList',
+        method: 'get',
+        params,
+    })
+}
+//课节列表
+export function getClassOurList(params) {
+    return request({
+        url: 'arrange/getClassOurList',
+        method: 'get',
+        params,
+    })
+}
 

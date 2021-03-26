@@ -20,64 +20,53 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          label="序号"
+          label="学员姓名"
           show-overflow-tooltip
           min-width="90"
-          prop="classroom_id"
+          prop="user_realname"
         >
         </el-table-column>
         <el-table-column
-          prop="classroom_name"
-          label="上课日期"
+          label="手机号码"
+          show-overflow-tooltip
+          min-width="90"
+          prop="telphone"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="institution_name"
+          label="所属机构"
           min-width="110"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="classroom_name"
-          label="星期"
+          prop="schoole_name"
+          label="所属校区"
           min-width="110"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="category_name"
-          label="上课时间"
+          prop="add_time"
+          label="加入时间"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="project_name"
-          label="上课老师"
+          prop="course_username"
+          label="出勤次数"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="staff_name"
-          label="授课方式"
+          label="缺勤次数"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="staff_name"
-          label="排课属性"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="student_number"
-          label="出勤人数"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="student_number"
-          label="缺勤人数"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="student_number"
           label="出勤率"
           min-width="110"
           show-overflow-tooltip
