@@ -5,18 +5,27 @@
         <p class="col-item">
           <span>班级名称</span>{{ detailData.classroom_name }}
         </p>
-        <p class="col-item"><span>所属分类</span>{{ detailData.admin_id }}</p>
-        <p class="col-item"><span>学生人数</span>{{ detailData.admin_id }}</p>
+        <p class="col-item">
+          <span>所属分类</span>{{ detailData.category_name }}
+        </p>
+        <p class="col-item">
+          <span>学生人数</span>{{ detailData.student_number }}
+        </p>
       </div>
       <div class="header-col">
         <p class="col-item"><span>班主任</span>{{ detailData.staff_name }}</p>
-        <p class="col-item"><span>所属项目</span>{{ detailData.project_id }}</p>
-        <p class="col-item"><span>排课总数</span>{{ detailData.admin_id }}</p>
+        <p class="col-item">
+          <span>所属项目</span>{{ detailData.project_name }}
+        </p>
+        <p class="col-item">
+          <span>排课总数</span>{{ detailData.class_number }}
+        </p>
       </div>
       <div class="header-col">
         <p class="col-item col-item-cover">
           <span>班级封面</span>
           <img
+            @click="handlePreview(detailData.class_icon)"
             v-if="detailData.class_icon"
             :src="detailData.class_icon"
             alt="班级封面"
@@ -34,6 +43,7 @@
       ></el-tab-pane>
     </el-tabs>
     <component :is="getComponent" />
+    <PreviewImg ref="view" />
   </div>
 </template>
 
@@ -58,6 +68,9 @@ export default {
     this.getClassroomDetail();
   },
   methods: {
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
     async getClassroomDetail() {
       const data = {
         classroom_id: this.$route.query?.id || "",

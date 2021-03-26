@@ -82,18 +82,6 @@
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="200"
-          max-width="200"
-        >
-          <template slot-scope="{ row }">
-            <div class="operation_btn">
-              <el-button type="text">排课情况</el-button>
-            </div>
-          </template>
-        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page

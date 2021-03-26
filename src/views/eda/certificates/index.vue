@@ -177,9 +177,8 @@
       :uid="currentUid"
       @on-success="getCertificates"
     />
-    <el-dialog :visible.sync="previewDialog" custom-class="preview-dialog">
-      <img width="100%" :src="previewSrc" alt="" />
-    </el-dialog>
+
+    <PreviewImg ref="view" />
   </section>
 </template>
 
@@ -213,7 +212,6 @@ export default {
       addDialog: false,
       currentUid: "",
       previewSrc: "",
-      previewDialog: false,
     };
   },
   created() {
@@ -234,8 +232,7 @@ export default {
       }
     },
     handlePreview(src) {
-      this.previewDialog = true;
-      this.previewSrc = src;
+      this.$refs.view.show(src);
     },
     openAddPhoto(id) {
       this.currentUid = id;
@@ -281,10 +278,5 @@ export default {
   width: 50px;
   height: 50px;
   cursor: pointer;
-}
-/deep/.preview-dialog {
-  .el-dialog__body {
-    text-align: center;
-  }
 }
 </style>

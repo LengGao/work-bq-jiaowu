@@ -2,7 +2,7 @@
   <!-- 证件资料 -->
   <div class="certificates" v-loading="loading">
     <div class="certificates-header">
-      <el-button>查看大图</el-button>
+      <el-button @click="handlePreview">查看大图</el-button>
       <el-button @click="zipDownload">打包下载</el-button>
     </div>
     <div class="certificates-uploads">
@@ -34,6 +34,7 @@
         <p>{{ item.name }}</p>
       </div>
     </div>
+    <PreviewImg ref="view" />
   </div>
 </template>
 
@@ -105,6 +106,10 @@ export default {
     this.getCertificateInfo();
   },
   methods: {
+    handlePreview() {
+      const srcs = Object.values(this.photoData).filter((src) => !!src);
+      this.$refs.view.show(srcs);
+    },
     // 下载
     async zipDownload() {
       const data = {

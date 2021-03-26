@@ -16,7 +16,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import VueQuillEditor from 'vue-quill-editor'
 import '@/utils/filters'
-
+import './cropper'
 // import './mock/mock'
 moment.locale('zh-cn') //设置语言 或 moment.lang('zh-cn');
 Vue.use(ElementUI)
