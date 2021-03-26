@@ -1,19 +1,20 @@
 <template>
   <div class="student-detail">
-    <div class="head_remind"></div>
-    <section class="mainwrap">
+    <section class="mainwrap" v-loading="detailLoading">
       <div class="detail-header">
         <div class="header-item header-user">
           <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
-          <span class="name">{{ detailData.surname || '--' }}</span>
+          <span class="name">{{ detailData.surname || "--" }}</span>
         </div>
-        <div class="header-item">ID：{{ detailData.uid || '--' }}</div>
-        <div class="header-item">手机号码：{{ detailData.mobile || '--' }}</div>
+        <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
         <div class="header-item">
-          身份证码：{{ detailData.id_card_number || '--' }}
+          手机号码：{{ detailData.mobile | filterPhone }}
         </div>
         <div class="header-item">
-          注册日期：{{ detailData.create_time || '--' }}
+          身份证码：{{ detailData.id_card_number | filterIdCard }}
+        </div>
+        <div class="header-item">
+          注册日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
           <el-button type="primary">报名</el-button>
@@ -22,7 +23,7 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
         <el-tab-pane label="证件资料" name="Certificates"></el-tab-pane>
-        <el-tab-pane label="报读班级" name="Class"></el-tab-pane>
+        <el-tab-pane label="项目班级" name="Class"></el-tab-pane>
         <el-tab-pane label="学习记录" name="LearningRecords"></el-tab-pane>
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
@@ -39,38 +40,41 @@
 </template>
 
 <script>
-import { getStudentBasicDetail } from '@/api/eda'
+import { getStudentBasicDetail } from "@/api/eda";
 export default {
-  name: 'studentDetail',
+  name: "studentDetail",
   data() {
     return {
-      activeName: 'BasicInfo',
+      activeName: "BasicInfo",
       detailData: {},
-    }
+      detailLoading: false,
+    };
   },
   computed: {
     getComponent() {
       if (this.activeName) {
-        return () => import(`./components/${this.activeName}.vue`)
+        return () => import(`./components/${this.activeName}.vue`);
       }
     },
   },
   created() {
-    this.getStudentBasicDetail()
+    this.getStudentBasicDetail();
   },
   methods: {
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {
-        uid: this.$route.query?.id || '',
-      }
-      const res = await getStudentBasicDetail(data)
+        uid: this.$route.query?.id || "",
+      };
+      this.detailLoading = true;
+      const res = await getStudentBasicDetail(data);
+      this.detailLoading = false;
       if (res.code === 0) {
-        this.detailData = res.data
+        this.detailData = res.data;
       }
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
