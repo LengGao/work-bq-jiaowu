@@ -16,7 +16,7 @@ export function dispenseList(params) {
 }
 /**
  * 发放教材
- * @param {*} data 
+ * @param {*} data
  */
 export function dispenseBooks(data) {
     return request({
@@ -27,7 +27,7 @@ export function dispenseBooks(data) {
 }
 /**
  * 发放日志
- * @param {} params 
+ * @param {} params
  */
 export function dispenseLog(params) {
     return request({
@@ -38,7 +38,7 @@ export function dispenseLog(params) {
 }
 /**
  * 获取项目下拉菜单
- * @param {*} params 
+ * @param {*} params
  */
 export function getproject(params) {
     return request({
@@ -49,7 +49,7 @@ export function getproject(params) {
 }
 /**
  * 获取班级下拉
- * @param {*} params 
+ * @param {*} params
  */
 export function getcourseallclass(params) {
     return request({
@@ -61,7 +61,7 @@ export function getcourseallclass(params) {
 // 学生中心====================
 /**
  * 学生列表
- * @param {*} params 
+ * @param {*} params
  */
 export function getStudentList(params) {
     return request({
@@ -72,7 +72,7 @@ export function getStudentList(params) {
 }
 /**
  * 批量分班
- * @param {*} data 
+ * @param {*} data
  */
 export function addstudents(data) {
     return request({
@@ -83,7 +83,7 @@ export function addstudents(data) {
 }
 /**
  * 学生详情-基本信息
- * @param {*} params 
+ * @param {*} params
  */
 export function getStudentBasicDetail(params) {
     return request({
@@ -94,7 +94,7 @@ export function getStudentBasicDetail(params) {
 }
 /**
  * 修改学生基本信息
- * @param {*} params 
+ * @param {*} params
  */
 export function updateStudentBasicInfo(data) {
     return request({
@@ -105,7 +105,7 @@ export function updateStudentBasicInfo(data) {
 }
 /**
  * 学习轨迹
- * @param {*} params 
+ * @param {*} params
  */
 export function studentBehaviorRecord(params) {
     return request({
@@ -116,7 +116,7 @@ export function studentBehaviorRecord(params) {
 }
 /**
  * 学生跟进记录
- * @param {*} params 
+ * @param {*} params
  */
 export function userArchivesRecord(params) {
     return request({
@@ -127,7 +127,7 @@ export function userArchivesRecord(params) {
 }
 /**
  * 添加跟进记录
- * @param {*} data 
+ * @param {*} data
  */
 export function addUserArchivesRecord(data) {
     return request({
@@ -138,7 +138,7 @@ export function addUserArchivesRecord(data) {
 }
 /**
  * 获取订单列表
- * @param {*} params 
+ * @param {*} params
  */
 export function getOrderList(params) {
     return request({
@@ -157,7 +157,7 @@ export function getClassList(params) {
 }
 /**
  * 获取班主任下拉列表
- * @param {*} params 
+ * @param {*} params
  */
 export function getHeadMasters(params) {
     return request({
@@ -168,7 +168,7 @@ export function getHeadMasters(params) {
 }
 /**
  * 添加班级
- * @param {*} data 
+ * @param {*} data
  */
 export function addClassroom(data) {
     return request({
@@ -179,7 +179,7 @@ export function addClassroom(data) {
 }
 /**
  * 编辑编辑
- * @param {*} data 
+ * @param {*} data
  */
 export function editClassroom(data) {
     return request({
@@ -188,6 +188,10 @@ export function editClassroom(data) {
         data,
     })
 }
+/**
+ * 班级详情
+ * @param {*} params 
+ */
 export function getClassroomDetail(params) {
     return request({
         url: '/classroom/edit',
@@ -195,3 +199,56 @@ export function getClassroomDetail(params) {
         params,
     })
 }
+/**
+ * 获取学生所有班级
+ * @param {*} params 
+ */
+export function getstudendclass(params) {
+    return request({
+        url: '/classstudents/getstudendclass',
+        method: 'get',
+        params,
+    })
+}
+//考勤统计列表
+export function getAttendanceList(params) {
+    return request({
+        url: 'classstudents/personalAttendanceStatistics',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 获取学生项目列表
+ * @param {*} params 
+ */
+export function getuserproject(params) {
+    return request({
+        url: '/classstudents/getuserproject',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 获取班级学生
+ * @param {*} params 
+ */
+export function getClassstudentList(params) {
+    return request({
+        url: '/classstudents/index',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 班级考勤统计
+ * @param {*} params 
+ */
+export function classAttendanceStatistics(params) {
+    return request({
+        url: '/classroom/attendanceStatistics',
+        method: 'get',
+        params,
+    })
+}
+

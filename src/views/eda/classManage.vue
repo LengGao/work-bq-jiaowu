@@ -73,7 +73,9 @@
                 <el-button type="text" @click="openEdit(scope.row.classroom_id)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="topayment(scope.row)"
+                <el-button
+                  type="text"
+                  @click="toClassDetail(scope.row.classroom_id)"
                   >班级详情</el-button
                 >
                 <el-button type="text" @click="toLearnerManage(scope.row)"
@@ -87,15 +89,13 @@
             </template>
           </el-table-column>
         </el-table>
-        <!-- <div class="table_bottom">
         <div class="table_bottom">
           <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="getClassList"
           />
         </div>
-      </div> -->
       </div>
       <!--弹框-->
       <AddClass
@@ -236,9 +236,12 @@ export default {
         );
       }
     },
-    toClassDetail() {
+    toClassDetail(id) {
       this.$router.push({
         path: "/eda/classDetail",
+        query: {
+          id,
+        },
       });
     },
     toMassMessage() {

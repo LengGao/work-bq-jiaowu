@@ -24,7 +24,7 @@
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="nickname"
+          prop="project_name"
           label="项目名称"
           min-width="110"
           show-overflow-tooltip
@@ -36,7 +36,7 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="mobile"
+          prop="price"
           label="项目价格"
           min-width="100"
           show-overflow-tooltip
@@ -46,21 +46,45 @@
           label="课程"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{
+              row.course.length
+                ? row.course.map((item) => item.course_name).join(",")
+                : "--"
+            }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="classroom_id"
           label="题库"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{
+              row.problem && row.problem.length
+                ? row.problem.map((item) => item.title).join(",")
+                : "--"
+            }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="total_books"
           label="教材"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{
+              row.textbook && row.textbook.length
+                ? row.textbook.map((item) => item.book_name).join(",")
+                : "--"
+            }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="total_books"
+          prop="create_time"
           label="报名时间"
           min-width="100"
           show-overflow-tooltip
@@ -71,9 +95,9 @@
     <div class="userTable">
       <el-table
         ref="multipleTable"
-        :data="listData"
+        :data="classData"
         tooltip-effect="light"
-        v-loading="listLoading"
+        v-loading="classLoading"
         element-loading-text="loading"
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
@@ -84,13 +108,13 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="id"
+          prop="class_id"
           label="编号"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="nickname"
+          prop="classroom_name"
           label="班级名称"
           min-width="110"
           show-overflow-tooltip
@@ -102,25 +126,25 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="mobile"
+          prop="project_name"
           label="项目名称"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="project_name"
+          prop="staff_name"
           label="班主任"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="classroom_id"
+          prop="student_number"
           label="班级人数"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="total_books"
+          prop="add_time"
           label="加入时间"
           min-width="100"
           show-overflow-tooltip
@@ -133,7 +157,7 @@
         >
           <template slot-scope="{ row }">
             <div class="operation_btn">
-              <el-button type="text" @click="linkTo(row.id)"
+              <el-button type="text" @click="toClassDetail(row.classroom_id)"
                 >班级详情</el-button
               >
             </div>
@@ -145,29 +169,56 @@
 </template>
 
 <script>
-import { dispenseList } from "@/api/eda";
+import { getstudendclass, getuserproject } from "@/api/eda";
 export default {
   name: "class",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
       listLoading: false,
+      classData: [],
+      classLoading: false,
     };
   },
   created() {
-    this.dispenseList();
+    this.getstudendclass();
+    this.getuserproject();
   },
   methods: {
-    linkTo(id) {
+    toClassDetail(id) {
       console.log(id);
+      this.$router.push({
+        path: "/eda/classDetail",
+        query: {
+          id,
+        },
+      });
     },
-    //教材发放列表
-    async dispenseList() {
-      this.checkedIds = [];
+    //学生所在项目列表
+    async getuserproject() {
+      const data = {
+        uid: this.uid,
+      };
       this.listLoading = true;
-      const res = await dispenseList();
+      const res = await getuserproject(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data;
+    },
+    //学生所在班级列表
+    async getstudendclass() {
+      const data = {
+        uid: this.uid,
+      };
+      this.classLoading = true;
+      const res = await getstudendclass(data);
+      this.classLoading = false;
+      this.classData = res.data;
     },
   },
 };

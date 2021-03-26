@@ -16,12 +16,17 @@
     <div>
       <el-form
         :model="ruleForm"
-        :rules="rules"
         ref="ruleForm"
         label-width="100px"
         class="info-form"
       >
-        <el-form-item label="客户姓名" prop="surname">
+        <el-form-item
+          label="客户姓名"
+          prop="surname"
+          :rules="[
+            { required: isEdit, message: '请输入客户名称', trigger: 'blur' },
+          ]"
+        >
           <el-input
             v-if="isEdit"
             v-model="ruleForm.surname"
@@ -35,7 +40,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.mobile || "--" }}</span>
+          <span v-else>{{ datas.mobile | filterPhone }}</span>
         </el-form-item>
         <el-form-item label="备用号码">
           <el-input
@@ -43,7 +48,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.second_mobile || "--" }}</span>
+          <span v-else>{{ datas.second_mobile | filterPhone }}</span>
         </el-form-item>
         <el-form-item label="身份证号">
           <el-input
@@ -51,7 +56,7 @@
             v-if="isEdit"
             placeholder="请输入"
           ></el-input>
-          <span v-else>{{ datas.id_card_number || "--" }}</span>
+          <span v-else>{{ datas.id_card_number | filterIdCard }}</span>
         </el-form-item>
         <el-form-item label="微信">
           <el-input
@@ -266,11 +271,6 @@ export default {
         from_organization_id: "",
         tips: "",
       },
-      rules: {
-        surname: [
-          { required: true, message: "请输入客户名称", trigger: "blur" },
-        ],
-      },
       selectOptions: [],
       city2: "",
       city1: "",
@@ -335,6 +335,7 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
+        console.log(valid);
         if (valid) {
           this.updateStudentBasicInfo();
         }

@@ -276,7 +276,6 @@ export const asyncRouter = [
         meta: { title: '订单管理', icon: 'product-cate' },
         hidden: true,
       },
-
       //学生中心组件结束
       {
         path: 'classManage',
@@ -303,14 +302,14 @@ export const asyncRouter = [
         path: 'massMessage',
         name: 'massMessage',
         component: () => import('@/views/eda/classManage/massMessage.vue'),
-        meta: { title: '', icon: 'product-cate' },
+        meta: { title: '群发信息', icon: 'product-cate' },
         hidden: true,
       },
       {
         path: 'classDetail',
         name: 'classDetail',
         component: () => import('@/views/eda/classManage/classDetail.vue'),
-        meta: { title: '', icon: 'product-cate' },
+        meta: { title: '班级详情', icon: 'product-cate' },
         hidden: true,
       },
       {
@@ -515,7 +514,7 @@ export const asyncRouter = [
       {
         path: 'cusdetail',
         name: 'cusdetail',
-        component: () => import('@/views/fina/finance/cusdetail.vue'),
+        component: () => import('@/views/fina/finance/index.vue'),
         meta: { title: '客户详情', icon: 'product-cate' },
         hidden: true,
       },
