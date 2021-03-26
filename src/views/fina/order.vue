@@ -29,7 +29,7 @@
         </div>
       </div>
       <!--表格-->
-      <div class="userTable" v-if="isTagactive === 1">
+      <div class="userTable" v-show="isTagactive === 1">
         <el-table ref="multipleTable" 
         :data="schoolData.list" 
         tooltip-effect="light" 
@@ -83,7 +83,7 @@
 
       </div>
 
-      <div class="userTable" v-if="isTagactive === 2">
+      <div class="userTable" v-show="isTagactive === 2">
         <el-table ref="multipleTable" :data="schoolData" tooltip-effect="light" stripe @selection-change="handleSelectionChange" style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
           <el-table-column type="selection" width="45"> </el-table-column>
 
@@ -123,7 +123,7 @@
 
       </div>
 
-      <div class="userTable" v-if="isTagactive === 3">
+      <div class="userTable" v-show="isTagactive === 3">
         <el-table ref="multipleTable" :data="schoolData" tooltip-effect="light" stripe @selection-change="handleSelectionChange" style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
           <el-table-column type="selection" width="45"> </el-table-column>
 

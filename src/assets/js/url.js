@@ -148,6 +148,8 @@ export default {
   ruleList: '/Examination/ruleList',
   //添加报考规则
   createRule: '/Examination/createRule',
+  //删除报考规则
+  deleteRule: '/Examination/deleteRule',
   //添加科目
   createSubject: '/Examination/createSubject',
   //编辑科目
