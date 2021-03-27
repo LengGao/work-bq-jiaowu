@@ -191,7 +191,7 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
+          :data="schoolDatad.list"
           tooltip-effect="light"
           stripe
           style="width: 100%;"
@@ -208,7 +208,7 @@
             min-width="90"
           >
             <template slot-scope="scope">
-              <div class="coursename" @click="orderDetail(scope.row)">
+              <div class="coursename" @click="orderDetail(scope.row)" >
                 {{ scope.row.order_no }}
               </div>
             </template>
@@ -330,7 +330,7 @@
                     </el-col>
                     <el-col :lg="8" :md="8" :sm="8" :xs="8">
                       <el-form-item label="收费学生：" prop="surname">
-                        <div class="ruleWord">{{ ruleForm.surname }}</div>
+                        <div class="ruleWord">{{ ruleForm.account.surname }}</div>
                       </el-form-item>
                     </el-col>
 
@@ -458,7 +458,7 @@
                     </el-col>
                     <el-col :lg="8" :md="8" :sm="8" :xs="8">
                       <el-form-item label="收费学生：" prop="surname">
-                        <div class="ruleWord">{{ ruleForm.surname }}</div>
+                        <div class="ruleWord">{{ ruleForm.account.surname }}</div>
                       </el-form-item>
                     </el-col>
 
@@ -574,7 +574,7 @@
                     </el-col>
                     <el-col :lg="8" :md="8" :sm="8" :xs="8">
                       <el-form-item label="收费学生：" prop="surname">
-                        <div class="ruleWord">{{ ruleForm.surname }}</div>
+                        <div class="ruleWord">{{ ruleForm.account.surname }}</div>
                       </el-form-item>
                     </el-col>
 
@@ -690,7 +690,7 @@ export default {
         ],
         cate_id: [{ required: true, message: '', trigger: 'change' }],
       },
-      schoolData: [],
+      schoolDatad: [],
       panelData: {
         total: '',
         order_money: '',
@@ -737,6 +737,7 @@ export default {
       dialogFormVisible: false,
       refundFormVisible: false,
       voidFormVisible: false,
+
       form: {
         name: '',
         region: '',
@@ -747,6 +748,7 @@ export default {
         resource: '',
         desc: '',
       },
+      order_id:'',
       formLabelWidth: '120px',
     }
   },
@@ -754,32 +756,35 @@ export default {
     this.status = 1
   },
   mounted() {
-    this.$api.orderindex(this, 'schoolData')
+    this.$api.orderindex(this, 'schoolDatad')
 
   },
   filters: {},
   methods: {
-    handledialog(){
+    handledialog(ab){
       this.dialogFormVisible = true,
+      this.order_id = ab.order_id,
       this.$api.orderdetail(this, 'schoolData')
-      // this.pay_status = 1
     },
-    handlerefund(){
-      this.refundFormVisible = true
+    handlerefund(ab){
+      this.refundFormVisible = true,
+      this.order_id = ab.order_id,
+      this.$api.orderdetail(this, 'schoolData')
     },
-    handlevoid(){
-      this.voidFormVisible = true
+    handlevoid(ab){
+      this.voidFormVisible = true,
+      this.order_id = ab.order_id,
+      this.$api.orderdetail(this, 'schoolData')
     },
     handlePageChange(val) {
       this.pageNum = val
-      this.$api.orderindex(this, 'schoolData')
+      this.$api.orderindex(this, 'schoolDatad')
     },
     handleSearch(data) {
       console.log(data)
       if (data.date && data.date.length) {
-        data.date = data.date[0] + '-' + data.date[1]
+        data.date = data.date[0] + ' - ' + data.date[1]
       }
-
       this.pageNum = 1
       this.searchData = data
       this.$api.orderindex(this, 'schoolData')
@@ -833,13 +838,10 @@ export default {
     coursDetail(ab) {
       this.$router.push({
         path: '/fina/cusdetail',
-        // query: {
-        //   surname: ab.surname,
-        // },
-
       })
     },
     orderDetail(ab) {
+      
       this.$router.push({
         path: '/fina/orderDetail',
         query: {
@@ -1090,6 +1092,7 @@ header {
 }
 .coursename {
   color: #2798ee;
+  cursor:pointer;
 }
 .order-header {
   display: flex;

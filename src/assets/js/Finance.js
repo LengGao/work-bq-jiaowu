@@ -22,6 +22,7 @@ let Finance = {
         if (res.data.code == 0) {
           self[name] = data
           self.panelData = res.data.data.count[0]
+          // self.ruleForm = res.data.data.list[0]
         }
       },
     })
@@ -32,7 +33,7 @@ let Finance = {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
-      order_id: self.$route.query.order_id,
+      order_id:self.order_id ,
       //order_id赋值：order_id
     }
     console.log(config)
@@ -50,6 +51,8 @@ let Finance = {
       },
     })
   },
+
+
 }
 
 export default Finance

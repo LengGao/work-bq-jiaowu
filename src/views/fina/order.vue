@@ -29,7 +29,7 @@
         </div>
       </div>
       <!--表格-->
-      <div class="userTable" v-if="isTagactive === 1">
+      <div class="userTable" v-show="isTagactive === 1">
         <el-table ref="multipleTable" 
         :data="schoolData.list" 
         tooltip-effect="light" 
@@ -44,15 +44,15 @@
 
           <el-table-column prop="order_no" label="订单编号" min-width="100" column-key="course_id" show-overflow-tooltip>
             <template slot-scope="scope">
-              <div class="coursename" @click="orderDetail">
+              <div class="coursename" @click="orderDetail(scope.row)">
                 {{scope.row.order_no}}
               </div>
             </template>
           </el-table-column>
           <el-table-column prop="surname" label="学员姓名" min-width="70" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="class_type_name" label="联系方式" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="course_price" label="项目名称" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="create_time" label="联系方式" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="tips" label="项目名称" min-width="180" show-overflow-tooltip></el-table-column>
 
           <el-table-column prop="pay_money" label="实付金额" min-width="80" show-overflow-tooltip>
           </el-table-column>
@@ -83,7 +83,7 @@
 
       </div>
 
-      <div class="userTable" v-if="isTagactive === 2">
+      <div class="userTable" v-show="isTagactive === 2">
         <el-table ref="multipleTable" :data="schoolData" tooltip-effect="light" stripe @selection-change="handleSelectionChange" style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
           <el-table-column type="selection" width="45"> </el-table-column>
 
@@ -123,7 +123,7 @@
 
       </div>
 
-      <div class="userTable" v-if="isTagactive === 3">
+      <div class="userTable" v-show="isTagactive === 3">
         <el-table ref="multipleTable" :data="schoolData" tooltip-effect="light" stripe @selection-change="handleSelectionChange" style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
           <el-table-column type="selection" width="45"> </el-table-column>
 
@@ -245,6 +245,14 @@ export default {
   },
 
   methods: {
+    orderDetail(ab) {
+      this.$router.push({
+        path: '/fina/orderDetail',
+        query: {
+          order_id: ab.order_id,
+        },
+      })
+    },
     doPageChange(page) {
       this.page = page
       this.$api.orderindex(this, 'schoolData', this.datas)
@@ -256,11 +264,7 @@ export default {
         })
         .catch((_) => {})
     },
-    orderDetail() {
-      this.$router.push({
-        path: '/fina/orderDetail',
-      })
-    },
+   
     statusSwitch(ab) {
       this.isTagactive = ab.id
     },
