@@ -226,6 +226,22 @@ export function personalAttendanceSummary(params) {
         params,
     })
 }
+// 个人教材发放列表
+export function getMaterial(params) {
+    return request({
+        url: 'UserArchives/getMaterial',
+        method: 'get',
+        params,
+    })
+}
+// 个人课表
+export function getTable(params) {
+    return request({
+        url: '/UserArchives/getTable',
+        method: 'get',
+        params,
+    })
+}
 /**
  * 获取学生项目列表
  * @param {*} params 

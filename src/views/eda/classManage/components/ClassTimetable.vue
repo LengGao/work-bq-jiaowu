@@ -22,7 +22,6 @@
       </div>
       <el-calendar :value="calendarDate">
         <template slot="dateCell" slot-scope="{ date, data }">
-          <!-- :class="data.isSelected ? 'is-selected' : ''" -->
           <div
             class="day"
             :class="{
@@ -76,7 +75,6 @@ export default {
   },
   created() {
     this.createYears();
-    // this.getClassArrangeList();
   },
   methods: {
     handleOpen(data) {
@@ -84,6 +82,7 @@ export default {
       this.courseData = data;
       this.detailDialog = true;
     },
+    //获取课表信息
     async getClassArrangeList() {
       const data = {
         classroom_id: this.$route.query?.id,
@@ -100,6 +99,7 @@ export default {
         });
       }
     },
+    //获取年
     createYears() {
       const years = [];
       let startYear = 2019;
