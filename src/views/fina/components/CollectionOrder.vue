@@ -376,6 +376,7 @@ export default {
       justify-content: space-around;
       flex-wrap: wrap;
       li {
+        padding-left: 30px;
         width: calc(100% / 3);
         margin-bottom: 10px;
       }
