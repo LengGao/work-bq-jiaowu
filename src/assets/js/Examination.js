@@ -6,7 +6,8 @@ let Examination = {
   //考试科目列表
   subjectList(self, name) {
     let config = {
-      // search_box: ruleForm.search_box,
+      search_box:self.searchData.keyboard,
+      cate_id:self.searchData.category_id.pop(),
       page: self.page,
     }
     console.log(config)
@@ -23,10 +24,48 @@ let Examination = {
       },
     })
   },
+
+//添加科目
+  createSubject(self, ruleForm) {
+  let config = {
+  cate_id:self.ruleForm.cate_id.pop(),
+
+  subject_name: ruleForm.subject_name,
+  total_score: ruleForm.total_score,
+  pass_score: ruleForm.pass_score,
+  exam_type: ruleForm.exam_type,
+  credit_hour: ruleForm.credit_hour,
+  cost: ruleForm.cost,
+  period: ruleForm.period,
+  from_organization_id: ruleForm.from_organization_id,
+
+  // search_box: ruleForm.search_box,
+
+  page: self.page,
+}
+console.log(config)
+axiosHttp({
+  url: url.createSubject,
+  data: config,
+  method: 'POST',
+  then(res) {
+    console.log(res.data.data)
+    let data = res.data.data
+    if (res.data.code == 0) {
+      self[name] = data
+      self.dialogVisible=false
+      self.$api.subjectList(self, 'subjectData')
+    }
+  },
+})
+},
+
   //考试规则列表
   ruleList(self, name) {
     let config = {
-      // search_box: ruleForm.search_box,
+      search_box:self.searchDatas.keyboard,
+      cate_id:self.searchDatas.category_id.pop(),
+     
       page: self.page,
     }
     console.log(config)
@@ -43,28 +82,64 @@ let Examination = {
       },
     })
   },
-  //添加科目
-  createSubject(self, ruleForm) {
-    let config = {
-      // name:name,
-      // exam:exam,
-      // score:score,
-      // qualified:qualified,
-      // desc:desc,
+    //添加报考规则
+    createRule(self, ruleForm) {
+      let config = {
+        cate_id: ruleForm.cate_id,
+        rule_name: ruleForm.rule_name,
+        subject_name: ruleForm.subject_name,
+        exam_type: ruleForm.exam_type,
+        credit_hour: ruleForm.credit_hour,
+        exam_type: ruleForm.exam_type,
+        credit_hour: ruleForm.credit_hour,
+        comment: ruleForm.comment,
+        phone: ruleForm.phone,
+        id_card_limit: ruleForm.id_card_limit,
+        place_limit: ruleForm.place_limit,
+        age_limit: ruleForm.age_limit,
+        edu_limit: ruleForm.edu_limit,
+        work_limit: ruleForm.work_limit,
+        health_limit: ruleForm.health_limit,
 
-      cate_id: ruleForm.cate_id,
-      subject_name: ruleForm.subject_name,
-      cost: ruleForm.cost,
-      total_score: ruleForm.total_score,
-      pass_score: ruleForm.pass_score,
+        // search_box: ruleForm.search_box,
+  
+        page: self.page,
+      }
+      console.log(config)
+      axiosHttp({
+        url: url.createRule,
+        data: config,
+        method: 'POST',
+        then(res) {
+          console.log(res.data.data)
+          let data = res.data.data
+          if (res.data.code == 0) {
+            self[name] = data
+            self.dialogVisible=false
+            self.$api.createRule(self, 'schoolData')
+          }
+        },
+      })
+    },
+
+  //修改科目
+  updateSubject(self, ruleForm) {
+    let config = {
+    cate_id:self.ruleForm.cate_id,
+    id:self.ruleForm.id,
+    subject_name:self.ruleForm.subject_name,
+    total_score:self.ruleForm.total_score,
+    pass_score:self.ruleForm.pass_score,
+    cost:self.ruleForm.cost,
+    exam_type:self.ruleForm.exam_type,
+    credit_hour:self.ruleForm.credit_hour,
 
       // search_box: ruleForm.search_box,
-
       page: self.page,
     }
     console.log(config)
     axiosHttp({
-      url: url.createSubject,
+      url: url.updateSubject,
       data: config,
       method: 'POST',
       then(res) {
@@ -73,12 +148,57 @@ let Examination = {
         if (res.data.code == 0) {
           self[name] = data
           self.dialogVisible=false
-          self.$api.subjectList(self, 'subjectData')
+          self.$api.updateList(self, 'subjectData')
         }
       },
     })
   },
 
+  //删除报考科目
+  deleteSubject(self, id) {
+      let config = {
+        // search_box: ruleForm.search_box,
+        id:id,
+      }
+      console.log(config)
+      axiosHttp({
+        url: url.deleteSubject,
+        data: config,
+        method: 'POST',
+        then(res) {
+          console.log(res.data.data)
+          let data = res.data.data
+          if (res.data.code == 0) {
+            self[name] = data
+            self.dialogVisible=false
+            self.$api.subjectList(self, 'subjectData')
+          }
+        },
+      })
+    },
+
+  //删除报考规则
+  deleteRule(self, id) {
+  let config = {
+      // search_box: ruleForm.search_box,
+      id:id,
+  }
+  console.log(config)
+  axiosHttp({
+      url: url.deleteRule,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+          self.dialogVisible=false
+          self.$api.ruleList(self, 'schoolData')
+        }
+      },
+    })
+  },
 
   //授课老师下拉列表
   getTeacherDrop(self, name, data = {}) {

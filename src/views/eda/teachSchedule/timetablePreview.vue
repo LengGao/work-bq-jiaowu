@@ -56,7 +56,7 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-form-item label="班级名称" prop="classroom_id_arr">
+        <!-- <el-form-item label="班级名称" prop="classroom_id_arr">
           <el-select
             v-model="ruleForm.classroom_id_arr"
             placeholder="请选择班级名称"
@@ -64,7 +64,7 @@
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="上课时间" prop="name">
           <div
             v-for="(item, index) in lessonTime"
@@ -181,7 +181,7 @@ export default {
       ruleForm: {
         date: '',
         title: '',
-        classroom_id_arr: [55, 56, 57],
+        classroom_id_arr: [],
         category_id: '',
         teacher_id: '',
         teaching_type: '',
@@ -226,6 +226,8 @@ export default {
     }
   },
   created() {
+    this.ruleForm.category_id = this.$route.query.category_id
+    this.ruleForm.classroom_id_arr.push(this.$route.query.classroom_id)
     this.$api.getTeacherSublist(this, 'teacherData') //老师列表
     this.$api.getRoomSelect(this, 'roomData') //教室列表
     this.$api.getClassScheduling(this, this.schoolData)

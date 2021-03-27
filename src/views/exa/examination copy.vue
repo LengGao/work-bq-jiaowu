@@ -21,14 +21,14 @@
           :options="searchOptions"
           :data="searchData"
           @on-search="handleSearch"
-          v-show="isTagactive === 1"
+          v-if="isTagactive === 1"
         />
 
         <SearchList
-          :options="searchOptionss"
-          :data="searchDatas"
-          @on-search="handleSearchs"
-          v-show="isTagactive === 2"
+          :options="searchOptionstwo"
+          :data="searchData"
+          @on-search="handleSearch"
+          v-if="isTagactive === 2"
         />
 
         <!-- <search2
@@ -213,13 +213,11 @@
             <el-row>
               <el-col :lg="11">
                 <el-form-item label="所属分类" prop="cate_id">
-              <el-cascader
-              ref="cascader"
-              style="width: 100%"
-              placeholder="请选择分类"
-              v-model="ruleForm.cate_id"
-              :options="selectData"
-            ></el-cascader>
+              <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类" style="width:100%">
+                <el-option label="学历教育" value="1"></el-option>
+                <el-option label="职称考证" value="2"></el-option>
+                <el-option label="特种作业" value="3"></el-option>
+              </el-select>
             </el-form-item>
               </el-col>
               <el-col :lg="11">
@@ -235,9 +233,9 @@
            
             <el-row>
               <el-col :lg="11">
-                 <el-form-item label="考试科目" prop="subject_id_str">
+                 <el-form-item label="考试科目" prop="exam_type">
                  <el-select
-                  v-model="subject_id_str"
+                  v-model="value1"
                   multiple
                   placeholder="请选择考试科目（多选）"
                   style="width:300px"
@@ -253,11 +251,11 @@
             </el-form-item>
               </el-col>
              <el-col :lg="11">
-                <el-form-item label="报考省市" prop="region">
+                <el-form-item label="报考省市" prop="credit_hour">
                   <el-cascader
                   size="large"
                   :options="options"
-                  v-model="region"
+                  v-model="selectedOptions"
                   @change="handleChange"
                   style="width:300px">
                 </el-cascader>
@@ -282,9 +280,9 @@
 
           <el-row>
             <el-col :lg="11">
-                <el-form-item label="个人照片" prop="photo_limit" class="radiomargin">
+                <el-form-item label="个人照片" prop="phone" class="radiomargin">
                   <div class="radiocss">
-                  <el-radio-group v-model="ruleForm.photo_limit" style="width:250px">
+                  <el-radio-group v-model="ruleForm.phone" style="width:250px">
                     <el-radio :label="2" value="0">白底一寸照</el-radio>
                     <el-radio :label="1">蓝底一寸照
                       </el-radio>
@@ -606,7 +604,6 @@ export default {
 
     data() {
     return {
-       changeSwitch:'',
        kmdata: [
         {
           value: '选项1',
@@ -619,7 +616,6 @@ export default {
 
       ],
       value1: [],
-      subject_id_str:[],
       oppos:[{
         value:'1',
         label:'必考',
@@ -630,10 +626,6 @@ export default {
       }
       ],
       searchData: {
-        category_id: [],
-        keyboard: '',
-      },
-      searchDatas: {
         category_id: [],
         keyboard: '',
       },
@@ -655,24 +647,7 @@ export default {
         },
       ],
 
-       searchOptionss: [
-        {
-          key: 'category_id',
-          type: 'cascader',
-          attrs: {
-            placeholder: '所属分类',
-            clearable: true,
-            options: [],
-          },
-        },
-        {
-          key: 'keyboard',
-          attrs: {
-            placeholder: '报考规则',
-          },
-        },
-      ],
-
+      
       ruleTitle:'添加报考规则',
 
       handleChange:'',
@@ -681,7 +656,6 @@ export default {
       from_organization_id:'',
       data:[],
       options: regionDataPlus,
-      region:'',
       selectedOptions: [],
       radio: '0',
       radio1: '0',
@@ -727,9 +701,7 @@ export default {
       ruleForm: {
           rule_name:'',
 
-          photo_limit:'',
-
-
+          phone:'',
           id_card_limit:'',
           place_limit:'',
           age_limit:'',
@@ -820,39 +792,26 @@ export default {
   },
 
   mounted() {
+    this.$api.ruleList(this, 'schoolData'),  //报考规则列表
     this.$api.subjectList(this, 'subjectData')  //考试科目列表
     this.getCateList()
     // this.$api.updateSubject(this, 'subjectData')
     // this.$api.createRule(this, 'schoolData')  //添加规则
   },
     methods: {
-      
-
       handleSearch(data) {
       this.pageNum = 1
       this.searchData = data
       this.$api.subjectList(this, 'subjectData')
-    },
-    handleSearchs(data) {
-      this.pageNum = 1
-      this.searchDatas = data
-      console.log(this.isTagactive)
-      if(this.isTagactive === 2){
-      this.$api.ruleList(this, 'schoolData')
-      }else{
-   this.$api.subjectList(this, 'subjectData')  //考试科目列表
-      }
 
     },
 
-      //考试科目search
       async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData)
         this.searchOptions[0].attrs.options = this.selectData
-        this.searchOptionss[0].attrs.options = this.selectData
       }
     },
     cloneData(data, newData) {
@@ -879,35 +838,6 @@ export default {
       this.listData = res.data.data
       this.listTotal = res.data.total
     },
-
-    //报考规则search
-
-    cloneData(data, newData) {
-      data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
-        if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
-        }
-      })
-    },
-
-    async ruleList() {
-      const data = {
-        page: this.pageNum,
-        ...this.searchDatas,
-       
-      }
-      this.listLoading = true
-      const res = await ruleList(data)
-      this.listLoading = false
-      this.listData = res.data.data
-      this.listTotal = res.data.total
-    },
-
-
 
       deleteOneClass(index){
         this.data.splice(index,1)
@@ -965,7 +895,28 @@ export default {
 
     handleDelete(ab) {
       console.log(ab)
-      this.$confirm('此操作将删除, 是否继续?', '提示', {
+      this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          console.log(ab.id)
+          this.$api.deleteSubject(this, ab.id)
+
+
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+
+    deleterule(ab) {
+      console.log(ab)
+      this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -983,37 +934,11 @@ export default {
         })
     },
 
-    deleterule(ab) {
-      console.log(ab)
-      this.$confirm('此操作将删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          console.log(ab.id)
-          this.$api.deleteRule(this, ab.id)
-
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
-    },
-
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
 
     statusSwitch(ab) {
-      if(  ab.name === '报考规则'){
-      this.$api.ruleList(this, 'schoolData')  //报考规则列表
-      }else{
-       this.$api.subjectList(this, 'subjectData')  //考试科目列表
-      }
-    // this.getCateList()
       this.isTagactive = ab.id
     },
     getTableList(state, val, datas) {

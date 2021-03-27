@@ -168,8 +168,16 @@ export default {
   subjectList: '/Examination/subjectList',
   //报考规则
   ruleList: '/Examination/ruleList',
+  //添加报考规则
+  createRule: '/Examination/createRule',
+  //删除报考规则
+  deleteRule: '/Examination/deleteRule',
   //添加科目
   createSubject: '/Examination/createSubject',
+  //编辑科目
+  updateSubject: '/Examination/updateSubject',
+  //删除科目
+  deleteSubject: '/Examination/deleteSubject',
 
   //财务订单管理
   orderindex: '/order/index',

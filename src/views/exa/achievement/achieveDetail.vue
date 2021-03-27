@@ -1,7 +1,14 @@
 <template>
   <section class="mainwrap">
+    <header>
+      <SearchList
+        :options="searchOptions"
+        :data="searchData"
+        @on-search="handleSearch"
+      />
+    </header>
     <el-table
-      :data="tableData"
+      :data="listData"
       tooltip-effect="light"
       stripe
       style="width: 100%"
@@ -26,30 +33,16 @@
         >
         </el-table-column>
       </el-table-column>
-      <!-- <el-table-column prop="date" label="日期" width="150"> </el-table-column>
-      <el-table-column prop="date" label="日期" width="150"> </el-table-column>
-      <el-table-column prop="date" label="日期" width="150"> </el-table-column>
-      <el-table-column label="配送信息">
-        <el-table-column prop="name" label="姓名" width="120">
-        </el-table-column>
-        <el-table-column prop="name" label="姓名" width="120">
-        </el-table-column>
-        <el-table-column prop="name" label="姓名" width="120">
-        </el-table-column>
-        <el-table-column prop="name" label="姓名" width="120">
-        </el-table-column>
-      </el-table-column>
-      <el-table-column prop="name" label="姓名" width="120"> </el-table-column>
-      <el-table-column prop="name" label="姓名" width="120"> </el-table-column> -->
+
       <el-table-column label="操作" fixed="right" min-width="200">
         <template slot-scope="{ row }">
           <div style="display: flex; justify-content: center">
             <el-button type="text" @click="openEdit(row.book_id)"
-              >编辑</el-button
+              >录入成绩</el-button
             >
-            <el-button type="text" @click="link(row.book_id)"
+            <!-- <el-button type="text" @click="link(row.book_id)"
               >库存详情</el-button
-            >
+            > -->
           </div>
         </template>
       </el-table-column>
@@ -58,44 +51,112 @@
 </template>
 
 <script>
+import { cloneOptions } from '@/utils/index'
+import { getGradeListByPlan, getPlanGradeSelect } from '@/api/exa'
 export default {
   name: 'achieveDetail',
   data() {
     return {
       tableData: [],
-      title: [
-        { prop: 'id', title: '学生姓名' },
-        { prop: 'tel', title: '手机号码' },
-        { prop: 'score1', title: '系统集成基础知识' },
+      listData: [],
+      title: {},
+      searchOptions: [
         {
-          prop: '',
-          title: '系统集成应用技术',
-          children: [
-            { prop: '1_1', title: '选择题' },
-            { prop: 'score3', title: '判断题' },
-            { prop: 'score4', title: '理论题' },
-            { prop: 'score5', title: '总分' },
-          ],
+          key: 'exam_type',
+          type: 'select',
+          attrs: {
+            placeholder: '考试性质',
+            clearable: true,
+          },
+          options: [],
         },
-        // { prop: 'tel', title: '手机号码' },
-        // { prop: 'score1', title: '系统集成基础知识' },
-        // { prop: 'tel', title: '手机号码' },
-        // { prop: 'score1', title: '系统集成基础知识' },
+        {
+          key: 'grade_status',
+          type: 'select',
+          attrs: {
+            placeholder: '成绩状态',
+            clearable: true,
+          },
+          options: [],
+        },
+        {
+          key: 'search_box',
+          attrs: {
+            placeholder: '考试计划名称',
+          },
+        },
       ],
-      punchTitle: [
-        { prop: 'date_time', title: '打卡时间' },
-        { prop: 'total_problem', title: '题目总数' },
-        { prop: 'right_problem', title: '正确题数' },
-        { prop: 'accuracy', title: '正确率' },
-        { prop: 'use_time', title: '打卡用时' },
-        { prop: 'ranking', title: '打卡排行' },
-      ],
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        cate_id: [],
+        date: '',
+        exam_type: '',
+        grade_status: '',
+        search_box: '',
+        pid: '',
+      },
     }
   },
   created() {
-    this.headTitle = this.punchTitle
+    this.searchData.pid = this.$route.query.id
+    this.getPlanGradeSelect()
+    this.getGradeListByPlan()
+  },
+  methods: {
+    handleSearch(data) {
+      const times = data.date || ['', '']
+      delete data.date
+      this.pageNum = 1
+      this.searchData = {
+        ...data,
+      }
+      this.getGradeListByPlan()
+    },
+    // 获取教材分类
+    async getPlanGradeSelect() {
+      const data = { list: true }
+      const res = await getPlanGradeSelect(data)
+
+      if (res.code === 0) {
+        this.searchOptions[0].options = cloneOptions(
+          res.data.exam_type,
+          'name',
+          'id'
+        )
+        console.log(this.searchOptions[0].options)
+        this.searchOptions[1].options = cloneOptions(
+          res.data.grade_status,
+          'name',
+          'id'
+        )
+        console.log(this.searchOptions[1].options)
+      }
+    },
+    async getGradeListByPlan() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+        // pid: this.$route.query.id,
+      }
+      delete data.date
+      this.listLoading = true
+      const res = await getGradeListByPlan(data)
+      this.listLoading = false
+      this.title = res.data.title_field
+      this.listData = res.data.list
+      this.listTotal = res.data.total
+    },
   },
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
+</style>

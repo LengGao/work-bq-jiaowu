@@ -279,12 +279,9 @@ let resource = {
     })
   },
   //班级不带分页
-  getcourseallclass(self, index) {
+  getcourseallclass(self, id, name) {
     let config = {
-      // page: 1,
-      // page: self.pageNum,
-      // ...self.searchData,
-      // category_id: self.searchData.category_id.pop(),
+      category_id: id,
     }
     console.log(config)
     axiosHttp({
@@ -296,6 +293,7 @@ let resource = {
         if (res.data.code == 0) {
           console.log(data)
           self[name] = data
+
           // console.log(res.data.data)
           // self.cloneData(data, self.projectData, 'project_id', 'project_name')
           // console.log(self.projectData)

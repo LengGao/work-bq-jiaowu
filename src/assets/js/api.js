@@ -390,6 +390,11 @@ let api = {
           })
           if (num) {
             self.$api.getClassScheduling(self, self.schoolData)
+            for (var item in self.ruleForm) {
+              self.ruleForm[item] = ''
+              self.dialogVisible = false
+            }
+            // self.ruleForm = {}
           } else {
             self.$router.go(-1)
           }
@@ -438,7 +443,7 @@ let api = {
         if (res.data.code == 0) {
           let data = res.data.data
           console.log(data)
-          // let calendarData = []
+          self.calendarData = []
           data.map((i) => {
             console.log(i)
             console.log(i.date)
@@ -451,6 +456,7 @@ let api = {
               things:
                 '上课时间:' + i.period + ' <br/>上课地点:' + i.schoolroom_name,
             }
+
             // obj.year.push(i.date.split('-')[0])
             // console.log(obj.year)
             // obj.months.push(i.date.split('-')[1])
