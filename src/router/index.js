@@ -461,10 +461,17 @@ export const asyncRouter = [
       },
       //成绩管理组件开始
       {
-        path: 'achieveDetail',
-        name: 'achieveDetail',
+        path: 'achieveDetails',
+        name: 'achieveDetails',
         component: () => import('@/views/exa/achievement/achieveDetail.vue'),
-        meta: { title: '成绩管理', icon: 'product-add' },
+        meta: { title: '成绩详情', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'allResult',
+        name: 'allResult',
+        component: () => import('@/views/exa/achievement/allResults.vue'),
+        meta: { title: '全部成绩', icon: 'product-add' },
         hidden: true,
       },
       //成绩管理组件开始
