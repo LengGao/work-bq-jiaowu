@@ -126,6 +126,7 @@ export default {
         query: {
           time: ab.frist_class_time,
           classroom_id: ab.classroom_id,
+          category_id: ab.category_id,
         },
       })
     },
