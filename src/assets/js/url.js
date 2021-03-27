@@ -41,6 +41,26 @@ export default {
   organizationDetail: '/institution/info',
   modifyOrganization: '/institution/modify',
   modifyBlock: '/institution/modifyBlock',
+  getFileList: '/courseFile/fileList',
+  courseFileSort: '/batchSort/CourseFile',
+  alterFileList: '/courseFile/updateFile',
+  flieInfo: '/courseFile/flieInfo',
+  deleteFile: 'courseFile/deleteFile',
+  getvideochapter: '/video/getvideochapter',
+  addvideochapter: '/video/addvideochapter',
+  editvideochapter: '/video/editvideochapter',
+  deletevideochapter: '/video/deletevideochapter',
+  getvideoclass: '/video/getvideoclass',
+  videoChapterSort: '/batchSort/VideoChapter',
+  addvideo: '/video/addvideoclass', //新增课时
+  editvideoclass: '/video/editvideoclass',
+  deletevideoclass: '/video/deletevideoclass',
+  batchmovevideoclass: '/video/batchmovevideoclass',
+  //视频上传凭据
+  generateDataKey: '/video/generatevideodatakey', //视频加密
+  refreshUploadVideo: '/live/refreshuploadvideo', //刷新视频上传凭据
+  updatecreate: '/live/updatecreate', //获取视频上传凭据
+
   //教务管理
   getStudentManage: '/classstudents/studentmanage',
   getClassroomList: '/classroom/index',
@@ -57,9 +77,11 @@ export default {
   deleteTeacher: '/teacher/delete',
   getTeacherInfo: '/teacher/info',
   addScheduling: '/arrange/insert',
+  getClassScheduling: '/arrange/getList',
   getTimetableList: 'arrange/classroomList',
   getAllForPageList: 'arrange/getAllForPageList',
   exportExcelSchedule: '/arrange/exportExcel',
+  deleteClass: '/arrange/deleted',
 
   //系统配置
   getBucketList: '/oss/getBucketList',

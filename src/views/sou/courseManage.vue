@@ -54,18 +54,7 @@
             show-overflow-tooltip
             min-width="90"
           ></el-table-column>
-          <!-- <el-table-column
-            prop="cover_img"
-            label="缩略图"
-            min-width="80"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <div style="width:50px ;height:50px;">
-                <img :src="scope.row.cover_img" alt class="school_class_box" />
-              </div>
-            </template>
-          </el-table-column> -->
+
           <el-table-column
             prop="course_name"
             label="课程名称"
@@ -91,35 +80,7 @@
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
-          <!-- <el-table-column
-            prop="keshi"
-            label="视频个数"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="is_publish_status"
-            label="状态"
-            min-width="50"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            label="课程排序"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <el-col :span="12">
-                <el-input
-                  v-model="scope.row.sort"
-                  placeholder
-                  size="small"
-                  @blur="scopes(scope.row.course_id, scope.row.sort)"
-                ></el-input>
-              </el-col>
-            </template>
-          </el-table-column>
-          -->
+
           <el-table-column
             label="是否上架"
             min-width="100"
@@ -148,7 +109,7 @@
                 <el-button type="text" @click="toCreateClass(scope.row)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="toCreateClass(scope.row)"
+                <el-button type="text" @click="toConfigureCourses(scope.row)"
                   >配置</el-button
                 >
                 <el-button type="text" @click="toCreateClass(scope.row)"
@@ -156,13 +117,6 @@
                 >
               </div>
             </template>
-            <!-- <template slot-scope="scope" v-if="isTagactive === 2">
-              <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="toCreateClass(scope.row)"
-                  >查看详情</el-button
-                >
-              </div>
-            </template> -->
           </el-table-column>
         </el-table>
         <div class="table_bottom">
@@ -172,22 +126,6 @@
             @pageChange="handlePageChange"
           />
         </div>
-        <!-- <div style="display:flex;justify-content:space-between">
-          <div class="batch_btn" style="padding-top:40px">
-            <el-button @click="batchRelease">批量发布</el-button>
-            <el-button @click="batchClose">批量关闭</el-button>
-            <el-button @click="batchDeletion">批量删除</el-button>
-          </div>
-          <div class="table_bottom">
-            <div class="table_bottom">
-              <page
-                :data="schoolData.total"
-                :curpage="page"
-                @pageChange="doPageChange"
-              />
-            </div>
-          </div>
-        </div> -->
       </div>
     </section>
   </div>
@@ -255,6 +193,15 @@ export default {
   },
 
   methods: {
+    toConfigureCourses(ab) {
+      this.$router.push({
+        path: '/sou/configureCourses',
+        query: {
+          course_id: ab.course_id,
+          video_collection_id: ab.video_collection_id,
+        },
+      })
+    },
     async bashPublish(ab) {
       const data = { course_ids: ab.course_id, is_publish: ab.is_publish }
       const res = await bashPublish(data)
@@ -309,7 +256,6 @@ export default {
     async getCourseList() {
       const data = {
         page: this.pageNum,
-
         ...this.searchData,
         course_category_id: this.searchData.category_id.pop(),
       }

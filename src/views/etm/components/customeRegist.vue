@@ -4,6 +4,7 @@
       title="客户报名"
       :visible.sync="openStatus"
       @close="doClose"
+      :close-on-click-modal="false"
       append-to-body
       width="70%"
       class="add-teaching-material"
@@ -275,7 +276,7 @@
         <el-row>
           <el-form-item>
             <div style="display:flex;justify-content:flex-end">
-              <el-button>取消</el-button>
+              <el-button @click="doClose">取消</el-button>
               <el-button type="primary" @click="orderDeatilShow"
                 >报名缴费</el-button
               >
@@ -446,6 +447,9 @@ export default {
       this.projectVisible = status
     },
     doClose() {
+      for (var item in this.ruleForm) {
+        this.ruleForm[item] = ''
+      }
       this.$emit('addDialog', false)
     },
     changeAmount(av, ab) {

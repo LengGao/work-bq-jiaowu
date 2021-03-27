@@ -278,6 +278,33 @@ let resource = {
       },
     })
   },
+  //班级不带分页
+  getcourseallclass(self, index) {
+    let config = {
+      // page: 1,
+      // page: self.pageNum,
+      // ...self.searchData,
+      // category_id: self.searchData.category_id.pop(),
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getcourseallclass,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let data = res.data.data
+        if (res.data.code == 0) {
+          console.log(data)
+          self[name] = data
+          // console.log(res.data.data)
+          // self.cloneData(data, self.projectData, 'project_id', 'project_name')
+          // console.log(self.projectData)
+          // self.searchOptions[index].options = self.projectData
+          // console.log(self.searchOptions[index], index)
+        }
+      },
+    })
+  },
   //添加项目
   createProject(self, ruleForm) {
     let config = {
@@ -843,6 +870,683 @@ let resource = {
             type: 'error',
             message: res.data.message,
           })
+        }
+      },
+    })
+  },
+  //课程资料列表
+  getFileList(self, name, data = {}) {
+    let chapter_name = ''
+    if (data.name != '' || data.name != undefined) {
+      chapter_name = data.name
+    }
+    let config = {
+      course_id: self.$route.query.course_id,
+      page: self.page,
+      // chapter_name
+    }
+    axiosHttp({
+      url: url.getFileList,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
+  //批量排序课程资料
+  courseFileSort(sortAry, self) {
+    // let chapter_name = ''
+    // if (data.name != '' || data.name != undefined) {
+    //   chapter_name = data.name
+    // }
+    let config = {
+      sortAry: sortAry,
+    }
+    axiosHttp({
+      url: url.courseFileSort,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        if (res.data.code == 0) {
+          self.$api.getFileList(self, 'schoolData')
+        }
+        // console.log(res.data.data)
+        // self[name] = res.data.data
+      },
+    })
+  },
+  //修改课程资料
+  alterFileList(self, name) {
+    let config = {
+      course_file_id: self['ruleForm'].course_file_id,
+      file_name: self['ruleForm'].file_name,
+      sort: self['ruleForm'].sort,
+      file: self['ruleForm'].file,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.alterFileList,
+      data: config,
+      then(res) {
+        console.log(res)
+        if (res.status == 200) {
+          self.$message({
+            type: 'success',
+            message: '提交成功!',
+          })
+          self['dialogEditor'] = false
+        }
+      },
+    })
+  },
+  //批量删除
+  deleteFile(self, course_file_id) {
+    let config = {
+      course_file_id: course_file_id,
+      // is_publish: status,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.deleteFile,
+      data: config,
+      then(res) {
+        console.log(res.data.data)
+        if (res.data.code == 0) {
+          self.$api.getFileList(self, 'schoolData')
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+        } else {
+          self.$message({
+            type: 'error',
+            message: res.data.message,
+          })
+        }
+      },
+    })
+  },
+  //课程资料详情
+  flieInfo(self, file_id) {
+    let config = {
+      file_id: file_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.flieInfo,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        if (res.data.code == 0) {
+          // self.$api.getFileList(self, 'schoolData')
+          // self.$message({
+          //   type: 'success',
+          //   message: res.data.message,
+          // })
+          let data = res.data.data
+          self.ruleForm.file_name = data.file_name
+          self.ruleForm.sort = data.sort
+          self.ruleForm.oss_name = data.oss_name
+          self.ruleForm.oss_url = data.oss_url
+          self.icon = data.oss_url
+          self.ruleForm.suffix = data.suffix
+          self.ruleForm.course_file_id = data.course_file_id
+        } else {
+          self.$message({
+            type: 'error',
+            message: res.data.message,
+          })
+        }
+      },
+    })
+  },
+  //添加课程资料
+  addAppendFile(self, ruleForm) {
+    let config = {
+      course_id: self.$route.query.course_id,
+      file_name: ruleForm.file_name,
+      file: ruleForm.file,
+      sort: parseInt(ruleForm.sort),
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.addAppendFile,
+      data: config,
+      then(res) {
+        console.log(res.data.data)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.$api.getFileList(self, 'schoolData')
+          // for (let key in self.ruleForm) {
+          //   self.ruleForm[key] = ''
+          // }
+          self.dialogVisible = false
+          // self.$router.go(-1)
+        } else {
+          self.$message({
+            type: 'error',
+            message: res.data.message,
+          })
+        }
+      },
+    })
+  },
+  getvideochapter(self, name) {
+    let config = {
+      video_collection_id: self.video_collection_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getvideochapter,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        self[name] = res.data.data
+        // if(res.data.code==0){
+        //     self.$message({
+        //         type: "success",
+        //         message: "编辑成功!"
+        //     });
+        //     self.$api.videocollectionlist(self, 'dataList')
+        //     self.editdialogVisible = false
+        // }
+      },
+    })
+  },
+  addvideochapter(self, name) {
+    let config = {
+      video_chapter_name: self[name].name,
+      video_collection_id: self.video_collection_id,
+      video_chapter_sort: self[name].sort,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.addvideochapter,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: '添加成功!',
+          })
+          self.$api.getvideochapter(self, 'spaceList')
+          self.dialogVisible = false
+        }
+      },
+    })
+  },
+  addvideochapterfree(self, data) {
+    let config = {
+      video_class_free: data.video_class_free,
+      video_class_name: data.video_class_name,
+      // video_collection_id: data.video_collection_id,
+      video_class_id: data.video_class_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.addvideochapterfree,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.$api.getvideoclass(self, 'videoData') //右侧列表
+          // self.dialogVisible = false
+        }
+      },
+    })
+  },
+  editvideochapter(self, name) {
+    let config = {
+      video_chapter_name: self[name].name,
+      video_chapter_id: self[name].video_chapter_id,
+      video_chapter_sort: self[name].sort,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.editvideochapter,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: '修改成功!',
+          })
+          self.$api.getvideochapter(self, 'spaceList')
+          self.dialogSpace = false
+        }
+      },
+    })
+  },
+  deletevideochapter(self, id) {
+    let config = {
+      video_chapter_id: id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.deletevideochapter,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: '修改成功!',
+          })
+          self.$api.getvideochapter(self, 'spaceList')
+        }
+      },
+    })
+  },
+  //批量排序视频章节
+  videoChapterSort(sortAry, self) {
+    let config = {
+      sortAry: sortAry,
+    }
+    // console.log(config)
+    axiosHttp({
+      url: url.videoChapterSort,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        if (res.data.code == 0) {
+          // self[name] = res.data.data
+          self.$api.getvideoclass(self, 'videoData') //右侧列表
+        }
+      },
+    })
+  },
+  getvideoclass(self, name, data) {
+    console.log(data)
+    let keyboard = ''
+    if (data != undefined) {
+      keyboard = data.name
+    }
+    let config = {
+      video_collection_id: self.$route.query.video_collection_id,
+      video_chapter_id: self.video_chapter_id,
+      keyboard: keyboard,
+      page: self.page,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getvideoclass,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+        if (res.data.code == 0) {
+          let data = res.data.data
+          for (let i of data.data) {
+            i.video_class_duration =
+              parseInt(i.video_class_duration / 60) +
+              ':' +
+              (i.video_class_duration % 60)
+          }
+          self[name] = data
+        }
+      },
+    })
+  },
+  /**
+   * 获取视频上传凭证和地址（阿里云）
+   * @param {*} self
+   * @param {*} name
+   */
+  createUploadVideo(self, uploadInfo, uploader, fn) {
+    console.log('adasad')
+    let arr = uploadInfo.file.name.split('.')
+    let config = {
+      title: arr[0],
+      file_name: uploadInfo.file.name,
+    }
+    axiosHttp({
+      url: url.updatecreate,
+      data: config,
+      method: 'POST',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (fn) {
+          fn(data)
+          return
+        }
+        let uploadAuth = data.UploadAuth
+        let uploadAddress = data.UploadAddress
+        let videoId = data.VideoId
+        uploader.setUploadAuthAndAddress(
+          uploadInfo,
+          uploadAuth,
+          uploadAddress,
+          videoId
+        )
+      },
+    })
+  },
+  addvideo(self) {
+    let form = self.courseTimeForm
+    console.log(form)
+    let config = {
+      video_class_name: self.$parent.$parent.$parent.$parent.video_class_name, //视频课时名称
+      media_id: form.mediaId,
+      // video_class_coverurl: form.free,//	封面url
+      video_class_duration: form.lbDuration, //	课时时长
+      // video_class_status: self.$route.query.id,//状态
+      // video_class_free: self.zChapter,//	是否免费课时
+      // 录播
+      // video_class_free_time: form.mediaId,//	免费时长（秒）
+      video_chapter_id:
+        self.$parent.$parent.$parent.$parent.ruleForm.video_chapter_id, //章节id
+      video_collection_id: self.$route.query.video_collection_id, //	集合id
+      // video_class_teacher_id: form.mediaSite,//	老师id
+      // 直播
+      // media_id: form.startTime,//阿里返回的video_id
+      video_class_sort:
+        self.$parent.$parent.$parent.$parent.video_class_sort < 1
+          ? (self.$parent.$parent.$parent.$parent.video_class_sort = 1)
+          : self.$parent.$parent.$parent.$parent.video_class_sort, //	排序数字越大越靠前
+      // media_size: form.maxOnlineNum,//大小
+      media_name: form.media_name, //媒体名称后缀
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.addvideo,
+      data: config,
+      then(res) {
+        console.log(res)
+        self.reload()
+        // self.$common.success(res.data.msg);
+        // self.closeDialogK();
+        // self.$api.getCourseLesson(self, 1);
+      },
+    })
+  },
+  /**
+   * 刷新视频上传凭证
+   * @param {*} self
+   * @param {*} name
+   */
+  refreshUploadVideo(self, uploadInfo, uploader, fn) {
+    let config = {
+      videoId: uploadInfo.videoId,
+    }
+
+    axiosHttp({
+      url: url.refreshUploadVideo,
+      data: config,
+      then(res) {
+        let data = res.data.data
+        if (fn) {
+          fn(data)
+          return
+        }
+
+        let uploadAuth = data.UploadAuth
+        let uploadAddress = data.UploadAddress
+        let videoId = data.VideoId
+        uploader.setUploadAuthAndAddress(
+          uploadInfo,
+          uploadAuth,
+          uploadAddress,
+          videoId
+        )
+      },
+    })
+  },
+  editvideoclass(self) {
+    console.log()
+    let config = {
+      video_class_id: self.spaceData.video_class_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.editvideoclass,
+      data: config,
+      method: 'GET',
+      then(res) {
+        console.log(res)
+        self.editvideo = res.data.data
+        console.log(self.editvideo)
+        // self.$common.success(res.data.msg);
+        // self.closeDialogK();
+        // self.$api.getCourseLesson(self, 1);
+      },
+    })
+  },
+  deletevideoclass(self) {
+    console.log()
+    let config = {
+      video_class_id: self.singleImgId,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.deletevideoclass,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        // self.reload()
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: '删除成功!',
+          })
+          self.$api.getvideoclass(self, 'videoData') //右侧列表
+          self.$api.getvideochapter(self, 'spaceList') //左侧列表
+        }
+      },
+    })
+  },
+  multideleteVideo(self, name) {
+    console.log()
+    let config = {
+      video_class_id: self[name],
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.deletevideoclass,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        // self.reload()
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: '删除成功!',
+          })
+          self.$api.getvideoclass(self, 'videoData') //右侧列表
+          self.$api.getvideochapter(self, 'spaceList') //左侧列表
+        }
+      },
+    })
+  },
+  editVideoSuccess(self) {
+    let form = self.courseTimeForm
+    console.log(self.$parent.$parent.$parent.$parent.editvideo.video_class_name)
+    let config = {
+      video_class_name:
+        self.$parent.$parent.$parent.$parent.editvideo.video_class_name, //视频课时名称
+      media_id: form.mediaId,
+      // video_class_coverurl: form.free,//	封面url
+      video_class_duration: form.lbDuration, //	课时时长
+      // video_class_status: self.$route.query.id,//状态
+      // video_class_free: self.zChapter,//	是否免费课时
+      // 录播
+      // video_class_free_time: form.mediaId,//	免费时长（秒）
+      video_chapter_id:
+        self.$parent.$parent.$parent.$parent.editvideo.video_chapter_id, //章节id
+      video_collection_id: self.$route.query.video_collection_id, //	集合id
+      // video_class_teacher_id: form.mediaSite,//	老师id
+      // 直播
+      // media_id: form.startTime,//阿里返回的video_id
+      video_class_sort:
+        self.$parent.$parent.$parent.$parent.editvideo.video_class_sort < 1
+          ? (self.$parent.$parent.$parent.$parent.editvideo.video_class_sort = 1)
+          : self.$parent.$parent.$parent.$parent.editvideo.video_class_sort, //	排序数字越大越靠前
+      // media_size: form.maxOnlineNum,//大小
+      media_name: form.media_name, //媒体名称后缀
+      video_class_id:
+        self.$parent.$parent.$parent.$parent.editvideo.video_class_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.editvideoclass,
+      data: config,
+      then(res) {
+        console.log(res)
+        self.reload()
+        // self.$common.success(res.data.msg);
+        // self.closeDialogK();
+        // self.$api.getCourseLesson(self, 1);
+      },
+    })
+  },
+  batchmovevideoclass(self) {
+    let config = {
+      video_class_id: self.transFormId,
+      video_chapter_id: self.transvideo_chapter_id,
+    }
+    axiosHttp({
+      url: url.batchmovevideoclass,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: '移动成功!',
+          })
+          self.dialogTransform = false
+          self.$api.getvideoclass(self, 'videoData') //右侧列表
+          self.$api.getvideochapter(self, 'spaceList') //左侧列表
+        }
+      },
+    })
+  },
+  mutilbatchmovevideoclass(self) {
+    let config = {
+      video_class_id: self.multiTransformConfirm,
+      video_chapter_id: self.transvideo_chapter_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.batchmovevideoclass,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: '移动成功!',
+          })
+          self.dialogTransform = false
+          self.$api.getvideoclass(self, 'videoData') //右侧列表
+          self.$api.getvideochapter(self, 'spaceList') //左侧列表
+        }
+      },
+    })
+  },
+  /**
+   * 刷新视频上传凭证
+   * @param {*} self
+   * @param {*} name
+   */
+  refreshUploadVideo(self, uploadInfo, uploader, fn) {
+    let config = {
+      videoId: uploadInfo.videoId,
+    }
+
+    axiosHttp({
+      url: url.refreshUploadVideo,
+      data: config,
+      then(res) {
+        let data = res.data.data
+        if (fn) {
+          fn(data)
+          return
+        }
+
+        let uploadAuth = data.UploadAuth
+        let uploadAddress = data.UploadAddress
+        let videoId = data.VideoId
+        uploader.setUploadAuthAndAddress(
+          uploadInfo,
+          uploadAuth,
+          uploadAddress,
+          videoId
+        )
+      },
+    })
+  },
+  createUploadVideo(self, uploadInfo, uploader, fn) {
+    console.log('adasad')
+    let arr = uploadInfo.file.name.split('.')
+    let config = {
+      title: arr[0],
+      file_name: uploadInfo.file.name,
+    }
+    axiosHttp({
+      url: url.updatecreate,
+      data: config,
+      method: 'POST',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (fn) {
+          fn(data)
+          return
+        }
+        let uploadAuth = data.UploadAuth
+        let uploadAddress = data.UploadAddress
+        let videoId = data.VideoId
+        uploader.setUploadAuthAndAddress(
+          uploadInfo,
+          uploadAuth,
+          uploadAddress,
+          videoId
+        )
+      },
+    })
+  },
+  /**
+   * 视频加密
+   * @param {*} self
+   * @param {*} name
+   */
+  generateDataKey(self) {
+    let config = {
+      video_id: self.courseTimeForm.mediaId,
+    }
+    axiosHttp({
+      url: url.generateDataKey,
+      data: config,
+      then(res) {
+        if (self.zCourseTime) {
+          // 修改
+          // self.$api.saveCourseLesson(self);
+        } else {
+          // 新增
+          // self.$api.addCourseLesson(self);
         }
       },
     })

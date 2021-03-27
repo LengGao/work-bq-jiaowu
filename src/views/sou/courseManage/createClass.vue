@@ -9,268 +9,246 @@
           :model="formData"
           :rules="rules"
           ref="ruleForm"
+          class="class-form"
           :show-message="true"
           label-position="right"
         >
           <!--左边部分-->
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="课程分类">
-                <el-cascader
-                  :key="selectData.length"
-                  ref="cascader"
-                  style="240px"
-                  placeholder="请选择分类"
-                  v-model="formData.category_id"
-                  :options="selectData"
-                ></el-cascader>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="12">
-              <el-form-item label="任课老师" prop="teacher_id">
-                <el-select
-                  filterable
-                  v-model="formData.teacher_id"
-                  placeholder="请选择任课老师"
-                >
-                  <el-option
-                    v-for="item in teacherData"
-                    :key="item.teacher_id"
-                    :label="item.teacher_name"
-                    :value="item.teacher_id"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="课程名称" prop="course_name">
-                <el-input
-                  style="width:740px;"
-                  v-model="formData.course_name"
-                  placeholder="请输入课程名称"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="课程名称" prop="brief">
-                <el-input
-                  type="textarea"
-                  style="width:740px;"
-                  v-model="formData.brief"
-                  placeholder="请输入课程简介"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
 
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="首页分类" prop="index_category_id">
-                <el-select
-                  filterable
-                  v-model="formData.index_category_id"
-                  placeholder="请选择首页分类"
-                >
-                  <el-option
-                    v-for="item in homeData.list"
-                    :key="item.index_category_id"
-                    :label="item.index_category_name"
-                    :value="item.index_category_id"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="全部课程排序" prop="sort">
-                <el-input
-                  type="number"
-                  v-model="formData.sort"
-                  placeholder="排序数字越大课程越靠前"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="课程价格" prop="course_price">
-                <el-input
-                  placeholder="请输入课程价格"
-                  v-model="formData.course_price"
-                  type="number"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="12">
-              <el-form-item label="课程封面" prop="cover_img">
-                <div v-show="!haschoose">
-                  <div class="headPortrait el-icon-plus" @click="addIcon"></div>
-                  <div style="color:#aaa;ling-height:20px">
-                    <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
-                    <p><span> 2. 推荐尺寸750*420px或者16:9</span></p>
-                  </div>
-                </div>
-                <div v-show="haschoose" class=" imageBox ">
-                  <i class=" iconjia el-icon-plus" @click="addIcon"></i>
-                  <img
-                    style="width:100%;height:100%; border-radius: 3px"
-                    :src="formData.cover_img"
-                    alt=""
-                  />
-                </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="关联视频集" prop="video_collection_id">
-                <el-select
-                  filterable
-                  v-model="formData.video_collection_id"
-                  placeholder="请选择关联视频集"
-                >
-                  <el-option
-                    v-for="item in videoData.data"
-                    :key="item.video_collection_id"
-                    :label="item.video_collection_name"
-                    :value="item.video_collection_id"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="12">
-              <el-form-item label="关联题库" prop="problem_course_id">
-                <el-select
-                  filterable
-                  v-model="formData.problem_course_id"
-                  placeholder="请选择关联题库"
-                >
-                  <el-option
-                    v-for="item in questionBank.list"
-                    :key="item.problem_course_id"
-                    :label="item.course_name"
-                    :value="item.problem_course_id"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="是否置顶">
-                <el-radio-group v-model="formData.is_topping" @change="isReal">
-                  <el-radio :label="1">是</el-radio>
-                  <el-radio :label="2">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="12">
-              <el-form-item label="划线价格" prop="past_price">
-                <el-input
-                  placeholder="请输入划线价格"
-                  type="number"
-                  v-model="formData.past_price"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="热门推荐" prop="is_hot">
-                <el-radio-group v-model="formData.is_hot">
-                  <el-radio :label="1">是</el-radio>
-                  <el-radio :label="2">否</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="12">
-              <el-form-item label="热门课程排序" prop="hot_sort">
-                <el-input
-                  placeholder="排序数字越大课程越靠前"
-                  type="number"
-                  v-model="formData.hot_sort"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="售卖方式" prop="sale_type">
-                <el-radio-group v-model="formData.sale_type" @change="isFree">
-                  <el-radio :label="1">付费</el-radio>
-                  <el-radio :label="2">免费</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="12">
-              <el-form-item
-                label="免费课程排序"
-                prop="free_sort"
-                v-if="formData.sale_type == 2"
-              >
-                <el-input
-                  placeholder="排序数字越大课程越靠前"
-                  type="number"
-                  v-model="formData.free_sort"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :sm="12">
-              <el-form-item label="购买数量" prop="is_fictitious">
-                <el-radio-group
-                  v-model="formData.is_fictitious"
-                  @change="isReal"
-                >
-                  <el-radio :label="1">虚拟</el-radio>
-                  <el-radio :label="0">真实</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="12">
-              <el-form-item
-                label="虚拟数量"
-                prop="fictitious_num"
-                v-if="formData.is_fictitious == '1'"
-              >
-                <el-input
-                  placeholder="请输入虚拟数量"
-                  type="number"
-                  v-model="formData.fictitious_num"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <el-form-item label="课程分类">
+            <el-cascader
+              :key="selectData.length"
+              ref="cascader"
+              style="240px"
+              placeholder="请选择分类"
+              v-model="formData.course_category_id"
+              :options="selectData"
+            ></el-cascader>
+          </el-form-item>
 
-          <el-row style="height:400px">
-            <el-form-item
-              label="课程介绍"
-              class="textarea_date"
-              prop="introduction"
+          <el-form-item label="任课老师" prop="teacher_id">
+            <el-select
+              filterable
+              v-model="formData.teacher_id"
+              placeholder="请选择任课老师"
             >
-              <el-upload
-                class="avatar-uploader"
-                :action="serverUrl"
-                name="image"
-                :headers="header"
-                :show-file-list="false"
-                :on-success="uploadSuccess"
-                :on-error="uploadError"
-                :before-upload="beforeUpload"
+              <el-option
+                v-for="item in teacherData"
+                :key="item.teacher_id"
+                :label="item.teacher_name"
+                :value="item.teacher_id"
               >
-              </el-upload>
-              <quill-editor
-                v-model="content"
-                ref="myQuillEditor"
-                :options="editorOption"
-                @change="onEditorChange($event)"
-                style="height:200px"
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="课程名称" prop="course_name">
+            <el-input
+              style="width:740px;"
+              v-model="formData.course_name"
+              placeholder="请输入课程名称"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="课程名称" prop="brief" style="width:100%">
+            <el-input
+              type="textarea"
+              style="width:740px;"
+              v-model="formData.brief"
+              placeholder="请输入课程简介"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="首页分类" prop="index_category_id">
+            <el-select
+              filterable
+              v-model="formData.index_category_id"
+              placeholder="请选择首页分类"
+            >
+              <el-option
+                v-for="item in homeData.list"
+                :key="item.index_category_id"
+                :label="item.index_category_name"
+                :value="item.index_category_id"
               >
-              </quill-editor>
-            </el-form-item>
-          </el-row>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="全部课程排序" prop="sort">
+            <el-input
+              type="number"
+              v-model="formData.sort"
+              placeholder="排序数字越大课程越靠前"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="课程价格" prop="course_price">
+            <el-input
+              placeholder="请输入课程价格"
+              v-model="formData.course_price"
+              type="number"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="课程封面" prop="cover_img" class="upload-cover">
+            <el-upload
+              name="image"
+              :headers="headers"
+              :action="uploadImageUrl"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img
+                v-if="formData.cover_img"
+                :src="formData.cover_img"
+                class="img"
+              />
+              <i v-else class="el-icon-plus upload-cover-icon"></i>
+            </el-upload>
+            <!-- <div v-show="!haschoose">
+              <div class="headPortrait el-icon-plus" @click="addIcon"></div>
+              <div style="color:#aaa;ling-height:20px">
+                <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
+                <p><span> 2. 推荐尺寸750*420px或者16:9</span></p>
+              </div>
+            </div>
+            <div v-show="haschoose" class=" imageBox ">
+              <i class=" iconjia el-icon-plus" @click="addIcon"></i>
+              <img
+                style="width:100%;height:100%; border-radius: 3px"
+                :src="formData.cover_img"
+                alt=""
+              />
+            </div> -->
+          </el-form-item>
+
+          <el-form-item label="关联视频集" prop="video_collection_id">
+            <el-select
+              filterable
+              v-model="formData.video_collection_id"
+              placeholder="请选择关联视频集"
+            >
+              <el-option
+                v-for="item in videoData.data"
+                :key="item.video_collection_id"
+                :label="item.video_collection_name"
+                :value="item.video_collection_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="关联题库" prop="problem_course_id">
+            <el-select
+              filterable
+              v-model="formData.problem_course_id"
+              placeholder="请选择关联题库"
+            >
+              <el-option
+                v-for="item in questionBank.list"
+                :key="item.problem_course_id"
+                :label="item.course_name"
+                :value="item.problem_course_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="是否置顶">
+            <el-radio-group v-model="formData.is_topping" @change="isReal">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="2">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="划线价格" prop="past_price">
+            <el-input
+              placeholder="请输入划线价格"
+              type="number"
+              v-model="formData.past_price"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="热门推荐" prop="is_hot">
+            <el-radio-group v-model="formData.is_hot">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="2">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="热门课程排序" prop="hot_sort">
+            <el-input
+              placeholder="排序数字越大课程越靠前"
+              type="number"
+              v-model="formData.hot_sort"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="售卖方式" prop="sale_type">
+            <el-radio-group v-model="formData.sale_type" @change="isFree">
+              <el-radio :label="1">付费</el-radio>
+              <el-radio :label="2">免费</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item
+            label="免费课程排序"
+            prop="free_sort"
+            v-if="formData.sale_type == 2"
+          >
+            <el-input
+              placeholder="排序数字越大课程越靠前"
+              type="number"
+              v-model="formData.free_sort"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="购买数量" prop="is_fictitious">
+            <el-radio-group v-model="formData.is_fictitious" @change="isReal">
+              <el-radio :label="1">虚拟</el-radio>
+              <el-radio :label="0">真实</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item
+            label="虚拟数量"
+            prop="fictitious_num"
+            v-if="formData.is_fictitious == '1'"
+          >
+            <el-input
+              placeholder="请输入虚拟数量"
+              type="number"
+              v-model="formData.fictitious_num"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item
+            label="课程介绍"
+            class="textarea_date"
+            prop="introduction"
+            style="width:100%;height:334px"
+          >
+            <el-upload
+              class="avatar-uploader"
+              :action="serverUrl"
+              name="image"
+              :headers="header"
+              :show-file-list="false"
+              :on-success="uploadSuccess"
+              :on-error="uploadError"
+              :before-upload="beforeUpload"
+            >
+            </el-upload>
+            <quill-editor
+              v-model="content"
+              ref="myQuillEditor"
+              :options="editorOption"
+              @change="onEditorChange($event)"
+              style="height:200px"
+            >
+            </quill-editor>
+          </el-form-item>
+
           <el-form-item> </el-form-item>
           <div class="entybtn">
             <!-- <el-button @click="releaseCourse('ruleForm', 'is_publish')"
@@ -325,6 +303,10 @@ export default {
   },
   data() {
     return {
+      uploadImageUrl,
+      // headers: {
+      //   token: this.$store.state.user.token,
+      // },
       editor: null,
       pictureVisible: false,
       haschoose: false,
@@ -437,6 +419,21 @@ export default {
   mounted() {},
 
   methods: {
+    handleAvatarSuccess(res, file) {
+      console.log(res)
+      this.formData.cover_img = res.data?.data?.url || ''
+    },
+    beforeAvatarUpload(file) {
+      const isImg = file.type.indexOf('image') !== -1
+      const isLt20M = file.size / 1024 / 1024 < 20
+      if (!isImg) {
+        this.$message.error('请上传图片')
+      }
+      if (!isLt20M) {
+        this.$message.error('上传图片大小不能超过 20MB!')
+      }
+      return isLt20M && isImg
+    },
     async getCoursesDetail() {
       const data = { id: this.course_id }
       console.log(data)
@@ -444,7 +441,7 @@ export default {
       console.log(res)
       if (res.code === 0) {
         this.formData = res.data.info
-        this.formData.category_id = res.data.info.course_category_id
+        this.formData.course_category_id = res.data.info.course_category_id
       }
     },
     handleCancle() {
@@ -466,14 +463,14 @@ export default {
     async submit() {
       const data = {
         ...this.formData,
-        category_id: Array.isArray(this.formData.category_id)
-          ? this.formData.category_id.pop()
-          : this.formData.category_id,
+        course_category_id: Array.isArray(this.formData.course_category_id)
+          ? this.formData.course_category_id.pop()
+          : this.formData.course_category_id,
       }
-      if (this.id) {
-        data.book_id = this.id
+      if (this.course_id) {
+        data.course_id = this.course_id
       }
-      const api = this.id ? editCourse : addCourse
+      const api = this.course_id ? editCourse : addCourse
       const res = await api(data)
       console.log(res)
       if (res.code === 0) {
@@ -685,6 +682,37 @@ export default {
 }
 
 .imageBox:hover i {
+  display: block;
+}
+.class-form {
+  display: flex;
+  flex-wrap: wrap;
+  .el-form-item {
+    width: 400px;
+  }
+}
+.upload-cover /deep/.el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.upload-cover /deep/.el-upload:hover {
+  border-color: #409eff;
+}
+.upload-cover-icon {
+  font-size: 28px;
+  color: hsl(215, 8%, 58%);
+  width: 240px;
+  height: 135px;
+  line-height: 135px;
+  text-align: center;
+}
+.img {
+  padding: 5px;
+  width: 240px;
+  height: 135px;
   display: block;
 }
 </style>
