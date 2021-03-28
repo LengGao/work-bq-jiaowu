@@ -599,7 +599,7 @@
 
 <script>
 import SearchList from '@/components/SearchList/index'
-import { regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+import { provinceAndCityData } from 'element-china-area-data'
 import { getCateList } from '@/api/sou'
 export default {
     name: 'examination',
@@ -680,7 +680,7 @@ export default {
       category_name:'',
       from_organization_id:'',
       data:[],
-      options: regionDataPlus,
+      options: provinceAndCityData,
       region:'',
       selectedOptions: [],
       radio: '0',
@@ -826,7 +826,14 @@ export default {
     // this.$api.createRule(this, 'schoolData')  //添加规则
   },
     methods: {
-      
+
+       handleChange () {
+        var loc = "";
+        for (let i = 0; i < this.selectedOptions.length; i++) {
+            loc += CodeToText[this.selectedOptions[i]];
+        }
+        console.log(loc)//打印区域码所对应的属性值即中文地址
+      },
 
       handleSearch(data) {
       this.pageNum = 1
