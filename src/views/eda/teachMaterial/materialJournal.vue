@@ -154,6 +154,7 @@ export default {
     //教材发放日志
     async dispenseLog() {
       const data = {
+        id: this.$route.query?.id || "",
         page: this.pageNum,
         ...this.searchData,
       };
