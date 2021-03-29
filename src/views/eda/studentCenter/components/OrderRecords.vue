@@ -79,18 +79,40 @@
         >
           <template slot-scope="{ row }">
             <div class="operation_btn">
-              <el-button type="text" @click="linkTo(row.id)">收款</el-button>
-              <el-button type="text" @click="linkTo(row.id)">退费</el-button>
-              <el-button type="text" @click="linkTo(row.id)">作废</el-button>
+              <el-button
+                type="text"
+                v-if="excludes(row, 0)"
+                @click="openOrderActions(row, 1)"
+                >收款</el-button
+              >
+              <el-button
+                type="text"
+                v-if="excludes(row, 5)"
+                @click="openOrderActions(row, 2)"
+                >退款</el-button
+              >
+              <el-button
+                type="text"
+                v-if="excludes(row, 4)"
+                @click="openOrderActions(row, 3)"
+                >作废</el-button
+              >
             </div>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <CollectionOrder
+      v-model="orderActionDialog"
+      :type="dialogType"
+      :orderInfo="dialogInfo"
+      @on-success="getOrderList"
+    />
   </div>
 </template>
 
 <script>
+import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import { getOrderList } from "@/api/eda";
 export default {
   name: "orderRecords",
@@ -99,6 +121,9 @@ export default {
       type: [String, Number],
       default: "",
     },
+  },
+  components: {
+    CollectionOrder,
   },
   data() {
     return {
@@ -112,14 +137,28 @@ export default {
         4: "已作废",
         5: "已退款",
       },
+      orderActionDialog: false,
+      dialogInfo: {},
+      dialogType: 1,
     };
   },
   created() {
     this.getOrderList();
   },
   methods: {
-    linkTo(id) {
-      console.log(id);
+    // 按钮操作
+    excludes(row, type) {
+      const auth = {
+        0: row.overdue_money > 0, // 收款
+        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
+        5: ![4, 5].includes(row.pay_status), // 作废
+      };
+      return auth[type];
+    },
+    openOrderActions(row, type) {
+      this.dialogType = type;
+      this.dialogInfo = row;
+      this.orderActionDialog = true;
     },
     //订单列表
     async getOrderList() {
