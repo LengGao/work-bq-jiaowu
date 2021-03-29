@@ -40,10 +40,10 @@ export function orderCollect(data) {
  * 订单作废 退费
  * @param {*} data 
  */
-export function orderCancel(data) {
+export function orderCancel(params) {
     return request({
         url: '/order/cancel',
-        method: 'post',
-        data
+        method: 'get',
+        params
     })
 }

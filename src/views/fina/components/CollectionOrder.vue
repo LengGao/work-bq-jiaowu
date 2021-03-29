@@ -39,10 +39,10 @@
                 placeholder="请选择支付方式"
               >
                 <el-option
-                  v-for="item in payTypes"
-                  :key="item.type"
+                  v-for="(item, index) in payTypes"
+                  :key="index"
                   :label="item.name"
-                  :value="item.type"
+                  :value="item.name"
                 >
                 </el-option>
               </el-select>
@@ -100,10 +100,10 @@
                 placeholder="请选择退费方式"
               >
                 <el-option
-                  v-for="item in payTypes"
-                  :key="item.type"
+                  v-for="(item, index) in payTypes"
+                  :key="index"
                   :label="item.name"
-                  :value="item.type"
+                  :value="item.name"
                 >
                 </el-option>
               </el-select>
@@ -186,19 +186,15 @@ export default {
       payTypes: [
         {
           name: "现金",
-          type: 1,
         },
         {
           name: "微信",
-          type: 2,
         },
         {
           name: "支付宝",
-          type: 3,
         },
         {
           name: "聚合收单",
-          type: 4,
         },
       ],
       formData: {
