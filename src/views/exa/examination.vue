@@ -150,10 +150,10 @@ export default {
       schoolData: [],
       subjectData: [],
       createData: [],
-       isTagactive: 1,
-        page: 1,
-        cate_id: '',
-       tabFun: [
+      isTagactive: 1,
+      page: 1,
+      cate_id: '',
+      tabFun: [
         {
           id: 1,
           name: '考试科目',
