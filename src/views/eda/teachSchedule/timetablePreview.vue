@@ -1,42 +1,358 @@
 <template>
-  <section class="mainwrap">
-    <el-calendar :first-day-of-week="7" v-model="value">
-      <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
-      <template slot="dateCell" slot-scope="{ date, data }">
+  <div class="mainwrap">
+    <el-calendar>
+      <template slot="dateCell" slot-scope="{ date, data }" class="calItem">
         <div
-          slot="reference"
-          class="div-Calendar"
-          @click="calendarOnClick(data)"
+          :class="data.isSelected ? 'is-selected' : ''"
+          @click="calClick(data)"
         >
-          <p :class="data.isSelected ? 'is-selected' : ''">
-            {{
-              data.day
-                .split('-')
-                .slice(1)
-                .join('-')
-            }}
-            {{ data.isSelected ? '✔️' : '' }}
+          <p class="dayItem" v-if="data.day.substr(-2) < 10">
+            {{ data.day.substr(-1) }}
+          </p>
+          <p class="dayItem" v-else>{{ data.day.substr(-2) }}</p>
+          <div v-for="(item, index) in calendarData" :key="index">
+            <div
+              v-if="
+                item.years.indexOf(data.day.split('-').slice(0)[0]) != -1 &&
+                  item.months.indexOf(data.day.split('-').slice(1)[0]) != -1 &&
+                  item.days.indexOf(
+                    data.day
+                      .split('-')
+                      .slice(2)
+                      .join('-')
+                  ) != -1
+              "
+            >
+              <div class="deleteIcon" @click="deleteClass(item)">
+                <i class="el-icon-delete "></i>
+              </div>
+
+              <el-tooltip :content="item.things" placement="right">
+                <div class="mark" v-html="item.things"></div>
+              </el-tooltip>
+            </div>
+            <div v-else></div>
+          </div>
+          <p
+            class="addBtn"
+            v-show="data.isSelected == true"
+            @click="dialogVisible = true"
+          >
+            添加日程
           </p>
         </div>
       </template>
     </el-calendar>
-  </section>
-</template>
+    <el-dialog
+      title="添加上课信息"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <!-- <el-form-item label="班级名称" prop="classroom_id_arr">
+          <el-select
+            v-model="ruleForm.classroom_id_arr"
+            placeholder="请选择班级名称"
+          >
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item> -->
+        <el-form-item label="上课时间" prop="name">
+          <div
+            v-for="(item, index) in lessonTime"
+            :key="index"
+            class="lessonTime"
+          >
+            <el-time-picker
+              is-range
+              v-model="item.classTimeArr"
+              style="width:240px"
+              format="HH:mm"
+              value-format="HH:mm"
+              range-separator="至"
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+              placeholder="选择时间范围"
+            >
+            </el-time-picker>
+            <span
+              class="el-icon-plus"
+              style="padding-left:10px"
+              @click="addTime()"
+            ></span>
+            <span
+              class="el-icon-minus"
+              style="padding-left:5px"
+              @click="delTime(index)"
+            ></span>
+          </div>
+        </el-form-item>
+        <el-form-item label="授课老师" prop="name">
+          <el-select
+            v-model="ruleForm.teacher_id"
+            class="common-width"
+            placeholder="请选择默认老师"
+          >
+            <el-option
+              v-for="item in teacherData"
+              :key="item.teacher_id"
+              :label="item.teacher_name"
+              :value="item.teacher_id"
+            ></el-option>
+            <!-- <el-option label="区域二" value="beijing"></el-option> -->
+          </el-select>
+        </el-form-item>
+        <el-form-item label="授课方式" prop="name">
+          <el-select
+            v-model="ruleForm.teaching_type"
+            placeholder="请选择授课方式"
+            class="common-width"
+          >
+            <el-option
+              v-for="item in regionData"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="上课教室" prop="name">
+          <el-select
+            v-model="ruleForm.schoolroom_id"
+            placeholder="请选择"
+            class="common-width"
+          >
+            <el-option
+              v-for="item in roomData"
+              :key="item.id"
+              :label="item.room_name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="跟班人员" prop="name">
+          <el-select
+            v-model="ruleForm.staff_id"
+            placeholder="请选择"
+            multiple
+            class="common-width"
+          >
+            <el-option
+              v-for="item in staffData"
+              :key="item.staff_id"
+              :label="item.staff_name"
+              :value="item.staff_id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注信息" prop="remark">
+          <el-input
+            placeholder="请输入备注信息"
+            class="common-width"
+            v-model="ruleForm.remark"
+          ></el-input>
+        </el-form-item>
+      </el-form>
 
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleAdd()">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
 <script>
 export default {
-  name: 'timetablePreview',
+  name: 'calendar',
   data() {
     return {
-      value: '',
+      rules: {},
+      classTimeArr: '',
+      lessonTime: [{ classTimeArr: '' }],
+      ruleForm: {
+        date: '',
+        title: '',
+        classroom_id_arr: [],
+        category_id: '',
+        teacher_id: '',
+        teaching_type: '',
+        schoolroom_id: '',
+        start_time: '',
+        end_time: '',
+        staff_id: [],
+        remark: '',
+        class_hour: [],
+      },
+      staffData: {},
+      roomData: [],
+      teacherData: [],
+      regionData: [
+        {
+          value: 1,
+          name: '面授',
+        },
+        {
+          value: 2,
+          name: '直播',
+        },
+      ],
+      formData: {
+        data: '',
+        content: '',
+      },
+      dialogVisible: false,
+      calendarData: [
+        { years: ['2020'], months: ['08', '11'], days: ['14'], things: '杂志' },
+        // {
+        //   years: ['2019'],
+        //   months: ['10', '11'],
+        //   days: ['02'],
+        //   things: '演唱会',
+        // },
+        // { years: ['2020'], months: ['11'], days: ['02'], things: '晚会' },
+        // { years: ['2019'], months: ['11'], days: ['02'], things: '杂志预售' },
+        // { years: ['2020'], months: ['07'], days: ['15'], things: '重启开播' },
+      ],
+      value: new Date(),
     }
   },
+  created() {
+    this.ruleForm.category_id = this.$route.query.category_id
+    this.ruleForm.classroom_id_arr.push(this.$route.query.classroom_id)
+    this.$api.getTeacherSublist(this, 'teacherData') //老师列表
+    this.$api.getRoomSelect(this, 'roomData') //教室列表
+    this.$api.getClassScheduling(this, this.schoolData)
+    this.$api.getStaffSelect(this, 'staffData') //跟班人员下拉列表
+  },
   methods: {
-    calendarOnClick(e) {
-      console.log(e)
+    addTime() {
+      let obj = {}
+      this.lessonTime.push(obj)
+    },
+    delTime(index) {
+      if (this.lessonTime.length > 1) {
+        this.lessonTime.splice(index, 1)
+      }
+    },
+    calClick(item) {
+      console.log(item)
+      this.ruleForm.date = item.day
+      this.ruleForm.title = item.day
+      this.formData.data = item.day
+    },
+    handleClose(done) {
+      done()
+    },
+    handleAdd() {
+      var date = new Date()
+      // console.log(this.lessonTime)
+      // this.lessonTime[0]
+      // var a = this.lessonTime[0].classTimeArr[0].split(':')
+      // console.log(date.setHours(a[0], a[1]))
+      // console.log(this.lessonTime)
+      this.lessonTime.forEach((i) => {
+        // console.log(i)
+        var obj = {
+          start_time: i.classTimeArr[0],
+          end_time: i.classTimeArr[1],
+        }
+        // console.log(obj)
+        this.ruleForm.class_hour.push(obj)
+      })
+      var min = date.setHours(
+        this.ruleForm.class_hour[0].start_time.split(':')[0],
+        this.ruleForm.class_hour[0].start_time.split(':')[1]
+      )
+      var max = date.setHours(
+        this.ruleForm.class_hour[0].end_time.split(':')[0],
+        this.ruleForm.class_hour[0].end_time.split(':')[1]
+      )
+      console.log(min, max)
+      var minIndex = 0
+      var maxIndex = 0
+      this.ruleForm.class_hour.forEach((v, it) => {
+        var a = v.start_time.split(':')
+        var b = v.end_time.split(':')
+        // console.log(date.setHours(a[0], a[1]))
+        if (min > date.setHours(a[0], a[1])) {
+          min = date.setHours(a[0], a[1])
+          minIndex = it
+        }
+        if (max < date.setHours(b[0], b[1])) {
+          max = date.setHours(b[0], b[1])
+          maxIndex = it
+        }
+      })
+      console.log(minIndex, maxIndex)
+      this.ruleForm.start_time = this.ruleForm.class_hour[minIndex].start_time
+      this.ruleForm.end_time = this.ruleForm.class_hour[maxIndex].end_time
+      // this.dialogVisible = false
+      console.log(this.ruleForm)
+      this.ruleForm.classroom_id_arr
+      // console.log(this.calendarData)
+      var arr = []
+
+      arr.push(this.ruleForm)
+
+      this.$api.addScheduling(this, arr, 2)
+      // var a = {
+      //   years: [date[0]],
+      //   months: [date[1]],
+      //   days: [date[2]],
+      //   things: this.formData.content,
+      // }
+      // this.calendarData.push(a)
+    },
+    deleteClass(ab) {
+      this.$api.deleteClass(this, ab.id)
+      console.log(ab)
     },
   },
 }
 </script>
-
-<style></style>
+<style lang="scss" scoped>
+.main {
+  /deep/.el-calendar__body {
+    padding: 12px 0px 35px 0;
+  }
+}
+.deleteIcon {
+  font-size: 16px;
+  display: flex;
+  justify-content: flex-end;
+  color: #199fff;
+  // position: relative;
+  // top: -15px;
+  // right: -140px;
+}
+/deep/.el-calendar-table .el-calendar-day {
+  height: 120px;
+}
+.mark {
+  font-size: 16px;
+  color: #199fff;
+  // line-height: 32px;
+}
+.addBtn {
+  background: #199fff;
+  width: 55px;
+  height: 20px;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  border-radius: 20px;
+  align-items: center;
+}
+.lessonTime {
+  margin-bottom: 10px;
+}
+</style>

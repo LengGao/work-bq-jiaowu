@@ -117,9 +117,17 @@ export default {
       this.page = page
       this.$api.getTimetableList(this, 'schoolData')
     },
-    toTimetablePreview() {
+    toTimetablePreview(ab) {
+      console.log(ab)
+      // let time = this.$moment.unix(ab.frist_class_time).format('YYYY-MM-DD')
+      // console.log(time)
       this.$router.push({
         path: '/eda/timetablePreview',
+        query: {
+          time: ab.frist_class_time,
+          classroom_id: ab.classroom_id,
+          category_id: ab.category_id,
+        },
       })
     },
     toAllSchedule() {

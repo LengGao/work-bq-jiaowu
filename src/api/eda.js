@@ -210,10 +210,34 @@ export function getstudendclass(params) {
         params,
     })
 }
-//考勤统计列表
+//个人考勤统计列表
 export function getAttendanceList(params) {
     return request({
         url: 'classstudents/personalAttendanceStatistics',
+        method: 'get',
+        params,
+    })
+}
+// 个人考勤统计汇总
+export function personalAttendanceSummary(params) {
+    return request({
+        url: 'classstudents/personalAttendanceSummary',
+        method: 'get',
+        params,
+    })
+}
+// 个人教材发放列表
+export function getMaterial(params) {
+    return request({
+        url: 'UserArchives/getMaterial',
+        method: 'get',
+        params,
+    })
+}
+// 个人课表
+export function getTable(params) {
+    return request({
+        url: '/UserArchives/getTable',
         method: 'get',
         params,
     })
@@ -247,6 +271,33 @@ export function getClassstudentList(params) {
 export function classAttendanceStatistics(params) {
     return request({
         url: '/classroom/attendanceStatistics',
+        method: 'get',
+        params,
+    })
+}
+/**
+ * 班级排课列表
+ * @param {*} params 
+ */
+export function getClassArrangeList(params) {
+    return request({
+        url: '/arrange/getList',
+        method: 'get',
+        params,
+    })
+}
+//课节列表
+export function getClassOurList(params) {
+    return request({
+        url: 'arrange/getClassOurList',
+        method: 'get',
+        params,
+    })
+}
+// 上课老师下拉列表
+export function getTeacherList(params) {
+    return request({
+        url: 'teacher/getList',
         method: 'get',
         params,
     })

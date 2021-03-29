@@ -22,29 +22,54 @@
       </div>
       <el-calendar :value="calendarDate">
         <template slot="dateCell" slot-scope="{ date, data }">
-          <p :class="data.isSelected ? 'is-selected' : ''">
-            {{ data.day.split("-").slice(1).join("-") }}
-            {{ data.isSelected ? "✔️" : "" }}
-          </p>
+          <div
+            class="day"
+            :class="{
+              'class-date': allDay.includes(data.day),
+            }"
+            @click="handleOpen(infoMap[data.day])"
+          >
+            <span>{{ data.day.split("-").slice(1).join("-") }}</span>
+            <div v-if="allDay.includes(data.day)" class="day-info">
+              <p>
+                上课时间：{{
+                  infoMap[data.day].period &&
+                  infoMap[data.day].period.substr(11)
+                }}
+              </p>
+              <p>上课老师：{{ infoMap[data.day].teacher_name }}</p>
+            </div>
+          </div>
         </template>
       </el-calendar>
     </div>
+    <CourseDialog v-model="detailDialog" :datas="courseData" />
   </div>
 </template>
 
 <script>
+import CourseDialog from "@/components/CourseDialog/index";
+import { getClassArrangeList } from "@/api/eda";
 export default {
   name: "ClassTimetable",
+  components: {
+    CourseDialog,
+  },
   data() {
     return {
       years: [],
       months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       checkedYear: new Date().getFullYear(),
       checkedMonth: new Date().getMonth() + 1,
+      detailDialog: false,
+      allDay: [],
+      infoMap: {},
+      courseData: {},
     };
   },
   computed: {
     calendarDate() {
+      this.getClassArrangeList();
       return `${this.checkedYear}-${this.checkedMonth}`;
     },
   },
@@ -52,6 +77,29 @@ export default {
     this.createYears();
   },
   methods: {
+    handleOpen(data) {
+      if (!data) return;
+      this.courseData = data;
+      this.detailDialog = true;
+    },
+    //获取课表信息
+    async getClassArrangeList() {
+      const data = {
+        classroom_id: this.$route.query?.id,
+        year: this.checkedYear,
+        month:
+          this.checkedMonth < 10 ? "0" + this.checkedMonth : this.checkedMonth,
+      };
+      const res = await getClassArrangeList(data);
+      if (res.code === 0) {
+        const data = res.data || [];
+        this.allDay = data.map((item) => item.date);
+        data.forEach((item) => {
+          this.infoMap[item.date] = item;
+        });
+      }
+    },
+    //获取年
     createYears() {
       const years = [];
       let startYear = 2019;
@@ -84,6 +132,15 @@ export default {
         width: 90px;
         margin-left: 10px;
       }
+    }
+    .day {
+      font-size: 14px;
+    }
+    .class-date {
+      color: cornflowerblue;
+    }
+    .day-info {
+      margin-top: 5px;
     }
   }
 }

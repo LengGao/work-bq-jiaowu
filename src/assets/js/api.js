@@ -371,7 +371,7 @@ let api = {
     })
   },
   //创建排课
-  addScheduling(self, ruleForm) {
+  addScheduling(self, ruleForm, num) {
     let config = {
       param: ruleForm,
     }
@@ -388,7 +388,91 @@ let api = {
             type: 'success',
             message: res.data.message,
           })
-          self.$router.go(-1)
+          if (num) {
+            self.$api.getClassScheduling(self, self.schoolData)
+            for (var item in self.ruleForm) {
+              self.ruleForm[item] = ''
+              self.dialogVisible = false
+            }
+            // self.ruleForm = {}
+          } else {
+            self.$router.go(-1)
+          }
+        }
+      },
+    })
+  },
+  //删除排课
+  deleteClass(self, id) {
+    let config = {
+      id: id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.deleteClass,
+      data: config,
+      // method: 'GET',
+      then(res) {
+        let data = res.data.data
+        console.log(data)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.$api.getClassScheduling(self, self.schoolData)
+          // self.$router.go(-1)
+        }
+      },
+    })
+  },
+  //班级排课列表
+  getClassScheduling(self, ruleForm) {
+    let config = {
+      classroom_id: self.$route.query.classroom_id,
+      year: self.$route.query.time.split('-')[0],
+      month: self.$route.query.time.split('-')[1],
+      // param: ruleForm,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getClassScheduling,
+      data: config,
+      method: 'GET',
+      then(res) {
+        if (res.data.code == 0) {
+          let data = res.data.data
+          console.log(data)
+          self.calendarData = []
+          data.map((i) => {
+            console.log(i)
+            console.log(i.date)
+            console.log(i.date.split('-')[0])
+            var obj = {
+              years: [i.date.split('-')[0]],
+              months: [i.date.split('-')[1]],
+              days: [i.date.split('-')[2]],
+              id: i.id,
+              things:
+                '上课时间:' + i.period + ' <br/>上课地点:' + i.schoolroom_name,
+            }
+
+            // obj.year.push(i.date.split('-')[0])
+            // console.log(obj.year)
+            // obj.months.push(i.date.split('-')[1])
+            // obj.days.push(i.date.split('-')[2])
+            // obj.things = i.schoolroom_name
+
+            self.calendarData.push(obj)
+          })
+          // self.calendarData = calendarData
+          console.log(self.calendarData)
+
+          // self.$message({
+          //   type: 'success',
+          //   message: res.data.message,
+          // })
+          // self.$router.go(-1)
         }
       },
     })
@@ -413,7 +497,7 @@ let api = {
             if (item.frist_class_time != 0 || item.frist_class_time != '') {
               item.frist_class_time = self.$moment
                 .unix(item.frist_class_time)
-                .format('YYYY-MM-DD HH:mm:ss')
+                .format('YYYY-MM-DD')
             } else {
               item.frist_class_time = '---'
             }

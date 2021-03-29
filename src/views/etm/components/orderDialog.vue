@@ -5,6 +5,7 @@
       title="订单详情"
       :visible.sync="openStatus"
       v-if="openStatus"
+      :close-on-click-modal="false"
       @close="doClose"
       append-to-body
       width="60%"
@@ -345,6 +346,9 @@ export default {
       })
     },
     doClose() {
+      this.projectData = []
+      this.pay_log = []
+      this.ruleForm = {}
       this.$emit('orderDialog', false)
     },
   },

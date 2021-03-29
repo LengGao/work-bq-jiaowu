@@ -19,18 +19,18 @@
           label="ID"
           show-overflow-tooltip
           min-width="90"
-          prop="classroom_id"
+          prop="books_id"
         >
         </el-table-column>
         <el-table-column
-          prop="classroom_name"
+          prop="books_name"
           label="教材名称"
           min-width="110"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="category_name"
+          prop="chief_editor"
           label="作者"
           min-width="110"
           show-overflow-tooltip
@@ -42,25 +42,25 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="staff_name"
+          prop="type"
           label="领取状态"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="type"
           label="领取方式"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="create_time"
           label="领取时间"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="remark"
           label="备注信息"
           min-width="110"
           show-overflow-tooltip
@@ -71,7 +71,7 @@
           <page
             :data="listTotal"
             :curpage="pageNum"
-            @pageChange="getClassList"
+            @pageChange="getMaterial"
           />
         </div>
       </div>
@@ -80,9 +80,15 @@
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
+import { getMaterial } from "@/api/eda";
 export default {
   name: "TeachingMaterials",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
@@ -92,20 +98,21 @@ export default {
     };
   },
   created() {
-    this.getClassList();
+    this.getMaterial();
   },
   methods: {
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.getMaterial();
     },
-    async getClassList() {
+    async getMaterial() {
       const data = {
+        uid: this.uid,
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await getMaterial(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

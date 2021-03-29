@@ -111,7 +111,13 @@
             label="客户姓名"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div class="surname" @click="toCusDetail(row)">
+                {{ row.surname }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="mobile"
             label="手机号码"
@@ -476,16 +482,6 @@ export default {
       if (this.ruleForm.sex == '') {
         this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
       }
-      // console.log(this.ruleForm)
-      // this.$refs[formName].validate((valid) => {
-      //   if (valid) {
-      //     this.$api.addCustomers(this, this.ruleForm, num)
-      //     // alert('submit!');
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
     },
 
     toCustomeRegist() {
@@ -498,87 +494,11 @@ export default {
     },
     addCustomer() {
       this.innerVisible = true
-      // console.log(this.ruleForm)
-      // for (var i in this.ruleForm) {
-      //   console.log(i)
-      //   this.ruleForm[i] = ''
-      // }
-      // //添加用户弹框打开
-      // this.curstomerVisible = true
     },
     doPageChange(page) {
       this.page = page
       this.$api.getCustomerList(this, 'schoolData')
     },
-    //   getTableList(state, val, datas) {
-    //     console.log(state, val, datas)
-    //     if (state == 'page') {
-    //       this.page = val
-    //       this.datas = datas
-    //       console.log(this.datas)
-    //     } else if (state == 'data') {
-    //       this.schoolData = val
-    //     }
-    //   },
-    //   toSwapStudent() {
-    //     this.$router.push({
-    //       path: '/etm/swapStudent',
-    //     })
-    //   },
-    //   topayment(yz, zx) {
-    //     this.$router.push({
-    //       path: '/etm/payMent',
-    //       query: { intent_id: yz.intent_id, refund: zx, lastPage: this.page },
-    //     })
-    //   },
-    //   toRefundDetail(ab) {
-    //     console.log(ab)
-    //     this.$router.push({
-    //       path: '/etm/refundDetail',
-    //       query: { intent_id: ab.intent_id },
-    //     })
-    //   },
-    //   toStudentDetail(zx) {
-    //     console.log(zx)
-    //     let intent_id = zx.intent_id
-    //     let uid = zx.uid
-    //     this.$router.push({
-    //       path: '/etm/studentDetail',
-    //       query: { intent_id: intent_id, uid: uid },
-    //     })
-    //   },
-    //   toIntentionEntry(ab) {
-    //     console.log(ab)
-    //     let intent_id = ab.intent_id
-    //     this.$router.push({
-    //       path: '/etm/IntentionEntry',
-    //       query: { intent_id: intent_id, lastPage: this.page },
-    //     })
-    //   },
-    //   jumpSea(ab) {
-    //     let intent_id = ab.intent_id
-    //     this.$confirm('确定要把学员转交到公海吗?', '提示', {
-    //       confirmButtonText: '确定',
-    //       cancelButtonText: '取消',
-    //       type: 'warning',
-    //     })
-    //       .then(() => {
-    //         this.$api.jumpSea(this, intent_id)
-    //         // this.$message({
-    //         //   type: 'success',
-    //         //   message: '删除成功!',
-    //         // })
-    //       })
-    //       .catch(() => {
-    //         this.$message({
-    //           type: 'info',
-    //           message: '已取消删除',
-    //         })
-    //       })
-    //   },
-    //
-    // },
-    //
   },
 }
 </script>
@@ -594,6 +514,10 @@ export default {
 }
 .input-width {
   width: 240px;
+}
+.surname {
+  color: #199fff;
+  cursor: pointer;
 }
 .main {
   padding: 20px;
