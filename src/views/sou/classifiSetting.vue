@@ -6,14 +6,14 @@
 
     <section class="mainwrap">
       <div class="client_head">
-        <search2
-          :contentShow="true"
-          api="getHomeclassifiList"
-          inputText="分类名称"
-          @getTable="getTableList"
-        ></search2>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <el-button type="primary" @click="addClassiFion">添加分类</el-button>
       </div>
+
       <!--表格-->
       <div class="userTable">
         <el-table
@@ -49,12 +49,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="关联业务模板"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
+         
           <el-table-column label="排序" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
@@ -97,7 +92,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <!-- <div class="table_bottom">
+        <div class="table_bottom">
         <div class="table_bottom">
           <page
             :data="schoolData.total"
@@ -105,7 +100,7 @@
             @pageChange="doPageChange"
           />
         </div>
-      </div> -->
+      </div>
       </div>
       <!--弹框-->
       <el-dialog
@@ -163,15 +158,20 @@
 </template>
 
 <script>
+import { getCateList } from '@/api/sou'
+import SearchList from '@/components/SearchList/index'
+
 export default {
   data() {
     return {
+      pageNum:[],
+      searchData:[],
+      selectData: [],
       schoolData: [],
-      index_category_id: '',
       dialogTitle: '',
       ruleForm: {
-        category_name: '',
-        sort: '',
+      category_name: '',
+      sort: '',
       },
       datas: {},
       url: '',
@@ -179,18 +179,30 @@ export default {
       haschoose: false,
       page: 1,
       dialogVisible: false,
+      keyboard:'',
+
+      // 搜索框
+       searchOptions: [
+   
+        {
+          key: 'keyboard',
+          attrs: {
+            placeholder: '分类名称',
+          },
+        },
+      ],
+    
     }
   },
-
   created() {
+    this.getCateList()
     this.$api.getCategoryList(this, 'schoolData')
   },
-
   methods: {
-    // doPageChange(page) {
-    //   this.page = page
-    //   this.$api.getHomeclassifiList(this, 'schoolData', this.datas)
-    // },
+    doPageChange(page) {
+      this.page = page
+      this.$api.getCategoryList(this, 'schoolData', this.datas)
+    },
     // 获取数据
     getTableList(state, val, datas) {
       console.log(state, val)
@@ -202,12 +214,12 @@ export default {
       }
     },
     topayment(zx) {
-      //   this.dialogTitle = '编辑首页分类'
-      //   console.log(zx)
-      //   this.dialogVisible = true
-      //   this.haschoose = true
-      //   this.index_category_id = zx.index_category_id
-      //   this.$api.getHomeclassifiDetail(this, this.index_category_id)
+        this.dialogTitle = '编辑首页分类'
+        console.log(zx)
+        this.dialogVisible = true
+        this.haschoose = true
+        this.index_category_id = zx.index_category_id
+        this.$api.getHomeclassifiDetail(this, this.index_category_id)
     },
     scopes(id, sorts) {
       var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
@@ -222,21 +234,63 @@ export default {
 
     addClassiFion() {
       this.dialogTitle = '添加分类'
-      //   for (let key in this.ruleForm) {
-      //     this.ruleForm[key] = ''
-      //   }
-      //   this.url = ''
-      //   this.haschoose = false
+        for (let key in this.ruleForm) {
+          this.ruleForm[key] = ''
+        }
+        this.url = ''
+        this.haschoose = false
       this.dialogVisible = true
     },
     handleConfirm() {
       console.log(this.ruleForm)
       console.log(this.index_category_id == '')
       if (this.index_category_id == '' || this.index_category_id == undefined) {
-        this.$api.insertCategory(this, 'ruleForm')
+        this.$api.getCategoryList(this, 'ruleForm')
       } else {
-        this.$api.insertCategory(this, 'ruleForm')
+        this.$api.getCategoryList(this, 'ruleForm')
       }
+    },
+
+     //搜索功能
+     handleSearch(data) {
+      this.pageNum = 1
+      this.searchData = data
+      this.$api.getCategoryList(this, 'schoolData')
+
+    },
+
+    async getCateList() {
+      const data = { list: true }
+      const res = await getCateList(data)
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData)
+        console.log(this.selectData)
+        this.searchOptions[0].attrs.options = this.selectData
+      }
+    },
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {}
+        newData[index].value = item.category_id
+        newData[index].label = item.category_name
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
+      })
+    },
+
+    changeSwitch(ab) {
+      console.log(ab)
+      let formData = {
+        category_id: ab.category_id,
+        category_name: ab.category_name,
+        icon: ab.icon,
+        category_id: ab.category_id,
+        sort: ab.sort,
+        account_status: ab.account_status,
+      }
+      this.$api.getCategoryList(this, formData, 'POST')
     },
   },
 }
@@ -315,5 +369,9 @@ export default {
 
 .imageBox:hover i {
   display: block;
+}
+.school_class_box{
+  width: 32px;
+  height: 32px;
 }
 </style>
