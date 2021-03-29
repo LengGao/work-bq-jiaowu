@@ -255,11 +255,10 @@ export default {
       this.pageNum = val;
       this.dispenseList();
     },
-    toMaterialJournal(ab) {
-      console.log(ab);
+    toMaterialJournal(id) {
       this.$router.push({
         path: "/eda/materialJournal",
-        query: { id: ab.id },
+        query: { id },
       });
     },
     handleBatchAdd() {
