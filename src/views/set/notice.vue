@@ -120,7 +120,7 @@
 
             <div class="abstract">
               <el-form-item label="接受范围" prop="receiver">
-                <el-radio-group v-model="radio2" @change="change">
+                <el-radio-group v-model="ruleForm.receiver" @change="change">
                   <el-radio :label="1">全部员工</el-radio>
                   <el-radio :label="2">指定角色</el-radio>
                 </el-radio-group>

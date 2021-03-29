@@ -21,28 +21,17 @@
           :options="searchOptions"
           :data="searchData"
           @on-search="handleSearch"
-          v-if="isTagactive === 1"
+          v-show="isTagactive === 1"
         />
 
         <SearchList
-          :options="searchOptionstwo"
-          :data="searchData"
-          @on-search="handleSearch"
-          v-if="isTagactive === 2"
+          :options="searchOptionss"
+          :data="searchDatas"
+          @on-search="handleSearchs"
+          v-show="isTagactive === 2"
         />
 
-        <!-- <search2
-          :courseTypeShow="true"
-          :contentShow="true"
-          typeTx="punch"
-          inputText="报考规则"
-          api="getCourseManage"
-          @getTable="getTableList"
-          :selectList="selectData.list"
-          v-if="isTagactive === 2"
-        ></search2> -->
-
-        <div v-if="isTagactive === 1">
+        <div v-show="isTagactive === 1">
          <div>
           <el-button type="primary" @click="addSubject">添加科目</el-button>
           <el-dialog
@@ -167,11 +156,8 @@
                   ></el-input>
                   <el-button style="margin-left:10px" @click="deleteOneClass(index)">删除</el-button>
                 </el-form-item>
-                 
               </el-col>
-        
             </el-row>
-
             <el-row>
               <el-col>
                  <el-form-item>
@@ -183,16 +169,15 @@
             <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="submitForm('ruleForm')"
-              >保 存</el-button
-            >
+              >保 存</el-button>
           </span>
 
         </el-dialog>
         </div>
         </div>
         
-        <div v-if="isTagactive === 2">
-          <el-button type="primary" @click="guizeVisible = true">添加报考规则</el-button>
+        <div v-show="isTagactive === 2">
+          <el-button type="primary" @click="addRegistration">添加报考规则</el-button>
           
           <el-dialog
           :title="ruleTitle"
@@ -213,11 +198,13 @@
             <el-row>
               <el-col :lg="11">
                 <el-form-item label="所属分类" prop="cate_id">
-              <el-select v-model="ruleForm.cate_id" placeholder="请选择所属分类" style="width:100%">
-                <el-option label="学历教育" value="1"></el-option>
-                <el-option label="职称考证" value="2"></el-option>
-                <el-option label="特种作业" value="3"></el-option>
-              </el-select>
+              <el-cascader
+              ref="cascader"
+              style="width: 100%"
+              placeholder="请选择分类"
+              v-model="ruleForm.cate_id"
+              :options="selectData"
+            ></el-cascader>
             </el-form-item>
               </el-col>
               <el-col :lg="11">
@@ -233,9 +220,9 @@
            
             <el-row>
               <el-col :lg="11">
-                 <el-form-item label="考试科目" prop="exam_type">
+                 <el-form-item label="考试科目" prop="subject_id_str">
                  <el-select
-                  v-model="value1"
+                  v-model="subject_id_str"
                   multiple
                   placeholder="请选择考试科目（多选）"
                   style="width:300px"
@@ -251,11 +238,11 @@
             </el-form-item>
               </el-col>
              <el-col :lg="11">
-                <el-form-item label="报考省市" prop="credit_hour">
+                <el-form-item label="报考省市" prop="region">
                   <el-cascader
                   size="large"
                   :options="options"
-                  v-model="selectedOptions"
+                  v-model="region"
                   @change="handleChange"
                   style="width:300px">
                 </el-cascader>
@@ -280,9 +267,9 @@
 
           <el-row>
             <el-col :lg="11">
-                <el-form-item label="个人照片" prop="phone" class="radiomargin">
+                <el-form-item label="个人照片" prop="photo_limit" class="radiomargin">
                   <div class="radiocss">
-                  <el-radio-group v-model="ruleForm.phone" style="width:250px">
+                  <el-radio-group v-model="ruleForm.photo_limit" style="width:250px">
                     <el-radio :label="2" value="0">白底一寸照</el-radio>
                     <el-radio :label="1">蓝底一寸照
                       </el-radio>
@@ -395,11 +382,9 @@
           </span>
         </el-dialog>
         </div>
-
         
       </div>
 
-   
       <!--表格-->
       <div class="userTable" v-show="isTagactive === 1">
         <el-table
@@ -477,7 +462,7 @@
                 v-model="scope.row.status"
                 :active-value="1"
                 :inactive-value="2"
-                @change="changeSwitch(scope.row)"
+                @change="stateChanged(scope.row)"
               >
               </el-switch>
             </template>
@@ -597,13 +582,14 @@
 
 <script>
 import SearchList from '@/components/SearchList/index'
-import { regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
+import { provinceAndCityData } from 'element-china-area-data'
 import { getCateList } from '@/api/sou'
 export default {
     name: 'examination',
 
     data() {
     return {
+       changeSwitch:'',
        kmdata: [
         {
           value: '选项1',
@@ -616,6 +602,7 @@ export default {
 
       ],
       value1: [],
+      subject_id_str:[],
       oppos:[{
         value:'1',
         label:'必考',
@@ -626,6 +613,10 @@ export default {
       }
       ],
       searchData: {
+        category_id: [],
+        keyboard: '',
+      },
+      searchDatas: {
         category_id: [],
         keyboard: '',
       },
@@ -647,15 +638,32 @@ export default {
         },
       ],
 
-      
-      ruleTitle:'添加报考规则',
+       searchOptionss: [
+        {
+          key: 'category_id',
+          type: 'cascader',
+          attrs: {
+            placeholder: '所属分类',
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: 'keyboard',
+          attrs: {
+            placeholder: '报考规则',
+          },
+        },
+      ],
+
 
       handleChange:'',
       exam_type:'',
       category_name:'',
       from_organization_id:'',
       data:[],
-      options: regionDataPlus,
+      options: provinceAndCityData,
+      region:'',
       selectedOptions: [],
       radio: '0',
       radio1: '0',
@@ -698,10 +706,9 @@ export default {
     
       value2: '',
 
-      ruleForm: {
+    ruleForm: {
           rule_name:'',
-
-          phone:'',
+          photo_limit:'',
           id_card_limit:'',
           place_limit:'',
           age_limit:'',
@@ -718,8 +725,9 @@ export default {
           cost: '',
           total_score: '',
           pass_score: ''
-        },    
-        rules: {
+        },  
+
+    rules: {
           cate_id: [
             { required: true, message: '', trigger: 'blur' },
           ],
@@ -765,6 +773,8 @@ export default {
           ]
         },
 
+      
+      
       dialogVisible: false,
       guizeVisible:false,
       isTagactive: 1,
@@ -785,33 +795,51 @@ export default {
       createData: [],
       course_ids: [],
       datas: {},
-      selectData: [
-        
-      ],
+      selectData: [],
     }
   },
 
   mounted() {
-    this.$api.ruleList(this, 'schoolData'),  //报考规则列表
     this.$api.subjectList(this, 'subjectData')  //考试科目列表
     this.getCateList()
     // this.$api.updateSubject(this, 'subjectData')
     // this.$api.createRule(this, 'schoolData')  //添加规则
   },
     methods: {
+
+       handleChange () {
+        var loc = "";
+        for (let i = 0; i < this.selectedOptions.length; i++) {
+            loc += CodeToText[this.selectedOptions[i]];
+        }
+        console.log(loc)//打印区域码所对应的属性值即中文地址
+      },
+
       handleSearch(data) {
       this.pageNum = 1
       this.searchData = data
       this.$api.subjectList(this, 'subjectData')
+    },
+    handleSearchs(data) {
+      this.pageNum = 1
+      this.searchDatas = data
+      console.log(this.isTagactive)
+      if(this.isTagactive === 2){
+      this.$api.ruleList(this, 'schoolData')
+      }else{
+   this.$api.subjectList(this, 'subjectData')  //考试科目列表
+      }
 
     },
 
+      //考试科目search
       async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData)
         this.searchOptions[0].attrs.options = this.selectData
+        this.searchOptionss[0].attrs.options = this.selectData
       }
     },
     cloneData(data, newData) {
@@ -838,6 +866,35 @@ export default {
       this.listData = res.data.data
       this.listTotal = res.data.total
     },
+
+    //报考规则search
+
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {}
+        newData[index].value = item.category_id
+        newData[index].label = item.category_name
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
+      })
+    },
+
+    async ruleList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchDatas,
+       
+      }
+      this.listLoading = true
+      const res = await ruleList(data)
+      this.listLoading = false
+      this.listData = res.data.data
+      this.listTotal = res.data.total
+    },
+
+
 
       deleteOneClass(index){
         this.data.splice(index,1)
@@ -883,6 +940,8 @@ export default {
       },
 
     addSubject(){
+      this.classTitle = '添加科目'
+      this.dialogVisible = true
        this.ruleForm = {
         subject_name:'',
           category_name: '',
@@ -890,12 +949,21 @@ export default {
           total_score: '',
           pass_score: ''
       }
-      this.dialogVisible = true
+      
+    },
+    addRegistration(){
+      this.ruleTitle = '添加报考规则'
+      this.guizeVisible = true
+       this.ruleForm = {
+        subject_name:'',
+
+      }
+      
     },
 
     handleDelete(ab) {
       console.log(ab)
-      this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
+      this.$confirm('此操作将删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -903,8 +971,6 @@ export default {
         .then(() => {
           console.log(ab.id)
           this.$api.deleteSubject(this, ab.id)
-
-
         })
         .catch(() => {
           this.$message({
@@ -916,14 +982,14 @@ export default {
 
     deleterule(ab) {
       console.log(ab)
-      this.$confirm('此操作将删除该通知, 是否继续?', '提示', {
+      this.$confirm('此操作将删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
         .then(() => {
           console.log(ab.id)
-          this.$api.deleteSubject(this, ab.id)
+          this.$api.deleteRule(this, ab.id)
 
         })
         .catch(() => {
@@ -939,6 +1005,12 @@ export default {
       },
 
     statusSwitch(ab) {
+      if(  ab.name === '报考规则'){
+      this.$api.ruleList(this, 'schoolData')  //报考规则列表
+      }else{
+       this.$api.subjectList(this, 'subjectData')  //考试科目列表
+      }
+    // this.getCateList()
       this.isTagactive = ab.id
     },
     getTableList(state, val, datas) {
@@ -990,14 +1062,12 @@ export default {
         this.$api.updateCourseSort(id, sorts, this)
       }
     },
-
-    editNotice(ab) {
-      console.log(ab)
+    editNotice(id) {
       this.classTitle = '编辑科目'
-      this.ruleForm = ab
+      this.ruleForm = id
       this.dialogVisible = true
+      this.$api.editProject(this, this.ruleForm, 'GET')
     },
-    
     editrule(ab) {
       console.log(ab)
       this.ruleTitle = '编辑报考规则'
