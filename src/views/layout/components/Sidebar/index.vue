@@ -7,7 +7,7 @@
             ><img :src="logo" alt="logo"
           /></router-link>
         </div>
-        <div>
+        <!-- <div>
           <el-button type="primary" icon="el-icon-plus" @click="something"
             >快捷功能1</el-button
           >
@@ -26,7 +26,7 @@
               </li>
             </ul>
           </transition>
-        </div>
+        </div> -->
       </div>
     </transition>
     <el-menu
@@ -40,6 +40,7 @@
       :collapse-transition="true"
       active-text-color="#409EFF"
       @select="handleMenuSelect"
+      style="overflow: hidden"
       router
     >
       <!-- <sidebar-item :routes="routes"></sidebar-item> -->
@@ -113,6 +114,7 @@ export default {
   margin: auto;
   display: block;
   margin-top: 16px;
+  margin-bottom: 10px;
 }
 img {
   width: auto;

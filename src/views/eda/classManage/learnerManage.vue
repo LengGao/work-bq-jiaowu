@@ -6,16 +6,13 @@
 
     <section class="mainwrap">
       <div class="client_head">
-        <search2
-          :contentShow="true"
-          :courseTypeShow="true"
-          :classTypeShow="true"
-          api="getHomeclassifiList"
-          inputText="分类名称"
-          @getTable="getTableList"
-        ></search2>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <div>
-          <el-button type="primary" @click="addClass">导出数据</el-button>
+          <el-button type="primary">导出数据</el-button>
           <el-button type="primary" @click="addStudent">添加学生</el-button>
         </div>
       </div>
@@ -23,7 +20,11 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="listData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
@@ -111,7 +112,7 @@
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
+              <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="topayment(scope.row)"
                   >转班</el-button
                 >
@@ -124,176 +125,116 @@
         </el-table>
         <div class="footer">
           <div>
-            <el-button>
-              批量转班
-            </el-button>
-            <el-button>
-              批量移除
-            </el-button>
+            <el-button> 批量转班 </el-button>
+            <el-button> 批量移除 </el-button>
           </div>
           <div class="table_bottom">
             <page
-              :data="schoolData.total"
-              :curpage="page"
-              @pageChange="doPageChange"
+              :data="listTotal"
+              :curpage="pageNum"
+              @pageChange="handlePageChange"
             />
           </div>
         </div>
       </div>
-      <!--弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%">
-        <el-form label-width="100px">
-          <el-row>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="所属分类">
-                <el-input
-                  placeholder="请输入分类名称"
-                  v-model="addClassify.index_category_name"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="所属项目">
-                <el-input
-                  placeholder="请输入所属项目"
-                  v-model="addClassify.index_category_name"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="班级名称">
-                <el-input
-                  placeholder="请输入班级名称"
-                  v-model="addClassify.index_category_name"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-              <el-form-item label="班主任">
-                <el-input
-                  placeholder="请输入班主任"
-                  v-model="addClassify.index_category_name"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item label="班级封面">
-            <div v-show="!haschoose">
-              <div class="headPortrait el-icon-plus" @click="addIcon"></div>
-              <div style="color:#aaa;ling-height:20px">
-                <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
-                <p><span> 2. 推荐尺寸750*420px或者16:9</span></p>
-              </div>
-            </div>
-            <div v-show="haschoose" class=" imageBox ">
-              <i class=" iconjia el-icon-plus" @click="addIcon"></i>
-              <img
-                style="width:100%;height:100%; border-radius: 3px"
-                :src="url"
-                alt=""
-              />
-            </div>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleConfirm">确 定</el-button>
-        </span>
-      </el-dialog>
     </section>
   </div>
 </template>
 
 <script>
+import { getClassstudentList } from "@/api/eda";
+import { getInstitutionSelectData } from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
 export default {
   data() {
     return {
-      schoolData: [
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        organization_id: [],
+        value: "",
+      },
+      searchOptions: [
         {
-          index_category_name: '手机端',
+          key: "organization_id",
+          type: "cascader",
+          attrs: {
+            placeholder: "推荐机构",
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: "value",
+          attrs: {
+            placeholder: "学生姓名/手机号码",
+          },
         },
       ],
-      index_category_id: '',
-      dialogTitle: '添加班级',
-      addClassify: {
-        index_category_name: '',
-        sort: '',
-      },
-      datas: {},
-      url: '',
-      pictureVisible: false,
-      haschoose: false,
-      page: 1,
-      dialogVisible: false,
-    }
+    };
   },
 
   created() {
-    // this.$api.getHomeclassifiList(this, 'schoolData')
+    this.getClassstudentList();
   },
 
   methods: {
     addStudent() {
       this.$router.push({
-        path: '/eda/addStudent',
-      })
+        path: "/eda/addStudent",
+      });
     },
-    // doPageChange(page) {
-    //   this.page = page
-    //   this.$api.getHomeclassifiList(this, 'schoolData', this.datas)
-    // },
-    // 获取数据
-    getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
-      }
-    },
-    topayment(zx) {
-      //   this.dialogTitle = '编辑首页分类'
-      //   console.log(zx)
-      //   this.dialogVisible = true
-      //   this.haschoose = true
-      //   this.index_category_id = zx.index_category_id
-      //   this.$api.getHomeclassifiDetail(this, this.index_category_id)
-    },
-    scopes(index_category_id, sorts) {
-      //   var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      //   var re = new RegExp(regu)
-      //   if (!re.test(sorts)) {
-      //     this.$message.error('请输入正确的排序！')
-      //     return false
-      //   } else {
-      //     this.$api.updateHomeClassifiSort(index_category_id, sorts, this)
-      //   }
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.getClassstudentList();
     },
 
-    addClass() {
-      //   this.dialogTitle = '添加分类'
-      //   for (let key in this.addClassify) {
-      //     this.addClassify[key] = ''
-      //   }
-      //   this.url = ''
-      //   this.haschoose = false
-      this.dialogVisible = true
+    handleSearch(data) {
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        category_id: data.category_id.pop(),
+        organization_id: data.organization_id.pop(),
+        start_time: times[0],
+        end_time: times[1],
+      };
+      this.getClassstudentList();
     },
-    handleConfirm() {
-      //   console.log(this.index_category_id == '')
-      //   if (this.index_category_id == '' || this.index_category_id == undefined) {
-      //     this.$api.addHomeCategory(this, 'addClassify')
-      //   } else {
-      //     this.$api.modifyHomeCategory(this, this.index_category_id)
-      //   }
+    // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
+      if (res.code === 0) {
+        this.searchOptions[4].attrs.options = cloneOptions(
+          res.data,
+          "institution_name",
+          "institution_id",
+          "children"
+        );
+      }
+    },
+    //教材发放列表
+    async getClassstudentList() {
+      this.checkedIds = [];
+      this.projectId = "";
+      console.log(this.searchData);
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      };
+      delete data.date;
+      this.listLoading = true;
+      const res = await getClassstudentList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

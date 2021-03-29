@@ -159,19 +159,19 @@
               <div style="display: flex; justify-content: center">
                 <el-button
                   type="text"
-                  v-if="row.overdue_money > 0"
+                  v-if="excludes(row, 0)"
                   @click="openOrderActions(row, 1)"
                   >收款</el-button
                 >
                 <el-button
                   type="text"
-                  v-if="row.pay_money > 0"
+                  v-if="excludes(row, 5)"
                   @click="openOrderActions(row, 2)"
                   >退款</el-button
                 >
                 <el-button
                   type="text"
-                  v-if="row.pay_status !== 4"
+                  v-if="excludes(row, 4)"
                   @click="openOrderActions(row, 3)"
                   >作废</el-button
                 >
@@ -292,6 +292,15 @@ export default {
     this.getOrderList();
   },
   methods: {
+    // 按钮操作
+    excludes(row, type) {
+      const auth = {
+        0: row.overdue_money > 0, // 收款
+        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
+        5: ![4, 5].includes(row.pay_status), // 作废
+      };
+      return auth[type];
+    },
     openOrderActions(row, type) {
       this.dialogType = type;
       this.dialogInfo = row;
