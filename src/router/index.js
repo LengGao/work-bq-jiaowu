@@ -681,6 +681,7 @@ const createRouter = () => {
 }
 const router = createRouter()
 
+// 重置路由
 export const resetRouter = () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher

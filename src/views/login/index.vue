@@ -84,6 +84,7 @@ import { isvalidUsername } from "@/utils/validate";
 import { setSupport, getSupport, setCookie, getCookie } from "@/utils/support";
 import login_center_bg from "@/assets/images/login-img.jpg";
 import logologin from "@/assets/images/logo-login.jpg";
+import { resetRouter } from "@/router/index";
 const Base64 = require("js-base64").Base64;
 export default {
   name: "login",
@@ -125,6 +126,7 @@ export default {
     };
   },
   created() {
+    resetRouter();
     console.log(getCookie("password"));
     this.loginForm.username = getCookie("username");
     if (getCookie("password"))

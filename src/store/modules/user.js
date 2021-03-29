@@ -75,7 +75,6 @@ const user = {
           // data: config,
           method: 'GET',
           then(res) {
-            console.log(res.data)
             if (res.data.data && res.data.data.length > 0) {
               commit('SET_ROLES', res.data.data)
             } else {
