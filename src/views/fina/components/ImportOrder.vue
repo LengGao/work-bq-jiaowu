@@ -11,7 +11,7 @@
   >
     <Title text="下载模板" />
     <div class="dowload">
-      <el-button size="small" type="primary">
+      <el-button size="small" type="primary" @click="handleDownload">
         <i class="el-icon-download"></i> 下载模板</el-button
       >
       <p class="el-upload__tip">
@@ -79,19 +79,20 @@
     <Title text="上传文件" />
     <div class="file-upload">
       <el-upload
-        name="image"
+        ref="upload"
+        :data="uploadData"
         :headers="headers"
-        :action="uploadImageUrl"
-        :show-file-list="false"
+        :action="uploadUrl"
         :on-error="handleUploadError"
         :on-success="handleUploadSuccess"
         :before-upload="beforeUpload"
+        :auto-upload="false"
       >
         <el-button size="small" type="primary">
-          <i class="el-icon-upload2"></i> 点击上传</el-button
+          <i class="el-icon-upload2"></i> 选择文件</el-button
         >
         <div slot="tip" class="el-upload__tip">
-          上传文件格式仅支持xls， 且文件大小不得超过5M
+          上传文件格式仅支持xlsx， 且文件大小不得超过5M
         </div>
       </el-upload>
     </div>
@@ -104,15 +105,15 @@
         >确 定</el-button
       >
     </span>
+    <a ref="a" download=""></a>
   </el-dialog>
 </template>
 
 <script>
-import { uploadImageUrl } from "@/api/educational";
 import { getproject } from "@/api/eda";
 import { cloneOptions } from "@/utils/index";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
-import { importOrder } from "@/api/fina";
+import { importUrl, downloadUrl } from "@/api/fina";
 export default {
   props: {
     value: {
@@ -122,7 +123,8 @@ export default {
   },
   data() {
     return {
-      uploadImageUrl,
+      downloadUrl,
+      uploadUrl: importUrl,
       headers: {
         token: this.$store.state.user.token,
       },
@@ -132,7 +134,6 @@ export default {
         category_id: "",
         project_id: "",
         online_course: "",
-        file: "",
       },
       rules: {
         from_organization_id: [
@@ -149,6 +150,7 @@ export default {
       projectOptions: [],
       typeOptions: [],
       selectOptions: [],
+      uploadData: {},
     };
   },
   watch: {
@@ -158,41 +160,45 @@ export default {
   },
 
   methods: {
+    // 下载模板
+    handleDownload() {
+      const a = this.$refs.a;
+      a.download = "订单模板.xlsx";
+      a.href = this.downloadUrl;
+      a.click();
+    },
     handleOpen() {
       this.getInstitutionSelectData();
       this.getproject();
       this.getCateList();
     },
-    async submit() {
-      const data = {
-        ...this.formData,
-        category_id: Array.isArray(this.formData.category_id)
-          ? [...this.formData.category_id].pop()
-          : this.formData.category_id,
-        from_organization_id: Array.isArray(this.formData.from_organization_id)
-          ? [...this.formData.from_organization_id].pop()
-          : this.formData.from_organization_id,
-      };
 
-      this.addLoading = true;
-      const res = await importOrder(data).catch(() => {
-        this.addLoading = false;
-      });
-      this.addLoading = false;
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.hanldeCancel();
-        this.$emit("on-success");
-      }
-    },
     submitForm(formName) {
-      // if (!this.formData.file) {
-      //   this.$message.warning("请上传文件！");
-      //   return;
-      // }
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          const uploadFiles = this.$refs?.upload?.uploadFiles || [];
+          if (!uploadFiles.length) {
+            this.$message.warning("请上传文件！");
+            return;
+          }
+          if (uploadFiles.length > 1) {
+            this.$message.error("只能上传一份文件");
+            return;
+          }
+          this.uploadData = {
+            ...this.formData,
+            category_id: Array.isArray(this.formData.category_id)
+              ? [...this.formData.category_id].pop()
+              : this.formData.category_id,
+            from_organization_id: Array.isArray(
+              this.formData.from_organization_id
+            )
+              ? [...this.formData.from_organization_id].pop()
+              : this.formData.from_organization_id,
+          };
+          this.$nextTick(() => {
+            this.$refs.upload.submit();
+          });
         }
       });
     },
@@ -231,12 +237,6 @@ export default {
         );
       }
     },
-    // 当分类选择时
-    // handleTypeChange(ids) {
-    //   this.formData.project_id = "";
-    //   const id = ids ? [...ids].pop() : "";
-    //   this.getproject(id);
-    // },
     // 获取项目下拉
     async getproject(category_id = "") {
       const data = {
@@ -248,23 +248,27 @@ export default {
       }
     },
     handleUploadSuccess(res) {
-      this.formData.file = res.data?.data?.url || "";
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.hanldeCancel();
+        this.$emit("on-success");
+      } else {
+        this.$message.error(res.message);
+      }
+      this.$refs.upload.clearFiles();
       this.uploadLoading = false;
     },
     handleUploadError() {
-      this.formData.file = "";
+      this.$message.error("上传失败");
+      this.$refs.upload.clearFiles();
       this.uploadLoading = false;
-    },
-    hanldeDelete() {
-      this.formData.file = "";
     },
     beforeUpload(file) {
       const fileType = file.name.substr(-4);
-      const isXls = fileType === "xlsx" || fileType === ".xls";
+      const isXls = fileType === "xlsx";
       const isLt5M = file.size / 1024 / 1024 < 5;
-
       if (!isXls) {
-        this.$message.error("请上.xls格式文件");
+        this.$message.error("请上.xlsx格式文件");
         return false;
       }
       if (!isLt5M) {

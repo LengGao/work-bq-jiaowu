@@ -25,7 +25,7 @@
           <el-button type="primary" @click="openImport" style="height: 40px">
             导入订单</el-button
           >
-          <el-button type="primary" style="height: 40px"> 导出</el-button>
+          <!-- <el-button type="primary" style="height: 40px"> 导出</el-button> -->
         </div>
       </header>
       <ul class="panel-list">
@@ -78,7 +78,7 @@
           :cell-style="{ 'text-align': 'center' }"
           all="1"
         >
-          <el-table-column type="selection" width="45"> </el-table-column>
+          <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
           <el-table-column
             prop="order_id"
             label="订单编号"

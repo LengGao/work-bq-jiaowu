@@ -18,13 +18,9 @@ export function getOrderList(params) {
  * 导入订单
  * @param {*} data 
  */
-export function importOrder(data) {
-    return request({
-        url: '/UserArchives/import',
-        method: 'post',
-        data
-    })
-}
+export const importUrl = `${process.env.VUE_APP_LOACTION}/UserArchives/import`
+const baseUrl = process.env.NODE_ENV === "development" ? 'http://thing.com' : ''
+export const downloadUrl = `${baseUrl}/static/order_import.xlsx`
 /**
  * 订单收款
  * @param {*} data 
