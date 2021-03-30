@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { getRoleList } from '@/api/set'
+import { getRoleInfo } from '@/api/set'
 export default {
   name: 'roledetail',
 

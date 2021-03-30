@@ -64,6 +64,24 @@ export function formatTime(time, option) {
     )
   }
 }
+
+//获取星期几
+export function getweek(time) {
+  var timestamp = 1400000000
+  var a = new Date(timestamp * 1000)
+  var days = [
+    '星期天',
+    '星期一',
+    '星期二',
+    '星期三',
+    '星期四',
+    '星期五',
+    '星期六',
+  ]
+  var dayOfWeek = days[a.getDay()]
+  return dayOfWeek
+}
+
 //1、获取出生日期：
 
 export function getBirth(cardId) {
@@ -107,14 +125,14 @@ export function cloneOptions(data, optionLabel, optionValue, childrenName) {
   const newData = []
   const deep = (data, newData) => {
     data.forEach((item, index) => {
-      newData[index] = {};
-      newData[index].value = item[optionValue];
-      newData[index].label = item[optionLabel];
+      newData[index] = {}
+      newData[index].value = item[optionValue]
+      newData[index].label = item[optionLabel]
       if (item[childrenName] && item[childrenName].length) {
-        newData[index].children = [];
-        deep(item[childrenName], newData[index].children);
+        newData[index].children = []
+        deep(item[childrenName], newData[index].children)
       }
-    });
+    })
   }
   data && deep(data, newData)
   return newData

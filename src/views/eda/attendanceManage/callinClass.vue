@@ -1,6 +1,6 @@
 <template>
   <section class="mainwrap">
-    <div class="flex">
+    <!-- <div class="flex">
       <search
         :organHide="false"
         :schoolHide="false"
@@ -11,7 +11,7 @@
         :statusNum="3"
       ></search>
       <el-checkbox v-model="checked">只显示未点名学生</el-checkbox>
-    </div>
+    </div> -->
     <div class="flex">
       <div class="callinClass-left">
         <el-row>
@@ -127,15 +127,42 @@
 </template>
 
 <script>
+import { getSignList } from '@/api/eda'
 export default {
   data() {
-    return {
-      checked: false,
-      checkList: '',
-      schoolData: [{ student_number: 1 }],
-    }
+    return {}
   },
-  methods: {},
+
+  created() {
+    this.getSignList()
+  },
+  methods: {
+    //签到学生列表
+    async getSignList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      delete data.date
+      this.listLoading = true
+      const res = await getSignList(data)
+      this.listLoading = false
+      // for (var item of res.data.list) {
+      //   // console.log(item)
+      //   if (item.start_time != 0 || item.start_time != '') {
+      //     item.start_time = this.$moment
+      //       .unix(item.start_time)
+      //       .format('YYYY-MM-DD HH:mm:ss')
+      //   } else {
+      //     item.start_time = '---'
+      //   }
+      // }
+      this.listData = res.data.list
+
+      console.log(this.listData)
+      this.listTotal = res.data.total
+    },
+  },
 }
 </script>
 

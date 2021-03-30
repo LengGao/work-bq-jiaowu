@@ -3,11 +3,22 @@
  */
 import request from '@/utils/request'
 
-// 教材管理=======
+// 角色管理=======
 /**
- * 获取教材管理列表
+ * 获取角色列表
  */
 export function getRoleList(params) {
+  return request({
+    url: '/role/index',
+    method: 'get',
+    params,
+  })
+}
+// 角色管理=======
+/**
+ * 获取角色详情
+ */
+export function getRoleInfo(params) {
   return request({
     url: '/role/index',
     method: 'get',

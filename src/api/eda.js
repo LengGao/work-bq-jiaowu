@@ -332,6 +332,18 @@ export function getWorkPageList(params) {
         params,
     })
 }
+
+/**
+ * 签到学生列表
+ */
+export function getSignList(params) {
+  return request({
+    url: 'arrange/signList',
+    method: 'get',
+    params,
+  })
+}
+
 // 学生详情-个人成绩统计
 export function getSubjectListByUser(params) {
     return request({
