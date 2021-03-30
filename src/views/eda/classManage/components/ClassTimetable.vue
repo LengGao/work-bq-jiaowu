@@ -1,7 +1,7 @@
 <template>
   <!-- 班级课表 -->
   <div class="timetable">
-    <div class="calendar">
+    <div class="calendar" v-loading="detailLoading">
       <div class="date-select">
         <el-select v-model="checkedYear">
           <el-option
@@ -62,6 +62,7 @@ export default {
       checkedYear: new Date().getFullYear(),
       checkedMonth: new Date().getMonth() + 1,
       detailDialog: false,
+      detailLoading: false,
       allDay: [],
       infoMap: {},
       courseData: {},
@@ -90,7 +91,9 @@ export default {
         month:
           this.checkedMonth < 10 ? "0" + this.checkedMonth : this.checkedMonth,
       };
+      this.detailLoading = true;
       const res = await getClassArrangeList(data);
+      this.detailLoading = false;
       if (res.code === 0) {
         const data = res.data || [];
         this.allDay = data.map((item) => item.date);

@@ -444,7 +444,7 @@ export const asyncRouter = [
       {
         path: 'examination',
         name: 'examination',
-        component: () => import('@/views/exa/examination.vue'),
+        component: () => import('@/views/exa/examinationConfig/index.vue'),
         meta: { title: '考试配置', icon: 'product-add' },
       },
       {
@@ -681,6 +681,7 @@ const createRouter = () => {
 }
 const router = createRouter()
 
+// 重置路由
 export const resetRouter = () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher

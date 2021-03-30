@@ -38,9 +38,7 @@ let Examination = {
   cost: ruleForm.cost,
   period: ruleForm.period,
   from_organization_id: ruleForm.from_organization_id,
-
   // search_box: ruleForm.search_box,
-
   page: self.page,
 }
 console.log(config)
@@ -59,6 +57,39 @@ axiosHttp({
   },
 })
 },
+
+//修改科目
+  updateSubject(self, ruleForm) {
+    let config = {
+    id:self.ruleForm.id,
+    cate_id:self.ruleForm.cate_id,
+    id:self.ruleForm.id,
+    subject_name:self.ruleForm.subject_name,
+    total_score:self.ruleForm.total_score,
+    pass_score:self.ruleForm.pass_score,
+    cost:self.ruleForm.cost,
+    exam_type:self.ruleForm.exam_type,
+    credit_hour:self.ruleForm.credit_hour,
+
+      // search_box: ruleForm.search_box,
+      page: self.page,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.updateSubject,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res.data.data)
+        let data = res.data.data
+        if (res.data.code == 0) {
+          self[name] = data
+          self.dialogVisible=false
+          self.$api.updateList(self, 'subjectData')
+        }
+      },
+    })
+  },
 
   //考试规则列表
   ruleList(self, name) {
@@ -122,37 +153,7 @@ axiosHttp({
       })
     },
 
-  //修改科目
-  updateSubject(self, ruleForm) {
-    let config = {
-    cate_id:self.ruleForm.cate_id,
-    id:self.ruleForm.id,
-    subject_name:self.ruleForm.subject_name,
-    total_score:self.ruleForm.total_score,
-    pass_score:self.ruleForm.pass_score,
-    cost:self.ruleForm.cost,
-    exam_type:self.ruleForm.exam_type,
-    credit_hour:self.ruleForm.credit_hour,
-
-      // search_box: ruleForm.search_box,
-      page: self.page,
-    }
-    console.log(config)
-    axiosHttp({
-      url: url.updateSubject,
-      data: config,
-      method: 'POST',
-      then(res) {
-        console.log(res.data.data)
-        let data = res.data.data
-        if (res.data.code == 0) {
-          self[name] = data
-          self.dialogVisible=false
-          self.$api.updateList(self, 'subjectData')
-        }
-      },
-    })
-  },
+  
 
   //删除报考科目
   deleteSubject(self, id) {

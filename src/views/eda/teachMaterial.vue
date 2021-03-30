@@ -133,7 +133,6 @@
 </template>
 
 <script>
-import SearchList from "@/components/SearchList/index";
 import GrantTeachMaterials from "./components/GrantTeachMaterials";
 import { dispenseList, getproject, getcourseallclass } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
@@ -141,7 +140,6 @@ import { cloneOptions } from "@/utils/index";
 export default {
   name: "teachMaterial",
   components: {
-    SearchList,
     GrantTeachMaterials,
   },
   data() {
@@ -257,11 +255,10 @@ export default {
       this.pageNum = val;
       this.dispenseList();
     },
-    toMaterialJournal(ab) {
-      console.log(ab);
+    toMaterialJournal(id) {
       this.$router.push({
         path: "/eda/materialJournal",
-        query: { id: ab.id },
+        query: { id },
       });
     },
     handleBatchAdd() {

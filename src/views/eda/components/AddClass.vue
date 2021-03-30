@@ -1,5 +1,5 @@
 <template>
-  <!--添加仓库弹框-->
+  <!--添加班级弹框-->
   <el-dialog
     :title="title"
     :visible.sync="visible"
