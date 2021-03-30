@@ -148,16 +148,16 @@
 </template>
 
 <script>
-import { cloneOptions } from '@/utils/index'
+import { cloneOptions } from "@/utils/index";
 import {
   getStudentList,
   getproject,
   getcourseallclass,
   addstudents,
-} from '@/api/eda'
-import { getCateList, getInstitutionSelectData } from '@/api/sou'
+} from "@/api/eda";
+import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
-  name: 'myClients',
+  name: "myClients",
 
   data() {
     return {
@@ -169,269 +169,269 @@ export default {
       checkedIds: [],
       searchData: {
         type: 0,
-        date: '',
-        course_category_id: '',
-        project_id: '',
-        classroom_id: '',
+        date: "",
+        course_category_id: [],
+        project_id: "",
+        classroom_id: "",
         organization_id: [],
-        keyboard: '',
+        keyboard: "",
         student_type: 1,
       },
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
+          key: "date",
+          type: "datePicker",
           attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            'value-format': 'yyyy-MM-dd',
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
           },
         },
         {
-          key: 'student_type',
-          type: 'select',
+          key: "student_type",
+          type: "select",
           options: [
-            { label: '网课', value: 1 },
-            { label: '非网课', value: 2 },
+            { label: "网课", value: 1 },
+            { label: "非网课", value: 2 },
           ],
           attrs: {
-            placeholder: '学生类型',
+            placeholder: "学生类型",
             clearable: true,
           },
         },
         {
-          key: 'course_category_id',
-          type: 'cascader',
+          key: "course_category_id",
+          type: "cascader",
           events: {
             change: this.handleTypeChange,
           },
           attrs: {
-            placeholder: '所属分类',
+            placeholder: "所属分类",
             clearable: true,
             options: [],
           },
         },
         {
-          key: 'project_id',
-          type: 'select',
+          key: "project_id",
+          type: "select",
           options: [],
-          optionValue: 'project_id',
-          optionLabel: 'project_name',
+          optionValue: "project_id",
+          optionLabel: "project_name",
           attrs: {
-            placeholder: '所属项目',
+            placeholder: "所属项目",
             clearable: true,
           },
         },
         {
-          key: 'organization_id',
-          type: 'cascader',
+          key: "organization_id",
+          type: "cascader",
           attrs: {
-            placeholder: '推荐机构',
+            placeholder: "推荐机构",
             clearable: true,
             options: [],
           },
         },
         {
-          key: 'classroom_id',
-          type: 'select',
+          key: "classroom_id",
+          type: "select",
           options: [],
-          optionValue: 'classroom_id',
-          optionLabel: 'classroom_name',
+          optionValue: "classroom_id",
+          optionLabel: "classroom_name",
           attrs: {
-            placeholder: '所属班级',
+            placeholder: "所属班级",
             clearable: true,
           },
         },
         {
-          key: 'keyboard',
+          key: "keyboard",
           attrs: {
-            placeholder: '学生姓名/手机号码',
+            placeholder: "学生姓名/手机号码",
           },
         },
       ],
-      checked: '',
+      checked: "",
       submitLoading: false,
       dialogVisible: false,
       classOptions: [], // 班级选项
       formData: {
-        classroom_id: '',
+        classroom_id: "",
       },
       rules: {
-        classroom_id: [{ required: true, message: '请选择', trigger: 'blur' }],
+        classroom_id: [{ required: true, message: "请选择", trigger: "blur" }],
       },
-    }
+    };
   },
 
   created() {
-    this.getInstitutionSelectData()
-    this.getproject()
-    this.getCateList()
-    this.getStudentList()
+    this.getInstitutionSelectData();
+    this.getproject();
+    this.getCateList();
+    this.getStudentList();
   },
 
   methods: {
     handleBatch() {
-      console.log(this.searchData.course_category_id)
       if (!this.searchData.course_category_id) {
-        this.$message.warning('请先按照 所属分类 搜索！')
-        return
+        this.$message.warning("请先按照 所属分类 搜索！");
+        return;
       }
       if (!this.checkedIds.length) {
-        this.$message.warning('请选择需要分班的学生！')
-        return
+        this.$message.warning("请选择需要分班的学生！");
+        return;
       }
-      this.dialogVisible = true
+      this.dialogVisible = true;
     },
     handleSeletChange(selection) {
-      this.intent_id = selection[0]?.intent_id || ''
-      this.checkedIds = selection.map((item) => item.uid)
+      this.intent_id = selection[0]?.intent_id || "";
+      this.checkedIds = selection.map((item) => item.uid);
     },
     async addstudents() {
       const data = {
         ...this.formData,
         intent_id: this.intent_id,
         course_students_id: this.checkedIds,
-      }
-      const res = await addstudents(data)
+      };
+      const res = await addstudents(data);
       if (res.code === 0) {
-        this.$message.success(res.message)
-        this.getStudentList()
+        this.$message.success(res.message);
+        this.getStudentList();
       }
     },
     handleChecked(val) {
-      this.searchData.type = val ? 2 : 0
-      this.getStudentList()
+      this.searchData.type = val ? 2 : 0;
+      this.getStudentList();
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.addstudents()
+          this.addstudents();
         }
-      })
+      });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
       for (const k in this.formData) {
-        this.formData[k] = ''
+        this.formData[k] = "";
       }
-      this.dialogVisible = false
+      this.dialogVisible = false;
     },
     // 当分类选择时
     handleTypeChange(ids) {
-      const id = ids ? [...ids].pop() : ''
-      this.getcourseallclass(id)
-      this.getproject(id)
+      const id = ids ? [...ids].pop() : "";
+      this.getcourseallclass(id);
+      this.getproject(id);
     },
     // 获取班级下拉
     async getcourseallclass(category_id) {
-      const data = { category_id }
-      const res = await getcourseallclass(data)
+      const data = { category_id };
+      const res = await getcourseallclass(data);
       if (res.code === 0) {
-        this.classOptions = res.data
-        this.searchOptions[5].options = res.data
+        this.classOptions = res.data;
+        this.searchOptions[5].options = res.data;
       }
     },
     // 获取项目下拉
-    async getproject(category_id = '') {
+    async getproject(category_id = "") {
       const data = {
         category_id,
-      }
-      const res = await getproject(data)
+      };
+      const res = await getproject(data);
       if (res.code === 0) {
-        this.searchOptions[3].options = res.data
+        this.searchOptions[3].options = res.data;
       }
     },
     handleSearch(data) {
-      const times = data.date || ['', '']
-      delete data.date
-      this.pageNum = 1
+      console.log(data);
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
       this.searchData = {
         ...data,
         organization_id: data.organization_id.pop(),
         course_category_id: data.course_category_id.pop(),
         start_time: times[0],
         end_time: times[1],
-      }
-      this.getStudentList()
+      };
+      this.getStudentList();
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getStudentList()
+      this.pageNum = val;
+      this.getStudentList();
     },
     //学生列表
     async getStudentList() {
-      this.checkedIds = []
-      this.intent_id = ''
+      this.checkedIds = [];
+      this.intent_id = "";
       const data = {
         page: this.pageNum,
         ...this.searchData,
-      }
-      this.listLoading = true
-      const res = await getStudentList(data)
-      this.listLoading = false
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      };
+      this.listLoading = true;
+      const res = await getStudentList(data);
+      this.listLoading = false;
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
     // 获取教材分类
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
         this.searchOptions[2].attrs.options = cloneOptions(
           res.data,
-          'category_name',
-          'category_id',
-          'son'
-        )
+          "category_name",
+          "category_id",
+          "son"
+        );
       }
     },
     // 获取机构
     async getInstitutionSelectData() {
-      const data = { list: true }
-      const res = await getInstitutionSelectData(data)
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
         this.searchOptions[4].attrs.options = cloneOptions(
           res.data,
-          'institution_name',
-          'institution_id',
-          'children'
-        )
+          "institution_name",
+          "institution_id",
+          "children"
+        );
       }
     },
     toOrderManage() {
       this.$router.push({
-        path: '/eda/orderManage',
-      })
+        path: "/eda/orderManage",
+      });
     },
     toStudentDetail(id) {
       this.$router.push({
-        path: '/eda/studentDetail',
+        path: "/eda/studentDetail",
         query: { id },
-      })
+      });
     },
     batchImport() {
-      this.importVisible = true
+      this.importVisible = true;
     },
     //保存
     preserve() {
-      console.log(this.ruleForm)
-      this.$api.addCustomers(this, this.ruleForm)
+      console.log(this.ruleForm);
+      this.$api.addCustomers(this, this.ruleForm);
     },
 
     toCustomeRegist() {
       this.$router.push({
-        path: '/etm/customeRegist',
-      })
+        path: "/etm/customeRegist",
+      });
     },
 
     addCustomer() {
       //添加用户弹框打开
-      this.importVisible = true
+      this.importVisible = true;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -525,7 +525,7 @@ header {
     display: flex;
     justify-content: flex-start;
     align-items: baseline;
-    font-family: 'Microsoft YaHei UI', sans-serif;
+    font-family: "Microsoft YaHei UI", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
@@ -553,7 +553,7 @@ header {
   h3 {
     padding-left: 4px;
     border-left: 4px solid #199fff;
-    font-family: 'Arial Normal', 'Arial', sans-serif;
+    font-family: "Arial Normal", "Arial", sans-serif;
     font-weight: 400;
     letter-spacing: normal;
     color: #333333;
