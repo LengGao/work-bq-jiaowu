@@ -75,7 +75,7 @@
           <page
             :data="listTotal"
             :curpage="pageNum"
-            @pageChange="getMaterial"
+            @pageChange="handlePageChange"
           />
         </div>
       </div>
