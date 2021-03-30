@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+      *本模块主要是招生老师用来进行日常招生数据的分类管理。
     </div>
 
     <section class="mainwrap">
@@ -13,7 +13,6 @@
         />
         <el-button type="primary" @click="addClassiFion">添加分类</el-button>
       </div>
-
       <!--表格-->
       <div class="userTable">
         <el-table
@@ -22,34 +21,29 @@
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-        >
+          :cell-style="{ 'text-align': 'center' }">
           <el-table-column
             label="分类ID"
             show-overflow-tooltip
             min-width="90"
-            prop="category_id"
-          >
+            prop="category_id">
           </el-table-column>
           <el-table-column
             prop="category_name"
             label="分类名称"
             min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-
+            show-overflow-tooltip>
+            </el-table-column>
           <el-table-column
             label="分类图标"
             min-width="150"
-            show-overflow-tooltip
-          >
+            show-overflow-tooltip>
             <template slot-scope="scope">
               <div style="margin:0 auto;width:50px ;height:50px;">
                 <img :src="scope.row.icon" alt class="school_class_box" />
               </div>
             </template>
           </el-table-column>
-         
           <el-table-column label="排序" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
@@ -68,16 +62,14 @@
             prop="status"
             label="是否启用"
             min-width="150"
-            show-overflow-tooltip
-          >
+            show-overflow-tooltip>
             <template slot-scope="scope">
               <el-switch
                 active-color="#13ce66"
                 v-model="scope.row.account_status"
                 :active-value="1"
                 :inactive-value="2"
-                @change="changeSwitch(scope.row)"
-              >
+                @change="changeSwitch(scope.row)">
               </el-switch>
             </template>
           </el-table-column>
@@ -86,8 +78,7 @@
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
                 <el-button type="text" @click="topayment(scope.row)"
-                  >编辑</el-button
-                >
+                  >编辑</el-button>
               </div>
             </template>
           </el-table-column>
@@ -106,8 +97,7 @@
       <el-dialog
         :title="dialogTitle"
         :visible.sync="dialogVisible"
-        width="576px"
-      >
+        width="576px">
         <el-form label-width="100px">
           <el-form-item label="所属分类">
             <el-select
@@ -156,7 +146,6 @@
     </section>
   </div>
 </template>
-
 <script>
 import { getCateList } from '@/api/sou'
 import SearchList from '@/components/SearchList/index'
@@ -165,7 +154,8 @@ export default {
   data() {
     return {
       pageNum:[],
-      searchData:[],
+      searchData: {
+        value: "",},
       selectData: [],
       schoolData: [],
       dialogTitle: '',
@@ -180,10 +170,8 @@ export default {
       page: 1,
       dialogVisible: false,
       keyboard:'',
-
       // 搜索框
        searchOptions: [
-   
         {
           key: 'keyboard',
           attrs: {
@@ -191,7 +179,6 @@ export default {
           },
         },
       ],
-    
     }
   },
   created() {
@@ -199,6 +186,11 @@ export default {
     this.$api.getCategoryList(this, 'schoolData')
   },
   methods: {
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = data;
+      this.getCategoryList();
+    },
     doPageChange(page) {
       this.page = page
       this.$api.getCategoryList(this, 'schoolData', this.datas)
@@ -219,7 +211,7 @@ export default {
         this.dialogVisible = true
         this.haschoose = true
         this.index_category_id = zx.index_category_id
-        this.$api.getHomeclassifiDetail(this, this.index_category_id)
+        this.$api.getCategoryList(this, this.index_category_id)
     },
     scopes(id, sorts) {
       var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
@@ -251,14 +243,6 @@ export default {
       }
     },
 
-     //搜索功能
-     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.$api.getCategoryList(this, 'schoolData')
-
-    },
-
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
@@ -279,7 +263,6 @@ export default {
         }
       })
     },
-
     changeSwitch(ab) {
       console.log(ab)
       let formData = {
