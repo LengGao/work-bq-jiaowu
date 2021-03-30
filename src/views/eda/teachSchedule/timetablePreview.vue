@@ -311,8 +311,8 @@ export default {
 
     this.param = JSON.parse(this.$route.query.param)
     this.ruleForm.category_id = this.param.category_id
-    this.classroom_id = this.param.classroom_id
-    this.ruleForm.classroom_id_arr.push(this.$route.query.classroom_id)
+    this.ruleForm.classroom_id = this.param.classroom_id
+    this.ruleForm.classroom_id_arr.push(this.param.classroom_id)
     this.$api.getTeacherSublist(this, 'teacherData') //老师列表
     this.$api.getRoomSelect(this, 'roomData') //教室列表
     this.$api.getClassScheduling(this, this.schoolData)
@@ -381,8 +381,8 @@ export default {
         remark: '',
         class_hour: [],
       }
-      this.ruleForm.category_id = this.$route.query.category_id
-      this.ruleForm.classroom_id_arr.push(this.$route.query.classroom_id)
+      this.ruleForm.category_id = this.param.category_id
+      this.ruleForm.classroom_id_arr.push(this.param.classroom_id)
       this.lessonTime = [{ classTimeArr: '' }]
     },
     addTime() {
