@@ -302,4 +302,20 @@ export function getTeacherList(params) {
         params,
     })
 }
+// 学生详情-个人成绩统计
+export function getSubjectListByUser(params) {
+    return request({
+        url: '/Graduation/getSubjectListByUser',
+        method: 'get',
+        params,
+    })
+}
+// 学生详情-个人成绩统计-历史成绩
+export function getHistoryGradeList(params) {
+    return request({
+        url: '/Graduation/getHistoryGradeList',
+        method: 'get',
+        params,
+    })
+}
 
