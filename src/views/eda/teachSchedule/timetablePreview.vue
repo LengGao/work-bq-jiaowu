@@ -1,8 +1,19 @@
 <template>
   <div class="mainwrap">
     <div class="timetable">
-      <div>
-        双方都发生
+      <div class="time-head">
+        <p>
+          班级名称 <span> {{ param.classroom_name }}</span>
+        </p>
+        <p>
+          所属分类 <span> {{ param.category_name }}</span>
+        </p>
+        <p>
+          学生人数 <span> {{ param.total_people }}</span>
+        </p>
+        <p>
+          开课日期 <span> {{ param.frist_class_time }}</span>
+        </p>
       </div>
       <div class="calendar">
         <div class="date-select">
@@ -245,6 +256,7 @@ export default {
     return {
       courseData: {},
       years: [],
+      param: {},
       detailDialog: false,
       allDay: [],
       calendarDate: new Date(),
@@ -296,7 +308,10 @@ export default {
   },
   created() {
     this.createYears()
-    this.ruleForm.category_id = this.$route.query.category_id
+
+    this.param = JSON.parse(this.$route.query.param)
+    this.ruleForm.category_id = this.param.category_id
+    this.classroom_id = this.param.classroom_id
     this.ruleForm.classroom_id_arr.push(this.$route.query.classroom_id)
     this.$api.getTeacherSublist(this, 'teacherData') //老师列表
     this.$api.getRoomSelect(this, 'roomData') //教室列表
@@ -304,16 +319,15 @@ export default {
     this.$api.getStaffSelect(this, 'staffData') //跟班人员下拉列表
   },
   watch: {
-    calendarDate() {
-      this.$api.getClassScheduling(this, this.schoolData)
-      // this.getClassArrangeList()
-      //return `${this.checkedYear}-${this.checkedMonth}`
-    },
+    // calendarDate() {
+    //   this.$api.getClassScheduling(this, this.schoolData)
+    // },
   },
   methods: {
     changTime() {
       console.log('3243')
       this.calendarDate = `${this.checkedYear}-${this.checkedMonth}`
+      this.$api.getClassScheduling(this, this.schoolData)
     },
     handleOpen(data, ab) {
       console.log('点会')
@@ -471,6 +485,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+/deep/.el-calendar__header {
+  border-bottom: none;
+}
 .main {
   /deep/.el-calendar__body {
     padding: 12px 0px 35px 0;
@@ -537,6 +554,22 @@ export default {
     }
     .day-info {
       margin-top: 5px;
+    }
+  }
+}
+.time-head {
+  width: 80%;
+  font-family: 'Microsoft YaHei UI', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  p {
+    color: #999999;
+    span {
+      margin-left: 20px;
+      color: #666666;
     }
   }
 }

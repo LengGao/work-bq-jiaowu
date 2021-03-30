@@ -1,17 +1,11 @@
 <template>
   <section class="mainwrap">
     <div class="header">
-      <search
-        :organHide="false"
-        :schoolHide="false"
-        :classNameHide="false"
-        :dealStatusHide="false"
-        :teacherHide="false"
-        @getTable="getTableList"
-        api="getMyclient"
-        :statusNum="3"
-      ></search>
-      <!-- <el-checkbox v-model="checked">显示未归档学生</el-checkbox> -->
+      <SearchList
+        :options="searchOptions"
+        :data="searchData"
+        @on-search="handleSearch"
+      />
       <el-button type="primary" @click="exportTable">导出排课表</el-button>
     </div>
 
@@ -19,7 +13,7 @@
     <div class="userTable">
       <el-table
         ref="multipleTable"
-        :data="schoolData.list"
+        :data="listData"
         tooltip-effect="light"
         stripe
         style="width: 100%;"
@@ -94,26 +88,12 @@
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="200"
-          max-width="200"
-        >
-          <template slot-scope="scope">
-            <div class="operation_btn">
-              <el-button type="text" @click="handleAdd(scope.row)"
-                >添加</el-button
-              >
-            </div>
-          </template>
-        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
-          :data="schoolData.total"
-          :curpage="page"
-          @pageChange="doPageChange"
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
         />
       </div>
     </div>
@@ -129,6 +109,13 @@
 </template>
 
 <script>
+import {
+  getAllForPageList,
+  getcourseallclass,
+  getTeacherList,
+  getRoomSelect,
+} from '@/api/eda'
+import {} from '@/api/eda'
 export default {
   name: 'seaStudent',
   data() {
@@ -140,10 +127,84 @@ export default {
       datas: {},
       checked: '',
       url: '',
+      searchOptions: [
+        {
+          key: 'date',
+          type: 'datePicker',
+          attrs: {
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            'value-format': 'yyyy-MM-dd',
+          },
+        },
+        {
+          key: 'classroom_id',
+          type: 'select',
+          options: [],
+          optionValue: 'classroom_id',
+          optionLabel: 'classroom_name',
+          attrs: {
+            placeholder: '所属班级',
+            clearable: true,
+          },
+        },
+        {
+          key: 'teacher_id',
+          type: 'select',
+          options: [],
+          optionValue: 'teacher_id',
+          optionLabel: 'teacher_name',
+          attrs: {
+            placeholder: '上课老师',
+            clearable: true,
+          },
+        },
+        {
+          key: 'teaching_type',
+          type: 'select',
+          options: [
+            { value: 1, name: '面授' },
+            { value: 2, name: '直播' },
+          ],
+          optionValue: 'value',
+          optionLabel: 'name',
+          attrs: {
+            placeholder: '授课方式',
+            clearable: true,
+          },
+        },
+        {
+          key: 'schoolroom_id',
+          type: 'select',
+          options: [],
+          optionValue: 'id',
+          optionLabel: 'room_name',
+          attrs: {
+            placeholder: '教室',
+            clearable: true,
+          },
+        },
+      ],
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        classroom_id: '',
+        teacher_id: '',
+        teaching_type: '',
+        schoolroom_id: '',
+      },
     }
   },
   mounted() {
-    this.$api.getAllForPageList(this, 'schoolData')
+    this.getAllForPageList()
+    this.getcourseallclass()
+    this.getTeacherList()
+    this.getRoomSelect()
+    // this.$api.getAllForPageList(this, 'schoolData')
   },
   filters: {
     teaching_type(num) {
@@ -160,32 +221,70 @@ export default {
     },
   },
   methods: {
+    // 获取班级下拉
+    async getcourseallclass() {
+      const data = {}
+      const res = await getcourseallclass(data)
+      if (res.code === 0) {
+        this.classOptions = res.data
+        this.searchOptions[1].options = res.data
+      }
+    },
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getAllForPageList()
+    },
+    handleSearch(data) {
+      console.log(data)
+      const times = data.date || ['', '']
+      delete data.date
+      this.pageNum = 1
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+      }
+      this.getAllForPageList()
+    },
+    // 获取班级老师
+    async getTeacherList() {
+      const data = {}
+      const res = await getTeacherList(data)
+      if (res.code === 0) {
+        this.classOptions = res.data
+        console.log(res.data)
+        this.searchOptions[2].options = res.data
+      }
+    },
+    // 获取教室选择列表
+    async getRoomSelect() {
+      const data = {}
+      const res = await getRoomSelect(data)
+      if (res.code === 0) {
+        this.classOptions = res.data
+        console.log(res.data)
+        this.searchOptions[4].options = res.data
+      }
+    },
+    // 获全部排课列表
+    async getAllForPageList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      delete data.date
+      this.listLoading = true
+      const res = await getAllForPageList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.listTotal = res.data.total
+    },
     exportTable() {
       this.$api.exportExcelSchedule(this, 'myclient')
     },
     exportData() {
       console.log(this.url)
       window.location.href = this.url
-    },
-    // exportData: function(val) {
-    //   let self = this
-    //   self.$message.success('正在导出数据，请勿重复提交！')
-    //   location.href = self.$urls + '/arrange/exportExcel'
-    //   console.log('点击的次数')
-    // },
-    getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
-      }
-    },
-
-    doPageChange(page) {
-      this.page = page
-      this.$api.getAllForPageList(this, 'schoolData')
     },
   },
 }

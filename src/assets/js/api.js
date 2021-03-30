@@ -431,7 +431,7 @@ let api = {
   //班级排课列表
   getClassScheduling(self, ruleForm) {
     let config = {
-      classroom_id: self.$route.query.classroom_id,
+      classroom_id: self.param.classroom_id,
       year: self.checkedYear,
       month:
         self.checkedMonth < 10 ? '0' + self.checkedMonth : self.checkedMonth,
