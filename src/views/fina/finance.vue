@@ -98,7 +98,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <div class="link" @click="coursDetail(scope.row)">
+              <div class="link" @click="coursDetail(scope.row.uid)">
                 {{ scope.row.surname }}
               </div>
             </template>
@@ -339,12 +339,12 @@ export default {
       this.listTotal = res.data.total;
       this.panelData = res.data.count[0] || {};
     },
-    coursDetail(ab) {
+    coursDetail(uid) {
       this.$router.push({
         path: "/fina/cusdetail",
-        // query: {
-        //   surname: ab.surname,
-        // },
+        query: {
+          uid,
+        },
       });
     },
     orderDetail(ab) {
