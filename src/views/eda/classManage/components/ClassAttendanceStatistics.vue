@@ -108,7 +108,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
-          @pageChange="classAttendanceStatistics"
+          @pageChange="handlePageChange"
         />
       </div>
     </div>

@@ -24,7 +24,11 @@
         </li>
       </ul>
       <div class="container-components">
-        <component :is="getComponent" :uid="uid" />
+        <component
+          :is="getComponent"
+          :uid="uid"
+          :graduate="$attrs.datas.is_graduate || 0"
+        />
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@
     top="30px"
     class="allocation-storage"
     @open="handleOpen"
+    :close-on-click-modal="false"
     @closed="resetForm('ruleForm')"
   >
     <SearchList

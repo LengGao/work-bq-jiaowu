@@ -68,7 +68,11 @@
             label="授课方式"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="">
+              <div></div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="schoolroom_name"
             label="上课教室"

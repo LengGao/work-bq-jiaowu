@@ -7,6 +7,7 @@
     top="30px"
     class="grant-teach-materials"
     @open="handleOpen"
+    :close-on-click-modal="false"
     @closed="resetForm('ruleForm')"
   >
     <el-form

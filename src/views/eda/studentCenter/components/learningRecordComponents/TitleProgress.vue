@@ -3,9 +3,9 @@
   <div class="title-progress">
     <Title text="学习进度" />
     <div class="step">
-      <el-steps :active="active" finish-status="success">
-        <el-step title="报名" description="2021-03-20"></el-step>
-        <el-step title="培训" description="2021-03-23"></el-step>
+      <el-steps :active="graduate + 1" finish-status="success">
+        <el-step title="报名"></el-step>
+        <el-step title="培训"></el-step>
         <el-step title="考试"></el-step>
         <el-step title="毕业"></el-step>
       </el-steps>
@@ -87,6 +87,16 @@
 import { getClassList } from "@/api/eda";
 export default {
   name: "titleProgress",
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
+    graduate: {
+      type: [String, Number],
+      default: 0,
+    },
+  },
   data() {
     return {
       active: 1,
