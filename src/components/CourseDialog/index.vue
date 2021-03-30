@@ -3,7 +3,7 @@
   <el-dialog
     title="排课详情"
     :visible.sync="visible"
-    width="400px"
+    width="300px"
     class="course-dialog"
     @open="handleOpen"
     :close-on-click-modal="false"
@@ -100,15 +100,22 @@ export default {
 <style lang="scss" scoped>
 .course-dialog {
   .detail {
+    margin-left: 10px;
     margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
     p {
       line-height: 30px;
     }
   }
-
+  /deep/.el-dialog__body {
+    padding-bottom: 0;
+  }
   .detail__radius {
     position: relative;
     padding-left: 20px;
+
     &::before {
       position: absolute;
       left: 5px;
