@@ -183,7 +183,7 @@
     />
 
     <PreviewImg ref="view" />
-    <a></a>
+    <a ref="a"></a>
   </section>
 </template>
 

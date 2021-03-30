@@ -51,7 +51,13 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <el-switch :value="row.status === 1"> </el-switch>
+              <el-switch
+                @change="editstorage(row)"
+                v-model="row.status"
+                :active-value="1"
+                :inactive-value="2"
+              >
+              </el-switch>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="300">
@@ -114,7 +120,11 @@ import SearchList from "@/components/SearchList/index";
 import AddWarehouse from "./components/AddWarehouse";
 import PutInStorage from "./components/PutInStorage";
 import AllocationStorage from "./components/AllocationStorage";
-import { getStorageList, getInstitutionSelectData } from "@/api/sou";
+import {
+  getStorageList,
+  getInstitutionSelectData,
+  editstorage,
+} from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
   components: {
@@ -166,6 +176,19 @@ export default {
   },
 
   methods: {
+    //修改仓库状态
+    async editstorage(row) {
+      const data = {
+        storage_id: row.id,
+        status: row.status,
+      };
+      const res = await editstorage(data);
+      if (res.code === 0) {
+        this.$message.success(
+          `仓库 ${row.storage_name} 已${row.status === 1 ? "启" : "禁"}用`
+        );
+      }
+    },
     async getInstitutionSelectData() {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);

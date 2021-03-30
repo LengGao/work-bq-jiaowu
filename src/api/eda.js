@@ -318,4 +318,12 @@ export function getHistoryGradeList(params) {
         params,
     })
 }
+// 学生详情-学习进度列表
+export function getstudentcourse(params) {
+    return request({
+        url: '/classstudents/getstudentcourse',
+        method: 'get',
+        params,
+    })
+}
 

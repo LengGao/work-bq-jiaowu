@@ -24,56 +24,56 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="classroom_name"
+          prop="course_name"
           label="课程名称"
-          min-width="110"
+          min-width="160"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="category_name"
+          prop="video_time_total"
           label="学习时长"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="project_name"
+          prop="video_progress"
           label="学习进度"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="staff_name"
+          prop="total_problem"
           label="做题总数"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="problem_rate"
           label="做题进度"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="real_topic_score"
           label="历年真题平均分"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="exam_score"
           label="模拟考试平均分"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="student_number"
           label="自主出题最高分"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
-          prop="student_number"
+          prop="live_time"
           label="参加直播时长"
           min-width="110"
           show-overflow-tooltip
@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
+import { getstudentcourse } from "@/api/eda";
 export default {
   name: "titleProgress",
   props: {
@@ -105,14 +105,17 @@ export default {
     };
   },
   created() {
-    this.getClassList();
+    this.getstudentcourse();
   },
   methods: {
-    async getClassList() {
+    async getstudentcourse() {
       this.listLoading = true;
-      const res = await getClassList();
+      const data = {
+        uid: this.uid,
+      };
+      const res = await getstudentcourse(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data;
     },
   },
 };

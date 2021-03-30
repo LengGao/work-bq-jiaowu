@@ -52,12 +52,12 @@
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="update_number"
             label="更新库存数量"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column
             prop="staff_name"
             label="操作人"

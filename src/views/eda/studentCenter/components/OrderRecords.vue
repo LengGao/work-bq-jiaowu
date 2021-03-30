@@ -20,7 +20,7 @@
           prop="order_no"
           label="订单编号"
           show-overflow-tooltip
-          min-width="90"
+          min-width="160"
         ></el-table-column>
         <el-table-column
           prop="pay_status"
