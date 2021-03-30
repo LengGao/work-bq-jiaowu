@@ -5,23 +5,13 @@
     </div>
     <section class="mainwrap">
       <div class="header">
-        <search
-          :organHide="false"
-          :schoolHide="false"
-          :classNameHide="false"
-          :dealStatusHide="false"
-          :teacherHide="false"
-          @getTable="getTableList"
-          api="getMyclient"
-          :statusNum="3"
-        ></search>
         <!-- <el-checkbox v-model="checked">显示未归档学生</el-checkbox> -->
       </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="listData"
           tooltip-effect="light"
           stripe
           style="width: 100%;"
@@ -34,10 +24,16 @@
             label="序号"
             show-overflow-tooltip
             min-width="90"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <div>
+                {{ scope.$index + 1 }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="user_realname"
-            label="上课时间"
+            prop="date"
+            label="上课日期"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
@@ -49,51 +45,55 @@
           ></el-table-column>
 
           <el-table-column
-            prop="institution_name"
+            prop="start_time"
             label="上课时间"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
-            prop="create_time"
+            prop="class_list"
             label="班级名称"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="teacher_name"
             label="上课老师"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="teaching_type"
             label="授课方式"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="">
+              <div></div>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="schoolroom_name"
             label="上课教室"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="staff_list"
             label="跟班人员"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="state"
             label="状态"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
-            label="排班属性"
+            prop="class_list"
+            label="课节数量"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
@@ -105,7 +105,7 @@
           >
             <template slot-scope="scope">
               <div class="operation_btn">
-                <el-button type="text" @click="dialoShow">排班详情</el-button>
+                <!-- <el-button type="text" @click="dialoShow">排班详情</el-button> -->
                 <div>
                   <el-button type="text" @click="callinClass(scope.row)"
                     >上课点名</el-button
@@ -121,13 +121,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
-        </div>
       </div>
       <el-dialog title="提示" :visible.sync="detailVisible" width="40%">
         <!-- <span>这是一段信息</span> -->
@@ -206,57 +199,106 @@
 </template>
 
 <script>
+import { getWorkPageList } from '@/api/eda'
 export default {
-  name: 'seaStudent',
+  name: 'attendanceManage',
   data() {
     return {
-      detailVisible: false,
-      schoolData: [
+      searchOptions: [
         {
-          create_time: 123332,
+          key: 'date',
+          type: 'datePicker',
+          attrs: {
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            'value-format': 'yyyy-MM-dd',
+          },
+        },
+
+        {
+          key: 'cate_id',
+          type: 'cascader',
+          events: {
+            change: this.handleTypeChange,
+          },
+          attrs: {
+            placeholder: '所属分类',
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: 'project_id',
+          type: 'select',
+          options: [],
+          optionValue: 'project_id',
+          optionLabel: 'project_name',
+          attrs: {
+            placeholder: '所属项目',
+            clearable: true,
+          },
+        },
+        {
+          key: 'class_id',
+          type: 'select',
+          options: [],
+          optionValue: 'classroom_id',
+          optionLabel: 'classroom_name',
+          attrs: {
+            placeholder: '所属班级',
+            clearable: true,
+          },
+        },
+        {
+          key: 'foid',
+          type: 'cascader',
+          attrs: {
+            placeholder: '推荐机构',
+            clearable: true,
+            options: [],
+          },
+        },
+
+        {
+          key: 'search_box',
+          attrs: {
+            placeholder: '学生姓名/手机号码',
+          },
         },
       ],
-      page: 1,
-      status: 3,
-      datas: {},
-      checked: '',
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        type: 0,
+        date: '',
+        cate_id: '',
+        project_id: '',
+        class_id: '',
+        foid: [],
+        search_box: '',
+      },
     }
   },
   mounted() {
-    // this.$api.onlineUserList(this, 'schoolData')
+    this.getWorkPageList()
   },
   methods: {
-    toAttendanceStatistics() {
-      this.$router.push({
-        path: '/eda/attendanceStatistics',
-      })
-    },
-    toSinCode() {
-      this.$router.push({
-        path: '/eda/sinCode',
-      })
-    },
-    callinClass() {
-      this.$router.push({
-        path: '/eda/callinClass',
-      })
-    },
-    dialoShow() {
-      this.detailVisible = true
-    },
-    getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+    // 获学员列表
+    async getWorkPageList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
       }
-    },
-
-    doPageChange(page) {
-      this.page = page
-      this.$api.onlineUserList(this, 'schoolData')
+      delete data.date
+      this.listLoading = true
+      const res = await getWorkPageList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.listTotal = res.data.total
     },
   },
 }
