@@ -1,6 +1,77 @@
 <template>
   <div class="mainwrap">
-    <el-calendar>
+    <div class="timetable">
+      <div>
+        双方都发生
+      </div>
+      <div class="calendar">
+        <div class="date-select">
+          <el-select v-model="checkedYear" @change="changTime">
+            <el-option
+              :value="year"
+              :label="year + '年'"
+              v-for="year in years"
+              :key="year"
+            ></el-option>
+          </el-select>
+          <el-select v-model="checkedMonth" @change="changTime">
+            <el-option
+              :value="item"
+              :label="item + '月'"
+              v-for="item in months"
+              :key="item"
+            ></el-option>
+          </el-select>
+        </div>
+        <el-calendar :value="calendarDate" :ShowNextPrevMonth="false">
+          <template slot="dateCell" slot-scope="{ date, data }">
+            <div
+              class="day"
+              :class="{
+                'class-date': allDay.includes(data.day),
+              }"
+              @click="handleOpen(infoMap[data.day], data)"
+            >
+              <div style="display:flex;justify-content:space-between">
+                <span>{{
+                  data.day
+                    .split('-')
+                    .slice(1)
+                    .join('-')
+                }}</span>
+
+                <i
+                  class="el-icon-delete "
+                  @click.stop="deleteClass(infoMap[data.day])"
+                  v-if="allDay.includes(data.day)"
+                ></i>
+              </div>
+
+              <div v-if="allDay.includes(data.day)" class="day-info">
+                <p>
+                  上课时间：{{
+                    infoMap[data.day].period &&
+                      infoMap[data.day].period.substr(11)
+                  }}
+                </p>
+                <p>上课老师：{{ infoMap[data.day].teacher_name }}</p>
+              </div>
+              <div class="addBtnBox">
+                <p
+                  v-if="data.isSelected == true && !allDay.includes(data.day)"
+                  class="addBtn"
+                  @click="addProgramme(data)"
+                >
+                  添加日程
+                </p>
+              </div>
+            </div>
+          </template>
+        </el-calendar>
+      </div>
+      <!-- <CourseDialog v-model="detailDialog" :datas="courseData" /> -->
+    </div>
+    <!-- <el-calendar>
       <template slot="dateCell" slot-scope="{ date, data }" class="calItem">
         <div
           :class="data.isSelected ? 'is-selected' : ''"
@@ -36,17 +107,18 @@
           <p
             class="addBtn"
             v-show="data.isSelected == true"
-            @click="dialogVisible = true"
+            @click="addProgramme()"
           >
             添加日程
           </p>
         </div>
       </template>
-    </el-calendar>
+    </el-calendar> -->
     <el-dialog
       title="添加上课信息"
       :visible.sync="dialogVisible"
       width="30%"
+      :close-on-click-modal="false"
       :before-close="handleClose"
     >
       <el-form
@@ -56,15 +128,6 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <!-- <el-form-item label="班级名称" prop="classroom_id_arr">
-          <el-select
-            v-model="ruleForm.classroom_id_arr"
-            placeholder="请选择班级名称"
-          >
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="上课时间" prop="name">
           <div
             v-for="(item, index) in lessonTime"
@@ -168,16 +231,31 @@
         <el-button type="primary" @click="handleAdd()">确 定</el-button>
       </span>
     </el-dialog>
+    <CourseDialog v-model="detailDialog" :datas="courseData" />
   </div>
 </template>
 <script>
+import CourseDialog from '@/components/CourseDialog/index'
 export default {
   name: 'calendar',
+  components: {
+    CourseDialog,
+  },
   data() {
     return {
+      courseData: {},
+      years: [],
+      detailDialog: false,
+      allDay: [],
+      calendarDate: new Date(),
+      infoMap: {},
+      detailLoading: false,
       rules: {},
+      checkedYear: new Date().getFullYear(),
+      checkedMonth: new Date().getMonth() + 1,
       classTimeArr: '',
       lessonTime: [{ classTimeArr: '' }],
+      months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       ruleForm: {
         date: '',
         title: '',
@@ -212,20 +290,12 @@ export default {
       dialogVisible: false,
       calendarData: [
         { years: ['2020'], months: ['08', '11'], days: ['14'], things: '杂志' },
-        // {
-        //   years: ['2019'],
-        //   months: ['10', '11'],
-        //   days: ['02'],
-        //   things: '演唱会',
-        // },
-        // { years: ['2020'], months: ['11'], days: ['02'], things: '晚会' },
-        // { years: ['2019'], months: ['11'], days: ['02'], things: '杂志预售' },
-        // { years: ['2020'], months: ['07'], days: ['15'], things: '重启开播' },
       ],
       value: new Date(),
     }
   },
   created() {
+    this.createYears()
     this.ruleForm.category_id = this.$route.query.category_id
     this.ruleForm.classroom_id_arr.push(this.$route.query.classroom_id)
     this.$api.getTeacherSublist(this, 'teacherData') //老师列表
@@ -233,7 +303,74 @@ export default {
     this.$api.getClassScheduling(this, this.schoolData)
     this.$api.getStaffSelect(this, 'staffData') //跟班人员下拉列表
   },
+  watch: {
+    calendarDate() {
+      this.$api.getClassScheduling(this, this.schoolData)
+      // this.getClassArrangeList()
+      //return `${this.checkedYear}-${this.checkedMonth}`
+    },
+  },
   methods: {
+    changTime() {
+      console.log('3243')
+      this.calendarDate = `${this.checkedYear}-${this.checkedMonth}`
+    },
+    handleOpen(data, ab) {
+      console.log('点会')
+      console.log(ab.day.split('-')[1])
+      console.log(this.checkedYear)
+      if (this.checkedYear != ab.day.split('-')[0]) {
+        this.checkedYear = ab.day.split('-')[0]
+      }
+
+      if (this.checkedMonth != ab.day.split('-')[1]) {
+        this.checkedMonth = parseInt(ab.day.split('-')[1])
+      }
+      this.calendarDate = `${this.checkedYear}-${this.checkedMonth}-${
+        ab.day.split('-')[2]
+      }`
+      // this.checkedYear = ab.day.split('-')[0]
+      // this.checkedMonth = ab.day.split('-')[1]
+      if (!data) return
+      this.courseData = data
+      this.detailDialog = true
+    },
+    //获取年
+    createYears() {
+      const years = []
+      let startYear = 2019
+      const currentYear = new Date().getFullYear()
+      const deepAdd = () => {
+        if (startYear <= currentYear) {
+          years.push(startYear++)
+          deepAdd()
+        }
+      }
+      deepAdd()
+      this.years = [...years]
+    },
+    addProgramme(data) {
+      console.log(data)
+
+      this.dialogVisible = true
+      this.ruleForm = {
+        date: data.day,
+        title: data.day,
+        classroom_id_arr: [],
+        category_id: '',
+        teacher_id: '',
+        teaching_type: '',
+        schoolroom_id: '',
+        start_time: '',
+        end_time: '',
+        staff_id: [],
+        remark: '',
+        class_hour: [],
+      }
+      this.ruleForm.category_id = this.$route.query.category_id
+      this.ruleForm.classroom_id_arr.push(this.$route.query.classroom_id)
+      this.lessonTime = [{ classTimeArr: '' }]
+    },
     addTime() {
       let obj = {}
       this.lessonTime.push(obj)
@@ -313,7 +450,21 @@ export default {
       // this.calendarData.push(a)
     },
     deleteClass(ab) {
-      this.$api.deleteClass(this, ab.id)
+      this.$confirm('此操作将删除该排课, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$api.deleteClass(this, ab.id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+
       console.log(ab)
     },
   },
@@ -342,17 +493,51 @@ export default {
   color: #199fff;
   // line-height: 32px;
 }
-.addBtn {
-  background: #199fff;
-  width: 55px;
-  height: 20px;
-  color: #fff;
+.addBtnBox {
   display: flex;
   justify-content: center;
-  border-radius: 20px;
   align-items: center;
+  width: 100%;
+  height: 79px;
+  .addBtn {
+    background: #199fff;
+    width: 102px;
+    height: 32px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+    align-items: center;
+  }
 }
+
 .lessonTime {
   margin-bottom: 10px;
+}
+.timetable {
+  .calendar {
+    position: relative;
+    /deep/.el-calendar__button-group {
+      display: none;
+    }
+    .date-select {
+      top: 0;
+      right: 0;
+      position: absolute;
+      .el-select {
+        width: 90px;
+        margin-left: 10px;
+      }
+    }
+    .day {
+      font-size: 14px;
+    }
+    .class-date {
+      color: cornflowerblue;
+    }
+    .day-info {
+      margin-top: 5px;
+    }
+  }
 }
 </style>
