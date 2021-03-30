@@ -51,13 +51,20 @@
           show-overflow-tooltip
         ></el-table-column>
 
-        <el-table-column label="所属校区" min-width="100" show-overflow-tooltip>
-        </el-table-column>
+        <!-- <el-table-column label="所属校区" min-width="100" show-overflow-tooltip>
+        </el-table-column> -->
 
         <el-table-column
           label="项目名称"
           min-width="150"
           prop="project"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="报考科目"
+          min-width="150"
+          prop="subject_count"
           show-overflow-tooltip
         >
         </el-table-column>

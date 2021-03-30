@@ -64,3 +64,35 @@ export function getHistoryGradeList(params) {
     params,
   })
 }
+/**
+ *获取计划学员成绩详情
+ */
+export function getPlanGradeDetail(params) {
+  return request({
+    url: '/Graduation/getPlanGradeDetail',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 保存成绩
+ * @param {*} data
+ */
+export function saveGrade(data) {
+  return request({
+    url: '/Graduation/saveGrade',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 批量通过
+ * @param {*} data
+ */
+export function batchPass(data) {
+  return request({
+    url: '/Graduation/batchPass',
+    method: 'post',
+    data,
+  })
+}

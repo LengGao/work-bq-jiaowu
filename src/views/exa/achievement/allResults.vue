@@ -114,49 +114,6 @@
           show-overflow-tooltip
           min-width="150"
         ></el-table-column>
-        <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
-        <!-- <el-table-column
-          prop="subject_name"
-          label="更新时间"
-          show-overflow-tooltip
-          min-width="150"
-        ></el-table-column>
-
-        <el-table-column
-          prop="category_name"
-          label="考试性质"
-          min-width="100"
-          column-key="course_id"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="exam_type_name"
-          label="单选题"
-          min-width="90"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="total_score"
-          label="多选题"
-          min-width="90"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="max_score"
-          label="考试总分"
-          min-width="80"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          label="考试状态"
-          prop=""
-          min-width="100"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            {{ row.exam_result | exam_resulType }}
-          </template>
-        </el-table-column> -->
       </el-table>
       <span slot="footer" class="dialog-footer">
         <div style="display:flex;justify-content:center;width:100%">

@@ -115,14 +115,14 @@
 </template>
 
 <script>
-import { uploadImageUrl } from "@/api/educational";
+import { uploadImageUrl } from '@/api/educational'
 import {
   getHeadMasters,
   getproject,
   addClassroom,
   editClassroom,
   getClassroomDetail,
-} from "@/api/eda";
+} from '@/api/eda'
 export default {
   props: {
     value: {
@@ -131,11 +131,11 @@ export default {
     },
     title: {
       type: String,
-      default: "",
+      default: '',
     },
     id: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
     typeOptions: {
       type: Array,
@@ -150,58 +150,58 @@ export default {
       },
       visible: this.value,
       formData: {
-        category_id: "",
-        project_id: "",
-        classroom_name: "",
-        master_teacher_id: "",
-        class_icon: "",
+        category_id: '',
+        project_id: '',
+        classroom_name: '',
+        master_teacher_id: '',
+        class_icon: '',
       },
       rules: {
         classroom_name: [
-          { required: true, message: "请输入班级名称", trigger: "blur" },
+          { required: true, message: '请输入班级名称', trigger: 'blur' },
         ],
-        category_id: [{ required: true, message: "请选择", trigger: "change" }],
+        category_id: [{ required: true, message: '请选择', trigger: 'change' }],
         master_teacher_id: [
-          { required: true, message: "请选择", trigger: "change" },
+          { required: true, message: '请选择', trigger: 'change' },
         ],
       },
       addLoading: false,
       uploadLoading: false,
       projectOptions: [],
       staffOptions: [],
-    };
+    }
   },
   watch: {
     value(val) {
-      this.visible = val;
+      this.visible = val
     },
   },
 
   methods: {
     //班主任下拉
     async getHeadMasters() {
-      const data = {};
-      const res = await getHeadMasters(data);
+      const data = {}
+      const res = await getHeadMasters(data)
       if (res.code === 0) {
-        this.staffOptions = res.data.list;
+        this.staffOptions = res.data.list
       }
     },
     handleOpen() {
-      this.getHeadMasters();
+      this.getHeadMasters()
       if (this.id) {
-        this.getClassroomDetail();
+        this.getClassroomDetail()
       }
     },
     async getClassroomDetail() {
       const data = {
         classroom_id: this.id,
-      };
-      const res = await getClassroomDetail(data);
+      }
+      const res = await getClassroomDetail(data)
       if (res.code === 0) {
         for (const k in this.formData) {
-          this.formData[k] = res.data[k];
+          this.formData[k] = res.data[k]
         }
-        this.getproject(this.formData.category_id);
+        this.getproject(this.formData.category_id)
       }
     },
     async submit() {
@@ -210,83 +210,83 @@ export default {
         category_id: Array.isArray(this.formData.category_id)
           ? this.formData.category_id.pop()
           : this.formData.category_id,
-      };
-      if (this.id) {
-        data.classroom_id = this.id;
       }
-      const api = this.id ? editClassroom : addClassroom;
-      this.addLoading = true;
+      if (this.id) {
+        data.classroom_id = this.id
+      }
+      const api = this.id ? editClassroom : addClassroom
+      this.addLoading = true
       const res = await api(data).catch(() => {
-        this.addLoading = false;
-      });
-      this.addLoading = false;
+        this.addLoading = false
+      })
+      this.addLoading = false
       if (res.code === 0) {
-        this.$message.success(`班级${this.id ? "编辑" : "新增"}成功`);
-        this.hanldeCancel();
-        this.$emit("on-success");
+        this.$message.success(`班级${this.id ? '编辑' : '新增'}成功`)
+        this.hanldeCancel()
+        this.$emit('on-success')
       }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.submit()
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
       for (const k in this.formData) {
-        this.formData[k] = "";
+        this.formData[k] = ''
       }
-      this.hanldeCancel();
+      this.hanldeCancel()
     },
     hanldeCancel() {
-      this.$emit("input", false);
+      this.$emit('input', false)
     },
     // 当分类选择时
     handleTypeChange(ids) {
-      this.formData.project_id = "";
-      const id = ids ? [...ids].pop() : "";
-      this.getproject(id);
+      this.formData.project_id = ''
+      const id = ids ? [...ids].pop() : ''
+      this.getproject(id)
     },
     // 获取项目下拉
-    async getproject(category_id = "") {
+    async getproject(category_id = '') {
       const data = {
         category_id,
-      };
-      const res = await getproject(data);
+      }
+      const res = await getproject(data)
       if (res.code === 0) {
-        this.projectOptions = res.data;
+        this.projectOptions = res.data
       }
     },
     handleUploadSuccess(res) {
-      console.log(res);
-      this.formData.class_icon = res.data?.data?.url || "";
-      this.uploadLoading = false;
+      console.log(res)
+      this.formData.class_icon = res.data?.data?.url || ''
+      this.uploadLoading = false
     },
     handleUploadError() {
-      this.formData.class_icon = "";
-      this.uploadLoading = false;
+      this.formData.class_icon = ''
+      this.uploadLoading = false
     },
     hanldeDelete() {
-      this.formData.class_icon = "";
+      this.formData.class_icon = ''
     },
     beforeUpload(file) {
-      const isImg = file.type.indexOf("image") !== -1;
-      const isLt20M = file.size / 1024 / 1024 < 20;
+      const isImg = file.type.indexOf('image') !== -1
+      const isLt20M = file.size / 1024 / 1024 < 20
 
       if (!isImg) {
-        this.$message.error("请上传图片");
-        return false;
+        this.$message.error('请上传图片')
+        return false
       }
       if (!isLt20M) {
-        this.$message.error("上传图片大小不能超过 20MB!");
-        return false;
+        this.$message.error('上传图片大小不能超过 20MB!')
+        return false
       }
-      this.uploadLoading = true;
+      this.uploadLoading = true
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
