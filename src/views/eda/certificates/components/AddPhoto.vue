@@ -15,7 +15,7 @@
           :headers="headers"
           :action="uploadImageUrl"
           :show-file-list="false"
-          :on-error="() => handleUploadError(index)"
+          :on-error="(err) => handleUploadError(err, index)"
           :on-success="
             (res, file) => handleUploadSuccess(res, file, item.key, index)
           "
@@ -143,7 +143,8 @@ export default {
       this.photoData[key] = res.data?.data?.url || "";
       this.uploads[index].loading = false;
     },
-    handleUploadError(index) {
+    handleUploadError(err, index) {
+      this.$message.error(err.message || "上传失败");
       this.uploads[index].loading = false;
     },
     beforeUpload(file, index) {

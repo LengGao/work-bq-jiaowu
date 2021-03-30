@@ -183,6 +183,7 @@
     />
 
     <PreviewImg ref="view" />
+    <a></a>
   </section>
 </template>
 
@@ -226,13 +227,18 @@ export default {
       this.$router.push({ name: "certificatesLog", query: { id } });
     },
     // 下载
+    download(url) {
+      const a = this.$refs.a;
+      a.href = url;
+      a.click();
+    },
     async zipDownload(uid) {
       const data = {
         uid,
       };
       const res = await zipDownload(data);
       if (res.code === 0) {
-        window.open(res.data.url);
+        this.download(res.data.url);
       }
     },
     handlePreview(src) {
