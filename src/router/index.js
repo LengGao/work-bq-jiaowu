@@ -291,6 +291,13 @@ export const asyncRouter = [
         hidden: true,
       },
       {
+        path: 'shift',
+        name: 'shift',
+        component: () => import('@/views/eda/classManage/shift.vue'),
+        meta: { title: '学生转班', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
         path: 'addStudent',
         name: 'addStudent',
         component: () => import('@/views/eda/classManage/addStudent.vue'),

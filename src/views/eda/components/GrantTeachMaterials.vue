@@ -157,7 +157,7 @@ export default {
       });
       this.addLoading = false;
       if (res.code === 0) {
-        this.$message.success(`入库成功`);
+        this.$message.success(res.message);
         this.hanldeCancel();
         this.$emit("on-success");
       }
