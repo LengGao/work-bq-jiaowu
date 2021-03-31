@@ -186,6 +186,7 @@ export default {
   created() {
     this.planList();
     this.getCateList();
+    console.log(this.$route);
   },
   methods: {
     // 删除计划

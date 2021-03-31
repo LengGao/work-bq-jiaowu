@@ -38,9 +38,27 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          prop="binding_count"
+          label="关联规则数"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <div style="display: flex; justify-content: center">
+              <el-button
+                v-if="row.binding_count"
+                type="text"
+                @click="openEdit(row.id)"
+                >{{ row.binding_count }}</el-button
+              >
+              <span v-else>{{ row.binding_count }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="subject_name"
           label="考试科目"
-          min-width="110"
+          min-width="180"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -48,7 +66,16 @@
           label="科目性质"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <el-tag size="small" v-if="row.exam_type === '必考'">{{
+              row.exam_type
+            }}</el-tag>
+            <el-tag size="small" type="warning" v-else>{{
+              row.exam_type
+            }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="total_score"
           label="考试总分"
@@ -76,7 +103,7 @@
         <el-table-column
           prop="student_number"
           label="是否启用"
-          min-width="110"
+          min-width="80"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">

@@ -123,7 +123,13 @@
         </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="年龄要求" prop="age_limit">
-            <el-radio-group v-model="formData.age_limit">
+            <el-radio-group
+              v-model="formData.age_limit"
+              @change="
+                ageStart = '';
+                ageEnd = '';
+              "
+            >
               <el-radio :label="0">无限制</el-radio>
               <el-radio :label="1">
                 年满
@@ -147,7 +153,10 @@
       <el-row>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="学历要求" prop="edu_limit">
-            <el-radio-group v-model="formData.edu_limit">
+            <el-radio-group
+              v-model="formData.edu_limit"
+              @change="eduValue = ''"
+            >
               <el-radio :label="0">无限制</el-radio>
               <el-radio :label="1">
                 <el-select v-model="eduValue" placeholder="文化程度">
@@ -165,7 +174,10 @@
         </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="工作年限" prop="work_limit">
-            <el-radio-group v-model="formData.work_limit">
+            <el-radio-group
+              v-model="formData.work_limit"
+              @change="workYear = ''"
+            >
               <el-radio :label="0">无限制</el-radio>
               <el-radio :label="1">
                 从事相关工作满
