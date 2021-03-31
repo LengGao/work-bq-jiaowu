@@ -1,163 +1,237 @@
 <template>
   <section class="mainwrap">
-    <!-- <div class="flex">
-      <search
-        :organHide="false"
-        :schoolHide="false"
-        :classNameHide="false"
-        :dealStatusHide="false"
-        :teacherHide="false"
-        api="getMyclient"
-        :statusNum="3"
-      ></search>
-      <el-checkbox v-model="checked">只显示未点名学生</el-checkbox>
-    </div> -->
+    <SearchList
+      :options="searchOptions"
+      :data="searchData"
+      @on-search="handleSearch"
+    />
     <div class="flex">
       <div class="callinClass-left">
-        <el-row>
-          <el-col :lg="6" :xs="6" :sm="6" :xl="6">
-            上课日期 <span>2021-04-14</span>
-          </el-col>
-          <el-col :lg="6" :xs="6" :sm="6" :xl="6">
-            上课时间 <span>2021-04-14</span>
-          </el-col>
-          <el-col :lg="6" :xs="6" :sm="6" :xl="6">
-            上课班级 <span>2021-04-14</span>
-          </el-col>
-          <el-col :lg="6" :xs="6" :sm="6" :xl="6">
-            学生人数 <span>200人</span>
-          </el-col>
-        </el-row>
+        <p>
+          上课日期 <span>{{ classroomData.date }}</span>
+        </p>
+        <p>
+          上课时间 <span>{{ classroomData.start_time }}</span>
+        </p>
+        <p>
+          上课班级 <span>{{ classroomData.classroom_name }}</span>
+        </p>
+        <p>
+          学生人数 <span>{{ classroomData.people_number }}</span>
+        </p>
       </div>
       <div>
-        <el-button>
+        <el-button @click="getSignList">
           复位
         </el-button>
-        <el-button type="primary">
+        <el-button type="primary" @click="handleSave">
           保存
         </el-button>
       </div>
     </div>
+    <div>
+      <el-button @click="Attendance(2)">
+        批量出勤
+      </el-button>
+      <el-button type="primary" @click="Attendance(1)">
+        批量缺勤
+      </el-button>
+    </div>
     <div class="userTable">
       <el-table
         ref="multipleTable"
-        :data="schoolData"
+        :data="listData"
         style="width: 100%"
         class="min_table"
+        @selection-change="handleSelectionChange"
+        v-loading="listLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <!-- <el-table-column
-          label="编号"
-          show-overflow-tooltip
-          min-width="90"
-          prop="classroom_id"
-        >
-        </el-table-column> -->
+        <el-table-column type="selection" width="45"> </el-table-column>
         <el-table-column
-          prop="classroom_name"
+          prop="nickname"
           label="学员姓名"
           min-width="110"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="category_name"
+          prop="mobile"
           label="手机号码"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="index_category_name"
+          prop="classroom_name"
           label="所属班级"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="teacher_name"
-          label="出勤情况"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="student_number"
-          label="备注信息"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="student_number"
+          prop="sign_type"
           label="出勤情况"
           min-width="110"
           show-overflow-tooltip
         >
-          <template>
+          <template slot-scope="{ row }">
             <div>
-              <el-checkbox-group v-model="checkList">
-                <el-checkbox label="复选框 A"></el-checkbox>
-                <el-checkbox label="复选框 B"></el-checkbox>
-              </el-checkbox-group>
+              <el-radio-group v-model="row.sign_type">
+                <el-radio :label="2">
+                  出勤
+                </el-radio>
+                <el-radio :label="1">
+                  缺勤
+                </el-radio>
+              </el-radio-group>
             </div>
           </template>
         </el-table-column>
         <el-table-column
-          prop="student_number"
+          prop="remark"
           label="备注信息"
           min-width="110"
           show-overflow-tooltip
         >
-          <template>
+          <template slot-scope="{ row }">
             <div>
-              <el-input placeholder="请输入备注信息"></el-input>
+              <el-input
+                placeholder="请输入备注信息"
+                v-model="row.remark"
+              ></el-input>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <!-- <div class="table_bottom">
-        <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
-        </div>
-      </div> -->
     </div>
   </section>
 </template>
 
 <script>
-import { getSignList } from '@/api/eda'
+import { getSignList, batchSign, getcourseallclass } from '@/api/eda'
 export default {
   data() {
-    return {}
+    return {
+      class_hour_id: '',
+      arrange_id: '',
+      searchOptions: [
+        {
+          key: 'classroom_id',
+          type: 'select',
+          options: [],
+          optionValue: 'classroom_id',
+          optionLabel: 'classroom_name',
+          attrs: {
+            placeholder: '所属班级',
+            clearable: true,
+          },
+        },
+        {
+          key: 'value',
+          attrs: {
+            placeholder: '学生姓名/手机号码',
+          },
+        },
+      ],
+      listData: [],
+      multipleSelection: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      param_arr: [],
+      searchData: {
+        classroom_id: '',
+        value: '',
+      },
+    }
   },
 
   created() {
+    this.classroomData = JSON.parse(this.$route.query.param)
+    this.class_hour_id = this.$route.query.class_hour_id
+    this.arrange_id = this.$route.query.arrange_id
     this.getSignList()
+    this.getcourseallclass()
   },
   methods: {
+    handleSearch(data) {
+      this.pageNum = 1
+      this.searchData = {
+        ...data,
+      }
+      this.getSignList()
+    },
+    // 获取班级下拉
+    async getcourseallclass() {
+      const data = {}
+      const res = await getcourseallclass(data)
+      if (res.code === 0) {
+        this.searchOptions[0].options = res.data
+      }
+    },
+    Attendance(num) {
+      this.param_arr = []
+      if (this.multipleSelection && this.multipleSelection.length) {
+        this.multipleSelection.forEach((i) => {
+          var obj = {
+            id: i.id,
+            sign_type: num,
+            remark: i.remark,
+          }
+          this.param_arr.push(obj)
+        })
+        this.batchSign()
+      } else {
+        this.$message.warning('你还没勾选学生')
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    handleSave() {
+      console.log(this.listData)
+      this.param_arr = []
+      this.listData.forEach((i) => {
+        if (i.sign_type != 0) {
+          var obj = {
+            id: i.id,
+            sign_type: i.sign_type,
+            remark: i.remark,
+          }
+          this.param_arr.push(obj)
+        }
+      })
+      this.batchSign()
+    },
+    //手动签到
+    async batchSign() {
+      const data = {
+        class_hour_id: this.class_hour_id,
+        arrange_id: this.arrange_id,
+        param_arr: this.param_arr,
+      }
+      const res = await batchSign(data)
+      if (res.code === 0) {
+        this.$message.success(res.message)
+        this.getSignList()
+      }
+    },
     //签到学生列表
     async getSignList() {
       const data = {
-        page: this.pageNum,
+        class_hour_id: this.class_hour_id,
+        arrange_id: this.arrange_id,
         ...this.searchData,
       }
-      delete data.date
+
       this.listLoading = true
       const res = await getSignList(data)
       this.listLoading = false
-      // for (var item of res.data.list) {
-      //   // console.log(item)
-      //   if (item.start_time != 0 || item.start_time != '') {
-      //     item.start_time = this.$moment
-      //       .unix(item.start_time)
-      //       .format('YYYY-MM-DD HH:mm:ss')
-      //   } else {
-      //     item.start_time = '---'
-      //   }
-      // }
-      this.listData = res.data.list
+
+      this.listData = res.data
 
       console.log(this.listData)
       this.listTotal = res.data.total
@@ -175,6 +249,7 @@ export default {
 .flex {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .callinClass-left {
   font-family: 'Microsoft YaHei UI', sans-serif;
@@ -182,9 +257,12 @@ export default {
   font-style: normal;
   font-size: 16px;
   color: #999999;
-  width: 1000px;
-  padding-top: 20px;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  // padding-top: 20px;
   span {
+    margin-left: 10px;
     color: #666666;
   }
 }

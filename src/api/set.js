@@ -20,7 +20,7 @@ export function getRoleList(params) {
  */
 export function getRoleInfo(params) {
   return request({
-    url: '/role/index',
+    url: '/role/info',
     method: 'get',
     params,
   })

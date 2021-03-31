@@ -64,6 +64,20 @@ export function formatTime(time, option) {
     )
   }
 }
+//对时间字符串处理'20210316'
+export function timestampToTime(date) {
+  //20200904针对str类型的时间进行格式转换
+  var date = date.toString()
+
+  var year = date.substr(0, 4)
+  var month = date.substr(4, 2)
+  var day = date.substr(6, 2)
+  // var start = date.substr(9, 5)
+  // var end = date.substr(15, 5)
+  // var time = date.substr(9)
+  return year + '-' + month + '-' + day
+  // return year + '年' + month + '月' + day + '日' + ' ' + start + '~' + end
+}
 
 //获取星期几
 export function getweek(time) {

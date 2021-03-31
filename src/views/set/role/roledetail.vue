@@ -548,9 +548,27 @@ export default {
   },
 
   mounted() {
+    this.getRoleInfo()
     // let status = 3
   },
-  methods: {},
+  methods: {
+    // 获学员列表
+    async getRoleInfo() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      delete data.date
+      this.listLoading = true
+      const res = await getRoleInfo(data)
+      this.listLoading = false
+
+      this.listData = res.data.list
+
+      console.log(this.listData)
+      this.listTotal = res.data.total
+    },
+  },
 }
 </script>
 
