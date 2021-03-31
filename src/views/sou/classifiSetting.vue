@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的分类管理。
+      *分类设置是按照一定条件将相关对象进行归纳整理，方便后期筛选区分。
     </div>
 
     <section class="mainwrap">
@@ -27,14 +27,11 @@
            row-key="category_id"
            :tree-props="{ children: 'son' }"
           >
-        
           <el-table-column
             prop="category_name"
             label="分类名称"
             min-width="110"
-           
             show-overflow-tooltip>
-           
             </el-table-column>
               <el-table-column
             label="分类ID"
@@ -82,7 +79,7 @@
       <el-dialog
         :title="dialogTitle"
         :visible.sync="dialogVisible"
-        width="526px"
+        width="30%"
         >
         <el-form 
         label-width="100px"
@@ -90,8 +87,7 @@
         :rules="rules"
         ref="ruleForm" 
         :show-message="true">
-
-          <el-form-item label="所属分类">
+          <el-form-item label="所属分类：">
              <el-cascader
               ref="cascader"
               clearable 
@@ -101,11 +97,6 @@
               :options="selectData"
             
             ></el-cascader>
-            <!-- <el-input
-              placeholder="请输入分类名称"
-              v-model="ruleForm.index_category_name"
-              class="input-width"
-            ></el-input> -->
           </el-form-item>
           <el-form-item label="分类名称：">
             <el-input
@@ -130,7 +121,6 @@
           <div v-show="!haschoose" style="display:flex">
             <div class="headPortrait el-icon-plus" 
             @click="addIcon"
-            
             ></div>
             <div style="color:#aaa;ling-height:10px;margin-left:10px">
               <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
@@ -153,14 +143,17 @@
           <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
         </span>
       </el-dialog>
+
       <imgDialog
       v-if="pictureVisible"
       @closeImg="closeImg"
       @clearUrl="clearUrl"
     ></imgDialog>
+
     </section>
   </div>
 </template>
+
 <script>
 import { getCateList,getCategoryList,insertCategory,updateCategory } from '@/api/sou'
 import SearchList from '@/components/SearchList/index'
@@ -175,7 +168,6 @@ export default {
         checkStrictly: true,
       },
       pageNum:[],
-
        haschoose: false,
        pictureVisible: false,
 
@@ -184,14 +176,12 @@ export default {
         category_id: [],
         keyboard: '',
       },
-
       listData:[],
       selectData: [],
       schoolData: [],
       dialogTitle: '',
       datas: {},
       data:[],
-
       url: '',
       pictureVisible: false,
       haschoose: false,
@@ -199,13 +189,13 @@ export default {
       dialogVisible: false,
       keyboard:'',
       icon:'',
-
       // 搜索框
       searchOptions: [
         {
           key: 'keyboard',
           attrs: {
             placeholder: '分类名称',
+            clearable: true,
           },
         },
       ],
@@ -228,13 +218,10 @@ export default {
   created() {
     this.getCateList()
     this.getCategoryList()
-
-    // this.updateCategory()
-   
   },
   methods: {
     closeImg(radioUrl) {
-      //  console.log(radioUrl + '我好睡')
+      // console.log(radioUrl + '我')
       this.pictureVisible = false
       if (radioUrl != undefined) {
         this.haschoose = true
@@ -244,22 +231,15 @@ export default {
         this.haschoose = false
       }
     },
-
     clearUrl() {
       // this.url = ''
       // this.haschoose = false
       this.pictureVisible = false
     },
-
     addIcon() {
       this.imgUrl = ''
       this.pictureVisible = true
-      // this.$router.push({
-      //   path: '/eda/addNewClassify',
-      //   query: { id: '' },
-      // })
     },
-
     //搜索功能
     handleSearch(data) {
       this.pageNum = 1;
@@ -270,7 +250,6 @@ export default {
       this.page = page;
       this.getCategoryList();
     },
-
     // 获取数据
     getTableList(state, val, datas) {
       console.log(state, val)
@@ -283,15 +262,17 @@ export default {
     },
     topayment(ab) {
         this.dialogTitle = '编辑首页分类'
-        // console.log(zx)
-        // this.dialogVisible = true
-        // this.haschoose = true
+        this.haschoose = true
         // this.index_category_id = zx.index_category_id
         // this.$api.getCategoryList(this, this.index_category_id)
         this.ruleForm = ab
+        this.icon = ab.icon
+        console.log(ab)
         this.dialogVisible = true
         this.category_name = ab.category_name
-        this.haschoose = true
+        this.sort = ab.sort
+        // this.pid = ab.pid.pop()
+        this.describe = ab.describe
 
     },
     scopes(institution_id, sorts) {
@@ -302,13 +283,13 @@ export default {
         return false
       } else {
         this.$api.changeUpdateSort(this, institution_id, sorts)
-        // this.getCategoryList(this, institution_id, sorts)
+        // this.getCategoryList()
       }
     },
-
     addClassiFion() {
       this.dialogTitle = '添加分类'
         this.ruleForm = {
+          icon:'',
             pid:'',
             cate_id:'',
             category_name: '',
@@ -317,15 +298,6 @@ export default {
       }
       this.dialogVisible = true
     },
-    // handleConfirm() {
-    //   console.log(this.ruleForm)
-    //   console.log(this.index_category_id == '')
-    //   if (this.index_category_id == '' || this.index_category_id == undefined) {
-    //     this.$api.getCategoryList(this, 'ruleForm')
-    //   } else {
-    //     this.$api.getCategoryList(this, 'ruleForm')
-    //   }
-    // },
 
     async getCateList() {
       const data = { list: true }
@@ -347,6 +319,7 @@ export default {
         }
       })
     },
+    //分类列表接口
     async getCategoryList() {
       const data = {
         page: this.pageNum,
@@ -365,14 +338,14 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        icon:this.icon,
 
-            category_name : this.ruleForm.category_name,
-            pid : this.ruleForm.pid,
-            sort : this.ruleForm.sort,
-         
-            describe : this.ruleForm.describe,
+        icon:this.ruleForm.icon,
+        category_name : this.ruleForm.category_name,
+        pid : this.ruleForm.pid.pop(),
+        sort : this.ruleForm.sort,
+        describe : this.describe,
       }
+     
       const res = await insertCategory(data)
       this.listLoading = false
         if(res.code==0){
@@ -380,7 +353,6 @@ export default {
           this.$message.success(res.message)
           this.getCategoryList()
         }
-     
 
     },
 
@@ -390,29 +362,31 @@ export default {
         page: this.pageNum,
         ...this.searchData,
 
-            category_id:this.ruleForm.category_id,
-            category_name : this.ruleForm.category_name,
-            pid : this.ruleForm.pid,
-            sort : this.ruleForm.sort,
-            icon : this.ruleForm.icon,
-            describe : this.ruleForm.describe,
+        icon:this.ruleForm.icon,
+        category_name : this.ruleForm.category_name,
+        pid : this.ruleForm.pid,
+        sort : this.ruleForm.sort,
+        describe : this.describe,
+        category_id:this.category_id
       }
+      console.log(data)
       const res = await updateCategory(data)
       this.listLoading = false
-      this.listData = res.data
-      console.log( res)
-      this.listLoading = true
-      this.listTotal = res.data.total
+
+       if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+          this.getCategoryList()
+          this.listLoading = true
+        }
     },
-
-
 
      submitForm(formName) {
         console.log(this.ruleForm)
 
         this.$refs[formName].validate((valid) => {
           if (valid) {
-           if (this.ruleForm.id) {
+           if (this.ruleForm.category_id) {
             //修改
             this.updateCategory()
           } else {
@@ -507,8 +481,5 @@ export default {
 .imageBox:hover i {
   display: block;
 }
-.school_class_box{
-  width: 32px;
-  height: 32px;
-}
+
 </style>

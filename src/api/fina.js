@@ -43,3 +43,15 @@ export function orderCancel(params) {
         params
     })
 }
+
+/**
+ * 订单审批
+ * @param {*} params 
+ */
+ export function Approvalist(params) {
+    return request({
+        url: '/order/index',
+        method: 'get',
+        params
+    })
+}
