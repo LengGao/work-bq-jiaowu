@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="head_remind">*管理不同机构的仓库和仓库出入库。</div>
+    <div class="head_remind">*本模块主要负责学生报名后的教材发放工作。</div>
     <section class="mainwrap">
       <div class="header">
         <SearchList
@@ -72,12 +72,12 @@
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="classroom_id"
             label="所属班级"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column
             prop="total_books"
             label="应发教材"
@@ -91,7 +91,7 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="update_time"
+            prop="create_time"
             label="最后更新时间"
             min-width="100"
             show-overflow-tooltip

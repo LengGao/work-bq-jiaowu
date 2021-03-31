@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="head-certificates">
-      *本模块展示所有的班级数据，方便教务老师管理班级的日常工作
+      *本模块主要用来收集学生的各种证件资料，方便后期报考。
     </div>
     <section class="mainwrap">
       <SearchList
@@ -238,7 +238,7 @@ export default {
       };
       const res = await zipDownload(data);
       if (res.code === 0) {
-        this.download(res.data.url);
+        // this.download(res.data.url);
       }
     },
     handlePreview(src) {
