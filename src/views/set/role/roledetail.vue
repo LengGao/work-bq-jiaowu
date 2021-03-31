@@ -2,12 +2,27 @@
   <div>
     <section class="mainwrap">
       <div>
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form
+          :model="formInline"
+          label-width="80px"
+          class="demo-form-inline"
+          label-position="left"
+        >
           <el-form-item label="角色名称">
             <el-input
               v-model="formInline.user"
               placeholder="校长"
               maxlength="30"
+              style="width: 420px"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input
+              type="textarea"
+              v-model="formInline.remark"
+              placeholder="请输入"
+              maxlength="100"
+              style="width: 420px"
             ></el-input>
           </el-form-item>
         </el-form>
@@ -50,6 +65,7 @@ export default {
     return {
       formInline: {
         user: "",
+        remark: "",
       },
       roleData: [],
       btnLoading: false,
@@ -90,6 +106,7 @@ export default {
     async modifyRole(node_ids) {
       const data = {
         role_name: this.formInline.user,
+        remarks: this.formInline.remark,
         node_ids,
         id: this.$route.query.id,
       };
@@ -107,6 +124,7 @@ export default {
     async addRole(node_ids) {
       const data = {
         role_name: this.formInline.user,
+        remarks: this.formInline.remark,
         node_ids,
       };
       this.treeLoading = true;
@@ -171,7 +189,7 @@ export default {
 }
 .authority {
   font-size: 14px;
-  color: #333;
+  color: #606266;
   padding: 10px 0;
   display: block;
 }

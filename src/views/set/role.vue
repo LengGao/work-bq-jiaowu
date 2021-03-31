@@ -40,19 +40,18 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="update_time"
-            label="修改时间"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
             prop="remarks"
             label="备注"
             min-width="180"
             show-overflow-tooltip
           ></el-table-column>
-
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column
+            prop="update_time"
+            label="修改时间"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="addrole(row.role_id)"
