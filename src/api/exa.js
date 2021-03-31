@@ -208,11 +208,43 @@ export function updateRuleStatus(data) {
     data,
   })
 }
-//获取报考列表
+//获取报考计划列表
 export function planList(params) {
   return request({
     url: '/Examination/planList',
     method: 'get',
     params,
+  })
+}
+// 添加报考计划
+export function createPlan(data) {
+  return request({
+    url: '/Examination/createPlan',
+    method: 'post',
+    data,
+  })
+}
+// 修改报考计划
+export function updatePlan(data) {
+  return request({
+    url: '/Examination/updatePlan',
+    method: 'post',
+    data,
+  })
+}
+// 报考计划详情
+export function planInfo(params) {
+  return request({
+    url: '/Examination/planInfo',
+    method: 'get',
+    params,
+  })
+}
+// 报考计划详情
+export function deletePlan(data) {
+  return request({
+    url: '/Examination/deletePlan',
+    method: 'post',
+    data,
   })
 }

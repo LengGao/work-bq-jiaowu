@@ -10,7 +10,7 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary">添加考试计划</el-button>
+        <el-button type="primary" @click="openAdd">添加考试计划</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
@@ -100,27 +100,44 @@
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="120">
-            <template slot-scope="scope">
+          <el-table-column label="操作" fixed="right" min-width="160">
+            <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text">编辑</el-button>
-
-                <el-button type="text">报考详情</el-button>
+                <el-button type="text" @click="openEdit(row.id)"
+                  >编辑</el-button
+                >
+                <el-button type="text" @click="$message.error('没做')"
+                  >报考详情</el-button
+                >
+                <el-button type="text" @click="deleteConfirm(row.id)"
+                  >删除</el-button
+                >
               </div>
             </template>
           </el-table-column>
         </el-table>
       </div>
     </section>
+    <ApplyDialog
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      :id="currentId"
+      :typeOptions="typeOptions"
+      @on-success="planList"
+    />
   </div>
 </template>
 
 <script>
-import { planList } from "@/api/exa";
+import { planList, deletePlan } from "@/api/exa";
 import { cloneOptions } from "@/utils/index";
 import { getCateList } from "@/api/sou";
+import ApplyDialog from "./components/ApplyDialog";
 export default {
   name: "apply",
+  components: {
+    ApplyDialog,
+  },
   data() {
     return {
       listData: [],
@@ -150,6 +167,7 @@ export default {
             placeholder: "所属分类",
             clearable: true,
             options: [],
+            props: { checkStrictly: true },
           },
         },
         {
@@ -159,6 +177,10 @@ export default {
           },
         },
       ],
+      currentId: "",
+      dialogTitle: "添加考试计划",
+      dialogVisible: false,
+      typeOptions: [],
     };
   },
   created() {
@@ -166,6 +188,34 @@ export default {
     this.getCateList();
   },
   methods: {
+    // 删除计划
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此计划吗?", { type: "warning" })
+        .then(() => {
+          this.deletePlan(id);
+        })
+        .catch(() => {});
+    },
+    async deletePlan(id) {
+      const data = {
+        id,
+      };
+      const res = await deletePlan(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.planList();
+      }
+    },
+    openEdit(id) {
+      this.dialogTitle = "编辑考试计划";
+      this.currentId = id;
+      this.dialogVisible = true;
+    },
+    openAdd() {
+      this.currentId = "";
+      this.dialogTitle = "添加考试计划";
+      this.dialogVisible = true;
+    },
     // 搜索
     handleSearch(data) {
       const times = data.date || ["", ""];
@@ -184,7 +234,7 @@ export default {
       this.pageNum = val;
       this.planList();
     },
-    // 规则列表
+    // 计划列表
     async planList() {
       const data = {
         page: this.pageNum,
@@ -201,7 +251,7 @@ export default {
       const data = { list: true };
       const res = await getCateList(data);
       if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
+        this.searchOptions[1].attrs.options = this.typeOptions = cloneOptions(
           res.data,
           "category_name",
           "category_id",
