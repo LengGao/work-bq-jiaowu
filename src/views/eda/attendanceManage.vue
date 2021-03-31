@@ -17,6 +17,10 @@
           ref="multipleTable"
           :data="listData"
           tooltip-effect="light"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           stripe
           style="width: 100%;"
           class="min_table"
@@ -125,7 +129,7 @@
               <div class="operation_btn">
                 <el-button
                   type="text"
-                  @click="scheduleShow"
+                  @click="scheduleShow(row)"
                   v-if="row.class_hour_number > 1"
                   >排班详情</el-button
                 >
@@ -133,10 +137,10 @@
                   <el-button type="text" @click="callinClass(row)"
                     >上课点名</el-button
                   >
-                  <el-button type="text" @click="handleAdd(scope.row)"
+                  <el-button type="text" @click="signShow(row)"
                     >签到码</el-button
                   >
-                  <el-button type="text" @click="handleAdd(scope.row)"
+                  <el-button type="text" @click="toStatistics(row)"
                     >考勤统计</el-button
                   >
                 </div>
@@ -151,7 +155,17 @@
             @pageChange="handlePageChange"
           />
         </div>
-        <ScheduleDialog v-model="scheduleVisible" />
+        <ScheduleDialog
+          v-model="scheduleVisible"
+          :arrange_id="arrange_id"
+          :classDate="classDate"
+          :classInfoData="classInfoData"
+        />
+        <SignCode
+          v-model="signVisible"
+          :arrange_id="arrange_id"
+          :class_hour_id="class_hour_id"
+        />
       </div>
     </section>
   </section>
@@ -159,30 +173,33 @@
 
 <script>
 import { getWorkPageList, getTeacherList, getcourseallclass } from '@/api/eda'
-import { getweek } from '@/utils/index'
+import { getweek, timestampToTime } from '@/utils/index'
 import ScheduleDialog from './attendanceManage/components/ScheduleDialog'
+import SignCode from './attendanceManage/components/SignCode'
 export default {
   name: 'attendanceManage',
   components: {
     ScheduleDialog,
+    SignCode,
   },
   data() {
     return {
+      signVisible: false,
       schoolData: [],
       scheduleVisible: false,
-
+      classDate: '',
       searchOptions: [
-        // {
-        //   key: 'date',
-        //   type: 'datePicker',
-        //   attrs: {
-        //     type: 'daterange',
-        //     'range-separator': '至',
-        //     'start-placeholder': '开始日期',
-        //     'end-placeholder': '结束日期',
-        //     'value-format': 'yyyy-MM-dd',
-        //   },
-        // },
+        {
+          key: 'date',
+          type: 'datePicker',
+          attrs: {
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            'value-format': 'yyyy-MM-dd',
+          },
+        },
 
         {
           key: 'classroom_id',
@@ -243,16 +260,19 @@ export default {
         //   },
         // },
       ],
+      arrange_id: '',
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      class_hour_id: '',
       searchData: {
         teacher_id: '',
         teacher_type: '',
         date: '',
         classroom_id: '',
       },
+      classInfoData: {},
     }
   },
   filters: {
@@ -296,13 +316,50 @@ export default {
     this.getWorkPageList()
   },
   methods: {
-    callinClass() {
+    toStatistics(row) {
+      this.$router.push({
+        path: '/eda/attendanceStatistics',
+        query: {
+          class_hour_id: row.class_hour_list[0],
+          arrange_id: row.id,
+        },
+      })
+    },
+    signShow(row) {
+      console.log()
+      this.arrange_id = row.id
+      this.class_hour_id = row.class_hour_list[0]
+      this.signVisible = true
+    },
+    callinClass(row) {
+      let obj = {
+        date: row.date,
+        start_time: row.start_time,
+        classroom_name: row.classroom_name,
+        people_number: row.people_number,
+      }
       this.$router.push({
         path: '/eda/callinClass',
+        query: {
+          class_hour_id: row.class_hour_list[0],
+          arrange_id: row.id,
+          param: JSON.stringify(obj),
+        },
       })
     },
     //打开排课详情弹框
-    scheduleShow() {
+    scheduleShow(row) {
+      let obj = {
+        date: row.date,
+        start_time: row.start_time,
+        classroom_name: row.classroom_name,
+        people_number: row.people_number,
+      }
+
+      this.classInfoData = obj
+      console.log(this.classInfoData)
+      this.arrange_id = row.id
+      this.classDate = row.date
       this.scheduleVisible = true
     },
     // 获取班级下拉
@@ -311,7 +368,7 @@ export default {
       const res = await getcourseallclass(data)
       if (res.code === 0) {
         this.classOptions = res.data
-        this.searchOptions[0].options = res.data
+        this.searchOptions[1].options = res.data
       }
     },
     handlePageChange(val) {
@@ -320,13 +377,13 @@ export default {
     },
     handleSearch(data) {
       // console.log(data)
-      // const times = data.date || ['', '']
-      // delete data.date
+      const times = data.date || ['', '']
+      delete data.date
       this.pageNum = 1
       this.searchData = {
         ...data,
-        // start_time: times[0],
-        // end_time: times[1],
+        start_date: times[0].split('-').join(''),
+        end_date: times[1].split('-').join(''),
       }
       this.getWorkPageList()
     },
@@ -337,7 +394,7 @@ export default {
       if (res.code === 0) {
         this.classOptions = res.data
         console.log(res.data)
-        this.searchOptions[1].options = res.data
+        this.searchOptions[2].options = res.data
       }
     },
     // 获学员列表
@@ -351,6 +408,7 @@ export default {
       const res = await getWorkPageList(data)
       this.listLoading = false
       for (var item of res.data.list) {
+        item.date = timestampToTime(item.date)
         // console.log(item)
         if (item.start_time != 0 || item.start_time != '') {
           item.start_time = this.$moment
@@ -362,7 +420,7 @@ export default {
       }
       this.listData = res.data.list
 
-      console.log(this.listData)
+      // console.log(this.listData)
       this.listTotal = res.data.total
     },
   },
