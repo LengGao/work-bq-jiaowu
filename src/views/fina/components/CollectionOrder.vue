@@ -15,8 +15,9 @@
         <li>订单时间：{{ orderInfo.create_time }}</li>
         <li>收费学生：{{ orderInfo.surname }}</li>
         <li>
-          应收金额：
-          {{ (orderInfo.order_money - orderInfo.reduction).toFixed(2) }}
+          应收金额：{{
+            (orderInfo.order_money - orderInfo.reduction).toFixed(2)
+          }}
         </li>
         <li>已付金额：{{ orderInfo.pay_money }}</li>
         <li>欠费金额：{{ orderInfo.overdue_money }}</li>
