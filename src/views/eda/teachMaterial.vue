@@ -53,7 +53,11 @@
             label="手机号码"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.mobile | filterPhone }}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column
             prop="category_name"

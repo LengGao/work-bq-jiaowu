@@ -25,7 +25,7 @@
           <el-button type="primary" @click="openImport" style="height: 40px">
             导入订单</el-button
           >
-          <el-button type="primary" style="height: 40px"> 导出</el-button>
+          <!-- <el-button type="primary" style="height: 40px"> 导出</el-button> -->
         </div>
       </header>
       <ul class="panel-list">
@@ -78,7 +78,7 @@
           :cell-style="{ 'text-align': 'center' }"
           all="1"
         >
-          <el-table-column type="selection" width="45"> </el-table-column>
+          <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
           <el-table-column
             prop="order_id"
             label="订单编号"
@@ -98,7 +98,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <div class="link" @click="coursDetail(scope.row)">
+              <div class="link" @click="coursDetail(scope.row.uid)">
                 {{ scope.row.surname }}
               </div>
             </template>
@@ -339,12 +339,12 @@ export default {
       this.listTotal = res.data.total;
       this.panelData = res.data.count[0] || {};
     },
-    coursDetail(ab) {
+    coursDetail(uid) {
       this.$router.push({
         path: "/fina/cusdetail",
-        // query: {
-        //   surname: ab.surname,
-        // },
+        query: {
+          uid,
+        },
       });
     },
     orderDetail(ab) {

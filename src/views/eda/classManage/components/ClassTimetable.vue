@@ -29,12 +29,17 @@
             }"
             @click="handleOpen(infoMap[data.day])"
           >
-            <span>{{ data.day.split("-").slice(1).join("-") }}</span>
+            <span>{{
+              data.day
+                .split('-')
+                .slice(1)
+                .join('-')
+            }}</span>
             <div v-if="allDay.includes(data.day)" class="day-info">
               <p>
                 上课时间：{{
                   infoMap[data.day].period &&
-                  infoMap[data.day].period.substr(11)
+                    infoMap[data.day].period.substr(11)
                 }}
               </p>
               <p>上课老师：{{ infoMap[data.day].teacher_name }}</p>
@@ -48,10 +53,10 @@
 </template>
 
 <script>
-import CourseDialog from "@/components/CourseDialog/index";
-import { getClassArrangeList } from "@/api/eda";
+import CourseDialog from '@/components/CourseDialog/index'
+import { getClassArrangeList } from '@/api/eda'
 export default {
-  name: "ClassTimetable",
+  name: 'ClassTimetable',
   components: {
     CourseDialog,
   },
@@ -65,22 +70,22 @@ export default {
       allDay: [],
       infoMap: {},
       courseData: {},
-    };
+    }
   },
   computed: {
     calendarDate() {
-      this.getClassArrangeList();
-      return `${this.checkedYear}-${this.checkedMonth}`;
+      this.getClassArrangeList()
+      return `${this.checkedYear}-${this.checkedMonth}`
     },
   },
   created() {
-    this.createYears();
+    this.createYears()
   },
   methods: {
     handleOpen(data) {
-      if (!data) return;
-      this.courseData = data;
-      this.detailDialog = true;
+      if (!data) return
+      this.courseData = data
+      this.detailDialog = true
     },
     //获取课表信息
     async getClassArrangeList() {
@@ -88,33 +93,33 @@ export default {
         classroom_id: this.$route.query?.id,
         year: this.checkedYear,
         month:
-          this.checkedMonth < 10 ? "0" + this.checkedMonth : this.checkedMonth,
-      };
-      const res = await getClassArrangeList(data);
+          this.checkedMonth < 10 ? '0' + this.checkedMonth : this.checkedMonth,
+      }
+      const res = await getClassArrangeList(data)
       if (res.code === 0) {
-        const data = res.data || [];
-        this.allDay = data.map((item) => item.date);
+        const data = res.data || []
+        this.allDay = data.map((item) => item.date)
         data.forEach((item) => {
-          this.infoMap[item.date] = item;
-        });
+          this.infoMap[item.date] = item
+        })
       }
     },
     //获取年
     createYears() {
-      const years = [];
-      let startYear = 2019;
-      const currentYear = new Date().getFullYear();
+      const years = []
+      let startYear = 2019
+      const currentYear = new Date().getFullYear()
       const deepAdd = () => {
         if (startYear <= currentYear) {
-          years.push(startYear++);
-          deepAdd();
+          years.push(startYear++)
+          deepAdd()
         }
-      };
-      deepAdd();
-      this.years = [...years];
+      }
+      deepAdd()
+      this.years = [...years]
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -76,7 +76,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
-          @pageChange="getClassstudentList"
+          @pageChange="handlePageChange"
         />
       </div>
     </div>

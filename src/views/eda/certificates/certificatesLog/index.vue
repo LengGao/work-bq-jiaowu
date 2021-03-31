@@ -42,49 +42,56 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <img
-                @click="handlePreview(row.portrait)"
-                class="list-img"
-                :src="row.portrait"
-                v-if="row.portrait"
-                alt=""
-              />
-              <img
-                @click="handlePreview(row.photo_id_card)"
-                class="list-img"
-                :src="row.photo_id_card"
-                v-if="row.photo_id_card"
-                alt=""
-              />
-              <img
-                @click="handlePreview(row.graduation_certificate)"
-                :src="row.graduation_certificate"
-                v-if="row.graduation_certificate"
-                alt=""
-                class="list-img"
-              />
-              <img
-                @click="handlePreview(row.photo_residence_permit)"
-                :src="row.photo_residence_permit"
-                v-if="row.photo_residence_permit"
-                alt=""
-                class="list-img"
-              />
-              <img
-                class="list-img"
-                @click="handlePreview(row.photo_commitment)"
-                :src="row.photo_commitment"
-                v-if="row.photo_commitment"
-                alt=""
-              />
-              <img
-                @click="handlePreview(row.photo_health)"
-                title="点击预览大图"
-                class="list-img"
-                :src="row.photo_health"
-                v-if="row.photo_health"
-                alt=""
-              />
+              <div class="images">
+                <div class="list-img" v-if="row.portrait">
+                  <img
+                    @click="handlePreview(row.portrait)"
+                    :src="row.portrait"
+                    alt=""
+                    title="点击预览大图"
+                  />
+                </div>
+                <div class="list-img" v-if="row.photo_id_card">
+                  <img
+                    @click="handlePreview(row.photo_id_card)"
+                    :src="row.photo_id_card"
+                    alt=""
+                    title="点击预览大图"
+                  />
+                </div>
+                <div class="list-img" v-if="row.graduation_certificate">
+                  <img
+                    @click="handlePreview(row.graduation_certificate)"
+                    :src="row.graduation_certificate"
+                    alt=""
+                    title="点击预览大图"
+                  />
+                </div>
+                <div class="list-img" v-if="row.photo_residence_permit">
+                  <img
+                    @click="handlePreview(row.photo_residence_permit)"
+                    :src="row.photo_residence_permit"
+                    alt=""
+                    title="点击预览大图"
+                  />
+                </div>
+                <div class="list-img" v-if="row.photo_commitment">
+                  <img
+                    @click="handlePreview(row.photo_commitment)"
+                    :src="row.photo_commitment"
+                    alt=""
+                    title="点击预览大图"
+                  />
+                </div>
+                <div class="list-img" v-if="row.photo_health">
+                  <img
+                    @click="handlePreview(row.photo_health)"
+                    title="点击预览大图"
+                    :src="row.photo_health"
+                    alt=""
+                  />
+                </div>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -97,9 +104,7 @@
         @pageChange="handlePageChange"
       />
     </div>
-    <el-dialog :visible.sync="previewDialog" custom-class="preview-dialog">
-      <img width="100%" :src="previewSrc" alt="" />
-    </el-dialog>
+    <PreviewImg ref="view" />
   </section>
 </template>
 
@@ -142,8 +147,6 @@ export default {
       ],
       addDialog: false,
       currentUid: "",
-      previewSrc: "",
-      previewDialog: false,
     };
   },
   created() {
@@ -151,8 +154,7 @@ export default {
   },
   methods: {
     handlePreview(src) {
-      this.previewDialog = true;
-      this.previewSrc = src;
+      this.$refs.view.show(src);
     },
 
     handleSearch(data) {
@@ -184,12 +186,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.list-img {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  margin-right: 10px;
+.images {
+  display: flex;
+  align-items: center;
+  .list-img {
+    height: 50px;
+    cursor: pointer;
+    margin-right: 16px;
+    text-align: center;
+  }
 }
+
 /deep/.preview-dialog {
   .el-dialog__body {
     text-align: center;

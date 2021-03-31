@@ -19,12 +19,7 @@
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column
-          label="序号"
-          show-overflow-tooltip
-          min-width="90"
-          prop="classroom_id"
-        >
+        <el-table-column label="序号" width="60" type="index">
         </el-table-column>
         <el-table-column
           prop="date"
@@ -43,9 +38,13 @@
         <el-table-column
           prop="period"
           label="上课时间"
-          min-width="110"
+          min-width="140"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.period.substr(11) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="teacher_name"
           label="上课老师"
@@ -109,7 +108,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
-          @pageChange="classAttendanceStatistics"
+          @pageChange="handlePageChange"
         />
       </div>
     </div>

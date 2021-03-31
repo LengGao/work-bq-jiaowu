@@ -41,7 +41,11 @@
             label="手机号码"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.mobile | filterPhone }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="project_price"
             label="免冠正面照"
@@ -49,13 +53,13 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <img
-                @click="handlePreview(row.portrait)"
-                class="list-img"
-                :src="row.portrait"
-                v-if="row.portrait"
-                alt=""
-              />
+              <div v-if="row.portrait" class="list-img">
+                <img
+                  @click="handlePreview(row.portrait)"
+                  :src="row.portrait"
+                  alt=""
+                />
+              </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -67,13 +71,13 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <img
-                @click="handlePreview(row.photo_id_card)"
-                class="list-img"
-                :src="row.photo_id_card"
-                v-if="row.photo_id_card"
-                alt=""
-              />
+              <div v-if="row.photo_id_card" class="list-img">
+                <img
+                  @click="handlePreview(row.photo_id_card)"
+                  :src="row.photo_id_card"
+                  alt=""
+                />
+              </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -84,13 +88,13 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <img
-                @click="handlePreview(row.graduation_certificate)"
-                :src="row.graduation_certificate"
-                v-if="row.graduation_certificate"
-                alt=""
-                class="list-img"
-              />
+              <div v-if="row.graduation_certificate" class="list-img">
+                <img
+                  @click="handlePreview(row.graduation_certificate)"
+                  :src="row.graduation_certificate"
+                  alt=""
+                />
+              </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -101,13 +105,13 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <img
-                @click="handlePreview(row.photo_residence_permit)"
-                :src="row.photo_residence_permit"
-                v-if="row.photo_residence_permit"
-                alt=""
-                class="list-img"
-              />
+              <div v-if="row.photo_residence_permit" class="list-img">
+                <img
+                  @click="handlePreview(row.photo_residence_permit)"
+                  :src="row.photo_residence_permit"
+                  alt=""
+                />
+              </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -118,13 +122,13 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <img
-                class="list-img"
-                @click="handlePreview(row.photo_commitment)"
-                :src="row.photo_commitment"
-                v-if="row.photo_commitment"
-                alt=""
-              />
+              <div v-if="row.photo_commitment" class="list-img">
+                <img
+                  @click="handlePreview(row.photo_commitment)"
+                  :src="row.photo_commitment"
+                  alt=""
+                />
+              </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -135,14 +139,14 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <img
-                @click="handlePreview(row.photo_health)"
-                title="点击预览大图"
-                class="list-img"
-                :src="row.photo_health"
-                v-if="row.photo_health"
-                alt=""
-              />
+              <div v-if="row.photo_health" class="list-img">
+                <img
+                  @click="handlePreview(row.photo_health)"
+                  title="点击预览大图"
+                  :src="row.photo_health"
+                  alt=""
+                />
+              </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -179,6 +183,7 @@
     />
 
     <PreviewImg ref="view" />
+    <a ref="a"></a>
   </section>
 </template>
 
@@ -222,13 +227,18 @@ export default {
       this.$router.push({ name: "certificatesLog", query: { id } });
     },
     // 下载
+    download(url) {
+      const a = this.$refs.a;
+      a.href = url;
+      a.click();
+    },
     async zipDownload(uid) {
       const data = {
         uid,
       };
       const res = await zipDownload(data);
       if (res.code === 0) {
-        window.open(res.data.url);
+        this.download(res.data.url);
       }
     },
     handlePreview(src) {
@@ -275,8 +285,8 @@ export default {
 }
 
 .list-img {
-  width: 50px;
-  height: 50px;
+  height: 40px;
   cursor: pointer;
+  text-align: center;
 }
 </style>

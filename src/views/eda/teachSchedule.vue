@@ -124,10 +124,13 @@ export default {
       this.$router.push({
         path: '/eda/timetablePreview',
         query: {
-          time: ab.frist_class_time,
-          classroom_id: ab.classroom_id,
-          category_id: ab.category_id,
+          param: JSON.stringify(ab),
         },
+        // query: {
+        //   time: ab.frist_class_time,
+        //   classroom_id: ab.classroom_id,
+        //   category_id: ab.category_id,
+        // },
       })
     },
     toAllSchedule() {

@@ -1,27 +1,21 @@
 <template>
   <section>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+      *本模块用于学生的上课点名签到和考勤统计管理。
     </div>
     <section class="mainwrap">
       <div class="header">
-        <search
-          :organHide="false"
-          :schoolHide="false"
-          :classNameHide="false"
-          :dealStatusHide="false"
-          :teacherHide="false"
-          @getTable="getTableList"
-          api="getMyclient"
-          :statusNum="3"
-        ></search>
-        <!-- <el-checkbox v-model="checked">显示未归档学生</el-checkbox> -->
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
       </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData"
+          :data="listData"
           tooltip-effect="light"
           stripe
           style="width: 100%;"
@@ -34,10 +28,16 @@
             label="序号"
             show-overflow-tooltip
             min-width="90"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <div>
+                {{ scope.$index + 1 }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="user_realname"
-            label="上课时间"
+            prop="date"
+            label="上课日期"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
@@ -46,54 +46,72 @@
             label="星期"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div>
+                {{ row.start_time | weekType }}
+              </div>
+            </template>
+          </el-table-column>
 
           <el-table-column
-            prop="institution_name"
+            prop="start_time"
             label="上课时间"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <!-- <template slot-scope="{ row }">
+              <div>
+                {{ row.start_time | start_time }}
+              </div>
+            </template> -->
+          </el-table-column>
 
           <el-table-column
-            prop="create_time"
+            prop="class_list"
             label="班级名称"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="teacher_name"
             label="上课老师"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
             label="授课方式"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div>
+                {{ row.teaching_type | teaching_type }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="schoolroom_name"
             label="上课教室"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="staff_list"
             label="跟班人员"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
+          <el-table-column label="状态" min-width="100" show-overflow-tooltip>
+            <template slot-scope="{ row }">
+              <div>
+                {{ row.state | state }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="create_time"
-            label="状态"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="create_time"
-            label="排班属性"
+            prop="class_hour_number"
+            label="课节数量"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
@@ -103,11 +121,16 @@
             min-width="200"
             max-width="200"
           >
-            <template slot-scope="scope">
+            <template slot-scope="{ row }">
               <div class="operation_btn">
-                <el-button type="text" @click="dialoShow">排班详情</el-button>
-                <div>
-                  <el-button type="text" @click="callinClass(scope.row)"
+                <el-button
+                  type="text"
+                  @click="scheduleShow"
+                  v-if="row.class_hour_number > 1"
+                  >排班详情</el-button
+                >
+                <div v-if="row.class_hour_number == 1">
+                  <el-button type="text" @click="callinClass(row)"
                     >上课点名</el-button
                   >
                   <el-button type="text" @click="handleAdd(scope.row)"
@@ -123,140 +146,224 @@
         </el-table>
         <div class="table_bottom">
           <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
           />
         </div>
+        <ScheduleDialog v-model="scheduleVisible" />
       </div>
-      <el-dialog title="提示" :visible.sync="detailVisible" width="40%">
-        <!-- <span>这是一段信息</span> -->
-        <el-table
-          ref="multipleTable"
-          :data="schoolData"
-          tooltip-effect="light"
-          stripe
-          style="width: 100%;"
-          class="min_table"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-        >
-          <el-table-column
-            prop="uid"
-            label="序号"
-            show-overflow-tooltip
-            min-width="90"
-          ></el-table-column>
-          <el-table-column
-            prop="user_realname"
-            label="上课日期"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-
-          <el-table-column
-            prop="user_realname"
-            label="上课时间"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="user_realname"
-            label="状态"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            label="操作"
-            fixed="right"
-            min-width="200"
-            max-width="200"
-          >
-            <template slot-scope="scope">
-              <div class="operation_btn">
-                <el-button type="text" @click="dialoShow">排班详情</el-button>
-                <div>
-                  <el-button type="text" @click="toCallinClass(scope.row)"
-                    >上课点名</el-button
-                  >
-                  <el-button type="text" @click="toSinCode(scope.row)"
-                    >签到码</el-button
-                  >
-                  <el-button
-                    type="text"
-                    @click="toAttendanceStatistics(scope.row)"
-                    >考勤统计</el-button
-                  >
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <span slot="footer" style="display:flex;justify-content:center">
-          <el-button @click="detailVisible = false" type="primary"
-            >关 闭</el-button
-          >
-          <!-- <el-button type="primary" @click="detailVisible = false"
-            >确 定</el-button
-          > -->
-        </span>
-      </el-dialog>
     </section>
   </section>
 </template>
 
 <script>
+import { getWorkPageList, getTeacherList, getcourseallclass } from '@/api/eda'
+import { getweek } from '@/utils/index'
+import ScheduleDialog from './attendanceManage/components/ScheduleDialog'
 export default {
-  name: 'seaStudent',
+  name: 'attendanceManage',
+  components: {
+    ScheduleDialog,
+  },
   data() {
     return {
-      detailVisible: false,
-      schoolData: [
+      schoolData: [],
+      scheduleVisible: false,
+
+      searchOptions: [
+        // {
+        //   key: 'date',
+        //   type: 'datePicker',
+        //   attrs: {
+        //     type: 'daterange',
+        //     'range-separator': '至',
+        //     'start-placeholder': '开始日期',
+        //     'end-placeholder': '结束日期',
+        //     'value-format': 'yyyy-MM-dd',
+        //   },
+        // },
+
         {
-          create_time: 123332,
+          key: 'classroom_id',
+          type: 'select',
+          options: [],
+          optionValue: 'classroom_id',
+          optionLabel: 'classroom_name',
+          attrs: {
+            placeholder: '所属班级',
+            clearable: true,
+          },
         },
+        {
+          key: 'teacher_id',
+          type: 'select',
+          options: [],
+          optionValue: 'teacher_id',
+          optionLabel: 'teacher_name',
+          attrs: {
+            placeholder: '上课老师',
+            clearable: true,
+          },
+        },
+        {
+          key: 'teacher_type',
+          type: 'select',
+          options: [
+            { value: 1, lable: '面授' },
+            { value: 2, lable: '直播' },
+          ],
+          optionValue: 'value',
+          optionLabel: 'lable',
+          attrs: {
+            placeholder: '授课方式',
+            clearable: true,
+          },
+        },
+        // {
+        //   key: 'teacher_type',
+        //   type: 'select',
+        //   options: [
+        //     { value: 0, lable: '未签到' },
+        //     { value: 1, lable: '缺勤' },
+        //     { value: 2, lable: '已到课' },
+        //   ],
+        //   optionValue: 'value',
+        //   optionLabel: 'lable',
+        //   attrs: {
+        //     placeholder: '状态',
+        //     clearable: true,
+        //   },
+        // },
+
+        // {
+        //   key: 'search_box',
+        //   attrs: {
+        //     placeholder: '学生姓名/手机号码',
+        //   },
+        // },
       ],
-      page: 1,
-      status: 3,
-      datas: {},
-      checked: '',
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        teacher_id: '',
+        teacher_type: '',
+        date: '',
+        classroom_id: '',
+      },
     }
   },
+  filters: {
+    teaching_type(val) {
+      switch (val) {
+        case 1:
+          return '面授'
+          break
+        case 2:
+          return '直播'
+          break
+        default:
+          return '未知'
+      }
+    },
+    start_time(val) {
+      // this.$moment.unix(val).format('YYYY-MM-DD HH:mm:ss')
+    },
+    weekType(val) {
+      return getweek(val)
+    },
+    state(val) {
+      switch (val) {
+        case 0:
+          return '未签到'
+          break
+        case 1:
+          return '缺勤'
+          break
+        case 2:
+          return '已到课'
+          break
+        default:
+          return '未知'
+      }
+    },
+  },
   mounted() {
-    // this.$api.onlineUserList(this, 'schoolData')
+    this.getcourseallclass()
+    this.getTeacherList()
+    this.getWorkPageList()
   },
   methods: {
-    toAttendanceStatistics() {
-      this.$router.push({
-        path: '/eda/attendanceStatistics',
-      })
-    },
-    toSinCode() {
-      this.$router.push({
-        path: '/eda/sinCode',
-      })
-    },
     callinClass() {
       this.$router.push({
         path: '/eda/callinClass',
       })
     },
-    dialoShow() {
-      this.detailVisible = true
+    //打开排课详情弹框
+    scheduleShow() {
+      this.scheduleVisible = true
     },
-    getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+    // 获取班级下拉
+    async getcourseallclass() {
+      const data = {}
+      const res = await getcourseallclass(data)
+      if (res.code === 0) {
+        this.classOptions = res.data
+        this.searchOptions[0].options = res.data
       }
     },
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getWorkPageList()
+    },
+    handleSearch(data) {
+      // console.log(data)
+      // const times = data.date || ['', '']
+      // delete data.date
+      this.pageNum = 1
+      this.searchData = {
+        ...data,
+        // start_time: times[0],
+        // end_time: times[1],
+      }
+      this.getWorkPageList()
+    },
+    // 获取班级老师
+    async getTeacherList() {
+      const data = {}
+      const res = await getTeacherList(data)
+      if (res.code === 0) {
+        this.classOptions = res.data
+        console.log(res.data)
+        this.searchOptions[1].options = res.data
+      }
+    },
+    // 获学员列表
+    async getWorkPageList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      delete data.date
+      this.listLoading = true
+      const res = await getWorkPageList(data)
+      this.listLoading = false
+      for (var item of res.data.list) {
+        // console.log(item)
+        if (item.start_time != 0 || item.start_time != '') {
+          item.start_time = this.$moment
+            .unix(item.start_time)
+            .format('YYYY-MM-DD HH:mm:ss')
+        } else {
+          item.start_time = '---'
+        }
+      }
+      this.listData = res.data.list
 
-    doPageChange(page) {
-      this.page = page
-      this.$api.onlineUserList(this, 'schoolData')
+      console.log(this.listData)
+      this.listTotal = res.data.total
     },
   },
 }

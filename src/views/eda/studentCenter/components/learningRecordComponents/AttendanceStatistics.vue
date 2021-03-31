@@ -105,7 +105,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
-          @pageChange="getAttendanceList"
+          @pageChange="handlePageChange"
         />
       </div>
     </div>

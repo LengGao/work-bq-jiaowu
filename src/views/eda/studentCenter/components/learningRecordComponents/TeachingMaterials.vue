@@ -35,24 +35,28 @@
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="project_name"
           label="出版日期"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
+        ></el-table-column> -->
+        <!-- <el-table-column
           prop="type"
           label="领取状态"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop="type"
           label="领取方式"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ types[row.type] }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="create_time"
           label="领取时间"
@@ -71,7 +75,7 @@
           <page
             :data="listTotal"
             :curpage="pageNum"
-            @pageChange="getMaterial"
+            @pageChange="handlePageChange"
           />
         </div>
       </div>
@@ -91,6 +95,10 @@ export default {
   },
   data() {
     return {
+      types: {
+        1: "现场发放",
+        2: "快递",
+      },
       listData: [],
       listLoading: false,
       pageNum: 1,

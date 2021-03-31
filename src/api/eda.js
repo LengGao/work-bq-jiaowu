@@ -190,7 +190,7 @@ export function editClassroom(data) {
 }
 /**
  * 班级详情
- * @param {*} params 
+ * @param {*} params
  */
 export function getClassroomDetail(params) {
     return request({
@@ -201,7 +201,7 @@ export function getClassroomDetail(params) {
 }
 /**
  * 获取学生所有班级
- * @param {*} params 
+ * @param {*} params
  */
 export function getstudendclass(params) {
     return request({
@@ -244,7 +244,7 @@ export function getTable(params) {
 }
 /**
  * 获取学生项目列表
- * @param {*} params 
+ * @param {*} params
  */
 export function getuserproject(params) {
     return request({
@@ -255,7 +255,7 @@ export function getuserproject(params) {
 }
 /**
  * 获取班级学生
- * @param {*} params 
+ * @param {*} params
  */
 export function getClassstudentList(params) {
     return request({
@@ -266,7 +266,7 @@ export function getClassstudentList(params) {
 }
 /**
  * 班级考勤统计
- * @param {*} params 
+ * @param {*} params
  */
 export function classAttendanceStatistics(params) {
     return request({
@@ -277,7 +277,7 @@ export function classAttendanceStatistics(params) {
 }
 /**
  * 班级排课列表
- * @param {*} params 
+ * @param {*} params
  */
 export function getClassArrangeList(params) {
     return request({
@@ -302,4 +302,87 @@ export function getTeacherList(params) {
         params,
     })
 }
+// 获取教室选择列表
+export function getRoomSelect(params) {
+    return request({
+        url: '/Schoolroom/getRoomSelect',
+        method: 'get',
+        params,
+    })
+}
+// 排课管理=======
+/**
+ * 获取教材发放列表
+ */
+export function getAllForPageList(params) {
+    return request({
+        url: 'arrange/getAllForPageList',
+        method: 'get',
+        params,
+    })
+}
+// 考勤管理=======
+/**
+ * 排课分页列表
+ */
+export function getWorkPageList(params) {
+    return request({
+        url: '/arrange/getPageList',
+        method: 'get',
+        params,
+    })
+}
+
+/**
+ * 签到学生列表
+ */
+export function getSignList(params) {
+  return request({
+    url: 'arrange/signList',
+    method: 'get',
+    params,
+  })
+}
+
+// 学生详情-个人成绩统计
+export function getSubjectListByUser(params) {
+    return request({
+        url: '/Graduation/getSubjectListByUser',
+        method: 'get',
+        params,
+    })
+}
+// 学生详情-个人成绩统计-历史成绩
+export function getHistoryGradeList(params) {
+    return request({
+        url: '/Graduation/getHistoryGradeList',
+        method: 'get',
+        params,
+    })
+}
+// 学生详情-学习进度列表
+export function getstudentcourse(params) {
+    return request({
+        url: '/classstudents/getstudentcourse',
+        method: 'get',
+        params,
+    })
+}
+// 移除班级学生
+export function classstudentsBatchRemove(data) {
+    return request({
+        url: '/classstudents/batchremove',
+        method: 'post',
+        data,
+    })
+}
+// 学生批量转班
+export function batchchangestudents(data) {
+    return request({
+        url: '/classstudents/batchchangestudents',
+        method: 'post',
+        data,
+    })
+}
+
 

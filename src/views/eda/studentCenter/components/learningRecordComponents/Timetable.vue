@@ -2,7 +2,7 @@
   <!-- 课表信息 -->
   <div class="timetable">
     <Title text="课表信息" />
-    <div class="calendar">
+    <div class="calendar" v-loading="detailLoading">
       <div class="date-select">
         <el-select v-model="checkedYear">
           <el-option
@@ -28,23 +28,22 @@
             :class="{
               'class-date': allDay.includes(data.day),
             }"
-            @click="handleOpen(infoMap[data.day])"
           >
             <span>{{ data.day.split("-").slice(1).join("-") }}</span>
             <div v-if="allDay.includes(data.day)" class="day-info">
-              <p>
-                上课时间：{{
-                  infoMap[data.day].period &&
-                  infoMap[data.day].period.substr(11)
-                }}
+              <p
+                v-for="(item, index) in infoMap[data.day]"
+                :key="index"
+                @click="handleOpen(item.id)"
+              >
+                {{ index + 1 }}. {{ item.classroom_name }}
               </p>
-              <p>上课老师：{{ infoMap[data.day].teacher_name }}</p>
             </div>
           </div>
         </template>
       </el-calendar>
     </div>
-    <CourseDialog v-model="detailDialog" :datas="courseData" />
+    <CourseDialog v-model="detailDialog" :id="checkedId" />
   </div>
 </template>
 
@@ -71,7 +70,8 @@ export default {
       detailDialog: false,
       allDay: [],
       infoMap: {},
-      courseData: {},
+      checkedId: "",
+      detailLoading: false,
     };
   },
   computed: {
@@ -84,9 +84,9 @@ export default {
     this.createYears();
   },
   methods: {
-    handleOpen(data) {
-      if (!data) return;
-      this.courseData = data;
+    handleOpen(id) {
+      if (!id) return;
+      this.checkedId = id;
       this.detailDialog = true;
     },
     //获取课表信息
@@ -94,16 +94,17 @@ export default {
       const data = {
         uid: this.uid,
         year: this.checkedYear,
+        project_id: 0,
         month:
           this.checkedMonth < 10 ? "0" + this.checkedMonth : this.checkedMonth,
       };
+      this.detailLoading = true;
       const res = await getTable(data);
+      this.detailLoading = false;
       if (res.code === 0) {
         const data = res.data || [];
-        this.allDay = data.map((item) => item.date);
-        data.forEach((item) => {
-          this.infoMap[item.date] = item;
-        });
+        this.allDay = Object.keys(data);
+        this.infoMap = data;
       }
     },
     createYears() {
@@ -129,6 +130,10 @@ export default {
     position: relative;
     /deep/.el-calendar__button-group {
       display: none;
+    }
+    /deep/.el-calendar-table .el-calendar-day {
+      min-height: 90px;
+      height: auto;
     }
     .date-select {
       top: 0;
