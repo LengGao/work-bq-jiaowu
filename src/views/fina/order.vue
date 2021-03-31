@@ -38,7 +38,7 @@
         class="min_table">
 
           <el-table-column type="selection" width="45"> </el-table-column>
-          <el-table-column prop="update_time" label="订单时间" show-overflow-tooltip min-width="100"></el-table-column>
+          <el-table-column prop="create_time" label="订单时间" show-overflow-tooltip min-width="100"></el-table-column>
 
           <el-table-column prop="order_no" label="订单编号" min-width="100" column-key="course_id" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -49,7 +49,9 @@
           </el-table-column>
           <el-table-column prop="surname" label="学员姓名" min-width="70" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="mobile" label="联系方式" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="mobile" label="联系方式" min-width="100" show-overflow-tooltip
+          :formatter="stateFormat">
+          </el-table-column>
           
           <el-table-column label="项目名称" min-width="180" show-overflow-tooltip>
               <template slot-scope="{row}"> 
@@ -63,7 +65,10 @@
           <el-table-column prop="pay_money" label="实付金额" min-width="80" show-overflow-tooltip>
           </el-table-column>
 
-          <el-table-column prop="pay_status" label="财务状态" min-width="80" show-overflow-tooltip>
+          <el-table-column label="财务状态" min-width="80" show-overflow-tooltip>
+            <template slot-scope="{row}">
+              {{statusMap[row.pay_status] }}
+            </template>
           </el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="200">
@@ -111,6 +116,14 @@ export default {
 
   data() {
     return {
+      statusMap: {
+        0: "待付款",
+        1: "已付款",
+        2: "部分入账",
+        3: "已入账",
+        4: "已作废",
+        5: "已退款",
+      },
       listData:[],
       activeIndex: 0,
       pageNum: 1,
@@ -172,6 +185,17 @@ export default {
   },
 
   methods: {
+    
+    // 格式化表格手机号码
+    stateFormat(row, column, cellValue) {
+      if (!cellValue) return "";
+      if (cellValue.length > 7) {
+        //最长固定显示7个字符
+        return cellValue.slice(0, 7) + "****";
+      }
+      return cellValue;
+    },
+
     //订单审批列表接口
     async Approvalist() {
       const data = {

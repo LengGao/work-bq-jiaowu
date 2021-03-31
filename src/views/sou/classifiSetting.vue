@@ -18,10 +18,11 @@
         <el-table
           ref="multipleTable"
           :data="listData"
-          style="width: 100%"
+          style="width: 100%;"
           class="min_table"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
+          :header-cell-style="{ 'text-align': 'left' }"
+          :cell-style="{ 'text-align': 'left' }"
+          
 
           :props="optionProps"
            row-key="category_id"
@@ -30,28 +31,29 @@
           <el-table-column
             prop="category_name"
             label="分类名称"
-            min-width="110"
+            min-width="180"
+            style="padding-left:20px"
             show-overflow-tooltip>
             </el-table-column>
               <el-table-column
             label="分类ID"
             show-overflow-tooltip
-            min-width="90"
+            min-width="130"
             prop="category_id">
           </el-table-column>
           <el-table-column
             label="分类图标"
-            min-width="150"
+            min-width="130"
             show-overflow-tooltip>
             <template slot-scope="scope">
-              <div style="margin:0 auto;width:50px ;height:50px;">
+              <div style="width:50px ;height:50px;">
                 <img :src="scope.row.icon" alt class="school_class_box" />
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="排序" min-width="100" show-overflow-tooltip>
+          <el-table-column label="排序" min-width="120" show-overflow-tooltip>
             <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
+              <div>
                 <el-col :span="12">
                   <el-input
                     v-model="scope.row.sort"
@@ -64,9 +66,9 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
+              <div style="display:flex;">
                 <el-button type="text" @click="topayment(scope.row)"
                   >编辑</el-button>
               </div>
@@ -345,7 +347,7 @@ export default {
         sort : this.ruleForm.sort,
         describe : this.describe,
       }
-     
+
       const res = await insertCategory(data)
       this.listLoading = false
         if(res.code==0){
@@ -353,7 +355,6 @@ export default {
           this.$message.success(res.message)
           this.getCategoryList()
         }
-
     },
 
     //编辑分类接口
@@ -366,8 +367,8 @@ export default {
         category_name : this.ruleForm.category_name,
         pid : this.ruleForm.pid,
         sort : this.ruleForm.sort,
-        describe : this.describe,
-        category_id:this.category_id
+        describe : this.ruleForm.describe,
+        category_id:this.ruleForm.category_id
       }
       console.log(data)
       const res = await updateCategory(data)
@@ -377,7 +378,9 @@ export default {
           console.log( res)
           this.$message.success(res.message)
           this.getCategoryList()
-          this.listLoading = true
+          this.dialogVisible = false
+       
+   
         }
     },
 
@@ -410,11 +413,16 @@ export default {
 .el-table__header tr {
   background-color: #f8f8f8;
   color: #909399;
+ 
 }
 /deep/.el-form-item__content{
   line-height: 30px;
 
 }
+/deep/.cell{
+  margin-left: 20px;
+}
+
 .input-width {
   width: 350px;
 }
