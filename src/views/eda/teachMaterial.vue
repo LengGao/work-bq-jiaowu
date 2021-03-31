@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="head_remind">*管理不同机构的仓库和仓库出入库。</div>
+    <div class="head_remind">*本模块主要负责学生报名后的教材发放工作。</div>
     <section class="mainwrap">
       <div class="header">
         <SearchList
@@ -69,19 +69,19 @@
           <el-table-column
             prop="project_name"
             label="所属项目"
-            min-width="100"
+            min-width="160"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="classroom_id"
             label="所属班级"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column
             prop="total_books"
             label="应发教材"
-            min-width="100"
+            min-width="80"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -89,20 +89,20 @@
             label="欠发教材"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.not_issued ? row.not_issued : "已发放完成" }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="update_time"
             label="最后更新时间"
-            min-width="100"
+            min-width="160"
             show-overflow-tooltip
-          ></el-table-column>
-
-          <el-table-column
-            label="操作"
-            fixed="right"
-            min-width="200"
-            max-width="200"
           >
+          </el-table-column>
+
+          <el-table-column label="操作" fixed="right" min-width="130">
             <template slot-scope="{ row }">
               <div class="operation_btn">
                 <el-button

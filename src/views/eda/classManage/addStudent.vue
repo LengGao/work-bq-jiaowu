@@ -96,7 +96,7 @@
 <script>
 import { cloneOptions } from "@/utils/index";
 import { getInstitutionSelectData } from "@/api/sou";
-import { getClassList, addstudents, getproject } from "@/api/eda";
+import { getStudentList, addstudents, getproject } from "@/api/eda";
 export default {
   data() {
     return {
@@ -153,7 +153,7 @@ export default {
   },
 
   created() {
-    this.getClassList();
+    this.getStudentList();
     this.getInstitutionSelectData();
     this.getproject();
   },
@@ -177,7 +177,7 @@ export default {
       const res = await addstudents(data);
       if (res.code === 0) {
         this.$message.success("转班成功");
-        this.getClassList();
+        this.getStudentList();
       }
     },
     handleSearch(data) {
@@ -190,19 +190,19 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
-      this.getClassList();
+      this.getStudentList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.getStudentList();
     },
-    async getClassList() {
+    async getStudentList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await getStudentList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

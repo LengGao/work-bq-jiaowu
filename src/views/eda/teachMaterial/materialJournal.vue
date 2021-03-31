@@ -24,28 +24,28 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="id"
-          label="学员编号"
-          show-overflow-tooltip
+          label="序号"
+          type="index"
           min-width="90"
         ></el-table-column>
         <el-table-column
           prop="create_time"
           label="操作时间"
           min-width="110"
+          sortable
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="books_name"
           label="教材名称"
-          min-width="100"
+          min-width="180"
           show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
-          prop="category_name"
+          prop="storehouse_name"
           label="仓库名称"
-          min-width="100"
+          min-width="120"
           show-overflow-tooltip
         ></el-table-column>
 
@@ -62,7 +62,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>{{ types[row.rype] }}</span>
+            <span>{{ types[row.type] }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -158,6 +158,7 @@ export default {
         page: this.pageNum,
         ...this.searchData,
       };
+      delete data.date;
       this.listLoading = true;
       const res = await dispenseLog(data);
       this.listLoading = false;
