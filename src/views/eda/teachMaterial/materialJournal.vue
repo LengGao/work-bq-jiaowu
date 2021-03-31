@@ -38,14 +38,14 @@
         <el-table-column
           prop="books_name"
           label="教材名称"
-          min-width="100"
+          min-width="180"
           show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
           prop="storehouse_name"
           label="仓库名称"
-          min-width="100"
+          min-width="120"
           show-overflow-tooltip
         ></el-table-column>
 

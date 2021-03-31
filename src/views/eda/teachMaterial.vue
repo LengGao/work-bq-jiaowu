@@ -69,7 +69,7 @@
           <el-table-column
             prop="project_name"
             label="所属项目"
-            min-width="100"
+            min-width="160"
             show-overflow-tooltip
           ></el-table-column>
           <!-- <el-table-column
@@ -81,7 +81,7 @@
           <el-table-column
             prop="total_books"
             label="应发教材"
-            min-width="100"
+            min-width="80"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -89,20 +89,20 @@
             label="欠发教材"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="create_time"
-            label="最后更新时间"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-
-          <el-table-column
-            label="操作"
-            fixed="right"
-            min-width="200"
-            max-width="200"
           >
+            <template slot-scope="{ row }">
+              <span>{{ row.not_issued ? row.not_issued : "已发放完成" }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="update_time"
+            label="最后更新时间"
+            min-width="160"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+
+          <el-table-column label="操作" fixed="right" min-width="130">
             <template slot-scope="{ row }">
               <div class="operation_btn">
                 <el-button

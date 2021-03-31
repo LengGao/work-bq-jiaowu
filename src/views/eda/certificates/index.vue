@@ -238,7 +238,7 @@ export default {
       };
       const res = await zipDownload(data);
       if (res.code === 0) {
-        // this.download(res.data.url);
+        this.download(res.data.url);
       }
     },
     handlePreview(src) {
