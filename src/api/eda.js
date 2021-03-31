@@ -418,3 +418,19 @@ export function getstudentcourse(params) {
     params,
   })
 }
+// 移除班级学生
+export function classstudentsBatchRemove(data) {
+  return request({
+    url: '/classstudents/batchremove',
+    method: 'post',
+    data,
+  })
+}
+// 学生批量转班
+export function batchchangestudents(data) {
+  return request({
+    url: '/classstudents/batchchangestudents',
+    method: 'post',
+    data,
+  })
+}

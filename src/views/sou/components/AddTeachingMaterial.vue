@@ -93,14 +93,21 @@
               :action="uploadImageUrl"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
+              :on-error="handleUploadError"
               :before-upload="beforeAvatarUpload"
             >
-              <img
-                v-if="formData.book_cover"
-                :src="formData.book_cover"
-                class="img"
-              />
-              <i v-else class="el-icon-plus upload-cover-icon"></i>
+              <div v-if="formData.book_cover" class="imgs">
+                <img :src="formData.book_cover" />
+                <i class="del el-icon-close" @click.stop="hanldeDelete"></i>
+              </div>
+              <i
+                v-if="!uploadLoading && !formData.book_cover"
+                class="el-icon-plus upload-cover-icon"
+              ></i>
+              <i
+                class="el-icon-loading upload-cover-icon"
+                v-if="uploadLoading"
+              ></i>
             </el-upload>
           </el-form-item>
         </el-col>
@@ -166,6 +173,7 @@ export default {
         ],
       },
       addLoading: false,
+      uploadLoading: false,
     };
   },
   watch: {
@@ -235,8 +243,15 @@ export default {
     hanldeCancel() {
       this.$emit("input", false);
     },
-    handleAvatarSuccess(res, file) {
-      console.log(res);
+    hanldeDelete() {
+      this.formData.book_cover = "";
+    },
+    handleUploadError() {
+      this.$message.error("上传失败");
+      this.uploadLoading = false;
+    },
+    handleAvatarSuccess(res) {
+      this.uploadLoading = false;
       this.formData.book_cover = res.data?.data?.url || "";
     },
     beforeAvatarUpload(file) {
@@ -244,11 +259,14 @@ export default {
       const isLt20M = file.size / 1024 / 1024 < 20;
       if (!isImg) {
         this.$message.error("请上传图片");
+        return;
       }
       if (!isLt20M) {
         this.$message.error("上传图片大小不能超过 20MB!");
+        return;
       }
-      return isLt20M && isImg;
+
+      this.uploadLoading = true;
     },
   },
 };
@@ -274,11 +292,27 @@ export default {
     line-height: 130px;
     text-align: center;
   }
-  .img {
+  .imgs {
     padding: 5px;
     width: 130px;
     height: 130px;
-    display: block;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .del {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: 20px;
+    }
+    &:hover {
+      .del {
+        color: #333;
+        display: block;
+      }
+    }
   }
 }
 </style>

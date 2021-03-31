@@ -68,21 +68,21 @@
           ></el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="300">
-            <template slot-scope="scope">
+            <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openEdit(scope.row.classroom_id)"
+                <el-button type="text" @click="openEdit(row.classroom_id)"
                   >编辑</el-button
+                >
+                <el-button type="text" @click="toClassDetail(row.classroom_id)"
+                  >班级详情</el-button
                 >
                 <el-button
                   type="text"
-                  @click="toClassDetail(scope.row.classroom_id)"
-                  >班级详情</el-button
-                >
-                <el-button type="text" @click="toLearnerManage(scope.row)"
+                  @click="toLearnerManage(row.classroom_id)"
                   >学生管理</el-button
                 >
 
-                <el-button type="text" @click="toMassMessage(scope.row)"
+                <el-button type="text" @click="toMassMessage(row)"
                   >群发消息</el-button
                 >
               </div>
@@ -249,9 +249,12 @@ export default {
         path: "/eda/massMessage",
       });
     },
-    toLearnerManage() {
+    toLearnerManage(classId) {
       this.$router.push({
         path: "/eda/learnerManage",
+        query: {
+          classId,
+        },
       });
     },
   },

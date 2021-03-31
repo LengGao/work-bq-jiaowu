@@ -3,11 +3,13 @@
     <!-- <el-dialog title="订单详情" :visible.sync="orderVisible" width="60%"> -->
     <!--订单信息-->
     <div>
-      <el-row style="min-width:900px;margin-bottom:20px;">
+      <el-row style="min-width: 900px; margin-bottom: 20px">
         <el-col :lg="21" :sm="21" :xs="21" :md="21">
           <div class="order-header">
-            <h3 style="height:21px;margin-top:4px">订单信息</h3>
-            <el-button type="primary" @click="dialogVisible = true">待入账</el-button>
+            <h3 style="height: 21px; margin-top: 4px">订单信息</h3>
+            <el-button type="primary" @click="dialogVisible = true"
+              >待入账</el-button
+            >
           </div>
 
           <el-form
@@ -38,7 +40,7 @@
                 <el-form-item label="订单总价" prop="order_money">
                   <div class="ruleWord">{{ ruleForm.order_money }}</div>
                 </el-form-item>
-              </el-col> 
+              </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="优惠 小计" prop="reduction">
                   <div class="ruleWord">{{ ruleForm.reduction }}</div>
@@ -63,7 +65,7 @@
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="订单来源" prop="type">
                   <div class="ruleWord">
-                    {{ ruleForm.type == 1 ? '已成交' : '未成交' }}
+                    {{ ruleForm.type == 1 ? "已成交" : "未成交" }}
                   </div>
                 </el-form-item>
               </el-col>
@@ -71,297 +73,37 @@
             <el-row>
               <el-form-item label="订单备注" prop="type">
                 <div class="ruleWord">
-                  {{ ruleForm.tips == 1 ? '已成交' : '未成交' }}
+                  {{ ruleForm.tips == 1 ? "已成交" : "未成交" }}
                 </div>
               </el-form-item>
             </el-row>
             <el-row>
               <!-- <el-button type="primary" @click="dialogVisible = true">入账</el-button>               -->
-              <div style="display: flex; justify-content:left;">
-                <el-button type="primary" @click="dialogFormVisible = true">收款</el-button>
-                <el-button type="primary" plain @click="refundFormVisible = true">退款</el-button>
-                <el-button type="primary" plain  @click="voidFormVisible = true">作废</el-button>
+              <div style="display: flex; justify-content: left">
+                <el-button
+                  type="primary"
+                  v-if="excludes(ruleForm, 0)"
+                  @click="openOrderActions(ruleForm, 1)"
+                  >收款</el-button
+                >
+                <el-button
+                  type="danger"
+                  plain
+                  v-if="excludes(ruleForm, 5)"
+                  @click="openOrderActions(ruleForm, 2)"
+                  >退款</el-button
+                >
+                <el-button
+                  type="danger"
+                  plain
+                  v-if="excludes(ruleForm, 4)"
+                  @click="openOrderActions(ruleForm, 3)"
+                  >作废</el-button
+                >
               </div>
             </el-row>
           </el-form>
         </el-col>
-
-          <!-- 收款弹出框 -->
-        <el-dialog title="收款信息" :visible.sync="dialogFormVisible" >
-
-          <!--订单信息-->
-        <div>
-          <el-row style="min-width:900px;margin-bottom:20px;">
-            <el-col :lg="21" :sm="21" :xs="21" :md="21">
-              <div class="order-header">
-                <h3 style="height:20px;padding-left:5px;font-size:16px">订单信息</h3>
-              </div>
-
-              <el-form
-                :model="ruleForm"
-                ref="ruleForm"
-                label-width="90px"
-                class="demo-ruleForm"
-                label-position="left"
-              >
-                <el-row class="detailLine">
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="订单编号：" prop="order_no">
-                      <div class="ruleWord">{{ ruleForm.order_no }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="订单时间：" prop="verify_time">
-                      <div class="ruleWord">{{ ruleForm.verify_time }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="收费学生：" prop="surname">
-                      <div class="ruleWord">{{ ruleForm.account.surname }}</div>
-                    </el-form-item>
-                  </el-col>
-
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="应收金额：" prop="order_money">
-                      <div class="ruleWord">{{ ruleForm.order_money }}</div>
-                    </el-form-item>
-                  </el-col>
-
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="已付金额：" prop="pay_money">
-                      <div class="ruleWord">{{ ruleForm.pay_money }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="欠费金额：" prop="reduction">
-                      <div class="ruleWord">{{ ruleForm.reduction }}</div>
-                    </el-form-item>
-                  </el-col>
-                
-                </el-row>
-              </el-form>
-            </el-col>
-            <el-col :lg="3" :sm="3" :xs="3" :md="3">
-            </el-col>
-          </el-row>
-        </div>
-
-        <div class="order-header">
-                <h3 style="height:20px;padding-left:5px;">支付信息</h3>
-              </div>
-
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="width:100%;display:flex;">
-          <el-form-item label="支付方式" prop="pay_type" class="zffs"  style="display:flex;">
-              <el-select v-model="ruleForm.pay_type" placeholder="请选择支付方式">
-                <el-option label="现金" value="xj"></el-option>
-                <el-option label="微信" value="wx"></el-option>
-                <el-option label="支付宝" value="zfn"></el-option>
-                <el-option label="聚合收单" value="jhsd"></el-option>
-              </el-select>
-            </el-form-item>
-         
-           
-          <el-form-item label="支付金额" prop="pay_money" class="zfmoney"  style="display:flex; margin-left:60px;">
-              <el-input v-model="ruleForm.pay_money" style="width:220px" placeholder="请输入支付金额"></el-input>
-            </el-form-item>
-            
-        </el-form>
-
-        <div class="upmoney">
-          <span style="padding-right:5px">上传收据</span> 
-          <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          style=""
-          >
-          <i class="el-icon-plus"></i>
-        </el-upload>
-        <div style="padding-left:10px;color:#aaa;margin-top:40px"> 
-        <p style="display:block">1. 支持jpg、jpeg、png、gif、bmp格式；</p>
-        <p>2. 单文件大小不能超过5M，最多可上传5个文件</p>
-        </div>
-        <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
-        </div>
-
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-        </div>
-      </el-dialog>
-
-  <!-- 退款弹出框 -->
-        <el-dialog title="申请退款" :visible.sync="refundFormVisible">
-
-          <!--订单信息-->
-        <div>
-          <el-row style="min-width:900px;margin-bottom:20px;">
-            <el-col :lg="21" :sm="21" :xs="21" :md="21">
-              <div class="order-header">
-                <h3 style="height:20px;padding-left:5px;font-size:16px">订单信息</h3>
-              </div>
-
-              <el-form
-                :model="ruleForm"
-                ref="ruleForm"
-                label-width="90px"
-                class="demo-ruleForm"
-                label-position="left"
-              >
-                <el-row class="detailLine">
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="订单编号：" prop="order_no">
-                      <div class="ruleWord">{{ ruleForm.order_no }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="订单时间：" prop="verify_time">
-                      <div class="ruleWord">{{ ruleForm.verify_time }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="收费学生：" prop="surname">
-                      <div class="ruleWord">{{ ruleForm.account.surname }}</div>
-                    </el-form-item>
-                  </el-col>
-
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="应收金额：" prop="order_money">
-                      <div class="ruleWord">{{ ruleForm.order_money }}</div>
-                    </el-form-item>
-                  </el-col>
-
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="已付金额：" prop="pay_money">
-                      <div class="ruleWord">{{ ruleForm.pay_money }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="欠费金额：" prop="reduction">
-                      <div class="ruleWord">{{ ruleForm.reduction }}</div>
-                    </el-form-item>
-                  </el-col>
-                
-                </el-row>
-              </el-form>
-            </el-col>
-            <el-col :lg="3" :sm="3" :xs="3" :md="3">
-            </el-col>
-          </el-row>
-        </div>
-        <div class="order-header">
-                <h3 style="height:20px;padding-left:5px;">退费信息</h3>
-              </div>
-          
-          <div class="formmoney">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="width:100%;">
-          <div style="display:flex;">
-          <el-form-item label="退费方式" prop="pay_type" class="zffs">
-              <el-select v-model="ruleForm.pay_type" placeholder="请选择退费方式">
-                <el-option label="现金" value="xj"></el-option>
-                <el-option label="微信" value="wx"></el-option>
-                <el-option label="支付宝" value="zfn"></el-option>
-                <el-option label="聚合收单" value="jhsd"></el-option>
-              </el-select>
-            </el-form-item>
- 
-          <el-form-item label="退费金额" prop="money" class="zfmoney">
-              <el-input v-model="ruleForm.money" style="width:220px" placeholder="请输入退费金额"></el-input>
-            </el-form-item>
-            </div>
-
-             <div style="margin-top:20px;">
-               <el-form-item label="退费原因" prop="money" style="display:flex;">
-              <el-input type="textarea" placeholder="请输入退费原因" v-model="form.tips" style="width:640px;"></el-input>
-            </el-form-item>
-             </div>
-        </el-form>
-          </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="refundFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="refundFormVisible = false">确 定</el-button>
-        </div>
-      </el-dialog>
-
-           <!-- 作废弹出框 -->
-        <el-dialog title="申请作废" :visible.sync="voidFormVisible">
-
-          <!--订单信息-->
-        <div>
-          <el-row style="min-width:900px;margin-bottom:20px;">
-            <el-col :lg="21" :sm="21" :xs="21" :md="21">
-              <div class="order-header">
-                <h3 style="height:20px;padding-left:5px;font-size:16px">订单信息</h3>
-              </div>
-
-              <el-form
-                :model="ruleForm"
-                ref="ruleForm"
-                label-width="100px"
-                class="demo-ruleForm"
-                label-position="left"
-              >
-                <el-row class="detailLine">
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="订单编号：" prop="order_id">
-                      <div class="ruleWord">{{ ruleForm.order_id }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="订单时间：" prop="verify_time">
-                      <div class="ruleWord">{{ ruleForm.verify_time }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="收费学生：" prop="surname">
-                      <div class="ruleWord">{{ ruleForm.account.surname }}</div>
-                    </el-form-item>
-                  </el-col>
-
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="应收金额：" prop="order_money">
-                      <div class="ruleWord">{{ ruleForm.order_money }}</div>
-                    </el-form-item>
-                  </el-col>
-
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="已付金额：" prop="pay_money">
-                      <div class="ruleWord">{{ ruleForm.pay_money }}</div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                    <el-form-item label="欠费金额：" prop="reduction">
-                      <div class="ruleWord">{{ ruleForm.reduction }}</div>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-            <el-col :lg="3" :sm="3" :xs="3" :md="3">
-            </el-col>
-          </el-row>
-        </div>
-        <div class="order-header">
-                <h3 style="height:20px;padding-left:5px;">作废信息</h3>
-              </div>
-          
-          <div class="formmoney">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style="width:100%;">
-             <div style="margin-top:20px;">
-               <el-form-item label="作废原因" prop="money" style="display:flex;">
-              <el-input type="textarea" placeholder="请输入作废原因" v-model="form.desc" style="width:595px;"></el-input>
-            </el-form-item>
-             </div>
-        </el-form>
-          </div>
-
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="voidFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="voidFormVisible = false">确 定</el-button>
-        </div>
-      </el-dialog>
-
         <el-col :lg="3" :sm="3" :xs="3" :md="3">
           <!-- <el-button type="primary" @click="toStudyReport"
             >生成学习报告</el-button
@@ -372,13 +114,13 @@
     </div>
     <!--订单详情-->
     <div>
-      <h3 style="margin:15px 0">订单详情</h3>
+      <h3 style="margin: 15px 0">订单详情</h3>
       <el-table
         ref="multipleTable"
         :data="schoolData"
         tooltip-effect="light"
         stripe
-        style="width: 100%;"
+        style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
@@ -410,21 +152,28 @@
       </el-table>
       <div class="orderDetail_bottm">
         <div class="orderDetail_content">
-          <div>订单总价: <span>{{ruleForm.order_money}}</span></div>
-          <div>优惠总额: <span>{{ ruleForm.reduction }}</span></div>
-          <div>订单应收: <span style="color:#199fff">{{ ruleForm.order_money }}</span></div>
+          <div>
+            订单总价: <span>{{ ruleForm.order_money }}</span>
+          </div>
+          <div>
+            优惠总额: <span>{{ ruleForm.reduction }}</span>
+          </div>
+          <div>
+            订单应收:
+            <span style="color: #199fff">{{ ruleForm.order_money }}</span>
+          </div>
         </div>
       </div>
     </div>
     <!--缴费记录-->
-    <div style="margin-top:20px">
-      <h3 style="margin-bottom:15px">缴费记录</h3>
+    <div style="margin-top: 20px">
+      <h3 style="margin-bottom: 15px">缴费记录</h3>
       <el-table
         ref="multipleTable"
         :data="schoolData"
         tooltip-effect="light"
         stripe
-        style="width: 100%;"
+        style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
@@ -453,35 +202,35 @@
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
-         <el-table-column label="操作" fixed="right" min-width="80">
-            <template slot-scope="scope">
-              <div>
-                <el-button type="primary" plain @click="dialogVisible = true">入账</el-button>
-              </div>
-            </template>
-          </el-table-column>
+        <el-table-column label="操作" fixed="right" min-width="80">
+          <template slot-scope="scope">
+            <div>
+              <el-button type="primary" plain @click="dialogVisible = true"
+                >入账</el-button
+              >
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
- <el-dialog
-              title="提示"
-              :visible.sync="dialogVisible"
-              width="25%"
-             >
-              <span style="font-size:20px;">是否将此笔订单入账？</span>
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-              </span>
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="25%">
+        <span style="font-size: 20px">是否将此笔订单入账？</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false"
+            >确 定</el-button
+          >
+        </span>
       </el-dialog>
     </div>
     <!--经办信息-->
-    <div style="margin-top:20px">
-      <h3 style="margin-bottom:15px">经办信息</h3>
+    <div style="margin-top: 20px">
+      <h3 style="margin-bottom: 15px">经办信息</h3>
       <el-table
         ref="multipleTable"
         :data="schoolData"
         tooltip-effect="light"
         stripe
-        style="width: 100%;"
+        style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
@@ -512,99 +261,115 @@
         ></el-table-column>
       </el-table>
     </div>
-     
-   
-    <!--关闭-->
-    <!-- <div
-      class="customer_colse"
-      style="display:flex;justify-content:center;margin-top:20px"
-    >
-      <el-button type="primary" @click="toCustomerDetail">关 闭</el-button>
-    </div> -->
-    <!-- </el-dialog> -->
+
+    <CollectionOrder
+      v-model="orderActionDialog"
+      :type="dialogType"
+      :orderInfo="dialogInfo"
+      @on-success="orderdetail"
+    />
   </section>
 </template>
 
 <script>
+import CollectionOrder from "../components/CollectionOrder";
 export default {
+  components: {
+    CollectionOrder,
+  },
   data() {
     return {
       dialogFormVisible: false,
       refundFormVisible: false,
       voidFormVisible: false,
       dialogVisible: false,
-      order_id:'',
-       form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
+      order_id: "",
+      form: {
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: "",
+      },
       ruleForm: {
-          order_no:'',
-          verify_time:'',
-          surname:'',
-          order_money:'',
-          reduction:'',
-          pay_money:'',
-          reduction:'',
-          account:{}
-        },
+        order_no: "",
+        verify_time: "",
+        surname: "",
+        order_money: "",
+        reduction: "",
+        pay_money: "",
+        reduction: "",
+        account: {},
+      },
       schoolData: [
-        {supplement_time:'',
-          pay_type:'',
-          pay_money:'',
-          yingshou:'',
-          uid:'',
-        }
+        {
+          supplement_time: "",
+          pay_type: "",
+          pay_money: "",
+          yingshou: "",
+          uid: "",
+        },
       ],
 
-      rules:{
-         pay_money: [
-            {type: 'date', required: true, message: '',  trigger: 'change' }
-          ],
-          pay_type: [
-            { required: true, message: '', trigger: 'change' }
-          ],
-          money: [
-            {type: 'date', required: true, message: '请填写支付金额',  trigger: 'change' }
-          ],
-          cate_id: [
-            { required: true, message: '', trigger: 'change' }
-          ],
+      rules: {
+        pay_money: [
+          { type: "date", required: true, message: "", trigger: "change" },
+        ],
+        pay_type: [{ required: true, message: "", trigger: "change" }],
+        money: [
+          {
+            type: "date",
+            required: true,
+            message: "请填写支付金额",
+            trigger: "change",
+          },
+        ],
+        cate_id: [{ required: true, message: "", trigger: "change" }],
       },
-      schoolData: [],  
-      panelData:{},   
-
-   
-    }
+      panelData: {},
+      orderActionDialog: false,
+      dialogInfo: {},
+      dialogType: 1,
+    };
   },
   mounted() {
     // let status = 3
-    this.order_id = this.$route.query.order_id
-    this.$api.orderdetail(this, 'schoolData')
-  
+    this.order_id = this.$route.query.order_id;
+    this.$api.orderdetail(this, "schoolData");
   },
 
-    methods: {
+  methods: {
+    // 按钮操作
+    excludes(row, type) {
+      const auth = {
+        0: row.overdue_money > 0, // 收款
+        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
+        5: ![4, 5].includes(row.pay_status), // 作废
+      };
+      return auth[type];
+    },
+    // 收款，作废，退款弹窗
+    openOrderActions(row, type) {
+      this.dialogType = type;
+      this.dialogInfo = row;
+      this.orderActionDialog = true;
+    },
     orderdetail(page) {
-      this.page = page
-      this.$api.orderdetail(this, 'schoolData', this.datas)
+      this.page = page;
+      this.$api.orderdetail(this, "schoolData", this.datas);
     },
     handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
   },
-}
+};
 </script>
 
 
@@ -617,23 +382,23 @@ export default {
 /deep/.el-button {
   padding: 9px 25px;
 }
-/deep/.el-form-item{
-  margin-bottom:10px;
+/deep/.el-form-item {
+  margin-bottom: 10px;
 }
-/deep/.app-main{
+/deep/.app-main {
   width: 80%;
 }
-/deep/.el-dialog__body{
-  padding:30px;
+/deep/.el-dialog__body {
+  padding: 30px;
 }
-.mainwrap{
+.mainwrap {
   width: 98%;
-} 
+}
 .orderDetail_bottm {
   margin-top: 10px;
   font-size: 14px;
   color: #909399;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
   display: flex;
@@ -653,7 +418,7 @@ export default {
 }
 h3 {
   color: #333333;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
@@ -661,30 +426,29 @@ h3 {
   border-left: 4px solid #199fff;
 }
 
-/deep/.el-dialog__header{
+/deep/.el-dialog__header {
   background: rgb(241, 241, 241);
 }
-.upmoney{
+.upmoney {
   display: flex;
   align-items: center;
   margin-top: 20px;
 }
-.upmoney p{
+.upmoney p {
   display: block;
   height: 30px;
 }
-.detailLine .el-form-item{
+.detailLine .el-form-item {
   width: 380px;
 }
-.formmoney{
+.formmoney {
   display: flex;
 }
-.formmoney .zffs{
+.formmoney .zffs {
   width: 40%;
 }
-.formmoney .zfmoney{
+.formmoney .zfmoney {
   margin-left: 50px;
   display: flex;
 }
-
 </style>

@@ -29,94 +29,94 @@
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleTabelSelectChange"
         >
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             label="学员编号"
             show-overflow-tooltip
             min-width="90"
-            prop="index_category_id"
+            prop="uid"
           >
           </el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="user_realname"
             label="学员姓名"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="telphone"
             label="手机号码"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="institution_name"
             label="所属机构"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="schoole_name"
             label="所属校区"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="video_time_total"
             label="学习时长"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="video_progress"
             label="学习进度"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="total_problem"
             label="做题总数"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
-            prop="index_category_name"
+            prop="problem_rate"
             label="做题进度"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="real_topic_score"
             label="历年真题平均分"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="exam_score"
             label="模拟考试平均分"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="self_determination_score"
             label="自主出题最高分"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="index_category_name"
+            prop="live_time"
             label="直播时长"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="200">
-            <template slot-scope="scope">
+            <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="topayment(scope.row)"
-                  >转班</el-button
-                >
-                <el-button type="text" @click="topayment(scope.row)"
+                <el-button type="text" @click="linkTo(row)">转班</el-button>
+                <el-button type="text" @click="removeConfirm([row.uid])"
                   >移除</el-button
                 >
               </div>
@@ -125,8 +125,8 @@
         </el-table>
         <div class="footer">
           <div>
-            <el-button> 批量转班 </el-button>
-            <el-button> 批量移除 </el-button>
+            <el-button @click="batchShift"> 批量转班 </el-button>
+            <el-button @click="batchRemove"> 批量移除 </el-button>
           </div>
           <div class="table_bottom">
             <page
@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { getClassstudentList } from "@/api/eda";
+import { getClassstudentList, classstudentsBatchRemove } from "@/api/eda";
 import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
@@ -154,33 +154,79 @@ export default {
       listTotal: 0,
       searchData: {
         organization_id: [],
-        value: "",
+        keyboard: "",
       },
       searchOptions: [
         {
           key: "organization_id",
           type: "cascader",
           attrs: {
-            placeholder: "推荐机构",
+            placeholder: "所属机构",
             clearable: true,
             options: [],
           },
         },
         {
-          key: "value",
+          key: "keyboard",
           attrs: {
             placeholder: "学生姓名/手机号码",
           },
         },
       ],
+      selectionIds: [],
+      courseIds: [],
     };
   },
 
   created() {
     this.getClassstudentList();
+    this.getInstitutionSelectData();
   },
 
   methods: {
+    handleTabelSelectChange(selection) {
+      if (selection) {
+        this.selectionIds = selection.map((item) => item.uid);
+        this.courseIds = [selection[0].course_id];
+      } else {
+        this.selectionIds = [];
+        this.courseIds = [];
+      }
+    },
+    //批量移除
+    batchRemove() {
+      if (!this.selectionIds.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      this.removeConfirm(this.selectionIds, true);
+    },
+    // 批量转班
+    batchShift() {
+      if (!this.selectionIds.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      const query = {
+        uid: this.selectionIds,
+        course_students_id: this.courseIds,
+        old_classroom_id: this.$route.query.classId,
+      };
+      // console.log(encodeURI(JSON.stringify(query)));
+      this.$router.push({
+        name: "shift",
+        query: JSON.stringify(query),
+      });
+    },
+
+    linkTo(row) {
+      const query = {
+        uid: [row.uid],
+        course_students_id: [row.course_id],
+        old_classroom_id: this.$route.query.classId,
+      };
+      this.$router.push({ name: "shift", query: JSON.stringify(query) });
+    },
     addStudent() {
       this.$router.push({
         path: "/eda/addStudent",
@@ -197,19 +243,37 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: data.category_id.pop(),
         organization_id: data.organization_id.pop(),
-        start_time: times[0],
-        end_time: times[1],
       };
       this.getClassstudentList();
+    },
+    // 移除学生
+    removeConfirm(uid, isbatch) {
+      this.$confirm(`确定要移除${isbatch ? "选中的" : "此"}学生吗?`, {
+        type: "warning",
+      })
+        .then(() => {
+          this.classstudentsBatchRemove(uid);
+        })
+        .catch(() => {});
+    },
+    async classstudentsBatchRemove(uid) {
+      const data = {
+        uid,
+        classroom_id: this.$route.query.classId,
+      };
+      const res = await classstudentsBatchRemove(data);
+      if (res.code === 0) {
+        this.$message.success("学生移除成功");
+        this.getClassstudentList();
+      }
     },
     // 获取机构
     async getInstitutionSelectData() {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[4].attrs.options = cloneOptions(
+        this.searchOptions[0].attrs.options = cloneOptions(
           res.data,
           "institution_name",
           "institution_id",
@@ -217,12 +281,12 @@ export default {
         );
       }
     },
-    //教材发放列表
+    //班级学生列表
     async getClassstudentList() {
-      this.checkedIds = [];
-      this.projectId = "";
-      console.log(this.searchData);
+      this.selectionIds = [];
+      this.courseIds = [];
       const data = {
+        class_id: this.$route.query.classId,
         page: this.pageNum,
         ...this.searchData,
       };
@@ -230,7 +294,7 @@ export default {
       this.listLoading = true;
       const res = await getClassstudentList(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.data;
       this.listTotal = res.data.total;
     },
   },

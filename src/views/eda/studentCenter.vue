@@ -343,7 +343,6 @@ export default {
       }
     },
     handleSearch(data) {
-      console.log(data);
       const times = data.date || ["", ""];
       delete data.date;
       this.pageNum = 1;

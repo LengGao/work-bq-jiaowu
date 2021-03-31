@@ -66,12 +66,12 @@
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
-        <!-- <el-table-column
-          prop="student_number"
+        <el-table-column
+          prop="self_determination_score"
           label="自主出题最高分"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column> -->
+        ></el-table-column>
         <el-table-column
           prop="live_time"
           label="参加直播时长"

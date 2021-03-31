@@ -208,3 +208,11 @@ export function updateRuleStatus(data) {
     data,
   })
 }
+//获取报考列表
+export function planList(params) {
+  return request({
+    url: '/Examination/planList',
+    method: 'get',
+    params,
+  })
+}

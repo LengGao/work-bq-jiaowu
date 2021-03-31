@@ -25,3 +25,19 @@ export function getRoleInfo(params) {
     params,
   })
 }
+// 添加角色
+export function addRole(data) {
+  return request({
+    url: '/role/add',
+    method: 'post',
+    data,
+  })
+}
+// 修改角色
+export function modifyRole(data) {
+  return request({
+    url: '/role/modify',
+    method: 'post',
+    data,
+  })
+}
