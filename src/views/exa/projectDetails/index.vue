@@ -1,7 +1,5 @@
 <template>
   <div>
-    <div class="head_remind">*本模块主要用来管理学生的报考情况。</div>
-
     <section class="mainwrap">
       <div class="client_head">
         <!--搜索模块-->
@@ -10,7 +8,7 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary" @click="openAdd">添加考试计划</el-button>
+        <el-button type="primary" @click="openAdd">添加学生</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
@@ -28,89 +26,98 @@
           :cell-style="{ 'text-align': 'center' }"
           class="min_table"
         >
-          <el-table-column
-            prop="id"
-            label="ID"
-            show-overflow-tooltip
-            min-width="60"
-          ></el-table-column>
+          <el-table-column type="selection" width="50"></el-table-column>
 
           <el-table-column
-            prop="plan_name"
-            label="考试计划"
-            min-width="180"
+            prop="user_realname"
+            label="学生姓名"
+            min-width="90"
             column-key="course_id"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="category_name"
-            label="所属分类"
-            min-width="100"
+            prop="telphone"
+            label="手机号码"
+            min-width="90"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.telphone | filterPhone }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="class_type_name"
-            label="考试日期"
+            prop="project"
+            label="项目名称"
             min-width="200"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>{{ row.exam_start_time }}</span>
-              <span> 至 </span>
-              <span>{{ row.exam_end_time }}</span>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="course_price"
-            label="报考时间"
+            prop="subject"
+            label="考试科目"
             min-width="180"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>{{ row.enroll_start_time }}</span>
-              <span> 至 </span>
-              <span>{{ row.enroll_end_time }}</span>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="max_num"
-            label="剩余报考天数"
-            min-width="80"
+            prop="exam_type"
+            label="考试性质"
+            min-width="60"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span v-if="row.remaining_days" style="color: #43d100">{{
-                row.remaining_days
-              }}</span>
-              <span v-else>0</span>
+              <el-tag size="small" v-if="row.exam_type === '新考'">{{
+                row.exam_type
+              }}</el-tag>
+              <el-tag size="small" type="warning" v-else>{{
+                row.exam_type
+              }}</el-tag>
             </template>
           </el-table-column>
 
           <el-table-column
-            prop="max_num"
-            label="计划人数"
+            prop="cost"
+            label="补考费用"
             min-width="80"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="actual_num"
-            label="报考人数"
-            min-width="80"
+            prop="lack"
+            label="资料缺失数量"
+            min-width="150"
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="160">
+          <el-table-column
+            prop="enroll_status"
+            label="报考状态"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span :style="{ color: statusColors[row.enroll_status] }">{{
+                enrollStatusMap[row.enroll_status]
+              }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="360">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="linkTo(row.id)"
-                  >报考详情</el-button
+                <el-button type="text" @click="$message.error('没做')"
+                  >补齐资料</el-button
+                >
+                <el-button type="text" @click="$message.error('没做')"
+                  >资料审核</el-button
+                >
+                <el-button type="text" @click="$message.error('没做')"
+                  >查看审核单</el-button
                 >
                 <el-button type="text" @click="deleteConfirm(row.id)"
-                  >删除</el-button
+                  >移除学生</el-button
                 >
               </div>
             </template>
@@ -118,26 +125,14 @@
         </el-table>
       </div>
     </section>
-    <ApplyDialog
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      :id="currentId"
-      :typeOptions="typeOptions"
-      @on-success="planList"
-    />
   </div>
 </template>
 
 <script>
-import { planList, deletePlan } from "@/api/exa";
-import { cloneOptions } from "@/utils/index";
-import { getCateList } from "@/api/sou";
-import ApplyDialog from "./components/ApplyDialog";
+import { enrollRecordList, deletePlan, getEnrollSelect } from "@/api/exa";
 export default {
   name: "apply",
-  components: {
-    ApplyDialog,
-  },
+  components: {},
   data() {
     return {
       listData: [],
@@ -145,35 +140,37 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        cate_id: [],
+        exam_type: "",
+        enroll_status: "",
         search_box: "",
       },
       searchOptions: [
         {
-          key: "date",
-          type: "datePicker",
+          key: "exam_type",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "name",
           attrs: {
-            type: "daterange",
-            "range-separator": "至",
-            "start-placeholder": "报考开始日期",
-            "end-placeholder": "报考结束日期",
-            "value-format": "yyyy-MM-dd",
+            placeholder: "考试性质",
+            clearable: true,
           },
         },
         {
-          key: "cate_id",
-          type: "cascader",
+          key: "enroll_status",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "name",
           attrs: {
-            placeholder: "所属分类",
+            placeholder: "报考状态",
             clearable: true,
-            options: [],
-            props: { checkStrictly: true },
           },
         },
         {
           key: "search_box",
           attrs: {
-            placeholder: "报考规则",
+            placeholder: "学生姓名/手机号码",
           },
         },
       ],
@@ -181,16 +178,20 @@ export default {
       dialogTitle: "添加考试计划",
       dialogVisible: false,
       typeOptions: [],
+      enrollStatusMap: {},
+      statusColors: {
+        1: "#2798ee",
+        2: "#FD6552",
+        3: "#FD6500",
+        4: "#43D100",
+      },
     };
   },
   created() {
-    this.planList();
-    this.getCateList();
+    this.getEnrollSelect();
+    this.enrollRecordList();
   },
   methods: {
-    linkTo(id) {
-      this.$router.push({ name: "projectDetails", query: { id } });
-    },
     // 删除计划
     deleteConfirm(id) {
       this.$confirm("确定要删除此计划吗?", { type: "warning" })
@@ -206,7 +207,7 @@ export default {
       const res = await deletePlan(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.planList();
+        this.enrollRecordList();
       }
     },
     openEdit(id) {
@@ -221,47 +222,42 @@ export default {
     },
     // 搜索
     handleSearch(data) {
-      const times = data.date || ["", ""];
-      delete data.date;
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        cate_id: data.cate_id.pop(),
-        enroll_start_time: times[0],
-        enroll_end_time: times[1],
       };
-      this.planList();
+      this.enrollRecordList();
     },
     // 分页
     handlePageChange(val) {
       this.pageNum = val;
-      this.planList();
+      this.enrollRecordList();
     },
-    // 计划列表
-    async planList() {
+    // 选择项
+    async getEnrollSelect() {
+      const data = {};
+      const res = await getEnrollSelect(data);
+      if (res.code === 0) {
+        const enrollStatus = res.data?.enroll_status || [];
+        this.searchOptions[0].options = res.data?.exam_type || [];
+        this.searchOptions[1].options = enrollStatus;
+        enrollStatus.forEach((item) => {
+          this.enrollStatusMap[item.id] = item.name;
+        });
+      }
+    },
+    // 计划详情列表
+    async enrollRecordList() {
       const data = {
-        rule_id: this.$route.query?.id || "",
+        pid: this.$route.query?.id || "",
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await planList(data);
+      const res = await enrollRecordList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
-    },
-    // 获取教材分类
-    async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
-      if (res.code === 0) {
-        this.searchOptions[1].attrs.options = this.typeOptions = cloneOptions(
-          res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
-      }
     },
   },
 };

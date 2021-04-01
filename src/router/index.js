@@ -461,6 +461,12 @@ export const asyncRouter = [
         meta: { title: '报考管理', icon: 'product-add' },
       },
       {
+        path: 'projectDetails',
+        name: 'projectDetails',
+        component: () => import('@/views/exa/projectDetails/index.vue'),
+        meta: { title: '报考详情', icon: 'product-add' },
+      },
+      {
         path: 'achievement',
         name: 'achievement',
         component: () => import('@/views/exa/achievement.vue'),
