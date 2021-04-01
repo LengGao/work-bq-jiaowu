@@ -123,16 +123,32 @@
             </template>
           </el-table-column>
         </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
       </div>
     </section>
+    <StudentDialog
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      :id="currentId"
+      @on-success="enrollRecordList"
+    />
   </div>
 </template>
 
 <script>
+import StudentDialog from "./components/StudentDialog";
 import { enrollRecordList, deletePlan, getEnrollSelect } from "@/api/exa";
 export default {
   name: "apply",
-  components: {},
+  components: {
+    StudentDialog,
+  },
   data() {
     return {
       listData: [],
@@ -175,9 +191,8 @@ export default {
         },
       ],
       currentId: "",
-      dialogTitle: "添加考试计划",
+      dialogTitle: "添加报考",
       dialogVisible: false,
-      typeOptions: [],
       enrollStatusMap: {},
       statusColors: {
         1: "#2798ee",
@@ -211,13 +226,13 @@ export default {
       }
     },
     openEdit(id) {
-      this.dialogTitle = "编辑考试计划";
+      this.dialogTitle = "编辑报考";
       this.currentId = id;
       this.dialogVisible = true;
     },
     openAdd() {
       this.currentId = "";
-      this.dialogTitle = "添加考试计划";
+      this.dialogTitle = "添加报考";
       this.dialogVisible = true;
     },
     // 搜索

@@ -264,3 +264,51 @@ export function getEnrollSelect(params) {
     params,
   })
 }
+// 报名
+export function enroll(data) {
+  return request({
+    url: '/Examination/enroll',
+    method: 'post',
+    data,
+  })
+}
+// 修改报名
+export function updateEnroll(data) {
+  return request({
+    url: '/Examination/updateEnroll',
+    method: 'post',
+    data,
+  })
+}
+// 报名科目选项
+export function getSubjectSelectForEnroll(params) {
+  return request({
+    url: '/Examination/getSubjectSelectForEnroll',
+    method: 'get',
+    params,
+  })
+}
+// 报考-选择学生列表
+export function getStudentUserSelect(params) {
+  return request({
+    url: '/Examination/getStudentUserSelect',
+    method: 'get',
+    params,
+  })
+}
+// 报考-选择学生列表-班级选项
+export function getClassRoomSelect(params) {
+  return request({
+    url: '/Examination/getClassRoomSelect',
+    method: 'get',
+    params,
+  })
+}
+// 报考详情
+export function enrollInfo(params) {
+  return request({
+    url: '/Examination/enrollInfo',
+    method: 'get',
+    params,
+  })
+}
