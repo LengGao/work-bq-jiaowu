@@ -4,9 +4,6 @@
       *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
     </div>
     <div class="mainPart">
-      <!-- <ul class="customer_navigation">
-        <li v-for="item in tabFun" :key="item.id">{{ item.name }}</li>
-      </ul> -->
       <!--搜索模块-->
       <header>
         <SearchList
@@ -27,6 +24,9 @@
           >
         </div>
       </header>
+      <div style="color: #909399;">
+        * 当前显示为近7天的数据,想要查看更多数据请点击搜索
+      </div>
       <el-row class="dataPanel" style="">
         <template>
           <el-col :lg="{ span: '4-8' }">
@@ -35,7 +35,6 @@
                 <h3>客户总数</h3>
                 <div class="time_num">
                   {{ analysis.total_count }}
-                  <!-- <span>{{ panelData.day }}</span -->
                 </div>
               </div>
             </div>
@@ -46,7 +45,6 @@
                 <h3>报名客户</h3>
                 <div class="time_num">
                   {{ analysis.total_refund_money }}
-                  <!-- <span>{{ panelData.use_time }}</span> -->
                 </div>
               </div>
             </div>
@@ -57,7 +55,6 @@
                 <h3>复购客户</h3>
                 <div class="time_num">
                   {{ analysis.total_repurchase }}
-                  <!-- <span>{{ panelData.total_problem }}</span> -->
                 </div>
               </div>
             </div>
@@ -66,11 +63,7 @@
             <div class="timeCard">
               <div>
                 <h3>订单金额</h3>
-                <div class="time_num">
-                  {{ analysis.total_order_money }}
-                  <!-- <span>{{ panelData.accuracy }}</span
-                  ><em>%</em> -->
-                </div>
+                <div class="time_num">￥{{ analysis.total_order_money }}</div>
               </div>
             </div>
           </el-col>
@@ -78,11 +71,7 @@
             <div class="timeCard">
               <div>
                 <h3>汇款金额</h3>
-                <div class="time_num">
-                  {{ analysis.total_pay_money }}
-                  <!-- <span>{{ panelData.accuracy }}</span
-                  ><em>%</em> -->
-                </div>
+                <div class="time_num">￥{{ analysis.total_pay_money }}</div>
               </div>
             </div>
           </el-col>
@@ -92,9 +81,13 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
+          :data="listData"
           tooltip-effect="light"
           stripe
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           style="width: 100%;"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
@@ -129,12 +122,26 @@
             label="性别"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div>
+                {{ row.sex == 1 ? '男' : row.sex == 2 ? '女' : '未知' }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="报读项目"
-            min-width="100"
+            prop="project"
+            min-width="150"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div v-if="row.project">
+                {{ row.project }}
+              </div>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
 
           <el-table-column
             prop="from_organization_name"
@@ -144,27 +151,25 @@
           ></el-table-column>
 
           <el-table-column
-            prop="sources"
             label="渠道来源"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
-          <!-- <el-table-column
-            label="成交状态"
-            min-width="100"
-            show-overflow-tooltip
           >
-            <template slot-scope="scope">
-              {{ scope.row.is_verify | dealType }}
+            <template slot-scope="{ row }">
+              <div v-if="row.sources != 0">
+                {{ row.sources }}
+              </div>
+              <span v-else>--</span>
             </template>
-          </el-table-column> -->
+          </el-table-column>
+
           <el-table-column
             prop="create_time"
             label="创建时间"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="150">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
                 <el-button type="text" @click="toCusDetail(scope.row)"
@@ -176,12 +181,11 @@
         </el-table>
         <div class="table_bottom">
           <page
-            :data="schoolData.total"
+            :data="listTotal"
             :curpage="pageNum"
-            @pageChange="doPageChange"
+            @pageChange="handlePageChange"
           />
         </div>
-
         <addCustomeDialog
           :innerVisible="innerVisible"
           v-on:innerDialog="getInnerStatus($event)"
@@ -192,7 +196,9 @@
 </template>
 
 <script>
-import { getCateList } from '@/api/sou'
+import { getCateList, getInstitutionSelectData } from '@/api/sou'
+import { getproject } from '@/api/eda'
+import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
 import { cloneOptions } from '@/utils/index'
 import addCustomeDialog from './components/addCustomeDialog'
 export default {
@@ -218,7 +224,7 @@ export default {
       innerVisible: false,
       searchData: {
         category_id: '',
-        date: '',
+        date: [],
         project_id: '',
         from_org: '',
         keyword: '',
@@ -227,6 +233,8 @@ export default {
         all: '',
         all_in: '',
       },
+      listData: [],
+      listLoading: false,
       pageNum: 1,
       listTotal: 0,
       searchOptions: [
@@ -246,6 +254,9 @@ export default {
           key: 'category_id',
           type: 'cascader',
           width: 120,
+          events: {
+            change: this.handleTypeChange,
+          },
           attrs: {
             placeholder: '所属分类',
             clearable: true,
@@ -257,36 +268,42 @@ export default {
           type: 'select',
           width: 120,
           options: [],
+          optionValue: 'project_id',
+          optionLabel: 'project_name',
           attrs: {
-            clearable: true,
             placeholder: '所属项目',
+            clearable: true,
           },
         },
+        // {
+        //   key: 'from_org',
+        //   type: 'select',
+        //   width: 120,
+        //   optionValue: 'institution_id',
+        //   optionLabel: 'institution_name',
+        //   options: [],
+        //   attrs: {
+        //     clearable: true,
+        //     placeholder: '推荐机构',
+        //   },
+        // },
         {
           key: 'from_org',
-          type: 'select',
+          type: 'cascader',
           width: 120,
-          options: [
-            {
-              value: '1',
-              label: 'test',
-            },
-          ],
           attrs: {
-            clearable: true,
             placeholder: '推荐机构',
+            clearable: true,
+            options: [],
           },
         },
         {
           key: 'sources',
           type: 'select',
           width: 120,
-          options: [
-            {
-              value: '1',
-              label: 'test',
-            },
-          ],
+          optionValue: 'value',
+          optionLabel: 'label',
+          options: [],
           attrs: {
             clearable: true,
             placeholder: '渠道来源',
@@ -332,10 +349,6 @@ export default {
           type: 'select',
           width: 120,
           options: [
-            // {
-            //   value: '1',
-            //   label: '全部',
-            // },
             {
               value: '1',
               label: '网课学生',
@@ -357,9 +370,7 @@ export default {
           },
         },
       ],
-
       schoolData: [],
-
       ruleForm: {
         surname: '',
         mobile: '',
@@ -392,18 +403,19 @@ export default {
       datas: {},
       selectData: [],
       projectData: [],
+      date: '',
     }
   },
   created() {
+    this.searchData.date = this.AddDays(new Date(), 7)
     this.getCateList()
-    this.$api.getCustomerList(this, 'schoolData')
-    // this.$api.getcategorytree(this, 1) //分类下拉列表
-    // this.$api.getProinvceList(this, 1) //获取省市区
+    this.getCustomerList()
+    // this.getInstitutionList()
+    this.getInstitutionSelectData()
+    this.getfieldinfo()
   },
   mounted() {
-    this.status = 1
-
-    this.$api.getProjectSub(this, 2) //项目下拉列表
+    console.log(this.date)
   },
   filters: {
     // dealType(is_verify) {
@@ -417,6 +429,52 @@ export default {
     // },
   },
   methods: {
+    AddDays(date, days) {
+      var nd = new Date(date)
+      var Y = nd.getFullYear()
+      var M = nd.getMonth() + 1
+      var D = nd.getDate()
+      if (M <= 9) M = '0' + M
+      if (D <= 9) D = '0' + D
+      var nowcdate = Y + '-' + M + '-' + D
+
+      nd = nd.valueOf()
+      nd = nd - days * 24 * 60 * 60 * 1000
+      nd = new Date(nd)
+      var y = nd.getFullYear()
+      var m = nd.getMonth() + 1
+      var d = nd.getDate()
+      if (m <= 9) m = '0' + m
+      if (d <= 9) d = '0' + d
+      var cdate = y + '-' + m + '-' + d
+      date = cdate + ' - ' + nowcdate
+      return date
+      // return cdate
+    },
+
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getCustomerList()
+    },
+    //客户列表
+    async getCustomerList() {
+      this.checkedIds = []
+      this.intent_id = ''
+      const data = {
+        page: this.pageNum,
+
+        ...this.searchData,
+        // date: this.date,
+        // all: 1,
+      }
+      console.log(data)
+      this.listLoading = true
+      const res = await getCustomerList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.analysis = res.data.analysis[0]
+      this.listTotal = res.data.total
+    },
     toCusDetail(ab) {
       this.$router.push({
         path: '/fina/cusdetail',
@@ -425,46 +483,88 @@ export default {
         },
       })
     },
+    // 当分类选择时
+    handleTypeChange(ids) {
+      const id = ids ? [...ids].pop() : ''
+      // this.getcourseallclass(id);
+      this.getproject(id)
+    },
+    // 获取所属分类
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
       if (res.code === 0) {
-        // this.cloneData(res.data, this.selectData)
         this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
           'category_name',
           'category_id',
           'son'
         )
-        // this.$set(this.searchOptions[1].attrs, 'options', this.selectData)
-        // // console.log(this.searchOptions[1])
-        // // this.searchOptions[1].attrs.options = this.selectData
-        // console.log(this.searchOptions[1])
       }
     },
-    cloneData(data, newData, val, lab) {
-      data.forEach((item, index) => {
-        // console.log(item)
-        newData[index] = {}
-        newData[index].value = item[val]
-        newData[index].label = item[lab]
-        if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
-        }
-      })
+    // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true }
+      const res = await getInstitutionSelectData(data)
+      if (res.code === 0) {
+        this.searchOptions[3].attrs.options = cloneOptions(
+          res.data,
+          'institution_name',
+          'institution_id',
+          'children'
+        )
+      }
+    },
+    // // 获取所属机构
+    // async getInstitutionList() {
+    //   const data = {}
+    //   const res = await getInstitutionList(data)
+    //   if (res.code === 0) {
+    //     // console.log(res.data)
+    //     this.searchOptions[3].options = res.data.list
+    //   }
+    // },
+    // 获取渠道来源
+    async getfieldinfo() {
+      const data = {
+        field_text: '渠道来源',
+      }
+      const res = await getfieldinfo(data)
+      if (res.code === 0) {
+        let field_content = res.data.field_content.map((i, index) => {
+          var obj = {}
+          obj.value = index + 1
+          obj.label = i
+          return obj
+        })
+
+        this.searchOptions[4].options = field_content
+      }
+    },
+    // 获取项目下拉
+    async getproject(category_id = '') {
+      const data = {
+        category_id,
+      }
+      const res = await getproject(data)
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data
+      }
     },
     handleSearch(data) {
-      console.log(data)
-      if (data.date && data.date.length) {
-        data.date = data.date[0] + ' - ' + data.date[1]
-      }
+      const times = data.date || ['', '']
+      console.log(times)
+      delete data.date
       this.pageNum = 1
+
       this.searchData = {
+        // category_id: data.category_id?.pop() || 0,
         ...data,
-        category_id: data.category_id.pop(),
+        from_org: data.from_org ? data.from_org.pop() : '',
+        category_id: data.category_id ? data.category_id.pop() : '',
+        date: times[0] + ' - ' + times[1],
       }
-      this.$api.getCustomerList(this, 'schoolData')
+      this.getCustomerList()
     },
     toOnlineStudents() {
       this.$router.push({
@@ -497,7 +597,7 @@ export default {
     },
     doPageChange(page) {
       this.page = page
-      this.$api.getCustomerList(this, 'schoolData')
+      this.getCustomerList()
     },
   },
 }

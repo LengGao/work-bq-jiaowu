@@ -229,7 +229,7 @@ export const asyncRouter = [
         name: 'onlineStudents',
         component: () =>
           import('@/views/etm/customerManage/onlineStudents.vue'),
-        meta: { title: '网课学生', icon: 'product-cate' },
+        meta: { title: '学生导入', icon: 'product-cate' },
         hidden: true,
       },
       {

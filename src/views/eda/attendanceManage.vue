@@ -108,7 +108,7 @@
           ></el-table-column>
           <el-table-column label="状态" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
-              <div>
+              <div :style="row.state == 1 ? 'color:#43d100' : 'color:#fd6500'">
                 {{ row.state | state }}
               </div>
             </template>
@@ -297,14 +297,12 @@ export default {
     state(val) {
       switch (val) {
         case 0:
-          return '未签到'
+          return '未上课'
           break
         case 1:
-          return '缺勤'
+          return '已上课'
           break
-        case 2:
-          return '已到课'
-          break
+
         default:
           return '未知'
       }

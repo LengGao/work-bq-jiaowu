@@ -5,10 +5,10 @@ let enrollStu = {
   //获取客户列表
   getCustomerList(self, name) {
     let config = {
-      // search_box: ruleForm.search_box,
       page: self.pageNum,
+
       ...self.searchData,
-      // category_id: self.searchData.category_id.pop(),
+      all: 1,
     }
     console.log(config)
     axiosHttp({
@@ -76,7 +76,7 @@ let enrollStu = {
       id_card_number: ruleForm.id_card_number,
       sex: ruleForm.sex,
       birthday: ruleForm.birthday,
-      // marry: ruleForm.marry,
+      marry: ruleForm.marry,
       qq: ruleForm.qq,
       email: ruleForm.email,
       culture: ruleForm.culture,
@@ -99,12 +99,16 @@ let enrollStu = {
           })
           self.addVisible = true //客户报名弹框显示
           self.userInfo = res.data.data
-          if (num) {
-            // let param = JSON.stringify(res.data.data)
+          if (num && num == 2) {
+            let param = JSON.stringify(res.data.data)
             self.$router.push({
               path: '/fina/cusdetail',
               query: { param: param },
             })
+          } else {
+            console.log('2344')
+            self.$emit('on-success')
+            self.doClose()
           }
         }
       },
