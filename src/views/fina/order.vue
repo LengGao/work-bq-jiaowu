@@ -3,7 +3,6 @@
     <div class="head_remind">
       *本模块主要用来财务入账结算和退费作废申请审批。
     </div>
-
     <section class="mainwrap">
       <ul class="customer_navigation">
         <li
@@ -36,10 +35,8 @@
         :header-cell-style="{ 'text-align': 'center' }" 
         :cell-style="{ 'text-align': 'center' }" 
         class="min_table">
-
           <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column prop="create_time" label="订单时间" show-overflow-tooltip min-width="100"></el-table-column>
-
           <el-table-column prop="order_no" label="订单编号" min-width="100" column-key="course_id" show-overflow-tooltip>
             <template slot-scope="scope">
               <div class="coursename" @click="orderDetail(scope.row)">
@@ -49,14 +46,12 @@
           </el-table-column>
           <el-table-column prop="surname" label="学员姓名" min-width="70" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column label="联系方式" min-width="100" show-overflow-tooltip
-          > 
+          <el-table-column label="联系方式" min-width="100" show-overflow-tooltip> 
           <template slot-scope="{row}">
             <div>
                 {{row.mobile | filterPhone}}
             </div>
           </template>
-
           </el-table-column>
           <el-table-column label="项目名称" min-width="180" show-overflow-tooltip>
               <template slot-scope="{row}"> 
@@ -65,13 +60,15 @@
                 </div>
               </template>
           </el-table-column>
-
           <el-table-column prop="pay_money" label="实付金额" min-width="80" show-overflow-tooltip>
           </el-table-column>
-
           <el-table-column label="财务状态" min-width="80" show-overflow-tooltip>
             <template slot-scope="{row}">
+              <div 
+              :class ="row.pay_status==1?'wordcolor':row.pay_status==3?'wordcolor2':''">
               {{statusMap[row.pay_status] }}
+              </div>
+           
             </template>
           </el-table-column>
 
@@ -79,12 +76,12 @@
             <template slot-scope="scope">
               <div>
                  <el-button type="text" @click="Entrydetail(scope.row)">订单详情</el-button>
-                <el-button type="text" @click="Entry(scope.row)">入账</el-button>
+                <el-button type="text" @click="Entry(scope.row)"
+                style="margin-left:20px">入账</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
-
        <div class="table_bottom">
           <page
             :data="listTotal"
@@ -92,14 +89,11 @@
             @pageChange="handlePageChange"
           />
         </div>
-
       </div>
-
         <el-dialog
               title="提示"
               :visible.sync="dialogVisible"
-              width="25%"
-             >
+              width="25%">
               <span style="font-size:20px;">是否将此笔订单入账？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
@@ -112,14 +106,14 @@
 
 <script>
 import { Approvalist } from '@/api/fina'
+
 export default {
   name: 'order',
-
   data() {
     return {
       statusMap: {
         0: "待付款",
-        1: "已付款",
+        1: "未入账",
         2: "部分入账",
         3: "已入账",
         4: "已作废",
@@ -131,11 +125,15 @@ export default {
       listTotal: 0,
       dialogVisible: false,
       startend: '',
-      ruleForm: {
-        category_id: '',
-      },
-      isTagactive: 1,
-      tabFun: [
+       isTagactive: 1,
+      ruleForm: {category_id: '',},
+      page: 1,
+      order_id:"",
+      schoolData: [],
+      course_ids: [],
+      datas: {},
+      selectData: [],
+       tabFun: [
         {
           name: "入账审批",
           status: "",
@@ -174,32 +172,24 @@ export default {
           },
         },
       ],
-      page: 1,
-      order_id:"",
-      schoolData: [],
-      course_ids: [],
-      datas: {},
-      selectData: [],
     }
   },
   created() {
     this.Approvalist()
+    
   },
-
   methods: {
-
     //订单审批列表接口
     async Approvalist() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        all:1,
-
+        // all:1,
+        pay_status: this.activeStatus,
       }
       const res = await Approvalist(data)
       this.listLoading = false
      console.log( res.data.list)
-
       this.listData = res.data.list
       this.listLoading = true
       this.listTotal = res.data.total
@@ -213,7 +203,6 @@ export default {
       };
       this.Approvalist();
     },
-
     orderDetail(ab) {
       this.$router.push({
         path: '/fina/orderDetail',
@@ -233,19 +222,16 @@ export default {
         })
         .catch((_) => {})
     },
-   
     statusSwitch(index, status) {
       this.activeIndex = index;
       this.activeStatus = status;
       this.Approvalist();
     },
-
     //入账
     Entry(row){
       this.dialogVisible = true
       this.order_id= row.order_id
     },
-
     Entrydetail(ab){
       this.$router.push({
         path: '/fina/orderDetail',
@@ -254,7 +240,6 @@ export default {
         },
       })
     },
-
     Entryenter(){
       this.$router.push({
         path: '/fina/orderDetail',
@@ -262,14 +247,15 @@ export default {
           order_id:this.order_id,
         },
       })
-
     }
-
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.wordcolor{
+  color:#bbb;
+}
 /deep/.el-table__header th,
 .el-table__header tr {
   background-color: #f8f8f8;
@@ -280,7 +266,6 @@ export default {
   margin: 20px;
   background: #fff;
 }
-
 .head_remind {
   padding: 20px;
   font-weight: 400;
@@ -291,7 +276,7 @@ export default {
   border-bottom: 15px solid #f2f6fc;
 }
 .navigation {
-  width: 220px;
+  width: 240px;
   display: flex;
   justify-content: space-between;
   font-family: 'Microsoft YaHei UI', sans-serif;
@@ -302,7 +287,6 @@ export default {
   li {
     height: 28px;
     font-size: 15px;
-
     border-bottom: 2px solid #fff;
     display: flex;
     justify-content: center;
@@ -310,6 +294,7 @@ export default {
     margin-right: 10px;
     cursor: pointer;
     color: #666666;
+    margin-right: 10px;
   }
   li:last-child {
     margin-right: 0px !important;
@@ -338,7 +323,6 @@ export default {
     margin-right: 25px;
   }
 }
-
 .coursename {
   color: #2798ee;
 }
@@ -359,7 +343,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px;
+    margin-right: 25px;
     cursor: pointer;
     color: #666666;
     border-bottom: 2px solid #fff;
@@ -376,5 +360,4 @@ export default {
     border-color: #199fff;
   }
 }
-
 </style>
