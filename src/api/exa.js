@@ -240,11 +240,27 @@ export function planInfo(params) {
     params,
   })
 }
-// 报考计划详情
+// 删除报考计划
 export function deletePlan(data) {
   return request({
     url: '/Examination/deletePlan',
     method: 'post',
     data,
+  })
+}
+// 报考计划详情列表
+export function enrollRecordList(params) {
+  return request({
+    url: '/Examination/enrollRecordList',
+    method: 'get',
+    params,
+  })
+}
+// 报考详情相关选择列表
+export function getEnrollSelect(params) {
+  return request({
+    url: '/Examination/getEnrollSelect',
+    method: 'get',
+    params,
   })
 }

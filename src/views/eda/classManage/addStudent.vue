@@ -198,6 +198,8 @@ export default {
     },
     async getStudentList() {
       const data = {
+        type: 2,
+        course_id: "",
         page: this.pageNum,
         ...this.searchData,
       };

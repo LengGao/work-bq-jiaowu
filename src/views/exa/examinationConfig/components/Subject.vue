@@ -37,24 +37,7 @@
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column
-          prop="binding_count"
-          label="关联规则数"
-          min-width="110"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <div style="display: flex; justify-content: center">
-              <el-button
-                v-if="row.binding_count"
-                type="text"
-                @click="openEdit(row.id)"
-                >{{ row.binding_count }}</el-button
-              >
-              <span v-else>{{ row.binding_count }}</span>
-            </div>
-          </template>
-        </el-table-column>
+
         <el-table-column
           prop="subject_name"
           label="考试科目"
@@ -100,6 +83,24 @@
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
+        <el-table-column
+          prop="binding_count"
+          label="关联规则数"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <div style="display: flex; justify-content: center">
+              <el-button
+                v-if="row.binding_count"
+                type="text"
+                @click="linkToRule(row.id)"
+                >{{ row.binding_count }}</el-button
+              >
+              <span v-else>{{ row.binding_count }}</span>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="student_number"
           label="是否启用"
@@ -197,6 +198,9 @@ export default {
   },
 
   methods: {
+    linkToRule(id) {
+      this.$emit("change", "Rule", id);
+    },
     //修改科目状态
     async updateSubjectStatus(row) {
       const data = {
