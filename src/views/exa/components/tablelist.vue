@@ -14,7 +14,6 @@
             :model="ruleForm"
             :rules="rules"
             ref="ruleForm">
-
             <el-row>
               <el-col :lg="11">
               <el-form-item label="所属分类">

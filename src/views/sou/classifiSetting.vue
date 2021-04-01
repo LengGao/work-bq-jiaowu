@@ -1,63 +1,60 @@
 <template>
   <div>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+      *分类设置是按照一定条件将相关对象进行归纳整理，方便后期筛选区分。
     </div>
 
     <section class="mainwrap">
       <div class="client_head">
-        <search2
-          :contentShow="true"
-          api="getHomeclassifiList"
-          inputText="分类名称"
-          @getTable="getTableList"
-        ></search2>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <el-button type="primary" @click="addClassiFion">添加分类</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
-          style="width: 100%"
+          :data="listData"
+          style="width: 100%;"
           class="min_table"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-        >
-          <el-table-column
-            label="分类ID"
-            show-overflow-tooltip
-            min-width="90"
-            prop="category_id"
+          :header-cell-style="{ 'text-align': 'left' }"
+          :cell-style="{ 'text-align': 'left' }"
+          
+
+          :props="optionProps"
+           row-key="category_id"
+           :tree-props="{ children: 'son' }"
           >
-          </el-table-column>
           <el-table-column
             prop="category_name"
             label="分类名称"
-            min-width="110"
+            min-width="180"
+            style="padding-left:20px"
+            show-overflow-tooltip>
+            </el-table-column>
+              <el-table-column
+            label="分类ID"
             show-overflow-tooltip
-          ></el-table-column>
-
+            min-width="130"
+            prop="category_id">
+          </el-table-column>
           <el-table-column
             label="分类图标"
-            min-width="150"
+            min-width="130"
             show-overflow-tooltip
-          >
+            prop="icon">
             <template slot-scope="scope">
-              <div style="margin:0 auto;width:50px ;height:50px;">
+              <div style="width:50px ;height:50px;">
                 <img :src="scope.row.icon" alt class="school_class_box" />
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="关联业务模板"
-            min-width="150"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column label="排序" min-width="100" show-overflow-tooltip>
+          <el-table-column label="排序" min-width="120" show-overflow-tooltip>
             <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
+              <div>
                 <el-col :span="12">
                   <el-input
                     v-model="scope.row.sort"
@@ -69,75 +66,50 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="status"
-            label="是否启用"
-            min-width="150"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <el-switch
-                active-color="#13ce66"
-                v-model="scope.row.account_status"
-                :active-value="1"
-                :inactive-value="2"
-                @change="changeSwitch(scope.row)"
-              >
-              </el-switch>
-            </template>
-          </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
+              <div style="display:flex;">
                 <el-button type="text" @click="topayment(scope.row)"
-                  >编辑</el-button
-                >
+                  >编辑</el-button>
+                  <el-button
+                type="text"
+                style="padding-left:10px"
+                @click="delbtn(scope.row)"
+                >删除</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <!-- <div class="table_bottom">
-        <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
-        </div>
-      </div> -->
+      
       </div>
       <!--弹框-->
       <el-dialog
         :title="dialogTitle"
         :visible.sync="dialogVisible"
-        width="576px"
-      >
-        <el-form label-width="100px">
-          <el-form-item label="所属分类">
-            <el-select
-              v-model="ruleForm.category_name"
-              placeholder="请选择所属分类"
-              style="width:240px"
-            >
-              <el-option
-                v-for="item in schoolData.list"
-                :key="item.category_id"
-                :label="item.category_name"
-                :value="item.category_name"
-              >
-              </el-option>
-            </el-select>
-            <!-- <el-input
-              placeholder="请输入分类名称"
-              v-model="ruleForm.index_category_name"
+        width="30%"
+        >
+        <el-form 
+        label-width="100px"
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm" 
+        :show-message="true">
+          <el-form-item label="所属分类：">
+             <el-cascader
+              ref="cascader"
+              clearable 
               class="input-width"
-            ></el-input> -->
+              placeholder="请选择分类"
+              v-model="ruleForm.pid"
+              :options="selectData"
+            
+            ></el-cascader>
           </el-form-item>
           <el-form-item label="分类名称：">
             <el-input
               placeholder="请输入分类名称"
-              v-model="ruleForm.index_category_name"
+              v-model="ruleForm.category_name"
               class="input-width"
             ></el-input>
           </el-form-item>
@@ -152,45 +124,141 @@
             排序数字越大分类越靠前,最小值为1
           </p> -->
           </el-form-item>
+
+           <el-form-item label="分类图标：" style>
+          <div v-show="!haschoose" style="display:flex">
+            <div class="headPortrait el-icon-plus" 
+            @click="addIcon"
+            ></div>
+            <div style="color:#aaa;ling-height:10px;margin-left:10px">
+              <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
+              <p><span> 2. 推荐尺寸200*200px或者1:1</span></p>
+            </div>
+          </div>
+          <div v-show="haschoose" class=" imageBox ">
+            <i class=" iconjia el-icon-plus" @click="addIcon"></i>
+            <img style="width:100%;height:100%;" :src="ruleForm.icon" alt="" />
+          </div>
+        </el-form-item>
+
+          <el-form-item label="分类描述：">
+            <el-input type="textarea" v-model="ruleForm.describe" style="width:90%"></el-input>
+          </el-form-item>
+
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleConfirm">确 定</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
         </span>
       </el-dialog>
+
+      <imgDialog
+      v-if="pictureVisible"
+      @closeImg="closeImg"
+      @clearUrl="clearUrl"
+    ></imgDialog>
+
     </section>
   </div>
 </template>
 
 <script>
+import { getCateList,getCategoryList,insertCategory,updateCategory,deleteCategory } from '@/api/sou'
+import SearchList from '@/components/SearchList/index'
+
 export default {
   data() {
     return {
-      schoolData: [],
-      index_category_id: '',
-      dialogTitle: '',
-      ruleForm: {
-        category_name: '',
-        sort: '',
+      row:'',
+      optionProps: {
+        label: "category_name",
+        value: "category_id",
+        children: "son",
+        checkStrictly: true,
       },
+      pageNum:[],
+       haschoose: false,
+       pictureVisible: false,
+      //搜索数据
+      searchData: {
+        category_id: [],
+        keyboard: '',
+      },
+      listData:[],
+      selectData: [],
+      schoolData: [],
+      dialogTitle: '',
       datas: {},
+      data:[],
       url: '',
       pictureVisible: false,
-      haschoose: false,
+    
       page: 1,
       dialogVisible: false,
+      keyboard:'',
+      icon:'',
+      // 搜索框
+      searchOptions: [
+        {
+          key: 'keyboard',
+          attrs: {
+            placeholder: '分类名称',
+            clearable: true,
+          },
+        },
+      ],
+      ruleForm:{
+            category_name:'',
+            pid:'',
+            category_name: '',
+            sort: '',
+            index_category_name:'',
+            describe:'',
+            icon:''
+      },
+      rules:{
+            index_category_name: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+      }
     }
   },
-
   created() {
-    this.$api.getCategoryList(this, 'schoolData')
+    this.getCateList()
+    this.getCategoryList()
   },
-
   methods: {
-    // doPageChange(page) {
-    //   this.page = page
-    //   this.$api.getHomeclassifiList(this, 'schoolData', this.datas)
-    // },
+   clearUrl() {
+      // this.url = ''
+      // this.haschoose = false
+      this.pictureVisible = false
+    },
+    closeImg(radioUrl) {
+      // console.log(radioUrl + '我')
+      this.pictureVisible = false
+      if (radioUrl != undefined) {
+        this.haschoose = true
+        this.ruleForm. icon = radioUrl
+      } else {
+        this.ruleForm. icon = ''
+        this.haschoose = false
+      }
+    },
+    addIcon() {
+      this.pictureVisible = true
+    },
+
+    //搜索功能
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = data;
+      this.getCategoryList();
+    },
+    doPageChange(page) {
+      this.page = page;
+      this.getCategoryList();
+    },
     // 获取数据
     getTableList(state, val, datas) {
       console.log(state, val)
@@ -201,43 +269,179 @@ export default {
         this.schoolData = val
       }
     },
-    topayment(zx) {
-      //   this.dialogTitle = '编辑首页分类'
-      //   console.log(zx)
-      //   this.dialogVisible = true
-      //   this.haschoose = true
-      //   this.index_category_id = zx.index_category_id
-      //   this.$api.getHomeclassifiDetail(this, this.index_category_id)
+    topayment(ab) {
+        this.dialogTitle = '编辑首页分类'
+        this.haschoose = true
+        // this.index_category_id = zx.index_category_id
+        // this.$api.getCategoryList(this, this.index_category_id)
+        this.ruleForm = ab
+        this.icon = ab.icon
+        console.log(ab)
+        this.dialogVisible = true
+        this.category_name = ab.category_name
+        this.sort = ab.sort
+        // this.pid = ab.pid.pop()
+        this.describe = ab.describe
+
     },
-    scopes(id, sorts) {
+    scopes(institution_id, sorts) {
       var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
       var re = new RegExp(regu)
       if (!re.test(sorts)) {
         this.$message.error('请输入正确的排序！')
         return false
       } else {
-        this.$api.updateCategorySort(id, sorts, this)
+        this.$api.changeUpdateSort(this, institution_id, sorts)
+        // this.getCategoryList()
       }
+    },
+
+     delbtn(row) {
+         this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+             this.deleteCategory(row.category_id)
+                 
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
     },
 
     addClassiFion() {
       this.dialogTitle = '添加分类'
-      //   for (let key in this.ruleForm) {
-      //     this.ruleForm[key] = ''
-      //   }
-      //   this.url = ''
-      //   this.haschoose = false
+        this.ruleForm = {
+          icon:'',
+            pid:'',
+            cate_id:'',
+            category_name: '',
+            sort: '',
+            describe:''
+      }
+      this.haschoose = false
       this.dialogVisible = true
     },
-    handleConfirm() {
-      console.log(this.ruleForm)
-      console.log(this.index_category_id == '')
-      if (this.index_category_id == '' || this.index_category_id == undefined) {
-        this.$api.insertCategory(this, 'ruleForm')
-      } else {
-        this.$api.insertCategory(this, 'ruleForm')
+
+    async getCateList() {
+      const data = { list: true }
+      const res = await getCateList(data)
+      if (res.code === 0) {
+        this.cloneData(res.data, this.selectData)
+        console.log(this.selectData)
+        this.searchOptions[0].attrs.options = this.selectData
       }
     },
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {}
+        newData[index].value = item.category_id
+        newData[index].label = item.category_name
+        if (item.son && item.son.length) {
+          newData[index].children = []
+          this.cloneData(item.son, newData[index].children)
+        }
+      })
+    },
+    //分类列表接口
+    async getCategoryList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      const res = await getCategoryList(data)
+      this.listLoading = false
+      this.listData = res.data
+      console.log( res)
+      this.listLoading = true
+      this.listTotal = res.data.total
+    },
+
+   //添加分类接口
+    async insertCategory() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+
+        icon:this.ruleForm.icon,
+        category_name : this.ruleForm.category_name,
+        pid : this.ruleForm.pid?this.ruleForm.pid.pop():'',
+        sort : this.ruleForm.sort,
+        describe : this.describe,
+      }
+
+      const res = await insertCategory(data)
+      this.listLoading = false
+        if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+          this.getCategoryList()
+        }
+    },
+
+    //编辑分类接口
+    async updateCategory() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+
+        icon:this.ruleForm.icon,
+        category_name : this.ruleForm.category_name,
+        pid : this.ruleForm.pid,
+        sort : this.ruleForm.sort,
+        describe : this.ruleForm.describe,
+        category_id:this.ruleForm.category_id
+      }
+      console.log(data)
+      const res = await updateCategory(data)
+      this.listLoading = false
+       if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+          this.getCategoryList()
+          this.dialogVisible = false
+        }
+    },
+
+     //删除分类接口
+    async deleteCategory(category_id) {
+      const data = {
+        category_id,
+      }
+      console.log(data)
+      const res = await deleteCategory(data)
+
+       if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+           this.getCategoryList()
+          this.dialogVisible = false
+        }
+    },
+
+     submitForm(formName) {
+        console.log(this.ruleForm)
+
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+           if (this.ruleForm.category_id) {
+            //修改
+            this.updateCategory()
+          } else {
+            //添加分类
+            this.insertCategory()
+            this.dialogVisible = false
+          }
+          }else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+
   },
 }
 </script>
@@ -248,8 +452,16 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
+/deep/.el-form-item__content{
+  line-height: 30px;
+
+}
+/deep/.cell{
+  margin-left: 20px;
+}
+
 .input-width {
-  width: 240px;
+  width: 350px;
 }
 .main {
   padding: 20px;
@@ -299,7 +511,6 @@ export default {
   height: 87px;
   position: relative;
 }
-
 .iconjia {
   font-size: 40px;
   color: #fff;
@@ -312,8 +523,8 @@ export default {
   background-color: rgba(0, 0, 0, 0.78);
   opacity: 0.5;
 }
-
 .imageBox:hover i {
   display: block;
 }
+
 </style>

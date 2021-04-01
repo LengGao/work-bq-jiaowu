@@ -7,9 +7,10 @@
         <el-col :lg="21" :sm="21" :xs="21" :md="21">
           <div class="order-header">
             <h3 style="height: 21px; margin-top: 4px">订单信息</h3>
-            <el-button type="primary" @click="dialogVisible = true"
+            <!-- <el-button type="primary" plain @click="dialogVisible = true"
               >待入账</el-button
-            >
+            > -->
+            <!-- <span class="Entryicon">已入账</span> -->
           </div>
 
           <el-form
@@ -27,7 +28,7 @@
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="订单时间" prop="verify_time">
-                  <div class="ruleWord">{{ ruleForm.verify_time }}</div>
+                  <div class="ruleWord">{{ ruleForm.create_time }}</div>
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
@@ -63,23 +64,20 @@
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="订单来源" prop="type">
+                <el-form-item label="订单状态" prop="pay_status">
                   <div class="ruleWord">
-                    {{ ruleForm.type == 1 ? "已成交" : "未成交" }}
+                    {{ ruleForm.pay_status == 3 ? "已入账" : "未入账" }}
                   </div>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-form-item label="订单备注" prop="type">
-                <div class="ruleWord">
-                  {{ ruleForm.tips == 1 ? "已成交" : "未成交" }}
-                </div>
+              <el-form-item label="订单备注" prop="tips">
               </el-form-item>
             </el-row>
             <el-row>
               <!-- <el-button type="primary" @click="dialogVisible = true">入账</el-button>               -->
-              <div style="display: flex; justify-content: left">
+              <!-- <div style="display: flex; justify-content: left">
                 <el-button
                   type="primary"
                   v-if="excludes(ruleForm, 0)"
@@ -100,7 +98,7 @@
                   @click="openOrderActions(ruleForm, 3)"
                   >作废</el-button
                 >
-              </div>
+              </div> -->
             </el-row>
           </el-form>
         </el-col>
@@ -202,7 +200,7 @@
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="80">
+        <!-- <el-table-column label="操作" fixed="right" min-width="80">
           <template slot-scope="scope">
             <div>
               <el-button type="primary" plain @click="dialogVisible = true"
@@ -210,17 +208,9 @@
               >
             </div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="25%">
-        <span style="font-size: 20px">是否将此笔订单入账？</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false"
-            >确 定</el-button
-          >
-        </span>
-      </el-dialog>
+   
     </div>
     <!--经办信息-->
     <div style="margin-top: 20px">
@@ -261,13 +251,26 @@
         ></el-table-column>
       </el-table>
     </div>
-
-    <CollectionOrder
-      v-model="orderActionDialog"
-      :type="dialogType"
-      :orderInfo="dialogInfo"
-      @on-success="orderdetail"
-    />
+     
+      <el-dialog
+              title="提示"
+              :visible.sync="dialogVisible"
+              width="25%">
+              <span style="font-size:20px;">是否将此笔订单入账？</span>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+              </span>
+      </el-dialog>
+   
+    <!--关闭-->
+    <!-- <div
+      class="customer_colse"
+      style="display:flex;justify-content:center;margin-top:20px"
+    >
+      <el-button type="primary" @click="toCustomerDetail">关 闭</el-button>
+    </div> -->
+    <!-- </el-dialog> -->
   </section>
 </template>
 
@@ -279,6 +282,15 @@ export default {
   },
   data() {
     return {
+      statusMap: {
+        0: "待付款",
+        1: "已付款",
+        2: "部分入账",
+        3: "已入账",
+        4: "已作废",
+        5: "已退款",
+      },
+      dialogImageUrl:'',
       dialogFormVisible: false,
       refundFormVisible: false,
       voidFormVisible: false,
@@ -343,35 +355,34 @@ export default {
 
   methods: {
     // 按钮操作
-    excludes(row, type) {
-      const auth = {
-        0: row.overdue_money > 0, // 收款
-        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
-        5: ![4, 5].includes(row.pay_status), // 作废
-      };
-      return auth[type];
-    },
+    // excludes(row, type) {
+    //   const auth = {
+    //     0: row.overdue_money > 0, // 收款
+    //     4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
+    //     5: ![4, 5].includes(row.pay_status), // 作废
+    //   };
+    //   return auth[type];
+    // },
     // 收款，作废，退款弹窗
-    openOrderActions(row, type) {
-      this.dialogType = type;
-      this.dialogInfo = row;
-      this.orderActionDialog = true;
-    },
-    orderdetail(page) {
-      this.page = page;
-      this.$api.orderdetail(this, "schoolData", this.datas);
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
+    // openOrderActions(row, type) {
+    //   this.dialogType = type;
+    //   this.dialogInfo = row;
+    //   this.orderActionDialog = true;
+    // },
+    // orderdetail(page) {
+    //   this.page = page;
+    //   this.$api.orderdetail(this, "schoolData", this.datas);
+    // },
+    // handleRemove(file, fileList) {
+    //   console.log(file, fileList);
+    // },
+    // handlePictureCardPreview(file) {
+    //   this.dialogImageUrl = file.url;
+    //   this.dialogVisible = true;
+    // },
   },
 };
 </script>
-
 
 <style lang="scss" scoped>
 /deep/.el-table__header th,
@@ -450,5 +461,20 @@ h3 {
 .formmoney .zfmoney {
   margin-left: 50px;
   display: flex;
+}
+.Entryicon{
+position: absolute;
+display: flex;
+justify-content: center;
+text-align: center;
+align-items: center;
+color:#199fff ;
+right:150px;
+font-size: 28px;
+// font-weight: bold;
+ width: 120px;
+ height: 120px;
+ border-radius: 50%;
+ border: 2px dashed #199fff;
 }
 </style>
