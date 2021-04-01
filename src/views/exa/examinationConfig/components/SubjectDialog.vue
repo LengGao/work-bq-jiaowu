@@ -49,7 +49,7 @@
           </el-form-item>
         </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-          <el-form-item label="合格分数">
+          <el-form-item label="合格分数" prop="pass_score">
             <el-input
               maxlength="10"
               placeholder="请输入合格分数"
@@ -151,6 +151,7 @@
 </template>
 
 <script>
+import { validateNumber } from "@/utils/validate";
 import { updateSubject, createSubject, getSubjectDetail } from "@/api/exa";
 export default {
   props: {
@@ -192,12 +193,23 @@ export default {
           { required: true, message: "请输入科目名称", trigger: "blur" },
         ],
         total_score: [
-          { required: true, message: "请输入考试总分", trigger: "blur" },
+          { required: true, validator: validateNumber, trigger: "blur" },
+        ],
+        pass_score: [
+          {
+            required: false,
+            validator: validateNumber,
+            trigger: "blur",
+          },
         ],
         credit_hour: [
-          { required: true, message: "请输入科目学分", trigger: "blur" },
+          {
+            required: true,
+            validator: validateNumber,
+            trigger: "blur",
+          },
         ],
-        cost: [{ required: true, message: "请输入补考费用", trigger: "blur" }],
+        cost: [{ required: true, validator: validateNumber, trigger: "blur" }],
         exam_type: [
           { required: true, message: "请选择科目性质", trigger: "change" },
         ],

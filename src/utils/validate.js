@@ -1,7 +1,7 @@
 export function isvalidUsername(str) {
   // const valid_map = ['admin', 'test']
   // return valid_map.indexOf(str.trim()) >= 0
-  return str.trim().length>=3
+  return str.trim().length >= 3
 }
 
 /* 合法uri*/
@@ -27,4 +27,13 @@ export function validatAlphabets(str) {
   const reg = /^[A-Za-z]+$/
   return reg.test(str)
 }
-
+// 输入必须是数字
+export const validateNumber = ({ required }, value, callback) => {
+  if (required && value === '') {
+    callback(new Error('内容不能为空'))
+  } else if (value && !/^[0-9]\d*(\.\d+)?$/g.test(value)) {
+    callback(new Error('内容必须为有效数字'))
+  } else {
+    callback()
+  }
+}
