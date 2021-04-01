@@ -61,6 +61,24 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          prop="binding_count"
+          label="关联计划数"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <div style="display: flex; justify-content: center">
+              <el-button
+                v-if="row.binding_count"
+                type="text"
+                @click="linkTo(row.id)"
+                >{{ row.binding_count }}</el-button
+              >
+              <span v-else>{{ row.binding_count }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="student_number"
           label="是否启用"
           min-width="110"
@@ -116,6 +134,12 @@ export default {
   components: {
     RuleDialog,
   },
+  props: {
+    subjectId: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
@@ -157,6 +181,9 @@ export default {
   },
 
   methods: {
+    linkTo(id) {
+      this.$router.push({ name: "apply", query: { id } });
+    },
     //修改科目状态
     async updateRuleStatus(row) {
       const data = {
@@ -214,6 +241,7 @@ export default {
     // 规则列表
     async getRuleList() {
       const data = {
+        subject_id: this.subjectId,
         page: this.pageNum,
         ...this.searchData,
       };

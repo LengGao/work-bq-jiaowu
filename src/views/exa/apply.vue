@@ -238,6 +238,7 @@ export default {
     // 计划列表
     async planList() {
       const data = {
+        rule_id: this.$route.query?.id || "",
         page: this.pageNum,
         ...this.searchData,
       };
