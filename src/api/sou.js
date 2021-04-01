@@ -51,6 +51,18 @@ export function insertCategory(data) {
 /**
  * 
  * /**
+ *  删除分类列
+ */
+export function deleteCategory(data) {
+  return request({
+    url: '/courseCategory/deleteCategory',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 
+ * /**
  *  编辑分类列表
  */
 export function updateCategory(data) {

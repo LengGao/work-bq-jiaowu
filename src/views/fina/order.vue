@@ -49,14 +49,18 @@
           </el-table-column>
           <el-table-column prop="surname" label="学员姓名" min-width="70" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column prop="mobile" label="联系方式" min-width="100" show-overflow-tooltip
-          :formatter="stateFormat">
+          <el-table-column label="联系方式" min-width="100" show-overflow-tooltip
+          > 
+          <template slot-scope="{row}">
+            <div>
+                {{row.mobile | filterPhone}}
+            </div>
+          </template>
+
           </el-table-column>
-          
           <el-table-column label="项目名称" min-width="180" show-overflow-tooltip>
               <template slot-scope="{row}"> 
                 <div>
-                  <!-- {{row.project_name}} -->
                   {{JSON.parse(row.project).project_name}}
                 </div>
               </template>
@@ -73,12 +77,9 @@
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
-              <!-- <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="toCreateClass(scope.row)"
-                  >入账</el-button>
-              </div> -->
               <div>
-                <el-button type="text" @click="dialogVisible = true">入账</el-button>
+                 <el-button type="text" @click="Entrydetail(scope.row)">订单详情</el-button>
+                <el-button type="text" @click="Entry(scope.row)">入账</el-button>
               </div>
             </template>
           </el-table-column>
@@ -94,7 +95,7 @@
 
       </div>
 
-    <el-dialog
+        <el-dialog
               title="提示"
               :visible.sync="dialogVisible"
               width="25%"
@@ -102,7 +103,7 @@
               <span style="font-size:20px;">是否将此笔订单入账？</span>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="Entryenter">确 定</el-button>
               </span>
         </el-dialog>
     </section>
@@ -174,6 +175,7 @@ export default {
         },
       ],
       page: 1,
+      order_id:"",
       schoolData: [],
       course_ids: [],
       datas: {},
@@ -185,16 +187,6 @@ export default {
   },
 
   methods: {
-    
-    // 格式化表格手机号码
-    stateFormat(row, column, cellValue) {
-      if (!cellValue) return "";
-      if (cellValue.length > 7) {
-        //最长固定显示7个字符
-        return cellValue.slice(0, 7) + "****";
-      }
-      return cellValue;
-    },
 
     //订单审批列表接口
     async Approvalist() {
@@ -206,13 +198,7 @@ export default {
       }
       const res = await Approvalist(data)
       this.listLoading = false
-
-//   res.data.list.forEach((i)=>{
-//     let arr = JSON.parse(i.project)
-//     console.log(arr.project_name)
-//    i.project_name =arr.project_name
-//  }) 
-   console.log( res.data.list)
+     console.log( res.data.list)
 
       this.listData = res.data.list
       this.listLoading = true
@@ -254,6 +240,30 @@ export default {
       this.Approvalist();
     },
 
+    //入账
+    Entry(row){
+      this.dialogVisible = true
+      this.order_id= row.order_id
+    },
+
+    Entrydetail(ab){
+      this.$router.push({
+        path: '/fina/orderDetail',
+        query: {
+          order_id:ab.order_id,
+        },
+      })
+    },
+
+    Entryenter(){
+      this.$router.push({
+        path: '/fina/orderDetail',
+        query: {
+          order_id:this.order_id,
+        },
+      })
+
+    }
 
   },
 }

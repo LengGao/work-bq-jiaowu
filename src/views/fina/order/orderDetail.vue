@@ -7,7 +7,7 @@
         <el-col :lg="21" :sm="21" :xs="21" :md="21">
           <div class="order-header">
             <h3 style="height: 21px; margin-top: 4px">订单信息</h3>
-            <el-button type="primary" @click="dialogVisible = true"
+            <el-button type="primary" plain @click="dialogVisible = true"
               >待入账</el-button
             >
           </div>
@@ -63,23 +63,21 @@
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="订单来源" prop="type">
+                <el-form-item label="订单状态" prop="pay_status">
                   <div class="ruleWord">
-                    {{ ruleForm.type == 1 ? "已成交" : "未成交" }}
+                    {{ ruleForm.pay_status == 3 ? "已入账" : "未入账" }}
                   </div>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-form-item label="订单备注" prop="type">
-                <div class="ruleWord">
-                  {{ ruleForm.tips == 1 ? "已成交" : "未成交" }}
-                </div>
+              <el-form-item label="订单备注" prop="tips">
+               
               </el-form-item>
             </el-row>
             <el-row>
               <!-- <el-button type="primary" @click="dialogVisible = true">入账</el-button>               -->
-              <div style="display: flex; justify-content: left">
+              <!-- <div style="display: flex; justify-content: left">
                 <el-button
                   type="primary"
                   v-if="excludes(ruleForm, 0)"
@@ -100,7 +98,7 @@
                   @click="openOrderActions(ruleForm, 3)"
                   >作废</el-button
                 >
-              </div>
+              </div> -->
             </el-row>
           </el-form>
         </el-col>
@@ -212,19 +210,7 @@
           </template>
         </el-table-column>
       </el-table>
-<<<<<<< HEAD
    
-=======
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="25%">
-        <span style="font-size: 20px">是否将此笔订单入账？</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false"
-            >确 定</el-button
-          >
-        </span>
-      </el-dialog>
->>>>>>> dev
     </div>
     <!--经办信息-->
     <div style="margin-top: 20px">
@@ -265,7 +251,6 @@
         ></el-table-column>
       </el-table>
     </div>
-<<<<<<< HEAD
      
       <el-dialog
               title="提示"
@@ -287,15 +272,6 @@
       <el-button type="primary" @click="toCustomerDetail">关 闭</el-button>
     </div> -->
     <!-- </el-dialog> -->
-=======
-
-    <CollectionOrder
-      v-model="orderActionDialog"
-      :type="dialogType"
-      :orderInfo="dialogInfo"
-      @on-success="orderdetail"
-    />
->>>>>>> dev
   </section>
 </template>
 
@@ -307,6 +283,14 @@ export default {
   },
   data() {
     return {
+      statusMap: {
+        0: "待付款",
+        1: "已付款",
+        2: "部分入账",
+        3: "已入账",
+        4: "已作废",
+        5: "已退款",
+      },
       dialogImageUrl:'',
       dialogFormVisible: false,
       refundFormVisible: false,

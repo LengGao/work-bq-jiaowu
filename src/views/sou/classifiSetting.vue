@@ -44,7 +44,8 @@
           <el-table-column
             label="分类图标"
             min-width="130"
-            show-overflow-tooltip>
+            show-overflow-tooltip
+            prop="icon">
             <template slot-scope="scope">
               <div style="width:50px ;height:50px;">
                 <img :src="scope.row.icon" alt class="school_class_box" />
@@ -71,6 +72,11 @@
               <div style="display:flex;">
                 <el-button type="text" @click="topayment(scope.row)"
                   >编辑</el-button>
+                  <el-button
+                type="text"
+                style="padding-left:10px"
+                @click="delbtn(scope.row)"
+                >删除</el-button>
               </div>
             </template>
           </el-table-column>
@@ -131,7 +137,7 @@
           </div>
           <div v-show="haschoose" class=" imageBox ">
             <i class=" iconjia el-icon-plus" @click="addIcon"></i>
-            <img style="width:100%;height:100%;" :src="icon" alt="" />
+            <img style="width:100%;height:100%;" :src="ruleForm.icon" alt="" />
           </div>
         </el-form-item>
 
@@ -157,12 +163,13 @@
 </template>
 
 <script>
-import { getCateList,getCategoryList,insertCategory,updateCategory } from '@/api/sou'
+import { getCateList,getCategoryList,insertCategory,updateCategory,deleteCategory } from '@/api/sou'
 import SearchList from '@/components/SearchList/index'
 
 export default {
   data() {
     return {
+      row:'',
       optionProps: {
         label: "category_name",
         value: "category_id",
@@ -172,7 +179,6 @@ export default {
       pageNum:[],
        haschoose: false,
        pictureVisible: false,
-
       //搜索数据
       searchData: {
         category_id: [],
@@ -186,7 +192,7 @@ export default {
       data:[],
       url: '',
       pictureVisible: false,
-      haschoose: false,
+    
       page: 1,
       dialogVisible: false,
       keyboard:'',
@@ -207,7 +213,8 @@ export default {
             category_name: '',
             sort: '',
             index_category_name:'',
-            describe:''
+            describe:'',
+            icon:''
       },
       rules:{
             index_category_name: [
@@ -222,26 +229,26 @@ export default {
     this.getCategoryList()
   },
   methods: {
+   clearUrl() {
+      // this.url = ''
+      // this.haschoose = false
+      this.pictureVisible = false
+    },
     closeImg(radioUrl) {
       // console.log(radioUrl + '我')
       this.pictureVisible = false
       if (radioUrl != undefined) {
         this.haschoose = true
-        this.icon = radioUrl
+        this.ruleForm. icon = radioUrl
       } else {
-        this.icon = ''
+        this.ruleForm. icon = ''
         this.haschoose = false
       }
     },
-    clearUrl() {
-      // this.url = ''
-      // this.haschoose = false
-      this.pictureVisible = false
-    },
     addIcon() {
-      this.imgUrl = ''
       this.pictureVisible = true
     },
+
     //搜索功能
     handleSearch(data) {
       this.pageNum = 1;
@@ -288,6 +295,23 @@ export default {
         // this.getCategoryList()
       }
     },
+
+     delbtn(row) {
+         this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+             this.deleteCategory(row.category_id)
+                 
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
+
     addClassiFion() {
       this.dialogTitle = '添加分类'
         this.ruleForm = {
@@ -298,6 +322,7 @@ export default {
             sort: '',
             describe:''
       }
+      this.haschoose = false
       this.dialogVisible = true
     },
 
@@ -343,7 +368,7 @@ export default {
 
         icon:this.ruleForm.icon,
         category_name : this.ruleForm.category_name,
-        pid : this.ruleForm.pid.pop(),
+        pid : this.ruleForm.pid?this.ruleForm.pid.pop():'',
         sort : this.ruleForm.sort,
         describe : this.describe,
       }
@@ -373,14 +398,27 @@ export default {
       console.log(data)
       const res = await updateCategory(data)
       this.listLoading = false
-
        if(res.code==0){
           console.log( res)
           this.$message.success(res.message)
           this.getCategoryList()
           this.dialogVisible = false
-       
-   
+        }
+    },
+
+     //删除分类接口
+    async deleteCategory(category_id) {
+      const data = {
+        category_id,
+      }
+      console.log(data)
+      const res = await deleteCategory(data)
+
+       if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+           this.getCategoryList()
+          this.dialogVisible = false
         }
     },
 
@@ -413,7 +451,6 @@ export default {
 .el-table__header tr {
   background-color: #f8f8f8;
   color: #909399;
- 
 }
 /deep/.el-form-item__content{
   line-height: 30px;
