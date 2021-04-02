@@ -77,6 +77,7 @@ let enrollStu = {
       sex: ruleForm.sex,
       birthday: ruleForm.birthday,
       marry: ruleForm.marry,
+      location: ruleForm.location,
       qq: ruleForm.qq,
       email: ruleForm.email,
       culture: ruleForm.culture,
@@ -97,18 +98,25 @@ let enrollStu = {
             type: 'success',
             message: res.data.message,
           })
-          self.addVisible = true //客户报名弹框显示
-          self.userInfo = res.data.data
+
           if (num && num == 2) {
-            let param = JSON.stringify(res.data.data)
+            //保存并跳转详情
             self.$router.push({
               path: '/fina/cusdetail',
-              query: { param: param },
+              query: {
+                uid: res.data.data.uid,
+              },
+              // query: { param: param },
             })
-          } else {
+          } else if (num && num == 3) {
+            //导入学员添加
             console.log('2344')
             self.$emit('on-success')
             self.doClose()
+          } else {
+            //保存并弹框
+            self.addVisible = true //客户报名弹框显示
+            self.userInfo = res.data.data
           }
         }
       },
@@ -124,6 +132,7 @@ let enrollStu = {
       location: ruleForm.location,
       // aid: ruleForm.aid,
       project: ruleForm.project,
+      online_course: ruleForm.online_course,
       // uid: ruleForm.uid,
       // id_card_number: ruleForm.id_card_number,
       // todo_id: ruleForm.todo_id,

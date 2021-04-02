@@ -6,7 +6,7 @@
       @close="doClose"
       :close-on-click-modal="false"
       append-to-body
-      width="70%"
+      width="60%"
       class="add-teaching-material"
       style="min-width:1070px"
     >
@@ -18,35 +18,44 @@
       >
         <div class="customer_sum_up">
           <h3>客户信息</h3>
-          <el-row class="wrap">
-            <el-col :sm="8">
-              <el-form-item label="客户姓名">
-                <el-input
-                  class="input-width"
-                  disabled
-                  v-model="userInfo.surname"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="8">
-              <el-form-item label="手机号码">
-                <el-input
-                  disabled
-                  class="input-width"
-                  v-model="userInfo.mobile"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="8">
-              <el-form-item label="身份证号">
-                <el-input
-                  class="input-width"
-                  disabled
-                  v-model="userInfo.id_card_number"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <div class="coustomer_Detail">
+            <el-form-item label="客户姓名">
+              <el-input
+                class="input-width"
+                disabled
+                v-model="userInfo.surname"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="手机号码">
+              <el-input
+                disabled
+                class="input-width"
+                v-model="userInfo.mobile"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="开通网课">
+              <el-radio-group
+                v-model="ruleForm.online_course"
+                style="width:240px"
+              >
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="2">否</el-radio>
+              </el-radio-group>
+              <!-- <el-input
+                disabled
+                class="input-width"
+                v-model="userInfo.mobile"
+              ></el-input> -->
+            </el-form-item>
+            <!-- <el-form-item label="身份证号">
+              <el-input
+                class="input-width"
+                disabled
+                v-model="userInfo.id_card_number"
+              ></el-input>
+            </el-form-item> -->
+          </div>
         </div>
         <div class="customer_sum_up">
           <el-row>
@@ -86,7 +95,6 @@
                     show-overflow-tooltip
                   ></el-table-column>
                   <el-table-column
-                    prop="save_price"
                     label="优惠金额"
                     min-width="150"
                     show-overflow-tooltip
@@ -192,51 +200,46 @@
         </div>
         <div class="customer_sum_up">
           <h3>支付信息</h3>
-          <el-row class="wrap">
-            <el-col :sm="8">
-              <el-form-item label="支付方式">
-                <el-select
-                  v-model="ruleForm.pay_type"
-                  placeholder="请选择支付方式"
+          <div class="coustomer_Detail">
+            <el-form-item label="支付方式">
+              <el-select
+                v-model="ruleForm.pay_type"
+                placeholder="请选择支付方式"
+              >
+                <el-option
+                  v-for="item in payWays"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.label"
                 >
-                  <el-option
-                    v-for="item in payWays"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.label"
-                  >
-                  </el-option>
-                </el-select>
-                <!-- <el-input class="input-width" v-model="ruleForm.name"></el-input> -->
-              </el-form-item>
-            </el-col>
-            <el-col :sm="8">
-              <el-form-item label="支付金额">
-                <el-input
-                  class="input-width"
-                  type="number"
-                  v-model="ruleForm.pay_money"
-                  @change="payNum"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :sm="8">
-              <el-form-item label="上传收据" class="receiptUpLoad">
-                <el-upload
-                  name="image"
-                  :headers="headers"
-                  :action="uploadImageUrl"
-                  :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload"
-                >
-                  <!-- {{ ruleForm.receipt_file }} -->
-                  <img v-if="imgSrc" :src="imgSrc" class="img" />
-                  <i v-else class="el-icon-plus upload-cover-icon"></i>
-                </el-upload>
-              </el-form-item>
-            </el-col>
-          </el-row>
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="支付金额">
+              <el-input
+                class="input-width"
+                type="number"
+                v-model="ruleForm.pay_money"
+                @change="payNum"
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item label="上传收据" class="receiptUpLoad">
+              <el-upload
+                name="image"
+                :headers="headers"
+                :action="uploadImageUrl"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <!-- {{ ruleForm.receipt_file }} -->
+                <img v-if="imgSrc" :src="imgSrc" class="img" />
+                <i v-else class="el-icon-plus upload-cover-icon"></i>
+              </el-upload>
+            </el-form-item>
+          </div>
         </div>
         <div class="customer_sum_up">
           <h3>备注信息</h3>
@@ -291,6 +294,7 @@
       v-on:orderDialog="getorderStatus($event)"
     ></orderDialog>
     <projectDialog
+      :projectData="projectData"
       :projectVisible="projectVisible"
       @courseArr="getCourseArr"
       v-on:projectDialog="getprojectStatus($event)"
@@ -361,6 +365,7 @@ export default {
         },
       ],
       ruleForm: {
+        online_course: '',
         order_token: 0,
         aid: '',
         uid: '',
@@ -406,7 +411,7 @@ export default {
       })
       this.ruleForm.order_money = order_money
       this.ruleForm.reduction = reduction
-      this.receivableMoney = receivableMoney
+      this.ruleForm.pay_money = this.receivableMoney = receivableMoney
 
       console.log(order_money, reduction, receivableMoney)
     },
@@ -437,6 +442,7 @@ export default {
         i.pay_price = i.project_price
         i.id = i.project_id
         i.lower_price = i.lowest_price
+        i.save_price = 0
       })
       this.projectData = arr
     },
@@ -450,6 +456,7 @@ export default {
       for (var item in this.ruleForm) {
         this.ruleForm[item] = ''
       }
+      this.projectData = []
       this.$emit('addDialog', false)
     },
     changeAmount(av, ab) {
@@ -478,7 +485,7 @@ export default {
       console.log(reduction)
       this.ruleForm.order_money = order_money
       this.ruleForm.reduction = reduction
-      this.receivableMoney = receivableMoney
+      this.ruleForm.pay_money = this.receivableMoney = receivableMoney
       console.log(order_money, reduction, receivableMoney)
     },
     choseProject() {
@@ -514,7 +521,7 @@ export default {
 
 <style lang="scss" scoped>
 .receiptUpLoad {
-  .upload-cover /deep/.el-upload {
+  /deep/.el-upload {
     border: 1px dashed #d9d9d9 !important;
     border-radius: 6px;
     cursor: pointer;
@@ -613,5 +620,10 @@ h3 {
   font-size: 16px;
   color: #199fff;
   cursor: pointer;
+}
+.coustomer_Detail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 </style>

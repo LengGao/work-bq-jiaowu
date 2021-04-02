@@ -3,7 +3,8 @@
     title="选择项目"
     :visible.sync="openStatus"
     @close="doClose"
-    width="70%"
+    @open="handleOpen"
+    width="60%"
     append-to-body
   >
     <SearchList
@@ -16,7 +17,9 @@
         <el-table
           @selection-change="handleSelectionChange"
           ref="multipleTable"
-          :data="listData.data"
+          :data="listData"
+          :row-key="getRowKeys"
+          @row-click="handleRowClick"
           v-loading="listLoading"
           element-loading-text="loading"
           element-loading-spinner="el-icon-loading"
@@ -26,7 +29,12 @@
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
         >
-          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            type="selection"
+            :reserve-selection="true"
+            width="55"
+          >
+          </el-table-column>
           <el-table-column
             label="项目名称"
             show-overflow-tooltip
@@ -57,6 +65,7 @@
         <div class="table_bottom" style="display:flex;justify-content:flex-end">
           <page
             :data="listTotal"
+            :pageSize="pageSize"
             :curpage="pageNum"
             @pageChange="handlePageChange"
           />
@@ -72,7 +81,7 @@
         <ul>
           <li v-for="(item, index) in choseCourse" :key="item.course_id">
             <p>{{ item.project_name }}</p>
-            <i class="el-icon-delete" @click="deleteCourse(index)"></i>
+            <i class="el-icon-delete" @click="handleRowClick(item)"></i>
           </li>
         </ul>
       </div>
@@ -88,15 +97,25 @@
 
 <script>
 import { getCourseList, getCateList } from '@/api/sou'
+import { getProject } from '@/api/etm'
 export default {
   props: {
     projectVisible: {
       type: Boolean,
       default: false,
     },
+    projectData: {
+      type: Array,
+      default: [],
+    },
   },
   data() {
     return {
+      getRowKeys(row) {
+        return row.id
+      },
+      pageSize: 10,
+      dialogWidth: 0,
       openStatus: this.projectVisible,
       listData: [],
       listLoading: false,
@@ -132,15 +151,73 @@ export default {
     projectVisible(val) {
       this.openStatus = val
     },
+    projectData(val) {},
   },
-  created() {
-    this.getCateList()
-    // console.log(this.selectData)
-    this.$api.getProjectList(this, 'listData')
-  },
+  created() {},
+  mounted() {},
   methods: {
+    handleRowClick(row, column, event) {
+      this.$refs.multipleTable.toggleRowSelection(row)
+    },
+    handleOpen() {
+      this.getProject()
+      this.getCateList()
+      if (this.projectData.length > 0) {
+        for (var i = 0; i < this.projectData.length; i++) {
+          for (let index = 0; index < this.listData.length; index++) {
+            if (
+              this.projectData[i].project_id == this.listData[index].project_id
+            ) {
+              console.log(index)
+              //服务端返回需选中项的id
+              this.$refs.multipleTable.toggleRowSelection(
+                this.listData[index],
+                true
+              ) //row.ndex 选中
+            }
+          }
+        }
+      }
+    },
+    //项目列表
+    async getProject() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+        status: 1,
+        limit: 10,
+      }
+      console.log(data)
+      this.listLoading = true
+      const res = await getProject(data)
+      this.listLoading = false
+      this.listData = res.data.data
+      this.listTotal = res.data.total
+      console.log(this.listTotal)
+      if (this.projectData.length > 0) {
+        for (var i = 0; i < this.projectData.length; i++) {
+          for (let index = 0; index < this.listData.length; index++) {
+            if (
+              this.projectData[i].project_id == this.listData[index].project_id
+            ) {
+              console.log(index)
+              //服务端返回需选中项的id
+              this.$refs.multipleTable.toggleRowSelection(
+                this.listData[index],
+                true
+              ) //row.ndex 选中
+            }
+          }
+        }
+      }
+    },
     doClose() {
+      this.pageNum = 1
+      this.resetForm()
       this.$emit('projectDialog', false)
+    },
+    resetForm() {
+      this.choseCourse = []
     },
     handleconfirm() {
       this.doClose()
@@ -153,9 +230,7 @@ export default {
       console.log(val)
       this.choseCourse = val
     },
-    // closeCourse() {
-    //   this.$emit('closeCourse')
-    // },
+
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
@@ -178,25 +253,15 @@ export default {
     },
     handlePageChange(val) {
       this.pageNum = val
-      this.$api.getProjectList(this, 'schoolData')
+      this.getProject()
     },
     handleSearch(data) {
       this.pageNum = 1
-      this.searchData = data
-      this.$api.getProjectList(this, 'schoolData')
-    },
-    async getCourseList() {
-      const data = {
-        page: this.pageNum,
-        ...this.searchData,
-        course_category_id: this.searchData.category_id.pop(),
+      this.searchData = {
+        ...data,
+        category_id: data.category_id ? data.category_id.pop() : '',
       }
-      console.log(data)
-      this.listLoading = true
-      const res = await getCourseList(data)
-      this.listLoading = false
-      this.listData = res.data.list
-      this.listTotal = res.data.total
+      this.getProject()
     },
   },
 }
@@ -209,6 +274,7 @@ export default {
   .userTable {
     border: 1px solid rgb(220, 223, 230);
     flex: 1;
+    width: 0;
   }
   .main-right {
     width: 317px;

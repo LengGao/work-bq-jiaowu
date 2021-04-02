@@ -130,6 +130,7 @@
     <AddLearner
       :learnVisible="learnVisible"
       :userInfo="userInfo"
+      :field_content="field_content"
       :institutionOption="institutionOption"
       @on-success="onlineUserList"
       v-on:innerDialog="getInnerStatus($event)"
@@ -330,14 +331,14 @@ export default {
       }
       const res = await getfieldinfo(data)
       if (res.code === 0) {
-        let field_content = res.data.field_content.map((i, index) => {
+        this.field_content = res.data.field_content.map((i, index) => {
           var obj = {}
           obj.value = index + 1
           obj.label = i
           return obj
         })
 
-        this.searchOptions[5].options = field_content
+        this.searchOptions[5].options = this.field_content
       }
     },
     // 获取机构
