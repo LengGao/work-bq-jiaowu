@@ -106,7 +106,7 @@
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="linkTo(row.id)"
+                <el-button type="text" @click="linkTo(row.id, row.cate_id)"
                   >报考详情</el-button
                 >
                 <el-button type="text" @click="deleteConfirm(row.id)"
@@ -116,6 +116,13 @@
             </template>
           </el-table-column>
         </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
       </div>
     </section>
     <ApplyDialog
@@ -188,8 +195,8 @@ export default {
     this.getCateList();
   },
   methods: {
-    linkTo(id) {
-      this.$router.push({ name: "projectDetails", query: { id } });
+    linkTo(id, cate_id) {
+      this.$router.push({ name: "projectDetails", query: { id, cate_id } });
     },
     // 删除计划
     deleteConfirm(id) {

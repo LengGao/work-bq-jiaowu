@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="编辑资料"
+    :title="title"
     :visible.sync="visible"
     width="600px"
     :close-on-click-modal="false"
@@ -8,7 +8,7 @@
     :show-close="false"
     @open="getCertificateInfo"
   >
-    <div class="uploads">
+    <div class="uploads" v-loading="detailLoading">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
         <el-upload
           name="image"
@@ -39,7 +39,9 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="handleCancel">取 消</el-button>
-      <el-button type="primary" @click="handleOk">确 定</el-button>
+      <el-button type="primary" :loading="btnLoading" @click="handleOk"
+        >确 定</el-button
+      >
     </span>
   </el-dialog>
 </template>
@@ -60,6 +62,10 @@ export default {
     uid: {
       type: [String, Number],
       default: "",
+    },
+    title: {
+      type: String,
+      default: "编辑资料",
     },
   },
   data() {
@@ -108,6 +114,8 @@ export default {
         photo_commitment: "",
         photo_health: "",
       },
+      detailLoading: false,
+      btnLoading: false,
     };
   },
   methods: {
@@ -116,7 +124,11 @@ export default {
       const data = {
         uid: this.uid,
       };
-      const res = await getCertificateInfo(data);
+      this.detailLoading = true;
+      const res = await getCertificateInfo(data).catch(() => {
+        this.detailLoading = false;
+      });
+      this.detailLoading = false;
       if (res.code === 0) {
         for (const k in this.photoData) {
           this.photoData[k] = res.data[k];
@@ -129,11 +141,25 @@ export default {
         uid: this.uid,
         ...this.photoData,
       };
-      const res = await modifyCertificate(data);
+      this.btnLoading = true;
+      const res = await modifyCertificate(data).catch(() => {
+        this.btnLoading = false;
+      });
+
       if (res.code === 0) {
-        this.$message.success("资料修改成功");
-        this.handleCancel();
-        this.$emit("on-success");
+        // 补齐资料
+        if (this.title === "补齐资料") {
+          setTimeout(() => {
+            this.btnLoading = false;
+            this.$message.success("资料修改成功");
+            this.handleCancel();
+            this.$emit("on-success");
+          }, 2000);
+        } else {
+          this.$message.success("资料修改成功");
+          this.handleCancel();
+          this.$emit("on-success");
+        }
       }
     },
     hanldeDelete(key) {
@@ -165,6 +191,9 @@ export default {
       this.modifyCertificate();
     },
     handleCancel() {
+      for (const k in this.photoData) {
+        this.photoData[k] = "";
+      }
       this.$emit("update:visible", false);
     },
   },

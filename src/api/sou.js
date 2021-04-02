@@ -16,9 +16,7 @@ export function getBookList(params) {
 }
 /**
  * 
- 
- 
- * 新增教材
+  * 新增教材
  * @param {*} data
  */
 export function addBook(data) {
@@ -29,6 +27,53 @@ export function addBook(data) {
   })
 }
 /**
+/
+ 
+ * 分类设置列表
+ */
+export function getCategoryList(params) {
+  return request({
+    url: '/courseCategory/getcategorytree',
+    method: 'get',
+    params,
+  })
+}
+/**
+ *  添加分类列表
+ */
+export function insertCategory(data) {
+  return request({
+    url: '/courseCategory/insertCategory',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 
+ * /**
+ *  删除分类列
+ */
+export function deleteCategory(data) {
+  return request({
+    url: '/courseCategory/deleteCategory',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 
+ * /**
+ *  编辑分类列表
+ */
+export function updateCategory(data) {
+  return request({
+    url: '/courseCategory/updateCategory',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 
  * 编辑教材
  * @param {*} data
  */

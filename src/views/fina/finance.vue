@@ -41,8 +41,7 @@
             <span
               >￥{{
                 (panelData.order_money - panelData.reduction).toFixed(2)
-              }}</span
-            >
+              }}</span>
           </div>
         </li>
         <li class="panel-item">

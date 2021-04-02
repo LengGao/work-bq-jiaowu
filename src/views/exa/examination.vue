@@ -105,8 +105,7 @@
                 v-model="scope.row.status"
                 :active-value="1"
                 :inactive-value="2"
-                @change="stateChanged(scope.row)"
-              >
+                @change="stateChanged(scope.row)">
               </el-switch>
             </template>
           </el-table-column>
@@ -114,11 +113,9 @@
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
                 <el-button type="text" @click="editNotice(scope.row)"
-                  >编辑</el-button
-                >
+                  >编辑</el-button>
                 <el-button type="text" @click="handleDelete(scope.row)"
-                  >删除</el-button
-                >
+                  >删除</el-button>
               </div>
             </template>
           </el-table-column>
@@ -153,10 +150,10 @@ export default {
       schoolData: [],
       subjectData: [],
       createData: [],
-       isTagactive: 1,
-        page: 1,
-        cate_id: '',
-       tabFun: [
+      isTagactive: 1,
+      page: 1,
+      cate_id: '',
+      tabFun: [
         {
           id: 1,
           name: '考试科目',

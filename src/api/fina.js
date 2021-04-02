@@ -34,7 +34,7 @@ export function orderCollect(data) {
 }
 /**
  * 订单作废 退费
- * @param {*} data 
+ * @param {*} params 
  */
 export function orderCancel(params) {
     return request({
@@ -43,3 +43,28 @@ export function orderCancel(params) {
         params
     })
 }
+
+/**
+ * 订单审批
+ * @param {*} params 
+ */
+ export function Approvalist(params) {
+    return request({
+        url: '/order/index',
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 订单入账
+ * @param {*} data 
+ */
+ export function Orderentry(data) {
+    return request({
+        url: '/order/entry',
+        method: 'post',
+        data
+    })
+}
+

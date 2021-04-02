@@ -83,6 +83,17 @@
           >
           </el-table-column>
           <el-table-column
+            prop="charge"
+            label="是否收费"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.exam_type !== '新考'">{{ row.charge }}</span>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="lack"
             label="资料缺失数量"
             min-width="150"
@@ -101,20 +112,17 @@
               }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="360">
+          <el-table-column label="操作" fixed="right" min-width="270">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="$message.error('没做')"
+                <el-button type="text" @click="openPhoto(row.uid)"
                   >补齐资料</el-button
                 >
-                <el-button type="text" @click="$message.error('没做')"
+                <el-button type="text" @click="openReview(row.id)"
                   >资料审核</el-button
-                >
-                <el-button type="text" @click="$message.error('没做')"
-                  >查看审核单</el-button
                 >
                 <el-button type="text" @click="deleteConfirm(row.id)"
                   >移除学生</el-button
@@ -123,16 +131,50 @@
             </template>
           </el-table-column>
         </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
       </div>
     </section>
+    <!-- 添加，编辑学生 -->
+    <StudentDialog
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      :id="currentId"
+      @on-success="enrollRecordList"
+    />
+    <!-- 编辑资料 -->
+    <AddPhoto
+      title="补齐资料"
+      :visible.sync="photoDialog"
+      :uid="photoUid"
+      @on-success="enrollRecordList"
+    />
+    <!-- 报考审核 -->
+    <ExaminationReview
+      v-model="reviewDialog"
+      :id="currentId"
+      @on-success="enrollRecordList"
+    />
   </div>
 </template>
 
 <script>
-import { enrollRecordList, deletePlan, getEnrollSelect } from "@/api/exa";
+import StudentDialog from "./components/StudentDialog";
+import ExaminationReview from "./components/ExaminationReview";
+import AddPhoto from "@/views/eda/certificates/components/AddPhoto";
+import { enrollRecordList, removeStudent, getEnrollSelect } from "@/api/exa";
 export default {
   name: "apply",
-  components: {},
+  components: {
+    ExaminationReview,
+    AddPhoto,
+    StudentDialog,
+  },
   data() {
     return {
       listData: [],
@@ -175,9 +217,8 @@ export default {
         },
       ],
       currentId: "",
-      dialogTitle: "添加考试计划",
+      dialogTitle: "添加报考",
       dialogVisible: false,
-      typeOptions: [],
       enrollStatusMap: {},
       statusColors: {
         1: "#2798ee",
@@ -185,6 +226,9 @@ export default {
         3: "#FD6500",
         4: "#43D100",
       },
+      photoDialog: false,
+      photoUid: "",
+      reviewDialog: false,
     };
   },
   created() {
@@ -192,32 +236,43 @@ export default {
     this.enrollRecordList();
   },
   methods: {
-    // 删除计划
+    // 打开报考审核
+    openReview(id) {
+      this.currentId = id;
+      this.reviewDialog = true;
+    },
+    //打开资料补齐
+    openPhoto(uid) {
+      this.photoUid = uid;
+      this.photoDialog = true;
+    },
+
+    // 移除报名学生
     deleteConfirm(id) {
-      this.$confirm("确定要删除此计划吗?", { type: "warning" })
+      this.$confirm("确定要移除此学生吗?", { type: "warning" })
         .then(() => {
-          this.deletePlan(id);
+          this.removeStudent(id);
         })
         .catch(() => {});
     },
-    async deletePlan(id) {
+    async removeStudent(id) {
       const data = {
         id,
       };
-      const res = await deletePlan(data);
+      const res = await removeStudent(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.enrollRecordList();
       }
     },
     openEdit(id) {
-      this.dialogTitle = "编辑考试计划";
+      this.dialogTitle = "编辑报考";
       this.currentId = id;
       this.dialogVisible = true;
     },
     openAdd() {
       this.currentId = "";
-      this.dialogTitle = "添加考试计划";
+      this.dialogTitle = "添加报考";
       this.dialogVisible = true;
     },
     // 搜索

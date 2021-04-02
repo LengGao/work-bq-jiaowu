@@ -15,12 +15,7 @@
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column
-          label="ID"
-          show-overflow-tooltip
-          min-width="90"
-          prop="books_id"
-        >
+        <el-table-column type="index" label="序号" min-width="60">
         </el-table-column>
         <el-table-column
           prop="books_name"
