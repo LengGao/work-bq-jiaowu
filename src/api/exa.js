@@ -312,3 +312,11 @@ export function enrollInfo(params) {
     params,
   })
 }
+// 移除报名学生
+export function removeStudent(data) {
+  return request({
+    url: '/Examination/removeStudent',
+    method: 'post',
+    data,
+  })
+}

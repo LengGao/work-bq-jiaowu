@@ -83,6 +83,17 @@
           >
           </el-table-column>
           <el-table-column
+            prop="charge"
+            label="是否收费"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.exam_type !== '新考'">{{ row.charge }}</span>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="lack"
             label="资料缺失数量"
             min-width="150"
@@ -143,7 +154,7 @@
 
 <script>
 import StudentDialog from "./components/StudentDialog";
-import { enrollRecordList, deletePlan, getEnrollSelect } from "@/api/exa";
+import { enrollRecordList, removeStudent, getEnrollSelect } from "@/api/exa";
 export default {
   name: "apply",
   components: {
@@ -207,19 +218,19 @@ export default {
     this.enrollRecordList();
   },
   methods: {
-    // 删除计划
+    // 移除报名学生
     deleteConfirm(id) {
-      this.$confirm("确定要删除此计划吗?", { type: "warning" })
+      this.$confirm("确定要移除此学生吗?", { type: "warning" })
         .then(() => {
-          this.deletePlan(id);
+          this.removeStudent(id);
         })
         .catch(() => {});
     },
-    async deletePlan(id) {
+    async removeStudent(id) {
       const data = {
         id,
       };
-      const res = await deletePlan(data);
+      const res = await removeStudent(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.enrollRecordList();

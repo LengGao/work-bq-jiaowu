@@ -112,7 +112,6 @@ export default {
   data() {
     return {
       visible: this.value,
-      periodYear: "",
       formData: {
         exam_type: "",
         subject_id_str: [],
@@ -163,7 +162,7 @@ export default {
       this.selection = selection;
       const len = selection.length;
       const showNmaes = selection.slice(0, 2);
-      const desc = len > 2 ? `  等${len}人` : "";
+      const desc = len > 2 ? `  ...等${len}人` : "";
       this.formData.names =
         showNmaes.map((item) => item.user_realname).join("，") + desc;
     },
@@ -202,8 +201,11 @@ export default {
         this.formData.subject_id_str = res.data?.sub_subject_arr.map(
           (item) => item * 1
         );
-        this.getResit();
         this.formData.names = res.data?.user_realname;
+        //计算补考费
+        this.$nextTick(() => {
+          this.getResit();
+        });
       }
     },
     async submit() {

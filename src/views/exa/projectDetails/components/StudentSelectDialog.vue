@@ -80,7 +80,6 @@
         </ul>
       </div>
     </div>
-
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
       <el-button type="primary" @click="handleOk">确 定</el-button>
@@ -208,6 +207,7 @@ export default {
     hadleResetUser() {
       this.toggleSelection();
     },
+    // table选中
     handleTableChange(selection) {
       this.selection = selection ? [...selection] : [];
     },
