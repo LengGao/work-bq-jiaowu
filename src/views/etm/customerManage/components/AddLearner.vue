@@ -7,7 +7,7 @@
       width="70%"
       @open="handleOpen"
       :close-on-click-modal="false"
-      @close="doClose"
+      @close="doClose(ruleForm)"
     >
       <el-form
         label-width="110px"
@@ -115,36 +115,27 @@
 
         <el-form-item label="推荐机构" prop="from_organization_id">
           <el-cascader
-            v-model="value"
+            class="input-width"
+            v-model="ruleForm.from_organization_id"
             :options="institutionOption"
           ></el-cascader>
-          <!-- <el-select
-            v-model="ruleForm.from_organization_id"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in organData.list"
-              :key="item.institution_id"
-              :label="item.institution_name"
-              :value="item.institution_id"
-            >
-            </el-option>
-          </el-select> -->
         </el-form-item>
 
         <el-form-item label="渠道来源" prop="sources">
-          <el-input
-            class="input-width"
-            placeholder="请选择渠道来源"
+          <el-select
             v-model="ruleForm.sources"
-          ></el-input>
+            placeholder="请选择"
+            class="input-width"
+          >
+            <el-option
+              v-for="item in field_content"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
-        <!-- <el-form-item label="是否跨区报考" prop="sources">
-          <el-radio-group v-model="ruleForm.sex">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="2">否</el-radio>
-          </el-radio-group>
-        </el-form-item> -->
 
         <el-form-item label="备注信息" prop="tips" style="width:100%">
           <el-input v-model="ruleForm.tips" type="textarea"></el-input>
@@ -172,7 +163,7 @@ import {
   provinceAndCityData,
   TextToCode,
 } from 'element-china-area-data'
-import { getInstitutionSelectData } from '@/api/sou'
+// import { getInstitutionSelectData } from '@/api/sou'
 import { getBirth, getSex } from '@/utils/index'
 export default {
   props: {
@@ -181,6 +172,10 @@ export default {
       default: false,
     },
     institutionOption: {
+      type: Array,
+      default: [],
+    },
+    field_content: {
       type: Array,
       default: [],
     },
@@ -291,11 +286,13 @@ export default {
       this.openStatus = val
     },
     userInfo(val) {
-      console.log(this.userInfo)
+      //   console.log(this.userInfo)
+
       this.ruleForm.surname = this.userInfo.realname
       this.ruleForm.uid = this.userInfo.uid
       this.ruleForm.mobile = this.userInfo.mobile
       this.ruleForm.id_card_number = this.userInfo.identity_card
+      //   this.$refs['ruleForm'].resetFields()
     },
   },
   created() {},
@@ -362,6 +359,11 @@ export default {
         this.ruleForm[item] = ''
       }
       this.$emit('innerDialog', false)
+    },
+    hanldeCancel(formName) {
+      this.$refs[formName].resetFields()
+      this.doClose()
+      //   this.$emit('input', false)
     },
   },
 }

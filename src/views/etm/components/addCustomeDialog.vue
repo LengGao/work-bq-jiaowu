@@ -4,9 +4,10 @@
     <el-dialog
       title="添加客户"
       :visible.sync="openStatus"
-      width="70%"
+      width="65%"
       :close-on-click-modal="false"
       @close="doClose"
+      @open="handleOpen"
     >
       <el-form
         label-width="110px"
@@ -116,31 +117,27 @@
         </el-form-item>
 
         <el-form-item label="推荐机构" prop="from_organization_id">
-          <el-select
+          <el-cascader
+            class="input-width"
             v-model="ruleForm.from_organization_id"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in organData.list"
-              :key="item.institution_id"
-              :label="item.institution_name"
-              :value="item.institution_id"
-            >
-            </el-option>
-          </el-select>
-          <!-- <el-input
-                class="input-width"
-                placeholder="请选择推荐机构"
-                v-model="ruleForm.from_organization_id"
-              ></el-input> -->
+            :options="institutionOption"
+          ></el-cascader>
         </el-form-item>
 
         <el-form-item label="渠道来源" prop="sources">
-          <el-input
-            class="input-width"
-            placeholder="请选择渠道来源"
+          <el-select
             v-model="ruleForm.sources"
-          ></el-input>
+            placeholder="请选择"
+            class="input-width"
+          >
+            <el-option
+              v-for="item in field_content"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item label="备注信息" prop="tips" style="width:100%">
@@ -174,6 +171,9 @@ import {
   provinceAndCityData,
   TextToCode,
 } from 'element-china-area-data'
+import { getInstitutionSelectData } from '@/api/sou'
+import { cloneOptions } from '@/utils/index'
+import { getfieldinfo } from '@/api/etm'
 import customeRegist from './customeRegist'
 import { getBirth, getSex } from '@/utils/index'
 export default {
@@ -198,7 +198,9 @@ export default {
       regionData: regionData,
       provinceAndCityData: provinceAndCityData,
       selectedOptions: [],
+      institutionOption: [],
       selectedOptionsLocal: [],
+      field_content: [],
       organData: {},
       ruleForm: {
         wechat: '',
@@ -298,13 +300,40 @@ export default {
       this.ruleForm.surname = this.seaUserInfo.realname
     },
   },
-  created() {
-    //渠道来源
-    // let field_text = '渠道来源'
-    // this.$api.getfieldinfo(this, 'channelData', field_text)
-    this.$api.getRecommenderSearch(this, 'organData') //推荐机构
-  },
+  created() {},
   methods: {
+    // 获取渠道来源
+    async getfieldinfo() {
+      const data = {
+        field_text: '渠道来源',
+      }
+      const res = await getfieldinfo(data)
+      if (res.code === 0) {
+        this.field_content = res.data.field_content.map((i, index) => {
+          var obj = {}
+          obj.value = index + 1
+          obj.label = i
+          return obj
+        })
+      }
+    },
+    // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true }
+      const res = await getInstitutionSelectData(data)
+      if (res.code === 0) {
+        this.institutionOption = cloneOptions(
+          res.data,
+          'institution_name',
+          'institution_id',
+          'children'
+        )
+      }
+    },
+    handleOpen() {
+      this.getInstitutionSelectData()
+      this.getfieldinfo()
+    },
     handleChange(value) {
       console.log(this.selectedOptions)
       console.log(value) // ["110000", "110100", "110101"]

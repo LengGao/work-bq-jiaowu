@@ -54,3 +54,14 @@ export function getCourseSelect(params) {
     params,
   })
 }
+
+/**
+ * 项目列表
+ */
+export function getProject(params) {
+  return request({
+    url: '/project/index',
+    method: 'get',
+    params,
+  })
+}
