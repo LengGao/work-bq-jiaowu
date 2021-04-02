@@ -34,7 +34,7 @@ export function orderCollect(data) {
 }
 /**
  * 订单作废 退费
- * @param {*} data 
+ * @param {*} params 
  */
 export function orderCancel(params) {
     return request({
@@ -55,3 +55,16 @@ export function orderCancel(params) {
         params
     })
 }
+
+/**
+ * 订单入账
+ * @param {*} data 
+ */
+ export function Orderentry(data) {
+    return request({
+        url: '/order/entry',
+        method: 'post',
+        data
+    })
+}
+
