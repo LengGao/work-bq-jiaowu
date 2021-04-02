@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { Approvalist } from '@/api/fina'
+import { Approvalist,Orderentry } from '@/api/fina'
 
 export default {
   name: 'order',
@@ -194,6 +194,20 @@ export default {
       this.listLoading = true
       this.listTotal = res.data.total
     },
+    //订单入账接口
+    async Orderentry() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+        order_id:this.order_id,
+
+ 
+      }
+      const res = await Orderentry(data)
+      console.log( res.data.list)
+      // this.listData = res.data.list
+      // this.listTotal = res.data.total
+    },
     //搜索模块
     handleSearch(data) {
       this.pageNum = 1;
@@ -240,13 +254,17 @@ export default {
         },
       })
     },
-    Entryenter(){
-      this.$router.push({
-        path: '/fina/orderDetail',
-        query: {
-          order_id:this.order_id,
-        },
-      })
+    Entryenter(order_id){
+      this.dialogVisible = false
+      order_id,
+      this.Orderentry()
+
+      // this.$router.push({
+      //   path: '/fina/orderDetail',
+      //   query: {
+      //     order_id:this.order_id,
+      //   },
+      // })
     }
   },
 }
