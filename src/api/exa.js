@@ -320,3 +320,27 @@ export function removeStudent(data) {
     data,
   })
 }
+// 报考审核详情
+export function auditInfo(params) {
+  return request({
+    url: '/Examination/auditInfo',
+    method: 'get',
+    params,
+  })
+}
+// 报考审核
+export function audit(data) {
+  return request({
+    url: '/Examination/audit',
+    method: 'post',
+    data,
+  })
+}
+// 重置审核
+export function refresh(data) {
+  return request({
+    url: '/Examination/refresh',
+    method: 'post',
+    data,
+  })
+}
