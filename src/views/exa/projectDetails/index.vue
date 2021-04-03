@@ -10,6 +10,12 @@
         />
         <el-button type="primary" @click="openAdd">添加学生</el-button>
       </div>
+      <div>
+        <el-button @click="openBatch">批量审核</el-button>
+        <el-button @click="exportEnrollRecord" :loading="exportLoading"
+          >导出</el-button
+        >
+      </div>
       <!--表格-->
       <div class="userTable">
         <el-table
@@ -25,6 +31,7 @@
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
           class="min_table"
+          @selection-change="handleTableChange"
         >
           <el-table-column type="selection" width="50"></el-table-column>
 
@@ -59,12 +66,7 @@
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column
-            prop="exam_type"
-            label="考试性质"
-            min-width="60"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="exam_type" label="考试性质" min-width="60">
             <template slot-scope="{ row }">
               <el-tag size="small" v-if="row.exam_type === '新考'">{{
                 row.exam_type
@@ -158,6 +160,9 @@
     <ExaminationReview
       v-model="reviewDialog"
       :id="currentId"
+      :is-batch="isBatch"
+      :batch-data="batchData"
+      :enrollStatusMap="enrollStatusMap"
       @on-success="enrollRecordList"
     />
   </div>
@@ -167,7 +172,12 @@
 import StudentDialog from "./components/StudentDialog";
 import ExaminationReview from "./components/ExaminationReview";
 import AddPhoto from "@/views/eda/certificates/components/AddPhoto";
-import { enrollRecordList, removeStudent, getEnrollSelect } from "@/api/exa";
+import {
+  enrollRecordList,
+  removeStudent,
+  getEnrollSelect,
+  exportEnrollRecord,
+} from "@/api/exa";
 export default {
   name: "apply",
   components: {
@@ -229,6 +239,10 @@ export default {
       photoDialog: false,
       photoUid: "",
       reviewDialog: false,
+      exportLoading: false,
+      isBatch: false,
+      selection: [],
+      batchData: [],
     };
   },
   created() {
@@ -236,8 +250,50 @@ export default {
     this.enrollRecordList();
   },
   methods: {
+    // 导出
+    downloadFile(content) {
+      if ("download" in document.createElement("a")) {
+        //支持a标签download的浏览器
+        let url = window.URL.createObjectURL(content); //为文件流创建构建下载链接
+        let link = document.createElement("a"); //创建a标签
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", "报考详情.xlsx"); //设置a标签的下载动作和下载文件名
+        document.body.appendChild(link);
+        link.click(); //执行下载
+        document.body.removeChild(link); //释放标签
+      } else {
+        //其他浏览器
+        navigator.msSaveBlob(content, "报考详情.xlsx");
+      }
+    },
+    async exportEnrollRecord() {
+      const data = {
+        pid: this.$route?.query.id,
+      };
+      this.exportLoading = true;
+      const res = await exportEnrollRecord(data).catch(() => {
+        this.exportLoading = false;
+      });
+      this.exportLoading = false;
+      this.downloadFile(res);
+    },
+    handleTableChange(selection) {
+      this.selection = selection || [];
+    },
+    openBatch() {
+      if (!this.selection.length) {
+        this.$message.warning("请选择需要审核的学生！");
+        return;
+      }
+      this.batchData = [...this.selection];
+      this.isBatch = true;
+      this.currentId = "";
+      this.reviewDialog = true;
+    },
     // 打开报考审核
     openReview(id) {
+      this.isBatch = false;
       this.currentId = id;
       this.reviewDialog = true;
     },

@@ -344,3 +344,12 @@ export function refresh(data) {
     data,
   })
 }
+// 导出报考详情
+export function exportEnrollRecord(params) {
+  return request({
+    url: '/Examination/exportEnrollRecord',
+    method: 'get',
+    responseType: 'blob',
+    params,
+  })
+}
