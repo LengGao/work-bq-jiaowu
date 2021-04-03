@@ -5,32 +5,20 @@
     </div>
 
     <section class="mainwrap">
-      <ul class="navigation">
-        <li
-          v-for="item in tabFun"
-          :key="item.id"
-          :class="{ tabg: item.id == isTagactive }"
-          @click="statusSwitch(item)"
-        >
-          {{ item.name }}
-        </li>
-      </ul>
       <div class="client_head">
         <search2
           :contentShow="true"
           typeTx="punch"
           inputText="教室名称"
-          api="getCourseManage"
-          :selectList="selectData.list"
+          api="getRoomList"
+          @getTable="getTableList"
         ></search2>
 
-        <div v-if="isTagactive === 1">
-          <el-button type="primary" @click="addClassroom">添加教室</el-button>
-        </div>
+        <el-button type="primary" @click="addClassroom">添加教室</el-button>
       </div>
 
       <!--教室配置表格-->
-      <div class="userTable" v-if="isTagactive === 1">
+      <div class="userTable">
         <el-table
           ref="multipleTable"
           :data="schoolData.list"
@@ -50,7 +38,7 @@
 
           <el-table-column
             prop="max_num"
-            label="最大容纳人数"
+            label="容纳人数"
             min-width="200"
             column-key="course_id"
             show-overflow-tooltip
@@ -63,7 +51,7 @@
           ></el-table-column>
           <el-table-column
             prop="comment"
-            label="备注"
+            label="备注信息"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
@@ -92,7 +80,7 @@
                 <el-button type="text" @click="editClassroom(scope.row)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="toCreateClass(scope.row)"
+                <el-button type="text" @click="toClassroomUsage(scope.row)"
                   >使用情况</el-button
                 >
                 <el-button type="text" @click="handleDelete(scope.row)"
@@ -112,7 +100,7 @@
       </div>
 
       <!--教室配置表格-->
-      <div class="userTable" v-if="isTagactive === 2">
+      <!-- <div class="userTable" v-if="isTagactive === 2">
         <el-table
           ref="multipleTable"
           :data="schoolData.list"
@@ -181,9 +169,9 @@
             @pageChange="doPageChange"
           />
         </div>
-      </div>
+      </div> -->
       <!--教室配置弹框-->
-      <el-dialog :title="classTitle" :visible.sync="classVisible" width="50%">
+      <el-dialog :title="classTitle" :visible.sync="classVisible" width="790px">
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -191,52 +179,38 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-row>
-            <el-col :lg="12" :sm="12" :xs="12" :md="12">
-              <el-form-item label="教室名称" prop="room_name">
-                <el-input
-                  v-model="ruleForm.room_name"
-                  placeholder="请输入教室名称"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :lg="12" :sm="12" :xs="12" :md="12">
-              <el-form-item label="容纳人数" prop="max_num">
-                <el-input
-                  v-model="ruleForm.max_num"
-                  placeholder="请输入容纳人数"
-                  type="number"
-                  class="input-width"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <!-- <el-row>
-            <el-form-item label="适用范围" prop="region">
-              <el-radio-group v-model="ruleForm.radio">
-                <el-radio :label="3">当前校区</el-radio>
-                <el-radio :label="6">全部校区</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-row> -->
-          <el-row>
-            <el-form-item label="详细地址">
+          <div class="flex-classroom">
+            <el-form-item label="教室名称" prop="room_name">
               <el-input
-                placeholder="请输入项目名称"
-                v-model="ruleForm.address"
+                v-model="ruleForm.room_name"
+                placeholder="请输入教室名称"
+                class="input-width"
               ></el-input>
             </el-form-item>
-          </el-row>
-          <el-row>
-            <el-form-item label="备注信息">
+
+            <el-form-item label="容纳人数" prop="max_num">
               <el-input
-                type="textarea"
-                v-model="ruleForm.comment"
-                placeholder="请输入备注信息"
+                v-model="ruleForm.max_num"
+                placeholder="请输入容纳人数"
+                type="number"
+                class="input-width"
               ></el-input>
             </el-form-item>
-          </el-row>
+          </div>
+          <el-form-item label="详细地址">
+            <el-input
+              placeholder="请输入项目名称"
+              v-model="ruleForm.address"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="备注信息">
+            <el-input
+              type="textarea"
+              v-model="ruleForm.comment"
+              placeholder="请输入备注信息"
+            ></el-input>
+          </el-form-item>
         </el-form>
         <!-- <span>这是一段信息</span> -->
         <span slot="footer" class="dialog-footer">
@@ -307,6 +281,21 @@ export default {
   },
 
   methods: {
+    toClassroomUsage(row) {
+      let obj = {
+        room_name: row.room_name,
+        address: row.address,
+        max_num: row.max_num,
+        comment: row.comment,
+      }
+      this.$router.push({
+        path: '/sou/classroomUsage',
+        query: {
+          id: row.id,
+          param: JSON.stringify(row),
+        },
+      })
+    },
     startUsing(ab) {
       this.$api.updateRoomStatus(this, ab.id, ab.status)
     },
@@ -401,6 +390,11 @@ export default {
   padding: 20px;
   margin: 20px;
   background: #fff;
+}
+.flex-classroom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 .input-width {
   width: 240px;

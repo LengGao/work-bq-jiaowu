@@ -17,10 +17,14 @@ let resource = {
     })
   },
   //教室列表
-  getRoomList(self, name, data) {
+  getRoomList(self, name, data = {}) {
+    var room_name = ''
+    if (data.name != '' || data.name != undefined) {
+      room_name = data.name
+    }
     let config = {
       page: self.page,
-      //   category_name: category_name,
+      room_name: room_name,
     }
     console.log(config)
     axiosHttp({

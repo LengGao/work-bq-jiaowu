@@ -110,10 +110,10 @@
 </template>
 
 <script>
-import { getClassList, getproject } from "@/api/eda";
-import { getCateList } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
-import AddClass from "./components/AddClass";
+import { getClassList, getproject } from '@/api/eda'
+import { getCateList } from '@/api/sou'
+import { cloneOptions } from '@/utils/index'
+import AddClass from './components/AddClass'
 export default {
   components: {
     AddClass,
@@ -126,139 +126,142 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        project_id: "",
-        keyboard: "",
+        project_id: '',
+        keyboard: '',
       },
       searchOptions: [
         {
-          key: "category_id",
-          type: "cascader",
+          key: 'category_id',
+          type: 'cascader',
           events: {
             change: this.handleTypeChange,
           },
           attrs: {
-            placeholder: "所属分类",
+            placeholder: '所属分类',
             clearable: true,
             options: [],
           },
         },
         {
-          key: "project_id",
-          type: "select",
+          key: 'project_id',
+          type: 'select',
           options: [],
-          optionValue: "project_id",
-          optionLabel: "project_name",
+          optionValue: 'project_id',
+          optionLabel: 'project_name',
           attrs: {
-            placeholder: "所属项目",
+            placeholder: '所属项目',
             clearable: true,
           },
         },
         {
-          key: "keyboard",
+          key: 'keyboard',
           attrs: {
-            placeholder: "班级名称、班主任",
+            placeholder: '班级名称、班主任',
           },
         },
       ],
 
-      currentId: "",
-      dialogTitle: "添加班级",
+      currentId: '',
+      dialogTitle: '添加班级',
       dialogVisible: false,
       typeOptions: [],
-    };
+    }
   },
 
   created() {
-    this.getClassList();
-    this.getCateList();
-    this.getproject();
+    this.getClassList()
+    this.getCateList()
+    this.getproject()
   },
 
   methods: {
     openEdit(id) {
-      this.dialogTitle = "编辑班级";
-      this.currentId = id;
-      this.dialogVisible = true;
+      this.dialogTitle = '编辑班级'
+      this.currentId = id
+      this.dialogVisible = true
     },
     openAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加班级";
-      this.dialogVisible = true;
+      this.currentId = ''
+      this.dialogTitle = '添加班级'
+      this.dialogVisible = true
     },
     handleSearch(data) {
-      this.pageNum = 1;
+      this.pageNum = 1
       this.searchData = {
         ...data,
         category_id: data.category_id.pop(),
-      };
-      this.getClassList();
+      }
+      this.getClassList()
     },
     handlePageChange(val) {
-      this.pageNum = val;
-      this.getClassList();
+      this.pageNum = val
+      this.getClassList()
     },
     async getClassList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-      };
-      this.listLoading = true;
-      const res = await getClassList(data);
-      this.listLoading = false;
-      this.listData = res.data.list;
-      this.listTotal = res.data.total;
+      }
+      this.listLoading = true
+      const res = await getClassList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.listTotal = res.data.total
     },
     // 当分类选择时
     handleTypeChange(ids) {
-      const id = ids ? [...ids].pop() : "";
-      this.getproject(id);
+      const id = ids ? [...ids].pop() : ''
+      this.getproject(id)
     },
     // 获取项目下拉
-    async getproject(category_id = "") {
+    async getproject(category_id = '') {
       const data = {
         category_id,
-      };
-      const res = await getproject(data);
+      }
+      const res = await getproject(data)
       if (res.code === 0) {
-        this.searchOptions[1].options = res.data;
+        this.searchOptions[1].options = res.data
       }
     },
     // 获取教材分类
     async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
+      const data = { list: true }
+      const res = await getCateList(data)
       if (res.code === 0) {
         this.searchOptions[0].attrs.options = this.typeOptions = cloneOptions(
           res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
+          'category_name',
+          'category_id',
+          'son'
+        )
       }
     },
     toClassDetail(id) {
       this.$router.push({
-        path: "/eda/classDetail",
+        path: '/eda/classDetail',
         query: {
           id,
         },
-      });
+      })
     },
-    toMassMessage() {
+    toMassMessage(row) {
       this.$router.push({
-        path: "/eda/massMessage",
-      });
+        path: '/eda/massMessage',
+        query: {
+          classroom_id: row.classroom_id,
+        },
+      })
     },
     toLearnerManage(classId) {
       this.$router.push({
-        path: "/eda/learnerManage",
+        path: '/eda/learnerManage',
         query: {
           classId,
         },
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

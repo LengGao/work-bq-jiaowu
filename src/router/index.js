@@ -151,6 +151,16 @@ export const asyncRouter = [
         component: () => import('@/views/sou/classroomManage.vue'),
         meta: { title: '教室管理', icon: 'product-add' },
       },
+      //教室管理组件开始
+      {
+        path: 'classroomUsage',
+        name: 'classroomUsage',
+        component: () =>
+          import('@/views/sou/classroomManage/classroomUsage.vue'),
+        meta: { title: '使用情况', icon: 'product-add' },
+        hidden: true,
+      },
+      //教室管理组件结束
       {
         path: 'customField',
         name: 'customField',

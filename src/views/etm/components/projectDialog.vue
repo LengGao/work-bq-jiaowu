@@ -4,7 +4,7 @@
     :visible.sync="openStatus"
     @close="doClose"
     @open="handleOpen"
-    width="60%"
+    width="1000px"
     append-to-body
   >
     <SearchList
@@ -26,6 +26,7 @@
           element-loading-background="#fff"
           style="width: 100%"
           class="min_table"
+          height="400"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
         >
@@ -74,7 +75,7 @@
       <div class="main-right">
         <div class="right-head">
           <div>已选课程:3</div>
-          <p>
+          <p @click="clearData">
             清空
           </p>
         </div>
@@ -118,6 +119,7 @@ export default {
       dialogWidth: 0,
       openStatus: this.projectVisible,
       listData: [],
+      choseCourse: [],
       listLoading: false,
       dialogVisible: true,
       pageNum: 1,
@@ -126,7 +128,7 @@ export default {
         category_id: [],
         course_name: '',
       },
-      choseCourse: [],
+
       searchOptions: [
         {
           key: 'category_id',
@@ -193,8 +195,11 @@ export default {
       this.listLoading = false
       this.listData = res.data.data
       this.listTotal = res.data.total
+
       console.log(this.listTotal)
+      console.log(this.projectData)
       if (this.projectData.length > 0) {
+        this.choseCourse = []
         for (var i = 0; i < this.projectData.length; i++) {
           for (let index = 0; index < this.listData.length; index++) {
             if (
@@ -209,19 +214,23 @@ export default {
             }
           }
         }
+        console.log(this.choseCourse)
       }
+    },
+    clearData() {
+      this.$refs.multipleTable.clearSelection()
+      this.choseCourse = []
     },
     doClose() {
       this.pageNum = 1
-      this.resetForm()
+      this.choseCourse = []
+      this.$refs.multipleTable.clearSelection()
       this.$emit('projectDialog', false)
     },
-    resetForm() {
-      this.choseCourse = []
-    },
+    resetForm() {},
     handleconfirm() {
-      this.doClose()
       this.$emit('courseArr', this.choseCourse)
+      this.doClose()
     },
     deleteCourse(index) {
       this.choseCourse.splice(index, 1)
