@@ -11,6 +11,7 @@
         <el-button type="primary" @click="openAdd">添加学生</el-button>
       </div>
       <div>
+        <el-button @click="openBatch">批量审核</el-button>
         <el-button @click="exportEnrollRecord" :loading="exportLoading"
           >导出</el-button
         >
@@ -30,6 +31,7 @@
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
           class="min_table"
+          @selection-change="handleTableChange"
         >
           <el-table-column type="selection" width="50"></el-table-column>
 
@@ -158,6 +160,9 @@
     <ExaminationReview
       v-model="reviewDialog"
       :id="currentId"
+      :is-batch="isBatch"
+      :batch-data="batchData"
+      :enrollStatusMap="enrollStatusMap"
       @on-success="enrollRecordList"
     />
   </div>
@@ -235,6 +240,9 @@ export default {
       photoUid: "",
       reviewDialog: false,
       exportLoading: false,
+      isBatch: false,
+      selection: [],
+      batchData: [],
     };
   },
   created() {
@@ -270,8 +278,22 @@ export default {
       this.exportLoading = false;
       this.downloadFile(res);
     },
+    handleTableChange(selection) {
+      this.selection = selection || [];
+    },
+    openBatch() {
+      if (!this.selection.length) {
+        this.$message.warning("请选择需要审核的学生！");
+        return;
+      }
+      this.batchData = [...this.selection];
+      this.isBatch = true;
+      this.currentId = "";
+      this.reviewDialog = true;
+    },
     // 打开报考审核
     openReview(id) {
+      this.isBatch = false;
       this.currentId = id;
       this.reviewDialog = true;
     },

@@ -3,96 +3,124 @@
   <el-dialog
     title="报考审核"
     :visible.sync="visible"
-    width="1000px"
+    width="1050px"
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="hanldeCancel"
     class="review-dialog"
   >
-    <div class="review-container" v-loading="listLoading">
-      <ul class="review-info">
-        <li class="info-item">
-          <span class="info-item-title">学生姓名</span>
-          <span class="info-item-content">{{ listData.surname }}</span>
-        </li>
-        <li class="info-item">
-          <span class="info-item-title">身份证号</span>
-          <span class="info-item-content">{{ listData.id_card }}</span>
-        </li>
-        <li class="info-item">
-          <span class="info-item-title">籍贯</span>
-          <span class="info-item-content">{{
-            listData.user_province
-              ? listData.user_province + " " + listData.user_city
-              : "--"
-          }}</span>
-        </li>
-        <li class="info-item">
-          <span class="info-item-title">考试计划</span>
-          <span class="info-item-content">{{ listData.plan }}</span>
-        </li>
-        <li class="info-item">
-          <span class="info-item-title">报考省市</span>
-          <span class="info-item-content">{{
-            listData.rule_province
-              ? listData.rule_province + " " + listData.rule_city
-              : "--"
-          }}</span>
-        </li>
-        <li class="info-item">
-          <span class="info-item-title">报考时间</span>
-          <span class="info-item-content">{{ listData.enroll_time }}</span>
-        </li>
-      </ul>
-      <div class="review-table">
-        <ul class="table-header">
-          <li></li>
-          <li>报考要求</li>
-          <li>本人情况</li>
-          <li>
-            <el-checkbox
-              :disabled="listData.audit_res !== 0"
-              v-model="allChecked"
-              @change="handleCheckAllChange"
-            ></el-checkbox>
-            批量达标
-          </li>
-        </ul>
-        <ul class="table-content">
+    <div class="review-container">
+      <div class="review-batch-list" v-if="isBatch">
+        <div class="list-header">
+          <span>已选学生：</span>
+          <span class="check-number">{{ getCheckedNum }}</span>
+        </div>
+        <ul class="list-content">
           <li
-            class="table-row"
-            v-for="(item, index) in listData.audit_item"
-            :key="index"
+            class="list-item"
+            v-for="(item, index) in batchData"
+            :key="item.id"
+            :class="{ 'list-item--active': activeIndex === index }"
+            @click="handleListChange(index)"
           >
-            <span class="table-col">{{ item.title }}</span>
-            <span class="table-col">{{ item.require }}</span>
-            <span class="table-col">
-              <div v-if="item.info.includes('http')" class="table-col-img">
-                <img :src="item.info" alt="" />
-              </div>
-              <span v-else>{{ item.info }}</span>
-            </span>
-            <span class="table-col"
-              ><el-checkbox
-                v-if="listData.audit_res === 0"
-                v-model="item.checked"
-                @change="handleCheckChange"
-              ></el-checkbox>
-              <el-checkbox v-else :value="item.checked"></el-checkbox>
-              达标</span
+            <span class="list-item-name">{{ item.user_realname }}</span>
+            <span
+              class="list-item-status"
+              :style="{ color: statusColors[item.enroll_status] }"
+              >{{ enrollStatusMap[item.enroll_status] }}</span
             >
           </li>
-          <li class="table-row table-row-remark" v-if="listData.audit_item">
-            <span class="remark-title"> 备注信息 </span>
-            <el-input
-              v-if="listData.audit_res === 0"
-              v-model="remark"
-              maxlength="100"
-              placeholder="请输入备注信息"
-            ></el-input>
-            <span class="remark-detail" v-else>{{ listData.comment }}</span>
+        </ul>
+      </div>
+      <div class="review-content" v-loading="listLoading">
+        <ul class="review-info">
+          <li class="info-item">
+            <span class="info-item-title">学生姓名</span>
+            <span class="info-item-content">{{ listData.surname }}</span>
+          </li>
+          <li class="info-item">
+            <span class="info-item-title">身份证号</span>
+            <span class="info-item-content">{{ listData.id_card }}</span>
+          </li>
+          <li class="info-item">
+            <span class="info-item-title">籍贯</span>
+            <span class="info-item-content">{{
+              listData.user_province
+                ? listData.user_province + " " + listData.user_city
+                : "--"
+            }}</span>
+          </li>
+          <li class="info-item">
+            <span class="info-item-title">考试计划</span>
+            <span class="info-item-content">{{ listData.plan }}</span>
+          </li>
+          <li class="info-item">
+            <span class="info-item-title">报考省市</span>
+            <span class="info-item-content">{{
+              listData.rule_province
+                ? listData.rule_province + " " + listData.rule_city
+                : "--"
+            }}</span>
+          </li>
+          <li class="info-item">
+            <span class="info-item-title">报考时间</span>
+            <span class="info-item-content">{{ listData.enroll_time }}</span>
           </li>
         </ul>
+        <div class="review-table">
+          <ul class="table-header">
+            <li></li>
+            <li>报考要求</li>
+            <li>本人情况</li>
+            <li>
+              <el-checkbox
+                :disabled="listData.audit_res !== 0"
+                v-model="allChecked"
+                @change="handleCheckAllChange"
+              ></el-checkbox>
+              批量达标
+            </li>
+          </ul>
+          <ul class="table-content">
+            <li
+              class="table-row"
+              v-for="(item, index) in listData.audit_item"
+              :key="index"
+            >
+              <span class="table-col">{{ item.title }}</span>
+              <span class="table-col">{{ item.require }}</span>
+              <span class="table-col">
+                <div
+                  v-if="item.info.includes('http')"
+                  @click="handlePreview(item.info)"
+                  class="table-col-img"
+                >
+                  <img :src="item.info" alt="" />
+                </div>
+                <span v-else>{{ item.info }}</span>
+              </span>
+              <span class="table-col"
+                ><el-checkbox
+                  v-if="listData.audit_res === 0"
+                  v-model="item.checked"
+                  @change="handleCheckChange"
+                ></el-checkbox>
+                <el-checkbox v-else :value="item.checked"></el-checkbox>
+                达标</span
+              >
+            </li>
+            <li class="table-row table-row-remark" v-if="listData.audit_item">
+              <span class="remark-title"> 备注信息 </span>
+              <el-input
+                v-if="listData.audit_res === 0"
+                v-model="remark"
+                maxlength="100"
+                placeholder="请输入备注信息"
+              ></el-input>
+              <span class="remark-detail" v-else>{{ listData.comment }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <Seal
@@ -128,6 +156,7 @@
         </div>
       </div>
     </div>
+    <PreviewImg ref="view" />
   </el-dialog>
 </template>
 
@@ -148,6 +177,25 @@ export default {
       type: [String, Number],
       default: "",
     },
+    isBatch: {
+      type: Boolean,
+      default: false,
+    },
+    batchData: {
+      type: Array,
+      default: () => [],
+    },
+    enrollStatusMap: {
+      type: Object,
+      default: () => ({
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+      }),
+    },
   },
   data() {
     return {
@@ -157,6 +205,14 @@ export default {
       allChecked: false,
       remark: "",
       btnLoading: false,
+      activeIndex: 0,
+      statusColors: {
+        1: "#2798ee",
+        2: "#FD6552",
+        3: "#FD6500",
+        4: "#43D100",
+      },
+      batchId: "",
     };
   },
   watch: {
@@ -164,12 +220,24 @@ export default {
       this.visible = val;
     },
   },
-
+  computed: {
+    getCheckedNum() {
+      return this.batchData.length;
+    },
+  },
   methods: {
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
+    handleListChange(index) {
+      this.activeIndex = index;
+      this.batchId = this.batchData[index].id;
+      this.auditInfo();
+    },
     //   重置审核
     async handleReset() {
       const data = {
-        id: this.id,
+        id: this.isBatch ? this.batchId : this.id,
       };
       this.btnLoading = true;
       const res = await refresh(data).catch(() => {
@@ -178,8 +246,12 @@ export default {
       this.btnLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("on-success");
-        this.hanldeCancel();
+        if (this.isBatch) {
+          this.auditInfo();
+        } else {
+          this.$emit("on-success");
+          this.hanldeCancel();
+        }
       }
     },
     // 审核通过，驳回
@@ -189,7 +261,7 @@ export default {
         resetParams[key] = this.listData.audit_item[key].checked ? 1 : 0;
       }
       const data = {
-        id: this.id,
+        id: this.isBatch ? this.batchId : this.id,
         audit_res,
         comment: this.remark,
         ...resetParams,
@@ -201,8 +273,12 @@ export default {
       this.btnLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("on-success");
-        this.hanldeCancel();
+        if (this.isBatch) {
+          this.auditInfo();
+        } else {
+          this.$emit("on-success");
+          this.hanldeCancel();
+        }
       }
     },
     // 单选
@@ -228,23 +304,29 @@ export default {
       }
     },
     handleOpen() {
+      this.isBatch && (this.batchId = this.batchData[0].id);
       this.auditInfo();
     },
     async auditInfo() {
+      this.ressetState();
       const data = {
-        id: this.id,
+        id: this.isBatch ? this.batchId : this.id,
       };
       this.listLoading = true;
       const res = await auditInfo(data);
       this.listLoading = false;
       this.listData = res.data;
     },
-
-    hanldeCancel() {
+    ressetState() {
       this.listData = {};
       this.allChecked = false;
       this.remark = "";
+    },
+    hanldeCancel() {
+      this.ressetState();
+      this.activeIndex = 0;
       this.$emit("input", false);
+      this.isBatch && this.$emit("on-success");
     },
   },
 };
@@ -254,63 +336,108 @@ export default {
 .review-dialog {
   .review-container {
     margin-bottom: 20px;
-    .review-info {
-      margin-bottom: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      .info-item {
-        width: calc(100% / 3.2);
-        display: flex;
-        align-items: center;
-        margin: 0 20px 20px 0;
-        &-title {
-          color: #909399;
-          margin-right: 16px;
-        }
-        &-content {
-          color: #606266;
-        }
-      }
-    }
-    .review-table {
+    display: flex;
+    .review-batch-list {
+      width: 200px;
       border: 1px solid #e4e7ed;
-      .table-header {
-        display: flex;
+      margin-right: 20px;
+      flex-shrink: 0;
+      .list-header {
         background-color: #f2f2f2;
-        li {
-          padding: 14px 6px;
-          width: calc(100% / 4);
+        padding: 14px;
+        font-weight: 550;
+        border-bottom: 1px solid #e4e7ed;
+        span {
           color: #909399;
-          font-weight: 550;
-          text-align: center;
+        }
+        .check-number {
+          color: #2798ee;
         }
       }
-      .table-content {
-        height: 400px;
+      .list-content {
         overflow-y: auto;
-        .table-row {
+        height: 499px;
+        .list-item {
+          padding: 14px;
           display: flex;
+          justify-content: space-between;
           align-items: center;
           border-bottom: 1px solid #e4e7ed;
-          .table-col {
-            text-align: center;
-            padding: 14px 6px;
-            width: calc(100% / 4);
+          cursor: pointer;
+          &-name {
             color: #909399;
-            &-img {
-              height: 50px;
+          }
+          &.list-item--active {
+            background-color: #ecf5ff;
+            color: #409eff;
+            .list-item-name {
+              color: #409eff;
             }
           }
         }
-        .table-row-remark {
-          padding: 14px 36px 14px 6px;
-          .remark-title {
-            width: 100px;
+      }
+    }
+    .review-content {
+      flex: 1;
+      .review-info {
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        .info-item {
+          width: calc(100% / 3.3);
+          display: flex;
+          align-items: center;
+          margin: 0 20px 20px 0;
+          &-title {
+            color: #909399;
+            margin-right: 16px;
+          }
+          &-content {
+            color: #606266;
+          }
+        }
+      }
+      .review-table {
+        border: 1px solid #e4e7ed;
+        .table-header {
+          display: flex;
+          background-color: #f2f2f2;
+          li {
+            padding: 14px 6px;
+            width: calc(100% / 4);
+            color: #909399;
+            font-weight: 550;
             text-align: center;
           }
-          .remark-detail {
-            color: #2798ee;
+        }
+        .table-content {
+          height: 400px;
+          overflow-y: auto;
+          .table-row {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e4e7ed;
+            .table-col {
+              text-align: center;
+              padding: 14px 6px;
+              width: calc(100% / 4);
+              color: #909399;
+              &-img {
+                height: 50px;
+                cursor: pointer;
+              }
+            }
+          }
+          .table-row-remark {
+            padding: 14px 36px 14px 6px;
+            .remark-title {
+              width: 100px;
+              text-align: center;
+            }
+            .remark-detail {
+              color: #2798ee;
+            }
           }
         }
       }
