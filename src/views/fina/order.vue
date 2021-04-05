@@ -68,15 +68,14 @@
               :class ="row.pay_status==1?'wordcolor':row.pay_status==3?'wordcolor2':''">
               {{statusMap[row.pay_status] }}
               </div>
-           
             </template>
           </el-table-column>
-
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div>
                  <el-button type="text" @click="Entrydetail(scope.row)">订单详情</el-button>
-                <el-button type="text" @click="Entry(scope.row)"
+                <el-button type="text" @click="Entry(scope.row)" 
+                :class="scope.row.pay_status==3?'entry2' : scope.row.pay_status==0?'entry2' : scope.row.pay_status==1?'entry1': scope.row.pay_status==2?'entry1': scope.row.pay_status==4?'entry2': scope.row.pay_status==5?'entry2':'' "
                 style="margin-left:20px">入账</el-button>
               </div>
             </template>
@@ -119,6 +118,7 @@ export default {
         4: "已作废",
         5: "已退款",
       },
+      pay_status:'',
       listData:[],
       activeIndex: 0,
       pageNum: 1,
@@ -197,26 +197,29 @@ export default {
     //订单入账接口
     async Orderentry() {
       const data = {
-        page: this.pageNum,
-        ...this.searchData,
+        // page: this.pageNum,
+        // ...this.searchData,
         order_id:this.order_id,
-
- 
       }
       const res = await Orderentry(data)
-      console.log( res.data.list)
+      if(res.code==0){
+        this.$message.success(res.message)
+      }
+      // console.log( res.data.list)
       // this.listData = res.data.list
       // this.listTotal = res.data.total
     },
     //搜索模块
     handleSearch(data) {
+    console.log(data)
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        date: data.list ? data.date.join(" - ") : "",
+        date: data.date ? data.date.join(" - ") : "",
       };
       this.Approvalist();
     },
+
     orderDetail(ab) {
       this.$router.push({
         path: '/fina/orderDetail',
@@ -258,13 +261,8 @@ export default {
       this.dialogVisible = false
       order_id,
       this.Orderentry()
+      this.Approvalist()
 
-      // this.$router.push({
-      //   path: '/fina/orderDetail',
-      //   query: {
-      //     order_id:this.order_id,
-      //   },
-      // })
     }
   },
 }
@@ -377,5 +375,11 @@ export default {
     color: #199fff;
     border-color: #199fff;
   }
+}
+.entry1{
+  display: inline;
+}
+.entry2{
+  display: none;
 }
 </style>
