@@ -60,7 +60,16 @@
             label="手机号码"
             min-width="130"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.mobile | filterPhone }}</span>
+              <i
+                class="el-icon-document-copy copy-number"
+                @click="handleCopy(row.mobile)"
+                title="复制"
+              ></i>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="institution_name"
             label="推荐机构"
@@ -265,6 +274,18 @@ export default {
   },
 
   methods: {
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
+      }
+    },
     handleBatch() {
       if (!this.searchData.course_category_id) {
         this.$message.warning("请先按照 所属分类 搜索！");
@@ -558,5 +579,10 @@ header {
 .realname {
   color: #199fff;
   cursor: pointer;
+}
+.copy-number {
+  color: #199fff;
+  cursor: pointer;
+  margin-left: 8px;
 }
 </style>

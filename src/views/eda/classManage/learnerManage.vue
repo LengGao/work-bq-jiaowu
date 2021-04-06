@@ -112,7 +112,7 @@
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="130">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="linkTo(row)">转班</el-button>
