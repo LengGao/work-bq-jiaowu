@@ -5,14 +5,6 @@
     </div>
     <section class="mainwrap">
       <div class="head-search">
-        <!-- <search2
-          :courseTypeShow="true"
-          :contentShow="true"
-          typeTx="punch"
-          api="getHomeclassifiList"
-          inputText="教材名称"
-          @getTable="getTableList"
-        ></search2> -->
         <SearchList
           :options="searchOptions"
           :data="searchData"
@@ -110,7 +102,11 @@
         </div>
       </div>
       <!--添加项目弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible"
+        width="1000px"
+      >
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -132,7 +128,7 @@
               </el-form-item>
             </el-col>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
-              <el-form-item label="所属分类" prop="category_id">
+              <el-form-item label="所属分类">
                 <el-cascader
                   v-model="ruleForm.category_id"
                   :options="selectData"
@@ -238,7 +234,7 @@
               >{{ item.course_name }}</el-tag
             >
           </li>
-          <li @click="courseDialogShow" style="cursor:pointer">
+          <li @click="courseDialogShow(courseTag)" style="cursor:pointer">
             选择
           </li>
         </ul>
@@ -247,9 +243,14 @@
             题库
           </li>
           <li class="project-tag">
-            <el-tag>家</el-tag>
+            <el-tag
+              v-for="item in quesTag"
+              :key="item.id"
+              style="margin:0 5px 5px 0"
+              >{{ item.title }}</el-tag
+            >
           </li>
-          <li style="cursor:pointer">
+          <li style="cursor:pointer" @click="questionShow">
             选择
           </li>
         </ul>
@@ -276,15 +277,20 @@
           >
         </span>
       </el-dialog>
-      <courseDialog
+      <CourseDialog
         v-model="showCourse"
-        @closeCourse="closeCourse"
-        @courseArr="courseArr"
+        @on-coursesuccess="handlecourse"
+        :courseTag="courseTag"
       />
-      <materialDialog
-        v-mode="showMaterial"
-        @closeMaterial="closeMaterial"
-        @materialArr="materialArr"
+      <MaterialDialog
+        v-model="showMaterial"
+        @on-materialsuccess="handleMaterial"
+        :materialTag="materialTag"
+      />
+      <QuestionBank
+        v-model="showQues"
+        :quesTag="quesTag"
+        @on-quesuccess="handleQuestion"
       />
     </section>
   </div>
@@ -292,13 +298,15 @@
 
 <script>
 import { getCateList } from '@/api/sou'
-import courseDialog from './components/courseDialog'
-import materialDialog from './components/materialDialog'
+import CourseDialog from './components/courseDialog'
+import MaterialDialog from './components/materialDialog'
+import QuestionBank from './components/QuestionBank'
 export default {
   name: 'projectManage',
   components: {
-    courseDialog,
-    materialDialog,
+    CourseDialog,
+    MaterialDialog,
+    QuestionBank,
   },
   data() {
     return {
@@ -379,7 +387,9 @@ export default {
       showCourse: false,
       courseTag: [],
       materialTag: [],
+      quesTag: [],
       showMaterial: false,
+      showQues: false,
     }
   },
   created() {
@@ -387,24 +397,27 @@ export default {
     this.$api.getProjectList(this, 'schoolData')
   },
   methods: {
+    handlecourse(selection) {
+      console.log(selection)
+      this.courseTag = selection
+    },
+    handleMaterial(selection) {
+      this.materialTag = selection
+    },
+    handleQuestion(selection) {
+      this.quesTag = selection
+    },
+    questionShow() {
+      this.showQues = true
+    },
     materialDialogShow() {
       this.showMaterial = true
     },
-    courseArr(arr) {
-      console.log(arr)
-      this.courseTag = arr
-    },
-    materialArr(arr) {
-      this.materialTag = arr
-    },
-    closeCourse() {
-      this.showCourse = false
-    },
-    closeMaterial() {
-      this.showMaterial = false
-    },
+
     courseDialogShow() {
       this.showCourse = true
+
+      // this.courseTag  = courseTag
     },
     handleChange() {
       console.log(this.ruleForm.category_id)
@@ -461,6 +474,9 @@ export default {
       }
     },
     handleEdit(ab) {
+      // for (var item in this.ruleForm) {
+      //   this.ruleForm[item] = ''
+      // }
       this.ruleForm.project_id = ab.project_id
       this.dialogTitle = '编辑项目'
       this.dialogVisible = true
@@ -484,6 +500,9 @@ export default {
     },
     getTableList() {},
     projectDialog() {
+      this.courseTag = []
+      this.materialTag = []
+      this.quesTag = []
       this.dialogTitle = '添加项目'
       this.dialogVisible = true
       //初始化参数
@@ -511,6 +530,10 @@ export default {
       //所选教材
       this.ruleForm.textbooks = this.materialTag.map((i) => {
         return i.book_id
+      })
+      //所选题库
+      this.ruleForm.problem = this.quesTag.map((i) => {
+        return i.id
       })
       console.log(this.ruleForm)
       console.log(this.ruleForm.course_id)
@@ -599,6 +622,7 @@ export default {
 .project-tag {
   min-width: 45px;
   width: 100%;
+  margin-top: 4px;
   list-style: none;
   padding-left: 20px;
   overflow: hidden;

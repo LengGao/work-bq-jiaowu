@@ -1,6 +1,15 @@
 <template>
+  <div>fsdg</div>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style lang="scss"></style>
+<template>
   <el-dialog
-    title="选择教材"
+    title="选择题库"
     :visible.sync="visible"
     width="1000px"
     append-to-body
@@ -35,7 +44,7 @@
             label="教材名称"
             show-overflow-tooltip
             min-width="90"
-            prop="book_name"
+            prop="title"
           >
           </el-table-column>
           <el-table-column
@@ -61,8 +70,8 @@
           </p>
         </div>
         <ul>
-          <li v-for="(item, index) in selection" :key="item.book_id">
-            <p>{{ item.book_name }}</p>
+          <li v-for="(item, index) in selection" :key="item.id">
+            <p>{{ item.title }}</p>
             <i class="el-icon-delete" @click="handleRemoveUser(index)"></i>
           </li>
         </ul>
@@ -78,7 +87,7 @@
 </template>
 
 <script>
-import { getBookList, getCateList } from '@/api/sou'
+import { getQuesbank, getCateList } from '@/api/sou'
 export default {
   data() {
     return {
@@ -90,7 +99,7 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        keyboard: '',
+        title: '',
       },
       choseCourse: [],
       searchOptions: [
@@ -103,7 +112,7 @@ export default {
           },
         },
         {
-          key: 'keyboard',
+          key: 'title',
           attrs: {
             placeholder: '课程名称',
           },
@@ -118,7 +127,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    materialTag: {
+    quesTag: {
       type: Array,
       default: () => [],
     },
@@ -132,12 +141,12 @@ export default {
   methods: {
     handleOpen() {
       this.getCateList()
-      this.getBookList()
+      this.getQuesbank()
       this.$nextTick(() => {
-        this.selection = [...this.materialTag]
+        this.selection = [...this.quesTag]
         // 替换掉this.$refs.multipleTable.selection上原有的
         const len = this.$refs.multipleTable.selection.length
-        this.$refs.multipleTable.selection.splice(0, len, ...this.materialTag)
+        this.$refs.multipleTable.selection.splice(0, len, ...this.quesTag)
       })
     },
     hanldeCancel() {
@@ -145,7 +154,7 @@ export default {
       this.pageNum = 1
     },
     handleconfirm() {
-      this.$emit('on-materialsuccess', [...this.selection])
+      this.$emit('on-quesuccess', [...this.selection])
       this.hanldeCancel()
     },
     // 切换列表选择状态
@@ -160,7 +169,7 @@ export default {
     },
     // 指定一个唯一标识。id或者其他唯一的
     getRowKeys(row) {
-      return row.book_id
+      return row.id
     },
 
     // 右侧已选删除
@@ -204,22 +213,22 @@ export default {
       this.searchData = {
         ...data,
       }
-      this.getBookList()
+      this.getQuesbank()
     },
     handlePageChange(val) {
       this.pageNum = val
-      this.getBookList()
+      this.getQuesbank()
     },
-    async getBookList() {
+    async getQuesbank() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
       }
       this.listLoading = true
-      const res = await getBookList(data)
+      const res = await getQuesbank(data)
       this.listLoading = false
-      this.listData = res.data.data
+      this.listData = res.data.list
       this.listTotal = res.data.total
     },
   },

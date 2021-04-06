@@ -405,7 +405,12 @@ let resource = {
           let data = res.data.data
           if (way == 'GET') {
             console.log(data)
+            self.courseTag = data.course
+            self.materialTag = data.textbooks
+            self.quesTag = data.problem
             self.ruleForm = data
+            self.ruleForm.service_period = data.service_period
+            console.log(data.service_period)
           } else {
             self.$message({
               type: 'success',

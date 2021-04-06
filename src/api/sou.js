@@ -288,3 +288,15 @@ export function schoolroomUsage(params) {
     params,
   })
 }
+/**
+ * 题库分页列表
+ * @param {*} data
+ */
+//
+export function getQuesbank(params) {
+  return request({
+    url: '/questionBank/getPageList',
+    method: 'get',
+    params,
+  })
+}
