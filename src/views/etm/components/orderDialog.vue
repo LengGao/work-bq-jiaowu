@@ -42,30 +42,30 @@
 
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="订单总价" prop="order_money">
-                    <div class="ruleWord">{{ schoolData.order_money }}</div>
+                    <div class="ruleWord">￥{{ schoolData.order_money }}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="优惠 小计" prop="reduction">
-                    <div class="ruleWord">{{ schoolData.reduction }}</div>
+                    <div class="ruleWord">￥{{ schoolData.reduction }}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="应收金额" prop="pay_money">
                     <div class="ruleWord">
-                      {{ schoolData.order_money - schoolData.reduction }}
+                      ￥ {{ schoolData.order_money - schoolData.reduction }}
                     </div>
                   </el-form-item>
                 </el-col>
 
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="已付金额" prop="identity_card">
-                    <div class="ruleWord">{{ schoolData.pay_money }}</div>
+                    <div class="ruleWord">￥{{ schoolData.pay_money }}</div>
                   </el-form-item>
                 </el-col>
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="欠费金额" prop="name">
-                    <div class="ruleWord">{{ schoolData.overdue_money }}</div>
+                    <div class="ruleWord">￥{{ schoolData.overdue_money }}</div>
                     <!-- <div class="ruleWord">
                       {{
                         ruleForm.sex == 1
@@ -166,16 +166,16 @@
         <div class="orderDetail_bottm">
           <div class="orderDetail_content">
             <div>
-              订单总价: <span>{{ schoolData.order_money }}</span>
+              订单总价: <span>￥{{ schoolData.order_money }}</span>
             </div>
             <div>
-              优惠总额: <span>{{ schoolData.reduction }}</span>
+              优惠总额: <span>￥{{ schoolData.reduction }}</span>
             </div>
             <div>
               订单应收:
-              <span style="color:#199fff">{{
-                schoolData.order_money - schoolData.reduction
-              }}</span>
+              <span style="color:#199fff"
+                >￥{{ schoolData.order_money - schoolData.reduction }}</span
+              >
             </div>
           </div>
         </div>
@@ -356,6 +356,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
 .orderDetail_bottm {
   margin-top: 20px;
   font-size: 14px;

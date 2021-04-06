@@ -104,14 +104,14 @@
                         <el-input
                           v-model="scope.row.save_price"
                           type="number"
-                          min="0"
+                          :controls="false"
+                          :min="0"
                           :max="
                             parseFloat(scope.row.project_price) -
                               parseFloat(scope.row.lowest_price)
                           "
-                          placeholder
                           size="small"
-                          @blur="
+                          @input="
                             changeAmount(
                               scope.$index,
                               scope.row.save_price,
@@ -147,25 +147,10 @@
                           plain
                           @click="delbtn(scope.$index, projectData)"
                         ></el-button>
-                        <!-- <el-button
-                    type="text"
-                    style="padding-left:40px"
-                    @click="delbtn(scope.row)"
-                    >删除</el-button
-                  > -->
                       </div>
                     </template>
                   </el-table-column>
                 </el-table>
-                <!-- <div class="table_bottom">
-            <div class="table_bottom">
-              <page
-                :data="schoolData.total"
-                :curpage="page"
-                @pageChange="doPageChange"
-              />
-            </div>
-          </div> -->
               </div>
             </el-col>
           </el-row>
@@ -487,6 +472,7 @@ export default {
       this.ruleForm.reduction = reduction
       this.ruleForm.pay_money = this.receivableMoney = receivableMoney
       console.log(order_money, reduction, receivableMoney)
+      this.$forceUpdate()
     },
     choseProject() {
       this.projectVisible = true

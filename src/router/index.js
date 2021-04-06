@@ -227,13 +227,7 @@ export const asyncRouter = [
         meta: { title: '客户管理', icon: 'product-add' },
       },
       //客户管理组件开始
-      {
-        path: 'customeRegist',
-        name: 'customeRegist',
-        component: () => import('@/views/etm/customerManage/customeRegist.vue'),
-        meta: { title: '客户报名', icon: 'product-cate' },
-        hidden: true,
-      },
+
       {
         path: 'onlineStudents',
         name: 'onlineStudents',
