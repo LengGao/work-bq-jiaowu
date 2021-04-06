@@ -69,4 +69,14 @@ import request from '@/utils/request'
     })
 }
 
-
+/**
+ * 通知推送
+ * @param {*} data 
+  */
+ export function noticepush(data) {
+    return request({
+        url: '/SystemAnnouncement/push',
+        method: 'post',
+        data
+    })
+}

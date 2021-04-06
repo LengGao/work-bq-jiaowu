@@ -184,7 +184,7 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        // all:1,
+        all:1,
         pay_status: this.activeStatus,
       }
       const res = await Approvalist(data)
