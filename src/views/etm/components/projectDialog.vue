@@ -74,7 +74,7 @@
       </div>
       <div class="main-right">
         <div class="right-head">
-          <div>已选课程:3</div>
+          <div>已选课程:{{ choseCourse.length }}</div>
           <p @click="clearData">
             清空
           </p>
@@ -112,9 +112,6 @@ export default {
   },
   data() {
     return {
-      getRowKeys(row) {
-        return row.id
-      },
       pageSize: 10,
       dialogWidth: 0,
       openStatus: this.projectVisible,
@@ -164,22 +161,14 @@ export default {
     handleOpen() {
       this.getProject()
       this.getCateList()
-      if (this.projectData.length > 0) {
-        for (var i = 0; i < this.projectData.length; i++) {
-          for (let index = 0; index < this.listData.length; index++) {
-            if (
-              this.projectData[i].project_id == this.listData[index].project_id
-            ) {
-              console.log(index)
-              //服务端返回需选中项的id
-              this.$refs.multipleTable.toggleRowSelection(
-                this.listData[index],
-                true
-              ) //row.ndex 选中
-            }
-          }
-        }
-      }
+      // 把已经选择的回显上
+      this.$nextTick(() => {
+        this.choseCourse = [...this.projectData]
+        console.log(this.selection)
+        // 替换掉this.$refs.multipleTable.selection上原有的
+        const len = this.$refs.multipleTable.selection.length
+        this.$refs.multipleTable.selection.splice(0, len, ...this.projectData)
+      })
     },
     //项目列表
     async getProject() {
@@ -198,46 +187,40 @@ export default {
 
       console.log(this.listTotal)
       console.log(this.projectData)
-      if (this.projectData.length > 0) {
-        this.choseCourse = []
-        for (var i = 0; i < this.projectData.length; i++) {
-          for (let index = 0; index < this.listData.length; index++) {
-            if (
-              this.projectData[i].project_id == this.listData[index].project_id
-            ) {
-              console.log(index)
-              //服务端返回需选中项的id
-              this.$refs.multipleTable.toggleRowSelection(
-                this.listData[index],
-                true
-              ) //row.ndex 选中
-            }
-          }
-        }
-        console.log(this.choseCourse)
+    },
+    // 指定一个唯一标识。id或者其他唯一的
+    getRowKeys(row) {
+      return row.project_id
+    },
+    // 切换列表选择状态
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
       }
     },
     clearData() {
-      this.$refs.multipleTable.clearSelection()
-      this.choseCourse = []
+      this.toggleSelection()
     },
     doClose() {
       this.pageNum = 1
-      this.choseCourse = []
-      this.$refs.multipleTable.clearSelection()
+      // this.choseCourse = []
+      // this.$refs.multipleTable.clearSelection()
       this.$emit('projectDialog', false)
     },
     resetForm() {},
     handleconfirm() {
-      this.$emit('courseArr', this.choseCourse)
+      this.$emit('courseArr', [...this.choseCourse])
       this.doClose()
     },
     deleteCourse(index) {
       this.choseCourse.splice(index, 1)
     },
-    handleSelectionChange(val) {
-      console.log(val)
-      this.choseCourse = val
+    handleSelectionChange(choseCourse) {
+      this.choseCourse = choseCourse ? [...choseCourse] : []
     },
 
     async getCateList() {

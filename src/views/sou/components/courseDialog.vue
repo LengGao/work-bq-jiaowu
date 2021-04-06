@@ -1,9 +1,10 @@
 <template>
   <el-dialog
     title="选择课程"
-    :visible.sync="dialogVisible"
-    width="70%"
+    :visible.sync="visible"
+    width="1000px"
     append-to-body
+    :close-on-click-modal="false"
     :before-close="closeCourse"
   >
     <SearchList
@@ -21,8 +22,9 @@
           element-loading-text="loading"
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
-          style="width: 100%"
+          height="400"
           class="min_table"
+          heig
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
         >
@@ -87,7 +89,7 @@ export default {
     return {
       listData: [],
       listLoading: false,
-      dialogVisible: true,
+      visible: this.value,
       pageNum: 1,
       listTotal: 0,
       searchData: {
@@ -115,7 +117,16 @@ export default {
       listData: [],
     }
   },
+  watch: {
+    value(val) {
+      this.visible = val
+    },
+  },
   props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
     // selectData: {
     //   type: Array,
     //   default: () => [],
@@ -137,6 +148,10 @@ export default {
     handleSelectionChange(val) {
       console.log(val)
       this.choseCourse = val
+    },
+    hanldeCancel() {
+      this.$emit('input', false)
+      this.pageNum = 1
     },
     closeCourse() {
       this.$emit('closeCourse')

@@ -277,12 +277,12 @@
         </span>
       </el-dialog>
       <courseDialog
-        v-if="showCourse"
+        v-model="showCourse"
         @closeCourse="closeCourse"
         @courseArr="courseArr"
       />
       <materialDialog
-        v-if="showMaterial"
+        v-mode="showMaterial"
         @closeMaterial="closeMaterial"
         @materialArr="materialArr"
       />
@@ -329,8 +329,10 @@ export default {
         {
           key: 'category_id',
           type: 'cascader',
+
           attrs: {
             clearable: true,
+            placeholder: '选择类别',
             options: [{ value: 1, label: 'test' }],
           },
         },
@@ -550,6 +552,7 @@ export default {
 .head-search {
   margin-bottom: 20px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 .project-h3 {
