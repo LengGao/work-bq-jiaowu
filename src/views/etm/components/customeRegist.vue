@@ -8,7 +8,7 @@
       append-to-body
       width="60%"
       class="add-teaching-material"
-      style="min-width:1070px"
+      style="min-width: 1070px"
     >
       <el-form
         label-width="90px"
@@ -37,7 +37,7 @@
             <el-form-item label="开通网课">
               <el-radio-group
                 v-model="ruleForm.online_course"
-                style="width:240px"
+                style="width: 240px"
               >
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="2">否</el-radio>
@@ -107,7 +107,7 @@
                           min="0"
                           :max="
                             parseFloat(scope.row.project_price) -
-                              parseFloat(scope.row.lowest_price)
+                            parseFloat(scope.row.lowest_price)
                           "
                           placeholder
                           size="small"
@@ -139,7 +139,7 @@
 
                   <el-table-column label="操作" fixed="right" min-width="200">
                     <template slot-scope="scope">
-                      <div style="display:flex;justify-content:center">
+                      <div style="display: flex; justify-content: center">
                         <el-button
                           type="danger"
                           icon="el-icon-delete"
@@ -178,7 +178,7 @@
                 <div class="expense_summary_label">
                   订单总价<span
                     >￥{{
-                      ruleForm.order_money ? ruleForm.order_money : ''
+                      ruleForm.order_money ? ruleForm.order_money : ""
                     }}</span
                   >
                 </div>
@@ -191,7 +191,7 @@
               <el-col :sm="4">
                 <div class="expense_summary_label">
                   应收金额<span style="color: #fd6500"
-                    >￥{{ receivableMoney ? receivableMoney : '' }}</span
+                    >￥{{ receivableMoney ? receivableMoney : "" }}</span
                   >
                 </div>
               </el-col>
@@ -244,8 +244,8 @@
         <div class="customer_sum_up">
           <h3>备注信息</h3>
           <el-row class="wrap">
-            <el-col :sm="8" style="display:flex;margin-top:10px">
-              <div class="expense_summary_label" style="margin-left:20px">
+            <el-col :sm="8" style="display: flex; margin-top: 10px">
+              <div class="expense_summary_label" style="margin-left: 20px">
                 实缴金额
                 <span style="color: #fd6500">￥{{ ruleForm.pay_money }}</span>
               </div>
@@ -254,7 +254,7 @@
                   >￥{{
                     receivableMoney - ruleForm.pay_money
                       ? receivableMoney - ruleForm.pay_money
-                      : ''
+                      : ""
                   }}</span
                 >
               </div>
@@ -278,7 +278,7 @@
         </div>
         <el-row>
           <el-form-item>
-            <div style="display:flex;justify-content:flex-end">
+            <div style="display: flex; justify-content: flex-end">
               <el-button @click="doClose">取消</el-button>
               <el-button type="primary" @click="orderDeatilShow"
                 >报名缴费</el-button
@@ -303,16 +303,16 @@
 </template>
 
 <script>
-import orderDialog from './orderDialog'
-import { uploadImageUrl } from '@/api/educational'
-import projectDialog from './projectDialog'
+import orderDialog from "./orderDialog";
+import { uploadImageUrl } from "@/api/educational";
+import projectDialog from "./projectDialog";
 export default {
   components: {
     orderDialog,
     projectDialog,
   },
   props: {
-    addVisible: {
+    value: {
       type: Boolean,
       default: false,
     },
@@ -336,51 +336,51 @@ export default {
       headers: {
         token: this.$store.state.user.token,
       },
-      openStatus: this.addVisible,
+      openStatus: this.value,
       schoolData: [],
       payWays: [
         {
           value: 1,
-          label: '现金',
+          label: "现金",
         },
         {
           value: 2,
-          label: '微信',
+          label: "微信",
         },
         {
           value: 3,
-          label: '支付宝',
+          label: "支付宝",
         },
         {
           value: 4,
-          label: '聚合收单',
+          label: "聚合收单",
         },
         {
           value: 5,
-          label: '银行转账',
+          label: "银行转账",
         },
         {
           value: 6,
-          label: '收钱吧',
+          label: "收钱吧",
         },
       ],
       ruleForm: {
-        online_course: '',
+        online_course: "",
         order_token: 0,
-        aid: '',
-        uid: '',
-        todo_id: '',
-        pay_type: '',
-        pay_money: '',
+        aid: "",
+        uid: "",
+        todo_id: "",
+        pay_type: "",
+        pay_money: "",
         order_money: 0,
-        project: '',
+        project: "",
         reduction: 0,
         overdue_money: 0,
-        surname: '',
-        mobile: '',
-        id_card_number: '',
-        receipt_file: '',
-        supplement_time: '',
+        surname: "",
+        mobile: "",
+        id_card_number: "",
+        receipt_file: "",
+        supplement_time: "",
       },
       customerInfo: {},
       receivableMoney: 0,
@@ -388,32 +388,32 @@ export default {
       projectVisible: false,
       projectData: [],
       page: 1,
-      imgSrc: '',
-    }
+      imgSrc: "",
+    };
   },
 
   created() {},
   mounted() {},
 
   watch: {
-    addVisible(val) {
-      this.openStatus = val
+    value(val) {
+      this.openStatus = val;
     },
     projectData(newVal, oldVal) {
       // if (this.projectData.length > 1) {
-      var order_money = 0 //订单总价
-      var reduction = 0 //优惠总额
-      var receivableMoney = 0 //应收金额
+      var order_money = 0; //订单总价
+      var reduction = 0; //优惠总额
+      var receivableMoney = 0; //应收金额
       this.projectData.forEach((i) => {
-        order_money = order_money + parseFloat(i.project_price)
-        reduction = reduction + parseFloat(i.save_price ? i.save_price : 0)
-        receivableMoney = receivableMoney + parseFloat(i.pay_price)
-      })
-      this.ruleForm.order_money = order_money
-      this.ruleForm.reduction = reduction
-      this.ruleForm.pay_money = this.receivableMoney = receivableMoney
+        order_money = order_money + parseFloat(i.project_price);
+        reduction = reduction + parseFloat(i.save_price ? i.save_price : 0);
+        receivableMoney = receivableMoney + parseFloat(i.pay_price);
+      });
+      this.ruleForm.order_money = order_money;
+      this.ruleForm.reduction = reduction;
+      this.ruleForm.pay_money = this.receivableMoney = receivableMoney;
 
-      console.log(order_money, reduction, receivableMoney)
+      console.log(order_money, reduction, receivableMoney);
     },
     // },
   },
@@ -421,75 +421,76 @@ export default {
     payNum() {},
     handleAvatarSuccess(res, file) {
       // console.log(res)
-      this.imgSrc = res.data?.data?.url || ''
-      this.ruleForm.receipt_file = this.imgSrc
+      this.imgSrc = res.data?.data?.url || "";
+      this.ruleForm.receipt_file = this.imgSrc;
       // console.log(this.ruleForm.receipt_file)
     },
     beforeAvatarUpload(file) {
-      const isImg = file.type.indexOf('image') !== -1
-      const isLt20M = file.size / 1024 / 1024 < 20
+      const isImg = file.type.indexOf("image") !== -1;
+      const isLt20M = file.size / 1024 / 1024 < 20;
       if (!isImg) {
-        this.$message.error('请上传图片')
+        this.$message.error("请上传图片");
       }
       if (!isLt20M) {
-        this.$message.error('上传图片大小不能超过 20MB!')
+        this.$message.error("上传图片大小不能超过 20MB!");
       }
-      return isLt20M && isImg
+      return isLt20M && isImg;
     },
     getCourseArr(arr) {
-      console.log(arr)
+      console.log(arr);
       arr.forEach((i) => {
-        i.pay_price = i.project_price
-        i.id = i.project_id
-        i.lower_price = i.lowest_price
-        i.save_price = 0
-      })
-      this.projectData = arr
+        i.pay_price = i.project_price;
+        i.id = i.project_id;
+        i.lower_price = i.lowest_price;
+        i.save_price = 0;
+      });
+      this.projectData = arr;
     },
     getorderStatus(status) {
-      this.orderVisible = status
+      this.orderVisible = status;
     },
     getprojectStatus(status) {
-      this.projectVisible = status
+      this.projectVisible = status;
     },
     doClose() {
       for (var item in this.ruleForm) {
-        this.ruleForm[item] = ''
+        this.ruleForm[item] = "";
       }
-      this.projectData = []
-      this.$emit('addDialog', false)
+      this.projectData = [];
+      this.$emit("input", false);
     },
     changeAmount(av, ab) {
-      this.projectData[av].save_price = parseFloat(ab)
-      console.log(this.projectData[av].save_price)
+      this.projectData[av].save_price = parseFloat(ab);
+      console.log(this.projectData[av].save_price);
       this.projectData[av].pay_price =
         parseFloat(this.projectData[av].project_price) -
-        parseFloat(this.projectData[av].save_price)
+        parseFloat(this.projectData[av].save_price);
       //应收金额小于最低金额
       if (this.projectData[av].pay_price < this.projectData[av].lowest_price) {
-        this.$message.error('该项目优惠金额已超')
+        this.$message.error("该项目优惠金额已超");
         this.projectData[av].save_price =
-          this.projectData[av].project_price - this.projectData[av].lowest_price
-        this.projectData[av].pay_price = this.projectData[av].lowest_price
+          this.projectData[av].project_price -
+          this.projectData[av].lowest_price;
+        this.projectData[av].pay_price = this.projectData[av].lowest_price;
       }
-      var order_money = 0 //订单总价
-      var reduction = 0 //优惠总额
-      var receivableMoney = 0 //应收金额
+      var order_money = 0; //订单总价
+      var reduction = 0; //优惠总额
+      var receivableMoney = 0; //应收金额
       this.projectData.forEach((i) => {
         // console.log(i.save_price)
         // i.save_price? i.save_price:0
-        order_money = order_money + parseFloat(i.project_price)
-        receivableMoney = receivableMoney + parseFloat(i.pay_price)
-        reduction = reduction + parseFloat(i.save_price || 0)
-      })
-      console.log(reduction)
-      this.ruleForm.order_money = order_money
-      this.ruleForm.reduction = reduction
-      this.ruleForm.pay_money = this.receivableMoney = receivableMoney
-      console.log(order_money, reduction, receivableMoney)
+        order_money = order_money + parseFloat(i.project_price);
+        receivableMoney = receivableMoney + parseFloat(i.pay_price);
+        reduction = reduction + parseFloat(i.save_price || 0);
+      });
+      console.log(reduction);
+      this.ruleForm.order_money = order_money;
+      this.ruleForm.reduction = reduction;
+      this.ruleForm.pay_money = this.receivableMoney = receivableMoney;
+      console.log(order_money, reduction, receivableMoney);
     },
     choseProject() {
-      this.projectVisible = true
+      this.projectVisible = true;
       // let obj = {
       //   id: 4,
       //   project_name: '北区教育系统集成专用教',
@@ -503,20 +504,20 @@ export default {
     //跳转到客户详情页面
 
     delbtn(index, rows) {
-      rows.splice(index, 1)
+      rows.splice(index, 1);
     },
     orderDeatilShow() {
       // this.orderVisible = true
       this.ruleForm.overdue_money =
-        this.receivableMoney - this.ruleForm.pay_money
-      this.ruleForm.order_token = Math.floor(Math.random() * 1000000 + 1) + ''
-      this.projectData.forEach((i) => {})
-      this.ruleForm.project = JSON.stringify(this.projectData)
+        this.receivableMoney - this.ruleForm.pay_money;
+      this.ruleForm.order_token = Math.floor(Math.random() * 1000000 + 1) + "";
+      this.projectData.forEach((i) => {});
+      this.ruleForm.project = JSON.stringify(this.projectData);
       // console.log(this.ruleForm)
-      this.$api.createOrder(this, this.ruleForm)
+      this.$api.createOrder(this, this.ruleForm);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -572,7 +573,7 @@ h3 {
   font-size: 16px;
   padding-left: 4px;
   border-left: 4px solid #199fff;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
@@ -580,7 +581,7 @@ h3 {
   margin: 30px 0;
   h3 {
     padding-left: 6px;
-    font-family: 'Arial Normal', 'Arial', sans-serif;
+    font-family: "Arial Normal", "Arial", sans-serif;
     font-weight: 400;
     font-style: normal;
     margin-bottom: 20px;
@@ -614,7 +615,7 @@ h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
