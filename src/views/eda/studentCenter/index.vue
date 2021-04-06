@@ -36,6 +36,7 @@
         :uid="detailData.uid"
       />
     </section>
+    <!-- 报名 -->
     <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
   </div>
 </template>

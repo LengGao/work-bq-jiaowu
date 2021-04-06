@@ -179,6 +179,7 @@ export default {
       this.checkedIds = [];
       this.listLoading = true;
       const data = {
+        all: 1,
         uid: this.uid,
       };
       const res = await getOrderList(data);

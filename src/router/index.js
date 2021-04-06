@@ -323,6 +323,20 @@ export const asyncRouter = [
         hidden: true,
       },
       {
+        path: 'returnVisit',
+        name: 'returnVisit',
+        component: () => import('@/views/eda/classManage/returnVisit.vue'),
+        meta: { title: '学习回访', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'returnVisitDetail',
+        name: 'returnVisitDetail',
+        component: () => import('@/views/eda/classManage/returnVisitDetail.vue'),
+        meta: { title: '回访详情', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
         path: 'examStatis',
         name: 'examStatis',
         component: () => import('@/views/eda/classManage/examStatis.vue'),
