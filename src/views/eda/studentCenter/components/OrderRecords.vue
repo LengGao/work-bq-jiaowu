@@ -21,7 +21,13 @@
           label="订单编号"
           show-overflow-tooltip
           min-width="160"
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="orderDetail(row)">
+              {{ row.order_no }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="pay_status"
           label="订单状态"
@@ -146,6 +152,14 @@ export default {
     this.getOrderList();
   },
   methods: {
+    orderDetail(ab) {
+      this.$router.push({
+        path: "/fina/orderDetail",
+        query: {
+          order_id: ab.order_id,
+        },
+      });
+    },
     // 按钮操作
     excludes(row, type) {
       const auth = {

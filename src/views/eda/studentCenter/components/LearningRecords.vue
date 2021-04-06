@@ -27,7 +27,7 @@
         <component
           :is="getComponent"
           :uid="uid"
-          :graduate="$attrs.datas.is_graduate || 0"
+          :graduate="$attrs.datas.is_graduate"
         />
       </div>
     </div>

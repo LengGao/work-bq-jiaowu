@@ -108,6 +108,10 @@ export default {
   methods: {
     handlePreview() {
       const srcs = Object.values(this.photoData).filter((src) => !!src);
+      if (!srcs.length) {
+        this.$message.warning("暂无图片");
+        return;
+      }
       this.$refs.view.show(srcs);
     },
     // 下载

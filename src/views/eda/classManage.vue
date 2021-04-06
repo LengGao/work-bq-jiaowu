@@ -78,7 +78,13 @@
                 >
                 <el-button
                   type="text"
-                  @click="toLearnerManage(row.classroom_id)"
+                  @click="
+                    toLearnerManage(
+                      row.classroom_id,
+                      row.course_id,
+                      row.project_id
+                    )
+                  "
                   >学生管理</el-button
                 >
 
@@ -249,11 +255,13 @@ export default {
         path: "/eda/massMessage",
       });
     },
-    toLearnerManage(classId) {
+    toLearnerManage(classId, course_id, project_id) {
       this.$router.push({
         path: "/eda/learnerManage",
         query: {
           classId,
+          course_id,
+          project_id,
         },
       });
     },

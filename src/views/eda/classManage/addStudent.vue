@@ -13,6 +13,9 @@
           @on-search="handleSearch"
         />
       </div>
+      <div>
+        <el-button @click="handleBatchAdd">批量添加</el-button>
+      </div>
       <!--表格-->
       <div class="userTable">
         <el-table
@@ -26,55 +29,57 @@
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
         >
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             label="学员编号"
             show-overflow-tooltip
             min-width="90"
-            prop="classroom_id"
+            prop="course_student_id"
           >
           </el-table-column>
           <el-table-column
-            prop="classroom_name"
+            prop="course_username"
             label="学员姓名"
-            min-width="180"
+            min-width="110"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="staff_name"
+            prop="telphone"
             label="手机号码"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.telphone | filterPhone }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="student_number"
+            prop="create_time"
             label="注册时间"
-            min-width="110"
+            min-width="130"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="student_number"
+            prop="institution_name"
             label="所属机构"
-            min-width="110"
+            min-width="130"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="student_number"
-            label="所属校区"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="student_number"
+            prop="project_name"
             label="项目名称"
-            min-width="110"
+            min-width="220"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="batchConfirm(row.classroom_id)"
+                <el-button
+                  type="text"
+                  @click="addConfirm(row.course_student_id, row.intent_id)"
                   >添加</el-button
                 >
               </div>
@@ -96,7 +101,7 @@
 <script>
 import { cloneOptions } from "@/utils/index";
 import { getInstitutionSelectData } from "@/api/sou";
-import { getStudentList, addstudents, getproject } from "@/api/eda";
+import { getbycoursestudet, addstudents, getproject } from "@/api/eda";
 export default {
   data() {
     return {
@@ -106,7 +111,6 @@ export default {
       listTotal: 0,
       searchData: {
         date: "",
-        project_id: "",
         organization_id: [],
         keyboard: "",
       },
@@ -132,57 +136,63 @@ export default {
           },
         },
         {
-          key: "project_id",
-          type: "select",
-          options: [],
-          optionValue: "project_id",
-          optionLabel: "project_name",
-          attrs: {
-            placeholder: "所属项目",
-            clearable: true,
-          },
-        },
-        {
           key: "keyboard",
           attrs: {
             placeholder: "学生姓名/手机号码",
           },
         },
       ],
+      selection: [],
     };
   },
 
   created() {
-    this.getStudentList();
+    this.getbycoursestudet();
     this.getInstitutionSelectData();
     this.getproject();
   },
 
   methods: {
+    handleSeletChange(selection) {
+      this.selection = selection || [];
+    },
     // 批量添加
-    batchConfirm(id) {
-      this.$confirm("确定要添加学生吗?", { type: "warning" })
+
+    handleBatchAdd() {
+      if (!this.selection.length) {
+        this.$message.warning("请先选择学生！");
+        return;
+      }
+      const ids = this.selection.map((item) => item.course_student_id);
+      const intent_id = this.selection[0].intent_id;
+      this.$confirm("确定要添加选中学生吗?", { type: "warning" })
         .then(() => {
-          this.addstudents(id);
+          this.addstudents(ids, intent_id);
         })
         .catch(() => {});
     },
-    async addstudents(classroom_id) {
-      // const query = JSON.parse(this.$route.query);
+    // 单个添加
+    addConfirm(id, intent_id) {
+      this.$confirm("确定要添加此学生吗?", { type: "warning" })
+        .then(() => {
+          this.addstudents(id, intent_id);
+        })
+        .catch(() => {});
+    },
+    async addstudents(course_students_id, intent_id) {
       const data = {
-        course_students_id: "",
-        intent_id: "",
-        classroom_id,
+        course_students_id,
+        intent_id,
+        classroom_id: this.$route.query.classId,
       };
       const res = await addstudents(data);
       if (res.code === 0) {
-        this.$message.success("转班成功");
-        this.getStudentList();
+        this.$message.success(res.message);
+        this.getbycoursestudet();
       }
     },
     handleSearch(data) {
       const times = data.date || ["", ""];
-      delete data.date;
       this.pageNum = 1;
       this.searchData = {
         ...data,
@@ -190,23 +200,24 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
-      this.getStudentList();
+      this.getbycoursestudet();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getStudentList();
+      this.getbycoursestudet();
     },
-    async getStudentList() {
+    async getbycoursestudet() {
       const data = {
-        type: 2,
-        course_id: "",
+        course_id: this.$route.query?.course_id || 0,
+        project_id: this.$route.query?.project_id || "",
         page: this.pageNum,
         ...this.searchData,
       };
+      delete data.date;
       this.listLoading = true;
-      const res = await getStudentList(data);
+      const res = await getbycoursestudet(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.data;
       this.listTotal = res.data.total;
     },
     // 获取项目下拉

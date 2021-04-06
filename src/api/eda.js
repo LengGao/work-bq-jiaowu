@@ -65,7 +65,7 @@ export function getcourseallclass(params) {
  */
 export function getStudentList(params) {
   return request({
-    url: '/classstudents/studentmanage',
+    url: '/classstudents/studentlist',
     method: 'get',
     params,
   })
@@ -432,5 +432,13 @@ export function batchchangestudents(data) {
     url: '/classstudents/batchchangestudents',
     method: 'post',
     data,
+  })
+}
+// 获取未分班的学生
+export function getbycoursestudet(params) {
+  return request({
+    url: '/classstudents/getbycoursestudent',
+    method: 'get',
+    params,
   })
 }

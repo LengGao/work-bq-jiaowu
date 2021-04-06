@@ -3,7 +3,11 @@
   <div class="title-progress">
     <Title text="学习进度" />
     <div class="step">
-      <el-steps :active="graduate + 1" finish-status="success">
+      <el-steps
+        :active="graduate"
+        finish-status="success"
+        process-status="success"
+      >
         <el-step title="报名"></el-step>
         <el-step title="培训"></el-step>
         <el-step title="考试"></el-step>
@@ -26,56 +30,56 @@
         <el-table-column
           prop="course_name"
           label="课程名称"
-          min-width="160"
+          min-width="220"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           prop="video_time_total"
           label="学习时长"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="video_progress"
           label="学习进度"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="total_problem"
           label="做题总数"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="problem_rate"
           label="做题进度"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="real_topic_score"
           label="历年真题平均分"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="exam_score"
           label="模拟考试平均分"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="self_determination_score"
           label="自主出题最高分"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="live_time"
           label="参加直播时长"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
       </el-table>

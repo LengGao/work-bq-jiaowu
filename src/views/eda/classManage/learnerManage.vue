@@ -12,7 +12,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary">导出数据</el-button>
+          <!-- <el-button type="primary">导出数据</el-button> -->
           <el-button type="primary" @click="addStudent">添加学生</el-button>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default {
         },
       ],
       selectionIds: [],
-      courseIds: [],
+      courseStudentIds: [],
     };
   },
 
@@ -187,10 +187,10 @@ export default {
     handleTabelSelectChange(selection) {
       if (selection) {
         this.selectionIds = selection.map((item) => item.uid);
-        this.courseIds = [selection[0].course_id];
+        this.courseStudentIds = selection.map((item) => item.course_student_id);
       } else {
         this.selectionIds = [];
-        this.courseIds = [];
+        this.courseStudentIds = [];
       }
     },
     //批量移除
@@ -209,7 +209,7 @@ export default {
       }
       const query = {
         uid: this.selectionIds,
-        course_students_id: this.courseIds,
+        course_students_id: this.courseStudentIds,
         old_classroom_id: this.$route.query.classId,
       };
       // console.log(encodeURI(JSON.stringify(query)));
@@ -222,7 +222,7 @@ export default {
     linkTo(row) {
       const query = {
         uid: [row.uid],
-        course_students_id: [row.course_id],
+        course_students_id: [row.course_student_id],
         old_classroom_id: this.$route.query.classId,
       };
       this.$router.push({ name: "shift", query: JSON.stringify(query) });
@@ -230,6 +230,7 @@ export default {
     addStudent() {
       this.$router.push({
         path: "/eda/addStudent",
+        query: this.$route.query || {},
       });
     },
     handlePageChange(val) {
@@ -284,7 +285,7 @@ export default {
     //班级学生列表
     async getClassstudentList() {
       this.selectionIds = [];
-      this.courseIds = [];
+      this.courseStudentIds = [];
       const data = {
         class_id: this.$route.query.classId,
         page: this.pageNum,
