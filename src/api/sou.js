@@ -51,11 +51,22 @@ export function insertCategory(data) {
 /**
  *
  * /**
- *  删除分类列
+ *  删除分类
  */
 export function deleteCategory(data) {
   return request({
     url: '/courseCategory/deleteCategory',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ *  分类排序
+ */
+ export function updateCategorySort(data) {
+  return request({
+    url: '/courseCategory/updateCategorySort',
     method: 'post',
     data,
   })
