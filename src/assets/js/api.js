@@ -595,6 +595,99 @@ let api = {
       },
     })
   },
+  //获取班级群发短信记录
+  getMessageInfo(self, name) {
+    let config = {
+      classroom_id: self.classroom_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getMessageInfo,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
+  //班级发送短信
+  sendMessage(self, ruleForm) {
+    let config = {
+      classroom_id: self.classroom_id,
+      type: ruleForm.type,
+      title: ruleForm.title,
+      content: ruleForm.content,
+      teacher: ruleForm.teacher,
+      time: ruleForm.time,
+      address: ruleForm.address,
+      remarks: ruleForm.remarks,
+      uid_arr: ruleForm.uid_arr,
+      wechat_notice: ruleForm.wechat_notice,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.sendMessage,
+      data: config,
+      method: 'POST',
+      then(res) {
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.ruleForm = {
+            title: '',
+            type: '',
+            teacher: '',
+            time: '',
+            content: '',
+            address: '',
+            remarks: '',
+            uid_arr: '',
+          }
+          self.$api.getMessageInfo(self, 'schoolData')
+        }
+      },
+    })
+  },
+  //班级学员列表
+  getclasstudents(self, name, data = {}) {
+    let keyboard = ''
+    let organization_id = ''
+    let school_id = ''
+    if (data.name != '' || data.name != undefined) {
+      keyboard = data.name
+    }
+    if (data.organization_id != '' || data.organization_id != undefined) {
+      organization_id = data.organization_id
+    }
+    if (data.institution_id != '' || data.institution_id != undefined) {
+      school_id = data.institution_id
+    }
+    let config = {
+      course_id: self.$route.query.course_id,
+      class_id: self.$route.query.classroom_id,
+      keyboard: keyboard,
+      organization_id: organization_id,
+      page: self.page,
+      school_id: school_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getclasstudents,
+      data: config,
+      method: 'GET',
+      then(res) {
+        res.data.data.data.forEach((i) => {
+          i.addChose = 0
+        })
+        console.log(res.data.data.data)
+        console.log(res.data.data)
+        self[name] = res.data.data
+      },
+    })
+  },
 }
 
 Object.assign(

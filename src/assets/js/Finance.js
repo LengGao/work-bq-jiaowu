@@ -42,10 +42,15 @@ let Finance = {
       data: config,
       method: 'GET',
       then(res) {
-        console.log(res.data.data.pay_log)
-        let data = res.data.data.pay_log
+        console.log(res.data.data)
+        let data = res.data.data
         if (res.data.code == 0) {
+          self.projectData =[]
           self[name] = data
+          console.log(data.project)
+          self.projectData.push(JSON.parse(data.project)) 
+          // console.log( self.projectData )
+          self.pay_log = data.pay_log
           self.ruleForm = res.data.data
         }
       },

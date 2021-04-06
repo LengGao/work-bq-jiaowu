@@ -82,6 +82,9 @@ export default {
   getAllForPageList: 'arrange/getAllForPageList',
   exportExcelSchedule: '/arrange/exportExcel',
   deleteClass: '/arrange/deleted',
+  getclasstudents: '/classstudents/index',
+  getMessageInfo: '/classroom/getMessageInfo',
+  sendMessage: '/classroom/sendMessage',
 
   //系统配置
   getBucketList: '/oss/getBucketList',

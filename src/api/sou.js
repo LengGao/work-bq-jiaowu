@@ -15,8 +15,8 @@ export function getBookList(params) {
   })
 }
 /**
- * 
-  * 新增教材
+ *
+ * 新增教材
  * @param {*} data
  */
 export function addBook(data) {
@@ -49,7 +49,7 @@ export function insertCategory(data) {
   })
 }
 /**
- * 
+ *
  * /**
  *  删除分类列
  */
@@ -61,7 +61,7 @@ export function deleteCategory(data) {
   })
 }
 /**
- * 
+ *
  * /**
  *  编辑分类列表
  */
@@ -73,7 +73,7 @@ export function updateCategory(data) {
   })
 }
 /**
- * 
+ *
  * 编辑教材
  * @param {*} data
  */
@@ -274,5 +274,17 @@ export function getStorageOptions() {
   return request({
     url: '/storage/getstoragelist',
     method: 'get',
+  })
+}
+/**
+ * 教室使用情况
+ * @param {*} data
+ */
+//
+export function schoolroomUsage(params) {
+  return request({
+    url: 'Schoolroom/schoolroomUsage',
+    method: 'get',
+    params,
   })
 }

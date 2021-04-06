@@ -1,5 +1,5 @@
 <template>
-  <div class="mainwrap">
+  <div class="main">
     <header>
       <ul>
         <li
@@ -387,9 +387,10 @@ export default {
     }
   },
   mounted() {
-    // this.classroom_id = this.$route.query.classroom_id
-    // this.$api.getMessageInfo(this, 'schoolData')
-    // this.$api.getclasstudents(this, 'studentData')
+    this.classroom_id = this.$route.query.classroom_id
+    this.$api.getMessageInfo(this, 'schoolData')
+    // this.$api.getTeacherList(this, 'teacherData')
+    this.$api.getclasstudents(this, 'studentData')
   },
 
   methods: {

@@ -5,6 +5,9 @@
     </div>
     <div class="mainPart">
       <!--搜索模块-->
+      <div style="color: #909399;margin-bottom:10px">
+        * 默认显示为近7天的数据,想要查看更多数据请点击搜索
+      </div>
       <header>
         <SearchList
           :options="searchOptions"
@@ -24,9 +27,7 @@
           >
         </div>
       </header>
-      <div style="color: #909399;">
-        * 当前显示为近7天的数据,想要查看更多数据请点击搜索
-      </div>
+
       <el-row class="dataPanel" style="">
         <template>
           <el-col :lg="{ span: '4-8' }">
@@ -44,7 +45,7 @@
               <div>
                 <h3>报名客户</h3>
                 <div class="time_num">
-                  {{ analysis.total_refund_money }}
+                  {{ analysis.total_sign }}
                 </div>
               </div>
             </div>
@@ -70,7 +71,7 @@
           <el-col :lg="{ span: '4-8' }">
             <div class="timeCard">
               <div>
-                <h3>汇款金额</h3>
+                <h3>收款金额</h3>
                 <div class="time_num">￥{{ analysis.total_pay_money }}</div>
               </div>
             </div>
@@ -116,7 +117,13 @@
             label="手机号码"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div>
+                {{ row.mobile | filterPhone }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="sex"
             label="性别"
@@ -148,7 +155,14 @@
             label="推荐机构"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div v-if="row.from_organization_name">
+                {{ row.from_organization_name }}
+              </div>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
 
           <el-table-column
             label="渠道来源"
@@ -407,7 +421,7 @@ export default {
     }
   },
   created() {
-    this.searchData.date = this.AddDays(new Date(), 7)
+    this.date = this.searchData.date = this.AddDays(new Date(), 7)
     this.getCateList()
     this.getCustomerList()
     // this.getInstitutionList()
@@ -447,8 +461,12 @@ export default {
       if (m <= 9) m = '0' + m
       if (d <= 9) d = '0' + d
       var cdate = y + '-' + m + '-' + d
-      date = cdate + ' - ' + nowcdate
-      return date
+      // date = cdate + ' - ' + nowcdate
+      var dateArr = []
+      dateArr.push(cdate)
+      dateArr.push(nowcdate)
+
+      return dateArr
       // return cdate
     },
 
@@ -459,12 +477,15 @@ export default {
     //客户列表
     async getCustomerList() {
       this.checkedIds = []
+
       this.intent_id = ''
+      console.log(this.searchData.date)
       const data = {
         page: this.pageNum,
 
         ...this.searchData,
-        // date: this.date,
+
+        date: this.searchData.date[0] + ' - ' + this.searchData.date[1],
         // all: 1,
       }
       console.log(data)
@@ -562,7 +583,8 @@ export default {
         ...data,
         from_org: data.from_org ? data.from_org.pop() : '',
         category_id: data.category_id ? data.category_id.pop() : '',
-        date: times[0] + ' - ' + times[1],
+        date: times,
+        // date: times[0] + ' - ' + times[1],
       }
       this.getCustomerList()
     },
@@ -700,7 +722,7 @@ header {
   .time_num {
     padding-top: 10px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: baseline;
     font-family: 'Microsoft YaHei UI', sans-serif;
     font-weight: 400;
