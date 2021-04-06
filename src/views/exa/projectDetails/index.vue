@@ -162,7 +162,6 @@
       :id="currentId"
       :is-batch="isBatch"
       :batch-data="batchData"
-      :enrollStatusMap="enrollStatusMap"
       @on-success="enrollRecordList"
     />
   </div>
