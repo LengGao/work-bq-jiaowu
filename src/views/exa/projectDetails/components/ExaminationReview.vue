@@ -26,8 +26,8 @@
             <span class="list-item-name">{{ item.user_realname }}</span>
             <span
               class="list-item-status"
-              :style="{ color: statusColors[item.enroll_status] }"
-              >{{ enrollStatusMap[item.enroll_status] }}</span
+              :style="{ color: statusColors[item.audit_res] }"
+              >{{ applyStatusMap[item.audit_res] }}</span
             >
           </li>
         </ul>
@@ -185,17 +185,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    enrollStatusMap: {
-      type: Object,
-      default: () => ({
-        0: "",
-        1: "",
-        2: "",
-        3: "",
-        4: "",
-        5: "",
-      }),
-    },
   },
   data() {
     return {
@@ -207,12 +196,16 @@ export default {
       btnLoading: false,
       activeIndex: 0,
       statusColors: {
-        1: "#2798ee",
+        0: "#2798ee",
+        1: "#43D100",
         2: "#FD6552",
-        3: "#FD6500",
-        4: "#43D100",
       },
       batchId: "",
+      applyStatusMap: {
+        0: "待审核",
+        1: "审核通过",
+        2: "驳回",
+      },
     };
   },
   watch: {
@@ -247,6 +240,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         if (this.isBatch) {
+          this.batchData[this.activeIndex].audit_res = 0;
           this.auditInfo();
         } else {
           this.$emit("on-success");
@@ -274,6 +268,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         if (this.isBatch) {
+          this.batchData[this.activeIndex].audit_res = audit_res;
           this.auditInfo();
         } else {
           this.$emit("on-success");
@@ -307,6 +302,7 @@ export default {
       this.isBatch && (this.batchId = this.batchData[0].id);
       this.auditInfo();
     },
+    //审核详情
     async auditInfo() {
       this.ressetState();
       const data = {
@@ -317,6 +313,7 @@ export default {
       this.listLoading = false;
       this.listData = res.data;
     },
+    //重置用到的数据
     ressetState() {
       this.listData = {};
       this.allChecked = false;

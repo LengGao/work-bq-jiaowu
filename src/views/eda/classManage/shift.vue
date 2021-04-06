@@ -120,8 +120,8 @@ export default {
       };
       const res = await batchchangestudents(data);
       if (res.code === 0) {
-        this.$message.success("转班成功");
-        this.getClassList();
+        this.$message.success(res.message);
+        this.$router.back();
       }
     },
     handleSearch(data) {

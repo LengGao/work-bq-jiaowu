@@ -11,9 +11,9 @@
         @on-search="handleSearch"
       />
       <div>
-        <el-button style="margin-right: 20px" @click="handleBatch"
+        <!-- <el-button style="margin-right: 20px" @click="handleBatch"
           >批量分班</el-button
-        >
+        > -->
         <el-checkbox v-model="checked" @change="handleChecked"
           >未分班学生</el-checkbox
         >
@@ -45,7 +45,7 @@
           <el-table-column
             prop="realname"
             label="学生姓名"
-            min-width="110"
+            min-width="100"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -58,32 +58,38 @@
           <el-table-column
             prop="mobile"
             label="手机号码"
-            min-width="150"
+            min-width="130"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="institution_name"
             label="推荐机构"
-            min-width="100"
+            min-width="150"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="schoole_name"
             label="所属校区"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column
             prop="classroom_name"
             label="所属班级"
-            min-width="150"
+            min-width="230"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{
+                row.classroom.map((item) => item.classroom_name).join("，")
+              }}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column
             prop="create_time"
             label="创建时间"
-            min-width="100"
+            min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="200">
@@ -105,7 +111,7 @@
         />
       </div>
     </div>
-    <el-dialog
+    <!-- <el-dialog
       title="批量分班"
       :visible.sync="dialogVisible"
       width="500px"
@@ -143,18 +149,13 @@
           >确 定</el-button
         >
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </section>
 </template>
 
 <script>
 import { cloneOptions } from "@/utils/index";
-import {
-  getStudentList,
-  getproject,
-  getcourseallclass,
-  addstudents,
-} from "@/api/eda";
+import { getStudentList, getproject, addstudents } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
   name: "myClients",
@@ -209,6 +210,7 @@ export default {
           },
           attrs: {
             placeholder: "所属分类",
+            filterable: true,
             clearable: true,
             options: [],
           },
@@ -222,6 +224,7 @@ export default {
           attrs: {
             placeholder: "所属项目",
             clearable: true,
+            filterable: true,
           },
         },
         {
@@ -229,19 +232,9 @@ export default {
           type: "cascader",
           attrs: {
             placeholder: "推荐机构",
+            filterable: true,
             clearable: true,
             options: [],
-          },
-        },
-        {
-          key: "classroom_id",
-          type: "select",
-          options: [],
-          optionValue: "classroom_id",
-          optionLabel: "classroom_name",
-          attrs: {
-            placeholder: "所属班级",
-            clearable: true,
           },
         },
         {
@@ -320,17 +313,7 @@ export default {
     // 当分类选择时
     handleTypeChange(ids) {
       const id = ids ? [...ids].pop() : "";
-      this.getcourseallclass(id);
       this.getproject(id);
-    },
-    // 获取班级下拉
-    async getcourseallclass(category_id) {
-      const data = { category_id };
-      const res = await getcourseallclass(data);
-      if (res.code === 0) {
-        this.classOptions = res.data;
-        this.searchOptions[5].options = res.data;
-      }
     },
     // 获取项目下拉
     async getproject(category_id = "") {
@@ -342,6 +325,15 @@ export default {
         this.searchOptions[3].options = res.data;
       }
     },
+    //  // 获取班级下拉
+    // async getcourseallclass(category_id) {
+    //   const data = { category_id };
+    //   const res = await getcourseallclass(data);
+    //   if (res.code === 0) {
+    //     this.classOptions = res.data;
+    //     this.searchOptions[5].options = res.data;
+    //   }
+    // },
     handleSearch(data) {
       const times = data.date || ["", ""];
       delete data.date;

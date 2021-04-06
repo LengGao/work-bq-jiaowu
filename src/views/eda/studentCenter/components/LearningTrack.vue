@@ -17,9 +17,8 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="id"
           label="序号"
-          show-overflow-tooltip
+          type="index"
           min-width="90"
         ></el-table-column>
         <el-table-column

@@ -210,7 +210,6 @@ export default {
       ruleForm:{
             category_name:'',
             pid:'',
-            category_name: '',
             sort: '',
             index_category_name:'',
             describe:'',

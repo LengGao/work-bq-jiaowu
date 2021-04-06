@@ -11,6 +11,10 @@
   >
     <el-table
       :data="listData"
+      v-loading="listLoading"
+      element-loading-text="loading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="#fff"
       style="width: 100%"
       class="min_table"
       :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
@@ -49,7 +53,9 @@
       >
         <template slot-scope="{ row }">
           <div class="operation_btn">
-            <el-button type="text">考勤统计</el-button>
+            <el-button type="text" @click="toStatistics(row)"
+              >考勤统计</el-button
+            >
           </div>
         </template>
       </el-table-column>
@@ -76,6 +82,7 @@ export default {
     return {
       visible: this.value,
       listData: [],
+      listLoading: false,
     };
   },
   watch: {
@@ -84,6 +91,15 @@ export default {
     },
   },
   methods: {
+    toStatistics(row) {
+      this.$router.push({
+        path: "/eda/attendanceStatistics",
+        query: {
+          class_hour_id: row.id,
+          arrange_id: row.arrange_id,
+        },
+      });
+    },
     hanldeCancel() {
       this.$emit("input", false);
     },
@@ -92,7 +108,11 @@ export default {
       const data = {
         arrange_id: this.id,
       };
-      const res = await getClassOurList(data);
+      this.listLoading = true;
+      const res = await getClassOurList(data).catch(() => {
+        this.listLoading = false;
+      });
+      this.listLoading = false;
       this.listData = res.data;
     },
   },
