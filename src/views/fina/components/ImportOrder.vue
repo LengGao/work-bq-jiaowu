@@ -44,6 +44,9 @@
               v-model="formData.category_id"
               placeholder="请选择所属分类"
               :options="typeOptions"
+              filterable
+          clearable
+          :props="{ checkStrictly: true }"
             >
             </el-cascader>
           </el-form-item>

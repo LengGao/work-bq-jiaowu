@@ -34,6 +34,9 @@
               placeholder="请选择分类"
               v-model="formData.category_id"
               :options="selectData"
+              filterable
+              clearable
+              :props="{ checkStrictly: true }"
             ></el-cascader>
           </el-form-item>
         </el-col>
@@ -127,8 +130,8 @@
 </template>
 
 <script>
-import { uploadImageUrl } from '@/api/educational'
-import { addBook, getBookById, editBook } from '@/api/sou'
+import { uploadImageUrl } from "@/api/educational";
+import { addBook, getBookById, editBook } from "@/api/sou";
 export default {
   props: {
     value: {
@@ -137,11 +140,11 @@ export default {
     },
     title: {
       type: String,
-      default: '',
+      default: "",
     },
     id: {
       type: [String, Number],
-      default: '',
+      default: "",
     },
     selectData: {
       type: Array,
@@ -156,51 +159,51 @@ export default {
       },
       visible: this.value,
       formData: {
-        book_name: '',
-        category_id: '',
-        book_cover: '',
-        chief_editor: '',
-        book_price: '',
-        book_isbn: '',
-        press: '',
+        book_name: "",
+        category_id: "",
+        book_cover: "",
+        chief_editor: "",
+        book_price: "",
+        book_isbn: "",
+        press: "",
       },
       rules: {
         book_name: [
-          { required: true, message: '请输入教材名称', trigger: 'blur' },
+          { required: true, message: "请输入教材名称", trigger: "blur" },
         ],
         category_id: [
-          { required: true, message: '请选择分类', trigger: 'change' },
+          { required: true, message: "请选择分类", trigger: "change" },
         ],
       },
       addLoading: false,
       uploadLoading: false,
-    }
+    };
   },
   watch: {
     value(val) {
-      this.visible = val
+      this.visible = val;
     },
   },
   methods: {
     handleOpen() {
       if (this.id) {
-        this.getBookById()
+        this.getBookById();
       } else {
-        this.formData.category_id = 1
+        this.formData.category_id = 1;
         // 为了清空cascader的值
         setTimeout(() => {
-          this.formData.category_id = ''
-        }, 10)
+          this.formData.category_id = "";
+        }, 10);
       }
     },
     async getBookById() {
       const data = {
         book_id: this.id,
-      }
-      const res = await getBookById(data)
+      };
+      const res = await getBookById(data);
       if (res.code === 0) {
         for (const k in this.formData) {
-          this.formData[k] = res.data[k]
+          this.formData[k] = res.data[k];
         }
       }
     },
@@ -210,66 +213,66 @@ export default {
         category_id: Array.isArray(this.formData.category_id)
           ? this.formData.category_id.pop()
           : this.formData.category_id,
-      }
+      };
       if (this.id) {
-        data.book_id = this.id
+        data.book_id = this.id;
       }
-      this.addLoading = true
-      const api = this.id ? editBook : addBook
+      this.addLoading = true;
+      const api = this.id ? editBook : addBook;
       const res = await api(data).catch(() => {
-        this.addLoading = false
-      })
-      this.addLoading = false
+        this.addLoading = false;
+      });
+      this.addLoading = false;
       if (res.code === 0) {
-        this.$message.success(`教材${this.id ? '编辑' : '新增'}成功`)
-        this.hanldeCancel()
-        this.$emit('on-success')
+        this.$message.success(`教材${this.id ? "编辑" : "新增"}成功`);
+        this.hanldeCancel();
+        this.$emit("on-success");
       }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit()
+          this.submit();
         }
-      })
+      });
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
       for (const k in this.formData) {
-        this.formData[k] = ''
+        this.formData[k] = "";
       }
-      this.hanldeCancel()
+      this.hanldeCancel();
     },
     hanldeCancel() {
-      this.$emit('input', false)
+      this.$emit("input", false);
     },
     hanldeDelete() {
-      this.formData.book_cover = ''
+      this.formData.book_cover = "";
     },
     handleUploadError() {
-      this.$message.error('上传失败')
-      this.uploadLoading = false
+      this.$message.error("上传失败");
+      this.uploadLoading = false;
     },
     handleAvatarSuccess(res) {
-      this.uploadLoading = false
-      this.formData.book_cover = res.data?.data?.url || ''
+      this.uploadLoading = false;
+      this.formData.book_cover = res.data?.data?.url || "";
     },
     beforeAvatarUpload(file) {
-      const isImg = file.type.indexOf('image') !== -1
-      const isLt20M = file.size / 1024 / 1024 < 20
+      const isImg = file.type.indexOf("image") !== -1;
+      const isLt20M = file.size / 1024 / 1024 < 20;
       if (!isImg) {
-        this.$message.error('请上传图片')
-        return
+        this.$message.error("请上传图片");
+        return;
       }
       if (!isLt20M) {
-        this.$message.error('上传图片大小不能超过 20MB!')
-        return
+        this.$message.error("上传图片大小不能超过 20MB!");
+        return;
       }
 
-      this.uploadLoading = true
+      this.uploadLoading = true;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

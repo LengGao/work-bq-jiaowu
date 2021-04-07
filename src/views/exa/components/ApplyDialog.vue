@@ -19,10 +19,11 @@
       <el-form-item label="所属分类" prop="cate_id">
         <el-cascader
           style="width: 100%"
-          :props="{ checkStrictly: true }"
           v-model="formData.cate_id"
           placeholder="请选择所属分类"
           filterable
+          clearable
+          :props="{ checkStrictly: true }"
           :options="typeOptions"
           @change="handleTypeChange"
         >

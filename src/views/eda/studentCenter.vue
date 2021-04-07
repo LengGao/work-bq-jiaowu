@@ -219,6 +219,7 @@ export default {
           },
           attrs: {
             placeholder: "所属分类",
+             props: { checkStrictly: true },
             filterable: true,
             clearable: true,
             options: [],
