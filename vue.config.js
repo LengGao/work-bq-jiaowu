@@ -15,13 +15,8 @@ module.exports = {
         target: 'http://thing.com',
         //target: 'http://testadmin.beiqujy.com/apidata', //测试
         //target: 'http://dpadmin.beiqujy.com/apidata', //测试
-<<<<<<< HEAD
         //target: 'http://dongpei.local', //孝华
         //target: 'http://a.cc',
-=======
-        // target: 'http://dongpei.local', //孝华
-        target: 'http://a.cc',
->>>>>>> 030b636a4e06263b27db90e23d2d02780a0a1a5d
         //target: 'http://www.beiqujy.com/apidata',
         // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
         changeOrigin: true,
