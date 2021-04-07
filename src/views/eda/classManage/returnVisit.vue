@@ -8,7 +8,9 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary">添加回访记录</el-button>
+        <el-button type="primary" @click="createReturnVisit"
+          >添加回访记录</el-button
+        >
       </div>
       <!--表格-->
       <div class="userTable">
@@ -27,26 +29,27 @@
           <el-table-column label="序号" width="50" type="index">
           </el-table-column>
           <el-table-column
-            prop="classroom_name"
+            prop="create_time"
             label="回访时间"
-            min-width="110"
+            min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="category_name"
+            prop="follow_user_name"
             label="回访人"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="project_name"
+            prop="state_rate"
             label="回访数量"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+          </el-table-column>
           <el-table-column
-            prop="staff_name"
+            prop="update_time"
             label="最后更新时间"
             min-width="140"
             show-overflow-tooltip
@@ -74,7 +77,7 @@
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
+import { getReturnVisit, createReturnVisit } from "@/api/eda";
 export default {
   data() {
     return {
@@ -84,7 +87,7 @@ export default {
       listTotal: 0,
       searchData: {
         date: "",
-        keyboard: "",
+        staff_name: "",
       },
       searchOptions: [
         {
@@ -99,7 +102,7 @@ export default {
           },
         },
         {
-          key: "keyboard",
+          key: "staff_name",
           attrs: {
             placeholder: "回访人姓名",
           },
@@ -114,10 +117,19 @@ export default {
   },
 
   created() {
-    this.getClassList();
+    this.getReturnVisit();
   },
 
   methods: {
+    async createReturnVisit() {
+      const data = {
+        class_id: this.$route.query?.id || "",
+      };
+      const res = await createReturnVisit(data);
+      if (res.code === 0) {
+        this.toReturnVisitDetail(res.data?.id || "", 1);
+      }
+    },
     handleSearch(data) {
       const times = data.date || ["", ""];
       this.pageNum = 1;
@@ -126,29 +138,32 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
-      this.getClassList();
+      this.getReturnVisit();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.getReturnVisit();
     },
-    async getClassList() {
+    async getReturnVisit() {
       const data = {
+        class_id: this.$route.query?.id || "",
         page: this.pageNum,
         ...this.searchData,
       };
       delete data.date;
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await getReturnVisit(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
-    toReturnVisitDetail(id) {
+    toReturnVisitDetail(id, isAdd) {
       this.$router.push({
         name: "returnVisitDetail",
         query: {
+          class_id: this.$route.query?.id || "",
           id,
+          isAdd,
         },
       });
     },

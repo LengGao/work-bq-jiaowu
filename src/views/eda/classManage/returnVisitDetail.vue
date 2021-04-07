@@ -8,36 +8,45 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div>
-          <el-button>复位</el-button>
-          <el-button type="primary">更新记录</el-button>
+        <div v-if="isAdd">
+          <el-button @click="handleReset">取消</el-button>
+          <el-button type="primary" @click="updateFollow">保存记录</el-button>
+        </div>
+        <div v-else>
+          <el-button @click="handleReset">复位</el-button>
+          <el-button type="primary" @click="updateFollow">更新记录</el-button>
         </div>
       </div>
       <ul class="class-info">
         <li class="info-item">
           <span class="info-item-label">班级名称</span>
-          <span class="info-item-value">2021系统集成春季1班</span>
+          <span class="info-item-value">{{ classInfo.classroom_name }}</span>
         </li>
         <li class="info-item">
           <span class="info-item-label">班主任</span>
-          <span class="info-item-value">集成春</span>
+          <span class="info-item-value">{{ classInfo.teacher_name }}</span>
         </li>
         <li class="info-item">
           <span class="info-item-label">学生人数</span>
-          <span class="info-item-value">10000</span>
+          <span class="info-item-value">{{ classInfo.total_students }}</span>
         </li>
         <li class="info-item">
           <span class="info-item-label">数据截止时间</span>
-          <span class="info-item-value">2020-02-20</span>
+          <span class="info-item-value">{{ classInfo.datetime }}</span>
         </li>
         <li class="info-item">
           <span class="info-item-label">回访人</span>
-          <span class="info-item-value">集成春</span>
+          <span class="info-item-value">{{ classInfo.my_name }}</span>
         </li>
         <li class="info-item">
           <span class="info-item-label">下次回访时间</span>
           <span class="info-item-value">
-            <el-date-picker v-model="date" type="date" placeholder="选择日期">
+            <el-date-picker
+              v-model="nextFollowTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期"
+            >
             </el-date-picker
           ></span>
         </li>
@@ -59,51 +68,60 @@
           <el-table-column label="学员编号" min-width="80" prop="id">
           </el-table-column>
           <el-table-column
-            prop="classroom_name"
+            prop="surname"
             label="学员姓名"
             min-width="110"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="category_name"
+            prop="mobile"
             label="手机号码"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.mobile | filterPhone }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="project_name"
+            prop="org_name"
             label="所属机构"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="staff_name"
+            prop="learn_rate"
             label="学习进度"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="staff_name"
+            prop="problem_rate"
             label="做题进度"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="staff_name"
+            prop="attendance_num"
             label="出勤次数"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="staff_name"
+            prop="attendance_rate"
             label="出勤率"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="沟通内容" fixed="right" min-width="180">
+          <el-table-column label="沟通内容" fixed="right" min-width="250">
             <template slot-scope="{ row }">
-              <el-input type="text" placeholder="请输入"></el-input>
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 1 }"
+                v-model="row.remark"
+                placeholder="请输入"
+              ></el-input>
             </template>
           </el-table-column>
         </el-table>
@@ -120,7 +138,11 @@
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
+import {
+  getReturnVisitDetail,
+  followClassroomInfo,
+  updateFollow,
+} from "@/api/eda";
 import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
@@ -130,10 +152,9 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-      date: "",
       searchData: {
-        organization_id: "",
-        keyboard: "",
+        organization_id: [],
+        value: "",
       },
       searchOptions: [
         {
@@ -147,45 +168,89 @@ export default {
           },
         },
         {
-          key: "keyboard",
+          key: "value",
           attrs: {
-            placeholder: "回访人姓名",
+            placeholder: "学员姓名/手机号码",
           },
         },
       ],
-
-      currentId: "",
-      dialogTitle: "添加班级",
-      dialogVisible: false,
-      typeOptions: [],
+      classInfo: {},
+      nextFollowTime: "",
     };
   },
-
+  computed: {
+    isAdd() {
+      return !!this.$route.query?.isAdd;
+    },
+  },
   created() {
     this.getInstitutionSelectData();
-    this.getClassList();
+    this.followClassroomInfo();
+    this.getReturnVisitDetail();
   },
 
   methods: {
+    // 重置
+    handleReset() {
+      this.nextFollowTime = "";
+      this.getReturnVisitDetail();
+    },
+    // 更新记录
+    async updateFollow() {
+      if (!this.listData.length) {
+        this.$message.warning("暂无学员信息！");
+        return;
+      }
+      const param = this.listData
+        .filter((item) => item.remark)
+        .map(({ id, remark }) => ({
+          id,
+          remark,
+        }));
+      const data = {
+        param,
+        follow_id: this.$route.query?.id || "",
+        next_follow_time: this.nextFollowTime,
+      };
+      const res = await updateFollow(data);
+      if (res.code === 0) {
+        this.nextFollowTime = "";
+        this.getReturnVisitDetail();
+        this.$message.success(res.message);
+      }
+    },
+    // 获取回访班级信息
+    async followClassroomInfo() {
+      const data = {
+        class_id: this.$route.query?.class_id || "",
+      };
+      const res = await followClassroomInfo(data);
+      if (res.code === 0) {
+        this.classInfo = res.data;
+      }
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
         organization_id: data.organization_id.pop(),
       };
-      this.getClassList();
+      this.getReturnVisitDetail();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.getReturnVisitDetail();
     },
-    async getClassList() {
+    // 回访详情列表
+    async getReturnVisitDetail() {
       const data = {
         page: this.pageNum,
+        class_id: this.$route.query?.class_id || "",
+        id: this.$route.query?.id || "",
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await getReturnVisitDetail(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
