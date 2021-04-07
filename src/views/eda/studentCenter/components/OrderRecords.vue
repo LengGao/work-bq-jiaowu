@@ -43,13 +43,21 @@
           label="订单总价"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.order_money }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="reduction"
           label="优惠金额"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.reduction }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="order_money"
           label="应收金额"
@@ -57,7 +65,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>{{ (row.order_money - row.reduction).toFixed(2) }}</span>
+            <span>￥{{ (row.order_money - row.reduction).toFixed(2) }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -65,7 +73,11 @@
           label="实收金额"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.pay_money }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="overdue_money"
           label="欠缴金额"
@@ -73,16 +85,11 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span class="overdue-money">{{ row.overdue_money }}</span>
+            <span class="overdue-money">￥{{ row.overdue_money }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="200"
-          max-width="200"
-        >
+        <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="{ row }">
             <div class="operation_btn">
               <el-button
