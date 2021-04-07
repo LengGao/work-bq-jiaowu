@@ -1,6 +1,6 @@
 <template>
   <div class="workbench">
-    <el-tabs :value="activeName" class="workbench-tab">
+    <!-- <el-tabs :value="activeName" class="workbench-tab">
       <el-tab-pane
         label="管理员工作台"
         name="5"
@@ -18,7 +18,7 @@
         name="3"
         v-if="activeName === '3'"
       ></el-tab-pane>
-    </el-tabs>
+    </el-tabs> -->
     <template v-if="activeName">
       <component :is="getComponent" />
     </template>
