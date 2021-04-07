@@ -5,64 +5,117 @@
     </div>
     <section class="mainwrap">
       <div class="client_head">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
-        <el-button type="primary" @click="addClassiFion">新建通知</el-button>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
+        <el-button type="primary" @click="addClassiFion"
+          >新建通知</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
-          <el-table-column prop="id" label="序号" min-width="80" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="title" label="通知标题" min-width="200" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column label="通知内容" prop="content" min-width="180" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <span>
-                {{scope.row.content | removeTag}}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="receiver_name" label="通知对象" min-width="150" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="read_count" label="已读人数" min-width="80" show-overflow-tooltip>
-            <template slot-scope="scope">
-              <el-button type="text" @click="readDetail(scope.row)"> {{scope.row.read_count}}</el-button>
-            </template>
-
-          </el-table-column>
-          <el-table-column label="是否推送" min-width="120" show-overflow-tooltip>
-            <template slot-scope="{row}">
-              <div v-if="row.sent==1" :class="row.sent==1?'wordcolor':''">
-                {{noticeMap[row.sent] }}
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%;"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          class="min_table">
+          <el-table-column
+            prop="id"
+            label="序号"
+            min-width="180"
+            column-key="role_id"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="title"
+            label="通知标题"
+            min-width="180"
+            column-key="role_id"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="digest"
+            label="通知内容"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="receiver_name"
+            label="通知对象"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            label="是否推送"
+            min-width="180"
+            show-overflow-tooltip> 
+           <template slot-scope="{row}">
+              <div v-if="row.sent==1"
+              :class ="row.sent==1?'wordcolor':''">
+              {{noticeMap[row.sent] }}
               </div>
-              <div v-if="row.sent==0" @click="noticeDetail(row)">
-                <el-button type="text"> {{noticeMap[row.sent] }}</el-button>
+              <div v-if="row.sent==0"
+              @click="noticeDetail(row)"
+              >
+             <el-button type="text"> {{noticeMap[row.sent] }}</el-button>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="editNotice(scope.row)" :class="scope.row.sent==1?'details':''">编辑</el-button>
-                <el-button type="text" @click="handleDelete(scope.row)" :class="scope.row.sent==1?'details':''">删除</el-button>
-                <el-button type="text" :class="scope.row.sent==0?'details':''" @click="viewdetails(scope.row)">查看详情</el-button>
+                <el-button type="text" @click="editNotice(scope.row)"
+                 :class="scope.row.sent==1?'details':''"
+                  >编辑</el-button>
+                <el-button type="text" @click="handleDelete(scope.row)"
+                 :class="scope.row.sent==1?'details':''"
+                  >删除</el-button>
+                <el-button type="text"
+                :class="scope.row.sent==0?'details':''"
+                @click="viewdetails(scope.row)"
+                >查看详情</el-button>
               </div>
             </template>
           </el-table-column>
           <el-pagination background layout="prev, pager, next" :total="1000">
           </el-pagination>
         </el-table>
-        <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"/>
         </div>
       </div>
       <!-- 弹窗 -->
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="45%">
         <div>
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="80px"
+            class="demo-ruleForm">
             <el-form-item label="通知标题" prop="title">
-              <el-input v-model="ruleForm.title" placeholder="请输入通知标题" style="width:300px"></el-input>
+              <el-input
+                v-model="ruleForm.title"
+                placeholder="请输入通知标题"
+                style="width:300px"
+              ></el-input>
             </el-form-item>
-            <quill-editor ref="myTextEditor" v-model="ruleForm.content" prop="content" :options="editorOption" style="display:block;height:280px;margin-bottom:80px;margin-top:20px">
-            </quill-editor>
-            <!-- <el-form-item
+            <quill-editor
+              ref="myTextEditor"
+              v-model="ruleForm.content"
+              prop="content"
+              :options="editorOption"
+              style="display:block;height:280px;margin-bottom:40px;margin-top:20px"
+            ></quill-editor>
+            <el-form-item
               label="内容摘要"
               prop="digest"
               style="margin-top:80px;">
@@ -71,11 +124,18 @@
                 placeholder="请输入内容摘要"
                 style="width:100%;"
               ></el-input>
-            </el-form-item> -->
+            </el-form-item>
             <div class="abstract">
               <el-form-item label="通知对象" prop="receiver">
-                <el-select v-model="ruleForm.receiver" multiple placeholder="请选择账号身份（可多选）">
-                  <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+                <el-select
+                  v-model="ruleForm.receiver"
+                  multiple 
+                  placeholder="请选择账号身份（可多选）">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -94,7 +154,8 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >确 定</el-button>
         </span>
       </el-dialog>
       <!-- 弹窗 -->
@@ -105,53 +166,47 @@
           </h3>
           <div class="notictitle">
             <p>发布时间：{{ruleForm.update_time}}</p>
-            <p>发布人：{{ruleForm.staff_name}}</p>
-            <p>已读人数：{{ruleForm.read_count}}</p>
+            <p>发布人：</p>
+            <p>已读人数 </p>
           </div>
           <div class="noticontent">
-            <div v-html="ruleForm.content"></div>
+            {{ruleForm.content}}
           </div>
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >确 定</el-button>
         </span>
-      </el-dialog>
+      </el-dialog> 
       <!-- 弹窗 -->
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible3" width="25%">
-        <span style="font-size:20px;">是否进行通知消息推送？</span>
+       <span style="font-size:20px;">是否进行通知消息推送？</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible3 = false">取 消</el-button>
-          <el-button type="primary" @click="pushentry">确 定</el-button>
+          <el-button type="primary" @click="pushentry"
+            >确 定</el-button>
         </span>
-      </el-dialog>
-      <Newnotice v-model="dialogVisible4" />
+      </el-dialog> 
+
     </section>
   </div>
 </template>
+
 <script>
-import {
-  noticelist,
-  noticecreate,
-  noticeupdate,
-  getReceiverSelect,
-  noticedelete,
-  noticeinfo,
-  noticepush,
-} from '@/api/system'
+import { noticelist,noticecreate,noticeupdate,getReceiverSelect,noticedelete,noticeinfo,noticepush } from '@/api/system'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
-import Newnotice from './components/newnotice'
 export default {
   name: 'role',
   data() {
     return {
-      id: '',
+      id:'',
       noticeMap: {
-        1: '已推送',
-        0: '未推送',
+        1: "已推送",
+        0: "未推送",
       },
       // 搜索框
       searchOptions: [
@@ -163,13 +218,12 @@ export default {
           },
         },
       ],
-      options: [],
+      options:[],
       //搜索数据
       searchData: {
-        category_id: [],
-        search_box: '',
-      },
-      listData: [],
+      category_id: [],
+      search_box: '',},
+      listData:[],
       selectData: [],
       pageNum: 1,
       listTotal: 0,
@@ -181,7 +235,6 @@ export default {
       dialogVisible: false,
       dialogVisible2: false,
       dialogVisible3: false,
-      dialogVisible4: false,
       schoolData: [],
       content: '',
       applay: '',
@@ -190,12 +243,13 @@ export default {
       },
       ruleForm: {
         type: [],
-        datatime: '',
-        content: '',
+        datatime:''
       },
       rules: {
         title: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
-        abstract: [{ required: true, message: '请输入公告摘要', trigger: 'blur' }],
+        abstract: [
+          { required: true, message: '请输入公告摘要', trigger: 'blur' },
+        ],
         type: [
           {
             type: 'array',
@@ -208,101 +262,92 @@ export default {
     }
   },
   components: {
-    quillEditor,
-    Newnotice,
+  quillEditor,
   },
   created() {
     this.noticelist()
     this.getReceiverSelect()
     // this.noticeinfo()
-  },
+},
   methods: {
-    readDetail(ab) {
-      this.dialogVisible4 = true
-      console.log(ab)
-      this.dialogTitle = '阅读情况'
-      this.ruleForm = ab
-      this.id = ab.id
-    },
     noticeDetail(id) {
       this.dialogTitle = '推送提醒'
-      this.id = id.id
+      this.id= id.id
       this.dialogVisible3 = true
     },
-    pushentry(id) {
+    pushentry(id){
       this.dialogVisible3 = false
-      id, this.noticepush()
+      id,
+      this.noticelist()
+      this.noticepush()
     },
 
     //通知推送接口
-    async noticepush() {
+      async noticepush() {
       const data = {
-        id: this.id,
+        id:this.listData.id,
       }
       const res = await noticepush(data)
-      console.log(res.data.data)
+      console.log( res.data.list)
     },
     //通知公告列表接口
-    async noticelist() {
+      async noticelist() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
       }
       const res = await noticelist(data)
-      console.log(res.data.list)
+      console.log( res.data.list)
       this.listData = res.data.list
       this.listTotal = res.data.total
     },
     //添加公告接口
-    async noticecreate() {
+      async noticecreate() {
       const data = {
-        title: this.ruleForm.title,
-        content: this.ruleForm.content,
-        digest: this.ruleForm.digest,
-        send_sms: this.ruleForm.send_sms,
-        send_wechat: this.ruleForm.send_wechat,
-        receiver: this.ruleForm.receiver,
+        title:this.ruleForm.title,
+        content:this.ruleForm.content,
+        digest:this.ruleForm.digest,
+        send_sms:this.ruleForm.send_sms,
+        send_wechat:this.ruleForm.send_wechat,
+        receiver:this.ruleForm.receiver,  
       }
       const res = await noticecreate(data)
-      console.log(res.data.list)
-      if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.noticelist()
-      }
+      console.log( res.data.list)
+      if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+          this.noticelist()
+        }
     },
     //通知对象接口
     async getReceiverSelect() {
       const data = {
-        id: this.ruleForm.id,
-        name: this.ruleForm.name,
       }
       console.log(data)
       const res = await getReceiverSelect(data)
       console.log(res.data)
-      if (res.code == 0) {
+      if(res.code==0){
         this.options = res.data
-      }
+        }
     },
     //编辑公告接口
     async noticeupdate() {
       const data = {
-        id: this.ruleForm.id,
-        title: this.ruleForm.title,
-        content: this.ruleForm.content,
-        digest: this.ruleForm.digest,
-        send_sms: this.ruleForm.send_sms,
-        send_wechat: this.ruleForm.send_wechat,
-        receiver: this.ruleForm.receiver,
-      }
-      const res = await noticeupdate(data)
-      console.log(res.data.list)
-      if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.noticelist()
-        this.dialogVisible = false
-      }
+        id:this.ruleForm.id,
+        title:this.ruleForm.title,
+        content:this.ruleForm.content,
+        digest:this.ruleForm.digest,
+        send_sms:this.ruleForm.send_sms,
+        send_wechat:this.ruleForm.send_wechat,
+        receiver:this.ruleForm.receiver, }
+        const res = await noticeupdate(data)
+        console.log( res.data.list)
+        if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+          this.noticelist()
+          this.dialogVisible = false
+        }
     },
     //删除公告接口
     async noticedelete(id) {
@@ -311,25 +356,28 @@ export default {
       }
       console.log(data)
       const res = await noticedelete(data)
-      if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
+       if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+           this.noticelist()
+          this.dialogVisible = false
+        }
         this.noticelist()
-        this.dialogVisible = false
-      }
-      this.noticelist()
     },
     //公告详情
     async noticeinfo() {
       const data = {
-        id: this.ruleForm.id,
+        id:this.ruleForm.id,
       }
       console.log(data)
       const res = await noticeinfo(data)
-      if (res.code == 0) {
+       if(res.code==0){
+          console.log( res)
+          this.$message.success(res.message)
+          this.noticeinfo()
+          this.dialogVisible = false
+        }
         this.noticelist()
-        this.dialogVisible = false
-      }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
@@ -342,25 +390,24 @@ export default {
         }
       })
     },
-    //搜索功能
+     //搜索功能
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.noticelist()
+      this.pageNum = 1;
+      this.searchData = data;
+      this.noticelist();
     },
     addClassiFion() {
-      this.dialogTitle = '新建公告'
-      this.ruleForm = {
-        title: '',
-        content: '',
-        digest: '',
+        this.dialogTitle = '新建公告'
+        this.ruleForm = {
+        title:'',
+        content:'',
+        digest:'',
         send_sms: '',
         send_wechat: '',
-        receiver: '',
-      }
+        receiver:''}
       this.dialogVisible = true
     },
-    editNotice(ab) {
+      editNotice(ab) {
       console.log(ab)
       this.dialogTitle = '编辑公告'
       this.ruleForm = ab
@@ -373,13 +420,12 @@ export default {
       this.ruleForm = ab
       this.dialogVisible2 = true
       this.id = ab.id
-      this.noticeinfo()
     },
     submitForm(formName) {
-      console.log(this.ruleForm)
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          if (this.ruleForm.id) {
+        console.log(this.ruleForm)
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+           if (this.ruleForm.id) {
             //修改
             this.noticeupdate()
           } else {
@@ -387,35 +433,34 @@ export default {
             this.noticecreate()
             this.dialogVisible = false
           }
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    handleDelete(row) {
-      this.$confirm('此操作将永久删除该通知, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          this.noticedelete(row.id)
-        })
-        .catch(() => {
+          }else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+     handleDelete(row) {
+         this.$confirm('此操作将永久删除该通知, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+             this.noticedelete(row.id)
+                 
+        }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除',
-          })
-        })
+            message: '已取消删除'
+          });          
+        });
     },
     doPageChange(page) {
       this.page = page
       this.$api.noticelist(this, 'schoolData', this.datas)
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.noticelist()
+      this.pageNum = val;
+      this.noticelist();
     },
   },
 }
@@ -465,31 +510,30 @@ export default {
   width: 50%;
   float: left;
 }
-.table_bottom {
+.table_bottom{
   text-align: right;
 }
-.wordcolor {
-  color: rgb(0, 146, 44);
+.wordcolor{
+  color:rgb(0, 146, 44);
 }
-.details {
+.details{
   display: none;
 }
-.detailtitle {
-  font-size: 30px;
+.detailtitle{
+  font-size:30px;
   font-weight: normal;
   color: #333;
   text-align: center;
 }
-.notictitle {
+.notictitle{
   display: flex;
   justify-content: center;
-  margin: 30px 0;
-  font-size: 16px;
+  margin:30px 0; font-size: 16px; 
 }
-.notictitle p {
-  width: 33%;
-}
-.noticontent {
+.notictitle p{
+    width:33%;
+  }
+.noticontent{
   border: 1px solid rgb(231, 230, 230);
   padding: 40px 30px;
 }

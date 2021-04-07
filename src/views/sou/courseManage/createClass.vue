@@ -247,6 +247,7 @@
               style="height:200px"
             >
             </quill-editor>
+
           </el-form-item>
 
           <el-form-item> </el-form-item>
@@ -379,7 +380,6 @@ export default {
       },
 
       /***********quillEditor编辑器需要的参数**********/
-
       quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
       content: null,
       editorOption: {
@@ -405,6 +405,9 @@ export default {
       header: {
         token: this.$store.state.user.token,
       }, // 有的图片服务器要求请求头需要有token
+      /***********quillEditor编辑器需要的参数**********/
+
+
     }
   },
   created() {
@@ -551,7 +554,6 @@ export default {
       // 显示loading动画
       this.quillUpdateImg = true
     },
-
     uploadSuccess(res, file) {
       // res为图片服务器返回的数据
       // 获取富文本组件实例
@@ -580,7 +582,10 @@ export default {
       // loading动画消失
       this.quillUpdateImg = false
       this.$message.error('图片插入失败')
-    },
+    },    
+    /***************quillEditor编辑器事件****************/
+
+
   },
 }
 </script>
