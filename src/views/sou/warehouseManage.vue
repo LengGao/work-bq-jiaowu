@@ -182,7 +182,9 @@ export default {
         storage_id: row.id,
         status: row.status,
       };
-      const res = await editstorage(data);
+      const res = await editstorage(data).catch(() => {
+        row.status = row.status ? 0 : 1;
+      });
       if (res.code === 0) {
         this.$message.success(
           `仓库 ${row.storage_name} 已${row.status === 1 ? "启" : "禁"}用`

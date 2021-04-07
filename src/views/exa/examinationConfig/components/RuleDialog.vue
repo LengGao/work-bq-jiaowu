@@ -27,6 +27,7 @@
               v-model="formData.cate_id"
               placeholder="请选择所属分类"
               :options="typeOptions"
+              :props="{ checkStrictly: true }"
               @change="handleTypeChange"
             >
             </el-cascader>

@@ -10,12 +10,7 @@
         />
         <el-button type="primary" @click="openAdd">添加学生</el-button>
       </div>
-      <div>
-        <el-button @click="openBatch">批量审核</el-button>
-        <el-button @click="exportEnrollRecord" :loading="exportLoading"
-          >导出</el-button
-        >
-      </div>
+
       <!--表格-->
       <div class="userTable">
         <el-table
@@ -133,7 +128,13 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="table_bottom">
+        <div class="pagination-container--between">
+          <div>
+            <el-button @click="openBatch">批量审核</el-button>
+            <el-button @click="exportEnrollRecord" :loading="exportLoading"
+              >导出</el-button
+            >
+          </div>
           <page
             :data="listTotal"
             :curpage="pageNum"

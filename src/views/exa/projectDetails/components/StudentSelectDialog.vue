@@ -126,6 +126,7 @@ export default {
           attrs: {
             placeholder: "所属项目",
             clearable: true,
+            filterable: true,
           },
         },
         {
@@ -133,6 +134,7 @@ export default {
           type: "cascader",
           attrs: {
             placeholder: "推荐机构",
+            filterable: true,
             clearable: true,
             options: [],
           },
@@ -146,6 +148,7 @@ export default {
           attrs: {
             placeholder: "所属班级",
             clearable: true,
+            filterable: true,
           },
         },
         {
