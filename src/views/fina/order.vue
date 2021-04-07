@@ -48,14 +48,14 @@
           <el-table-column
             prop="order_no"
             label="订单编号"
-            min-width="100"
+            min-width="180"
             column-key="course_id"
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <div class="coursename" @click="orderDetail(scope.row)">
+              <el-button type="text" @click="orderDetail(scope.row)">
                 {{ scope.row.order_no }}
-              </div>
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column
