@@ -72,16 +72,12 @@
               </el-col> -->
             </el-row>
             <el-row>
-              <el-form-item label="订单备注" prop="tips">
-              </el-form-item>
+              <el-form-item label="订单备注" prop="tips"> </el-form-item>
             </el-row>
-            <el-row>
-            
-            </el-row>
+            <el-row> </el-row>
           </el-form>
         </el-col>
-        <el-col :lg="3" :sm="3" :xs="3" :md="3">
-        </el-col>
+        <el-col :lg="3" :sm="3" :xs="3" :md="3"> </el-col>
       </el-row>
     </div>
     <!--订单详情-->
@@ -89,38 +85,41 @@
       <h3 style="margin: 15px 0">订单详情</h3>
       <el-table
         ref="multipleTable"
-      :data='projectData'
+        :data="projectData"
         tooltip-effect="light"
         stripe
         style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }">
+        :cell-style="{ 'text-align': 'center' }"
+      >
         <el-table-column
           label="项目名称"
           prop="project_name"
           show-overflow-tooltip
-          min-width="90"> 
+          min-width="90"
+        >
         </el-table-column>
         <el-table-column
           prop="order_money"
           label="价格"
           show-overflow-tooltip
           min-width="90"
-        >¥ {{ruleForm.order_money}}</el-table-column>
+          >¥ {{ ruleForm.order_money }}</el-table-column
+        >
         <el-table-column
           prop="reduction"
           label="优惠金额"
           show-overflow-tooltip
           min-width="90"
-        >¥ {{ruleForm.reduction}}
+          >¥ {{ ruleForm.reduction }}
         </el-table-column>
         <el-table-column
           prop="pay_money"
           label="应收金额"
           show-overflow-tooltip
           min-width="90"
-        >¥ {{ruleForm.pay_money}}
+          >¥ {{ ruleForm.pay_money }}
         </el-table-column>
       </el-table>
 
@@ -134,7 +133,9 @@
           </div>
           <div>
             订单应收:
-            <span style="color: #199fff">¥ {{ ruleForm.order_money - ruleForm.reduction }}</span>
+            <span style="color: #199fff"
+              >¥ {{ ruleForm.order_money - ruleForm.reduction }}</span
+            >
           </div>
         </div>
       </div>
@@ -169,7 +170,7 @@
           label="支付金额"
           show-overflow-tooltip
           min-width="90"
-        >¥ {{ ruleForm.pay_money }}
+          >¥ {{ ruleForm.pay_money }}
         </el-table-column>
         <el-table-column
           prop="pay_status"
@@ -177,9 +178,9 @@
           show-overflow-tooltip
           min-width="90"
         >
-         <template slot-scope="{row}">
-            {{statusMap[row.pay_status] }}
-               </template>
+          <template slot-scope="{ row }">
+            {{ statusMap[row.pay_status] }}
+          </template>
         </el-table-column>
         <!-- <el-table-column label="操作" fixed="right" min-width="80">
           <template slot-scope="scope">
@@ -191,7 +192,6 @@
           </template>
         </el-table-column> -->
       </el-table>
-   
     </div>
     <!--经办信息-->
     <!-- <div style="margin-top: 20px">
@@ -232,17 +232,16 @@
         ></el-table-column>
       </el-table>
     </div> -->
-     
-      <el-dialog
-              title="提示"
-              :visible.sync="dialogVisible"
-              width="25%">
-              <span style="font-size:20px;">是否将此笔订单入账？</span>
-              <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-              </span>
-      </el-dialog>
+
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="25%">
+      <span style="font-size: 20px">是否将此笔订单入账？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </section>
 </template>
 
@@ -254,10 +253,10 @@ export default {
   },
   data() {
     return {
-      projectData: [], 
-      
-      pay_log:[] ,  
-        statusMap: {
+      projectData: [],
+
+      pay_log: [],
+      statusMap: {
         0: "待付款",
         1: "已付款",
         2: "部分入账",
@@ -265,7 +264,7 @@ export default {
         4: "已作废",
         5: "已退款",
       },
-      dialogImageUrl:'',
+      dialogImageUrl: "",
       dialogFormVisible: false,
       refundFormVisible: false,
       voidFormVisible: false,
@@ -291,13 +290,13 @@ export default {
         reduction: "",
         account: {},
       },
-      projectData:{
-        id:'',
-        pay_price:'',
-        save_price:'',
-        project_name:'',
-        project_price:''
-      },
+      // projectData:{
+      //   id:'',
+      //   pay_price:'',
+      //   save_price:'',
+      //   project_name:'',
+      //   project_price:''
+      // },
       schoolData: [
         {
           supplement_time: "",
@@ -444,19 +443,19 @@ h3 {
   margin-left: 50px;
   display: flex;
 }
-.Entryicon{
-position: absolute;
-display: flex;
-justify-content: center;
-text-align: center;
-align-items: center;
-color:#199fff ;
-right:150px;
-font-size: 28px;
-// font-weight: bold;
- width: 120px;
- height: 120px;
- border-radius: 50%;
- border: 2px dashed #199fff;
+.Entryicon {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  color: #199fff;
+  right: 150px;
+  font-size: 28px;
+  // font-weight: bold;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px dashed #199fff;
 }
 </style>

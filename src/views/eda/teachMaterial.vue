@@ -183,6 +183,8 @@ export default {
           attrs: {
             placeholder: "所属分类",
             clearable: true,
+             props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },
@@ -195,6 +197,7 @@ export default {
           attrs: {
             placeholder: "所属项目",
             clearable: true,
+             filterable: true,
           },
         },
         {
@@ -214,6 +217,7 @@ export default {
           attrs: {
             placeholder: "推荐机构",
             clearable: true,
+             filterable: true,
             options: [],
           },
         },

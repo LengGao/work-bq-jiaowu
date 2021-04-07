@@ -18,15 +18,14 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="id"
-          label="编号"
-          show-overflow-tooltip
+          label="项目编号"
+          prop="project_id"
           min-width="90"
         ></el-table-column>
         <el-table-column
           prop="project_name"
           label="项目名称"
-          min-width="110"
+          min-width="200"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -44,7 +43,7 @@
         <el-table-column
           prop="project_name"
           label="课程"
-          min-width="100"
+          min-width="220"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -86,7 +85,7 @@
         <el-table-column
           prop="create_time"
           label="报名时间"
-          min-width="100"
+          min-width="130"
           show-overflow-tooltip
         ></el-table-column>
       </el-table>
@@ -107,28 +106,23 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column
-          prop="class_id"
-          label="编号"
-          show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
+        <el-table-column label="编号" type="index" width="60"></el-table-column>
         <el-table-column
           prop="classroom_name"
           label="班级名称"
-          min-width="110"
+          min-width="220"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="category_name"
           label="所属分类"
-          min-width="100"
+          min-width="120"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="project_name"
           label="项目名称"
-          min-width="100"
+          min-width="200"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -146,15 +140,10 @@
         <el-table-column
           prop="add_time"
           label="加入时间"
-          min-width="100"
+          min-width="130"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="200"
-          max-width="200"
-        >
+        <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="{ row }">
             <div class="operation_btn">
               <el-button type="text" @click="toClassDetail(row.classroom_id)"

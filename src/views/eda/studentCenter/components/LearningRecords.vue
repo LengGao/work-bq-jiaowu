@@ -3,9 +3,10 @@
   <div class="learning-record">
     <div class="learning-record-header">
       <el-select v-model="typeChecked" @change="handleTypeChange">
-        <el-option value="1" label="系统集成项目面授班（职称）"></el-option>
-        <el-option value="2" label="电气自动化专业（学历）"></el-option>
-        <el-option value="3" label="低压电工面授班（特种作业）"></el-option>
+        <el-option value="1" label="全部项目"></el-option>
+        <el-option value="2" label="系统集成项目"></el-option>
+        <el-option value="3" label="中级经济师项目"></el-option>
+        <el-option value="3" label="低压电工项目"></el-option>
       </el-select>
     </div>
     <div class="learning-record-container">
@@ -27,7 +28,7 @@
         <component
           :is="getComponent"
           :uid="uid"
-          :graduate="$attrs.datas.is_graduate || 0"
+          :graduate="$attrs.datas.is_graduate"
         />
       </div>
     </div>
@@ -62,6 +63,13 @@ export default {
           { menuName: "教材资料", component: "TeachingMaterials" },
         ],
         3: [
+          { menuName: "学习进度", component: "TitleProgress" },
+          { menuName: "课表信息", component: "Timetable" },
+          { menuName: "考勤统计", component: "AttendanceStatistics" },
+          { menuName: "成绩统计", component: "AchievementStatistics" },
+          { menuName: "教材资料", component: "TeachingMaterials" },
+        ],
+        4: [
           { menuName: "学习进度", component: "TitleProgress" },
           { menuName: "课表信息", component: "Timetable" },
           { menuName: "考勤统计", component: "AttendanceStatistics" },

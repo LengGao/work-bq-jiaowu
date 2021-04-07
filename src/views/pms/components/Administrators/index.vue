@@ -1,6 +1,7 @@
 <template>
   <div class="admin" v-loading="loading">
-    <div class="admin-top" v-if="isShowStep">
+    <!-- <div class="admin-top" v-if="isShowStep"> -->
+    <div class="admin-top">
       <div class="admin-top-title">
         <h4 class="title">任务助手</h4>
         <span>六步完成教务系统基本设置</span>
@@ -9,10 +10,14 @@
         <el-card class="card-item" v-for="(item, index) in cards" :key="index">
           <p>{{ item.name }}</p>
           <p class="card-item-desc">{{ item.desc }}</p>
-          <el-button round v-if="item.status" type="info" disabled size="mini"
-            >已完成</el-button
+          <el-button
+            round
+            @click="linkTo(item.routeName)"
+            type="success"
+            size="mini"
+            :class="{ 'disabled-color': item.status }"
+            >{{ item.status ? "已完成" : "未完成" }}</el-button
           >
-          <el-button round v-else type="success" size="mini">去完成</el-button>
           <i v-if="item.status" class="el-icon-check card-item-status"></i>
         </el-card>
       </div>
@@ -133,31 +138,37 @@ export default {
         {
           name: "①设置角色权限",
           desc: "设置好角色人员权限 轻松分配工作",
+          routeName: "role",
           status: false,
         },
         {
           name: "②设置分类名称",
           desc: "将相关对象进行归纳整理，方便后期筛选区分",
+          routeName: "classifiSetting",
           status: false,
         },
         {
           name: "③设置课程题库",
           desc: "设置后台的课程题库方便学生在线学习",
+          routeName: "courseManage",
           status: false,
         },
         {
           name: "④设置仓库教材",
           desc: "设置机构仓库存储方便教务分发教材",
+          routeName: "warehouseManage",
           status: false,
         },
         {
           name: "⑤设置收费项目",
           desc: "项目作为售卖的对象，包含课程、教材等配置信息",
+          routeName: "projectManage",
           status: false,
         },
         {
           name: "⑥开始招生录入",
           desc: "跟进管理招生数据，包括客户缴费报名等操作",
+          routeName: "customerManage",
           status: false,
         },
       ],
@@ -233,7 +244,7 @@ export default {
   },
   computed: {
     isShowStep() {
-      return this.cards.some((item) => item.status);
+      return this.cards.some((item) => !item.status);
     },
   },
   created() {
@@ -241,6 +252,9 @@ export default {
     this.getVisitChart();
   },
   methods: {
+    linkTo(name) {
+      this.$router.push({ name });
+    },
     isDown(val) {
       const reg = /^-/;
       return reg.test(val) ? "down" : "up";
@@ -385,6 +399,11 @@ export default {
         .card-item-desc {
           color: #909399;
           font-size: 13px;
+        }
+        .disabled-color {
+          color: #ffffff;
+          background-color: #c8c9cc;
+          border-color: #c8c9cc;
         }
         button {
           padding: 4px 16px;

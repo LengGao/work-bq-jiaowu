@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="head_remind">
-      *本模块展示所有的班级数据，方便教务老师管理班级的日常工作。
-    </div>
-
     <section class="mainwrap">
       <div class="client_head">
         <!--搜索模块-->
@@ -12,6 +8,9 @@
           :data="searchData"
           @on-search="handleSearch"
         />
+        <el-button type="primary" @click="createReturnVisit"
+          >添加回访记录</el-button
+        >
       </div>
       <!--表格-->
       <div class="userTable">
@@ -24,41 +23,42 @@
           element-loading-text="loading"
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
-          :header-cell-style="{ 'text-align': 'center' }"
+          :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
           :cell-style="{ 'text-align': 'center' }"
         >
-          <el-table-column
-            label="编号"
-            show-overflow-tooltip
-            min-width="90"
-            prop="classroom_id"
-          >
+          <el-table-column label="序号" width="50" type="index">
           </el-table-column>
           <el-table-column
-            prop="classroom_name"
-            label="班级名称"
-            min-width="180"
+            prop="create_time"
+            label="回访时间"
+            min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="staff_name"
-            label="班主任"
+            prop="follow_user_name"
+            label="回访人"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="student_number"
-            label="班级人数"
+            prop="state_rate"
+            label="回访数量"
             min-width="110"
             show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="update_time"
+            label="最后更新时间"
+            min-width="140"
+            show-overflow-tooltip
           ></el-table-column>
-
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="batchConfirm(row.classroom_id)"
-                  >转至此班</el-button
+                <el-button type="text" @click="toReturnVisitDetail(row.id)"
+                  >查看详情</el-button
                 >
               </div>
             </template>
@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import { getClassList, batchchangestudents } from "@/api/eda";
+import { getReturnVisit, createReturnVisit } from "@/api/eda";
 export default {
   data() {
     return {
@@ -86,13 +86,25 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        keyboard: "",
+        date: "",
+        staff_name: "",
       },
       searchOptions: [
         {
-          key: "keyboard",
+          key: "date",
+          type: "datePicker",
           attrs: {
-            placeholder: "班级名称、班主任",
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
+          },
+        },
+        {
+          key: "staff_name",
+          attrs: {
+            placeholder: "回访人姓名",
           },
         },
       ],
@@ -100,77 +112,61 @@ export default {
   },
 
   created() {
-    this.getClassList();
+    this.getReturnVisit();
   },
 
   methods: {
-    // 批量转班
-    batchConfirm(id) {
-      this.$confirm("确定要将学生转至此班吗?", { type: "warning" })
-        .then(() => {
-          this.batchchangestudents(id);
-        })
-        .catch(() => {});
-    },
-    async batchchangestudents(new_classroom_id) {
-      const query = JSON.parse(this.$route.query);
+    async createReturnVisit() {
       const data = {
-        ...query,
-        new_classroom_id,
+        class_id: this.$route.query?.id || "",
       };
-      const res = await batchchangestudents(data);
+      const res = await createReturnVisit(data);
       if (res.code === 0) {
-        this.$message.success(res.message);
-        this.$router.back();
+        this.toReturnVisitDetail(res.data?.id || "", 1);
       }
     },
     handleSearch(data) {
+      const times = data.date || ["", ""];
       this.pageNum = 1;
       this.searchData = {
         ...data,
+        start_time: times[0],
+        end_time: times[1],
       };
-      this.getClassList();
+      this.getReturnVisit();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.getReturnVisit();
     },
-    async getClassList() {
+    async getReturnVisit() {
       const data = {
+        class_id: this.$route.query?.id || "",
         page: this.pageNum,
         ...this.searchData,
       };
+      delete data.date;
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await getReturnVisit(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
+    },
+    toReturnVisitDetail(id, isAdd) {
+      this.$router.push({
+        name: "returnVisitDetail",
+        query: {
+          class_id: this.$route.query?.id || "",
+          id,
+          isAdd,
+        },
+      });
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-/deep/.el-table__header th,
-.el-table__header tr {
-  background-color: #f8f8f8;
-  color: #909399;
-}
-
-.main {
-  padding: 20px;
-  margin: 20px;
-  background: #fff;
-}
-.head_remind {
-  padding: 20px;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 16px;
-  color: #909399;
-  width: 100%;
-  border-bottom: 15px solid #f2f6fc;
-}
 .client_head {
   display: flex;
   justify-content: space-between;

@@ -9,7 +9,7 @@ let Finance = {
       all: self.all,
       ...self.searchData,
       page: self.page,
-      all:1,
+      all: 1,
     }
     console.log(config)
     axiosHttp({
@@ -33,7 +33,7 @@ let Finance = {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
-      order_id:self.order_id ,
+      order_id: self.order_id,
       //order_id赋值：order_id
     }
     console.log(config)
@@ -45,10 +45,11 @@ let Finance = {
         console.log(res.data.data)
         let data = res.data.data
         if (res.data.code == 0) {
-          self.projectData =[]
+          self.projectData = []
           self[name] = data
           console.log(data.project)
-          self.projectData.push(JSON.parse(data.project)) 
+          const project = JSON.parse(data.project)
+          self.projectData = Array.isArray(project) ? project : [project]
           // console.log( self.projectData )
           self.pay_log = data.pay_log
           self.ruleForm = res.data.data

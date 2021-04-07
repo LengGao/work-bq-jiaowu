@@ -99,7 +99,9 @@
                 v-if="row.class_hour_total > 1"
                 >排课详情</el-button
               >
-              <el-button type="text" v-else>考勤统计</el-button>
+              <el-button type="text" @click="toStatistics(row)" v-else
+                >考勤统计</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -199,6 +201,15 @@ export default {
     this.getTeacherList();
   },
   methods: {
+    toStatistics(row) {
+      this.$router.push({
+        path: "/eda/attendanceStatistics",
+        query: {
+          class_hour_id: row.class_hour[0],
+          arrange_id: row.id,
+        },
+      });
+    },
     hanldeOpenDialog(id) {
       this.dialogId = id;
       this.dialogVisible = true;

@@ -102,4 +102,19 @@ export function updateShowStatus(data) {
     data: data
   })
 }
-
+// 获取任务列表
+export function getAdminQueueList(params) {
+  return request({
+    url: '/AdminQueueRecord/getAdminQueueList',
+    method: 'get',
+    params
+  })
+}
+export function getUnreadCount(params) {
+  return request({
+    url: '/AdminQueueRecord/getUnreadCount',
+    method: 'get',
+    params
+  })
+}
+export const baseUrl = process.env.NODE_ENV === "development" ? 'http://sc.dp.com' : ''

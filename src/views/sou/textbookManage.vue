@@ -148,6 +148,8 @@ export default {
           attrs: {
             placeholder: "所属分类",
             clearable: true,
+              props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },

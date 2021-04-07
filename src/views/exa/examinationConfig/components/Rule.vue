@@ -157,6 +157,8 @@ export default {
           attrs: {
             placeholder: "所属分类",
             clearable: true,
+            props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },
@@ -184,15 +186,16 @@ export default {
     linkTo(id) {
       this.$router.push({ name: "apply", query: { id } });
     },
-    //修改科目状态
+    //修规则目状态
     async updateRuleStatus(row) {
       const data = {
         id: row.id,
-        status: row.status ? 1 : 0,
+        status: row.status,
       };
-      const res = await updateRuleStatus(data);
+      const res = await updateRuleStatus(data).catch(() => {
+        row.status = row.status ? 0 : 1;
+      });
       if (res.code === 0) {
-        row.status = row.status ? 1 : 0;
         this.$message.success(res.message);
       }
     },

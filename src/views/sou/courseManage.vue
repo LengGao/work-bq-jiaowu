@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="head_remind">
+    <!-- <div class="head_remind">
       *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
-    </div>
+    </div> -->
 
     <section class="mainwrap">
-      <ul class="navigation">
+      <!-- <ul class="navigation">
         <li
           v-for="item in tabFun"
           :key="item.id"
@@ -14,7 +14,7 @@
         >
           {{ item.name }}
         </li>
-      </ul>
+      </ul> -->
       <div class="client_head">
         <SearchList
           :options="searchOptions"

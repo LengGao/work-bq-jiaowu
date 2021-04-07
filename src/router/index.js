@@ -227,13 +227,7 @@ export const asyncRouter = [
         meta: { title: '客户管理', icon: 'product-add' },
       },
       //客户管理组件开始
-      {
-        path: 'customeRegist',
-        name: 'customeRegist',
-        component: () => import('@/views/etm/customerManage/customeRegist.vue'),
-        meta: { title: '客户报名', icon: 'product-cate' },
-        hidden: true,
-      },
+
       {
         path: 'onlineStudents',
         name: 'onlineStudents',
@@ -326,6 +320,20 @@ export const asyncRouter = [
         name: 'classDetail',
         component: () => import('@/views/eda/classManage/classDetail.vue'),
         meta: { title: '班级详情', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'returnVisit',
+        name: 'returnVisit',
+        component: () => import('@/views/eda/classManage/returnVisit.vue'),
+        meta: { title: '学习回访', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'returnVisitDetail',
+        name: 'returnVisitDetail',
+        component: () => import('@/views/eda/classManage/returnVisitDetail.vue'),
+        meta: { title: '回访详情', icon: 'product-cate' },
         hidden: true,
       },
       {
@@ -586,6 +594,13 @@ export const asyncRouter = [
         name: 'roledetail',
         component: () => import('@/views/set/role/roledetail.vue'),
         meta: { title: '添加角色', icon: 'product-add' },
+        hidden: true,
+      },
+      {
+        path: 'toDoManagement',
+        name: 'toDoManagement',
+        component: () => import('@/views/set/toDoManagement.vue'),
+        meta: { title: '待办管理', icon: 'product-add' },
         hidden: true,
       },
       {

@@ -1,10 +1,12 @@
 <template>
   <el-dialog
     title="选择课程"
-    :visible.sync="dialogVisible"
-    width="70%"
+    :visible.sync="visible"
+    width="1000px"
     append-to-body
-    :before-close="closeCourse"
+    :close-on-click-modal="false"
+    @open="handleOpen"
+    @closed="hanldeCancel"
   >
     <SearchList
       :options="searchOptions"
@@ -17,16 +19,18 @@
           @selection-change="handleSelectionChange"
           ref="multipleTable"
           :data="listData"
+          :row-key="getRowKeys"
           v-loading="listLoading"
           element-loading-text="loading"
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
-          style="width: 100%"
+          height="400"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
         >
-          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column type="selection" width="55" reserve-selection>
+          </el-table-column>
           <el-table-column
             label="课程名称"
             show-overflow-tooltip
@@ -58,15 +62,15 @@
       </div>
       <div class="main-right">
         <div class="right-head">
-          <div>已选课程:3</div>
-          <p>
+          <div>已选课程:{{ selection.length }}</div>
+          <p @click="hadleResetUser" style="cursor:pointer">
             清空
           </p>
         </div>
         <ul>
-          <li v-for="(item, index) in choseCourse" :key="item.course_id">
+          <li v-for="(item, index) in selection" :key="item.course_id">
             <p>{{ item.course_name }}</p>
-            <i class="el-icon-delete" @click="deleteCourse(index)"></i>
+            <i class="el-icon-delete" @click="handleRemoveUser(index)"></i>
           </li>
         </ul>
       </div>
@@ -74,7 +78,7 @@
     <!-- <span>这是一段信息</span> -->
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="closeCourse">取 消</el-button>
+      <el-button @click="hanldeCancel">取 消</el-button>
       <el-button type="primary" @click="handleconfirm">确 定</el-button>
     </span>
   </el-dialog>
@@ -87,14 +91,14 @@ export default {
     return {
       listData: [],
       listLoading: false,
-      dialogVisible: true,
+      visible: this.value,
       pageNum: 1,
       listTotal: 0,
       searchData: {
         category_id: [],
         course_name: '',
       },
-      choseCourse: [],
+      selection: [],
       searchOptions: [
         {
           key: 'category_id',
@@ -115,28 +119,76 @@ export default {
       listData: [],
     }
   },
+  watch: {
+    value(val) {
+      this.visible = val
+    },
+  },
   props: {
+    courseTag: {
+      type: Array,
+      default: () => [],
+    },
+    value: {
+      type: Boolean,
+      default: false,
+    },
     // selectData: {
     //   type: Array,
     //   default: () => [],
     // },
   },
-  created() {
-    this.getCateList()
-    console.log(this.selectData)
-    this.getCourseList()
-  },
+  created() {},
   methods: {
+    // 切换列表选择状态
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
+    // 指定一个唯一标识。id或者其他唯一的
+    getRowKeys(row) {
+      return row.course_id
+    },
+
+    // 右侧已选删除
+    handleRemoveUser(index) {
+      this.$refs.multipleTable.selection.splice(index, 1)
+      this.selection.splice(index, 1)
+    },
+    // 右侧已选清空
+    hadleResetUser() {
+      this.toggleSelection()
+    },
+    handleOpen() {
+      this.getCateList()
+      this.getCourseList()
+      // 把已经选择的回显上
+      this.$nextTick(() => {
+        this.selection = [...this.courseTag]
+        // 替换掉this.$refs.multipleTable.selection上原有的
+        const len = this.$refs.multipleTable.selection.length
+        this.$refs.multipleTable.selection.splice(0, len, ...this.courseTag)
+      })
+    },
     handleconfirm() {
-      this.$emit('courseArr', this.choseCourse)
-      this.closeCourse()
+      this.$emit('on-coursesuccess', [...this.selection])
+      this.hanldeCancel()
     },
     deleteCourse(index) {
-      this.choseCourse.splice(index, 1)
+      this.selection.splice(index, 1)
     },
-    handleSelectionChange(val) {
-      console.log(val)
-      this.choseCourse = val
+    handleSelectionChange(selection) {
+      this.selection = selection ? [...selection] : []
+      // this.selection = selection
+    },
+    hanldeCancel() {
+      this.$emit('input', false)
+      this.pageNum = 1
     },
     closeCourse() {
       this.$emit('closeCourse')
@@ -146,7 +198,6 @@ export default {
       const res = await getCateList(data)
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData)
-        console.log(this.selectData)
         this.searchOptions[0].attrs.options = this.selectData
       }
     },

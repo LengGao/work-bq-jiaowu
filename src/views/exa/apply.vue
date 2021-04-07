@@ -175,12 +175,13 @@ export default {
             clearable: true,
             options: [],
             props: { checkStrictly: true },
+            filterable: true,
           },
         },
         {
           key: "search_box",
           attrs: {
-            placeholder: "报考规则",
+            placeholder: "考试计划",
           },
         },
       ],

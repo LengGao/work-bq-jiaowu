@@ -17,7 +17,7 @@
           注册日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
-          <el-button type="primary">报名</el-button>
+          <el-button type="primary" @click="openSingUpDialog">报名</el-button>
         </div>
       </div>
       <el-tabs v-model="activeName">
@@ -36,18 +36,25 @@
         :uid="detailData.uid"
       />
     </section>
+    <!-- 报名 -->
+    <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
   </div>
 </template>
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
+import CustomeRegist from "@/views/etm/components/customeRegist";
 export default {
   name: "studentDetail",
+  components: {
+    CustomeRegist,
+  },
   data() {
     return {
       activeName: "BasicInfo",
       detailData: {},
       detailLoading: false,
+      signUpDialog: false,
     };
   },
   computed: {
@@ -61,6 +68,9 @@ export default {
     this.getStudentBasicDetail();
   },
   methods: {
+    openSingUpDialog() {
+      this.signUpDialog = true;
+    },
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {

@@ -8,7 +8,7 @@
       append-to-body
       width="60%"
       class="add-teaching-material"
-      style="min-width:1070px"
+      style="min-width: 1070px"
     >
       <el-form
         label-width="90px"
@@ -37,7 +37,7 @@
             <el-form-item label="开通网课">
               <el-radio-group
                 v-model="ruleForm.online_course"
-                style="width:240px"
+                style="width: 240px"
               >
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="2">否</el-radio>
@@ -104,14 +104,14 @@
                         <el-input
                           v-model="scope.row.save_price"
                           type="number"
-                          min="0"
+                          :controls="false"
+                          :min="0"
                           :max="
                             parseFloat(scope.row.project_price) -
                               parseFloat(scope.row.lowest_price)
                           "
-                          placeholder
                           size="small"
-                          @blur="
+                          @input="
                             changeAmount(
                               scope.$index,
                               scope.row.save_price,
@@ -139,7 +139,7 @@
 
                   <el-table-column label="操作" fixed="right" min-width="200">
                     <template slot-scope="scope">
-                      <div style="display:flex;justify-content:center">
+                      <div style="display: flex; justify-content: center">
                         <el-button
                           type="danger"
                           icon="el-icon-delete"
@@ -147,25 +147,10 @@
                           plain
                           @click="delbtn(scope.$index, projectData)"
                         ></el-button>
-                        <!-- <el-button
-                    type="text"
-                    style="padding-left:40px"
-                    @click="delbtn(scope.row)"
-                    >删除</el-button
-                  > -->
                       </div>
                     </template>
                   </el-table-column>
                 </el-table>
-                <!-- <div class="table_bottom">
-            <div class="table_bottom">
-              <page
-                :data="schoolData.total"
-                :curpage="page"
-                @pageChange="doPageChange"
-              />
-            </div>
-          </div> -->
               </div>
             </el-col>
           </el-row>
@@ -244,8 +229,8 @@
         <div class="customer_sum_up">
           <h3>备注信息</h3>
           <el-row class="wrap">
-            <el-col :sm="8" style="display:flex;margin-top:10px">
-              <div class="expense_summary_label" style="margin-left:20px">
+            <el-col :sm="8" style="display: flex; margin-top: 10px">
+              <div class="expense_summary_label" style="margin-left: 20px">
                 实缴金额
                 <span style="color: #fd6500">￥{{ ruleForm.pay_money }}</span>
               </div>
@@ -278,7 +263,7 @@
         </div>
         <el-row>
           <el-form-item>
-            <div style="display:flex;justify-content:flex-end">
+            <div style="display: flex; justify-content: flex-end">
               <el-button @click="doClose">取消</el-button>
               <el-button type="primary" @click="orderDeatilShow"
                 >报名缴费</el-button
@@ -312,7 +297,7 @@ export default {
     projectDialog,
   },
   props: {
-    addVisible: {
+    value: {
       type: Boolean,
       default: false,
     },
@@ -336,7 +321,7 @@ export default {
       headers: {
         token: this.$store.state.user.token,
       },
-      openStatus: this.addVisible,
+      openStatus: this.value,
       schoolData: [],
       payWays: [
         {
@@ -396,7 +381,7 @@ export default {
   mounted() {},
 
   watch: {
-    addVisible(val) {
+    value(val) {
       this.openStatus = val
     },
     projectData(newVal, oldVal) {
@@ -457,7 +442,7 @@ export default {
         this.ruleForm[item] = ''
       }
       this.projectData = []
-      this.$emit('addDialog', false)
+      this.$emit('input', false)
     },
     changeAmount(av, ab) {
       this.projectData[av].save_price = parseFloat(ab)
@@ -487,6 +472,7 @@ export default {
       this.ruleForm.reduction = reduction
       this.ruleForm.pay_money = this.receivableMoney = receivableMoney
       console.log(order_money, reduction, receivableMoney)
+      this.$forceUpdate()
     },
     choseProject() {
       this.projectVisible = true

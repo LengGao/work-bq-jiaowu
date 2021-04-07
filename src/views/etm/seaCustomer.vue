@@ -70,10 +70,10 @@
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
             <div style="display:flex;justify-content:center">
-              <el-button
-                type="text"
-                @click="enroll(scope.row)"
-                style="padding-right:20px"
+              <el-button type="text" disabled v-if="scope.row.aid">
+                已报名
+              </el-button>
+              <el-button v-else type="text" @click="enroll(scope.row)"
                 >报名</el-button
               >
               <!-- <el-button
@@ -108,9 +108,8 @@
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
 import addCustomeDialog from './components/addCustomeDialog'
+import { cloneOptions } from '@/utils/index'
 import { getCateList } from '@/api/sou'
 export default {
   name: 'seaStudent',
@@ -182,25 +181,18 @@ export default {
       this.searchData = data
       this.$api.getCommonUserList(this, 'schoolData')
     },
+    // 获取所属分类
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        console.log(this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          'category_name',
+          'category_id',
+          'son'
+        )
       }
-    },
-    cloneData(data, newData) {
-      data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
-        if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
-        }
-      })
     },
     enroll(ab) {
       this.seaUserInfo = ab
