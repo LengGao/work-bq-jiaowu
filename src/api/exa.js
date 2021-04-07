@@ -349,7 +349,6 @@ export function exportEnrollRecord(params) {
   return request({
     url: '/Examination/exportEnrollRecord',
     method: 'get',
-    responseType: 'blob',
     params,
   })
 }
