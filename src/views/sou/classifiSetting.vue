@@ -45,7 +45,6 @@
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
         <el-form label-width="100px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true">
           <el-form-item label="所属分类：">
-
             <el-cascader ref="cascader" clearable class="input-width" placeholder="请选择分类" v-model="ruleForm.pid" :options="selectData" :props="{ checkStrictly: true }"></el-cascader>
           </el-form-item>
           <el-form-item label="分类名称：">
@@ -79,6 +78,7 @@
           <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
         </span>
       </el-dialog>
+
       <imgDialog v-if="pictureVisible" @closeImg="closeImg" @clearUrl="clearUrl"></imgDialog>
     </section>
   </div>
@@ -258,9 +258,16 @@ export default {
       const res = await getCateList(data)
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData)
-        console.log(this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
+        this.deepDisabled(this.selectData, false)
       }
+    },
+    deepDisabled(data, disabled) {
+      data.forEach((item, index) => {
+        item.disabled = disabled
+        if (item.children && item.children.length) {
+          this.deepDisabled(item.children, true)
+        }
+      })
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
@@ -291,7 +298,6 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-
         icon: this.ruleForm.icon,
         category_name: this.ruleForm.category_name,
         pid: this.ruleForm.pid ? this.ruleForm.pid.pop() : '',
@@ -306,13 +312,11 @@ export default {
         this.getCategoryList()
       }
     },
-
     //编辑分类接口
     async updateCategory() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-
         icon: this.ruleForm.icon,
         category_name: this.ruleForm.category_name,
         pid: this.ruleForm.pid ? this.ruleForm.pid.pop() : '',
@@ -337,7 +341,6 @@ export default {
       }
       console.log(data)
       const res = await deleteCategory(data)
-
       if (res.code == 0) {
         console.log(res)
         this.$message.success(res.message)
@@ -345,7 +348,6 @@ export default {
         this.dialogVisible = false
       }
     },
-
     //校区排序
     changeUpdateSort(self, id, sort) {
       let config = {
@@ -369,7 +371,6 @@ export default {
         },
       })
     },
-
     //分类排序接口
     async updateCategorySort(category_id, sort) {
       const data = {
@@ -378,7 +379,6 @@ export default {
       }
       console.log(data)
       const res = await updateCategorySort(data)
-
       if (res.code == 0) {
         console.log(res)
         this.$message.success(res.message)
@@ -386,7 +386,6 @@ export default {
         this.dialogVisible = false
       }
     },
-
     submitForm(formName) {
       console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
@@ -408,7 +407,6 @@ export default {
   },
 }
 </script>
-
 <style lang="scss" scoped>
 /deep/.el-table__header th,
 .el-table__header tr {
@@ -421,9 +419,8 @@ export default {
 /deep/.cell {
   margin-left: 20px;
 }
-
 .input-width {
-  width: 350px;
+  width: 93%;
 }
 .main {
   padding: 20px;
