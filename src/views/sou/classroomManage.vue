@@ -193,6 +193,11 @@
                 v-model="ruleForm.max_num"
                 placeholder="请输入容纳人数"
                 type="number"
+                :min="0"
+                :maxlength="11"
+                :max="4294967295"
+                oninput="if(value>4294967295)value=4294967295"
+                onKeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
                 class="input-width"
               ></el-input>
             </el-form-item>
@@ -248,6 +253,16 @@ export default {
         ],
         max_num: [
           { required: true, message: '请输入容纳人数', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              if (/^[1-9]\d*$/.test(value) == false) {
+                callback(new Error('请输入一个整数'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'change',
+          },
         ],
       },
       ruleForm: {

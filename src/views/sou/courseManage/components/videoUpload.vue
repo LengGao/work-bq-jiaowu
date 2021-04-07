@@ -163,7 +163,7 @@
         />
       </div>
       <main></main>
-      <el-dialog title="添加图片分组" :visible.sync="dialogVisible" width="30%">
+      <el-dialog title="添加视频章节" :visible.sync="dialogVisible" width="30%">
         <el-form :model="addPicture" ref="reasonForm" label-width="150px">
           <el-form-item label="分组名称：">
             <el-input v-model="addPicture.name" class="input-width"></el-input>
@@ -521,7 +521,8 @@ export default {
     },
     doPageChange(page) {
       this.page = page
-      this.$api.getImagesList(this, 'videoData')
+      this.$api.getvideoclass(this, 'videoData') //右侧列表
+      // this.$api.getImagesList(this, 'videoData')
     },
     handleSelectionChange(val) {
       console.log(val)

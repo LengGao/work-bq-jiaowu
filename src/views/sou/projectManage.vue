@@ -34,7 +34,7 @@
           <el-table-column
             prop="project_name"
             label="项目名称"
-            min-width="110"
+            min-width="200"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -132,6 +132,7 @@
                 <el-cascader
                   v-model="ruleForm.category_id"
                   :options="selectData"
+                  :props="{ checkStrictly: true }"
                   @change="handleChange"
                 ></el-cascader>
                 <!-- <el-input
@@ -146,6 +147,7 @@
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="项目价格" prop="price">
                 <el-input
+                  type="number"
                   placeholder="请输入项目价格"
                   v-model="ruleForm.price"
                   class="input-width"
@@ -155,6 +157,7 @@
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="最低价格" prop="lowest_price">
                 <el-input
+                  type="number"
                   placeholder="请输入最低价格"
                   v-model="ruleForm.lowest_price"
                   class="input-width"
@@ -535,6 +538,7 @@ export default {
       this.ruleForm.problem = this.quesTag.map((i) => {
         return i.id
       })
+      console.log(this.quesTag)
       console.log(this.ruleForm)
       console.log(this.ruleForm.course_id)
       this.$refs[formName].validate((valid) => {

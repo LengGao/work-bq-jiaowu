@@ -21,14 +21,11 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div v-if="isTagactive === 2">
+        <!-- <div v-if="isTagactive === 2">
           <el-button type="primary" @click="toCreateClass">资源中心</el-button>
-        </div>
+        </div> -->
         <div v-if="isTagactive === 1">
           <el-button type="primary" @click="toCreateClass">添加课程</el-button>
-          <!-- <el-button type="primary" @click="toCreateClass('2')"
-            >创建套餐班</el-button
-          > -->
         </div>
       </div>
       <!--表格-->
@@ -89,15 +86,11 @@
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.is_publish"
-                class="tablescope"
                 active-color="#2798ee"
                 inactive-color="#eaeefb"
                 :active-value="1"
                 :inactive-value="2"
-                active-text="发布"
-                inactive-text="关闭"
                 @change="release(scope.row, $event)"
-                :width="50"
               >
               </el-switch>
             </template>
@@ -106,14 +99,17 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="toCreateClass(scope.row)"
+                <el-button
+                  type="text"
+                  v-if="scope.row.class_type == 1"
+                  @click="toCreateClass(scope.row)"
                   >编辑</el-button
                 >
                 <el-button type="text" @click="toConfigureCourses(scope.row)"
                   >配置</el-button
                 >
-                <el-button type="text" @click="toCreateClass(scope.row)"
-                  >复制</el-button
+                <el-button type="text" @click="handleDelete(scope.row)"
+                  >删除</el-button
                 >
               </div>
             </template>
@@ -133,7 +129,12 @@
 
 <script>
 import SearchList from '@/components/SearchList/index'
-import { getCourseList, getCateList, bashPublish } from '@/api/sou'
+import {
+  getCourseList,
+  getCateList,
+  bashPublish,
+  deleteCourses,
+} from '@/api/sou'
 export default {
   course_id: '',
   components: {
@@ -162,12 +163,12 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        category_id: [],
+        course_category_id: [],
         course_name: '',
       },
       searchOptions: [
         {
-          key: 'category_id',
+          key: 'course_category_id',
           type: 'cascader',
           attrs: {
             clearable: true,
@@ -187,12 +188,25 @@ export default {
     this.getCourseList()
     this.getCateList()
   },
-  mounted() {
-    // this.$api.getCourseManage(this, 'schoolData')
-    // this.$api.getCategoryList(this, 'selectData')
-  },
+  mounted() {},
 
   methods: {
+    handleDelete(row) {
+      this.$confirm('你正在删除该课程,,请谨慎操作?', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.deleteCourses(row.course_id)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
     toConfigureCourses(ab) {
       this.$router.push({
         path: '/sou/configureCourses',
@@ -203,10 +217,21 @@ export default {
       })
     },
     async bashPublish(ab) {
-      const data = { course_ids: ab.course_id, is_publish: ab.is_publish }
+      const data = { course_ids: [ab.course_id], is_publish: ab.is_publish }
       const res = await bashPublish(data)
       console.log(res)
       if (res.code === 0) {
+        this.$message.success(res.message)
+        this.getCourseList()
+      }
+    },
+    async deleteCourses(course_id) {
+      const data = { course_id: course_id }
+      const res = await deleteCourses(data)
+      console.log(res)
+      if (res.code === 0) {
+        this.$message.success(res.message)
+        this.getCourseList()
       }
     },
     release(ab, status) {
@@ -257,7 +282,8 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        course_category_id: this.searchData.category_id.pop(),
+        // category_id: data.category_id ? data.category_id.pop() : '',
+        course_category_id: this.searchData.course_category_id.pop(),
       }
       this.listLoading = true
       const res = await getCourseList(data)

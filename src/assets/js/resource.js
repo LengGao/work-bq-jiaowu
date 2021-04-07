@@ -164,7 +164,7 @@ let resource = {
   //校区列表
   getSchoolList(self, name) {
     let config = {
-      // institution_name: institution_name,
+      institution_name: institution_name,
       page: self.page,
     }
     console.log(config)
@@ -207,7 +207,7 @@ let resource = {
             message: res.data.message,
           })
 
-          self.$api.getSchoolList(self, 'schoolData')
+          self.getSchoolList()
         }
       },
     })
@@ -230,7 +230,7 @@ let resource = {
             type: 'success',
             message: res.data.message,
           })
-          self.$api.getSchoolList(self, 'schoolData')
+          self.getSchoolList(self)
         }
       },
     })
@@ -403,12 +403,18 @@ let resource = {
       then(res) {
         if (res.data.code == 0) {
           let data = res.data.data
+          console.log(data)
           if (way == 'GET') {
-            console.log(data)
             self.courseTag = data.course
             self.materialTag = data.textbooks
+            data.problem.forEach((i) => {
+              i.id = i.problem_id
+              console.log(i)
+            })
+            console.log(data.problem)
             self.quesTag = data.problem
             self.ruleForm = data
+            // self.ruleForm.category_id = [data.category_id]
             self.ruleForm.service_period = data.service_period
             console.log(data.service_period)
           } else {
@@ -1554,6 +1560,31 @@ let resource = {
         } else {
           // 新增
           // self.$api.addCourseLesson(self);
+        }
+      },
+    })
+  },
+  addvideochapterfree(self, data) {
+    let config = {
+      video_class_free: data.video_class_free,
+      video_class_name: data.video_class_name,
+      // video_collection_id: data.video_collection_id,
+      video_class_id: data.video_class_id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.addvideochapterfree,
+      data: config,
+      method: 'POST',
+      then(res) {
+        console.log(res)
+        if (res.data.code == 0) {
+          self.$message({
+            type: 'success',
+            message: res.data.message,
+          })
+          self.$api.getvideoclass(self, 'videoData') //右侧列表
+          // self.dialogVisible = false
         }
       },
     })

@@ -65,3 +65,13 @@ export function getProject(params) {
     params,
   })
 }
+/**
+ * 公海客户
+ */
+export function getCommonUserList(params) {
+  return request({
+    url: '/Enrollment/commonUserList',
+    method: 'get',
+    params,
+  })
+}
