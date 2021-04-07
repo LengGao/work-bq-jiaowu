@@ -55,11 +55,22 @@ export function getStaffWorkData() {
  * 获取待办信息
  * @param {*} params 
  */
-export function getStaffBacklog(params) {
+export function getFollowPage(params) {
     return request({
-        url: '/Workbench/getStaffBacklog',
+        url: '/StaffFollow/getFollowPage',
         method: 'get',
         params
+    })
+}
+/**
+ * 更新待办状态
+ * @param {*} params 
+ */
+export function updateState(data) {
+    return request({
+        url: '/StaffFollow/updateState',
+        method: 'post',
+        data
     })
 }
 /**
