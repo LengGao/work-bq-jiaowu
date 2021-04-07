@@ -17,7 +17,11 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column label="编号" type="index" width="60"></el-table-column>
+        <el-table-column
+          label="项目编号"
+          prop="project_id"
+          min-width="90"
+        ></el-table-column>
         <el-table-column
           prop="project_name"
           label="项目名称"

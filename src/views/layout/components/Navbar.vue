@@ -24,11 +24,7 @@
           @show="handlePopoverShow"
           @after-leave="handlePopoverColse"
         >
-          <el-badge
-            slot="reference"
-            :value="msgUnreadCount"
-            class="message-badge"
-          >
+          <el-badge slot="reference" :value="msgCount" class="message-badge">
             <i class="el-icon-bell message-bell"></i>
           </el-badge>
           <div class="message-content">
@@ -141,12 +137,11 @@
 
 <script>
 let timeId = null;
-import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import touxiang from "@/assets/images/touxiang.png";
-import { getAdminQueueList, baseUrl, getUnreadCount } from "@/api/login";
-const $navBar = "#ffffff";
+import { getAdminQueueList, baseUrl } from "@/api/login";
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     const validatePass = (rule, value, callback) => {
@@ -191,7 +186,6 @@ export default {
       msgTotal: 0,
       msgLoading: false,
       msgNoMore: false,
-      msgUnreadCount: 0,
       refershLoading: false,
     };
   },
@@ -200,16 +194,19 @@ export default {
     Hamburger,
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar"]),
+    ...mapGetters(["sidebar", "avatar", "msgCount"]),
   },
   created() {
-    const time = 1000 * 60;
+    this.getUnreadCount();
+    const time = 1000 * 30;
     timeId = setInterval(this.getUnreadCount, time);
   },
   beforeDestroy() {
     clearInterval(timeId);
   },
   methods: {
+    //getUnreadCount：获取未读数量
+    ...mapActions(["getUnreadCount"]),
     // msg 下载
     handleDownload(url) {
       console.log(baseUrl + url);
@@ -232,14 +229,7 @@ export default {
       await this.getAdminQueueList();
       this.refershLoading = false;
     },
-    // msg 未读数量
-    async getUnreadCount() {
-      const data = {};
-      const res = await getUnreadCount(data);
-      if (res.code === 0) {
-        this.msgUnreadCount = res.data.count;
-      }
-    },
+
     // 弹窗关闭时
     handlePopoverColse() {
       this.msgNoMore = false;

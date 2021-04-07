@@ -90,7 +90,7 @@
                 <el-button type="text" @click="toMassMessage(row)"
                   >群发消息</el-button
                 >
-                <el-button type="text" @click="toReturnVisit(row.id)"
+                <el-button type="text" @click="toReturnVisit(row.classroom_id)"
                   >学习回访</el-button
                 >
               </div>
@@ -147,6 +147,8 @@ export default {
           attrs: {
             placeholder: "所属分类",
             clearable: true,
+            props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },

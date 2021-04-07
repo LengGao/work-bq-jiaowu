@@ -7,16 +7,21 @@ import {
 } from '@/utils/auth'
 import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
 import { getIdentity } from "@/api/workbench.js";
+import { getUnreadCount } from "@/api/login";
 const user = {
   state: {
     token: getToken(),
     name: '',
     avatar: '',
     roles: [],
-    identity: '' // 用户身份 1教务 2招生 3老师 4财务 5管理员
+    identity: '', // 用户身份 1教务 2招生 3老师 4财务 5管理员
+    msgCount: 0,// 任务中心未读数量
   },
 
   mutations: {
+    SET_MSG_COUNT(state, val) {
+      state.msgCount = val
+    },
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -35,6 +40,16 @@ const user = {
   },
 
   actions: {
+    // 
+    // msg 未读数量
+    async getUnreadCount({ commit }) {
+      const data = {};
+      const res = await getUnreadCount(data);
+      if (res.code === 0) {
+        res.data.count;
+        commit('SET_MSG_COUNT', res.data?.count || 0)
+      }
+    },
     // 登录
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()

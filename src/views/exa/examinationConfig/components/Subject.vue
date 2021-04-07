@@ -175,6 +175,8 @@ export default {
           attrs: {
             placeholder: "所属分类",
             clearable: true,
+            props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },
@@ -205,11 +207,12 @@ export default {
     async updateSubjectStatus(row) {
       const data = {
         id: row.id,
-        status: row.status ? 1 : 0,
+        status: row.status,
       };
-      const res = await updateSubjectStatus(data);
+      const res = await updateSubjectStatus(data).catch(() => {
+        row.status = row.status ? 0 : 1;
+      });
       if (res.code === 0) {
-        row.status = row.status ? 1 : 0;
         this.$message.success(res.message);
       }
     },

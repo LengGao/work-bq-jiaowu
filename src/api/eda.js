@@ -442,3 +442,43 @@ export function getbycoursestudet(params) {
     params,
   })
 }
+// 获取回访列表
+export function getReturnVisit(params) {
+  return request({
+    url: '/classroom/getReturnVisit',
+    method: 'get',
+    params,
+  })
+}
+// 回访详情-班级信息
+export function followClassroomInfo(params) {
+  return request({
+    url: '/classroom/followClassroomInfo',
+    method: 'get',
+    params,
+  })
+}
+// 添加回访
+export function createReturnVisit(data) {
+  return request({
+    url: '/classroom/createReturnVisit',
+    method: 'post',
+    data,
+  })
+}
+// 回访详情列表
+export function getReturnVisitDetail(params) {
+  return request({
+    url: '/classroom/followStudentsReturnVisitList',
+    method: 'get',
+    params,
+  })
+}
+// 更新回访记录
+export function updateFollow(data) {
+  return request({
+    url: '/classroom/updateFollow',
+    method: 'post',
+    data,
+  })
+}

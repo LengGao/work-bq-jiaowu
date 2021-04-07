@@ -23,6 +23,7 @@
             <el-cascader
               filterable
               clearable
+              :props="{ checkStrictly: true }"
               style="width: 100%"
               v-model="formData.cate_id"
               placeholder="请选择所属分类"

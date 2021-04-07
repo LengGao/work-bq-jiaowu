@@ -10,12 +10,7 @@
         />
         <el-button type="primary" @click="openAdd">添加学生</el-button>
       </div>
-      <div>
-        <el-button @click="openBatch">批量审核</el-button>
-        <el-button @click="exportEnrollRecord" :loading="exportLoading"
-          >导出</el-button
-        >
-      </div>
+
       <!--表格-->
       <div class="userTable">
         <el-table
@@ -133,7 +128,13 @@
             </template>
           </el-table-column>
         </el-table>
-        <div class="table_bottom">
+        <div class="pagination-container--between">
+          <div>
+            <el-button @click="openBatch">批量审核</el-button>
+            <el-button @click="exportEnrollRecord" :loading="exportLoading"
+              >导出</el-button
+            >
+          </div>
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -171,6 +172,7 @@
 import StudentDialog from "./components/StudentDialog";
 import ExaminationReview from "./components/ExaminationReview";
 import AddPhoto from "@/views/eda/certificates/components/AddPhoto";
+import { mapActions } from "vuex";
 import {
   enrollRecordList,
   removeStudent,
@@ -249,23 +251,26 @@ export default {
     this.enrollRecordList();
   },
   methods: {
+    //getUnreadCount：获取未读数量
+    ...mapActions(["getUnreadCount"]),
     // 导出
-    downloadFile(content) {
-      if ("download" in document.createElement("a")) {
-        //支持a标签download的浏览器
-        let url = window.URL.createObjectURL(content); //为文件流创建构建下载链接
-        let link = document.createElement("a"); //创建a标签
-        link.style.display = "none";
-        link.href = url;
-        link.setAttribute("download", "报考详情.xlsx"); //设置a标签的下载动作和下载文件名
-        document.body.appendChild(link);
-        link.click(); //执行下载
-        document.body.removeChild(link); //释放标签
-      } else {
-        //其他浏览器
-        navigator.msSaveBlob(content, "报考详情.xlsx");
-      }
-    },
+    // downloadFile(content) {
+    //   if ("download" in document.createElement("a")) {
+    //     //支持a标签download的浏览器
+    //     let url = window.URL.createObjectURL(content); //为文件流创建构建下载链接
+    //     let link = document.createElement("a"); //创建a标签
+    //     link.style.display = "none";
+    //     link.href = url;
+    //     link.setAttribute("download", "报考详情.xlsx"); //设置a标签的下载动作和下载文件名
+    //     document.body.appendChild(link);
+    //     link.click(); //执行下载
+    //     document.body.removeChild(link); //释放标签
+    //   } else {
+    //     //其他浏览器
+    //     navigator.msSaveBlob(content, "报考详情.xlsx");
+    //   }
+    // },
+    // 导出
     async exportEnrollRecord() {
       const data = {
         pid: this.$route?.query.id,
@@ -275,7 +280,7 @@ export default {
         this.exportLoading = false;
       });
       this.exportLoading = false;
-      this.downloadFile(res);
+      this.$message.success(res.message);
     },
     handleTableChange(selection) {
       this.selection = selection || [];

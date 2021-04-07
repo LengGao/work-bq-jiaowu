@@ -35,6 +35,7 @@
           v-model="formData.subject_id_str"
           placeholder="请选择"
           multiple
+          filterable
           @change="handleSubjectChange"
         >
           <el-option

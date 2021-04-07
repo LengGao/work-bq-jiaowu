@@ -97,9 +97,14 @@ a:hover {
 }
 
 //分页栏样式
+.pagination-container--between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
 .pagination-container {
-  display: inline-block;
-  float: right;
+  display: flex;
   margin-top: 20px;
 }
 
