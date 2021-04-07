@@ -8,9 +8,6 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary" @click="createReturnVisit"
-          >添加回访记录</el-button
-        >
       </div>
       <!--表格-->
       <div class="userTable">
@@ -26,40 +23,56 @@
           :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
           :cell-style="{ 'text-align': 'center' }"
         >
-          <el-table-column label="序号" width="50" type="index">
+          <el-table-column label="编号" width="50" type="index">
           </el-table-column>
           <el-table-column
             prop="create_time"
-            label="回访时间"
+            label="创建时间"
             min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="follow_user_name"
-            label="回访人"
+            label="待办类型"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="state_rate"
-            label="回访数量"
+            label="待办事项"
             min-width="110"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="update_time"
-            label="最后更新时间"
+            label="账号身份"
+            min-width="140"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="update_time"
+            label="跟进人员"
+            min-width="140"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="update_time"
+            label="跟进状态"
+            min-width="140"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="update_time"
+            label="跟进时间"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="toReturnVisitDetail(row.id)"
-                  >查看详情</el-button
-                >
+                <el-button type="text">查看详情</el-button>
               </div>
             </template>
           </el-table-column>
@@ -77,7 +90,7 @@
 </template>
 
 <script>
-import { getReturnVisit, createReturnVisit } from "@/api/eda";
+import { getReturnVisit } from "@/api/eda";
 export default {
   data() {
     return {
@@ -103,8 +116,87 @@ export default {
         },
         {
           key: "staff_name",
+          type: "select",
+          options: [
+            {
+              label: "待跟进",
+              value: 1,
+            },
+            {
+              label: "待收款",
+              value: 2,
+            },
+            {
+              label: "待跟班",
+              value: 3,
+            },
+            {
+              label: "待回访",
+              value: 4,
+            },
+            {
+              label: "待入账",
+              value: 5,
+            },
+            {
+              label: "待退款",
+              value: 6,
+            },
+            {
+              label: "待作废",
+              value: 7,
+            },
+          ],
           attrs: {
-            placeholder: "回访人姓名",
+            placeholder: "待办类型",
+          },
+        },
+        {
+          key: "staff_name",
+          type: "select",
+          options: [
+            {
+              label: "招生",
+              value: 1,
+            },
+            {
+              label: "教务",
+              value: 2,
+            },
+            {
+              label: "财务",
+              value: 3,
+            },
+          ],
+          attrs: {
+            placeholder: "账号身份",
+          },
+        },
+        {
+          key: "staff_name",
+          type: "select",
+          options: [
+            {
+              label: "未开始",
+              value: 1,
+            },
+            {
+              label: "进行中",
+              value: 2,
+            },
+            {
+              label: "已完成",
+              value: 3,
+            },
+          ],
+          attrs: {
+            placeholder: "跟进状态",
+          },
+        },
+        {
+          key: "staff_name",
+          attrs: {
+            placeholder: "跟进员工，待办内容",
           },
         },
       ],
@@ -116,15 +208,6 @@ export default {
   },
 
   methods: {
-    async createReturnVisit() {
-      const data = {
-        class_id: this.$route.query?.id || "",
-      };
-      const res = await createReturnVisit(data);
-      if (res.code === 0) {
-        this.toReturnVisitDetail(res.data?.id || "", 1);
-      }
-    },
     handleSearch(data) {
       const times = data.date || ["", ""];
       this.pageNum = 1;
@@ -141,7 +224,7 @@ export default {
     },
     async getReturnVisit() {
       const data = {
-        class_id: this.$route.query?.id || "",
+        class_id: 67,
         page: this.pageNum,
         ...this.searchData,
       };
@@ -151,16 +234,6 @@ export default {
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
-    },
-    toReturnVisitDetail(id, isAdd) {
-      this.$router.push({
-        name: "returnVisitDetail",
-        query: {
-          class_id: this.$route.query?.id || "",
-          id,
-          isAdd,
-        },
-      });
     },
   },
 };

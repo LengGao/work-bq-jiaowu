@@ -597,6 +597,13 @@ export const asyncRouter = [
         hidden: true,
       },
       {
+        path: 'toDoManagement',
+        name: 'toDoManagement',
+        component: () => import('@/views/set/toDoManagement.vue'),
+        meta: { title: '待办管理', icon: 'product-add' },
+        hidden: true,
+      },
+      {
         path: 'notice',
         name: 'notice',
         component: () => import('@/views/set/notice.vue'),
