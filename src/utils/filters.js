@@ -15,6 +15,10 @@ const filters = {
         let end = val.substr(-4);
         return `${start}***********${end}`;
     },
+    removeTag(val){
+        const regx = /<[^>]*>|<\/[^>]*>/gm;
+        return val? val.replace(regx,""):''
+    }
 }
 
 Object.keys(filters).forEach(key => {

@@ -254,20 +254,20 @@ export default {
         surname: [
           { required: true, message: '请填写学生姓名', trigger: 'blur' },
         ],
-        // mail: [{ validator: validMail, trigger: 'blur', required: true }],
-        // mobile: [
-        //   { required: true, message: '请输入手机号码', trigger: 'blur' },
-        //   {
-        //     validator: function(rule, value, callback) {
-        //       if (/^1\d\d{9}$/.test(value) == false) {
-        //         callback(new Error('请输入正确的手机号'))
-        //       } else {
-        //         callback()
-        //       }
-        //     },
-        //     trigger: 'blur',
-        //   },
-        // ],
+        // email: [{ validator: validMail, trigger: 'blur', required: true }],
+        mobile: [
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          {
+            validator: function(rule, value, callback) {
+              if (/^1\d\d{9}$/.test(value) == false) {
+                callback(new Error('请输入正确的手机号'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur',
+          },
+        ],
         id_card_number: [
           { required: true, message: '请输入身份证ID', trigger: 'blur' },
           {

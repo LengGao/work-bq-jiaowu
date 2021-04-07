@@ -1,13 +1,11 @@
 <template>
   <section>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。默认显示为<span>近7天</span>的数据,想要查看更多数据请点击搜索
     </div>
     <div class="mainPart">
       <!--搜索模块-->
-      <div style="color: #909399;margin-bottom:10px">
-        * 默认显示为近7天的数据,想要查看更多数据请点击搜索
-      </div>
+      <div style="color: #909399;margin-bottom:10px"></div>
       <header>
         <SearchList
           :options="searchOptions"
@@ -558,7 +556,6 @@ export default {
           obj.label = i
           return obj
         })
-
         this.searchOptions[4].options = field_content
       }
     },
@@ -661,6 +658,9 @@ header {
   color: #909399;
   width: 100%;
   border-bottom: 15px solid #f2f6fc;
+  span {
+    color: #199fff;
+  }
 }
 .customer_navigation {
   width: 133px;

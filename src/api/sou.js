@@ -51,11 +51,22 @@ export function insertCategory(data) {
 /**
  *
  * /**
- *  删除分类列
+ *  删除分类
  */
 export function deleteCategory(data) {
   return request({
     url: '/courseCategory/deleteCategory',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ *  分类排序
+ */
+ export function updateCategorySort(data) {
+  return request({
+    url: '/courseCategory/updateCategorySort',
     method: 'post',
     data,
   })
@@ -284,6 +295,18 @@ export function getStorageOptions() {
 export function schoolroomUsage(params) {
   return request({
     url: 'Schoolroom/schoolroomUsage',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 题库分页列表
+ * @param {*} data
+ */
+//
+export function getQuesbank(params) {
+  return request({
+    url: '/questionBank/getPageList',
     method: 'get',
     params,
   })
