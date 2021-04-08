@@ -4,11 +4,11 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const path = require('path')
 console.log('当前环境：', process.env.NODE_ENV)
 console.log('当前baseUrl：', process.env.VUE_APP_LOACTION)
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production'
 // CDN外链，会插入到index.html中
 const cdn = {
   css: [
-    'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/theme-chalk/index.css'
+    'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/theme-chalk/index.css',
   ],
   js: [
     'https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
@@ -17,16 +17,16 @@ const cdn = {
     'https://cdn.jsdelivr.net/npm/vuex@3.4/dist/vuex.min.js',
     'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/index.js',
     'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
-  ]
+  ],
 }
 // cdn预加载使用
 const externals = {
-  'vue': 'Vue',
+  vue: 'Vue',
   'vue-router': 'VueRouter',
-  'vuex': 'Vuex',
-  'axios': 'axios',
-  "element-ui": "ELEMENT",
-  'jquery': 'jQuery',
+  vuex: 'Vuex',
+  axios: 'axios',
+  'element-ui': 'ELEMENT',
+  jquery: 'jQuery',
 }
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
@@ -38,12 +38,12 @@ module.exports = {
         // target: 'http://120.27.63.9:8080',
         // target: 'http://dongpei.kaifa',
         // target: 'http://sc.dp.com', //超
-        // target: 'http://thing.com',
+        target: 'http://thing.com',
         //target: 'http://testadmin.beiqujy.com/apidata', //测试
         //target: 'http://dpadmin.beiqujy.com/apidata', //测试
-        // target: 'http://dongpei.local', //孝华
-        target: 'http://a.cc',
-        // target: 'http://www.beiqujy.com/apidata',
+        //target: 'http://dongpei.local', //孝华
+        ///target: 'http://a.cc',
+        //target: 'http://www.beiqujy.com/apidata',
         // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
         changeOrigin: true,
         ws: true,
@@ -90,7 +90,7 @@ module.exports = {
     /**
      * 添加CDN参数到htmlWebpackPlugin配置中
      */
-    config.plugin('html').tap(args => {
+    config.plugin('html').tap((args) => {
       if (isProduction) {
         args[0].cdn = cdn
       }

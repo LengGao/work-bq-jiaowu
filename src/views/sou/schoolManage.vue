@@ -5,23 +5,22 @@
     </div>
     <section class="mainwrap">
       <div class="head-search">
-        <search2
-          :contentShow="true"
-          typeTx="punch"
-          api="getHomeclassifiList"
-          inputText="校区名称"
-          @getTable="getTableList"
-        ></search2>
-        <!-- <el-button type="primary" @click="projectDialog">
-          添加校区
-        </el-button> -->
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
       </div>
       <!--表格-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.list"
+          :data="listData"
           style="width: 100%"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
@@ -174,6 +173,7 @@
 </template>
 
 <script>
+import { getSchoolList } from '@/api/sou'
 export default {
   name: 'projectManage',
   data() {
@@ -183,12 +183,48 @@ export default {
       schoolData: [],
       dialogTitle: '添加校区',
       dialogVisible: false,
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchOptions: [
+        {
+          key: 'institution_name',
+          attrs: {
+            placeholder: '校区名称',
+          },
+        },
+      ],
+      searchData: {
+        institution_name: '',
+      },
     }
   },
   created() {
-    this.$api.getSchoolList(this, 'schoolData')
+    this.getSchoolList()
   },
   methods: {
+    handleSearch(data) {
+      this.pageNum = 1
+      this.searchData = data
+      this.getSchoolList()
+    },
+    handleSearch(data) {
+      this.pageNum = 1
+      this.searchData = data
+      this.getSchoolList()
+    },
+    async getSchoolList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      this.listLoading = true
+      const res = await getSchoolList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.listTotal = res.data.total
+    },
     scopes(institution_id, sorts) {
       var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
       var re = new RegExp(regu)
@@ -199,7 +235,7 @@ export default {
         this.$api.changeUpdateSort(this, institution_id, sorts)
       }
     },
-    getTableList() {},
+
     changeSwitch(ab) {
       console.log(ab.institution_id, ab.account_status)
       this.$api.changeUpdateStatus(this, ab.institution_id, ab.account_status)

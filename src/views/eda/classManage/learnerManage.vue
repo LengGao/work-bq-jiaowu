@@ -142,9 +142,9 @@
 </template>
 
 <script>
-import { getClassstudentList, classstudentsBatchRemove } from "@/api/eda";
-import { getInstitutionSelectData } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
+import { getClassstudentList, classstudentsBatchRemove } from '@/api/eda'
+import { getInstitutionSelectData } from '@/api/sou'
+import { cloneOptions } from '@/utils/index'
 export default {
   data() {
     return {
@@ -154,69 +154,69 @@ export default {
       listTotal: 0,
       searchData: {
         organization_id: [],
-        keyboard: "",
+        keyboard: '',
       },
       searchOptions: [
         {
-          key: "organization_id",
-          type: "cascader",
+          key: 'organization_id',
+          type: 'cascader',
           attrs: {
-            placeholder: "所属机构",
+            placeholder: '所属机构',
             clearable: true,
             options: [],
           },
         },
         {
-          key: "keyboard",
+          key: 'keyboard',
           attrs: {
-            placeholder: "学生姓名/手机号码",
+            placeholder: '学生姓名/手机号码',
           },
         },
       ],
       selectionIds: [],
       courseStudentIds: [],
-    };
+    }
   },
 
   created() {
-    this.getClassstudentList();
-    this.getInstitutionSelectData();
+    this.getClassstudentList()
+    this.getInstitutionSelectData()
   },
 
   methods: {
     handleTabelSelectChange(selection) {
       if (selection) {
-        this.selectionIds = selection.map((item) => item.uid);
-        this.courseStudentIds = selection.map((item) => item.course_student_id);
+        this.selectionIds = selection.map((item) => item.uid)
+        this.courseStudentIds = selection.map((item) => item.course_student_id)
       } else {
-        this.selectionIds = [];
-        this.courseStudentIds = [];
+        this.selectionIds = []
+        this.courseStudentIds = []
       }
     },
     //批量移除
     batchRemove() {
       if (!this.selectionIds.length) {
-        this.$message.warning("请选择学生");
-        return;
+        this.$message.warning('请选择学生')
+        return
       }
-      this.removeConfirm(this.selectionIds, true);
+      this.removeConfirm(this.selectionIds, true)
     },
     // 批量转班
     batchShift() {
       if (!this.selectionIds.length) {
-        this.$message.warning("请选择学生");
-        return;
+        this.$message.warning('请选择学生')
+        return
       }
       const query = {
         uid: this.selectionIds,
         course_students_id: this.courseStudentIds,
         old_classroom_id: this.$route.query.classId,
-      };
+      }
       // console.log(encodeURI(JSON.stringify(query)));
       this.$router.push({
-        name: "shift",
+        name: 'shift',
         query: JSON.stringify(query),
-      });
+      })
     },
 
     linkTo(row) {
@@ -224,82 +224,82 @@ export default {
         uid: [row.uid],
         course_students_id: [row.course_student_id],
         old_classroom_id: this.$route.query.classId,
-      };
-      this.$router.push({ name: "shift", query: JSON.stringify(query) });
+      }
+      this.$router.push({ name: 'shift', query: JSON.stringify(query) })
     },
     addStudent() {
       this.$router.push({
-        path: "/eda/addStudent",
+        path: '/eda/addStudent',
         query: this.$route.query || {},
-      });
+      })
     },
     handlePageChange(val) {
-      this.pageNum = val;
-      this.getClassstudentList();
+      this.pageNum = val
+      this.getClassstudentList()
     },
 
     handleSearch(data) {
-      const times = data.date || ["", ""];
-      delete data.date;
-      this.pageNum = 1;
+      const times = data.date || ['', '']
+      delete data.date
+      this.pageNum = 1
       this.searchData = {
         ...data,
         organization_id: data.organization_id.pop(),
-      };
-      this.getClassstudentList();
+      }
+      this.getClassstudentList()
     },
     // 移除学生
     removeConfirm(uid, isbatch) {
-      this.$confirm(`确定要移除${isbatch ? "选中的" : "此"}学生吗?`, {
-        type: "warning",
+      this.$confirm(`确定要移除${isbatch ? '选中的' : '此'}学生吗?`, {
+        type: 'warning',
       })
         .then(() => {
-          this.classstudentsBatchRemove(uid);
+          this.classstudentsBatchRemove(uid)
         })
-        .catch(() => {});
+        .catch(() => {})
     },
     async classstudentsBatchRemove(uid) {
       const data = {
         uid,
         classroom_id: this.$route.query.classId,
-      };
-      const res = await classstudentsBatchRemove(data);
+      }
+      const res = await classstudentsBatchRemove(data)
       if (res.code === 0) {
-        this.$message.success("学生移除成功");
-        this.getClassstudentList();
+        this.$message.success('学生移除成功')
+        this.getClassstudentList()
       }
     },
     // 获取机构
     async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
+      const data = { list: true }
+      const res = await getInstitutionSelectData(data)
       if (res.code === 0) {
         this.searchOptions[0].attrs.options = cloneOptions(
           res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
+          'institution_name',
+          'institution_id',
+          'children'
+        )
       }
     },
     //班级学生列表
     async getClassstudentList() {
-      this.selectionIds = [];
-      this.courseStudentIds = [];
+      this.selectionIds = []
+      this.courseStudentIds = []
       const data = {
         class_id: this.$route.query.classId,
         page: this.pageNum,
         ...this.searchData,
-      };
-      delete data.date;
-      this.listLoading = true;
-      const res = await getClassstudentList(data);
-      this.listLoading = false;
-      this.listData = res.data.data;
-      this.listTotal = res.data.total;
+      }
+      delete data.date
+      this.listLoading = true
+      const res = await getClassstudentList(data)
+      this.listLoading = false
+      this.listData = res.data.data
+      this.listTotal = res.data.total
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

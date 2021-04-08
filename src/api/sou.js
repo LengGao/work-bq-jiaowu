@@ -64,7 +64,7 @@ export function deleteCategory(data) {
 /**
  *  分类排序
  */
- export function updateCategorySort(data) {
+export function updateCategorySort(data) {
   return request({
     url: '/courseCategory/updateCategorySort',
     method: 'post',
@@ -307,6 +307,91 @@ export function schoolroomUsage(params) {
 export function getQuesbank(params) {
   return request({
     url: '/questionBank/getPageList',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 题库分页列表
+ * @param {*} data
+ */
+//
+export function getSchoolList(params) {
+  return request({
+    url: 'School/list',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 删除课程
+ * @param {*} data
+ */
+//
+export function deleteCourses(data) {
+  return request({
+    url: '/course/delete',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 视屏集
+ * @param {*} param
+ */
+//
+export function videocollectionlist(params) {
+  return request({
+    url: '/video/videocollectionlist',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 视屏集详情
+ * @param {*} param
+ */
+//
+export function editvideocollection(params) {
+  return request({
+    url: '/video/editvideocollection',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 是否允许快进
+ * @param {*} param
+ */
+//
+export function modifyvideocollection(params) {
+  return request({
+    url: '/video/editvideocollection',
+    method: 'post',
+    params,
+  })
+}
+/**
+ * 关联题库
+ * @param {*} param
+ */
+//
+export function getProblemCourseList(params) {
+  return request({
+    url: '/problem/getProblemCourseList',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 排课管理列表
+ * @param {*} param
+ */
+//
+export function getTimetableList(params) {
+  return request({
+    url: '/arrange/classroomList',
     method: 'get',
     params,
   })

@@ -9,7 +9,7 @@
     <div class="userTable">
       <el-table
         ref="multipleTable"
-        :data="schoolData.list"
+        :data="listData"
         tooltip-effect="light"
         stripe
         style="width: 100%"
@@ -41,18 +41,21 @@
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
-        <el-table-column
-          prop="realname"
-          label="学生姓名"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="mobile"
-          label="手机号码"
-          min-width="150"
-          show-overflow-tooltip
-        ></el-table-column>
+        <el-table-column label="学生姓名" min-width="110" show-overflow-tooltip>
+          <template slot-scope="{ row }">
+            <div v-if="row.realname">
+              {{ row.realname }}
+            </div>
+            <span v-else>--</span>
+          </template></el-table-column
+        >
+        <el-table-column label="手机号码" min-width="150" show-overflow-tooltip
+          ><template slot-scope="{ row }">
+            <div>
+              {{ row.mobile | filterPhone }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="create_time"
           label="加入时间"
@@ -90,13 +93,11 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
-        </div>
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
     <addCustomeDialog
@@ -111,6 +112,7 @@
 import addCustomeDialog from './components/addCustomeDialog'
 import { cloneOptions } from '@/utils/index'
 import { getCateList } from '@/api/sou'
+import { getCommonUserList } from '@/api/etm'
 export default {
   name: 'seaStudent',
   components: {
@@ -125,11 +127,14 @@ export default {
       page: 1,
       status: 3,
       datas: {},
+      listData: [],
+      listLoading: false,
       pageNum: 1,
       listTotal: 0,
       searchData: {
         category_id: '',
         date: '',
+        keyboard: '',
       },
       searchOptions: [
         {
@@ -155,7 +160,7 @@ export default {
           },
         },
         {
-          key: 'keyword',
+          key: 'keyboard',
           attrs: {
             placeholder: '客户姓名/手机号码',
           },
@@ -165,21 +170,49 @@ export default {
   },
   created() {
     this.getCateList()
+    this.getCommonUserList()
   },
   mounted() {
     // let status = 3
-    this.$api.getCommonUserList(this, 'schoolData')
+    // this.$api.getCommonUserList(this, 'schoolData')
   },
   methods: {
-    handleSearch(data) {
-      console.log(data)
-      if (data.date && data.date.length) {
-        data.date = data.date[0] + ' - ' + data.date[1]
-      }
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getCommonUserList()
+    },
+    //客户列表
+    async getCommonUserList() {
+      this.checkedIds = []
 
+      this.intent_id = ''
+      console.log(this.searchData.date)
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+        status: 3,
+      }
+      console.log(data)
+      this.listLoading = true
+      const res = await getCommonUserList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.listTotal = res.data.total
+    },
+    handleSearch(data) {
+      const times = data.date || ['', '']
+      console.log(times)
+      delete data.date
       this.pageNum = 1
-      this.searchData = data
-      this.$api.getCommonUserList(this, 'schoolData')
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+        category_id: data.category_id ? data.category_id.pop() : '',
+
+        // date: times[0] + ' - ' + times[1],
+      }
+      this.getCommonUserList()
     },
     // 获取所属分类
     async getCateList() {
@@ -214,11 +247,6 @@ export default {
     receiveStudent(zx) {
       console.log(zx)
       this.$api.receive(this, zx.intent_id)
-    },
-    doPageChange(page) {
-      this.page = page
-      // this.$api.getMyclient(this, 'myclient', status)
-      this.$api.getCommonUserList(this, 'schoolData', this.datas)
     },
   },
 }

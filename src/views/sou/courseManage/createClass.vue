@@ -20,7 +20,9 @@
               :key="selectData.length"
               ref="cascader"
               style="240px"
+              @change="changeCategory"
               placeholder="请选择分类"
+              :props="{ checkStrictly: true }"
               v-model="formData.course_category_id"
               :options="selectData"
             ></el-cascader>
@@ -77,6 +79,7 @@
           <el-form-item label="全部课程排序" prop="sort">
             <el-input
               type="number"
+              onkeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
               v-model="formData.sort"
               placeholder="排序数字越大课程越靠前"
             ></el-input>
@@ -85,6 +88,7 @@
             <el-input
               placeholder="请输入课程价格"
               v-model="formData.course_price"
+              :min="0"
               type="number"
             ></el-input>
           </el-form-item>
@@ -129,7 +133,7 @@
               placeholder="请选择关联视频集"
             >
               <el-option
-                v-for="item in videoData.data"
+                v-for="item in videoData"
                 :key="item.video_collection_id"
                 :label="item.video_collection_name"
                 :value="item.video_collection_id"
@@ -145,7 +149,7 @@
               placeholder="请选择关联题库"
             >
               <el-option
-                v-for="item in questionBank.list"
+                v-for="item in questionBank"
                 :key="item.problem_course_id"
                 :label="item.course_name"
                 :value="item.problem_course_id"
@@ -165,6 +169,7 @@
             <el-input
               placeholder="请输入划线价格"
               type="number"
+              :min="0"
               v-model="formData.past_price"
             ></el-input>
           </el-form-item>
@@ -180,6 +185,7 @@
             <el-input
               placeholder="排序数字越大课程越靠前"
               type="number"
+              onkeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
               v-model="formData.hot_sort"
             ></el-input>
           </el-form-item>
@@ -216,6 +222,7 @@
             v-if="formData.is_fictitious == '1'"
           >
             <el-input
+              onkeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
               placeholder="请输入虚拟数量"
               type="number"
               v-model="formData.fictitious_num"
@@ -240,14 +247,13 @@
             >
             </el-upload>
             <quill-editor
-              v-model="content"
+              v-model="formData.introduction"
               ref="myQuillEditor"
               :options="editorOption"
               @change="onEditorChange($event)"
               style="height:200px"
             >
             </quill-editor>
-
           </el-form-item>
 
           <el-form-item> </el-form-item>
@@ -259,9 +265,9 @@
             <el-button type="primary" @click="handleSave('ruleForm')"
               >保存</el-button
             >
-            <el-button type="primary" @click="toConfigureCourses"
+            <!-- <el-button type="primary" @click="handleSave('ruleForm', 2)"
               >保存并配置</el-button
-            >
+            > -->
           </div>
         </el-form>
       </el-col>
@@ -282,7 +288,17 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 import { uploadImageUrl } from '@/api/educational'
-import { addCourse, getCateList, editCourse, getCoursesDetail } from '@/api/sou'
+import Vue from 'vue'
+import {
+  addCourse,
+  getCateList,
+  editCourse,
+  getCoursesDetail,
+  videocollectionlist,
+  getProblemCourseList,
+} from '@/api/sou'
+import axios from 'axios'
+import store from '@/store'
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'], // toggled buttons
   [{ header: 1 }, { header: 2 }], // custom button values
@@ -305,9 +321,9 @@ export default {
   data() {
     return {
       uploadImageUrl,
-      // headers: {
-      //   token: this.$store.state.user.token,
-      // },
+      headers: {
+        token: this.$store.state.user.token,
+      },
       editor: null,
       pictureVisible: false,
       haschoose: false,
@@ -406,8 +422,6 @@ export default {
         token: this.$store.state.user.token,
       }, // 有的图片服务器要求请求头需要有token
       /***********quillEditor编辑器需要的参数**********/
-
-
     }
   },
   created() {
@@ -422,6 +436,56 @@ export default {
   mounted() {},
 
   methods: {
+    // getProblemCourseList(category_id) {
+    //   let data = { category_id }
+    //   const token = store.getters.token || ''
+    //   console.log(process.env.VUE_APP_LOACTION)
+    //   let baseurl = '/ai/adimn/v2'
+    //   // str = baseurl.Substring(0, 10)
+
+    //   console.log(Vue.prototype.rootDir)
+    //   let url =
+    //     baseurl +
+    //     '/problem/getProblemCourseList' +
+    //     '?category_id=' +
+    //     category_id
+
+    //   $.ajax(url, data, {
+    //     headers: {
+    //       'Content-type': 'application/x-www-form-urlencoded',
+    //       token: token,
+    //     },
+    //   })
+    // },
+
+    changeCategory(ids) {
+      console.log(ids)
+      const id = ids ? [...ids].pop() : ''
+      console.log(id)
+      this.videocollectionlist(id)
+      this.getProblemCourseList(id)
+    },
+    // 获取关联题库
+    async getProblemCourseList(category_id) {
+      const data = {
+        category_id,
+      }
+      const res = await getProblemCourseList(data)
+      if (res.code === 0) {
+        this.questionBank = res.data.list
+      }
+    },
+    // 获取关联视屏
+    async videocollectionlist(category_id) {
+      const data = {
+        course_category_id: category_id,
+        limit: 9999,
+      }
+      const res = await videocollectionlist(data)
+      if (res.code === 0) {
+        this.videoData = res.data.data
+      }
+    },
     handleAvatarSuccess(res, file) {
       console.log(res)
       this.formData.cover_img = res.data?.data?.url || ''
@@ -444,6 +508,11 @@ export default {
       console.log(res)
       if (res.code === 0) {
         this.formData = res.data.info
+        const id = res.data.info.course_category_id
+        if (id) {
+          this.videocollectionlist(id)
+          this.getProblemCourseList(id)
+        }
         this.formData.course_category_id = res.data.info.course_category_id
       }
     },
@@ -463,7 +532,7 @@ export default {
         this.formData.past_price = 0
       }
     },
-    async submit() {
+    async submit(num) {
       const data = {
         ...this.formData,
         course_category_id: Array.isArray(this.formData.course_category_id)
@@ -481,15 +550,24 @@ export default {
           type: 'success',
           message: res.message,
         })
-        this.$router.go(-1)
+        if (num) {
+          //保存并设置
+          this.$router.push({
+            path: '/sou/configureCourses',
+          })
+        } else {
+          //保存
+          this.$router.go(-1)
+        }
+
         // this.hanldeCancel()
         // this.$emit('on-success')
       }
     },
-    handleSave(formName) {
+    handleSave(formName, num) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit()
+          this.submit(num)
         }
       })
     },
@@ -538,9 +616,9 @@ export default {
     },
     //跳转配置课程页面
     toConfigureCourses() {
-      this.$router.push({
-        path: '/sou/configureCourses',
-      })
+      // this.$router.push({
+      //   path: '/sou/configureCourses',
+      // })
     },
 
     /***************quillEditor编辑器事件****************/
@@ -582,10 +660,8 @@ export default {
       // loading动画消失
       this.quillUpdateImg = false
       this.$message.error('图片插入失败')
-    },    
+    },
     /***************quillEditor编辑器事件****************/
-
-
   },
 }
 </script>
