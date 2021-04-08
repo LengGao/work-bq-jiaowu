@@ -41,3 +41,11 @@ export function modifyRole(data) {
     data,
   })
 }
+// 代办列表分页
+export function getFollowPage(params) {
+  return request({
+    url: '/StaffFollow/getFollowPage',
+    method: 'get',
+    params,
+  })
+}

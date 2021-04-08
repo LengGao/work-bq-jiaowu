@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="(item, index) in data" :key="index">
+    <div v-for="(item, index) in data" :key="item.id">
       <el-submenu :index="index + ''" v-if="item.children">
         <template slot="title">
           <i :class="['iconfont', item.icon || '']"></i>
