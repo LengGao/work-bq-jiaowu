@@ -76,12 +76,14 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
-            <template slot-scope="{ row }">
-              <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="toCusDetail(row.follow_user_id)"
-                  >查看详情</el-button
-                >
-              </div>
+            <template slot-scope="{ row }" v-if="followRoute[row.follow_type]">
+              <el-button
+                type="text"
+                @click="
+                  linkTo(followRoute[row.follow_type], row.param_list || {})
+                "
+                >查看详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -99,6 +101,7 @@
 
 <script>
 import { getFollowPage } from "@/api/set";
+import { followRoute } from "@/utils/index";
 export default {
   data() {
     return {
@@ -246,6 +249,7 @@ export default {
           color: "#43D100",
         },
       },
+      followRoute,
     };
   },
 
@@ -282,12 +286,10 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
-    toCusDetail(uid) {
+    linkTo(name, query) {
       this.$router.push({
-        name: "cusdetail",
-        query: {
-          uid,
-        },
+        name,
+        query,
       });
     },
   },

@@ -67,9 +67,23 @@
             <el-table-column
               prop="describe"
               label="待办事项"
-              min-width="110"
+              min-width="180"
               show-overflow-tooltip
             >
+              <template slot-scope="{ row }">
+                <div>
+                  <span>{{ row.describe }}</span>
+                  <el-button
+                    style="margin-left: 6px"
+                    v-if="followRoute[row.follow_type]"
+                    type="text"
+                    @click="
+                      linkTo(followRoute[row.follow_type], row.param_list || {})
+                    "
+                    >去跟进></el-button
+                  >
+                </div>
+              </template>
             </el-table-column>
             <el-table-column
               prop="update_time"
@@ -140,6 +154,7 @@
 <script>
 import Msg from "../Msg/index";
 import AddEntry from "./components/addEntry";
+import { followRoute } from "@/utils/index";
 import {
   getStaffWorkData,
   getFollowPage,
@@ -154,6 +169,7 @@ export default {
   },
   data() {
     return {
+      followRoute,
       activeName: "-1",
       loading: false,
       msgData: [],
@@ -253,6 +269,12 @@ export default {
     handleCurrentChange(page) {
       this.pageNum = page;
       this.getFollowPage();
+    },
+    linkTo(name, query) {
+      this.$router.push({
+        name,
+        query,
+      });
     },
   },
 };
