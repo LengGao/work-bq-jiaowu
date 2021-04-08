@@ -67,6 +67,19 @@
                 </p>
                 <p>老师：{{ infoMap[data.day].teacher_name }}</p>
               </div>
+
+              <div id="productStatus" v-if="allDay.includes(data.day)">
+                <span
+                  :class="
+                    infoMap[data.day].teaching_type == 1
+                      ? 'bgcolor'
+                      : 'bgcolor2'
+                  "
+                >
+                  <em>{{ typeMap[infoMap[data.day].teaching_type] }}</em>
+                </span>
+              </div>
+
               <div class="addBtnBox">
                 <p
                   v-if="data.isSelected == true && !allDay.includes(data.day)"
@@ -254,6 +267,10 @@ export default {
   },
   data() {
     return {
+      typeMap: {
+        1: '面',
+        2: '直',
+      },
       courseData: {},
       years: [],
       param: {},
@@ -330,6 +347,7 @@ export default {
       this.$api.getClassScheduling(this, this.schoolData)
     },
     handleOpen(data, ab) {
+      console.log(data)
       console.log('点会')
       console.log(ab.day.split('-')[1])
       console.log(this.checkedYear)
@@ -493,6 +511,12 @@ export default {
     padding: 12px 0px 35px 0;
   }
 }
+.bgcolor {
+  border-bottom: 2rem solid #ff00ff !important;
+}
+.bgcolor2 {
+  border-bottom: 2rem solid #199fff !important;
+}
 .deleteIcon {
   font-size: 16px;
   display: flex;
@@ -551,6 +575,7 @@ export default {
     }
     .class-date {
       color: cornflowerblue;
+      position: relative;
     }
     .day-info {
       margin-top: 5px;
@@ -570,6 +595,43 @@ export default {
     span {
       margin-left: 20px;
       color: #666666;
+    }
+  }
+}
+.day-type {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+#productStatus {
+  position: absolute;
+  right: -8px;
+  top: 88px;
+  height: 1.81rem;
+  width: 1.81rem;
+  display: flex;
+  align-items: center;
+  span {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 2rem solid #81d8d0;
+    border-left: 2rem solid transparent;
+    em {
+      position: absolute;
+      font-style: normal;
+      top: 0.8rem;
+      right: 0rem;
+      height: 1.27rem;
+      width: 1.27rem;
+      line-height: 1.2rem;
+      text-align: center;
+      font-size: 0.29rem;
+      color: #fff;
+      transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
     }
   }
 }

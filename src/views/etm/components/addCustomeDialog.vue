@@ -156,7 +156,7 @@
       </span>
     </el-dialog>
     <customeRegist
-      :addVisible="addVisible"
+      v-model="addVisible"
       :userInfo="userInfo"
       v-on:addDialog="getaddStatus($event)"
     />
@@ -354,8 +354,9 @@ export default {
       this.addVisible = status
     },
     preserve(formName, num) {
-      console.log(this.ruleForm)
+      // console.log(this.ruleForm)
       // this.addVisible = true //客户报名弹框显示
+      console.log(this.addVisible)
       //没有自动填充生日
       if (this.ruleForm.birthday == '') {
         this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number)
