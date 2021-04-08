@@ -1,6 +1,6 @@
 <template>
   <div class="recruit-students" v-loading="loading">
-    <div class="container-left">
+    <div class="container-top">
       <div class="entry">
         <h4 class="entry-title">常用入口</h4>
         <div class="entry-content">
@@ -22,32 +22,105 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="container-bottom">
       <div class="remind">
         <h4 class="remind-title">待办提醒</h4>
-        <span class="more"> 更多 </span>
         <el-tabs v-model="activeName" @tab-click="handleClick">
-          <!-- all: 全部, 0：待跟进，1：已跟进/跟进中，2：就读中，3、已毕业 4、放弃跟进 5、复活跟进， 6、复活意向跟进 -->
-          <el-tab-pane label="全部" name="all"></el-tab-pane>
-          <el-tab-pane label="待跟进" name="0"></el-tab-pane>
-          <el-tab-pane label="已跟进/跟进中" name="1"></el-tab-pane>
-          <el-tab-pane label="就读中" name="2"></el-tab-pane>
-          <el-tab-pane label="已毕业" name="3"></el-tab-pane>
-          <el-tab-pane label="放弃跟进" name="4"></el-tab-pane>
-          <el-tab-pane label="复活跟进" name="5"></el-tab-pane>
-          <el-tab-pane label="复活意向跟进" name="6"></el-tab-pane>
+          <!-- 代办类型 -1 全部 0 驳回 1未开始 2 进行中 3已经完成 -->
+          <el-tab-pane label="全部" name="-1"></el-tab-pane>
+          <el-tab-pane label="未开始" name="1"></el-tab-pane>
+          <el-tab-pane label="进行中" name="2"></el-tab-pane>
+          <el-tab-pane label="已完成" name="3"></el-tab-pane>
         </el-tabs>
         <div class="remind-content">
-          <ul class="remind-list" v-loading="remindLoading">
-            <li v-for="(item, index) in remindList" :key="index">
-              <span>{{ index + 1 }}、</span>
-              <span class="name">{{ item.user_realname }}</span>
-              {{ item.desc }}跟进人：
-              <span class="name">{{ item.staff_name }}</span
-              >， 跟进时间：<span class="date">{{ item.todo_time }}；</span>
-            </li>
-            <li v-if="!remindList.length" class="no-data">暂无相关提醒</li>
-          </ul>
-          <!-- :page-size="100" -->
+          <el-table
+            ref="multipleTable"
+            :data="remindList"
+            v-loading="remindLoading"
+            element-loading-text="loading"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="#fff"
+            :header-cell-style="{
+              'text-align': 'center',
+              background: '#f8f8f8',
+            }"
+            height="430"
+            :cell-style="{ 'text-align': 'center' }"
+            style="margin-bottom: 10px"
+          >
+            <el-table-column label="编号" width="50" type="index">
+            </el-table-column>
+            <el-table-column
+              prop="create_time"
+              label="创建时间"
+              min-width="140"
+              show-overflow-tooltip
+            >
+            </el-table-column>
+            <el-table-column
+              prop="type_name"
+              label="待办类型"
+              min-width="110"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="describe"
+              label="待办事项"
+              min-width="110"
+              show-overflow-tooltip
+            >
+            </el-table-column>
+            <el-table-column
+              prop="update_time"
+              label="完成状态"
+              min-width="140"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <el-popover placement="bottom" width="40" trigger="click">
+                  <el-button
+                    slot="reference"
+                    type="text"
+                    :style="{ color: statusMap[row.follow_state].color }"
+                    >{{ statusMap[row.follow_state].text }}</el-button
+                  >
+                  <ul class="status-list">
+                    <li
+                      style="color: #fd6500"
+                      v-if="row.follow_state !== 1"
+                      @click="updateState(row, 1)"
+                    >
+                      未开始
+                    </li>
+                    <li
+                      style="color: #fdc400"
+                      v-if="row.follow_state !== 2"
+                      @click="updateState(row, 2)"
+                    >
+                      进行中
+                    </li>
+                    <li
+                      style="color: #43d100"
+                      v-if="row.follow_state !== 3"
+                      @click="updateState(row, 3)"
+                    >
+                      已完成
+                    </li>
+                  </ul>
+                </el-popover>
+                <!-- <el-select
+                  v-model="row.follow_state"
+                  placeholder="请选择"
+                  style="width: 80px"
+                >
+                  <el-option label="未开始" value="1"> </el-option>
+                  <el-option label="进行中" value="2"> </el-option>
+                  <el-option label="已完成" value="3"> </el-option>
+                </el-select> -->
+              </template>
+            </el-table-column>
+          </el-table>
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -59,8 +132,6 @@
           </el-pagination>
         </div>
       </div>
-    </div>
-    <div class="container-right">
       <Msg :data="msgData" />
     </div>
     <AddEntry :visible.sync="dialogVisible" @on-ok="setStaffQuickEntry" />
@@ -71,8 +142,9 @@ import Msg from "../Msg/index";
 import AddEntry from "./components/addEntry";
 import {
   getStaffWorkData,
-  getStaffBacklog,
+  getFollowPage,
   setStaffQuickEntry,
+  updateState,
 } from "@/api/workbench.js";
 export default {
   name: "RecruitStudents",
@@ -82,7 +154,7 @@ export default {
   },
   data() {
     return {
-      activeName: "all",
+      activeName: "-1",
       loading: false,
       msgData: [],
       entrys: [],
@@ -92,11 +164,30 @@ export default {
       remindList: [],
       remindLoading: false,
       dialogVisible: false,
+      statusMap: {
+        //代办类型 -1 全部 0 驳回 1未开始 2 进行中 3已经完成
+        0: {
+          text: "驳回",
+          color: "#FD6500",
+        },
+        1: {
+          text: "未开始",
+          color: "#FD6500",
+        },
+        2: {
+          text: "进行中",
+          color: "#FDC400",
+        },
+        3: {
+          text: "已完成",
+          color: "#43D100",
+        },
+      },
     };
   },
   created() {
     this.getStaffWorkData();
-    this.getStaffBacklog();
+    this.getFollowPage();
   },
   methods: {
     handleOpen() {
@@ -115,15 +206,28 @@ export default {
         this.getStaffWorkData();
       }
     },
-    //获取待办提醒
-    async getStaffBacklog() {
+    // 更新待办状态
+    async updateState(row, follow_state) {
+      document.body.click();
       const data = {
-        type: this.activeName,
+        id: row.id,
+        follow_state,
+      };
+      const res = await updateState(data);
+      if (res.code === 0) {
+        row.follow_state = follow_state;
+        this.$message.success(res.message);
+      }
+    },
+    //获取待办提醒
+    async getFollowPage() {
+      const data = {
+        follow_state: this.activeName,
         limit: this.pageSize,
         page: this.pageNum,
       };
       this.remindLoading = true;
-      const res = await getStaffBacklog(data);
+      const res = await getFollowPage(data);
       this.remindLoading = false;
       if (res.code === 0) {
         this.total = res.data.total;
@@ -139,24 +243,22 @@ export default {
       this.entrys = res.data?.quick_entry;
     },
     handleClick() {
-      this.getStaffBacklog();
+      this.getFollowPage();
     },
     handleSizeChange(size) {
       this.pageSize = size;
       this.pageNum = 1;
-      this.getStaffBacklog();
+      this.getFollowPage();
     },
     handleCurrentChange(page) {
       this.pageNum = page;
-      this.getStaffBacklog();
+      this.getFollowPage();
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 .recruit-students {
-  display: flex;
-  justify-content: space-between;
   .bc-1 {
     background-color: #199fff;
   }
@@ -185,102 +287,87 @@ export default {
     background-color: #199fff;
   }
 
-  .container-left {
-    margin-right: 10px;
-    flex: 1;
-  }
+  .container-top {
+    .entry {
+      padding: 20px;
+      border: 1px solid #dcdfe6;
+      margin-bottom: 20px;
+      min-height: 220px;
+      .entry-title {
+        font-weight: normal;
+      }
 
-  .entry {
-    padding: 20px;
-    border: 1px solid #dcdfe6;
-    margin-bottom: 10px;
-    min-height: 220px;
-    .entry-title {
-      font-weight: normal;
-    }
-
-    .entry-content {
-      display: flex;
-      flex-wrap: wrap;
-      padding: 15px 20px 5px 20px;
-      .entry-item {
-        width: calc(100% / 5);
+      .entry-content {
         display: flex;
-        align-items: center;
-        margin-bottom: 16px;
-        padding: 6px;
-        // justify-content: center;
-        font-size: 14px;
-        cursor: pointer;
-        border-radius: 15px;
-        transition: all 0.4s;
-        &:hover {
-          background-color: #ecf5ff;
+        flex-wrap: wrap;
+        padding: 15px 20px 5px 20px;
+        .entry-item {
+          width: calc(100% / 5);
+          display: flex;
+          align-items: center;
+          margin-bottom: 16px;
+          padding: 6px;
+          // justify-content: center;
+          font-size: 14px;
+          cursor: pointer;
+          border-radius: 15px;
+          transition: all 0.4s;
+          &:hover {
+            background-color: #ecf5ff;
+          }
+          .entry-icon {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 16px;
+            text-align: center;
+            line-height: 50px;
+            color: #fff;
+            font-size: 25px;
+            flex-shrink: 0;
+          }
         }
-        .entry-icon {
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          margin-right: 16px;
-          text-align: center;
-          line-height: 50px;
-          color: #fff;
-          font-size: 25px;
-          flex-shrink: 0;
-        }
-      }
-      .entry-add {
-        &:hover {
-          background-color: #fff;
-        }
-        button {
-          border-radius: 30px;
+        .entry-add {
+          &:hover {
+            background-color: #fff;
+          }
+          button {
+            border-radius: 30px;
+          }
         }
       }
     }
   }
-  .remind {
-    padding: 20px;
-    border: 1px solid #dcdfe6;
-    height: 500px;
-    position: relative;
-    .remind-title {
-      font-weight: normal;
-    }
-    /deep/.el-tabs__item:last-child {
-      margin-right: 40px;
-    }
-    .more {
-      right: 20px;
-      top: 52px;
-      color: #199fff;
-      font-size: 12px;
-      z-index: 10;
-      cursor: pointer;
-      position: absolute;
-    }
-    .remind-content {
-      .remind-list {
-        height: 350px;
-        overflow-y: auto;
-        li {
-          font-size: 14px;
-          margin-bottom: 12px;
-          color: #606266;
-          .name {
-            color: #199fff;
-          }
-          .date {
-            color: #c0c4cc;
-          }
-        }
-        .no-data {
-          font-size: 12px;
-          color: #c0c4cc;
-          text-align: center;
-          padding-top: 100px;
-        }
+
+  .container-bottom {
+    display: flex;
+    justify-content: space-between;
+    .remind {
+      padding: 20px;
+      border: 1px solid #dcdfe6;
+      flex: 2;
+      margin-right: 20px;
+      .remind-title {
+        font-weight: normal;
       }
+      /deep/.el-tabs__item:last-child {
+        margin-right: 40px;
+      }
+      .remind-content {
+      }
+    }
+    .msg {
+      flex: 1;
+    }
+  }
+}
+.status-list {
+  text-align: center;
+  li {
+    padding: 6px 12px;
+    cursor: pointer;
+    &:hover {
+      background-color: #ecf5ff;
     }
   }
 }

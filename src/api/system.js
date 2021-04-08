@@ -80,3 +80,15 @@ import request from '@/utils/request'
         data
     })
 }
+
+/**
+ * 发送记录
+ * @param {*} params 
+ */
+ export function sendRecord(params) {
+    return request({
+        url: '/SystemAnnouncement/sendRecord',
+        method: 'get',
+        params
+    })
+}

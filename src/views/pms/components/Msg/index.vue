@@ -2,7 +2,6 @@
   <div class="msg">
     <div class="msg-title">
       <h4 class="title">消息中心</h4>
-      <span class="more">更多</span>
     </div>
     <ul class="msg-content">
       <li class="msg-item" v-for="(item, index) in data" :key="index">
@@ -32,19 +31,12 @@ export default {
   margin-right: 16px;
 }
 .msg {
-  min-height: 220px;
-  width: 335px;
   padding: 16px;
   border: 1px solid #dcdfe6;
   .msg-title {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    .more {
-      color: #199fff;
-      font-size: 12px;
-      cursor: pointer;
-    }
   }
   .msg-content {
     padding-top: 10px;
