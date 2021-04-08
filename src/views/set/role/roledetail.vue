@@ -28,8 +28,6 @@
         </el-form>
         <span class="authority">功能权限</span>
         <div class="tree-container" v-loading="treeLoading">
-          <!-- check-strictly -->
-
           <el-tree
             ref="trees"
             v-for="(item, index) in roleData"
@@ -39,6 +37,7 @@
             :props="{
               label: 'title',
             }"
+            :expand-on-click-node="false"
             check-on-click-node
             default-expand-all
             node-key="node_id"
