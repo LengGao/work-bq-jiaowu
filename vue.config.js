@@ -2,6 +2,32 @@ const webpack = require('webpack')
 const UglifyESPlugin = require('uglifyjs-webpack-plugin')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const path = require('path')
+console.log('当前环境：', process.env.NODE_ENV)
+console.log('当前baseUrl：', process.env.VUE_APP_LOACTION)
+const isProduction = process.env.NODE_ENV === 'production';
+// CDN外链，会插入到index.html中
+const cdn = {
+  css: [
+    'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/theme-chalk/index.css'
+  ],
+  js: [
+    'https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js',
+    'https://cdn.jsdelivr.net/npm/vue-router@3.2/dist/vue-router.min.js',
+    'https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js',
+    'https://cdn.jsdelivr.net/npm/vuex@3.4/dist/vuex.min.js',
+    'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/index.js',
+    'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+  ]
+}
+// cdn预加载使用
+const externals = {
+  'vue': 'Vue',
+  'vue-router': 'VueRouter',
+  'vuex': 'Vuex',
+  'axios': 'axios',
+  "element-ui": "ELEMENT",
+  'jquery': 'jQuery',
+}
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   lintOnSave: false, //关闭语法检测
@@ -38,6 +64,7 @@ module.exports = {
   },
   configureWebpack: {
     // 覆盖webpack默认配置的都在这里
+
     resolve: {
       // 配置解析别名
       alias: {
@@ -60,6 +87,15 @@ module.exports = {
       }),
       config.plugins.delete('preload')
     config.plugins.delete('prefetch')
+    /**
+     * 添加CDN参数到htmlWebpackPlugin配置中
+     */
+    config.plugin('html').tap(args => {
+      if (isProduction) {
+        args[0].cdn = cdn
+      }
+      return args
+    })
     // 对应package里的判断条件
     if (process.env.npm_config_report) {
       config
@@ -80,8 +116,12 @@ module.exports = {
     }
   },
   productionSourceMap: false,
-  // 启动gzip压缩
   configureWebpack: (config) => {
+    if (isProduction) {
+      // externals
+      config.externals = externals
+    }
+    // 启动gzip压缩
     config.plugins.push(
       new webpack.ProvidePlugin({
         $: 'jquery',
