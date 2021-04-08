@@ -93,3 +93,36 @@ export function setStaffQuickEntry(data) {
         data
     })
 }
+
+/**
+ * 通知公告列表
+ */
+export function getSystemAnnouncementList(params) {
+    return request({
+        url: '/Workbench/getSystemAnnouncementList',
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 公告详情
+ */
+export function getAnnouncementInfo(params) {
+    return request({
+        url: '/Workbench/getAnnouncementInfo',
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 公告标记已读未读
+ */
+export function setUnread(params) {
+    return request({
+        url: '/Workbench/setUnread',
+        method: 'get',
+        params
+    })
+}

@@ -49,7 +49,7 @@
           </el-pagination>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page :data="listTotal" :curpage="pageNum"   @pageChange="handlePageChange" />
         </div>
       </div>
       <!-- 弹窗 -->
@@ -211,7 +211,6 @@ export default {
       this.id = ab.id
       console.log(ab.id)
     },
-
     noticeDetail(id) {
       this.dialogTitle = '推送提醒'
       this.id = id.id
@@ -223,17 +222,17 @@ export default {
     },
     //通知推送接口
     async noticepush() {
-      const data = {
-        id: this.id,
-      }
-      const res = await noticepush(data)
-      console.log(res.data.data)
+    const data = {
+        id: this.id,}
+    const res = await noticepush(data)
+    console.log(res.data.data)
     },
     //通知公告列表接口
     async noticelist() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
+
       }
       const res = await noticelist(data)
       console.log(res.data.list)
@@ -398,7 +397,7 @@ export default {
     },
     doPageChange(page) {
       this.page = page
-      this.$api.noticelist(this, 'schoolData', this.datas)
+      this.noticelist()
     },
     handlePageChange(val) {
       this.pageNum = val

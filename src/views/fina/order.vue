@@ -179,7 +179,7 @@ export default {
         5: "已退款",
       },
       pay_status: "",
-      listData: [],
+      listData:[],
       activeIndex: 0,
       pageNum: 1,
       listTotal: 0,
@@ -251,14 +251,13 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        all: 1,
+        // all: 1,
         pay_status: this.activeStatus,
       };
       const res = await Approvalist(data);
       this.listLoading = false;
       console.log(res.data.list);
       this.listData = res.data.list;
-      this.listLoading = true;
       this.listTotal = res.data.total;
     },
     //订单入账接口
@@ -286,7 +285,6 @@ export default {
       };
       this.Approvalist();
     },
-
     orderDetail(ab) {
       this.$router.push({
         path: "/fina/orderDetail",
