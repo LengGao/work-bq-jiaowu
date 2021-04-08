@@ -207,6 +207,7 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
+      this.personalAttendanceSummary();
       this.getAttendanceList();
     },
     handlePageChange(val) {
@@ -215,8 +216,9 @@ export default {
     },
     async personalAttendanceSummary() {
       const data = {
-        // uid: this.uid,
-        uid: 39174,
+        uid: this.uid,
+        ...this.searchData,
+        teaching_type: this.searchData.teaching_type || 0,
       };
       const res = await personalAttendanceSummary(data);
       if (res.code === 0) {
@@ -226,8 +228,7 @@ export default {
     async getAttendanceList() {
       const data = {
         page: this.pageNum,
-        // uid: this.uid,
-        uid: 39174,
+        uid: this.uid,
         ...this.searchData,
         teaching_type: this.searchData.teaching_type || 0,
       };

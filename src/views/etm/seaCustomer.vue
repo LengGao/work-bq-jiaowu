@@ -10,6 +10,10 @@
       <el-table
         ref="multipleTable"
         :data="listData"
+        v-loading="listLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
         tooltip-effect="light"
         stripe
         style="width: 100%"
@@ -30,7 +34,7 @@
           min-width="90"
         >
           <template slot-scope="scope">
-            <div style="margin:0 auto;width:50px ;height:50px;">
+            <div style="margin: 0 auto; width: 50px; height: 50px">
               <img :src="scope.row.user_img" alt class="school_class_box" />
             </div>
           </template>
@@ -72,7 +76,7 @@
 
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
-            <div style="display:flex;justify-content:center">
+            <div style="display: flex; justify-content: center">
               <el-button type="text" disabled v-if="scope.row.aid">
                 已报名
               </el-button>
@@ -109,12 +113,12 @@
 </template>
 
 <script>
-import addCustomeDialog from './components/addCustomeDialog'
-import { cloneOptions } from '@/utils/index'
-import { getCateList } from '@/api/sou'
-import { getCommonUserList } from '@/api/etm'
+import addCustomeDialog from "./components/addCustomeDialog";
+import { cloneOptions } from "@/utils/index";
+import { getCateList } from "@/api/sou";
+import { getCommonUserList } from "@/api/etm";
 export default {
-  name: 'seaStudent',
+  name: "seaStudent",
   components: {
     addCustomeDialog,
   },
@@ -132,45 +136,47 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        category_id: '',
-        date: '',
-        keyboard: '',
+        category_id: "",
+        date: "",
+        keyboard: "",
       },
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
+          key: "date",
+          type: "datePicker",
           attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd',
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
           },
         },
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
           width: 120,
           attrs: {
-            placeholder: '所属分类',
+            placeholder: "所属分类",
             clearable: true,
+            props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },
         {
-          key: 'keyboard',
+          key: "keyboard",
           attrs: {
-            placeholder: '客户姓名/手机号码',
+            placeholder: "客户姓名/手机号码",
           },
         },
       ],
-    }
+    };
   },
   created() {
-    this.getCateList()
-    this.getCommonUserList()
+    this.getCateList();
+    this.getCommonUserList();
   },
   mounted() {
     // let status = 3
@@ -178,78 +184,78 @@ export default {
   },
   methods: {
     handlePageChange(val) {
-      this.pageNum = val
-      this.getCommonUserList()
+      this.pageNum = val;
+      this.getCommonUserList();
     },
     //客户列表
     async getCommonUserList() {
-      this.checkedIds = []
+      this.checkedIds = [];
 
-      this.intent_id = ''
-      console.log(this.searchData.date)
+      this.intent_id = "";
+      console.log(this.searchData.date);
       const data = {
         page: this.pageNum,
         ...this.searchData,
         status: 3,
-      }
-      console.log(data)
-      this.listLoading = true
-      const res = await getCommonUserList(data)
-      this.listLoading = false
-      this.listData = res.data.list
-      this.listTotal = res.data.total
+      };
+      console.log(data);
+      this.listLoading = true;
+      const res = await getCommonUserList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
     handleSearch(data) {
-      const times = data.date || ['', '']
-      console.log(times)
-      delete data.date
-      this.pageNum = 1
+      const times = data.date || ["", ""];
+      console.log(times);
+      delete data.date;
+      this.pageNum = 1;
       this.searchData = {
         ...data,
         start_time: times[0],
         end_time: times[1],
-        category_id: data.category_id ? data.category_id.pop() : '',
+        category_id: data.category_id ? data.category_id.pop() : "",
 
         // date: times[0] + ' - ' + times[1],
-      }
-      this.getCommonUserList()
+      };
+      this.getCommonUserList();
     },
     // 获取所属分类
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
-          'category_name',
-          'category_id',
-          'son'
-        )
+          "category_name",
+          "category_id",
+          "son"
+        );
       }
     },
     enroll(ab) {
-      this.seaUserInfo = ab
-      this.innerVisible = true
+      this.seaUserInfo = ab;
+      this.innerVisible = true;
     },
     getInnerStatus(status) {
-      this.innerVisible = status
+      this.innerVisible = status;
     },
     getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+      console.log(state, val);
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.schoolData = val;
       }
     },
 
     receiveStudent(zx) {
-      console.log(zx)
-      this.$api.receive(this, zx.intent_id)
+      console.log(zx);
+      this.$api.receive(this, zx.intent_id);
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,
