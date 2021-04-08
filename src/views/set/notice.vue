@@ -25,7 +25,6 @@
             <template slot-scope="scope">
               <el-button type="text" @click="readDetail(scope.row)"> {{scope.row.read_count}}</el-button>
             </template>
-
           </el-table-column>
           <el-table-column label="是否推送" min-width="120" show-overflow-tooltip>
             <template slot-scope="{row}">
@@ -62,16 +61,6 @@
             </el-form-item>
             <quill-editor ref="myTextEditor" v-model="ruleForm.content" prop="content" :options="editorOption" style="display:block;height:280px;margin-bottom:80px;margin-top:20px">
             </quill-editor>
-            <!-- <el-form-item
-              label="内容摘要"
-              prop="digest"
-              style="margin-top:80px;">
-              <el-input
-                v-model="ruleForm.digest"
-                placeholder="请输入内容摘要"
-                style="width:100%;"
-              ></el-input>
-            </el-form-item> -->
             <div class="abstract">
               <el-form-item label="通知对象" prop="receiver">
                 <el-select v-model="ruleForm.receiver" multiple placeholder="请选择账号身份（可多选）">
@@ -80,16 +69,15 @@
                 </el-select>
               </el-form-item>
             </div>
-
-            <el-col :lg="12" :sm="12" :xs="12" :md="12">
+            <!-- <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="发送短信">
                 <el-radio-group v-model="ruleForm.send_sms">
                   <el-radio :label="1">是</el-radio>
                   <el-radio :label="2">否</el-radio>
-                  <!-- <el-radio :label="3">指定校区</el-radio> -->
-                </el-radio-group>
+                  <el-radio :label="3">指定校区</el-radio> -->
+            <!-- </el-radio-group>
               </el-form-item>
-            </el-col>
+            </el-col> -->
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
@@ -125,7 +113,7 @@
           <el-button type="primary" @click="pushentry">确 定</el-button>
         </span>
       </el-dialog>
-      <Newnotice v-model="dialogVisible4" />
+      <Newnotice v-model="dialogVisible4" :id="id" />
     </section>
   </div>
 </template>
@@ -175,7 +163,6 @@ export default {
       listTotal: 0,
       value1: [],
       radio2: 1,
-      listTotal: 0,
       inputValue: '',
       dialogTitle: '',
       dialogVisible: false,
@@ -220,10 +207,11 @@ export default {
     readDetail(ab) {
       this.dialogVisible4 = true
       console.log(ab)
-      this.dialogTitle = '阅读情况'
       this.ruleForm = ab
       this.id = ab.id
+      console.log(ab.id)
     },
+
     noticeDetail(id) {
       this.dialogTitle = '推送提醒'
       this.id = id.id
@@ -233,7 +221,6 @@ export default {
       this.dialogVisible3 = false
       id, this.noticepush()
     },
-
     //通知推送接口
     async noticepush() {
       const data = {
