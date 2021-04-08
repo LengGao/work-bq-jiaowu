@@ -695,6 +695,7 @@ export const createUserRouter = (data) => {
           name: item.menu_name,
           path: route.path,
           icon: item.icon,
+          id: item.id
         }
         // 对 visualization 特殊处理
         if (item.node === 'visualization') {

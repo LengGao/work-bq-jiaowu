@@ -118,7 +118,7 @@ export default {
   methods: {
     async createReturnVisit() {
       const data = {
-        class_id: this.$route.query?.id || "",
+        class_id: this.$route.query?.class_id || "",
       };
       const res = await createReturnVisit(data);
       if (res.code === 0) {
@@ -141,7 +141,7 @@ export default {
     },
     async getReturnVisit() {
       const data = {
-        class_id: this.$route.query?.id || "",
+        class_id: this.$route.query?.class_id || "",
         page: this.pageNum,
         ...this.searchData,
       };
@@ -156,7 +156,7 @@ export default {
       this.$router.push({
         name: "returnVisitDetail",
         query: {
-          class_id: this.$route.query?.id || "",
+          class_id: this.$route.query?.class_id || "",
           id,
           isAdd,
         },

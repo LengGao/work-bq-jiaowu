@@ -33,36 +33,42 @@
           >
           </el-table-column>
           <el-table-column
-            prop="follow_user_name"
+            prop="type_name"
             label="待办类型"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="state_rate"
+            prop="describe"
             label="待办事项"
             min-width="110"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="update_time"
+            prop="position"
             label="账号身份"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="update_time"
+            prop="follow_user_name"
             label="跟进人员"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="update_time"
+            prop="follow_state"
             label="跟进状态"
             min-width="140"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span :style="{ color: statusMap[row.follow_state].color }">{{
+                statusMap[row.follow_state].text
+              }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="update_time"
             label="跟进时间"
@@ -70,10 +76,14 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
-            <template slot-scope="{ row }">
-              <div style="display: flex; justify-content: center">
-                <el-button type="text">查看详情</el-button>
-              </div>
+            <template slot-scope="{ row }" v-if="followRoute[row.follow_type]">
+              <el-button
+                type="text"
+                @click="
+                  linkTo(followRoute[row.follow_type], row.param_list || {})
+                "
+                >查看详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -90,7 +100,8 @@
 </template>
 
 <script>
-import { getReturnVisit } from "@/api/eda";
+import { getFollowPage } from "@/api/set";
+import { followRoute } from "@/utils/index";
 export default {
   data() {
     return {
@@ -100,13 +111,17 @@ export default {
       listTotal: 0,
       searchData: {
         date: "",
-        staff_name: "",
+        follow_type: "",
+        follow_state: "",
+        position: "",
+        value: "",
       },
       searchOptions: [
         {
           key: "date",
           type: "datePicker",
           attrs: {
+            clearable: true,
             type: "daterange",
             "range-separator": "至",
             "start-placeholder": "开始日期",
@@ -115,65 +130,79 @@ export default {
           },
         },
         {
-          key: "staff_name",
+          key: "follow_type", // 默认 0 跟进类型 1.学员跟进 2.资料缺失 3.待付款 4.排课 5 学习进度 6.约课 7 考试 8 入账 9 退费 10 学习回访
           type: "select",
           options: [
             {
-              label: "待跟进",
+              label: "学员跟进",
               value: 1,
             },
             {
-              label: "待收款",
+              label: "资料缺失",
               value: 2,
             },
             {
-              label: "待跟班",
+              label: "待付款",
               value: 3,
             },
             {
-              label: "待回访",
+              label: "排课",
               value: 4,
             },
             {
-              label: "待入账",
+              label: "学习进度",
               value: 5,
             },
             {
-              label: "待退款",
+              label: "约课",
               value: 6,
             },
             {
-              label: "待作废",
+              label: "考试",
               value: 7,
+            },
+            {
+              label: "入账",
+              value: 8,
+            },
+            {
+              label: "退费",
+              value: 9,
+            },
+            {
+              label: "学习回访",
+              value: 10,
             },
           ],
           attrs: {
+            clearable: true,
             placeholder: "待办类型",
           },
         },
         {
-          key: "staff_name",
+          key: "position",
           type: "select",
           options: [
             {
               label: "招生",
-              value: 1,
+              value: "招生",
             },
             {
               label: "教务",
-              value: 2,
+              value: "教务",
             },
             {
               label: "财务",
-              value: 3,
+              value: "财务",
             },
           ],
           attrs: {
+            clearable: true,
             placeholder: "账号身份",
           },
         },
         {
-          key: "staff_name",
+          key: "follow_state",
           type: "select",
           options: [
             {
@@ -190,21 +219,42 @@ export default {
             },
           ],
           attrs: {
+            clearable: true,
             placeholder: "跟进状态",
           },
         },
         {
-          key: "staff_name",
+          key: "value",
           attrs: {
             placeholder: "跟进员工，待办内容",
           },
         },
       ],
+      statusMap: {
+        //代办类型 -1 全部 0 驳回 1未开始 2 进行中 3已经完成
+        0: {
+          text: "驳回",
+          color: "#FD6500",
+        },
+        1: {
+          text: "未开始",
+          color: "#FD6500",
+        },
+        2: {
+          text: "进行中",
+          color: "#FDC400",
+        },
+        3: {
+          text: "已完成",
+          color: "#43D100",
+        },
+      },
+      followRoute,
     };
   },
 
   created() {
-    this.getReturnVisit();
+    this.getFollowPage();
   },
 
   methods: {
@@ -216,24 +266,31 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
-      this.getReturnVisit();
+      this.getFollowPage();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getReturnVisit();
+      this.getFollowPage();
     },
-    async getReturnVisit() {
+    async getFollowPage() {
       const data = {
-        class_id: 67,
         page: this.pageNum,
         ...this.searchData,
+        follow_type: this.searchData.follow_type || 0,
+        follow_state: this.searchData.follow_state || -1,
       };
       delete data.date;
       this.listLoading = true;
-      const res = await getReturnVisit(data);
+      const res = await getFollowPage(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
+    },
+    linkTo(name, query) {
+      this.$router.push({
+        name,
+        query,
+      });
     },
   },
 };

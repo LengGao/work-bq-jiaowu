@@ -272,11 +272,11 @@ export default {
         },
       });
     },
-    toReturnVisit(id) {
+    toReturnVisit(class_id) {
       this.$router.push({
         name: "returnVisit",
         query: {
-          id,
+          class_id,
         },
       });
     },

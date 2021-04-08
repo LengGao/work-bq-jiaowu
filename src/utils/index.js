@@ -151,3 +151,13 @@ export function cloneOptions(data, optionLabel, optionValue, childrenName) {
   data && deep(data, newData)
   return newData
 }
+// 代办事项跳转路由
+export const followRoute = {
+  1: "cusdetail",
+  2: "certificates",
+  3: "finance",
+  4: "teachSchedule",
+  8: "finance",
+  9: "finance",
+  10: "returnVisit",
+}

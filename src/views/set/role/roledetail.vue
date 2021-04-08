@@ -37,7 +37,7 @@
             :props="{
               label: 'title',
             }"
-            check-strictly
+            :expand-on-click-node="false"
             check-on-click-node
             default-expand-all
             node-key="node_id"
@@ -57,49 +57,49 @@
 </template>
 
 <script>
-import { getRoleInfo, addRole, modifyRole } from '@/api/set'
+import { getRoleInfo, addRole, modifyRole } from "@/api/set";
 export default {
-  name: 'roledetail',
+  name: "roledetail",
 
   data() {
     return {
       formInline: {
-        user: '',
-        remark: '',
+        user: "",
+        remark: "",
       },
       roleData: [],
       btnLoading: false,
       treeLoading: false,
-    }
+    };
   },
 
   created() {
-    this.getRoleInfo()
+    this.getRoleInfo();
   },
   methods: {
     handleCancel() {
-      this.$router.back()
+      this.$router.back();
     },
     handleSubmit() {
-      const trees = this.$refs.trees
-      const ids = []
+      const trees = this.$refs.trees;
+      const ids = [];
       trees.forEach((tree) => {
-        const currentHalfIds = tree.getHalfCheckedKeys()
-        const currentIds = tree.getCheckedKeys()
-        ids.push(...currentIds, ...currentHalfIds)
-      })
+        const currentHalfIds = tree.getHalfCheckedKeys(); // 获取半选状态的节点
+        const currentIds = tree.getCheckedKeys(); //获取选中状态点节点
+        ids.push(...currentIds, ...currentHalfIds);
+      });
       if (!this.formInline.user) {
-        this.$message.warning('请输入角色名称')
-        return
+        this.$message.warning("请输入角色名称");
+        return;
       }
       if (!ids.length) {
-        this.$message.warning('请选择菜单权限')
-        return
+        this.$message.warning("请选择菜单权限");
+        return;
       }
       if (this.$route.query.id) {
-        this.modifyRole(ids)
+        this.modifyRole(ids);
       } else {
-        this.addRole(ids)
+        this.addRole(ids);
       }
     },
     // 修改角色
@@ -109,15 +109,15 @@ export default {
         remarks: this.formInline.remark,
         node_ids,
         id: this.$route.query.id,
-      }
-      this.treeLoading = true
-      this.btnLoading = true
-      const res = await modifyRole(data)
-      this.treeLoading = false
-      this.btnLoading = false
+      };
+      this.treeLoading = true;
+      this.btnLoading = true;
+      const res = await modifyRole(data);
+      this.treeLoading = false;
+      this.btnLoading = false;
       if (res.code === 0) {
-        this.$message.success(res.message)
-        this.handleCancel()
+        this.$message.success(res.message);
+        this.handleCancel();
       }
     },
     // 添加
@@ -126,41 +126,47 @@ export default {
         role_name: this.formInline.user,
         remarks: this.formInline.remark,
         node_ids,
-      }
-      this.treeLoading = true
-      this.btnLoading = true
-      const res = await addRole(data)
-      this.treeLoading = false
-      this.btnLoading = false
+      };
+      this.treeLoading = true;
+      this.btnLoading = true;
+      const res = await addRole(data);
+      this.treeLoading = false;
+      this.btnLoading = false;
       if (res.code === 0) {
-        this.$message.success(res.message)
-        this.handleCancel()
+        this.$message.success(res.message);
+        this.handleCancel();
       }
     },
     // 角色详情
     async getRoleInfo() {
       const data = {
-        role_id: this.$route.query?.id || '',
-      }
-      this.treeLoading = true
-      const res = await getRoleInfo(data)
-      this.treeLoading = false
+        role_id: this.$route.query?.id || "",
+      };
+      this.treeLoading = true;
+      const res = await getRoleInfo(data);
+      this.treeLoading = false;
       if (res.code === 0) {
-        this.roleData = res.data.nodeTree
-        const checkedKeys = res.data?.all_checks || []
+        this.roleData = res.data.nodeTree;
+        const checkedKeys = res.data?.all_checks || [];
         if (checkedKeys.length && this.$route.query?.id) {
-          this.formInline.user = res.data.info.role_name
+          this.formInline.user = res.data.info.role_name;
           this.$nextTick(() => {
-            const trees = this.$refs.trees
+            const trees = this.$refs.trees;
             trees.forEach((tree) => {
-              tree.setCheckedKeys(checkedKeys)
-            })
-          })
+              checkedKeys.forEach((id) => {
+                const node = tree.getNode(id);
+                if (node && node.isLeaf) {
+                  // 回显时只设置叶子节点，父节点根据子节点选中情况自动选中
+                  tree.setChecked(node, true);
+                }
+              });
+            });
+          });
         }
       }
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

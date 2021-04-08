@@ -14,7 +14,6 @@ import api from './assets/js/api' //注册api，全局挂载
 import _ from 'lodash' //引入lodash
 import '@/icons' // icon
 import '@/permission' // permission control
-import VueQuillEditor from 'vue-quill-editor'
 import '@/utils/filters'
 import './cropper'
 // import './mock/mock'
