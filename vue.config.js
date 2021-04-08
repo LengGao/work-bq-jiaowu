@@ -5,6 +5,8 @@ const path = require('path')
 console.log('当前环境：', process.env.NODE_ENV)
 console.log('当前baseUrl：', process.env.VUE_APP_LOACTION)
 const isProduction = process.env.NODE_ENV === 'production'
+// 是否使用cdn
+const openCdn = isProduction && true
 // CDN外链，会插入到index.html中
 const cdn = {
   css: [
@@ -29,7 +31,7 @@ const externals = {
   jquery: 'jQuery',
 }
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+  publicPath: isProduction ? './' : '/',
   lintOnSave: false, //关闭语法检测
   devServer: {
     open: true,
@@ -91,7 +93,7 @@ module.exports = {
      * 添加CDN参数到htmlWebpackPlugin配置中
      */
     config.plugin('html').tap((args) => {
-      if (isProduction) {
+      if (openCdn) {
         args[0].cdn = cdn
       }
       return args
@@ -102,7 +104,7 @@ module.exports = {
         .plugin('webpack-bundle-analyzer')
         .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
     }
-    if (process.env.NODE_ENV === 'production') {
+    if (isProduction) {
       // 给js和css配置版本号
       const Timestamp = new Date().getTime()
       config.output.filename('js/[name].' + Timestamp + '.js').end()
@@ -117,7 +119,7 @@ module.exports = {
   },
   productionSourceMap: false,
   configureWebpack: (config) => {
-    if (isProduction) {
+    if (openCdn) {
       // externals
       config.externals = externals
     }
