@@ -30,6 +30,30 @@ export function parseTime(time, cFormat) {
   })
   return time_str
 }
+//金额格式转换
+export function parsePrice(s) {
+  var n = 2 //设置保留的小数位数
+  s = parseFloat((s + '').replace(/[^\d\.-]/g, '')).toFixed(n) + ''
+  var l = s
+    .split('.')[0]
+    .split('')
+    .reverse()
+  var r = s.split('.')[1]
+  var t = ''
+  for (var i = 0; i < l.length; i++) {
+    t += l[i]
+  }
+  console.log(t)
+  return (
+    // '￥' +
+    t
+      .split('')
+      .reverse()
+      .join('') +
+    '.' +
+    r
+  )
+}
 
 export function formatTime(time, option) {
   time = +time * 1000
@@ -153,11 +177,11 @@ export function cloneOptions(data, optionLabel, optionValue, childrenName) {
 }
 // 代办事项跳转路由
 export const followRoute = {
-  1: "cusdetail",
-  2: "certificates",
-  3: "finance",
-  4: "teachSchedule",
-  8: "finance",
-  9: "finance",
-  10: "returnVisit",
+  1: 'cusdetail',
+  2: 'certificates',
+  3: 'finance',
+  4: 'teachSchedule',
+  8: 'finance',
+  9: 'finance',
+  10: 'returnVisit',
 }

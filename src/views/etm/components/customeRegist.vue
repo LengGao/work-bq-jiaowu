@@ -42,19 +42,7 @@
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="2">否</el-radio>
               </el-radio-group>
-              <!-- <el-input
-                disabled
-                class="input-width"
-                v-model="userInfo.mobile"
-              ></el-input> -->
             </el-form-item>
-            <!-- <el-form-item label="身份证号">
-              <el-input
-                class="input-width"
-                disabled
-                v-model="userInfo.id_card_number"
-              ></el-input>
-            </el-form-item> -->
           </div>
         </div>
         <div class="customer_sum_up">
@@ -121,13 +109,6 @@
                         ></el-input>
                       </el-col>
                     </template>
-                    <!-- <template slot-scope="scope">
-                    <el-input
-                      @change="changeAmount"
-                      style="width:70px"
-                      v-model="scope.row.save_price"
-                    ></el-input>
-                  </template> -->
                   </el-table-column>
 
                   <el-table-column
@@ -206,7 +187,6 @@
                 class="input-width"
                 type="number"
                 v-model="ruleForm.pay_money"
-                @change="payNum"
               ></el-input>
             </el-form-item>
 
@@ -219,7 +199,6 @@
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
               >
-                <!-- {{ ruleForm.receipt_file }} -->
                 <img v-if="imgSrc" :src="imgSrc" class="img" />
                 <i v-else class="el-icon-plus upload-cover-icon"></i>
               </el-upload>
@@ -291,6 +270,8 @@
 import orderDialog from './orderDialog'
 import { uploadImageUrl } from '@/api/educational'
 import projectDialog from './projectDialog'
+import { parsePrice } from '@/utils/index'
+// import parsePrice from '@/utils/index'
 export default {
   components: {
     orderDialog,
@@ -303,14 +284,7 @@ export default {
     },
     userInfo: {
       type: Object,
-      default: {
-        // id: '44',
-        // id_card_number: '513436200003236818',
-        // mobile: '12877999082',
-        // surname: '王二',
-        // todo_id: '27',
-        // uid: '39228',
-      },
+      default: {},
     },
   },
 
@@ -385,7 +359,6 @@ export default {
       this.openStatus = val
     },
     projectData(newVal, oldVal) {
-      // if (this.projectData.length > 1) {
       var order_money = 0 //订单总价
       var reduction = 0 //优惠总额
       var receivableMoney = 0 //应收金额
@@ -394,21 +367,20 @@ export default {
         reduction = reduction + parseFloat(i.save_price ? i.save_price : 0)
         receivableMoney = receivableMoney + parseFloat(i.pay_price)
       })
-      this.ruleForm.order_money = order_money
-      this.ruleForm.reduction = reduction
-      this.ruleForm.pay_money = this.receivableMoney = receivableMoney
+      this.ruleForm.order_money = parsePrice(order_money)
+      this.ruleForm.reduction = parsePrice(reduction)
+      this.ruleForm.pay_money = this.receivableMoney = parsePrice(
+        receivableMoney
+      )
 
       console.log(order_money, reduction, receivableMoney)
     },
     // },
   },
   methods: {
-    payNum() {},
     handleAvatarSuccess(res, file) {
-      // console.log(res)
       this.imgSrc = res.data?.data?.url || ''
       this.ruleForm.receipt_file = this.imgSrc
-      // console.log(this.ruleForm.receipt_file)
     },
     beforeAvatarUpload(file) {
       const isImg = file.type.indexOf('image') !== -1
@@ -461,8 +433,6 @@ export default {
       var reduction = 0 //优惠总额
       var receivableMoney = 0 //应收金额
       this.projectData.forEach((i) => {
-        // console.log(i.save_price)
-        // i.save_price? i.save_price:0
         order_money = order_money + parseFloat(i.project_price)
         receivableMoney = receivableMoney + parseFloat(i.pay_price)
         reduction = reduction + parseFloat(i.save_price || 0)
@@ -476,15 +446,6 @@ export default {
     },
     choseProject() {
       this.projectVisible = true
-      // let obj = {
-      //   id: 4,
-      //   project_name: '北区教育系统集成专用教',
-      //   project_price: 20,
-      //   lower_price: 20,
-      //   save_price: 0,
-      //   pay_price: 20,
-      // }
-      // this.projectData.push(obj)
     },
     //跳转到客户详情页面
 

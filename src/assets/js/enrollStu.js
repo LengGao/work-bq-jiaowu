@@ -106,7 +106,6 @@ let enrollStu = {
               query: {
                 uid: res.data.data.uid,
               },
-              // query: { param: param },
             })
           } else if (num && num == 3) {
             //导入学员添加
@@ -115,6 +114,7 @@ let enrollStu = {
             self.doClose()
           } else {
             //保存并弹框
+            console.log(self.addVisible)
             self.addVisible = true //客户报名弹框显示
             self.userInfo = res.data.data
           }
