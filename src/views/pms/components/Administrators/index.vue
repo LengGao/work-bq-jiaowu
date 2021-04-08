@@ -16,7 +16,7 @@
             type="success"
             size="mini"
             :class="{ 'disabled-color': item.status }"
-            >{{ item.status ? "已完成" : "未完成" }}</el-button
+            >{{ item.status ? "已完成" : "去完成" }}</el-button
           >
           <i v-if="item.status" class="el-icon-check card-item-status"></i>
         </el-card>
