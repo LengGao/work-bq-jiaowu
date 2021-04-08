@@ -57,6 +57,11 @@ export default {
   deletevideoclass: '/video/deletevideoclass',
   batchmovevideoclass: '/video/batchmovevideoclass',
   addvideochapterfree: '/video/editvideoclass',
+  getTeachCateList: '/courseCategory/getCateList',
+  getTeacherInfo: '/teacher/info',
+  modifyTeacher: '/teacher/modify',
+  updateTeacherSort: '/teacher/updateTeacherSort',
+
   //视频上传凭据
   generateDataKey: '/video/generatevideodatakey', //视频加密
   refreshUploadVideo: '/live/refreshuploadvideo', //刷新视频上传凭据

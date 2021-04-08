@@ -149,7 +149,7 @@
               placeholder="请选择关联题库"
             >
               <el-option
-                v-for="item in questionBank.list"
+                v-for="item in questionBank"
                 :key="item.problem_course_id"
                 :label="item.course_name"
                 :value="item.problem_course_id"
@@ -288,6 +288,7 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 import { uploadImageUrl } from '@/api/educational'
+import Vue from 'vue'
 import {
   addCourse,
   getCateList,
@@ -296,6 +297,8 @@ import {
   videocollectionlist,
   getProblemCourseList,
 } from '@/api/sou'
+import axios from 'axios'
+import store from '@/store'
 const toolbarOptions = [
   ['bold', 'italic', 'underline', 'strike'], // toggled buttons
   [{ header: 1 }, { header: 2 }], // custom button values
@@ -433,6 +436,28 @@ export default {
   mounted() {},
 
   methods: {
+    // getProblemCourseList(category_id) {
+    //   let data = { category_id }
+    //   const token = store.getters.token || ''
+    //   console.log(process.env.VUE_APP_LOACTION)
+    //   let baseurl = '/ai/adimn/v2'
+    //   // str = baseurl.Substring(0, 10)
+
+    //   console.log(Vue.prototype.rootDir)
+    //   let url =
+    //     baseurl +
+    //     '/problem/getProblemCourseList' +
+    //     '?category_id=' +
+    //     category_id
+
+    //   $.ajax(url, data, {
+    //     headers: {
+    //       'Content-type': 'application/x-www-form-urlencoded',
+    //       token: token,
+    //     },
+    //   })
+    // },
+
     changeCategory(ids) {
       console.log(ids)
       const id = ids ? [...ids].pop() : ''
@@ -447,6 +472,7 @@ export default {
       }
       const res = await getProblemCourseList(data)
       if (res.code === 0) {
+        this.questionBank = res.data.list
       }
     },
     // 获取关联视屏

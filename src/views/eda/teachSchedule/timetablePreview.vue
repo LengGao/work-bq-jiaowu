@@ -60,12 +60,12 @@
 
               <div v-if="allDay.includes(data.day)" class="day-info">
                 <p>
-                  上课时间：{{
+                  时间：{{
                     infoMap[data.day].period &&
                       infoMap[data.day].period.substr(11)
                   }}
                 </p>
-                <p>上课老师：{{ infoMap[data.day].teacher_name }}</p>
+                <p>老师：{{ infoMap[data.day].teacher_name }}</p>
               </div>
               <div class="addBtnBox">
                 <p

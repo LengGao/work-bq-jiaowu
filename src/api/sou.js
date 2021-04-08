@@ -378,7 +378,20 @@ export function modifyvideocollection(params) {
 //
 export function getProblemCourseList(params) {
   return request({
-    url: '/topicCourse/list',
+    url: '/problem/getProblemCourseList',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 排课管理列表
+ * @param {*} param
+ */
+//
+export function getTimetableList(params) {
+  return request({
+    url: '/arrange/classroomList',
     method: 'get',
     params,
   })

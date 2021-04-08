@@ -332,7 +332,8 @@ export const asyncRouter = [
       {
         path: 'returnVisitDetail',
         name: 'returnVisitDetail',
-        component: () => import('@/views/eda/classManage/returnVisitDetail.vue'),
+        component: () =>
+          import('@/views/eda/classManage/returnVisitDetail.vue'),
         meta: { title: '回访详情', icon: 'product-cate' },
         hidden: true,
       },
@@ -466,6 +467,14 @@ export const asyncRouter = [
         component: () => import('@/views/exa/teachingManage.vue'),
         meta: { title: '授课老师', icon: 'product-add' },
       },
+      //授课老师组件开始
+      {
+        path: 'addTeacher',
+        name: 'addTeacher',
+        component: () => import('@/views/exa/teachingManage/addTeacher.vue'),
+        meta: { title: '添加老师', icon: 'product-add' },
+      },
+      //授课老师组件结束
       {
         path: 'examination',
         name: 'examination',

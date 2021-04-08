@@ -540,6 +540,7 @@ export default {
       })
       console.log(this.quesTag)
       console.log(this.ruleForm)
+      this.ruleForm.category_id = this.ruleForm.category_id.pop()
       console.log(this.ruleForm.course_id)
       this.$refs[formName].validate((valid) => {
         if (valid) {
