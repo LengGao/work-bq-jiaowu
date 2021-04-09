@@ -24,6 +24,7 @@ router.beforeEach((to, from, next) => {
             store.dispatch('addRouter', userRouter)
             // 设置菜单数据
             store.dispatch('setMenus', menuList)
+            // 默认进入第一个路由
             const firstRoute = userRouter[0]
             next({ ...firstRoute, replace: true })
           })

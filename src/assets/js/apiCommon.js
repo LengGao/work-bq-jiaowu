@@ -70,7 +70,7 @@ let axiosHttp = (obj) => {
     // `withCredentials` 表示跨域请求时是否需要使用凭证
     withCredentials: true, // default
   })
-    .then(function(res) {
+    .then(function (res) {
       loading.close()
       let data = res.data
       console.log(data.code)
@@ -95,7 +95,16 @@ let axiosHttp = (obj) => {
         setTimeout(() => {
           window.location.reload()
         }, 1200)
-      } else {
+      } else if (data.code === 50000) {
+        v.$message({
+          type: 'error',
+          message: data.message,
+        })
+        store.dispatch('FedLogOut').then(() => {
+          window.location.reload()
+        })
+      }
+      else {
         if (data.code != 0) {
           v.$message({
             type: 'error',
@@ -106,7 +115,7 @@ let axiosHttp = (obj) => {
         }
       }
     })
-    .catch(function(error) {
+    .catch(function (error) {
       loading.close()
       console.log(error.response)
       if (error.response) {
