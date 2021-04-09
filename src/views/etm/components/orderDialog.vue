@@ -339,7 +339,7 @@ export default {
   methods: {
     toCustomerDetail() {
       this.$router.push({
-        path: '/fina/cusdetail',
+        name: 'cusdetail',
         query: {
           uid: this.schoolData.uid,
         },

@@ -105,7 +105,7 @@ let enrollStu = {
           if (num && num == 2) {
             //保存并跳转详情
             self.$router.push({
-              path: '/fina/cusdetail',
+              name: 'cusdetail',
               query: {
                 uid: res.data.data.uid,
               },

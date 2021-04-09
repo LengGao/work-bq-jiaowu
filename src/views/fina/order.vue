@@ -179,7 +179,7 @@ export default {
         5: "已退款",
       },
       pay_status: "",
-      listData:[],
+      listData: [],
       activeIndex: 0,
       pageNum: 1,
       listTotal: 0,
@@ -287,7 +287,7 @@ export default {
     },
     orderDetail(ab) {
       this.$router.push({
-        path: "/fina/orderDetail",
+        name: "orderDetail",
         query: {
           order_id: ab.order_id,
         },
@@ -316,7 +316,7 @@ export default {
     },
     Entrydetail(ab) {
       this.$router.push({
-        path: "/fina/orderDetail",
+        name: "orderDetail",
         query: {
           order_id: ab.order_id,
         },
