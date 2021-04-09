@@ -35,8 +35,15 @@
             <el-table-column
               label="员工姓名"
               show-overflow-tooltip
-              min-width="90"
+              min-width="100"
               prop="staff_name"
+            >
+            </el-table-column>
+            <el-table-column
+              label="账号"
+              show-overflow-tooltip
+              min-width="90"
+              prop="account"
             >
             </el-table-column>
             <el-table-column
@@ -47,23 +54,23 @@
             >
             </el-table-column>
             <el-table-column
-              label="部门"
+              label="机构"
               show-overflow-tooltip
-              min-width="90"
-              prop="department_name"
+              min-width="150"
+              prop="institution_name"
             >
             </el-table-column>
             <el-table-column
               label="联系方式"
               show-overflow-tooltip
-              min-width="90"
+              min-width="120"
               prop="mobile_num"
             >
             </el-table-column>
 
             <el-table-column
               label="账号状态"
-              min-width="150"
+              min-width="90"
               show-overflow-tooltip
             >
               <template slot-scope="scope">
@@ -79,7 +86,7 @@
             </el-table-column>
             <el-table-column
               label="是否为超管"
-              min-width="150"
+              min-width="90"
               show-overflow-tooltip
             >
               <template slot-scope="scope">
@@ -95,7 +102,7 @@
             </el-table-column>
             <el-table-column
               label="班主任"
-              min-width="150"
+              min-width="90"
               show-overflow-tooltip
             >
               <template slot-scope="scope">
@@ -133,7 +140,12 @@
       </section>
     </div>
     <!--弹框-->
-    <el-dialog title="添加员工" :visible.sync="dialogVisible" width="30%">
+    <el-dialog
+      title="添加员工"
+      :visible.sync="dialogVisible"
+      width="425px"
+      @open="handleOpen"
+    >
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -206,9 +218,28 @@
             v-model="ruleForm.institution_id"
             placeholder="请输入所属机构"
             class="common-width"
+            filterable
+            @change="handleInstitution"
           >
             <el-option
               v-for="item in instituData"
+              :key="item.institution_id"
+              :label="item.institution_name"
+              :value="item.institution_id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属校区" prop="school_id">
+          <el-select
+            v-model="ruleForm.school_id"
+            placeholder="请输入所属校区"
+            class="common-width"
+            filterable
+            @change="handleInstitution"
+          >
+            <el-option
+              v-for="item in schoolData"
               :key="item.institution_id"
               :label="item.institution_name"
               :value="item.institution_id"
@@ -232,7 +263,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="账号权限" prop="identity">
+        <el-form-item label="账号身份" prop="identity">
           <el-select
             v-model="ruleForm.identity"
             placeholder="请输入账号权限"
@@ -265,72 +296,75 @@
   </section>
 </template>
 <script>
-import { getStaffList } from '@/api/set'
+import {
+  getStaffList,
+  getIdentitySelect,
+  getOrganizationSelect,
+  getSchoolSelect,
+} from '@/api/set'
 export default {
   name: 'staff',
   data() {
     return {
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
-          attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            'value-format': 'yyyy-MM-dd',
-          },
-        },
-
-        // {
-        //   key: 'cate_id',
-        //   type: 'cascader',
-        //   events: {
-        //     change: this.handleTypeChange,
-        //   },
-        //   attrs: {
-        //     placeholder: '所属分类',
-        //     clearable: true,
-        //     options: [],
-        //   },
-        // },
-        {
-          key: 'project_id',
+          key: 'identity',
           type: 'select',
           options: [],
-          optionValue: 'project_id',
-          optionLabel: 'project_name',
+          optionValue: 'id',
+          optionLabel: 'name',
           attrs: {
-            placeholder: '所属项目',
+            placeholder: '员工身份',
             clearable: true,
           },
         },
-        // {
-        //   key: 'class_id',
-        //   type: 'select',
-        //   options: [],
-        //   optionValue: 'classroom_id',
-        //   optionLabel: 'classroom_name',
-        //   attrs: {
-        //     placeholder: '所属班级',
-        //     clearable: true,
-        //   },
-        // },
-        // {
-        //   key: 'foid',
-        //   type: 'cascader',
-        //   attrs: {
-        //     placeholder: '推荐机构',
-        //     clearable: true,
-        //     options: [],
-        //   },
-        // },
+        {
+          key: 'is_super',
+          type: 'select',
+          options: [
+            { value: 1, label: '是' },
+            { value: 2, label: '不是' },
+          ],
+          optionValue: 'value',
+          optionLabel: 'label',
+          attrs: {
+            placeholder: '超级管理员',
+            clearable: true,
+          },
+        },
+        {
+          key: 'as_headmaster',
+          type: 'select',
+          options: [
+            { value: 1, label: '是' },
+            { value: 2, label: '不是' },
+          ],
+          optionValue: 'value',
+          optionLabel: 'label',
+          attrs: {
+            placeholder: '班主任',
+            clearable: true,
+          },
+        },
+        {
+          key: 'account_status',
+          type: 'select',
+          options: [
+            { value: 1, label: '启用' },
+            { value: 2, label: '停用' },
+          ],
+          optionValue: 'value',
+          optionLabel: 'label',
+          attrs: {
+            placeholder: '账号状态',
+            clearable: true,
+          },
+        },
 
         {
-          key: 'search_box',
+          key: 'name_mobile',
           attrs: {
-            placeholder: '学生姓名/手机号码',
+            placeholder: '员工姓名/手机号码',
           },
         },
       ],
@@ -339,16 +373,15 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        type: 0,
-        date: '',
-        cate_id: '',
-        project_id: '',
-        class_id: '',
-        foid: [],
-        search_box: '',
+        name_mobile: '',
+        account_status: '',
+        is_super: '',
+        as_headmaster: '',
+        identity: '',
       },
       page: 1,
       schoolData: [],
+      // schoolData: [],
       haschoose: false,
       roleData: [],
       IdentityData: [],
@@ -363,6 +396,7 @@ export default {
         role_ids: '',
         as_headmaster: '',
         is_super: '',
+        school_id: '',
         institution_id: '',
         identity: '',
       },
@@ -407,12 +441,60 @@ export default {
   },
   created() {
     this.getStaffList()
+    this.getIdentitySelect()
     // this.$api.getStaffList(this, 'schoolData')
     this.$api.getRoleSelectData(this, 'roleData') //所属角色列表
-    this.$api.getIdentitySelect(this, 'IdentityData') //所属角色列表
-    this.$api.getInstitutionSelectData(this, 'instituData') //所属角色列表
+    // this.$api.getIdentitySelect(this, 'IdentityData') //所属角色列表
+    // this.$api.getInstitutionSelectData(this, 'instituData') //所属角色列表
   },
   methods: {
+    handleInstitution(val) {
+      console.log(val)
+      this.getSchoolSelect(val)
+    },
+    handleOpen() {
+      this.getOrganizationSelect()
+    },
+    handlePageChange(val) {
+      this.pageNum = val
+      this.getStaffList()
+    },
+    handleSearch(data) {
+      this.pageNum = 1
+      this.searchData = {
+        ...data,
+      }
+      this.getStaffList()
+    },
+    // 获取机构下拉列表
+    async getOrganizationSelect() {
+      const data = {
+        limit: 99999,
+      }
+      const res = await getOrganizationSelect(data)
+      if (res.code === 0) {
+        this.instituData = res.data
+      }
+    },
+    // 获取校区
+    async getSchoolSelect(institution_id) {
+      const data = {
+        institution_id: institution_id,
+        limit: 99999,
+      }
+      const res = await getSchoolSelect(data)
+      if (res.code === 0) {
+        this.schoolData = res.data
+      }
+    },
+    // 获取身份下拉
+    async getIdentitySelect(category_id) {
+      const data = { category_id }
+      const res = await getIdentitySelect(data)
+      if (res.code === 0) {
+        this.searchOptions[0].options = this.IdentityData = res.data
+      }
+    },
     // 获学员列表
     async getStaffList() {
       const data = {
@@ -493,18 +575,23 @@ export default {
       this.isTagactiveName = cd.name
     },
     addStaff() {
-      this.ruleForm = {
-        staff_name: '',
-        mobile_num: '',
-        account: '',
-        password: '',
-        head_photo: '',
-        role_ids: '',
-        as_headmaster: '',
-        is_super: '',
-        institution_id: '',
-        identity: '',
+      // this.ruleForm = {
+      //   staff_name: '',
+      //   mobile_num: '',
+      //   account: '',
+      //   password: '',
+      //   head_photo: '',
+      //   role_ids: '',
+      //   as_headmaster: '',
+      //   is_super: '',
+      //   institution_id: '',
+      //   identity: '',
+      // }
+      for (var item in this.ruleForm) {
+        this.ruleForm[item] = ''
       }
+      this.haschoose = false
+      // this.ruleForm.head_photo = ''
       this.dialogVisible = true
     },
     clearUrl() {

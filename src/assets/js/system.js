@@ -19,7 +19,6 @@ let system = {
         let data = res.data.data.list
         if (res.data.code == 0) {
           self[name] = data
-          
         }
       },
     })
@@ -30,8 +29,6 @@ let system = {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
-
-
     }
     console.log(config)
     axiosHttp({
@@ -43,7 +40,6 @@ let system = {
         let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
-          
         }
       },
     })
@@ -72,13 +68,12 @@ let system = {
         let data = res.data.Data
         if (res.data.code == 0) {
           self[name] = data
-          self.dialogVisible=false
+          self.dialogVisible = false
           self.$api.noticelist(self, 'schoolData')
         }
       },
     })
   },
-
 
   //删除公告
   deletenoticelist(self, id) {
@@ -191,10 +186,15 @@ let system = {
             is_super: data.is_super,
             institution_id: data.institution_id,
             identity: data.identity,
+            school_id: data.school_id,
+          }
+          if (data.institution_id) {
+            self.getSchoolSelect(data.institution_id)
           }
           if (data.head_photo != '') {
             self.haschoose = true
-            self.ruleForm.head_photo = data.cover_img
+            self.ruleForm.head_photo = data.head_photo
+            console.log()
           } else {
             self.haschoose = false
             self.ruleForm.head_photo = ''
@@ -216,6 +216,7 @@ let system = {
       is_super: ruleForm.is_super,
       institution_id: ruleForm.institution_id,
       identity: ruleForm.identity,
+      school_id: ruleForm.school_id,
     }
     console.log(config)
     axiosHttp({
@@ -231,7 +232,7 @@ let system = {
             message: res.data.message,
           })
           self.dialogVisible = false
-          self.$api.getStaffList(self, 'schoolData')
+          self.getStaffList()
           // self[name] = data
         }
       },
@@ -251,6 +252,7 @@ let system = {
       is_super: ruleForm.is_super,
       institution_id: ruleForm.institution_id,
       identity: ruleForm.identity,
+      school_id: ruleForm.school_id,
     }
     console.log(config)
     axiosHttp({
@@ -266,7 +268,7 @@ let system = {
             message: res.data.message,
           })
           self.dialogVisible = false
-          self.$api.getStaffList(self, 'schoolData')
+          self.getStaffList()
           // self[name] = data
         }
       },
@@ -290,7 +292,7 @@ let system = {
             type: 'success',
             message: res.data.message,
           })
-          self.$api.getStaffList(self, 'schoolData')
+          self.getStaffList()
           // self[name] = data
         }
       },
@@ -313,7 +315,7 @@ let system = {
             type: 'success',
             message: res.data.message,
           })
-          self.$api.getStaffList(self, 'schoolData')
+          self.getStaffList()
         }
       },
     })
@@ -335,7 +337,7 @@ let system = {
             type: 'success',
             message: res.data.message,
           })
-          self.$api.getStaffList(self, 'schoolData')
+          self.getStaffList()
         }
       },
     })
@@ -357,7 +359,7 @@ let system = {
             type: 'success',
             message: res.data.message,
           })
-          self.$api.getStaffList(self, 'schoolData')
+          self.getStaffList()
         }
       },
     })
