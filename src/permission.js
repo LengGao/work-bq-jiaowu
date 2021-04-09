@@ -19,7 +19,7 @@ router.beforeEach((to, from, next) => {
           .then((userRouter) => {
             // 默认进入第一个路由
             const firstRoute = userRouter[0]
-            if (to.path === '/' && firstRoute.redirect !== '/visualization') {
+            if (to.path === '/visualization' && firstRoute.redirect !== '/visualization') {
               next({ ...firstRoute, replace: true })
             } else {
               next({ ...to, replace: true })
