@@ -208,7 +208,13 @@ export default {
         totalScore += parseFloat(i.score)
       })
       if (data.score < totalScore) {
-        this.$message.error('当前所有题型总分不能大于' + data.score)
+        this.$message.warning(
+          '当前所有题型总分不能大于' +
+            data.subject_name +
+            '' +
+            data.score +
+            '总分'
+        )
       }
       console.log(totalScore)
     },
@@ -231,6 +237,11 @@ export default {
         this.userOptions = res.data
         this.subject_item = res.data.subject_item
         console.log(res.data)
+        var totalScore = 0
+        res.data.subject_item.forEach((i) => {
+          totalScore += parseFloat(i.score - 0)
+        })
+        this.totalScore = totalScore
       }
     },
     handleOpen() {

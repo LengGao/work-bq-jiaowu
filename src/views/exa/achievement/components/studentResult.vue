@@ -79,12 +79,15 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="table_bottom">
-        <page
-          :data="listTotal"
-          :curpage="pageNum"
-          @pageChange="handlePageChange"
-        />
+      <div class="footer">
+        <el-button @click="exportData">导出数据</el-button>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -92,7 +95,7 @@
 
 <script>
 import { cloneOptions } from '@/utils/index'
-import { getGradeListByUser } from '@/api/exa'
+import { getGradeListByUser, exportUserGrade } from '@/api/exa'
 import { getCateList, getInstitutionSelectData } from '@/api/sou'
 import { getproject, getcourseallclass } from '@/api/eda'
 export default {
@@ -184,6 +187,9 @@ export default {
     this.getCateList()
   },
   methods: {
+    exportData() {
+      this.exportUserGrade()
+    },
     toAllResults(uid) {
       this.$router.push({
         path: '/exa/allResult',
@@ -191,6 +197,14 @@ export default {
           uid: uid,
         },
       })
+    },
+    // 导出成绩按学员
+    async exportUserGrade(category_id) {
+      const data = { category_id }
+      const res = await exportUserGrade(data)
+      if (res.code === 0) {
+        this.$message.success(res.message)
+      }
     },
     // 当分类选择时
     handleTypeChange(ids) {
@@ -204,8 +218,8 @@ export default {
       const data = { category_id }
       const res = await getcourseallclass(data)
       if (res.code === 0) {
-        this.classOptions = res.data
-        this.searchOptions[3].options = res.data
+        // this.classOptions = res.data
+        // this.searchOptions[3].options = res.data
       }
     },
     // 获取项目下拉
@@ -284,5 +298,10 @@ export default {
 .el-table__header tr {
   background-color: #f8f8f8;
   color: #909399;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

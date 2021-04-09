@@ -352,3 +352,27 @@ export function exportEnrollRecord(params) {
     params,
   })
 }
+//获取计划下拉列表
+export function getPlanSelect(params) {
+  return request({
+    url: '/Examination/getPlanSelect',
+    method: 'get',
+    params,
+  })
+}
+//获取计划相关科目列表
+// export function getSubjectSelectForEnroll(params) {
+//   return request({
+//     url: '/Examination/getSubjectSelectForEnroll',
+//     method: 'get',
+//     params,
+//   })
+// }
+//导出成绩按学员
+export function exportUserGrade(params) {
+  return request({
+    url: '/Graduation/exportUserGrade',
+    method: 'get',
+    params,
+  })
+}

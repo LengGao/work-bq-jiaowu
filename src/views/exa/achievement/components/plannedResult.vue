@@ -49,9 +49,18 @@
           label="考试日期"
           min-width="200"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <div v-if="row.exam_start_time == row.exam_end_time">
+              {{ row.exam_end_time }}
+            </div>
+            <span v-else>{{
+              row.exam_start_time + ' 至 ' + row.exam_end_time
+            }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="计划人数"
+          prop="enroll_num"
           label="报考人数"
           min-width="80"
           show-overflow-tooltip
@@ -59,7 +68,7 @@
 
         <el-table-column
           label="登记人数"
-          prop="actual_num"
+          prop="grade_num"
           min-width="100"
           show-overflow-tooltip
         >
@@ -110,6 +119,7 @@ export default {
           key: 'category_id',
           type: 'cascader',
           attrs: {
+            checkStrictly: true,
             placeholder: '所属分类',
             clearable: true,
             options: [],
@@ -118,7 +128,7 @@ export default {
         {
           key: 'search_box',
           attrs: {
-            placeholder: '考试计划名称',
+            placeholder: '学员姓名/手机号码',
           },
         },
       ],
@@ -158,8 +168,8 @@ export default {
       this.searchData = {
         ...data,
         cate_id: data.category_id?.pop() || 0,
-        enroll_start_time: times[0],
-        enroll_end_time: times[1],
+        exam_start_time: times[0],
+        exam_end_time: times[1],
       }
       this.getPlanList()
     },
