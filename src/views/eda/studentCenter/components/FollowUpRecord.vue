@@ -8,11 +8,11 @@
       label-width="100px"
       class="add-record"
     >
-      <el-form-item label="备注信息" class="desc">
+      <el-form-item label="备注信息" class="describe">
         <el-input
           type="textarea"
           placeholder="请输入"
-          v-model="ruleForm.desc"
+          v-model="ruleForm.describe"
         ></el-input>
       </el-form-item>
       <div class="add-record-actions">
@@ -22,7 +22,7 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="选择日期"
-            v-model="ruleForm.todo_time"
+            v-model="ruleForm.follow_next_time"
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
@@ -43,27 +43,27 @@
               </div>
               <div class="list-row-col">
                 <span class="col-name">跟进人：</span>
-                <span>{{ item.staff_name || "--" }} </span>
+                <span>{{ item.follow_user_name || "--" }} </span>
               </div>
               <!-- <div class="list-row-col">
                 <span class="col-name">部门：</span>
                 <span>{{ item.staff_name }} </span>
               </div> -->
-              <!-- <div class="list-row-col">
+              <div class="list-row-col">
                 <span class="col-name">角色：</span>
-                <span>教务</span>
-              </div> -->
+                <span>{{ item.position }}</span>
+              </div>
             </div>
             <div class="list-row">
               <div class="list-row-col">
                 <span class="col-name">跟进内容：</span>
-                <span>{{ item.desc }} </span>
+                <span>{{ item.describe }} </span>
               </div>
             </div>
             <div class="list-row">
               <div class="list-row-col">
                 <span class="col-name">下次跟进时间：</span>
-                <span>{{ item.todo_time }}</span>
+                <span>{{ item.next_follow_time }}</span>
               </div>
             </div>
           </el-card>
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { userArchivesRecord, addUserArchivesRecord } from "@/api/eda";
+import { getFollowPage, insertTeachFollow } from "@/api/eda";
 export default {
   name: "followUpRecord",
   props: {
@@ -93,11 +93,13 @@ export default {
   data() {
     return {
       ruleForm: {
-        desc: "",
-        todo_time: "",
+        describe: "",
+        follow_next_time: "",
       },
       rules: {
-        desc: [{ required: true, message: "请输入客户名称", trigger: "blur" }],
+        describe: [
+          { required: true, message: "请输入客户名称", trigger: "blur" },
+        ],
       },
       listData: [],
       pageNum: 1,
@@ -105,33 +107,35 @@ export default {
     };
   },
   created() {
-    this.userArchivesRecord();
+    this.getFollowPage();
   },
   methods: {
     // 添加跟进记录
-    async addUserArchivesRecord() {
+    async insertTeachFollow() {
       const data = {
         ...this.ruleForm,
         uid: this.uid,
       };
-      const res = await addUserArchivesRecord(data);
+      const res = await insertTeachFollow(data);
       if (res.code === 0) {
         this.ruleForm = {
-          desc: "",
-          todo_time: "",
+          describe: "",
+          follow_next_time: "",
         };
         this.$message.success(res.message);
-        this.userArchivesRecord();
+        this.getFollowPage();
       }
     },
     // 跟进记录
-    async userArchivesRecord() {
+    async getFollowPage() {
       const data = {
         page: this.pageNum,
         uid: this.uid,
+        follow_type: 5, //5:学习进度
+        follow_state: 3, //3:已完成
       };
       this.listLoading = true;
-      const res = await userArchivesRecord(data);
+      const res = await getFollowPage(data);
       this.listLoading = false;
       if (res.code === 0) {
         this.listData = res.data.list;
@@ -140,12 +144,12 @@ export default {
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.userArchivesRecord();
+      this.getFollowPage();
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.addUserArchivesRecord();
+          this.insertTeachFollow();
         }
       });
     },
@@ -166,8 +170,10 @@ export default {
   }
   .record-list {
     font-size: 14px;
-    height: 590px;
-    overflow-y: auto;
+    ul {
+      height: 520px;
+      overflow-y: auto;
+    }
     li {
       margin-bottom: 10px;
     }

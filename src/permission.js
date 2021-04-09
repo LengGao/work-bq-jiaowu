@@ -22,7 +22,6 @@ router.beforeEach((to, from, next) => {
             if (to.path === '/' && firstRoute.redirect !== '/visualization') {
               next({ ...firstRoute, replace: true })
             } else {
-              console.log(111111111)
               next({ ...to, replace: true })
             }
           })

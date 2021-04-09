@@ -9,11 +9,13 @@ import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
 import { getIdentity } from "@/api/workbench.js";
 import { getUnreadCount, getMenu, logout } from "@/api/login";
 import defaultRouter, { resetRouter, createUserRouter } from '@/router'
+const userInfoJson = sessionStorage.getItem('userInfo')
 const user = {
   state: {
     token: getToken(),
     name: '',
     avatar: '',
+    userInfo: userInfoJson ? JSON.parse(userInfoJson) : {},
     identity: '', // 用户身份 1教务 2招生 3老师 4财务 5管理员
     msgCount: 0,// 任务中心未读数量
     userRouter: [],
@@ -21,6 +23,9 @@ const user = {
   },
 
   mutations: {
+    SET_USER_INFO(state, data) {
+      state.userInfo = data
+    },
     SET_MENUS: (state, menus) => {
       state.menus = menus
     },
@@ -87,8 +92,12 @@ const user = {
           method: 'POST',
           then(res) {
             const tokenStr = res.data.data.token
+            const userData = res.data.data.info
+            console.log(userData)
             setToken(tokenStr)
             setStaff_id(res.data.data.info.staff_id)
+            sessionStorage.setItem('userInfo', JSON.stringify(userData))
+            commit('SET_USER_INFO', userData)
             commit('SET_TOKEN', tokenStr)
             resolve()
           },
@@ -106,6 +115,7 @@ const user = {
         commit('SET_TOKEN', '')
         commit('SET_USER_ROUTERS', [])
         commit('SET_MENUS', [])
+        sessionStorage.clear()
         return Promise.resolve(res)
       }
     },
@@ -122,6 +132,7 @@ const user = {
         commit('SET_USER_ROUTERS', [])
         commit('SET_MENUS', [])
         removeToken()
+        sessionStorage.clear()
         resolve()
       })
     },

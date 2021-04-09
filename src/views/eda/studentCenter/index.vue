@@ -28,6 +28,7 @@
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
         <el-tab-pane label="跟进记录" name="FollowUpRecord"></el-tab-pane>
+        <el-tab-pane label="学员历史" name="CustomerHistory"></el-tab-pane>
       </el-tabs>
       <component
         :is="getComponent"

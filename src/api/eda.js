@@ -115,7 +115,7 @@ export function studentBehaviorRecord(params) {
   })
 }
 /**
- * 学生跟进记录
+ * 客户历史
  * @param {*} params
  */
 export function userArchivesRecord(params) {
@@ -126,12 +126,23 @@ export function userArchivesRecord(params) {
   })
 }
 /**
+ * 学生跟进记录
+ * @param {*} params
+ */
+export function getFollowPage(params) {
+  return request({
+    url: '/StaffFollow/getFollowPage',
+    method: 'get',
+    params,
+  })
+}
+/**
  * 添加跟进记录
  * @param {*} data
  */
-export function addUserArchivesRecord(data) {
+export function insertTeachFollow(data) {
   return request({
-    url: '/UserArchivesRecord/add',
+    url: 'staffFollow/insertTeachFollow',
     method: 'post',
     data,
   })
