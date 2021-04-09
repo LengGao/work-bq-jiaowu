@@ -49,3 +49,44 @@ export function getFollowPage(params) {
     params,
   })
 }
+// 员工管理=======
+/**
+ * 获取员工列表
+ */
+export function getStaffList(params) {
+  return request({
+    url: '/staff/index',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 获取身份下拉列表
+ */
+export function getIdentitySelect(params) {
+  return request({
+    url: '/staff/getIdentitySelect',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 获取机构下拉列表
+ */
+export function getOrganizationSelect(params) {
+  return request({
+    url: '/institution/getOrganizationSelect',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 获取机构下拉列表
+ */
+export function getSchoolSelect(params) {
+  return request({
+    url: '/institution/getSchoolSelect',
+    method: 'get',
+    params,
+  })
+}

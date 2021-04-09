@@ -112,9 +112,13 @@
         >
           <template slot-scope="scope">
             <div class="operation_btn">
-              <el-button type="text" @click="handleAdd(scope.row)"
+              <span v-if="scope.row.aid > 0">已归档</span>
+              <el-button type="text" @click="handleAdd(scope.row)" v-else
                 >添加</el-button
               >
+              <!-- <el-button type="text" @click="handleAdd(scope.row)"
+                >添加</el-button
+              > -->
             </div>
           </template>
         </el-table-column>

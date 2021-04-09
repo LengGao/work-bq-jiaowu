@@ -227,15 +227,15 @@ export default {
       cultures: [
         {
           value: 1,
-          label: '文化',
+          label: '初中及以下',
         },
         {
           value: 2,
-          label: '小学',
+          label: '中专/中技',
         },
         {
           value: 3,
-          label: '初中',
+          label: '高中',
         },
         {
           value: 4,
@@ -243,11 +243,15 @@ export default {
         },
         {
           value: 5,
-          label: '专科',
+          label: '大专',
         },
         {
           value: 6,
           label: '本科',
+        },
+        {
+          value: 7,
+          label: '研究生及以上',
         },
       ],
       rules: {
@@ -348,7 +352,8 @@ export default {
     },
     handleLocal(value) {
       console.log(value)
-      this.ruleForm.location = CodeToText[value[0]] + CodeToText[value[1]]
+
+      this.ruleForm.location = value[0]
     },
     getaddStatus(status) {
       this.addVisible = status
@@ -365,11 +370,13 @@ export default {
       if (this.ruleForm.sex == '') {
         this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
       }
-
+      if (this.ruleForm.from_organization_id) {
+        this.ruleForm.from_organization_id = this.ruleForm.from_organization_id.pop()
+      }
+      console.log(this.ruleForm.from_organization_id)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$api.addCustomers(this, this.ruleForm, num)
-          // alert('submit!');
         } else {
           console.log('error submit!!')
           return false

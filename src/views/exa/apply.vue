@@ -136,12 +136,12 @@
 </template>
 
 <script>
-import { planList, deletePlan } from "@/api/exa";
-import { cloneOptions } from "@/utils/index";
-import { getCateList } from "@/api/sou";
-import ApplyDialog from "./components/ApplyDialog";
+import { planList, deletePlan } from '@/api/exa'
+import { cloneOptions } from '@/utils/index'
+import { getCateList } from '@/api/sou'
+import ApplyDialog from './components/ApplyDialog'
 export default {
-  name: "apply",
+  name: 'apply',
   components: {
     ApplyDialog,
   },
@@ -153,25 +153,25 @@ export default {
       listTotal: 0,
       searchData: {
         cate_id: [],
-        search_box: "",
+        search_box: '',
       },
       searchOptions: [
         {
-          key: "date",
-          type: "datePicker",
+          key: 'date',
+          type: 'datePicker',
           attrs: {
-            type: "daterange",
-            "range-separator": "至",
-            "start-placeholder": "报考开始日期",
-            "end-placeholder": "报考结束日期",
-            "value-format": "yyyy-MM-dd",
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '报考开始日期',
+            'end-placeholder': '报考结束日期',
+            'value-format': 'yyyy-MM-dd',
           },
         },
         {
-          key: "cate_id",
-          type: "cascader",
+          key: 'cate_id',
+          type: 'cascader',
           attrs: {
-            placeholder: "所属分类",
+            placeholder: '所属分类',
             clearable: true,
             options: [],
             props: { checkStrictly: true },
@@ -179,100 +179,100 @@ export default {
           },
         },
         {
-          key: "search_box",
+          key: 'search_box',
           attrs: {
-            placeholder: "考试计划",
+            placeholder: '考试计划',
           },
         },
       ],
-      currentId: "",
-      dialogTitle: "添加考试计划",
+      currentId: '',
+      dialogTitle: '添加考试计划',
       dialogVisible: false,
       typeOptions: [],
-    };
+    }
   },
   created() {
-    this.planList();
-    this.getCateList();
+    this.planList()
+    this.getCateList()
   },
   methods: {
     linkTo(id, cate_id) {
-      this.$router.push({ name: "projectDetails", query: { id, cate_id } });
+      this.$router.push({ name: 'projectDetails', query: { id, cate_id } })
     },
     // 删除计划
     deleteConfirm(id) {
-      this.$confirm("确定要删除此计划吗?", { type: "warning" })
+      this.$confirm('确定要删除此计划吗?', { type: 'warning' })
         .then(() => {
-          this.deletePlan(id);
+          this.deletePlan(id)
         })
-        .catch(() => {});
+        .catch(() => {})
     },
     async deletePlan(id) {
       const data = {
         id,
-      };
-      const res = await deletePlan(data);
+      }
+      const res = await deletePlan(data)
       if (res.code === 0) {
-        this.$message.success(res.message);
-        this.planList();
+        this.$message.success(res.message)
+        this.planList()
       }
     },
     openEdit(id) {
-      this.dialogTitle = "编辑考试计划";
-      this.currentId = id;
-      this.dialogVisible = true;
+      this.dialogTitle = '编辑考试计划'
+      this.currentId = id
+      this.dialogVisible = true
     },
     openAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加考试计划";
-      this.dialogVisible = true;
+      this.currentId = ''
+      this.dialogTitle = '添加考试计划'
+      this.dialogVisible = true
     },
     // 搜索
     handleSearch(data) {
-      const times = data.date || ["", ""];
-      delete data.date;
-      this.pageNum = 1;
+      const times = data.date || ['', '']
+      delete data.date
+      this.pageNum = 1
       this.searchData = {
         ...data,
         cate_id: data.cate_id.pop(),
         enroll_start_time: times[0],
         enroll_end_time: times[1],
-      };
-      this.planList();
+      }
+      this.planList()
     },
     // 分页
     handlePageChange(val) {
-      this.pageNum = val;
-      this.planList();
+      this.pageNum = val
+      this.planList()
     },
     // 计划列表
     async planList() {
       const data = {
-        rule_id: this.$route.query?.id || "",
+        rule_id: this.$route.query?.id || '',
         page: this.pageNum,
         ...this.searchData,
-      };
-      this.listLoading = true;
-      const res = await planList(data);
-      this.listLoading = false;
-      this.listData = res.data.list;
-      this.listTotal = res.data.total;
+      }
+      this.listLoading = true
+      const res = await planList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.listTotal = res.data.total
     },
     // 获取教材分类
     async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
+      const data = { list: true }
+      const res = await getCateList(data)
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = this.typeOptions = cloneOptions(
           res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
+          'category_name',
+          'category_id',
+          'son'
+        )
       }
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -306,4 +306,3 @@ export default {
   margin-top: 20px;
 }
 </style>
-

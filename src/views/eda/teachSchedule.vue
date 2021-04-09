@@ -5,14 +5,6 @@
     </div>
     <section class="mainwrap">
       <div class="head-search">
-        <!-- <search2
-          :courseTypeShow="true"
-          :contentShow="true"
-          typeTx="punch"
-          api="getHomeclassifiList"
-          inputText="教材名称"
-          @getTable="getTableList"
-        ></search2> -->
         <SearchList
           :options="searchOptions"
           :data="searchData"
@@ -78,6 +70,11 @@
           <el-table-column
             prop="frist_class_time"
             label="开课日期"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            label="结束日期"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>

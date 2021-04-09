@@ -25,7 +25,7 @@
       <el-table-column
         :prop="item.prop"
         :label="item.title"
-        min-width="90"
+        min-width="100"
         v-for="item in title"
         :key="item.prop"
       >
@@ -33,6 +33,8 @@
           <div
             :class="{
               green: scope.row[scope.column.property] === '通过',
+              red: scope.row[scope.column.property] === '补考',
+              blue: scope.row[scope.column.property] === '待定',
             }"
           >
             <!-- {{ scope.column.property }} -->
@@ -63,11 +65,11 @@
         </el-table-column>
       </el-table-column>
 
-      <el-table-column label="操作" fixed="right" min-width="100">
+      <el-table-column label="操作" fixed="right" min-width="80">
         <template slot-scope="{ row }">
           <div style="display: flex; justify-content: center">
             <el-button type="text" @click="openScoreDialog(row.id)">
-              {{ row.update_time ? '修改成绩' : '录入成绩' }}</el-button
+              {{ row.update_time ? '修改' : '录入' }}</el-button
             >
             <!-- <el-button type="text" @click="link(row.book_id)"
               >库存详情</el-button
@@ -78,7 +80,7 @@
     </el-table>
     <div style="display:flex;justify-content:space-between">
       <div style="margin-top:10px">
-        <el-button>添加报考</el-button>
+        <el-button @click="addRegistration">添加报考</el-button>
         <el-button @click="batchPass">批量通过</el-button>
       </div>
       <div class="table_bottom">
@@ -98,6 +100,7 @@
       :typeOptions="typeOptions"
       @on-success="getGradeListByPlan"
     />
+    <AddRegistration v-model="regisVisible" />
   </section>
 </template>
 
@@ -105,14 +108,17 @@
 import { cloneOptions } from '@/utils/index'
 import { getGradeListByPlan, getPlanGradeSelect, batchPass } from '@/api/exa'
 import AddScore from './components/AddScore'
+import AddRegistration from './components/AddRegistration'
 export default {
   name: 'achieveDetail',
   components: {
     AddScore,
+    AddRegistration,
   },
   data() {
     return {
       dialogVisible: false,
+      regisVisible: false,
       dialogTitle: '录入成绩',
       tableData: [],
       listData: [],
@@ -165,6 +171,9 @@ export default {
     this.getGradeListByPlan()
   },
   methods: {
+    addRegistration() {
+      this.regisVisible = true
+    },
     batchPass() {
       this.batchPass()
     },
@@ -261,9 +270,9 @@ export default {
   color: #fd6500;
 }
 .red {
-  color: red;
+  color: $error_color;
 }
 .blue {
-  color: blue;
+  color: #199fff;
 }
 </style>

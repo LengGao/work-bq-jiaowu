@@ -45,18 +45,23 @@
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
         <el-form label-width="100px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true">
           <el-form-item label="所属分类：">
-            <el-cascader ref="cascader" clearable class="input-width" placeholder="请选择分类" v-model="ruleForm.pid" :options="selectData" :props="{ checkStrictly: true }"></el-cascader>
+            <el-select v-model="ruleForm.pid" clearable placeholder="请选择分类">
+              <el-option v-for="item in selectData" :key="item.value" :label="item.label" :value="item.value" class="input-width">
+              </el-option>
+
+            </el-select>
+            <!-- <el-cascader ref="cascader" clearable class="input-width" placeholder="请选择分类" v-model="ruleForm.pid" :options="selectData" :props="{ checkStrictly: true }"></el-cascader> -->
           </el-form-item>
-          <el-form-item label="分类名称：">
-            <el-input placeholder="请输入分类名称" v-model="ruleForm.category_name" class="input-width"></el-input>
+          <el-form-item label="分类名称：" class="input-width">
+            <el-input :placeholder="ruleForm.pid == 0 ? '请输入一级分类名称' : '请输入二级分类名称'" v-model="ruleForm.category_name"></el-input>
           </el-form-item>
-          <el-form-item label="分类排序：">
+          <el-form-item label="分类排序：" v-if="ruleForm.pid == 0">
             <el-input v-model="ruleForm.sort" class="input-width" placeholder=" 排序数字越大分类越靠前" type="number"></el-input>
             <!-- <p style="color:#aaa;ling-height:20px">
             排序数字越大分类越靠前,最小值为1
           </p> -->
           </el-form-item>
-          <el-form-item label="分类图标：" style>
+          <el-form-item label="分类图标：" style v-if="ruleForm.pid == 0">
             <div v-show="!haschoose" style="display:flex">
               <div class="headPortrait el-icon-plus" @click="addIcon"></div>
               <div style="color:#aaa;ling-height:10px;margin-left:10px">
@@ -64,12 +69,12 @@
                 <p><span> 2. 推荐尺寸200*200px或者1:1</span></p>
               </div>
             </div>
-            <div v-show="haschoose" class=" imageBox ">
+            <div v-show="haschoose" class=" imageBox">
               <i class=" iconjia el-icon-plus" @click="addIcon"></i>
               <img style="width:100%;height:100%;" :src="ruleForm.icon" alt="" />
             </div>
           </el-form-item>
-          <el-form-item label="分类描述：">
+          <el-form-item label="分类描述：" v-if="ruleForm.pid == 0">
             <el-input type="textarea" v-model="ruleForm.describe" style="width:90%"></el-input>
           </el-form-item>
         </el-form>
@@ -156,6 +161,12 @@ export default {
     this.getCategoryList()
   },
   methods: {
+    checkDepart(ab) {
+      console.log(ab)
+      let end = ab[ab.length - 1]
+      console.log(end)
+      // this.ruleForm.parent_id = end
+    },
     clearUrl() {
       // this.url = ''
       // this.haschoose = false
@@ -258,6 +269,14 @@ export default {
       const data = { list: true }
       const res = await getCateList(data)
       if (res.code === 0) {
+        console.log(res.data)
+        let topMenu = {
+          category_id: 0,
+          category_name: '顶级类别',
+          pid: 0,
+          son: [],
+        }
+        res.data.unshift(topMenu)
         this.cloneData(res.data, this.selectData)
         this.deepDisabled(this.selectData, false)
       }
@@ -301,7 +320,7 @@ export default {
         ...this.searchData,
         icon: this.ruleForm.icon,
         category_name: this.ruleForm.category_name,
-        pid: this.ruleForm.pid ? this.ruleForm.pid.pop() : '',
+        pid: this.ruleForm.pid,
         sort: this.ruleForm.sort,
         describe: this.describe,
       }
@@ -320,7 +339,8 @@ export default {
         ...this.searchData,
         icon: this.ruleForm.icon,
         category_name: this.ruleForm.category_name,
-        pid: this.ruleForm.pid ? this.ruleForm.pid.pop() : '',
+        pid: this.ruleForm.pid,
+        // pid: this.ruleForm.pid ? this.ruleForm.pid.pop() : '',
         sort: this.ruleForm.sort,
         describe: this.ruleForm.describe,
         category_id: this.ruleForm.category_id,

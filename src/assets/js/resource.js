@@ -383,7 +383,6 @@ let resource = {
         price: parseFloat(ruleForm.price),
         lowest_price: parseFloat(ruleForm.lowest_price),
         service_type: ruleForm.service_type,
-
         service_period: ruleForm.service_period,
         service_effective: ruleForm.service_effective,
         course: ruleForm.course,
@@ -414,7 +413,8 @@ let resource = {
             console.log(data.problem)
             self.quesTag = data.problem
             self.ruleForm = data
-            // self.ruleForm.category_id = [data.category_id]
+            self.ruleForm.category_id = data.category_id
+            console.log(self.ruleForm.category_id)
             // self.ruleForm.service_period = data.service_period
             console.log(data.service_period)
           } else {

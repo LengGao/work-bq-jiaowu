@@ -73,6 +73,7 @@ let enrollStu = {
     let config = {
       surname: ruleForm.surname,
       mobile: ruleForm.mobile,
+      second_mobile: ruleForm.second_mobile,
       id_card_number: ruleForm.id_card_number,
       sex: ruleForm.sex,
       birthday: ruleForm.birthday,
@@ -82,8 +83,10 @@ let enrollStu = {
       email: ruleForm.email,
       culture: ruleForm.culture,
       province: ruleForm.province,
+      wechat: ruleForm.wechat,
       city: ruleForm.city,
       from_organization_id: ruleForm.from_organization_id,
+      sources: ruleForm.sources,
       tips: ruleForm.tips,
     }
     console.log(config)
