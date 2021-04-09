@@ -38,8 +38,8 @@ export default {
         // 4: "RecruitStudents",
         // 2: "RecruitStudents",
         //===============
-        5: 'Administrators',
-        // 5: 'RecruitStudents',
+        // 5: 'Administrators',
+        5: 'RecruitStudents',
       },
     }
   },
