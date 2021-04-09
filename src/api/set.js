@@ -49,3 +49,14 @@ export function getFollowPage(params) {
     params,
   })
 }
+// 员工管理=======
+/**
+ * 获取角色列表
+ */
+export function getStaffList(params) {
+  return request({
+    url: '/staff/index',
+    method: 'get',
+    params,
+  })
+}

@@ -7,12 +7,11 @@
     <div class="mainwrap">
       <section class="main-right">
         <div class="client_head">
-          <search2
-            :contentShow="true"
-            api="getStaffList"
-            inputText="搜索员工姓名/手机号"
-            @getTable="getTableList"
-          ></search2>
+          <SearchList
+            :options="searchOptions"
+            :data="searchData"
+            @on-search="handleSearch"
+          />
 
           <el-button type="primary" @click="addStaff">添加员工</el-button>
         </div>
@@ -20,7 +19,7 @@
         <div class="userTable">
           <el-table
             ref="multipleTable"
-            :data="schoolData.list"
+            :data="listData"
             style="width: 100%"
             class="min_table"
             :header-cell-style="{ 'text-align': 'center' }"
@@ -124,13 +123,11 @@
             </el-table-column>
           </el-table>
           <div class="table_bottom">
-            <div class="table_bottom">
-              <page
-                :data="schoolData.total"
-                :curpage="page"
-                @pageChange="doPageChange"
-              />
-            </div>
+            <page
+              :data="listTotal"
+              :curpage="pageNum"
+              @pageChange="handlePageChange"
+            />
           </div>
         </div>
       </section>
@@ -268,10 +265,88 @@
   </section>
 </template>
 <script>
+import { getStaffList } from '@/api/set'
 export default {
   name: 'staff',
   data() {
     return {
+      searchOptions: [
+        {
+          key: 'date',
+          type: 'datePicker',
+          attrs: {
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            'value-format': 'yyyy-MM-dd',
+          },
+        },
+
+        // {
+        //   key: 'cate_id',
+        //   type: 'cascader',
+        //   events: {
+        //     change: this.handleTypeChange,
+        //   },
+        //   attrs: {
+        //     placeholder: '所属分类',
+        //     clearable: true,
+        //     options: [],
+        //   },
+        // },
+        {
+          key: 'project_id',
+          type: 'select',
+          options: [],
+          optionValue: 'project_id',
+          optionLabel: 'project_name',
+          attrs: {
+            placeholder: '所属项目',
+            clearable: true,
+          },
+        },
+        // {
+        //   key: 'class_id',
+        //   type: 'select',
+        //   options: [],
+        //   optionValue: 'classroom_id',
+        //   optionLabel: 'classroom_name',
+        //   attrs: {
+        //     placeholder: '所属班级',
+        //     clearable: true,
+        //   },
+        // },
+        // {
+        //   key: 'foid',
+        //   type: 'cascader',
+        //   attrs: {
+        //     placeholder: '推荐机构',
+        //     clearable: true,
+        //     options: [],
+        //   },
+        // },
+
+        {
+          key: 'search_box',
+          attrs: {
+            placeholder: '学生姓名/手机号码',
+          },
+        },
+      ],
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      searchData: {
+        type: 0,
+        date: '',
+        cate_id: '',
+        project_id: '',
+        class_id: '',
+        foid: [],
+        search_box: '',
+      },
       page: 1,
       schoolData: [],
       haschoose: false,
@@ -331,12 +406,26 @@ export default {
     }
   },
   created() {
-    this.$api.getStaffList(this, 'schoolData')
+    this.getStaffList()
+    // this.$api.getStaffList(this, 'schoolData')
     this.$api.getRoleSelectData(this, 'roleData') //所属角色列表
     this.$api.getIdentitySelect(this, 'IdentityData') //所属角色列表
     this.$api.getInstitutionSelectData(this, 'instituData') //所属角色列表
   },
   methods: {
+    // 获学员列表
+    async getStaffList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      delete data.date
+      this.listLoading = true
+      const res = await getStaffList(data)
+      this.listLoading = false
+      this.listData = res.data.list
+      this.listTotal = res.data.total
+    },
     handleEdit(ab) {
       console.log(ab)
       // this.ruleForm.id = ab.staff_id
