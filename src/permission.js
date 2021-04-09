@@ -4,7 +4,6 @@ import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css' // Progress 进度条样式
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth' // 验权
-import { createUserRouter } from '@/router'
 const whiteList = ['/login', '/forget', '/resetpage', '/menuManage'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
@@ -14,19 +13,18 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (store.getters.roles.length === 0) {
+      if (store.getters.userRouter.length === 0) {
         store
-          .dispatch('GetInfo')
-          .then((res) => {
-            // 拉取用户信息,获取权限菜单
-            const { userRouter, menuList } = createUserRouter(res)
-            // 设置路由
-            store.dispatch('addRouter', userRouter)
-            // 设置菜单数据
-            store.dispatch('setMenus', menuList)
+          .dispatch('setRouterAndMenu')
+          .then((userRouter) => {
             // 默认进入第一个路由
             const firstRoute = userRouter[0]
-            next({ ...firstRoute, replace: true })
+            if (to.path === '/' && firstRoute.redirect !== '/visualization') {
+              next({ ...firstRoute, replace: true })
+            } else {
+              console.log(111111111)
+              next({ ...to, replace: true })
+            }
           })
           .catch((err) => {
             store.dispatch('FedLogOut').then(() => {

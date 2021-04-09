@@ -6,7 +6,7 @@
         <el-option value="1" label="全部项目"></el-option>
         <el-option value="2" label="系统集成项目"></el-option>
         <el-option value="3" label="中级经济师项目"></el-option>
-        <el-option value="3" label="低压电工项目"></el-option>
+        <el-option value="4" label="低压电工项目"></el-option>
       </el-select>
     </div>
     <div class="learning-record-container">

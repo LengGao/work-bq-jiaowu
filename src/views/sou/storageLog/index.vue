@@ -122,6 +122,7 @@ export default {
             { label: "调拨", value: 1 },
           ],
           attrs: {
+            clearable: true,
             placeholder: "操作类型",
           },
         },
@@ -163,7 +164,7 @@ export default {
     async getstoragelog() {
       const date = this.searchData.date || [];
       const data = {
-        uid: this.$route.query.id,
+        storage_id: this.$route.query.id,
         page: this.pageNum,
         keyboard: this.searchData.keyboard,
         type: this.searchData.type,

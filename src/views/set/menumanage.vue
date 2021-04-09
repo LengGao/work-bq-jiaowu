@@ -441,15 +441,9 @@ export default {
 
       this.dialogVisible = true;
     },
+    // 更新路由+菜单
     updateRouter() {
-      this.$store.dispatch("GetInfo").then((res) => {
-        // 拉取用户信息,获取权限菜单
-        const { userRouter, menuList } = createUserRouter(res);
-        // 设置路由
-        this.$store.dispatch("resetRouter", userRouter);
-        // 设置菜单数据
-        this.$store.dispatch("setMenus", menuList);
-      });
+      this.$store.dispatch("setRouterAndMenu");
     },
     // 是否中菜单中展示
     async updateShowStatus({ id, show_at_list }) {

@@ -18,12 +18,7 @@ export function getInfo() {
   })
 }
 
-export function logout() {
-  return request({
-    url: '/admin/logout',
-    method: 'post'
-  })
-}
+
 
 export function fetchList(params) {
   return request({
@@ -110,6 +105,7 @@ export function getAdminQueueList(params) {
     params
   })
 }
+// 未读任务数量
 export function getUnreadCount(params) {
   return request({
     url: '/AdminQueueRecord/getUnreadCount',
@@ -118,3 +114,19 @@ export function getUnreadCount(params) {
   })
 }
 export const baseUrl = process.env.NODE_ENV === "development" ? 'http://sc.dp.com' : ''
+// 获取菜单
+export function getMenu(params) {
+  return request({
+    url: '/staff/getMenu',
+    method: 'get',
+    params
+  })
+}
+// 登出
+export function logout(params) {
+  return request({
+    url: '/passport/logout',
+    method: 'get',
+    params
+  })
+}

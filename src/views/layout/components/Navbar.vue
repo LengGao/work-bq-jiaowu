@@ -294,8 +294,9 @@ export default {
       this.$store.dispatch("ToggleSideBar");
     },
     logout() {
-      this.$store.dispatch("LogOut").then(() => {
-        location.reload(); // 为了重新实例化vue-router对象 避免bug
+      this.$store.dispatch("logout").then((res) => {
+        this.$message.success(res.message);
+        this.$router.push("/login");
       });
     },
   },
