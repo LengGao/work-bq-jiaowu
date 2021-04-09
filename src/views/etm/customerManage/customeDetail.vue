@@ -481,7 +481,7 @@ export default {
     //跳转订单详情页
     toOrderDetail() {
       this.$router.push({
-        name: "orderDetail",
+        name: "orderdetail",
       });
     },
     orderVisibleShow() {

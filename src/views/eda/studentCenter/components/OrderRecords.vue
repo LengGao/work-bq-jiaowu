@@ -161,7 +161,7 @@ export default {
   methods: {
     orderDetail(ab) {
       this.$router.push({
-        name: "orderDetail",
+        name: "orderdetail",
         query: {
           order_id: ab.order_id,
         },
