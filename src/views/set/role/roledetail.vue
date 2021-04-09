@@ -32,7 +32,7 @@
             ref="trees"
             v-for="(item, index) in roleData"
             :key="index"
-            :data="[item]"
+            :data="item"
             show-checkbox
             :props="{
               label: 'title',
@@ -146,10 +146,11 @@ export default {
       const res = await getRoleInfo(data);
       this.treeLoading = false;
       if (res.code === 0) {
-        this.roleData = res.data.nodeTree;
+        this.formInline.user = res.data.info.role_name;
+        this.formInline.remark = res.data.info.remarks;
+        this.roleData = res.data.nodeTree.map((item) => [item]);
         const checkedKeys = res.data?.all_checks || [];
         if (checkedKeys.length && this.$route.query?.id) {
-          this.formInline.user = res.data.info.role_name;
           this.$nextTick(() => {
             const trees = this.$refs.trees;
             trees.forEach((tree) => {
