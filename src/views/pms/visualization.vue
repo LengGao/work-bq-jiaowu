@@ -33,12 +33,12 @@ export default {
       activeName: this.$store.state.user.identity + '',
       componentNames: {
         //1教务 2招生 3老师 4财务 5管理员
-        // 5: "Administrators",
-        // 1: "RecruitStudents",
-        // 4: "RecruitStudents",
-        // 2: "RecruitStudents",
-        //===============
         5: 'Administrators',
+        1: 'RecruitStudents',
+        4: 'RecruitStudents',
+        2: 'RecruitStudents',
+        //===============
+        // 5: 'Administrators',
         // 5: 'RecruitStudents',
       },
     }

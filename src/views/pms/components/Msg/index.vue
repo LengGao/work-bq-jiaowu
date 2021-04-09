@@ -1,18 +1,33 @@
 <template>
   <div class="msg">
-    <div class="msg-title">
+    <div class="msg-title" v-if="activeName === '5'">
       <h4 class="title">消息中心</h4>
-      <span class="msgspan">5</span>
     </div>
+
+    <!-- <div class="msg-title" v-if="activeName !== '5'">
+      <h4 class="title">未读</h4>
+      <span class="msgspan">{{listdata.length}}</span>
+    </div> -->
+    <div v-if="activeName !== '5'">
+      <el-tabs v-model="activeNames" @tab-click="handleClick">
+        <el-tab-pane name="2">
+           <span slot="label">未读<el-badge :value="listdata.length"></el-badge> </span>
+        </el-tab-pane>
+        <el-tab-pane label="已读" name="1">
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+
     <ul class="msg-content">
-      <li class="msg-item" v-for="(item, index) in listdata.slice(0, 8)" :key="index">
+      <li class="msg-item" v-for="(item, index) in listdata" :key="index">
         <span class="msg-item-info" :title="item.title" @click="msgclick(item)">
           {{ item.title }}</span>
         <span class="msg-item-date">{{ item.create_time }}</span>
       </li>
     </ul>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[10, 20, 30]" layout="total, prev, pager, next, jumper" :total="total">
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[8, 16, 24]" layout="total, prev, pager, next, jumper" :total="total">
     </el-pagination>
+
     <!-- 弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
       <div :model="ruleForm" :rules="rules" ref="ruleForm">
@@ -27,15 +42,31 @@
           <div v-html="ruleForm.content"></div>
         </div>
       </div>
+    </el-dialog>
+    <!-- 弹窗 -->
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" v-if="activeName !== '5'">
+      <div :model="ruleForm" :rules="rules" ref="ruleForm">
+        <h3 class="detailtitle">
+          {{ruleForm.title}}
+        </h3>
+        <div class="notictitle">
+          <p>发布时间：{{ruleForm.create_time}}</p>
+          <p>发布人：{{ruleForm.staff_name}}</p>
+        </div>
+        <div class="noticontent">
+          <div v-html="ruleForm.content"></div>
+        </div>
+      </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="Markunread">标为未读</el-button>
+        <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
 import { getSystemAnnouncementList, getAnnouncementInfo, setUnread } from '@/api/workbench'
+import { followRoute } from '@/utils/index'
 export default {
   name: 'Msg',
   props: {
@@ -46,15 +77,18 @@ export default {
   },
   data() {
     return {
-      noticeMap: {
+      activeName: '1',
+      activeNames: '2',
+      readMap: {
         1: '已读',
         2: '未读',
       },
-      pageSize: 8,
+      pageSize: '8',
       total: 0,
       pageNum: 1,
       dialogVisible: false,
       dialogTitle: '',
+      handleSizeChanges: '',
       id: '',
       rules: {},
       ruleForm: {
@@ -73,16 +107,21 @@ export default {
     this.getSystemAnnouncementList()
   },
   methods: {
+    Markunread(id) {
+      this.setUnread(id)
+      this.dialogVisible = false
+    },
     //公告列表接口
     async getSystemAnnouncementList() {
       const data = {
         limit: this.pageSize,
         page: this.pageNum,
+        read: this.activeNames,
       }
       const res = await getSystemAnnouncementList(data)
       console.log(res.data.list)
       this.listdata = res.data.list
-      this.listTotal = res.data.total
+      this.total = res.data.total
     },
     msgclick(ab) {
       console.log(ab)
@@ -113,6 +152,7 @@ export default {
       console.log(data)
       const res = await setUnread(data)
       if (res.code == 0) {
+        this.$message.success(res.message)
         this.getSystemAnnouncementList()
       }
     },
@@ -124,6 +164,11 @@ export default {
     },
     handleCurrentChange(page) {
       this.pageNum = page
+      this.getSystemAnnouncementList()
+    },
+
+    handleClick(val) {
+      console.log(this.activeNames)
       this.getSystemAnnouncementList()
     },
   },
@@ -142,7 +187,6 @@ export default {
     display: flex;
     align-items: left;
     justify-content: left;
-    border-bottom: 1px solid #dcdfe6;
     line-height: 30px;
   }
   .msg-content {
@@ -169,7 +213,7 @@ export default {
   }
 }
 .detailtitle {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: normal;
   color: #333;
   text-align: center;
@@ -190,6 +234,11 @@ export default {
 .table_bottom {
   padding: 10px 10px 0 10px;
 }
+.msgdiv {
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
 .msgspan {
   background: orangered;
   border-radius: 50%;
@@ -200,6 +249,10 @@ export default {
   line-height: 22px;
   text-align: center;
   margin-top: 5px;
+  position: absolute;
+  left: 35px;
+  top: 0;
+  z-index: 9999;
 }
 /deep/.el-pagination {
   margin-top: 10px;
