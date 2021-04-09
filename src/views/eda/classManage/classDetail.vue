@@ -9,16 +9,16 @@
           <span>所属分类</span>{{ detailData.category_name }}
         </p>
         <p class="col-item">
-          <span>学生人数</span>{{ detailData.student_number }}
+          <span>学生人数</span>{{ detailData.total_student }}
         </p>
       </div>
       <div class="header-col">
-        <p class="col-item"><span>班主任</span>{{ detailData.staff_name }}</p>
+        <p class="col-item"><span>班主任</span>{{ detailData.teacher_name }}</p>
         <p class="col-item">
           <span>所属项目</span>{{ detailData.project_name }}
         </p>
         <p class="col-item">
-          <span>排课总数</span>{{ detailData.class_number }}
+          <span>排课总数</span>{{ detailData.total_arrange }}
         </p>
       </div>
       <div class="header-col">

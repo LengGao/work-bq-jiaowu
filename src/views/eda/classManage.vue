@@ -31,27 +31,27 @@
           <el-table-column
             label="编号"
             show-overflow-tooltip
-            min-width="90"
+            min-width="70"
             prop="classroom_id"
           >
           </el-table-column>
           <el-table-column
             prop="classroom_name"
             label="班级名称"
-            min-width="110"
+            min-width="220"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="category_name"
             label="所属分类"
-            min-width="110"
+            min-width="120"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="project_name"
             label="项目名称"
-            min-width="110"
+            min-width="180"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -63,11 +63,11 @@
           <el-table-column
             prop="student_number"
             label="班级人数"
-            min-width="110"
+            min-width="100"
             show-overflow-tooltip
           ></el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="300">
+          <el-table-column label="操作" fixed="right" min-width="320">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="openEdit(row.classroom_id)"

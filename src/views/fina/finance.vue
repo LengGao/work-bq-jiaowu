@@ -41,7 +41,8 @@
             <span
               >￥{{
                 (panelData.order_money - panelData.reduction).toFixed(2)
-              }}</span>
+              }}</span
+            >
           </div>
         </li>
         <li class="panel-item">
@@ -340,7 +341,7 @@ export default {
     },
     coursDetail(uid) {
       this.$router.push({
-        path: "/fina/cusdetail",
+        name: "cusdetail",
         query: {
           uid,
         },
@@ -348,7 +349,7 @@ export default {
     },
     orderDetail(ab) {
       this.$router.push({
-        path: "/fina/orderDetail",
+        name: "orderdetail",
         query: {
           order_id: ab.order_id,
         },

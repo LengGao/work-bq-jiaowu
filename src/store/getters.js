@@ -4,10 +4,10 @@ const getters = {
   token: state => state.user.token,
   avatar: state => state.user.avatar,
   name: state => state.user.name,
-  roles: state => state.user.roles,
-  userRouter: state => state.permission.userRouter,
+  userRouter: state => state.user.userRouter,
+  userInfo: state => state.user.userInfo,
   identity: state => state.user.identity,
-  menus: state => state.permission.menus,
+  menus: state => state.user.menus,
   msgCount: state => state.user.msgCount
 }
 export default getters

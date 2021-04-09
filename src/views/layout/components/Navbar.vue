@@ -118,9 +118,12 @@
     </el-form>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar == '' ? touxiang : avatar" />
+        <img
+          class="user-avatar"
+          :src="userInfo.head_photo ? userInfo.head_photo : touxiang"
+        />
         <i class="el-icon-caret-bottom" style="margin-top: 5px"></i>
-        <span>总管理员</span>
+        <span>{{ userInfo.staff_name }}</span>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <el-dropdown-item>
@@ -194,7 +197,7 @@ export default {
     Hamburger,
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar", "msgCount"]),
+    ...mapGetters(["sidebar", "msgCount", "userInfo"]),
   },
   created() {
     this.getUnreadCount();
@@ -294,8 +297,9 @@ export default {
       this.$store.dispatch("ToggleSideBar");
     },
     logout() {
-      this.$store.dispatch("LogOut").then(() => {
-        location.reload(); // 为了重新实例化vue-router对象 避免bug
+      this.$store.dispatch("logout").then((res) => {
+        this.$message.success(res.message);
+        this.$router.push("/login");
       });
     },
   },

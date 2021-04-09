@@ -161,7 +161,7 @@ export default {
   methods: {
     orderDetail(ab) {
       this.$router.push({
-        path: "/fina/orderDetail",
+        name: "orderdetail",
         query: {
           order_id: ab.order_id,
         },
@@ -170,7 +170,7 @@ export default {
     // 按钮操作
     excludes(row, type) {
       const auth = {
-        0: row.overdue_money > 0, // 收款
+        0: row.overdue_money > 0 && ![4, 5].includes(row.pay_status), // 收款
         4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
         5: ![4, 5].includes(row.pay_status), // 作废
       };

@@ -29,20 +29,27 @@ export const constantRouterMap = [
   //   meta: { title: '重置密码' },
   // },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-  // {
-  //   path: '',
-  //   component: Layout,
-  //   redirect: '/visualization',
-  //   // name: 'pms',
-  //   children: [
-  //     {
-  //       path: 'visualization',
-  //       name: 'visualization',
-  //       component: () => import('@/views/pms/visualization.vue'),
-  //       meta: { title: '工作台', icon: 'shujukanban' },
-  //     },
-  //   ],
-  // },
+  {
+    path: '',
+    component: Layout,
+    redirect: '/visualization',
+    children: [
+      {
+        path: 'cusdetail',
+        name: 'cusdetail',
+        component: () => import('@/views/fina/finance/index.vue'),
+        meta: { title: '客户详情', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'orderdetail',
+        name: 'orderdetail',
+        component: () => import('@/views/fina/order/orderDetail.vue'),
+        meta: { title: '订单详情', icon: 'product-add' },
+        hidden: true,
+      },
+    ],
+  },
 ]
 
 export const asyncRouter = [
@@ -550,20 +557,8 @@ export const asyncRouter = [
         component: () => import('@/views/fina/order.vue'),
         meta: { title: '订单审批', icon: 'product-add' },
       },
-      {
-        path: 'orderdetail',
-        name: 'orderdetail',
-        component: () => import('@/views/fina/order/orderDetail.vue'),
-        meta: { title: '订单详情', icon: 'product-add' },
-        hidden: true,
-      },
-      {
-        path: 'cusdetail',
-        name: 'cusdetail',
-        component: () => import('@/views/fina/finance/index.vue'),
-        meta: { title: '客户详情', icon: 'product-cate' },
-        hidden: true,
-      },
+
+
     ],
   },
 
@@ -717,6 +712,7 @@ export const createUserRouter = (data) => {
   deepCreate(data, userRouter, menuList)
   // 添加 重定向 404
   userRouter.push({ path: '*', redirect: '/404' })
+  console.log(userRouter)
   return { userRouter, menuList }
 }
 
