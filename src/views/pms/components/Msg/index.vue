@@ -25,8 +25,10 @@
         <span class="msg-item-date">{{ item.create_time }}</span>
       </li>
     </ul>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[8, 16, 24]" layout="total, prev, pager, next, jumper" :total="total">
-    </el-pagination>
+    <div class="table_bottom">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[8, 16, 24]" layout="total, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
 
     <!-- 弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
@@ -191,11 +193,13 @@ export default {
   }
   .msg-content {
     padding-top: 10px;
+    padding-bottom: 10px;
     .msg-item {
       display: flex;
       justify-content: space-between;
-      line-height: 30px;
+      line-height: 28px;
       color: #909399;
+
       .msg-item-info {
         text-overflow: ellipsis;
         overflow: hidden;
@@ -255,6 +259,18 @@ export default {
   z-index: 9999;
 }
 /deep/.el-pagination {
-  margin-top: 10px;
+  margin: 20px auto 0 auto;
+  position: absolute;
+  bottom: 4px;
+  width: 100%;
+}
+.table_bottom {
+  height: 25px;
+  margin: auto;
+}
+.msg {
+  position: relative;
+  width: 24%;
+  padding-bottom: 5px;
 }
 </style>

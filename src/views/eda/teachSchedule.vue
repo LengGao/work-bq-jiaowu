@@ -1,15 +1,11 @@
 <template>
   <section>
     <div class="head_remind">
-      *本模块展示所有的班级数据，方便教务老师管理班级的日常工作
+      *本模块主要用于学生的排班上课，同时配置上课老师和教室。
     </div>
     <section class="mainwrap">
       <div class="head-search">
-        <SearchList
-          :options="searchOptions"
-          :data="searchData"
-          @on-search="handleSearch"
-        />
+        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
         <div>
           <el-button type="primary" @click="toAddSchedule">
             添加排课
@@ -21,38 +17,16 @@
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="listData"
-          style="width: 100%"
-          class="min_table"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-        >
-          <el-table-column
-            label="序号"
-            show-overflow-tooltip
-            min-width="90"
-            prop="project_id"
-          >
+        <el-table ref="multipleTable" :data="listData" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
+          <el-table-column label="序号" show-overflow-tooltip min-width="90" prop="project_id">
             <template slot-scope="scope">
               <div>
                 {{ scope.$index + 1 }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="classroom_name"
-            label="班级名称"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="category_name"
-            label="所属分类"
-            min-width="110"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="classroom_name" label="班级名称" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="category_name" label="所属分类" min-width="110" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div v-if="row.category_name">
                 {{ row.category_name }}
@@ -67,34 +41,19 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="frist_class_time"
-            label="开课日期"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            label="结束日期"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
+          <el-table-column prop="frist_class_time" label="开课日期" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column label="结束日期" min-width="110" show-overflow-tooltip></el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
-                <el-button type="text" @click="toTimetablePreview(scope.row)"
-                  >课表预览</el-button
-                >
+                <el-button type="text" @click="toTimetablePreview(scope.row)">课表预览</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="handlePageChange"
-          />
+          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
         </div>
         <StudentDialog v-model="studentdialogShow" :class_id="class_id" />
       </div>
@@ -214,9 +173,7 @@ export default {
       this.listLoading = false
       for (var item of res.data.list) {
         if (item.frist_class_time != 0) {
-          item.frist_class_time = this.$moment
-            .unix(item.frist_class_time)
-            .format('YYYY-MM-DD')
+          item.frist_class_time = this.$moment.unix(item.frist_class_time).format('YYYY-MM-DD')
         } else {
           item.frist_class_time = '未确定时间'
         }
@@ -273,5 +230,8 @@ export default {
 .studentNumber {
   color: #199fff;
   cursor: pointer;
+}
+.table_bottom {
+  text-align: right;
 }
 </style>
