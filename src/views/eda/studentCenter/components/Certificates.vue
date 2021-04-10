@@ -3,7 +3,9 @@
   <div class="certificates" v-loading="loading">
     <div class="certificates-header">
       <el-button @click="handlePreview">查看大图</el-button>
-      <el-button @click="zipDownload">打包下载</el-button>
+      <el-button :loading="downloadLoading" @click="zipDownload"
+        >打包下载</el-button
+      >
     </div>
     <div class="certificates-uploads">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
@@ -34,6 +36,7 @@
         <p>{{ item.name }}</p>
       </div>
     </div>
+    <a ref="a"></a>
     <PreviewImg ref="view" />
   </div>
 </template>
@@ -100,6 +103,7 @@ export default {
         photo_commitment: "",
         photo_health: "",
       },
+      downloadLoading: false,
     };
   },
   created() {
@@ -115,13 +119,24 @@ export default {
       this.$refs.view.show(srcs);
     },
     // 下载
+    download(url) {
+      const a = this.$refs.a;
+      a.href = url;
+      a.click();
+    },
     async zipDownload() {
       const data = {
         uid: this.uid,
       };
-      const res = await zipDownload(data);
+      this.downloadLoading = true;
+      const res = await zipDownload(data).catch(() => {
+        this.downloadLoading = false;
+      });
       if (res.code === 0) {
-        window.open(res.data.url);
+        this.download(res.data.url);
+        setTimeout(() => {
+          this.downloadLoading = false;
+        }, 1000);
       }
     },
     // 修改
