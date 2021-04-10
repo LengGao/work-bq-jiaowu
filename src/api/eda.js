@@ -178,6 +178,17 @@ export function getHeadMasters(params) {
   })
 }
 /**
+ * 根据项目获取课程
+ * @param {*} params 
+ */
+export function getCourseOptions(data) {
+  return request({
+    url: 'course/project',
+    method: 'post',
+    data,
+  })
+}
+/**
  * 添加班级
  * @param {*} data
  */

@@ -33,11 +33,13 @@
           </el-form-item>
         </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-          <el-form-item label="所属项目">
+          <el-form-item label="所属项目" prop="project_id">
             <el-select
+              style="width: 100%"
               :disabled="!formData.category_id"
               v-model="formData.project_id"
               placeholder="请选择所属项目"
+              @change="handleProjectChange"
             >
               <el-option
                 v-for="item in projectOptions"
@@ -52,6 +54,24 @@
       </el-row>
       <el-row>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
+          <el-form-item label="所属课程" prop="course_id">
+            <el-select
+              style="width: 100%"
+              :disabled="!formData.project_id"
+              v-model="formData.course_id"
+              placeholder="请选择所属课程"
+            >
+              <el-option
+                v-for="item in courseOptions"
+                :key="item.course_id"
+                :label="item.course_name"
+                :value="item.course_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="班级名称" prop="classroom_name">
             <el-input
               placeholder="请输入班级名称"
@@ -60,9 +80,46 @@
             ></el-input>
           </el-form-item>
         </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :lg="12" :xs="12" :sm="12" :xl="12">
+          <el-form-item label="班级封面" prop="class_icon">
+            <div class="class-cover-upload">
+              <el-upload
+                class="upload-item"
+                name="image"
+                :headers="headers"
+                :action="uploadImageUrl"
+                :show-file-list="false"
+                :on-error="handleUploadError"
+                :on-success="handleUploadSuccess"
+                :before-upload="beforeUpload"
+              >
+                <div v-if="formData.class_icon" class="imgs">
+                  <img :src="formData.class_icon" />
+                  <i class="del el-icon-close" @click.stop="hanldeDelete"></i>
+                </div>
+                <i
+                  v-if="!uploadLoading && !formData.class_icon"
+                  class="el-icon-plus upload-item-icon"
+                ></i>
+                <i
+                  class="el-icon-loading upload-loading"
+                  v-if="uploadLoading"
+                ></i>
+              </el-upload>
+              <div class="upload-desc">
+                <p>1. 支持jpg、jpeg、png、gif、bmp格式；</p>
+                <p>2. 推荐尺寸750*422px或者16:9</p>
+              </div>
+            </div>
+          </el-form-item>
+        </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="班主任" prop="master_teacher_id">
             <el-select
+              style="width: 100%"
               v-model="formData.master_teacher_id"
               placeholder="请选择"
             >
@@ -77,34 +134,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="班级封面">
-        <div class="class-cover-upload">
-          <el-upload
-            class="upload-item"
-            name="image"
-            :headers="headers"
-            :action="uploadImageUrl"
-            :show-file-list="false"
-            :on-error="handleUploadError"
-            :on-success="handleUploadSuccess"
-            :before-upload="beforeUpload"
-          >
-            <div v-if="formData.class_icon" class="imgs">
-              <img :src="formData.class_icon" />
-              <i class="del el-icon-close" @click.stop="hanldeDelete"></i>
-            </div>
-            <i
-              v-if="!uploadLoading && !formData.class_icon"
-              class="el-icon-plus upload-item-icon"
-            ></i>
-            <i class="el-icon-loading upload-loading" v-if="uploadLoading"></i>
-          </el-upload>
-          <div class="upload-desc">
-            <p>1. 支持jpg、jpeg、png、gif、bmp格式；</p>
-            <p>2. 推荐尺寸750*422px或者16:9</p>
-          </div>
-        </div>
-      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
@@ -126,6 +155,7 @@ import {
   addClassroom,
   editClassroom,
   getClassroomDetail,
+  getCourseOptions,
 } from "@/api/eda";
 export default {
   props: {
@@ -159,14 +189,20 @@ export default {
         classroom_name: "",
         master_teacher_id: "",
         class_icon: "",
+        course_id: "",
       },
       rules: {
         classroom_name: [
           { required: true, message: "请输入班级名称", trigger: "blur" },
         ],
+        course_id: [{ required: true, message: "请选择", trigger: "change" }],
         category_id: [{ required: true, message: "请选择", trigger: "change" }],
+        project_id: [{ required: true, message: "请选择", trigger: "change" }],
         master_teacher_id: [
           { required: true, message: "请选择", trigger: "change" },
+        ],
+        class_icon: [
+          { required: true, message: "请选择图片", trigger: "change" },
         ],
       },
       addLoading: false,
@@ -174,6 +210,7 @@ export default {
       detailLoading: false,
       projectOptions: [],
       staffOptions: [],
+      courseOptions: [],
     };
   },
   watch: {
@@ -183,6 +220,21 @@ export default {
   },
 
   methods: {
+    // 当项目选择时请求课程
+    handleProjectChange(id) {
+      this.formData.course_id = "";
+      this.getCourseOptions(id);
+    },
+    //课程下拉
+    async getCourseOptions(project_id = "") {
+      const data = {
+        project_id,
+      };
+      const res = await getCourseOptions(data);
+      if (res.code === 0) {
+        this.courseOptions = res.data;
+      }
+    },
     //班主任下拉
     async getHeadMasters() {
       const data = {};
@@ -211,6 +263,7 @@ export default {
           this.formData[k] = res.data[k];
         }
         this.getproject(this.formData.category_id);
+        this.getCourseOptions(this.formData.project_id);
       }
     },
     async submit() {
