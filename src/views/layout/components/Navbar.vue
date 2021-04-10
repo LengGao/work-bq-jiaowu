@@ -1,12 +1,14 @@
 <template>
-  <el-menu class="navbar" mode="horizontal">
-    <hamburger
-      class="hamburger-container"
-      :toggleClick="toggleSideBar"
-      :isActive="sidebar.opened"
-    ></hamburger>
-    <breadcrumb></breadcrumb>
-    <div class="function-container">
+  <header class="header" mode="horizontal">
+    <div class="header-left">
+      <hamburger
+        class="btn"
+        :toggleClick="toggleSideBar"
+        :isActive="sidebar.opened"
+      ></hamburger>
+      <breadcrumb></breadcrumb>
+    </div>
+    <div class="header-right">
       <!-- <div class="top-function-wrapper"> -->
       <!-- <span style="color: #199FFF;" @click="huanfu('theme1')">换肤</span> -->
       <!-- </div> -->
@@ -83,20 +85,39 @@
           </div>
         </el-popover>
       </div>
+      <el-dropdown class="avatar-container" trigger="click">
+        <div class="avatar-wrapper">
+          <img
+            class="user-avatar"
+            :src="userInfo.head_photo ? userInfo.head_photo : touxiang"
+          />
+          <span>{{ userInfo.staff_name }}</span>
+          <i class="el-icon-caret-bottom"></i>
+        </div>
+        <el-dropdown-menu class="user-dropdown" slot="dropdown">
+          <el-dropdown-item>
+            <span @click="modifyPassword"> 修改密码</span>
+          </el-dropdown-item>
+
+          <el-dropdown-item divided>
+            <span @click="logout" style="display: block">退出</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
-    <el-form
-      :model="form"
-      :rules="ru"
-      ref="rulef"
-      label-width="95px"
-      label-position="left"
+    <el-dialog
+      title="修改个人密码"
+      :visible.sync="dialog"
+      :append-to-body="true"
+      width="600px"
+      @close="$refs['rulef'].resetFields()"
     >
-      <el-dialog
-        title="修改个人密码"
-        :visible.sync="dialog"
-        :append-to-body="true"
-        width="600px"
-        @close="$refs['rulef'].resetFields()"
+      <el-form
+        :model="form"
+        :rules="ru"
+        ref="rulef"
+        label-width="95px"
+        label-position="left"
       >
         <el-form-item label="原密码：" prop="origin">
           <el-input v-model="form.origin" type="passWord"></el-input>
@@ -107,35 +128,13 @@
         <el-form-item label="确认密码：" prop="confirm">
           <el-input v-model="form.confirm" type="passWord"></el-input>
         </el-form-item>
-
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialog = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm('rulef')"
-            >确 定</el-button
-          >
-        </div>
-      </el-dialog>
-    </el-form>
-    <el-dropdown class="avatar-container" trigger="click">
-      <div class="avatar-wrapper">
-        <img
-          class="user-avatar"
-          :src="userInfo.head_photo ? userInfo.head_photo : touxiang"
-        />
-        <i class="el-icon-caret-bottom" style="margin-top: 5px"></i>
-        <span>{{ userInfo.staff_name }}</span>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialog = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('rulef')">确 定</el-button>
       </div>
-      <el-dropdown-menu class="user-dropdown" slot="dropdown">
-        <el-dropdown-item>
-          <span @click="modifyPassword"> 修改密码</span>
-        </el-dropdown-item>
-
-        <el-dropdown-item divided>
-          <span @click="logout" style="display: block">退出</span>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-  </el-menu>
+    </el-dialog>
+  </header>
 </template>
 
 <script>
@@ -307,16 +306,29 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.navbar {
-  height: 50px;
-  line-height: 50px;
-  border-radius: 0px !important;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid #e6e6e6;
+  .header-left {
+    display: flex;
+    align-items: center;
+    .btn {
+      margin-top: 5px;
+    }
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+  }
   .message-container {
     padding: 0 25px;
     .message-badge {
-      padding-top: 22px;
+      padding-top: 7px;
       /deep/.el-badge__content.is-fixed {
-        top: 30px;
+        top: 3px;
       }
       .message-bell {
         font-size: 20px;
@@ -328,70 +340,15 @@ export default {
     }
   }
 
-  .hamburger-container {
-    line-height: 58px;
-    height: 50px;
-    float: left;
-    padding: 4px 10px;
-  }
-  .screenfull {
-    position: absolute;
-    right: 90px;
-    top: 16px;
-    color: red;
-  }
-  .function-container {
-    height: 50px;
-    display: inline-block;
-    position: absolute;
-    right: 155px;
-    display: flex;
-    top: 0;
-    span {
-      position: relative;
-      right: -0px;
-      top: -15px;
-      font-size: 16px;
-    }
-    .top-function-wrapper {
-      cursor: pointer;
-      margin: auto;
-      margin-right: 80px;
-      display: flex;
-      align-items: center;
-      span {
-        position: relative;
-        top: 0px;
-        font-size: 14px;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 400;
-        color: rgba(0, 0, 0, 0.65);
-        line-height: 14px;
-      }
-      .svg-icon {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-      }
-    }
-  }
-
   .avatar-container {
-    height: 50px;
-    display: inline-block;
-    position: absolute;
-    right: 55px;
     display: flex;
-    top: 0;
     span {
       position: relative;
       right: -0px;
-
       font-size: 16px;
     }
     .avatar-wrapper {
       cursor: pointer;
-
       position: relative;
       display: flex;
       align-items: center;
@@ -409,9 +366,7 @@ export default {
         line-height: 14px;
       }
       .el-icon-caret-bottom {
-        position: absolute;
-        right: -20px;
-        top: 15px;
+        margin: 0 10px;
         font-size: 12px;
       }
     }
