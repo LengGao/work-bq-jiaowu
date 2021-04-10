@@ -85,7 +85,7 @@ export default {
   .record-list {
     font-size: 14px;
     ul {
-      height: 660px;
+      height: 640px;
       overflow-y: auto;
     }
     li {

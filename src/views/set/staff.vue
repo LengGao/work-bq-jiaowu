@@ -47,11 +47,19 @@
             >
             </el-table-column>
             <el-table-column
-              label="角色"
+              label="身份"
               show-overflow-tooltip
               min-width="90"
-              prop="role_name"
+              prop="identity"
             >
+            </el-table-column>
+            <el-table-column label="角色" show-overflow-tooltip min-width="90">
+              <template slot-scope="{ row }">
+                <div v-if="row.role_name">
+                  {{ row.role_name }}
+                </div>
+                <span v-else>--</span>
+              </template>
             </el-table-column>
             <el-table-column
               label="机构"
@@ -584,6 +592,7 @@ export default {
       //   role_ids: '',
       //   as_headmaster: '',
       //   is_super: '',
+
       //   institution_id: '',
       //   identity: '',
       // }

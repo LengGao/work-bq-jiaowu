@@ -37,23 +37,10 @@
               blue: scope.row[scope.column.property] === '待定',
             }"
           >
-            <!-- {{ scope.column.property }} -->
             {{ scope.row[scope.column.property] }}
           </div>
-
-          <!-- <span v-if="scope.row[scope.column.property] == 'grade_status'">
-            <el-link type="primary">{{
-              scope.row[scope.column.property]
-            }}</el-link> -->
-          <!--          {{scope.row}}&#45;&#45;{{scope.column}}-->
-          <!-- </span> -->
         </template>
 
-        <!-- <template slot-scope="{ row }">
-          <div :class="row.grade_status == 1 ? 'qualified' : 'unqualified'">
-            {{ row }}
-          </div>
-        </template> -->
         <el-table-column
           min-width="60"
           v-show="item.children && item.children.length"
@@ -71,9 +58,6 @@
             <el-button type="text" @click="openScoreDialog(row.id)">
               {{ row.update_time ? '修改' : '录入' }}</el-button
             >
-            <!-- <el-button type="text" @click="link(row.book_id)"
-              >库存详情</el-button
-            > -->
           </div>
         </template>
       </el-table-column>
@@ -81,7 +65,7 @@
     <div style="display:flex;justify-content:space-between">
       <div style="margin-top:10px">
         <el-button @click="addRegistration">添加报考</el-button>
-        <el-button @click="batchPass">批量通过</el-button>
+        <el-button @click="batchpassStudent">批量通过</el-button>
       </div>
       <div class="table_bottom">
         <page
@@ -100,7 +84,12 @@
       :typeOptions="typeOptions"
       @on-success="getGradeListByPlan"
     />
-    <AddRegistration v-model="regisVisible" />
+    <AddRegistration
+      v-model="regisVisible"
+      :userName="userName"
+      :erid_arr="erid_arr"
+      @on-success="getGradeListByPlan"
+    />
   </section>
 </template>
 
@@ -122,6 +111,7 @@ export default {
       dialogTitle: '录入成绩',
       tableData: [],
       listData: [],
+      userName: '',
       title: {},
       typeOptions: [],
       searchOptions: [
@@ -163,6 +153,7 @@ export default {
         pid: '',
       },
       currentId: '',
+      erid_arr: [],
     }
   },
   created() {
@@ -172,24 +163,30 @@ export default {
   },
   methods: {
     addRegistration() {
-      this.regisVisible = true
+      if (this.erid_arr.length > 0) {
+        this.regisVisible = true
+      } else {
+        this.$message.warning('你还没有选择学生')
+      }
     },
-    batchPass() {
-      this.batchPass()
+    batchpassStudent() {
+      if (this.erid_arr.length > 0) {
+        this.batchPass()
+      } else {
+        this.$message.warning('你还没有选择学生')
+      }
     },
     async batchPass() {
       const data = {
         pid: this.searchData.pid,
         erid_arr: this.erid_arr,
-        // page: this.pageNum,
-        // ...this.searchData,
-        // pid: this.$route.query.id,
       }
       delete data.date
       this.listLoading = true
       const res = await batchPass(data)
       this.listLoading = false
       if (res.code == 0) {
+        this.$message.success(res.message)
         this.getGradeListByPlan()
       }
       // this.title = res.data.title_field
@@ -201,6 +198,25 @@ export default {
       this.erid_arr = val.map((i) => {
         return i.id
       })
+      let erid_arr_name = val.map((i) => {
+        return i.user_realname
+      })
+      let userNameArr = ''
+      if (erid_arr_name.length > 2) {
+        userNameArr =
+          erid_arr_name[0] +
+          ',' +
+          erid_arr_name[1] +
+          '等' +
+          erid_arr_name.length +
+          '名学生'
+      } else if ((erid_arr_name.length = 2)) {
+        userNameArr = erid_arr_name.join(',')
+      } else {
+        userNameArr = erid_arr_name[0]
+      }
+      this.userName = userNameArr
+      // console.log(userNameArr)
     },
     handlePageChange(val) {
       this.pageNum = val
@@ -225,13 +241,13 @@ export default {
       const res = await getPlanGradeSelect(data)
 
       if (res.code === 0) {
-        this.searchOptions[0].options = this.typeOptions = cloneOptions(
+        this.searchOptions[0].options = cloneOptions(
           res.data.exam_type,
           'name',
           'id'
         )
         console.log(this.searchOptions[0].options)
-        this.searchOptions[1].options = cloneOptions(
+        this.searchOptions[1].options = this.typeOptions = cloneOptions(
           res.data.grade_status,
           'name',
           'id'

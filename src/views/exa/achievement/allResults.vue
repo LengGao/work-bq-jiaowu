@@ -63,7 +63,9 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            {{ row.exam_result | exam_resulType }}
+            <div :class="row.exam_result == 1 ? 'green' : 'red'">
+              {{ row.exam_result | exam_resulType }}
+            </div>
           </template>
         </el-table-column>
 
@@ -86,11 +88,17 @@
       </div>
     </div>
     <!--弹框-->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="60%">
+    <el-dialog title="历史成绩" :visible.sync="dialogVisible" width="60%">
       <div class="dialog-head">
-        <p>学生姓名<span>张小北</span></p>
-        <p>学生姓名<span>张小北</span></p>
-        <p>学生姓名<span>张小北</span></p>
+        <p>
+          学生姓名<span>{{ hisUserData.user_realname }}</span>
+        </p>
+        <p>
+          考试科目<span>{{ hisUserData.subject_name }}</span>
+        </p>
+        <p>
+          试卷满分<span>{{ hisUserData.total_score }}</span>
+        </p>
       </div>
       <el-table
         ref="multipleTable"
@@ -113,7 +121,18 @@
           :label="item.title"
           show-overflow-tooltip
           min-width="150"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <div
+              :class="{
+                green: scope.row[scope.column.property] === '合格',
+                red: scope.row[scope.column.property] === '补考',
+              }"
+            >
+              {{ scope.row[scope.column.property] }}
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
         <div style="display:flex;justify-content:center;width:100%">
@@ -167,6 +186,7 @@ export default {
         },
       ],
       listData: [],
+      hisUserData: {},
       hisData: [],
       hisLoading: false,
       listLoading: false,
@@ -267,6 +287,7 @@ export default {
       const res = await getHistoryGradeList(data)
       this.hisLoading = false
       this.hisData = res.data.list
+      this.hisUserData = res.data
       this.title = res.data.title_field
       //   this.listTotal = res.data.total
     },
@@ -310,5 +331,11 @@ export default {
       margin-left: 7px;
     }
   }
+}
+.green {
+  color: $success_color;
+}
+.red {
+  color: $error_color;
 }
 </style>
