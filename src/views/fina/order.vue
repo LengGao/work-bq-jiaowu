@@ -379,4 +379,7 @@ export default {
 .entry2 {
   display: none;
 }
+.table_bottom {
+  text-align: right;
+}
 </style>

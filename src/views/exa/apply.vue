@@ -5,79 +5,31 @@
     <section class="mainwrap">
       <div class="client_head">
         <!--搜索模块-->
-        <SearchList
-          :options="searchOptions"
-          :data="searchData"
-          @on-search="handleSearch"
-        />
+        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
         <el-button type="primary" @click="openAdd">添加考试计划</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="listData"
-          v-loading="listLoading"
-          element-loading-text="loading"
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="#fff"
-          tooltip-effect="light"
-          stripe
-          style="width: 100%"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-          class="min_table"
-        >
-          <el-table-column
-            prop="id"
-            label="ID"
-            show-overflow-tooltip
-            min-width="60"
-          ></el-table-column>
+        <el-table ref="multipleTable" :data="listData" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" tooltip-effect="light" stripe style="width: 100%" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
+          <el-table-column prop="id" label="ID" show-overflow-tooltip min-width="60"></el-table-column>
 
-          <el-table-column
-            prop="plan_name"
-            label="考试计划"
-            min-width="180"
-            column-key="course_id"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="category_name"
-            label="所属分类"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="class_type_name"
-            label="考试日期"
-            min-width="200"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="plan_name" label="考试计划" min-width="180" column-key="course_id" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="category_name" label="所属分类" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="class_type_name" label="考试日期" min-width="200" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <span>{{ row.exam_start_time }}</span>
               <span> 至 </span>
               <span>{{ row.exam_end_time }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="course_price"
-            label="报考时间"
-            min-width="180"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="course_price" label="报考时间" min-width="180" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <span>{{ row.enroll_start_time }}</span>
               <span> 至 </span>
               <span>{{ row.enroll_end_time }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="max_num"
-            label="剩余报考天数"
-            min-width="80"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="max_num" label="剩余报考天数" min-width="80" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <span v-if="row.remaining_days" style="color: #43d100">{{
                 row.remaining_days
@@ -86,52 +38,26 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            prop="max_num"
-            label="计划人数"
-            min-width="80"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="max_num" label="计划人数" min-width="80" show-overflow-tooltip>
           </el-table-column>
-          <el-table-column
-            prop="actual_num"
-            label="报考人数"
-            min-width="80"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="actual_num" label="报考人数" min-width="80" show-overflow-tooltip>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openEdit(row.id)"
-                  >编辑</el-button
-                >
-                <el-button type="text" @click="linkTo(row.id, row.cate_id)"
-                  >报考详情</el-button
-                >
-                <el-button type="text" @click="deleteConfirm(row.id)"
-                  >删除</el-button
-                >
+                <el-button type="text" @click="openEdit(row.id)">编辑</el-button>
+                <el-button type="text" @click="linkTo(row.id, row.cate_id)">报考详情</el-button>
+                <el-button type="text" @click="deleteConfirm(row.id)">删除</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="handlePageChange"
-          />
+          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
         </div>
       </div>
     </section>
-    <ApplyDialog
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      :id="currentId"
-      :typeOptions="typeOptions"
-      @on-success="planList"
-    />
+    <ApplyDialog v-model="dialogVisible" :title="dialogTitle" :id="currentId" :typeOptions="typeOptions" @on-success="planList" />
   </div>
 </template>
 
@@ -304,5 +230,8 @@ export default {
 }
 .userTable {
   margin-top: 20px;
+}
+.table_bottom {
+  text-align: right;
 }
 </style>

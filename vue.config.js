@@ -41,9 +41,9 @@ module.exports = {
         // target: 'http://dongpei.kaifa',
         // target: 'http://sc.dp.com', //超
         // target: 'http://thing.com',
-        // target: 'http://testadmin.beiqujy.com/apidata', //测试
-        // target: 'http://thing.com',
         target: 'http://testadmin.beiqujy.com/apidata', //测试
+        // target: 'http://thing.com',
+        // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://dpadmin.beiqujy.com/apidata', //测试
         //target: 'http://dongpei.local', //孝华
         // target: 'http://a.cc',

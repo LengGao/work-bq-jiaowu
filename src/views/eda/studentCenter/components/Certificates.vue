@@ -3,9 +3,7 @@
   <div class="certificates" v-loading="loading">
     <div class="certificates-header">
       <el-button @click="handlePreview">查看大图</el-button>
-      <el-button :loading="downloadLoading" @click="zipDownload"
-        >打包下载</el-button
-      >
+      <el-button :loading="downloadLoading" @click="zipDownload">打包下载</el-button>
     </div>
     <div class="certificates-uploads">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
@@ -89,12 +87,8 @@ export default {
         photo_commitment: '',
         photo_health: '',
       },
-<<<<<<< HEAD
       downloadLoading: false,
-    };
-=======
     }
->>>>>>> yqq
   },
   created() {
     this.getCertificateInfo()
@@ -110,30 +104,23 @@ export default {
     },
     // 下载
     download(url) {
-      const a = this.$refs.a;
-      a.href = url;
-      a.click();
+      const a = this.$refs.a
+      a.href = url
+      a.click()
     },
     async zipDownload() {
       const data = {
         uid: this.uid,
-<<<<<<< HEAD
-      };
-      this.downloadLoading = true;
-      const res = await zipDownload(data).catch(() => {
-        this.downloadLoading = false;
-      });
-      if (res.code === 0) {
-        this.download(res.data.url);
-        setTimeout(() => {
-          this.downloadLoading = false;
-        }, 1000);
-=======
       }
-      const res = await zipDownload(data)
+      this.downloadLoading = true
+      const res = await zipDownload(data).catch(() => {
+        this.downloadLoading = false
+      })
       if (res.code === 0) {
-        window.open(res.data.url)
->>>>>>> yqq
+        this.download(res.data.url)
+        setTimeout(() => {
+          this.downloadLoading = false
+        }, 1000)
       }
     },
     // 修改
