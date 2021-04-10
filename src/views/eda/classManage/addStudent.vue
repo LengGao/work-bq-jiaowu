@@ -36,7 +36,7 @@
             label="学员编号"
             show-overflow-tooltip
             min-width="90"
-            prop="course_student_id"
+            prop="uid"
           >
           </el-table-column>
           <el-table-column
@@ -59,6 +59,18 @@
           <el-table-column
             prop="create_time"
             label="注册时间"
+            min-width="130"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="course_name"
+            label="课程"
+            min-width="130"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="classroom_name"
+            label="是否分班"
             min-width="130"
             show-overflow-tooltip
           ></el-table-column>

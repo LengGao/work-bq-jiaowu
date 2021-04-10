@@ -10,6 +10,7 @@
     @closed="resetForm('ruleForm')"
   >
     <el-form
+      v-loading="detailLoading"
       label-width="100px"
       :model="formData"
       :rules="rules"
@@ -177,6 +178,7 @@ export default {
       },
       addLoading: false,
       uploadLoading: false,
+      detailLoading: false,
     };
   },
   watch: {
@@ -188,19 +190,17 @@ export default {
     handleOpen() {
       if (this.id) {
         this.getBookById();
-      } else {
-        this.formData.category_id = 1;
-        // 为了清空cascader的值
-        setTimeout(() => {
-          this.formData.category_id = "";
-        }, 10);
       }
     },
     async getBookById() {
       const data = {
         book_id: this.id,
       };
-      const res = await getBookById(data);
+      this.detailLoading = true;
+      const res = await getBookById(data).catch(() => {
+        this.detailLoading = false;
+      });
+      this.detailLoading = false;
       if (res.code === 0) {
         for (const k in this.formData) {
           this.formData[k] = res.data[k];
@@ -211,7 +211,7 @@ export default {
       const data = {
         ...this.formData,
         category_id: Array.isArray(this.formData.category_id)
-          ? this.formData.category_id.pop()
+          ? [...this.formData.category_id].pop()
           : this.formData.category_id,
       };
       if (this.id) {
