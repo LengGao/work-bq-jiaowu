@@ -1,43 +1,18 @@
 <template>
   <section class="mainwrap">
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-    >
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <div class="demo-ruleForm">
         <div class="emp_form">
-          <el-form-item
-            prop="teacher_name"
-            label="老师姓名"
-            style="margin-bottom:63px"
-          >
-            <el-input
-              placeholder="请输入老师姓名 (必填)"
-              v-model="ruleForm.teacher_name"
-            ></el-input>
+          <el-form-item prop="teacher_name" label="老师姓名" style="margin-bottom:63px">
+            <el-input placeholder="请输入老师姓名 (必填)" v-model="ruleForm.teacher_name"></el-input>
           </el-form-item>
           <el-form-item prop="telephone" label="手机号码">
-            <el-input
-              v-model="ruleForm.telephone"
-              placeholder="请输入手机号码"
-              auto-complete="new-password"
-            ></el-input>
+            <el-input v-model="ruleForm.telephone" placeholder="请输入手机号码" auto-complete="new-password"></el-input>
           </el-form-item>
-          <el-form-item
-            :prop="passYalid == true ? 'password' : ''"
-            label="登录密码"
-          >
-            <el-input
-              v-model="ruleForm.password"
-              style="width:250px"
-              :type="pwdType"
-              :placeholder="
+          <el-form-item :prop="passYalid == true ? 'password' : ''" label="登录密码">
+            <el-input v-model="ruleForm.password" style="width:250px" :type="pwdType" :placeholder="
                 teacher_id ? '如果想修改之前的密码,请输入' : '请输入登录密码'
-              "
-              auto-complete="new-password"
-            >
+              " auto-complete="new-password">
               <i slot="suffix" class="el-icon-view" @click="showPwd"></i>
             </el-input>
           </el-form-item>
@@ -53,34 +28,15 @@
             </div>
             <div v-show="haschoose" class=" imageBox ">
               <i class=" iconjia el-icon-plus" @click="addIcon"></i>
-              <img
-                style="width:100%;height:100%;  border-radius:3px;"
-                :src="url"
-                alt=""
-              />
+              <img style="width:100%;height:100%;  border-radius:3px;" :src="url" alt="" />
             </div>
           </el-form-item>
           <el-form-item prop="email" label="电子邮箱">
-            <el-input
-              v-model="ruleForm.email"
-              placeholder="请输入电子邮箱"
-            ></el-input>
+            <el-input v-model="ruleForm.email" placeholder="请输入电子邮箱"></el-input>
           </el-form-item>
           <el-form-item label="教师类型" prop="cate_id_arr">
-            <el-select
-              v-model="ruleForm.cate_id_arr"
-              class="chapterTag"
-              filterable
-              multiple
-              placeholder="请选择关联类型"
-              @change="pushtag"
-            >
-              <el-option
-                v-for="item in categoryData"
-                :key="item.category_id"
-                :label="item.category_name"
-                :value="item.category_id"
-              >
+            <el-select v-model="ruleForm.cate_id_arr" class="chapterTag" filterable multiple placeholder="请选择关联类型" @change="pushtag">
+              <el-option v-for="item in categoryData" :key="item.category_id" :label="item.category_name" :value="item.category_id">
               </el-option>
             </el-select>
 
@@ -98,30 +54,17 @@
         </div>
       </div>
       <el-form-item prop="rank" label="老师头衔">
-        <el-input
-          v-model="ruleForm.rank"
-          style="width:650px"
-          placeholder="请输入老师头衔 (必填)"
-        ></el-input>
+        <el-input v-model="ruleForm.rank" style="width:650px" placeholder="请输入老师头衔 (必填)"></el-input>
       </el-form-item>
       <el-form-item prop="introduction" label="老师简介">
-        <el-input
-          type="textarea"
-          v-model="ruleForm.introduction"
-          style="width:650px;height:200px;"
-          placeholder="请输入老师简介 (必填)"
-        ></el-input>
+        <el-input type="textarea" v-model="ruleForm.introduction" style="width:650px;height:200px;" placeholder="请输入老师简介 (必填)"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="preserve('ruleForm')">保存</el-button>
       </el-form-item>
     </el-form>
-    <imgDialog
-      v-if="pictureVisible"
-      @closeImg="closeImg"
-      @clearUrl="clearUrl"
-    ></imgDialog>
+    <imgDialog v-if="pictureVisible" @closeImg="closeImg" @clearUrl="clearUrl"></imgDialog>
   </section>
 </template>
 <script>
@@ -192,7 +135,7 @@ export default {
         telephone: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
           {
-            validator: function(rule, value, callback) {
+            validator: function (rule, value, callback) {
               if (/^1\d\d{9}$/.test(value) == false) {
                 callback(new Error('请输入正确的手机号'))
               } else {
@@ -215,10 +158,7 @@ export default {
       handler(newName, oldName) {
         console.log(newName, oldName)
         if (this.teacher_id != '' || this.teacher_id != undefined) {
-          if (
-            this.ruleForm.password == '' ||
-            this.ruleForm.password == undefined
-          ) {
+          if (this.ruleForm.password == '' || this.ruleForm.password == undefined) {
             this.passYalid = false
           } else {
             this.passYalid = true
@@ -280,9 +220,7 @@ export default {
       }
     },
     showPwd() {
-      this.pwdType === 'password'
-        ? (this.pwdType = '')
-        : (this.pwdType = 'password')
+      this.pwdType === 'password' ? (this.pwdType = '') : (this.pwdType = 'password')
       let e = document.getElementsByClassName('el-icon-view')[0]
       this.pwdType == ''
         ? e.setAttribute('style', 'color: #409EFF')
@@ -370,7 +308,6 @@ export default {
   height: 63px;
   position: relative;
 }
-
 .iconjia {
   font-size: 40px;
   color: #fff;
@@ -382,8 +319,6 @@ export default {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.78);
   opacity: 0.5;
-}
-.imageBox:hover {
 }
 .imageBox:hover i {
   display: block;

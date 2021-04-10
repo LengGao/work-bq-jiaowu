@@ -6,70 +6,22 @@
 
     <section class="mainwrap">
       <div class="client_head">
-        <search2
-          :contentShow="true"
-          typeTx="punch"
-          inputText="教室名称"
-          api="getRoomList"
-          @getTable="getTableList"
-        ></search2>
+        <search2 :contentShow="true" typeTx="punch" inputText="教室名称" api="getRoomList" @getTable="getTableList"></search2>
 
         <el-button type="primary" @click="addClassroom">添加教室</el-button>
       </div>
 
       <!--教室配置表格-->
       <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="schoolData.list"
-          tooltip-effect="light"
-          stripe
-          style="width: 100%;"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-          class="min_table"
-        >
-          <el-table-column
-            prop="room_name"
-            label="教室名称"
-            show-overflow-tooltip
-            min-width="90"
-          ></el-table-column>
+        <el-table ref="multipleTable" :data="schoolData.list" tooltip-effect="light" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
+          <el-table-column prop="room_name" label="教室名称" show-overflow-tooltip min-width="90"></el-table-column>
 
-          <el-table-column
-            prop="max_num"
-            label="容纳人数"
-            min-width="200"
-            column-key="course_id"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="address"
-            label="详细地址"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="comment"
-            label="备注信息"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            label="是否启用"
-            min-width="100"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="max_num" label="容纳人数" min-width="200" column-key="course_id" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="address" label="详细地址" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="comment" label="备注信息" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column label="是否启用" min-width="100" show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.status"
-                class="tablescope"
-                active-color="#2798ee"
-                inactive-color="#eaeefb"
-                :active-value="1"
-                :inactive-value="0"
-                @change="startUsing(scope.row, $event)"
-              >
+              <el-switch v-model="scope.row.status" class="tablescope" active-color="#2798ee" inactive-color="#eaeefb" :active-value="1" :inactive-value="0" @change="startUsing(scope.row, $event)">
               </el-switch>
             </template>
           </el-table-column>
@@ -77,25 +29,15 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="editClassroom(scope.row)"
-                  >编辑</el-button
-                >
-                <el-button type="text" @click="toClassroomUsage(scope.row)"
-                  >使用情况</el-button
-                >
-                <el-button type="text" @click="handleDelete(scope.row)"
-                  >删除</el-button
-                >
+                <el-button type="text" @click="editClassroom(scope.row)">编辑</el-button>
+                <el-button type="text" @click="toClassroomUsage(scope.row)">使用情况</el-button>
+                <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
+          <page :data="schoolData.total" :curpage="page" @pageChange="doPageChange" />
         </div>
       </div>
 
@@ -172,65 +114,31 @@
       </div> -->
       <!--教室配置弹框-->
       <el-dialog :title="classTitle" :visible.sync="classVisible" width="790px">
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <div class="flex-classroom">
             <el-form-item label="教室名称" prop="room_name">
-              <el-input
-                v-model="ruleForm.room_name"
-                placeholder="请输入教室名称"
-                class="input-width"
-              ></el-input>
+              <el-input v-model="ruleForm.room_name" placeholder="请输入教室名称" class="input-width"></el-input>
             </el-form-item>
 
             <el-form-item label="容纳人数" prop="max_num">
-              <el-input
-                v-model="ruleForm.max_num"
-                placeholder="请输入容纳人数"
-                type="number"
-                :min="0"
-                :maxlength="11"
-                :max="4294967295"
-                oninput="if(value>4294967295)value=4294967295"
-                onKeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
-                class="input-width"
-              ></el-input>
+              <el-input v-model="ruleForm.max_num" placeholder="请输入容纳人数" type="number" :min="0" :maxlength="11" :max="4294967295" oninput="if(value>4294967295)value=4294967295" onKeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))" class="input-width"></el-input>
             </el-form-item>
           </div>
           <el-form-item label="详细地址">
-            <el-input
-              placeholder="请输入项目名称"
-              v-model="ruleForm.address"
-            ></el-input>
+            <el-input placeholder="请输入项目名称" v-model="ruleForm.address"></el-input>
           </el-form-item>
 
           <el-form-item label="备注信息">
-            <el-input
-              type="textarea"
-              v-model="ruleForm.comment"
-              placeholder="请输入备注信息"
-            ></el-input>
+            <el-input type="textarea" v-model="ruleForm.comment" placeholder="请输入备注信息"></el-input>
           </el-form-item>
         </el-form>
         <!-- <span>这是一段信息</span> -->
         <span slot="footer" class="dialog-footer">
           <div style="display:flex;justify-content:space-between">
-            <el-checkbox
-              style="padding-left:10px ;"
-              :class="ruleForm.id ? 'continueAdd' : ''"
-              v-model="addChecked"
-              >继续添加</el-checkbox
-            >
+            <el-checkbox style="padding-left:10px ;" :class="ruleForm.id ? 'continueAdd' : ''" v-model="addChecked">继续添加</el-checkbox>
             <div>
               <el-button @click="classVisible = false">取 消</el-button>
-              <el-button type="primary" @click="handleConfirm('ruleForm')"
-                >确 定</el-button
-              >
+              <el-button type="primary" @click="handleConfirm('ruleForm')">确 定</el-button>
             </div>
           </div>
         </span>
@@ -248,9 +156,7 @@ export default {
       classTitle: '添加教室',
       addChecked: false, //继续添加
       rules: {
-        room_name: [
-          { required: true, message: '请输入教室名称', trigger: 'blur' },
-        ],
+        room_name: [{ required: true, message: '请输入教室名称', trigger: 'blur' }],
         max_num: [
           { required: true, message: '请输入容纳人数', trigger: 'blur' },
           {
@@ -497,5 +403,8 @@ export default {
   .is-checked {
     padding: 0;
   }
+}
+.table_bottom {
+  text-align: right;
 }
 </style>

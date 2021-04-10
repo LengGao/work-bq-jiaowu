@@ -18,48 +18,35 @@
     <div class="calendar">
       <div class="date-select">
         <el-select v-model="checkedYear">
-          <el-option
-            :value="year"
-            :label="year + '年'"
-            v-for="year in years"
-            :key="year"
-          ></el-option>
+          <el-option :value="year" :label="year + '年'" v-for="year in years" :key="year"></el-option>
         </el-select>
         <el-select v-model="checkedMonth">
-          <el-option
-            :value="item"
-            :label="item + '月'"
-            v-for="item in months"
-            :key="item"
-          ></el-option>
+          <el-option :value="item" :label="item + '月'" v-for="item in months" :key="item"></el-option>
         </el-select>
       </div>
       <el-calendar :value="calendarDate">
         <template slot="dateCell" slot-scope="{ date, data }">
-          <div
-            class="day"
-            :class="{
+          <div class="day" :class="{
               'class-date': allDay.includes(data.day),
-            }"
-            @click="handleOpen(infoMap[data.day])"
-          >
+            }" @click="handleOpen(infoMap[data.day])">
             <span>{{
               data.day
                 .split('-')
                 .slice(1)
                 .join('-')
             }}</span>
-            <div v-if="allDay.includes(data.day)" class="day-info">
-              <p v-for="(item, index) in infoMap[data.day]" :key="index">
-                上课时间：{{ item.period && item.period.substr(11) }}
+            <div v-if="allDay.includes(data.day)" class="day-info" style="">
+
+              <p v-for="(item, index) in infoMap[data.day]" :key="index" style="line-height:26px;background:#fff;padding-left:2px;">
+                时间：{{ item.period && item.period.substr(11) }} ({{ infoMap[data.day].teacher_name }})
               </p>
+              <!-- <p>上课老师：{{ infoMap[data.day].teacher_name }}</p> -->
               <!-- <p>
                 上课时间：{{
                   infoMap[data.day].period &&
                     infoMap[data.day].period.substr(11)
                 }}
-              </p>
-              <p>上课老师：{{ infoMap[data.day].teacher_name }}</p> -->
+              </p> -->
             </div>
           </div>
         </template>
@@ -114,8 +101,7 @@ export default {
       const data = {
         id: this.$route.query?.id,
         year: this.checkedYear,
-        month:
-          this.checkedMonth < 10 ? '0' + this.checkedMonth : this.checkedMonth,
+        month: this.checkedMonth < 10 ? '0' + this.checkedMonth : this.checkedMonth,
       }
       console.log(data)
       const res = await schoolroomUsage(data)
