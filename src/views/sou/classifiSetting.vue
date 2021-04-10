@@ -53,14 +53,12 @@
             <!-- <el-cascader ref="cascader" clearable class="input-width" placeholder="请选择分类" v-model="ruleForm.pid" :options="selectData" :props="{ checkStrictly: true }"></el-cascader> -->
           </el-form-item>
           <el-form-item label="分类名称：" class="input-width">
-            <el-input :placeholder="ruleForm.pid == 0 ? '请输入一级分类名称' : '请输入二级分类名称'" v-model="ruleForm.category_name"></el-input>
+            <el-input :placeholder="ruleForm.pid == 0 ? '请输入分类名称' : '请输入分类名称'" v-model="ruleForm.category_name"></el-input>
           </el-form-item>
-          <el-form-item label="分类排序：" v-if="ruleForm.pid == 0">
-            <el-input v-model="ruleForm.sort" class="input-width" placeholder=" 排序数字越大分类越靠前" type="number"></el-input>
-            <!-- <p style="color:#aaa;ling-height:20px">
-            排序数字越大分类越靠前,最小值为1
-          </p> -->
+          <el-form-item label="分类描述：" v-if="ruleForm.pid == 0">
+            <el-input type="textarea" v-model="ruleForm.describe" style="width:91%"></el-input>
           </el-form-item>
+
           <el-form-item label="分类图标：" style v-if="ruleForm.pid == 0">
             <div v-show="!haschoose" style="display:flex">
               <div class="headPortrait el-icon-plus" @click="addIcon"></div>
@@ -74,9 +72,13 @@
               <img style="width:100%;height:100%;" :src="ruleForm.icon" alt="" />
             </div>
           </el-form-item>
-          <el-form-item label="分类描述：" v-if="ruleForm.pid == 0">
-            <el-input type="textarea" v-model="ruleForm.describe" style="width:90%"></el-input>
+          <el-form-item label="分类排序：" v-if="ruleForm.pid == 0">
+            <el-input v-model="ruleForm.sort" class="input-width" placeholder=" 排序数字越大分类越靠前" type="number"></el-input>
+            <!-- <p style="color:#aaa;ling-height:20px">
+            排序数字越大分类越靠前,最小值为1
+          </p> -->
           </el-form-item>
+
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
