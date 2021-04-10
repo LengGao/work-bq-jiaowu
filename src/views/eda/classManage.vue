@@ -55,6 +55,12 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
+            prop="course_name"
+            label="课程名称"
+            min-width="180"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
             prop="staff_name"
             label="班主任"
             min-width="110"

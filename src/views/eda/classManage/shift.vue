@@ -53,7 +53,24 @@
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
-
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
+            min-width="120"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="project_name"
+            label="项目名称"
+            min-width="180"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="course_name"
+            label="课程名称"
+            min-width="180"
+            show-overflow-tooltip
+          ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
@@ -113,7 +130,7 @@ export default {
         .catch(() => {});
     },
     async batchchangestudents(new_classroom_id) {
-      const query = JSON.parse(this.$route.query);
+      const query = JSON.parse(this.$route.query?.json || "{}");
       const data = {
         ...query,
         new_classroom_id,
