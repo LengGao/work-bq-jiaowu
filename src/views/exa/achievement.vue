@@ -56,4 +56,7 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
+.table_bottom {
+  text-align: right;
+}
 </style>
