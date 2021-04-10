@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+      *学生报名缴费后会自动产生缴费记录、欠费记录（如有欠费）等。
     </div>
     <div class="mainPart">
       <ul class="customer_navigation">

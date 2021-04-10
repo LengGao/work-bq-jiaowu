@@ -3,120 +3,47 @@
     <div class="head_remind">*管理教学过程中用到的学习教材</div>
     <section class="mainwrap">
       <div class="client_head">
-        <SearchList
-          :options="searchOptions"
-          :data="searchData"
-          @on-search="handleSearch"
-        />
+        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
         <div>
           <el-button type="primary" @click="openAdd">添加教材</el-button>
         </div>
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="listData"
-          v-loading="listLoading"
-          element-loading-text="loading"
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="#fff"
-          style="width: 100%"
-          class="min_table"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-        >
-          <el-table-column
-            label="ID"
-            show-overflow-tooltip
-            min-width="70"
-            prop="book_id"
-          >
+        <el-table ref="multipleTable" :data="listData" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
+          <el-table-column label="ID" show-overflow-tooltip min-width="70" prop="book_id">
           </el-table-column>
-          <el-table-column
-            prop="book_name"
-            label="教材名称"
-            min-width="180"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="book_name"
-            label="教材封面"
-            min-width="110"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="book_name" label="教材名称" min-width="180" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="book_name" label="教材封面" min-width="110" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div class="list-img" v-if="row.book_cover">
-                <img
-                  @click="handlePreview(row.book_cover)"
-                  :src="row.book_cover"
-                  alt=""
-                />
+                <img @click="handlePreview(row.book_cover)" :src="row.book_cover" alt="" />
               </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="category_name"
-            label="所属分类"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="chief_editor"
-            label="主编"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="book_price"
-            label="价格"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
+          <el-table-column prop="category_name" label="所属分类" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="chief_editor" label="主编" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="book_price" label="价格" min-width="110" show-overflow-tooltip></el-table-column>
 
-          <el-table-column
-            prop="book_isbn"
-            label="教材条码ISBN"
-            min-width="160"
-            show-overflow-tooltip
-          ></el-table-column>
+          <el-table-column prop="book_isbn" label="教材条码ISBN" min-width="160" show-overflow-tooltip></el-table-column>
 
-          <el-table-column
-            prop="number"
-            label="库存数量"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
+          <el-table-column prop="number" label="库存数量" min-width="110" show-overflow-tooltip></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="110">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openEdit(row.book_id)"
-                  >编辑</el-button
-                >
-                <el-button type="text" @click="link(row.book_id)"
-                  >库存详情</el-button
-                >
+                <el-button type="text" @click="openEdit(row.book_id)">编辑</el-button>
+                <el-button type="text" @click="link(row.book_id)">库存详情</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="handlePageChange"
-          />
+          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
         </div>
       </div>
     </section>
-    <AddTeachingMaterial
-      v-model="addDialog"
-      :title="dialogTitle"
-      :selectData="selectData"
-      :id="currentId"
-      @on-success="getBookList"
-    />
+    <AddTeachingMaterial v-model="addDialog" :title="dialogTitle" :selectData="selectData" :id="currentId" @on-success="getBookList" />
     <PreviewImg ref="view" />
   </div>
 </template>
@@ -274,5 +201,8 @@ export default {
   height: 50px;
   cursor: pointer;
   text-align: center;
+}
+.table_bottom {
+  text-align: right;
 }
 </style>

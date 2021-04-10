@@ -8,9 +8,10 @@
         <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
         <el-button type="primary" @click="addClassiFion">添加分类</el-button>
       </div>
-      <!--表格-->
+      <!-- 表格-->
       <div class="userTable">
         <el-table ref="multipleTable" :data="listData" style="width: 100%;" class="min_table" :header-cell-style="{ 'text-align': 'left' }" :cell-style="{ 'text-align': 'left' }" :props="optionProps" row-key="category_id" :tree-props="{ children: 'son' }">
+
           <el-table-column prop="category_name" label="分类名称" min-width="180" style="padding-left:20px" show-overflow-tooltip>
           </el-table-column>
           <el-table-column label="分类ID" show-overflow-tooltip min-width="130" prop="category_id">
@@ -48,7 +49,6 @@
             <el-select v-model="ruleForm.pid" clearable placeholder="请选择分类">
               <el-option v-for="item in selectData" :key="item.value" :label="item.label" :value="item.value" class="input-width">
               </el-option>
-
             </el-select>
             <!-- <el-cascader ref="cascader" clearable class="input-width" placeholder="请选择分类" v-model="ruleForm.pid" :options="selectData" :props="{ checkStrictly: true }"></el-cascader> -->
           </el-form-item>
@@ -58,7 +58,6 @@
           <el-form-item label="分类描述：" v-if="ruleForm.pid == 0">
             <el-input type="textarea" v-model="ruleForm.describe" style="width:91%"></el-input>
           </el-form-item>
-
           <el-form-item label="分类图标：" style v-if="ruleForm.pid == 0">
             <div v-show="!haschoose" style="display:flex">
               <div class="headPortrait el-icon-plus" @click="addIcon"></div>
@@ -78,19 +77,16 @@
             排序数字越大分类越靠前,最小值为1
           </p> -->
           </el-form-item>
-
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
         </span>
       </el-dialog>
-
       <imgDialog v-if="pictureVisible" @closeImg="closeImg" @clearUrl="clearUrl"></imgDialog>
     </section>
   </div>
 </template>
-
 <script>
 import {
   getCateList,
@@ -101,7 +97,6 @@ import {
   updateCategorySort,
 } from '@/api/sou'
 import SearchList from '@/components/SearchList/index'
-
 export default {
   data() {
     return {
@@ -188,7 +183,6 @@ export default {
     addIcon() {
       this.pictureVisible = true
     },
-
     //搜索功能
     handleSearch(data) {
       this.pageNum = 1
@@ -234,7 +228,6 @@ export default {
         // this.getCategoryList()
       }
     },
-
     delbtn(row) {
       this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -251,7 +244,6 @@ export default {
           })
         })
     },
-
     addClassiFion() {
       this.dialogTitle = '添加分类'
       this.ruleForm = {
@@ -262,11 +254,9 @@ export default {
         sort: '',
         describe: '',
       }
-
       this.haschoose = false
       this.dialogVisible = true
     },
-
     async getCateList() {
       const data = { list: true }
       const res = await getCateList(data)
@@ -274,7 +264,7 @@ export default {
         console.log(res.data)
         let topMenu = {
           category_id: 0,
-          category_name: '顶级类别',
+          category_name: '顶级分类',
           pid: 0,
           son: [],
         }
