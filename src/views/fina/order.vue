@@ -221,7 +221,8 @@ export default {
     },
     orderDetail(ab) {
       this.$router.push({
-        path: '/fina/orderDetail',
+        name: 'orderDetail',
+        // path: '/fina/orderDetail',
         query: {
           order_id: ab.order_id,
         },
