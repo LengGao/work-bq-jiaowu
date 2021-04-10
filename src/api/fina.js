@@ -19,8 +19,7 @@ export function getOrderList(params) {
  * @param {*} data 
  */
 export const importUrl = `${process.env.VUE_APP_LOACTION}/UserArchives/import`
-const baseUrl = process.env.NODE_ENV === "development" ? 'http://thing.com' : ''
-export const downloadUrl = `${baseUrl}/static/order_import.xlsx`
+export const downloadUrl = `${process.env.VUE_APP_downLoad}/static/order_import.xlsx`
 /**
  * 订单收款
  * @param {*} data 
@@ -48,7 +47,7 @@ export function orderCancel(params) {
  * 订单审批列表
  * @param {*} params 
  */
- export function Approvalist(params) {
+export function Approvalist(params) {
     return request({
         url: '/order/index',
         method: 'get',
@@ -60,7 +59,7 @@ export function orderCancel(params) {
  * 订单入账
  * @param {*} data 
  */
- export function Orderentry(data) {
+export function Orderentry(data) {
     return request({
         url: '/order/entry',
         method: 'post',
