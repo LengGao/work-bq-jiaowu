@@ -35,7 +35,7 @@
 
       <el-col :lg="3" :md="3" :sm="3" :xs="3">
         <div>
-          <el-button type="primary">报名</el-button>
+          <el-button type="primary" @click="openSingUpDialog">报名</el-button>
           <!-- <el-button type="primary">编辑</el-button> -->
         </div>
       </el-col>
@@ -463,38 +463,48 @@
         <el-button type="primary" @click="toOrderDetail">收 费</el-button>
       </span>
     </el-dialog>
+    <!-- 报名 -->
+    <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
   </section>
 </template>
 
 <script>
+import CustomeRegist from '@/views/etm/components/customeRegist'
 export default {
-  name: "customeDetail",
+  name: 'customeDetail',
+  components: {
+    CustomeRegist,
+  },
   data() {
     return {
       ruleForm: {},
       schoolData: [{ index_category_id: 1 }],
       editorInfoShow: false, //控制编辑信息显示
       orderVisible: false,
-    };
+      signUpDialog: false,
+    }
   },
   methods: {
+    openSingUpDialog() {
+      this.signUpDialog = true
+    },
     //跳转订单详情页
     toOrderDetail() {
       this.$router.push({
-        name: "orderdetail",
-      });
+        name: 'orderdetail',
+      })
     },
     orderVisibleShow() {
-      this.orderVisible = true;
+      this.orderVisible = true
     },
     showEditorInfo() {
-      this.editorInfoShow = !this.editorInfoShow;
+      this.editorInfoShow = !this.editorInfoShow
     },
     editorInfoHide() {
-      this.editorInfoShow = false;
+      this.editorInfoShow = false
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -541,7 +551,7 @@ h3 {
   color: #333333;
   font-size: 16px;
 
-  font-family: "Arial Normal", "Arial", sans-serif;
+  font-family: 'Arial Normal', 'Arial', sans-serif;
   font-weight: 400;
   font-style: normal;
 
@@ -551,13 +561,13 @@ h3 {
 .textContent {
   font-size: 16px;
   color: #606266;
-  font-family: "Arial Normal", "Arial", sans-serif;
+  font-family: 'Arial Normal', 'Arial', sans-serif;
   font-weight: 400;
   font-style: normal;
   h5 {
     font-size: 16px;
     color: #606266;
-    font-family: "Arial Normal", "Arial", sans-serif;
+    font-family: 'Arial Normal', 'Arial', sans-serif;
     font-weight: 400;
     font-style: normal;
     padding-top: 10px;

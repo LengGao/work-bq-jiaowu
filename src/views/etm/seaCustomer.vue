@@ -1,18 +1,50 @@
 <template>
   <section class="mainwrap">
-    <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+    <SearchList
+      :options="searchOptions"
+      :data="searchData"
+      @on-search="handleSearch"
+    />
     <!--表格-->
     <div class="userTable">
-      <el-table ref="multipleTable" :data="listData" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" tooltip-effect="light" stripe style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-        <el-table-column prop="uid" label="学员编号" show-overflow-tooltip min-width="90"></el-table-column>
-        <el-table-column prop="uid" label="学员头像" show-overflow-tooltip min-width="90">
+      <el-table
+        ref="multipleTable"
+        :data="listData"
+        v-loading="listLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
+        tooltip-effect="light"
+        stripe
+        style="width: 100%"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column
+          prop="uid"
+          label="学员编号"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="uid"
+          label="学员头像"
+          show-overflow-tooltip
+          min-width="90"
+        >
           <template slot-scope="scope">
             <div style="margin: 0 auto; width: 50px; height: 50px">
               <img :src="scope.row.user_img" alt class="school_class_box" />
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="user_nicename" label="微信昵称" show-overflow-tooltip min-width="90"></el-table-column>
+        <el-table-column
+          prop="user_nicename"
+          label="微信昵称"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
         <el-table-column label="学生姓名" min-width="110" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <div v-if="row.realname">
@@ -21,15 +53,31 @@
             <span v-else>--</span>
           </template>
         </el-table-column>
-        <el-table-column label="手机号码" min-width="150" show-overflow-tooltip><template slot-scope="{ row }">
-            <div>
+        <el-table-column label="手机号码" min-width="150" show-overflow-tooltip
+          ><template slot-scope="{ row }">
+            <span>
               {{ row.mobile | filterPhone }}
-            </div>
+            </span>
+            <i
+              class="el-icon-document-copy copy-number"
+              @click="handleCopy(row.mobile)"
+              title="复制"
+            ></i>
           </template>
         </el-table-column>
-        <el-table-column prop="create_time" label="加入时间" min-width="150" show-overflow-tooltip></el-table-column>
+        <el-table-column
+          prop="create_time"
+          label="加入时间"
+          min-width="150"
+          show-overflow-tooltip
+        ></el-table-column>
 
-        <el-table-column prop="from" label="数据来源" min-width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column
+          prop="from"
+          label="数据来源"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
 
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
@@ -37,7 +85,9 @@
               <el-button type="text" disabled v-if="scope.row.aid">
                 已报名
               </el-button>
-              <el-button v-else type="text" @click="enroll(scope.row)">报名</el-button>
+              <el-button v-else type="text" @click="enroll(scope.row)"
+                >报名</el-button
+              >
               <!-- <el-button
                 type="text"
                 @click="toStudentDetail(scope.row)"
@@ -52,10 +102,18 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
-    <addCustomeDialog :innerVisible="innerVisible" :seaUserInfo="seaUserInfo" v-on:innerDialog="getInnerStatus($event)" />
+    <addCustomeDialog
+      :innerVisible="innerVisible"
+      :seaUserInfo="seaUserInfo"
+      v-on:innerDialog="getInnerStatus($event)"
+    />
   </section>
 </template>
 
@@ -130,6 +188,18 @@ export default {
     // this.$api.getCommonUserList(this, 'schoolData')
   },
   methods: {
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+      input.setAttribute('value', val)
+      input.select()
+      if (document.execCommand('copy')) {
+        document.execCommand('copy')
+        document.body.removeChild(input)
+        this.$message.success('复制成功')
+      }
+    },
     handlePageChange(val) {
       this.pageNum = val
       this.getCommonUserList()
@@ -226,5 +296,10 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.copy-number {
+  color: #199fff;
+  cursor: pointer;
+  margin-left: 8px;
 }
 </style>

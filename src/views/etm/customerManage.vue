@@ -7,12 +7,22 @@
       <!--搜索模块-->
       <div style="color: #909399; margin-bottom: 10px"></div>
       <header>
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <div>
-          <el-button type="primary" style="height: 40px" @click="toOnlineStudents">
-            学生导入</el-button>
+          <el-button
+            type="primary"
+            style="height: 40px"
+            @click="toOnlineStudents"
+          >
+            学生导入</el-button
+          >
           <el-button type="primary" style="height: 40px" @click="addCustomer">
-            添加客户</el-button>
+            添加客户</el-button
+          >
         </div>
       </header>
 
@@ -68,30 +78,73 @@
       </el-row>
       <!--列表-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-          <el-table-column prop="uid" label="ID" show-overflow-tooltip min-width="90"></el-table-column>
-          <el-table-column prop="surname" label="客户姓名" min-width="110" show-overflow-tooltip>
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          stripe
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          style="width: 100%"
+          class="min_table"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+        >
+          <el-table-column
+            prop="uid"
+            label="ID"
+            show-overflow-tooltip
+            min-width="90"
+          ></el-table-column>
+          <el-table-column
+            prop="surname"
+            label="客户姓名"
+            min-width="110"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div class="surname" @click="toCusDetail(row)">
                 {{ row.surname }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="mobile" label="手机号码" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="mobile"
+            label="手机号码"
+            min-width="130"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
-              <div>
+              <span>
                 {{ row.mobile | filterPhone }}
-              </div>
+              </span>
+              <i
+                class="el-icon-document-copy copy-number"
+                @click="handleCopy(row.mobile)"
+                title="复制"
+              ></i>
             </template>
           </el-table-column>
-          <el-table-column prop="sex" label="性别" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="sex"
+            label="性别"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div>
-                {{ row.sex == 1 ? "男" : row.sex == 2 ? "女" : "未知" }}
+                {{ row.sex == 1 ? '男' : row.sex == 2 ? '女' : '未知' }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="报读项目" prop="project" min-width="150" show-overflow-tooltip>
+          <el-table-column
+            label="报读项目"
+            prop="project"
+            min-width="150"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div v-if="row.project">
                 {{ row.project }}
@@ -100,7 +153,12 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="from_organization_name" label="推荐机构" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="from_organization_name"
+            label="推荐机构"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div v-if="row.from_organization_name">
                 {{ row.from_organization_name }}
@@ -109,28 +167,46 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="渠道来源" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            label="渠道来源"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div v-if="row.sources != 0">
-                {{ row.sources }}
+                {{ field_content[row.sources].label }}
               </div>
               <span v-else>--</span>
             </template>
           </el-table-column>
 
-          <el-table-column prop="create_time" label="创建时间" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="150">
             <template slot-scope="scope">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="toCusDetail(scope.row)">客户详情</el-button>
+                <el-button type="text" @click="toCusDetail(scope.row)"
+                  >客户详情</el-button
+                >
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
-        <addCustomeDialog :innerVisible="innerVisible" v-on:innerDialog="getInnerStatus($event)" />
+        <addCustomeDialog
+          :innerVisible="innerVisible"
+          v-on:innerDialog="getInnerStatus($event)"
+        />
       </div>
     </div>
   </section>
@@ -344,6 +420,7 @@ export default {
       datas: {},
       selectData: [],
       projectData: [],
+      field_content: [],
       date: '',
     }
   },
@@ -370,6 +447,18 @@ export default {
     // },
   },
   methods: {
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement('input')
+      document.body.appendChild(input)
+      input.setAttribute('value', val)
+      input.select()
+      if (document.execCommand('copy')) {
+        document.execCommand('copy')
+        document.body.removeChild(input)
+        this.$message.success('复制成功')
+      }
+    },
     AddDays(date, days) {
       var nd = new Date(date)
       var Y = nd.getFullYear()
@@ -409,9 +498,7 @@ export default {
       console.log(this.searchData.date)
       const data = {
         page: this.pageNum,
-
         ...this.searchData,
-
         date: this.searchData.date[0] + ' - ' + this.searchData.date[1],
         // all: 1,
       }
@@ -481,11 +568,11 @@ export default {
       if (res.code === 0) {
         let field_content = res.data.field_content.map((i, index) => {
           var obj = {}
-          obj.value = index + 1
+          obj.value = index
           obj.label = i
           return obj
         })
-        this.searchOptions[4].options = field_content
+        this.searchOptions[4].options = this.field_content = field_content
       }
     },
     // 获取项目下拉
@@ -669,5 +756,10 @@ header {
 }
 .table_bottom {
   text-align: right;
+}
+.copy-number {
+  color: #199fff;
+  cursor: pointer;
+  margin-left: 8px;
 }
 </style>
