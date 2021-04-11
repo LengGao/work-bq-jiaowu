@@ -217,21 +217,11 @@ export default {
         return i.user_realname
       })
       let userNameArr = ''
-      if (erid_arr_name.length > 2) {
-        userNameArr =
-          erid_arr_name[0] +
-          ',' +
-          erid_arr_name[1] +
-          '等' +
-          erid_arr_name.length +
-          '名学生'
-      } else if ((erid_arr_name.length = 2)) {
-        userNameArr = erid_arr_name.join(',')
-      } else {
-        userNameArr = erid_arr_name[0]
-      }
+      let len = erid_arr_name.length
+      const name = erid_arr_name.slice(0, 2)
+      const nameStr = len > 2 ? `  ...等${len}人` : ''
+      userNameArr = name.join(',') + nameStr
       this.userName = userNameArr
-      // console.log(userNameArr)
     },
     handlePageChange(val) {
       this.pageNum = val

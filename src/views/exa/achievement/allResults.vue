@@ -167,6 +167,8 @@ export default {
             placeholder: '所属分类',
             clearable: true,
             options: [],
+            props: { checkStrictly: true },
+            filterable: true,
           },
         },
         {
