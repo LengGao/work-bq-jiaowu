@@ -97,7 +97,9 @@
       </el-row>
       <el-row>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-          <el-form-item label="合计总分"> {{ totalScore }}</el-form-item>
+          <el-form-item label="合计总分">
+            {{ totalScore + '/' + userOptions.total_score }}</el-form-item
+          >
         </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="成绩状态" prop="">
