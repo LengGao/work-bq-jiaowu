@@ -25,6 +25,7 @@
         <span class="msg-item-date">{{ item.create_time }}</span>
       </li>
     </ul>
+
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[8, 16, 24]" layout="total, prev, pager, next, jumper" :total="total">
     </el-pagination>
 
@@ -190,12 +191,13 @@ export default {
     line-height: 30px;
   }
   .msg-content {
-    padding-top: 10px;
+    padding-bottom: 30px;
     .msg-item {
       display: flex;
       justify-content: space-between;
-      line-height: 30px;
+      line-height: 28px;
       color: #909399;
+
       .msg-item-info {
         text-overflow: ellipsis;
         overflow: hidden;
@@ -255,6 +257,22 @@ export default {
   z-index: 9999;
 }
 /deep/.el-pagination {
-  margin-top: 10px;
+  margin: 20px auto 0 auto;
+  width: 95%;
+  position: absolute;
+  bottom: 4px;
+  text-align: center;
+}
+.table_bottom {
+  height: 25px;
+  margin: auto;
+}
+.msg {
+  position: relative;
+  width: 24%;
+  padding-bottom: 5px;
+}
+.el-tabs__header {
+  margin-bottom: 0;
 }
 </style>

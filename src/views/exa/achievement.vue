@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head_remind">
-      *本模块主要是招生老师用来进行日常招生数据的跟进管理，包括学员意向录入、课程缴费报名等操作。
+      *本模块主要负责考试后学生成绩的录入归档和统计管理。
     </div>
 
     <section class="mainwrap">
@@ -55,5 +55,8 @@ export default {
 .el-table__header tr {
   background-color: #f8f8f8;
   color: #909399;
+}
+.table_bottom {
+  text-align: right;
 }
 </style>

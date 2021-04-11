@@ -157,7 +157,10 @@
                 <el-button type="text" @click="openAddPhoto(row.uid)"
                   >编辑资料</el-button
                 >
-                <el-button type="text" @click="zipDownload(row.uid)"
+                <el-button
+                  type="text"
+                  :loading="row.loading"
+                  @click="zipDownload(row)"
                   >打包下载</el-button
                 >
                 <el-button type="text" @click="hanldeLink(row.uid)"
@@ -232,13 +235,19 @@ export default {
       a.href = url;
       a.click();
     },
-    async zipDownload(uid) {
+    async zipDownload(row) {
       const data = {
-        uid,
+        uid: row.uid,
       };
-      const res = await zipDownload(data);
+      row.loading = true;
+      const res = await zipDownload(data).catch(() => {
+        row.loading = false;
+      });
       if (res.code === 0) {
         this.download(res.data.url);
+        setTimeout(() => {
+          row.loading = false;
+        }, 1000);
       }
     },
     handlePreview(src) {
@@ -266,7 +275,10 @@ export default {
       this.listLoading = true;
       const res = await getCertificates(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        loading: false,
+      }));
       this.listTotal = res.data.total;
     },
   },

@@ -97,6 +97,7 @@ export default {
       line-height: 50px;
       display: flex;
       &-cover {
+        cursor: pointer;
         img {
           height: 100px;
         }

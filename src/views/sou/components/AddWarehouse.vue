@@ -10,6 +10,7 @@
     @closed="resetForm('ruleForm')"
   >
     <el-form
+      v-loading="detailLoading"
       label-width="100px"
       :model="formData"
       :rules="rules"
@@ -91,6 +92,7 @@ export default {
         ],
       },
       addLoading: false,
+      detailLoading: false,
     };
   },
   watch: {
@@ -102,19 +104,17 @@ export default {
     handleOpen() {
       if (this.id) {
         this.getStorageById();
-      } else {
-        this.formData.organization_id = 1;
-        // 为了清空cascader的值
-        setTimeout(() => {
-          this.formData.organization_id = "";
-        }, 10);
       }
     },
     async getStorageById() {
       const data = {
         storage_id: this.id,
       };
-      const res = await getStorageById(data);
+      this.detailLoading = true;
+      const res = await getStorageById(data).catch(() => {
+        this.detailLoading = false;
+      });
+      this.detailLoading = false;
       if (res.code === 0) {
         for (const k in this.formData) {
           this.formData[k] = res.data[k];
@@ -125,7 +125,7 @@ export default {
       const data = {
         ...this.formData,
         organization_id: Array.isArray(this.formData.organization_id)
-          ? this.formData.organization_id.pop()
+          ? [...this.formData.organization_id].pop()
           : this.formData.organization_id,
       };
       if (this.id) {

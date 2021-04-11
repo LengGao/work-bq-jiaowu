@@ -129,6 +129,7 @@ let enrollStu = {
   //1.3 客户报名、学员报名、创建订单
   createOrder(self, ruleForm) {
     let config = {
+      ...self.userInfo,
       order_token: ruleForm.order_token,
       wechat: ruleForm.wechat,
       second_mobile: ruleForm.second_mobile,
@@ -146,7 +147,6 @@ let enrollStu = {
       overdue_money: ruleForm.overdue_money,
       // surname: ruleForm.surname,
       // mobile: ruleForm.mobile,
-      ...self.userInfo,
       aid: self.userInfo.id,
 
       supplement_time: ruleForm.supplement_time,

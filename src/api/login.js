@@ -113,7 +113,7 @@ export function getUnreadCount(params) {
     params
   })
 }
-export const baseUrl = process.env.NODE_ENV === "development" ? 'http://sc.dp.com' : ''
+export const baseUrl = process.env.VUE_APP_downLoad
 // 获取菜单
 export function getMenu(params) {
   return request({
