@@ -173,7 +173,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <div v-if="row.sources != 0">
+              <div v-if="row.sources">
                 {{ field_content[row.sources].label }}
               </div>
               <span v-else>--</span>
@@ -277,6 +277,8 @@ export default {
           attrs: {
             placeholder: '所属分类',
             clearable: true,
+            props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },
@@ -290,6 +292,7 @@ export default {
           attrs: {
             placeholder: '所属项目',
             clearable: true,
+            filterable: true,
           },
         },
         // {
@@ -311,6 +314,7 @@ export default {
           attrs: {
             placeholder: '推荐机构',
             clearable: true,
+            filterable: true,
             options: [],
           },
         },
@@ -382,8 +386,10 @@ export default {
         },
         {
           key: 'keyword',
+
           attrs: {
             placeholder: '客户姓名/手机号码',
+            clearable: true,
           },
         },
       ],
@@ -427,10 +433,11 @@ export default {
   created() {
     this.date = this.searchData.date = this.AddDays(new Date(), 7)
     this.getCateList()
-    this.getCustomerList()
+    this.getfieldinfo()
+
     // this.getInstitutionList()
     this.getInstitutionSelectData()
-    this.getfieldinfo()
+    this.getCustomerList()
   },
   mounted() {
     console.log(this.date)
