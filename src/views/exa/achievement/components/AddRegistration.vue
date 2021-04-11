@@ -99,7 +99,8 @@ export default {
       type: String,
       default: '',
     },
-    erid_arr: {
+
+    uids: {
       type: [Array, Object],
       default: '',
     },
@@ -108,7 +109,7 @@ export default {
     return {
       rules: {},
       formData: {
-        uid: this.erid_arr,
+        uid: this.uids,
         pid: '',
         subject_id_str: [],
         exam_type: '',
@@ -161,7 +162,7 @@ export default {
     async enroll() {
       const data = {
         ...this.formData,
-        uid: this.erid_arr,
+        uid: this.uids,
       }
       const res = await enroll(data)
       if (res.code === 0) {

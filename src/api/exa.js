@@ -96,6 +96,21 @@ export function batchPass(data) {
     data,
   })
 }
+/**
+ * 批量录入成绩
+ * @param {*} data
+ */
+export const importGrade = `${process.env.VUE_APP_LOACTION}/Graduation/importGrade`
+const baseUrl = process.env.NODE_ENV === 'development' ? 'http://thing.com' : ''
+export const downloadUrl = `${baseUrl}/static/order_import.xlsx`
+//成绩导入模板下载
+export function getImportTemplate(params) {
+  return request({
+    url: '/Graduation/getImportTemplate',
+    method: 'get',
+    params,
+  })
+}
 //考试科目列表
 export function getSubjectList(params) {
   return request({
