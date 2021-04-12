@@ -10,34 +10,46 @@
     </div> -->
     <div v-if="activeName !== '5'">
       <el-tabs v-model="activeNames" @tab-click="handleClick">
-        <el-tab-pane name="2">
-           <span slot="label">未读<el-badge :value="listdata.length"></el-badge> </span>
+        <el-tab-pane name="1">
+          <span slot="label"
+            >未读<el-badge
+              v-if="activeNames == 1"
+              :value="noreadcount"
+            ></el-badge>
+          </span>
         </el-tab-pane>
-        <el-tab-pane label="已读" name="1">
-        </el-tab-pane>
+        <el-tab-pane label="已读" name="2"> </el-tab-pane>
       </el-tabs>
     </div>
 
     <ul class="msg-content">
       <li class="msg-item" v-for="(item, index) in listdata" :key="index">
         <span class="msg-item-info" :title="item.title" @click="msgclick(item)">
-          {{ item.title }}</span>
+          {{ item.title }}</span
+        >
         <span class="msg-item-date">{{ item.create_time }}</span>
       </li>
     </ul>
 
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[8, 16, 24]" layout="total, prev, pager, next, jumper" :total="total">
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageNum"
+      :page-sizes="[8, 16, 24]"
+      layout="total, prev, pager, next, jumper"
+      :total="total"
+    >
     </el-pagination>
 
     <!-- 弹窗 -->
     <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
       <div :model="ruleForm" :rules="rules" ref="ruleForm">
         <h3 class="detailtitle">
-          {{ruleForm.title}}
+          {{ ruleForm.title }}
         </h3>
         <div class="notictitle">
-          <p>发布时间：{{ruleForm.create_time}}</p>
-          <p>发布人：{{ruleForm.staff_name}}</p>
+          <p>发布时间：{{ ruleForm.create_time }}</p>
+          <p>发布人：{{ ruleForm.staff_name }}</p>
         </div>
         <div class="noticontent">
           <div v-html="ruleForm.content"></div>
@@ -45,28 +57,41 @@
       </div>
     </el-dialog>
     <!-- 弹窗 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" v-if="activeName !== '5'">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="35%"
+      v-if="activeName !== '5'"
+    >
       <div :model="ruleForm" :rules="rules" ref="ruleForm">
         <h3 class="detailtitle">
-          {{ruleForm.title}}
+          {{ ruleForm.title }}
         </h3>
         <div class="notictitle">
-          <p>发布时间：{{ruleForm.create_time}}</p>
-          <p>发布人：{{ruleForm.staff_name}}</p>
+          <p>发布时间：{{ ruleForm.create_time }}</p>
+          <p>发布人：{{ ruleForm.staff_name }}</p>
         </div>
         <div class="noticontent">
           <div v-html="ruleForm.content"></div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="Markunread">标为未读</el-button>
-        <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
+        <el-button @click="Markunread" v-if="activeNames == 2"
+          >标为未读</el-button
+        >
+        <el-button type="primary" @click="dialogVisible = false"
+          >知道了</el-button
+        >
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getSystemAnnouncementList, getAnnouncementInfo, setUnread } from '@/api/workbench'
+import {
+  getSystemAnnouncementList,
+  getAnnouncementInfo,
+  setUnread,
+} from '@/api/workbench'
 import { followRoute } from '@/utils/index'
 export default {
   name: 'Msg',
@@ -79,7 +104,8 @@ export default {
   data() {
     return {
       activeName: '1',
-      activeNames: '2',
+      activeNames: '1',
+      readType: '',
       readMap: {
         1: '已读',
         2: '未读',
@@ -102,6 +128,7 @@ export default {
         staff_name: '',
       },
       listdata: [],
+      noreadcount: '',
     }
   },
   created() {
@@ -122,6 +149,7 @@ export default {
       const res = await getSystemAnnouncementList(data)
       console.log(res.data.list)
       this.listdata = res.data.list
+      this.activeNames == 1 ? (this.noreadcount = res.data.list.length) : ''
       this.total = res.data.total
     },
     msgclick(ab) {
@@ -136,11 +164,12 @@ export default {
     async getAnnouncementInfo() {
       const data = {
         id: this.ruleForm.id,
-        read: this.ruleForm.read,
+        // read: this.ruleForm.read,
       }
       console.log(data)
       const res = await getAnnouncementInfo(data)
       if (res.code == 0) {
+        console.log('未读')
         this.getSystemAnnouncementList()
       }
     },
@@ -169,6 +198,8 @@ export default {
     },
 
     handleClick(val) {
+      console.log(val)
+      this.readType = val
       console.log(this.activeNames)
       this.getSystemAnnouncementList()
     },
@@ -176,6 +207,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+/deep/.el-badge {
+  position: absolute;
+  top: 26px;
+  right: 19px;
+  transform: translateY(-50%) translateX(100%);
+}
 .title {
   font-weight: normal;
   margin-right: 5px;

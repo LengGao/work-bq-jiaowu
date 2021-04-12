@@ -512,10 +512,10 @@ export default {
   }
 }
 .bgcolor {
-  border-bottom: 2rem solid #ff00ff !important;
+  border-bottom: 24px solid #ff00ff !important;
 }
 .bgcolor2 {
-  border-bottom: 2rem solid #199fff !important;
+  border-bottom: 24px solid #199fff !important;
 }
 .deleteIcon {
   font-size: 16px;
@@ -617,18 +617,19 @@ export default {
     right: 0;
     width: 0;
     height: 0;
-    border-bottom: 2rem solid #81d8d0;
-    border-left: 2rem solid transparent;
+    border-bottom: 24px solid #81d8d0;
+    border-left: 24px solid transparent;
     em {
       position: absolute;
       font-style: normal;
-      top: 0.8rem;
-      right: 0rem;
-      height: 1.27rem;
-      width: 1.27rem;
-      line-height: 1.2rem;
+      top: 11.5px;
+      right: 1.8px;
+      height: 12px;
+      width: 12px;
+      line-height: 12px;
       text-align: center;
-      font-size: 0.29rem;
+      // font-size: 0.29rem;
+      font-size: 12px;
       color: #fff;
       transform: rotate(0deg);
       -webkit-transform: rotate(0deg);

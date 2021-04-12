@@ -27,16 +27,19 @@
       </el-tabs>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleCancel">取 消</el-button>
-      <el-button type="primary" @click="handleOk">确 定</el-button>
+      <p>(最多设置<span> 6 </span>个快捷入口位)</p>
+      <div>
+        <el-button @click="handleCancel">取 消</el-button>
+        <el-button type="primary" @click="handleOk">确 定</el-button>
+      </div>
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { getMenuList } from "@/api/workbench";
+import { getMenuList } from '@/api/workbench'
 export default {
-  name: "AddEntry",
+  name: 'AddEntry',
   props: {
     visible: {
       type: Boolean,
@@ -45,43 +48,43 @@ export default {
   },
   data() {
     return {
-      activeName: "0",
+      activeName: '0',
       entryData: [],
       loading: false,
-    };
+    }
   },
   methods: {
     getIds(arr) {
-      const ids = [];
+      const ids = []
       arr.forEach((item) => {
         item.children.forEach((chid) => {
           if (chid.selected) {
-            ids.push(chid.id);
+            ids.push(chid.id)
           }
-        });
-      });
-      console.log(ids);
-      return ids;
+        })
+      })
+      console.log(ids)
+      return ids
     },
     handleOk() {
-      const ids = this.getIds(this.entryData);
-      this.$emit("on-ok", ids);
-      this.$emit("update:visible", false);
+      const ids = this.getIds(this.entryData)
+      this.$emit('on-ok', ids)
+      this.$emit('update:visible', false)
     },
     handleCancel() {
-      this.$emit("update:visible", false);
+      this.$emit('update:visible', false)
     },
     handleClick(val) {
-      console.log(val);
+      console.log(val)
     },
     async getMenuList() {
-      this.loading = true;
-      const res = await getMenuList();
-      this.loading = false;
-      this.entryData = res.data || [];
+      this.loading = true
+      const res = await getMenuList()
+      this.loading = false
+      this.entryData = res.data || []
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -110,6 +113,16 @@ export default {
       text-align: center;
       width: 100%;
       padding-top: 100px;
+    }
+  }
+}
+.dialog-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  p {
+    span {
+      color: #199fff;
     }
   }
 }

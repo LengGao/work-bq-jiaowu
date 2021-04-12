@@ -26,7 +26,11 @@
           @show="handlePopoverShow"
           @after-leave="handlePopoverColse"
         >
-          <el-badge slot="reference" :value="msgCount" class="message-badge">
+          <el-badge
+            slot="reference"
+            :value="msgCount ? msgCount : ''"
+            class="message-badge"
+          >
             <i class="el-icon-bell message-bell"></i>
           </el-badge>
           <div class="message-content">
@@ -138,48 +142,48 @@
 </template>
 
 <script>
-let timeId = null;
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
-import touxiang from "@/assets/images/touxiang.png";
-import { getAdminQueueList, baseUrl } from "@/api/login";
-import { mapGetters, mapActions } from "vuex";
+let timeId = null
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
+import touxiang from '@/assets/images/touxiang.png'
+import { getAdminQueueList, baseUrl } from '@/api/login'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     const validatePass = (rule, value, callback) => {
       if (value.length < 3) {
-        callback(new Error("密码不能小于3位"));
+        callback(new Error('密码不能小于3位'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.form.password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       touxiang,
       dialog: false,
       form: {
-        origin: "",
-        password: "",
-        confirm: "",
+        origin: '',
+        password: '',
+        confirm: '',
       },
       ru: {
         origin: [
-          { required: true, message: "请填写原密码", trigger: "blur" },
-          { min: 6, message: "密码最少6位数", trigger: "blur" },
+          { required: true, message: '请填写原密码', trigger: 'blur' },
+          { min: 6, message: '密码最少6位数', trigger: 'blur' },
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePass },
+          { required: true, trigger: 'blur', validator: validatePass },
         ],
         confirm: [
-          { required: true, validator: validatePass2, trigger: "blur" },
+          { required: true, validator: validatePass2, trigger: 'blur' },
         ],
       },
       msgList: [],
@@ -189,120 +193,120 @@ export default {
       msgLoading: false,
       msgNoMore: false,
       refershLoading: false,
-    };
+    }
   },
   components: {
     Breadcrumb,
     Hamburger,
   },
   computed: {
-    ...mapGetters(["sidebar", "msgCount", "userInfo"]),
+    ...mapGetters(['sidebar', 'msgCount', 'userInfo']),
   },
   created() {
-    this.getUnreadCount();
-    const time = 1000 * 30;
-    timeId = setInterval(this.getUnreadCount, time);
+    this.getUnreadCount()
+    const time = 1000 * 30
+    timeId = setInterval(this.getUnreadCount, time)
   },
   beforeDestroy() {
-    clearInterval(timeId);
+    clearInterval(timeId)
   },
   methods: {
     //getUnreadCount：获取未读数量
-    ...mapActions(["getUnreadCount"]),
+    ...mapActions(['getUnreadCount']),
     // msg 下载
     handleDownload(url) {
-      console.log(baseUrl + url);
-      window.location.href = baseUrl + url;
+      console.log(baseUrl + url)
+      window.location.href = baseUrl + url
     },
     // msg 加载更多
     loadMore() {
-      const leng = this.msgList.length;
+      const leng = this.msgList.length
       if (leng < this.msgTotal) {
-        this.msgPageNum++;
-        this.getAdminQueueList();
+        this.msgPageNum++
+        this.getAdminQueueList()
       } else {
-        this.msgNoMore = true;
+        this.msgNoMore = true
       }
     },
     // msg 刷新
     async handleMsgRefresh() {
-      this.msgPageNum = 1;
-      this.refershLoading = true;
-      await this.getAdminQueueList();
-      this.refershLoading = false;
+      this.msgPageNum = 1
+      this.refershLoading = true
+      await this.getAdminQueueList()
+      this.refershLoading = false
     },
 
     // 弹窗关闭时
     handlePopoverColse() {
-      this.msgNoMore = false;
-      this.msgTotal = 0;
-      this.msgList = [];
+      this.msgNoMore = false
+      this.msgTotal = 0
+      this.msgList = []
     },
     // 弹窗打开时
     async handlePopoverShow() {
-      this.msgPageNum = 1;
-      await this.getAdminQueueList();
-      this.getUnreadCount();
+      this.msgPageNum = 1
+      await this.getAdminQueueList()
+      this.getUnreadCount()
     },
     // msg 列表
     async getAdminQueueList() {
       const data = {
         page: this.msgPageNum,
         limit: this.msgPageSize,
-      };
-      this.msgLoading = true;
-      const res = await getAdminQueueList(data).catch(() => {
-        this.msgLoading = false;
-      });
-      this.msgLoading = false;
-      if (this.msgPageNum === 1) {
-        this.msgList = res.data.list;
-      } else {
-        this.msgList.push(...res.data.list);
       }
-      this.msgTotal = res.data.total;
+      this.msgLoading = true
+      const res = await getAdminQueueList(data).catch(() => {
+        this.msgLoading = false
+      })
+      this.msgLoading = false
+      if (this.msgPageNum === 1) {
+        this.msgList = res.data.list
+      } else {
+        this.msgList.push(...res.data.list)
+      }
+      this.msgTotal = res.data.total
     },
     // 刷新按钮
     handclick() {
-      console.log("点了我");
-      window.location.reload();
+      console.log('点了我')
+      window.location.reload()
     },
     modifyPassword() {
-      console.log(111);
-      this.dialog = true;
+      console.log(111)
+      this.dialog = true
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$api.resetPassword(this, this.form);
+          this.$api.resetPassword(this, this.form)
           // if (this.$cookies.get('organization_id')) {
           //   this.$api.resetOrgPassword(this)
           // } else {
           //   this.$api.resetAdminPassword(this)
           // }
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     huanfu(theme) {
-      window.document.documentElement.setAttribute("data-theme", theme);
+      window.document.documentElement.setAttribute('data-theme', theme)
     },
     clearStorage() {
-      this.$api.clearCache(this);
+      this.$api.clearCache(this)
     },
     toggleSideBar() {
-      this.$store.dispatch("ToggleSideBar");
+      this.$store.dispatch('ToggleSideBar')
     },
     logout() {
-      this.$store.dispatch("logout").then((res) => {
-        this.$message.success(res.message);
-        this.$router.push("/login");
-      });
+      this.$store.dispatch('logout').then((res) => {
+        this.$message.success(res.message)
+        this.$router.push('/login')
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

@@ -4,14 +4,21 @@
       <div class="entry">
         <h4 class="entry-title">常用入口</h4>
         <div class="entry-content">
-          <div class="entry-item" v-for="(item, index) in entrys" :key="index" @click="handleEntryLink(item.node)">
+          <div
+            class="entry-item"
+            v-for="(item, index) in entrys"
+            :key="index"
+            @click="handleEntryLink(item.node)"
+          >
             <div class="entry-icon" :class="`bc-${index + 1}`">
               <i class="el-icon-tickets"></i>
             </div>
             <span class="entry-name">{{ item.menu_name }}</span>
           </div>
           <div class="entry-item entry-add">
-            <el-button type="info" @click="handleOpen" icon="el-icon-plus">编辑入口</el-button>
+            <el-button type="info" @click="handleOpen" icon="el-icon-plus"
+              >编辑入口</el-button
+            >
           </div>
         </div>
       </div>
@@ -27,38 +34,92 @@
           <el-tab-pane label="已完成" name="3"></el-tab-pane>
         </el-tabs>
         <div class="remind-content">
-          <el-table ref="multipleTable" :data="remindList" v-loading="remindLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" :header-cell-style="{
+          <el-table
+            ref="multipleTable"
+            :data="remindList"
+            v-loading="remindLoading"
+            element-loading-text="loading"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="#fff"
+            :header-cell-style="{
               'text-align': 'center',
               background: '#f8f8f8',
-            }" height="430" :cell-style="{ 'text-align': 'center' }" style="margin-bottom: 10px">
+            }"
+            height="430"
+            :cell-style="{ 'text-align': 'center' }"
+            style="margin-bottom: 10px"
+          >
             <el-table-column label="编号" width="50" type="index">
             </el-table-column>
-            <el-table-column prop="create_time" label="创建时间" min-width="140" show-overflow-tooltip>
+            <el-table-column
+              prop="create_time"
+              label="创建时间"
+              min-width="140"
+              show-overflow-tooltip
+            >
             </el-table-column>
-            <el-table-column prop="type_name" label="待办类型" min-width="110" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="describe" label="待办事项" min-width="180" show-overflow-tooltip>
+            <el-table-column
+              prop="type_name"
+              label="待办类型"
+              min-width="110"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
+              prop="describe"
+              label="待办事项"
+              min-width="180"
+              show-overflow-tooltip
+            >
               <template slot-scope="{ row }">
                 <div>
                   <span>{{ row.describe }}</span>
-                  <el-button style="margin-left: 6px" v-if="followRoute[row.follow_type]" type="text" @click="
+                  <el-button
+                    style="margin-left: 6px"
+                    v-if="followRoute[row.follow_type]"
+                    type="text"
+                    @click="
                       linkTo(followRoute[row.follow_type], row.param_list || {})
-                    ">去跟进></el-button>
+                    "
+                    >去跟进></el-button
+                  >
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="update_time" label="完成状态" min-width="140" show-overflow-tooltip>
+            <el-table-column
+              prop="update_time"
+              label="完成状态"
+              min-width="140"
+              show-overflow-tooltip
+            >
               <template slot-scope="{ row }">
                 <el-popover placement="bottom" width="40" trigger="click">
-                  <el-button slot="reference" type="text" :style="{ color: statusMap[row.follow_state].color }">
-                    {{ statusMap[row.follow_state].text }}</el-button>
+                  <el-button
+                    slot="reference"
+                    type="text"
+                    :style="{ color: statusMap[row.follow_state].color }"
+                  >
+                    {{ statusMap[row.follow_state].text }}</el-button
+                  >
                   <ul class="status-list">
-                    <li style="color: #fd6500" v-if="row.follow_state !== 1" @click="updateState(row, 1)">
+                    <li
+                      style="color: #fd6500"
+                      v-if="row.follow_state !== 1"
+                      @click="updateState(row, 1)"
+                    >
                       未开始
                     </li>
-                    <li style="color: #fdc400" v-if="row.follow_state !== 2" @click="updateState(row, 2)">
+                    <li
+                      style="color: #fdc400"
+                      v-if="row.follow_state !== 2"
+                      @click="updateState(row, 2)"
+                    >
                       进行中
                     </li>
-                    <li style="color: #43d100" v-if="row.follow_state !== 3" @click="updateState(row, 3)">
+                    <li
+                      style="color: #43d100"
+                      v-if="row.follow_state !== 3"
+                      @click="updateState(row, 3)"
+                    >
                       已完成
                     </li>
                   </ul>
@@ -75,7 +136,14 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[10, 20, 30]" layout="total, sizes, prev, pager, next, jumper" :total="total">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-sizes="[10, 20, 30]"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+          >
           </el-pagination>
         </div>
       </div>
@@ -257,7 +325,7 @@ export default {
         flex-wrap: wrap;
         padding: 15px 20px 5px 20px;
         .entry-item {
-          width: calc(100% / 5);
+          width: calc(100% / 6);
           display: flex;
           align-items: center;
           margin-bottom: 16px;

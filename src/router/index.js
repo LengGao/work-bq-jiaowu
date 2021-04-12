@@ -98,7 +98,13 @@ export const asyncRouter = [
         meta: { title: '添加课程', icon: 'product-cate' },
         hidden: true,
       },
-
+      {
+        path: 'packageDetail',
+        name: 'packageDetail',
+        component: () => import('@/views/sou/courseManage/packageDetail.vue'),
+        meta: { title: '套餐详情', icon: 'product-cate' },
+        hidden: true,
+      },
       {
         path: 'configureCourses',
         name: 'configureCourses',
@@ -563,8 +569,6 @@ export const asyncRouter = [
         component: () => import('@/views/fina/order.vue'),
         meta: { title: '订单审批', icon: 'product-add' },
       },
-
-
     ],
   },
 
@@ -696,7 +700,7 @@ export const createUserRouter = (data) => {
           name: item.menu_name,
           path: route.path,
           icon: item.icon,
-          id: item.id
+          id: item.id,
         }
         // 对 visualization 特殊处理
         if (item.node === 'visualization') {

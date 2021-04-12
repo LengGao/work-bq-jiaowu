@@ -16,7 +16,11 @@
         </li>
       </ul> -->
       <div class="client_head">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <!-- <div v-if="isTagactive === 2">
           <el-button type="primary" @click="toCreateClass">资源中心</el-button>
         </div> -->
@@ -26,18 +30,68 @@
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" tooltip-effect="light" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%;"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          class="min_table"
+        >
           <el-table-column type="selection" width="45"> </el-table-column>
-          <el-table-column prop="course_id" label="课程编号" show-overflow-tooltip min-width="90"></el-table-column>
+          <el-table-column
+            prop="course_id"
+            label="课程编号"
+            show-overflow-tooltip
+            min-width="90"
+          ></el-table-column>
 
-          <el-table-column prop="course_name" label="课程名称" min-width="200" column-key="course_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="category_name" label="课程分类" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="class_type_name" label="课程班型" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="course_price" label="课程价格" min-width="80" show-overflow-tooltip></el-table-column>
+          <el-table-column
+            prop="course_name"
+            label="课程名称"
+            min-width="200"
+            column-key="course_id"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="课程分类"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="class_type_name"
+            label="课程班型"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="course_price"
+            label="课程价格"
+            min-width="80"
+            show-overflow-tooltip
+          ></el-table-column>
 
-          <el-table-column label="是否上架" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            label="是否上架"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="scope">
-              <el-switch v-model="scope.row.is_publish" active-color="#2798ee" inactive-color="#eaeefb" :active-value="1" :inactive-value="2" @change="release(scope.row, $event)">
+              <el-switch
+                v-model="scope.row.is_publish"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="2"
+                @change="release(scope.row, $event)"
+              >
               </el-switch>
             </template>
           </el-table-column>
@@ -45,15 +99,38 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" v-if="scope.row.class_type == 1" @click="toCreateClass(scope.row)">编辑</el-button>
-                <el-button type="text" @click="toConfigureCourses(scope.row)">配置</el-button>
-                <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                <el-button
+                  type="text"
+                  v-if="scope.row.class_type == 1"
+                  @click="toCreateClass(scope.row)"
+                  >编辑</el-button
+                >
+                <el-button
+                  type="text"
+                  v-if="scope.row.class_type == 1"
+                  @click="toConfigureCourses(scope.row)"
+                  >配置</el-button
+                >
+                <el-button
+                  type="text"
+                  v-if="scope.row.class_type == 0 || scope.row.class_type == 2"
+                  @click="toPackageDetail(scope.row)"
+                >
+                  详情
+                </el-button>
+                <el-button type="text" @click="handleDelete(scope.row)"
+                  >删除</el-button
+                >
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
     </section>
@@ -62,7 +139,12 @@
 
 <script>
 import SearchList from '@/components/SearchList/index'
-import { getCourseList, getCateList, bashPublish, deleteCourses } from '@/api/sou'
+import {
+  getCourseList,
+  getCateList,
+  bashPublish,
+  deleteCourses,
+} from '@/api/sou'
 export default {
   course_id: '',
   components: {
@@ -119,6 +201,15 @@ export default {
   mounted() {},
 
   methods: {
+    toPackageDetail(row) {
+      this.$router.push({
+        name: 'packageDetail',
+        query: {
+          setMeal: row.class_type,
+          course_id: row.course_id,
+        },
+      })
+    },
     handleDelete(row) {
       this.$confirm('你正在删除该课程,,请谨慎操作?', '提示', {
         confirmButtonText: '删除',

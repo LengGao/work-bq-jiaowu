@@ -81,100 +81,75 @@
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="客户姓名" prop="uid">
                   <div class="ruleWord">{{ ruleForm.uid }}</div>
-                  <!-- <el-button type="text" disabled>{{ ruleForm.uid }}</el-button> -->
                 </el-form-item>
-                <!-- <span>学员编号</span>
-                <el-input disabled v-model="ruleForm.uid"></el-input> -->
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="手机号码" prop="create_time">
                   <div class="ruleWord">{{ ruleForm.create_time }}</div>
-                  <!-- <el-input v-model="ruleForm.create_time" disabled></el-input> -->
                 </el-form-item>
               </el-col>
 
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="备用号码" prop="user_nicename">
                   <div class="ruleWord">{{ ruleForm.user_nicename }}</div>
-                  <!-- <el-input
-                    v-model="ruleForm.user_nicename"
-                    disabled
-                  ></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="身份证号" prop="realname">
                   <div class="ruleWord">{{ ruleForm.realname }}sdfdsfsdf</div>
-                  <!-- <el-input v-model="ruleForm.realname" disabled></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="学员性别" prop="mobile">
                   <div class="ruleWord">{{ ruleForm.mobile }}</div>
-                  <!-- <el-input v-model="ruleForm.mobile" disabled></el-input> -->
                 </el-form-item>
               </el-col>
 
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="婚姻状况" prop="identity_card">
                   <div class="ruleWord">{{ ruleForm.identity_card }}</div>
-                  <!-- <el-input
-                    v-model="ruleForm.identity_card"
-                    disabled
-                  ></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="出生日期" prop="name">
                   <div class="ruleWord">{{ ruleForm.name }}</div>
-                  <!-- <el-input v-model="ruleForm.name" disabled></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="年龄" prop="type">
                   <div class="ruleWord">{{ ruleForm.type }}</div>
-                  <!-- <el-input v-model="ruleForm.type" disabled></el-input> -->
                 </el-form-item>
               </el-col>
 
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="邮箱地址" prop="organization_id">
                   <div class="ruleWord">{{ ruleForm.organization_id }}</div>
-                  <!-- <el-input
-                    v-model="ruleForm.organization_id"
-                    disabled
-                  ></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="文化程度" prop="name">
                   <div class="ruleWord">{{ ruleForm.name }}</div>
-                  <!-- <el-input v-model="ruleForm.name" disabled></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="地域" prop="pay_amount">
                   <div class="ruleWord">{{ ruleForm.pay_amount }}</div>
-                  <!-- <el-input v-model="ruleForm.pay_amount" disabled></el-input> -->
                 </el-form-item>
               </el-col>
 
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="所属校区" prop="class_type">
                   <div class="ruleWord">{{ ruleForm.class_type }}</div>
-                  <!-- <el-input v-model="ruleForm.class_type" disabled></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="渠道来源" prop="update_time">
                   <div class="ruleWord">{{ ruleForm.update_time }}</div>
-                  <!-- <el-input v-model="ruleForm.update_time" disabled></el-input> -->
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="所属机构" prop="update_time">
                   <div class="ruleWord">{{ ruleForm.update_time }}</div>
-                  <!-- <el-input v-model="ruleForm.update_time" disabled></el-input> -->
                 </el-form-item>
               </el-col>
             </el-row>
@@ -196,8 +171,6 @@
                     style="width: 240px"
                   ></el-input>
                 </el-form-item>
-                <!-- <span>学员编号</span>
-                <el-input disabled v-model="ruleForm.uid"></el-input> -->
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="手机号码" prop="create_time">

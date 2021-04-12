@@ -16,7 +16,13 @@
           注册日期：{{ detailData.create_time || '--' }}
         </div>
         <div class="header-item">
-          <el-button type="primary" @click="openSingUpDialog">报名</el-button>
+          <el-button
+            type="primary"
+            @click="openSingUpDialog"
+            v-if="!detailData.aid"
+            >报名</el-button
+          >
+          <el-button type="primary" disabled v-else>已报名</el-button>
         </div>
       </div>
       <el-tabs v-model="activeName">

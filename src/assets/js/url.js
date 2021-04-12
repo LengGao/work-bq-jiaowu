@@ -61,6 +61,8 @@ export default {
   getTeacherInfo: '/teacher/info',
   modifyTeacher: '/teacher/modify',
   updateTeacherSort: '/teacher/updateTeacherSort',
+  getSingleCourses: '/course/getSingleCourses',
+  getCoursesDetail: '/course/info',
 
   //视频上传凭据
   generateDataKey: '/video/generatevideodatakey', //视频加密
