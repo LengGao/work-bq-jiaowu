@@ -29,19 +29,13 @@
         </el-button>
       </div>
     </div>
-    <div>
-      <el-button @click="Attendance(2)">
-        批量出勤
-      </el-button>
-      <el-button type="primary" @click="Attendance(1)">
-        批量缺勤
-      </el-button>
-    </div>
+
     <div class="userTable">
       <el-table
         ref="multipleTable"
         :data="listData"
         style="width: 100%"
+        height="700"
         class="min_table"
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
@@ -71,12 +65,16 @@
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column
-          prop="sign_type"
-          label="出勤情况"
-          min-width="110"
-          show-overflow-tooltip
-        >
+        <el-table-column label="出勤情况" min-width="110" show-overflow-tooltip>
+          <template slot="header" slot-scope="scope">
+            <el-checkbox
+              class="returnCheck"
+              :label="2"
+              v-model="checkAll"
+              @change="handleChange"
+              >出勤情况</el-checkbox
+            >
+          </template>
           <template slot-scope="{ row }">
             <div>
               <el-radio-group v-model="row.sign_type">
@@ -107,6 +105,14 @@
         </el-table-column>
       </el-table>
     </div>
+    <div style="margin-top:20px">
+      <el-button @click="Attendance(2)">
+        批量出勤
+      </el-button>
+      <el-button type="primary" @click="Attendance(1)">
+        批量缺勤
+      </el-button>
+    </div>
   </section>
 </template>
 
@@ -116,6 +122,7 @@ export default {
   data() {
     return {
       class_hour_id: '',
+      checkAll: '',
       arrange_id: '',
       searchOptions: [
         {
@@ -157,6 +164,12 @@ export default {
     this.getcourseallclass()
   },
   methods: {
+    handleChange(val) {
+      console.log(val)
+      this.listData.forEach((i) => {
+        i.sign_type = val ? 2 : ''
+      })
+    },
     handleSearch(data) {
       this.pageNum = 1
       this.searchData = {
