@@ -68,8 +68,8 @@
         </el-form-item>
         <el-form-item label="学员性别">
           <el-radio-group v-if="isEdit" v-model="ruleForm.sex" class="w-100">
-            <el-radio label="男" :value="1"></el-radio>
-            <el-radio label="女" :value="2"></el-radio>
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="2">女</el-radio>
           </el-radio-group>
           <span v-else>{{ sexMap[datas.sex] }}</span>
         </el-form-item>
@@ -110,7 +110,7 @@
             <el-option
               v-for="(item, index) in educationOptions"
               :label="item.label"
-              :value="item.value"
+              :value="item.label"
               :key="index"
             ></el-option>
           </el-select>
@@ -152,9 +152,9 @@
             class="w-100"
           >
             <el-option
-              v-for="(item, index) in sourcesOptions"
-              :label="item.label"
-              :value="item.value"
+              v-for="(item, index) in channelOptions"
+              :label="item"
+              :value="index + ''"
               :key="index"
             ></el-option>
           </el-select>
@@ -199,6 +199,7 @@ import { provinceAndCityData, CodeToText } from "element-china-area-data";
 import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 import { updateStudentBasicInfo } from "@/api/eda";
+import { getfieldinfo } from "@/api/etm";
 export default {
   name: "basicInfo",
   props: {
@@ -216,40 +217,34 @@ export default {
         2: "女",
       },
       CodeToText,
-      sourcesOptions: [
-        {
-          label: "百度推广",
-          value: "百度推广",
-        },
-        {
-          label: "上门咨询",
-          value: "上门咨询",
-        },
-        {
-          label: "老学员介绍",
-          value: "老学员介绍",
-        },
-        {
-          label: "机构推荐",
-          value: "机构推荐",
-        },
-      ],
       educationOptions: [
         {
-          label: "高中毕业",
-          value: "高中毕业",
+          value: 1,
+          label: "初中及以下",
         },
         {
-          label: "大专毕业",
-          value: "大专毕业",
+          value: 2,
+          label: "中专/中技",
         },
         {
-          label: "本科毕业",
-          value: "本科毕业",
+          value: 3,
+          label: "高中",
         },
         {
-          label: "研究生毕业",
-          value: "研究生毕业",
+          value: 4,
+          label: "高中",
+        },
+        {
+          value: 5,
+          label: "大专",
+        },
+        {
+          value: 6,
+          label: "本科",
+        },
+        {
+          value: 7,
+          label: "研究生及以上",
         },
       ],
       cityOptions: provinceAndCityData,
@@ -274,12 +269,22 @@ export default {
       selectOptions: [],
       city2: "",
       city1: "",
+      channelOptions: [],
     };
   },
   created() {
     this.getInstitutionSelectData();
   },
   methods: {
+    async getfieldinfo() {
+      const data = {
+        field_text: "渠道来源",
+      };
+      const res = await getfieldinfo(data);
+      if (res.code === 0) {
+        this.channelOptions = res.data.field_content;
+      }
+    },
     // 修改基本信息
     async updateStudentBasicInfo() {
       let from_organization_id = this.ruleForm.from_organization_id;
@@ -288,6 +293,7 @@ export default {
           this.ruleForm.from_organization_id.length - 1
         ];
       }
+      console.log(this.ruleForm);
       const data = {
         ...this.ruleForm,
         id: this.datas.id,
@@ -327,6 +333,7 @@ export default {
     handleEdit() {
       this.isEdit = true;
       this.initDatas();
+      this.getfieldinfo();
     },
     initDatas() {
       for (const key in this.ruleForm) {
