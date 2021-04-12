@@ -128,6 +128,7 @@ export function getCateList(params) {
     params,
   })
 }
+
 // 课程管理=======
 /**
  * 获取课程管理列表

@@ -6,6 +6,7 @@
         :data="searchData"
         @on-search="handleSearch"
       />
+      <el-button type="primary" @click="openBatch">批量录入</el-button>
     </header>
     <el-table
       :data="listData"
@@ -76,7 +77,7 @@
       </div>
     </div>
 
-    <!--弹框--->
+    <!--添加成绩弹框--->
     <AddScore
       v-model="dialogVisible"
       :title="dialogTitle"
@@ -84,12 +85,15 @@
       :typeOptions="typeOptions"
       @on-success="getGradeListByPlan"
     />
+    <!--添加报考弹框--->
     <AddRegistration
       v-model="regisVisible"
       :userName="userName"
-      :erid_arr="erid_arr"
+      :uids="uids"
       @on-success="getGradeListByPlan"
     />
+    <!--批量录入弹框--->
+    <BatchEntry v-model="batchVisible" :pid="pid" />
   </section>
 </template>
 
@@ -97,15 +101,18 @@
 import { cloneOptions } from '@/utils/index'
 import { getGradeListByPlan, getPlanGradeSelect, batchPass } from '@/api/exa'
 import AddScore from './components/AddScore'
+import BatchEntry from './components/BatchEntry'
 import AddRegistration from './components/AddRegistration'
 export default {
   name: 'achieveDetail',
   components: {
     AddScore,
+    BatchEntry,
     AddRegistration,
   },
   data() {
     return {
+      batchVisible: false,
       dialogVisible: false,
       regisVisible: false,
       dialogTitle: '录入成绩',
@@ -113,6 +120,7 @@ export default {
       listData: [],
       userName: '',
       title: {},
+      uids: [],
       typeOptions: [],
       searchOptions: [
         {
@@ -152,16 +160,20 @@ export default {
         search_box: '',
         pid: '',
       },
+      pid: '',
       currentId: '',
       erid_arr: [],
     }
   },
   created() {
-    this.searchData.pid = this.$route.query.id
+    this.searchData.pid = this.pid = this.$route.query.id
     this.getPlanGradeSelect()
     this.getGradeListByPlan()
   },
   methods: {
+    openBatch() {
+      this.batchVisible = true
+    },
     addRegistration() {
       if (this.erid_arr.length > 0) {
         this.regisVisible = true
@@ -198,25 +210,18 @@ export default {
       this.erid_arr = val.map((i) => {
         return i.id
       })
+      this.uids = val.map((i) => {
+        return i.uid
+      })
       let erid_arr_name = val.map((i) => {
         return i.user_realname
       })
       let userNameArr = ''
-      if (erid_arr_name.length > 2) {
-        userNameArr =
-          erid_arr_name[0] +
-          ',' +
-          erid_arr_name[1] +
-          '等' +
-          erid_arr_name.length +
-          '名学生'
-      } else if ((erid_arr_name.length = 2)) {
-        userNameArr = erid_arr_name.join(',')
-      } else {
-        userNameArr = erid_arr_name[0]
-      }
+      let len = erid_arr_name.length
+      const name = erid_arr_name.slice(0, 2)
+      const nameStr = len > 2 ? `  ...等${len}人` : ''
+      userNameArr = name.join(',') + nameStr
       this.userName = userNameArr
-      // console.log(userNameArr)
     },
     handlePageChange(val) {
       this.pageNum = val
@@ -278,6 +283,11 @@ export default {
 .el-table__header tr {
   background-color: #f8f8f8;
   color: #909399;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .green {
   color: #43d100;

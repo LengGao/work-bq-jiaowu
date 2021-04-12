@@ -17,66 +17,89 @@
     >
       <el-row>
         <el-col :lg="8" :xs="8" :sm="8" :xl="8">
-          <el-form-item label="学生姓名"
-            >{{ userOptions.user_realname }}
-          </el-form-item>
+          <div class="subject_box">
+            <p>学生姓名</p>
+            <span>{{ userOptions.user_realname }}</span>
+          </div>
         </el-col>
         <el-col :lg="8" :xs="8" :sm="8" :xl="8">
-          <el-form-item label="手机号码">
-            {{ userOptions.telphone }}</el-form-item
-          >
+          <div class="subject_box">
+            <p>手机号码</p>
+            <span>{{ userOptions.telphone }}</span>
+          </div>
         </el-col>
         <el-col :lg="8" :xs="8" :sm="8" :xl="8">
-          <el-form-item label="考试计划">
-            {{ userOptions.plan_name }}</el-form-item
-          >
+          <div class="subject_box">
+            <p>考试计划</p>
+            <span>{{ userOptions.plan_name }}</span>
+          </div>
         </el-col>
       </el-row>
       <el-row v-for="(item, index) in subject_item" :key="index">
-        <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-          <el-form-item :label="item.subject_name">
+        <el-col :lg="8" :xs="8" :sm="8" :xl="8">
+          <div class="subject_box">
+            <p class="subject_name">{{ item.subject_name }}:</p>
             <el-input
               type="number"
               style="width:97px"
+              placeholder="请输入分数"
               :max="item.total_score"
               v-model="item.score"
               @input="subjectInput(subject_item)"
             ></el-input>
-          </el-form-item>
+          </div>
         </el-col>
-        <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-          <el-form-item label="考试状态">
-            <div
+        <el-col :lg="8" :xs="8" :sm="8" :xl="8">
+          <div class="subject_box">
+            <p>总分</p>
+            <span>
+              {{ item.total_score }}
+            </span>
+          </div>
+        </el-col>
+        <el-col :lg="8" :xs="8" :sm="8" :xl="8">
+          <div class="subject_box">
+            <p>考试状态</p>
+            <span
               :class="
                 item.score >= item.pass_score ? 'qualified' : 'unqualified'
               "
             >
               {{ item.score >= item.pass_score ? '合格' : '不合格' }}
+            </span>
+          </div>
+        </el-col>
+        <div style="">
+          <el-col
+            :lg="8"
+            :xs="8"
+            :sm="8"
+            :xl="8"
+            v-show="item.children && item.children.length"
+            v-for="(v, i) in item.children"
+            :key="i"
+          >
+            <div class="subject_sub_box">
+              <p>
+                {{ v.subject_name }}
+              </p>
+
+              <el-input
+                type="number"
+                style="width:97px"
+                placeholder="请输入分数"
+                v-model="v.score"
+                @input="subjectChildInput(item)"
+              ></el-input>
             </div>
-          </el-form-item>
-        </el-col>
-        <el-col
-          :lg="8"
-          :xs="8"
-          :sm="8"
-          :xl="8"
-          v-show="item.children && item.children.length"
-          v-for="(v, i) in item.children"
-          :key="i"
-        >
-          <el-form-item :label="v.subject_name">
-            <el-input
-              type="number"
-              style="width:97px"
-              v-model="v.score"
-              @input="subjectChildInput(item)"
-            ></el-input>
-          </el-form-item>
-        </el-col>
+          </el-col>
+        </div>
       </el-row>
       <el-row>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
-          <el-form-item label="合计总分"> {{ totalScore }}</el-form-item>
+          <el-form-item label="合计总分">
+            {{ totalScore + '/' + userOptions.total_score }}</el-form-item
+          >
         </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="成绩状态" prop="">
@@ -274,5 +297,33 @@ export default {
 .dialog-footer {
   display: flex;
   justify-content: center;
+}
+.subject_box {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-bottom: 20px;
+  p {
+    margin-right: 20px;
+  }
+}
+.subject_name {
+  font-family: 'Microsoft YaHei UI Bold', 'Microsoft YaHei UI Regular',
+    'Microsoft YaHei UI', sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: #606266;
+  font-size: 14px;
+}
+.subject_sub_box {
+  background-color: rgba(242, 246, 252, 1);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  // height: 40px;
+  margin-bottom: 20px;
+  p {
+    margin-right: 20px;
+  }
 }
 </style>

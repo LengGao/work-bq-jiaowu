@@ -5,18 +5,18 @@
       <div class="detail-header">
         <div class="header-item header-user">
           <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
-          <span class="name">{{ detailData.surname || "--" }}</span>
+          <span class="name">{{ detailData.surname || '--' }}</span>
         </div>
-        <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
-        <div class="header-item">手机号码：{{ detailData.mobile || "--" }}</div>
+        <div class="header-item">ID：{{ detailData.uid || '--' }}</div>
+        <div class="header-item">手机号码：{{ detailData.mobile || '--' }}</div>
         <div class="header-item">
-          身份证码：{{ detailData.id_card_number || "--" }}
-        </div>
-        <div class="header-item">
-          注册日期：{{ detailData.create_time || "--" }}
+          身份证码：{{ detailData.id_card_number || '--' }}
         </div>
         <div class="header-item">
-          <el-button type="primary">报名</el-button>
+          注册日期：{{ detailData.create_time || '--' }}
+        </div>
+        <div class="header-item">
+          <el-button type="primary" @click="openSingUpDialog">报名</el-button>
         </div>
       </div>
       <el-tabs v-model="activeName">
@@ -35,46 +35,55 @@
         :datas="detailData"
         :uid="detailData.uid"
       />
+      <!-- 报名 -->
+      <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
     </section>
   </div>
 </template>
 
 <script>
-import { getStudentBasicDetail } from "@/api/eda";
-
+import { getStudentBasicDetail } from '@/api/eda'
+import CustomeRegist from '@/views/etm/components/customeRegist'
 export default {
-  name: "studentDetail",
+  name: 'studentDetail',
+  components: {
+    CustomeRegist,
+  },
   data() {
     return {
-      activeName: "BasicInfo",
+      signUpDialog: false,
+      activeName: 'BasicInfo',
       detailData: {},
-    };
+    }
   },
   computed: {
     getComponent() {
       if (this.activeName) {
         return () =>
-          import(`../../eda/studentCenter/components/${this.activeName}.vue`);
+          import(`../../eda/studentCenter/components/${this.activeName}.vue`)
       }
     },
   },
   created() {
-    this.getStudentBasicDetail();
+    this.getStudentBasicDetail()
   },
   methods: {
+    openSingUpDialog() {
+      this.signUpDialog = true
+    },
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {
-        uid: this.$route.query?.uid || "",
-      };
-      const res = await getStudentBasicDetail(data);
+        uid: this.$route.query?.uid || '',
+      }
+      const res = await getStudentBasicDetail(data)
       if (res.code === 0) {
-        console;
-        this.detailData = res.data;
+        console
+        this.detailData = res.data
       }
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

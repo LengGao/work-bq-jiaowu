@@ -123,6 +123,8 @@ export default {
           attrs: {
             placeholder: '所属分类',
             clearable: true,
+            props: { checkStrictly: true },
+            filterable: true,
             options: [],
           },
         },
@@ -199,8 +201,11 @@ export default {
       })
     },
     // 导出成绩按学员
-    async exportUserGrade(category_id) {
-      const data = { category_id }
+    async exportUserGrade() {
+      const data = {
+        ...this.searchData,
+      }
+      console.log(this.searchData)
       const res = await exportUserGrade(data)
       if (res.code === 0) {
         this.$message.success(res.message)
@@ -243,8 +248,8 @@ export default {
       this.pageNum = 1
       this.searchData = {
         ...data,
-        cate_id: data.cate_id?.pop() || 0,
-        foid: data.foid.pop(),
+        cate_id: Array.isArray(data.cate_id) ? data.cate_id.pop() : 0,
+        foid: Array.isArray(data.foid) ? data.foid.pop() : 0,
         start_time: times[0],
         end_time: times[1],
       }
