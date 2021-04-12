@@ -1016,6 +1016,90 @@ let resource = {
       },
     })
   },
+  //课程详情
+  getCoursesDetail(self, id) {
+    let config = {
+      id: id,
+    }
+    console.log(config)
+    axiosHttp({
+      url: url.getCoursesDetail,
+      data: config,
+      method: 'GET',
+      then(res) {
+        let info = res.data.data.info
+        console.log(info)
+        // self.ruleForm = info
+        self.ruleForm.is_topping = info.is_topping
+        self.ruleForm.course_name = info.course_name
+        self.ruleForm.course_category_id = info.course_category_id
+        self.ruleForm.teacher_id = info.teacher_id
+        self.ruleForm.video_collection_id = info.video_collection_id
+        self.ruleForm.problem_course_id = info.problem_course_id
+        self.ruleForm.sale_type = info.sale_type
+        self.ruleForm.course_price = info.course_price
+        self.ruleForm.past_price = info.past_price
+        self.ruleForm.index_category_id = info.index_category_id
+        self.ruleForm.fictitious_num = info.fictitious_num
+        self.ruleForm.cover_img = info.cover_img
+        self.ruleForm.is_hot = info.is_hot
+        self.ruleForm.introduction = info.introduction
+        self.ruleForm.edu_qr_code = info.edu_qr_code
+        self.ruleForm.is_fictitious = info.is_fictitious
+        self.ruleForm.sort = info.sort
+        self.ruleForm.include_course_ids = info.include_course_ids
+        self.ruleForm.class_type = info.class_type
+        self.ruleForm.brief = info.brief
+        self.ruleForm.free_sort = info.free_sort
+        self.ruleForm.hot_sort = info.hot_sort
+        self.editor.txt.html(info.introduction)
+        if (info.course_category_id != '' && self.$route.query.setMeal == 1) {
+          //课程题库列表
+          self.$api.getProblemCourseList(self, 'questionBank')
+          //视屏列表
+          self.$api.videocollectionlist(self, 'videoData')
+        }
+        //chapterIds中字符串转数组的方法eval()
+        //  let Str = '[' + info.chapterIds + ']'
+        //  let Arr = eval('(' + Str + ')')
+        self.chapterCo = info.include_course_ids
+        console.log(info.cover_img)
+        if (info.cover_img != '') {
+          self.haschoose = true
+          self.url = info.cover_img
+        } else {
+          self.haschoose = false
+          self.url = ''
+        }
+        var _self = self
+
+        let _obj = {}
+        let i = 0
+        self.courseData.forEach((v, k) => {
+          // console.log(11)
+          _self.chapterCo.forEach((vo, key) => {
+            if (v.course_id == vo) {
+              var _temp = {}
+              _temp['course_id'] = v.course_id
+              _temp['course_name'] = v.course_name
+              //console.log(_temp)
+              _obj[i] = _temp
+              i++
+            }
+          })
+          console.log(_obj)
+        })
+        self.taglist = _obj
+        self.ruleForm.include_course_ids = info.include_course_ids
+        console.log(info.include_course_ids)
+        self.chapterTags = self.chapterCo
+        // self.ruleForm.host_man = info.host_man
+        // self.ruleForm.institution_name = info.institution_name
+        // self.ruleForm.telephone = info.telephone
+        // self[name] = res.data.data
+      },
+    })
+  },
   //添加课程资料
   addAppendFile(self, ruleForm) {
     let config = {
@@ -1094,6 +1178,26 @@ let resource = {
           self.$api.getvideochapter(self, 'spaceList')
           self.dialogVisible = false
         }
+      },
+    })
+  },
+  //获取关联课程
+  getSingleCourses(self, name) {
+    // let config = {
+    //   id: id,
+    // }
+    // console.log(config)
+    axiosHttp({
+      url: url.getSingleCourses,
+      // data: config,
+      // method: 'GET',
+      then(res) {
+        console.log(res.data.data)
+
+        // self.ruleForm.host_man = info.host_man
+        // self.ruleForm.institution_name = info.institution_name
+        // self.ruleForm.telephone = info.telephone
+        self[name] = res.data.data.list
       },
     })
   },
