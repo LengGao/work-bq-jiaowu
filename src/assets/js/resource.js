@@ -325,7 +325,7 @@ let resource = {
       problem: ruleForm.problem,
       textbooks: ruleForm.textbooks,
       status: ruleForm.status,
-      applay: parseInt(ruleForm.applay),
+
       school: ruleForm.school,
     }
     // console.log(config)
@@ -389,7 +389,7 @@ let resource = {
         problem: ruleForm.problem,
         textbooks: ruleForm.textbooks,
         status: ruleForm.status,
-        applay: parseInt(ruleForm.applay),
+
         school: ruleForm.school,
       }
     }

@@ -5,26 +5,77 @@
     </div>
     <section class="mainwrap">
       <div class="head-search">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <el-button type="primary" @click="projectDialog">
           添加项目
         </el-button>
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="schoolData.data" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-          <el-table-column label="项目ID" show-overflow-tooltip min-width="90" prop="project_id">
+        <el-table
+          ref="multipleTable"
+          :data="schoolData.data"
+          style="width: 100%"
+          class="min_table"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+        >
+          <el-table-column
+            label="项目ID"
+            show-overflow-tooltip
+            min-width="90"
+            prop="project_id"
+          >
           </el-table-column>
-          <el-table-column prop="project_name" label="项目名称" min-width="200" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="category_name" label="所属分类" min-width="110" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="project_price" label="价格" min-width="110" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="lowest_price" label="最低价格" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column
+            prop="project_name"
+            label="项目名称"
+            min-width="200"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="project_price"
+            label="价格"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="lowest_price"
+            label="最低价格"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
 
-          <el-table-column prop="buy_number" label="购买人数" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column
+            prop="buy_number"
+            label="购买人数"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
 
-          <el-table-column label="是否启用" min-width="150" show-overflow-tooltip>
+          <el-table-column
+            label="是否启用"
+            min-width="150"
+            show-overflow-tooltip
+          >
             <template slot-scope="scope">
-              <el-switch active-color="#13ce66" v-model="scope.row.project_status" :active-value="1" :inactive-value="2" @change="changeSwitch(scope.row)">
+              <el-switch
+                active-color="#13ce66"
+                v-model="scope.row.project_status"
+                :active-value="1"
+                :inactive-value="2"
+                @change="changeSwitch(scope.row)"
+              >
               </el-switch>
             </template>
           </el-table-column>
@@ -32,31 +83,59 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display:flex;justify-content:center">
-                <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
-                <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                <el-button type="text" @click="handleEdit(scope.row)"
+                  >编辑</el-button
+                >
+                <el-button type="text" @click="handleDelete(scope.row)"
+                  >删除</el-button
+                >
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
       <!--添加项目弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="1000px">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible"
+        width="1000px"
+      >
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="100px"
+          class="demo-ruleForm"
+        >
           <h3 class="project-h3" style="margin-bottom:20px">
             基本信息
           </h3>
           <el-row>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="项目名称" prop="project_name">
-                <el-input placeholder="请输入项目名称" v-model="ruleForm.project_name" class="input-width"></el-input>
+                <el-input
+                  placeholder="请输入项目名称"
+                  v-model="ruleForm.project_name"
+                  class="input-width"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="所属分类">
-                <el-cascader class="common-width" v-model="ruleForm.category_id" :options="selectData" :props="{ checkStrictly: true }" @change="handleChange"></el-cascader>
+                <el-cascader
+                  class="common-width"
+                  v-model="ruleForm.category_id"
+                  :options="selectData"
+                  :props="{ checkStrictly: true }"
+                  @change="handleChange"
+                ></el-cascader>
                 <!-- <el-input
                   placeholder="请输入分类名称"
                   v-model="ruleForm.category_id"
@@ -68,27 +147,56 @@
           <el-row>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="项目价格" prop="price">
-                <el-input type="number" placeholder="请输入项目价格" v-model="ruleForm.price" class="input-width"></el-input>
+                <el-input
+                  type="number"
+                  placeholder="请输入项目价格"
+                  v-model="ruleForm.price"
+                  class="input-width"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="最低价格" prop="lowest_price">
-                <el-input type="number" placeholder="请输入最低价格" v-model="ruleForm.lowest_price" class="input-width"></el-input>
+                <el-input
+                  type="number"
+                  placeholder="请输入最低价格"
+                  v-model="ruleForm.lowest_price"
+                  class="input-width"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="项目周期">
-                <el-radio-group v-model="ruleForm.service_type" @change="choseServicetype">
+                <el-radio-group
+                  v-model="ruleForm.service_type"
+                  @change="choseServicetype"
+                >
                   <el-radio :label="1">服务时长</el-radio>
                   <el-radio :label="2">有效期限</el-radio>
                 </el-radio-group>
-                <el-select v-if="ruleForm.service_type == 1" v-model="ruleForm.service_period" placeholder="请选择服务时长">
-                  <el-option v-for="item in timeOptions" :key="item.id" :label="item.value" :value="item.id">
+                <el-select
+                  v-if="ruleForm.service_type == 1"
+                  v-model="ruleForm.service_period"
+                  placeholder="请选择服务时长"
+                >
+                  <el-option
+                    v-for="item in timeOptions"
+                    :key="item.id"
+                    :label="item.value"
+                    :value="item.id"
+                  >
                   </el-option>
                 </el-select>
-                <el-date-picker v-if="ruleForm.service_type == 2" v-model="ruleForm.service_effective" type="date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" placeholder="选择日期">
+                <el-date-picker
+                  v-if="ruleForm.service_type == 2"
+                  v-model="ruleForm.service_effective"
+                  type="date"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期"
+                >
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -123,7 +231,12 @@
             课程
           </li>
           <li class="project-tag">
-            <el-tag v-for="item in courseTag" :key="item.course_id" style="margin:0 5px 5px 0">{{ item.course_name }}</el-tag>
+            <el-tag
+              v-for="item in courseTag"
+              :key="item.course_id"
+              style="margin:0 5px 5px 0"
+              >{{ item.course_name }}</el-tag
+            >
           </li>
           <li @click="courseDialogShow(courseTag)" style="cursor:pointer">
             选择
@@ -134,7 +247,12 @@
             题库
           </li>
           <li class="project-tag">
-            <el-tag v-for="item in quesTag" :key="item.id" style="margin:0 5px 5px 0">{{ item.title }}</el-tag>
+            <el-tag
+              v-for="item in quesTag"
+              :key="item.id"
+              style="margin:0 5px 5px 0"
+              >{{ item.title }}</el-tag
+            >
           </li>
           <li style="cursor:pointer" @click="questionShow">
             选择
@@ -145,7 +263,12 @@
             教材
           </li>
           <li class="project-tag">
-            <el-tag v-for="item in materialTag" :key="item.book_id" style="margin:0 5px 5px 0">{{ item.book_name }}</el-tag>
+            <el-tag
+              v-for="item in materialTag"
+              :key="item.book_id"
+              style="margin:0 5px 5px 0"
+              >{{ item.book_name }}</el-tag
+            >
           </li>
           <li @click="materialDialogShow" style="cursor:pointer">
             选择
@@ -153,12 +276,26 @@
         </ul>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="handleConfirm('ruleForm')">确 定</el-button>
+          <el-button type="primary" @click="handleConfirm('ruleForm')"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
-      <CourseDialog v-model="showCourse" @on-coursesuccess="handlecourse" :courseTag="courseTag" />
-      <MaterialDialog v-model="showMaterial" @on-materialsuccess="handleMaterial" :materialTag="materialTag" />
-      <QuestionBank v-model="showQues" :quesTag="quesTag" @on-quesuccess="handleQuestion" />
+      <CourseDialog
+        v-model="showCourse"
+        @on-coursesuccess="handlecourse"
+        :courseTag="courseTag"
+      />
+      <MaterialDialog
+        v-model="showMaterial"
+        @on-materialsuccess="handleMaterial"
+        :materialTag="materialTag"
+      />
+      <QuestionBank
+        v-model="showQues"
+        :quesTag="quesTag"
+        @on-quesuccess="handleQuestion"
+      />
     </section>
   </div>
 </template>
@@ -197,7 +334,7 @@ export default {
         problem: [1, 2, 3],
         textbooks: [1, 2, 3],
         status: '',
-        applay: '',
+
         school: '',
       },
       searchOptions: [
@@ -219,10 +356,16 @@ export default {
         },
       ],
       rules: {
-        project_name: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        category_id: [{ required: true, message: '请输入活动名称', trigger: 'change' }],
+        project_name: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+        ],
+        category_id: [
+          { required: true, message: '请输入活动名称', trigger: 'change' },
+        ],
         price: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
-        lowest_price: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        lowest_price: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+        ],
       },
 
       timeOptions: [
@@ -379,7 +522,7 @@ export default {
         problem: [],
         textbooks: [],
         status: '',
-        applay: '',
+
         school: '',
       }
     },

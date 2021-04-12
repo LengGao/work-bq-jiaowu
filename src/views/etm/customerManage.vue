@@ -33,7 +33,7 @@
               <div>
                 <h3>客户总数</h3>
                 <div class="time_num">
-                  {{ analysis.total_count }}
+                  {{ listTotal }}
                 </div>
               </div>
             </div>
