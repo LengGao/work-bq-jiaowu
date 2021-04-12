@@ -26,8 +26,8 @@
             <span class="list-item-name">{{ item.user_realname }}</span>
             <span
               class="list-item-status"
-              :style="{ color: statusColors[item.audit_res] }"
-              >{{ applyStatusMap[item.audit_res] }}</span
+              :style="{ color: statusColors[item.audit_status] }"
+              >{{ applyStatusMap[item.audit_status] }}</span
             >
           </li>
         </ul>
@@ -196,15 +196,17 @@ export default {
       btnLoading: false,
       activeIndex: 0,
       statusColors: {
-        0: "#2798ee",
-        1: "#43D100",
+        1: "#2798ee",
         2: "#FD6552",
+        3: "#43D100",
+        4: "#FD6552",
       },
       batchId: "",
       applyStatusMap: {
-        0: "待审核",
-        1: "审核通过",
-        2: "驳回",
+        1: "待审核",
+        2: "资料缺失",
+        3: "审核通过",
+        4: "审核驳回",
       },
     };
   },
