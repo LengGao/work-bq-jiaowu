@@ -23,7 +23,7 @@
       <component :is="getComponent" />
     </template>
   </div>
-</template>  
+</template>
 <script>
 import { mapGetters } from 'vuex'
 export default {
@@ -39,7 +39,7 @@ export default {
         2: 'RecruitStudents',
         //===============
         // 5: 'Administrators',
-        // 5: 'RecruitStudents',
+        5: 'RecruitStudents',
       },
     }
   },
@@ -47,7 +47,8 @@ export default {
     ...mapGetters(['identity']),
     getComponent() {
       if (this.activeName) {
-        return () => import(`./components/${this.componentNames[this.activeName]}/index`)
+        return () =>
+          import(`./components/${this.componentNames[this.activeName]}/index`)
       }
       return ''
     },
