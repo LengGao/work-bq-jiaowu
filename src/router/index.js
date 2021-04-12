@@ -84,6 +84,12 @@ export const asyncRouter = [
         component: () => import('@/views/sou/courseManage.vue'),
         meta: { title: '课程管理', icon: 'product-add' },
       },
+      {
+        path: 'questionBank',
+        name: 'questionBank',
+        component: () => import('@/views/sou/questionBankManagement/index.vue'),
+        meta: { title: '题库管理', icon: 'product-add' },
+      },
       //课程管理组件开始
       {
         path: 'createClass',

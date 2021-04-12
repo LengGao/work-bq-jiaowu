@@ -397,3 +397,51 @@ export function getTimetableList(params) {
     params,
   })
 }
+// 题库列表
+export function getQuestionBankList(params) {
+  return request({
+    url: '/questionBank/getPageList',
+    method: 'get',
+    params,
+  })
+}
+// 更新题库状态
+export function updateQuestionBankStatus(data) {
+  return request({
+    url: '/questionBank/status',
+    method: 'post',
+    data,
+  })
+}
+// 删除题库
+export function deleteQuestionBank(data) {
+  return request({
+    url: 'questionBank/deleted',
+    method: 'post',
+    data,
+  })
+}
+// 添加题库
+export function addQuestionBank(data) {
+  return request({
+    url: 'questionBank/insert',
+    method: 'post',
+    data,
+  })
+}
+// 添加题库
+export function updateQuestionBank(data) {
+  return request({
+    url: 'questionBank/modify',
+    method: 'post',
+    data,
+  })
+}
+// 题库详情
+export function questionBankDetail(params) {
+  return request({
+    url: '/questionBank/info',
+    method: 'get',
+    params,
+  })
+}
