@@ -179,10 +179,10 @@
         "
             >
               <div class="headPortrait el-icon-plus" @click="addIcon"></div>
-              <div style="color:#aaa;ling-height:0px!important">
+              <!-- <div style="color:#aaa;ling-height:0px!important">
                 <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
                 <p><span> 2. 推荐尺寸200*200px或者1:1</span></p>
-              </div>
+              </div> -->
             </div>
             <div v-show="haschoose" class=" imageBox ">
               <i class=" iconjia el-icon-plus" @click="addIcon"></i>
