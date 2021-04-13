@@ -45,7 +45,7 @@
             type="date"
             format="yyyy-MM-dd "
             value-format="yyyy-MM-dd "
-            style="width:240px"
+            style="width: 240px"
             placeholder="选择日期"
           >
           </el-date-picker>
@@ -140,7 +140,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="备注信息" prop="tips" style="width:100%">
+        <el-form-item label="备注信息" prop="tips" style="width: 100%">
           <el-input v-model="ruleForm.tips" type="textarea"></el-input>
         </el-form-item>
       </el-form>
@@ -170,12 +170,12 @@ import {
   regionData,
   provinceAndCityData,
   TextToCode,
-} from 'element-china-area-data'
-import { getInstitutionSelectData } from '@/api/sou'
-import { cloneOptions } from '@/utils/index'
-import { getfieldinfo } from '@/api/etm'
-import customeRegist from './customeRegist'
-import { getBirth, getSex } from '@/utils/index'
+} from "element-china-area-data";
+import { getInstitutionSelectData } from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
+import { getfieldinfo } from "@/api/etm";
+import customeRegist from "./customeRegist";
+import { getBirth, getSex } from "@/utils/index";
 export default {
   components: {
     customeRegist,
@@ -187,8 +187,8 @@ export default {
     },
     seaUserInfo: {
       type: Object,
-      default: function() {
-        return {}
+      default: function () {
+        return {};
       },
     },
   },
@@ -203,105 +203,105 @@ export default {
       field_content: [],
       organData: {},
       ruleForm: {
-        wechat: '',
-        second_mobile: '',
-        location: '',
-        surname: '',
-        mobile: '',
-        id_card_number: '',
+        wechat: "",
+        second_mobile: "",
+        location: "",
+        surname: "",
+        mobile: "",
+        id_card_number: "",
         sex: 0,
-        birthday: '',
+        birthday: "",
         marry: 0,
-        qq: '',
-        email: '',
-        culture: '',
-        province: '',
-        city: '',
-        from_organization_id: '',
-        sources: '',
-        tips: '',
-        uid: '',
+        qq: "",
+        email: "",
+        culture: "",
+        province: "",
+        city: "",
+        from_organization_id: "",
+        sources: "",
+        tips: "",
+        uid: "",
       },
       addVisible: false,
       openStatus: this.innerVisible,
       cultures: [
         {
           value: 1,
-          label: '初中及以下',
+          label: "初中及以下",
         },
         {
           value: 2,
-          label: '中专/中技',
+          label: "中专/中技",
         },
         {
           value: 3,
-          label: '高中',
+          label: "高中",
         },
         {
           value: 4,
-          label: '高中',
+          label: "高中",
         },
         {
           value: 5,
-          label: '大专',
+          label: "大专",
         },
         {
           value: 6,
-          label: '本科',
+          label: "本科",
         },
         {
           value: 7,
-          label: '研究生及以上',
+          label: "研究生及以上",
         },
       ],
       rules: {
         surname: [
-          { required: true, message: '请填写学生姓名', trigger: 'blur' },
+          { required: true, message: "请填写学生姓名", trigger: "blur" },
         ],
         // email: [{ validator: validMail, trigger: 'blur', required: true }],
         mobile: [
-          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          { required: true, message: "请输入手机号码", trigger: "blur" },
           {
-            validator: function(rule, value, callback) {
+            validator: function (rule, value, callback) {
               if (/^1\d\d{9}$/.test(value) == false) {
-                callback(new Error('请输入正确的手机号'))
+                callback(new Error("请输入正确的手机号"));
               } else {
-                callback()
+                callback();
               }
             },
-            trigger: 'blur',
+            trigger: "blur",
           },
         ],
         id_card_number: [
-          { required: true, message: '请输入身份证ID', trigger: 'blur' },
+          { required: true, message: "请输入身份证ID", trigger: "blur" },
           {
-            validator: function(rule, value, callback) {
+            validator: function (rule, value, callback) {
               if (
                 /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) == false
               ) {
-                callback(new Error('你的身份证格式不正确'))
+                callback(new Error("你的身份证格式不正确"));
               } else {
-                callback()
+                callback();
               }
             },
-            trigger: 'blur',
+            trigger: "blur",
           },
         ],
         // sources: [
         //   { required: true, message: '请填写渠道来源', trigger: 'change' },
         // ],
       },
-    }
+    };
   },
   watch: {
     innerVisible(val) {
-      this.openStatus = val
+      this.openStatus = val;
     },
     seaUserInfo(val) {
-      console.log(this.seaUserInfo)
-      this.ruleForm.uid = this.seaUserInfo.uid
-      this.ruleForm.mobile = this.seaUserInfo.mobile
-      this.ruleForm.surname = this.seaUserInfo.realname
+      console.log(this.seaUserInfo);
+      this.ruleForm.uid = this.seaUserInfo.uid;
+      this.ruleForm.mobile = this.seaUserInfo.mobile;
+      this.ruleForm.surname = this.seaUserInfo.realname;
     },
   },
   created() {},
@@ -309,88 +309,88 @@ export default {
     // 获取渠道来源
     async getfieldinfo() {
       const data = {
-        field_text: '渠道来源',
-      }
-      const res = await getfieldinfo(data)
+        field_text: "渠道来源",
+      };
+      const res = await getfieldinfo(data);
       if (res.code === 0) {
         this.field_content = res.data.field_content.map((i, index) => {
-          var obj = {}
-          obj.value = index + 1
-          obj.label = i
-          return obj
-        })
+          var obj = {};
+          obj.value = index;
+          obj.label = i;
+          return obj;
+        });
       }
     },
     // 获取机构
     async getInstitutionSelectData() {
-      const data = { list: true }
-      const res = await getInstitutionSelectData(data)
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
         this.institutionOption = cloneOptions(
           res.data,
-          'institution_name',
-          'institution_id',
-          'children'
-        )
+          "institution_name",
+          "institution_id",
+          "children"
+        );
       }
     },
     handleOpen() {
-      this.getInstitutionSelectData()
-      this.getfieldinfo()
+      this.getInstitutionSelectData();
+      this.getfieldinfo();
     },
     handleChange(value) {
-      console.log(this.selectedOptions)
-      console.log(value) // ["110000", "110100", "110101"]
+      console.log(this.selectedOptions);
+      console.log(value); // ["110000", "110100", "110101"]
       //CodeToText是个大对象，属性是区域码，属性值是汉字 用法例如：CodeToText['110000']输出北京市
       // console.log(
       //   CodeToText[value[0]],
       //   CodeToText[value[1]],
       //   CodeToText[value[2]]
       // ) //北京市 市辖区 东城区
-      this.ruleForm.province = value[0]
-      this.ruleForm.city = value[1]
+      this.ruleForm.province = value[0];
+      this.ruleForm.city = value[1];
     },
     handleLocal(value) {
-      console.log(value)
+      console.log(value);
 
-      this.ruleForm.location = value[0]
+      this.ruleForm.location = value[0];
     },
     getaddStatus(status) {
-      this.addVisible = status
+      this.addVisible = status;
     },
     preserve(formName, num) {
       // console.log(this.ruleForm)
       // this.addVisible = true //客户报名弹框显示
-      console.log(this.addVisible)
+      console.log(this.addVisible);
       //没有自动填充生日
-      if (this.ruleForm.birthday == '') {
-        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number)
+      if (this.ruleForm.birthday == "") {
+        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number);
       }
       //没有自动填充性别
-      if (this.ruleForm.sex == '') {
-        this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
+      if (this.ruleForm.sex == "") {
+        this.ruleForm.sex = getSex(this.ruleForm.id_card_number);
       }
       if (this.ruleForm.from_organization_id) {
-        this.ruleForm.from_organization_id = this.ruleForm.from_organization_id.pop()
+        this.ruleForm.from_organization_id = this.ruleForm.from_organization_id.pop();
       }
-      console.log(this.ruleForm.from_organization_id)
+      console.log(this.ruleForm.from_organization_id);
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$api.addCustomers(this, this.ruleForm, num)
+          this.$api.addCustomers(this, this.ruleForm, num);
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
     doClose() {
       for (var item in this.ruleForm) {
-        this.ruleForm[item] = ''
+        this.ruleForm[item] = "";
       }
-      this.$emit('innerDialog', false)
+      this.$emit("innerDialog", false);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" socped>
