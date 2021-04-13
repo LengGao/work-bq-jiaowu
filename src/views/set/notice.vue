@@ -49,7 +49,7 @@
           </el-pagination>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum"   @pageChange="handlePageChange" />
+          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
         </div>
       </div>
       <!-- 弹窗 -->
@@ -222,17 +222,17 @@ export default {
     },
     //通知推送接口
     async noticepush() {
-    const data = {
-        id: this.id,}
-    const res = await noticepush(data)
-    console.log(res.data.data)
+      const data = {
+        id: this.id,
+      }
+      const res = await noticepush(data)
+      console.log(res.data.data)
     },
     //通知公告列表接口
     async noticelist() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-
       }
       const res = await noticelist(data)
       console.log(res.data.list)
@@ -461,7 +461,7 @@ export default {
   display: none;
 }
 .detailtitle {
-  font-size: 30px;
+  font-size: 28px;
   font-weight: normal;
   color: #333;
   text-align: center;
