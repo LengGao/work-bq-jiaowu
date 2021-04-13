@@ -68,9 +68,9 @@
             <el-checkbox v-model="checked" @change="remember"
               >记住密码</el-checkbox
             >
-            <router-link to="/forget" style="color: #199fff"
+            <!-- <router-link to="/forget" style="color: #199fff"
               >忘记密码</router-link
-            >
+            > -->
           </div>
         </el-form-item>
       </el-form>
