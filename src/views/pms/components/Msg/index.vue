@@ -20,9 +20,10 @@
 
     <ul class="msg-content">
       <li class="msg-item" v-for="(item, index) in listdata" :key="index">
+        <!-- <span class="msg-icon"></span> -->
         <span class="msg-item-info" :title="item.title" @click="msgclick(item)">
           {{ item.title }}</span>
-        <span class="msg-item-date">{{ item.create_time }}</span>
+        <span class="msg-item-date" style="margin-left: auto;">{{ item.create_time }}</span>
       </li>
     </ul>
 
@@ -84,7 +85,7 @@ export default {
         1: '已读',
         2: '未读',
       },
-      pageSize: '8',
+      pageSize: '7',
       total: 0,
       pageNum: 1,
       dialogVisible: false,
@@ -144,7 +145,6 @@ export default {
         this.getSystemAnnouncementList()
       }
     },
-
     // 已读未读接口
     async setUnread() {
       const data = {
@@ -157,7 +157,6 @@ export default {
         this.getSystemAnnouncementList()
       }
     },
-
     handleSizeChange(size) {
       this.pageSize = size
       this.pageNum = 1
@@ -191,19 +190,29 @@ export default {
     line-height: 30px;
   }
   .msg-content {
-    padding-bottom: 30px;
+    padding-bottom: 35px;
     .msg-item {
       display: flex;
-      justify-content: space-between;
-      line-height: 28px;
-      color: #909399;
+      justify-content: flex-start;
+      line-height: 32px;
+      color: #858585;
+      border-bottom: 1px dashed rgb(228, 228, 228);
 
+      .msg-icon {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        margin-top: 12px;
+        padding: 0;
+        // border: 2px solid rgb(185, 185, 185);
+      }
       .msg-item-info {
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
         font-size: 14px;
         cursor: pointer;
+        padding-left: 3px;
       }
       .msg-item-date {
         width: 100px;
