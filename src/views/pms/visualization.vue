@@ -33,10 +33,20 @@ export default {
       activeName: this.$store.state.user.identity + "",
       componentNames: {
         //1教务 2招生 3老师 4财务 5管理员
+<<<<<<< HEAD
         5: "Administrators",
         1: "RecruitStudents",
         4: "RecruitStudents",
         2: "RecruitStudents",
+=======
+        // 5: 'Administrators',
+        // 1: 'RecruitStudents',
+        // 4: 'RecruitStudents',
+        // 2: 'RecruitStudents',
+        //===============
+        5: 'Administrators',
+        // 5: 'RecruitStudents',
+>>>>>>> yqq
       },
     };
   },
@@ -44,8 +54,12 @@ export default {
     ...mapGetters(["identity"]),
     getComponent() {
       if (this.activeName) {
+<<<<<<< HEAD
         return () =>
           import(`./components/${this.componentNames[this.activeName]}/index`);
+=======
+        return () => import(`./components/${this.componentNames[this.activeName]}/index`)
+>>>>>>> yqq
       }
       return "";
     },
