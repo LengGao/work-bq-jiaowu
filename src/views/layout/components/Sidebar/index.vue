@@ -34,7 +34,7 @@
       :show-timeout="200"
       :default-active="$route.path"
       :collapse="isCollapse"
-      background-color="#304156"
+      background-color="#560b3c"
       text-color="#bfcbd9"
       :unique-opened="true"
       :collapse-transition="true"
@@ -185,5 +185,9 @@ export default {
   font-weight: 400;
   color: rgba(0, 0, 0, 0.65);
   line-height: 14px;
+}
+// 选中状态
+/deep/.el-menu-item.is-active {
+  background-color: #3b202b !important;
 }
 </style>

@@ -51,4 +51,7 @@ export default {
   width: 100%;
   background: #fff;
 }
+.sidebar-container {
+  background-color: #560b3c;
+}
 </style>
