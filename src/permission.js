@@ -16,19 +16,13 @@ router.beforeEach((to, from, next) => {
       if (store.getters.userRouter.length === 0) {
         store
           .dispatch('setRouterAndMenu')
-          .then((userRouter) => {
-            // 默认进入第一个路由
-            const firstRoute = userRouter[0]
-            if (to.path === '/visualization' && firstRoute.redirect !== '/visualization') {
-              next({ ...firstRoute, replace: true })
-            } else {
-              next({ ...to, replace: true })
-            }
+          .then(() => {
+            next({ ...to, replace: true })
           })
           .catch((err) => {
             store.dispatch('FedLogOut').then(() => {
               Message.error(err || 'Verification failed, please login again')
-              next({ path: '/' })
+              next({ path: `/login?redirect=${to.path}` })
             })
           })
       } else {

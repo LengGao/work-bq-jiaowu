@@ -39,10 +39,7 @@ export default {
   },
   methods: {
     handleGoMain() {
-      // 返回用户的第一个路由
-      const fristRoute = this.userRouter[0];
-      const to = fristRoute.path ? fristRoute : { path: "/" };
-      this.$router.push({ ...to });
+      this.$router.push({ path: "/" });
     },
   },
 };

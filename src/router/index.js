@@ -35,6 +35,12 @@ export const constantRouterMap = [
     redirect: '/visualization',
     children: [
       {
+        path: 'visualization',
+        name: 'visualization',
+        component: () => import('@/views/pms/visualization.vue'),
+        meta: { title: '工作台', icon: 'shujukanban' },
+      },
+      {
         path: 'cusdetail',
         name: 'cusdetail',
         component: () => import('@/views/fina/finance/index.vue'),
@@ -53,12 +59,7 @@ export const constantRouterMap = [
 ]
 
 export const asyncRouter = [
-  {
-    path: 'visualization',
-    name: 'visualization',
-    component: () => import('@/views/pms/visualization.vue'),
-    meta: { title: '工作台', icon: 'shujukanban' },
-  },
+
   {
     path: '/sou',
     component: Layout,
@@ -235,7 +236,7 @@ export const asyncRouter = [
   {
     path: '/etm',
     component: Layout,
-    redirect: '/etm/enrollmentManagement',
+    redirect: '/etm/customerManage',
     meta: { title: '招生管理', icon: 'zhaoshengguanli' },
     name: 'etm',
     children: [
@@ -674,15 +675,7 @@ const routeToMap = (routers) => {
   return routerMap
 }
 const asyncRouterMap = routeToMap(asyncRouter)
-// visualization 默认路由
-const indexRoute = (route) => {
-  return {
-    path: '',
-    component: Layout,
-    redirect: '/visualization',
-    children: [route],
-  }
-}
+
 // 根据接口返回的数据创建路由
 export const createUserRouter = (data) => {
   const userRouter = []
@@ -702,13 +695,8 @@ export const createUserRouter = (data) => {
           icon: item.icon,
           id: item.id,
         }
-        // 对 visualization 特殊处理
-        if (item.node === 'visualization') {
-          userRouter.push(indexRoute(route))
-        } else {
-          userRouter.push(route)
-        }
-        // 添加到菜单
+        userRouter.push(route)
+        // 添加到菜单 show_at_list ===1：在菜单中显示
         item.show_at_list === 1 && menuList.push(menu)
         // 递归子节点
         if (item.children && item.children.length) {
@@ -722,7 +710,13 @@ export const createUserRouter = (data) => {
   deepCreate(data, userRouter, menuList)
   // 添加 重定向 404
   userRouter.push({ path: '*', redirect: '/404' })
-  console.log(userRouter)
+  // 添加工作台
+  menuList.unshift({
+    name: '工作台',
+    path: '/visualization',
+    icon: 'icongongzuotai',
+    id: 10000,
+  })
   return { userRouter, menuList }
 }
 
