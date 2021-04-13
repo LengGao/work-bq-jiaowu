@@ -158,7 +158,7 @@
               :key="index"
             ></el-option>
           </el-select>
-          <span v-else>{{ datas.sources || "--" }}</span>
+          <span v-else>{{ channelOptions[datas.sources] || "--" }}</span>
         </el-form-item>
         <el-form-item label="所属机构">
           <el-cascader
@@ -273,6 +273,7 @@ export default {
     };
   },
   created() {
+    this.getfieldinfo();
     this.getInstitutionSelectData();
   },
   methods: {
@@ -333,7 +334,6 @@ export default {
     handleEdit() {
       this.isEdit = true;
       this.initDatas();
-      this.getfieldinfo();
     },
     initDatas() {
       for (const key in this.ruleForm) {

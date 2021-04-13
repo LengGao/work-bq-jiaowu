@@ -135,7 +135,7 @@
           >
             <template slot-scope="{ row }">
               <div>
-                {{ row.sex == 1 ? '男' : row.sex == 2 ? '女' : '未知' }}
+                {{ row.sex == 1 ? "男" : row.sex == 2 ? "女" : "未知" }}
               </div>
             </template>
           </el-table-column>
@@ -174,7 +174,11 @@
           >
             <template slot-scope="{ row }">
               <div v-if="row.sources">
-                {{ field_content[row.sources].label }}
+                {{
+                  field_content[row.sources]
+                    ? field_content[row.sources].label
+                    : ""
+                }}
               </div>
               <span v-else>--</span>
             </template>
@@ -213,42 +217,42 @@
 </template>
 
 <script>
-import { getCateList, getInstitutionSelectData } from '@/api/sou'
-import { getproject } from '@/api/eda'
-import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
-import { cloneOptions } from '@/utils/index'
-import addCustomeDialog from './components/addCustomeDialog'
+import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { getproject } from "@/api/eda";
+import { getCustomerList, getInstitutionList, getfieldinfo } from "@/api/etm";
+import { cloneOptions } from "@/utils/index";
+import addCustomeDialog from "./components/addCustomeDialog";
 export default {
-  name: 'myClients',
+  name: "myClients",
   components: {
     addCustomeDialog,
   },
   data() {
     let validMail = (rule, value, callback) => {
-      if (value == '' || value == undefined) {
-        callback(new Error('请填写邮箱'))
+      if (value == "" || value == undefined) {
+        callback(new Error("请填写邮箱"));
       } else {
-        let reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/
+        let reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/;
         if (!reg.test(value)) {
-          callback(new Error('邮箱格式错误'))
+          callback(new Error("邮箱格式错误"));
         } else {
-          callback()
+          callback();
         }
       }
-    }
+    };
     return {
       analysis: {},
       innerVisible: false,
       searchData: {
-        category_id: '',
+        category_id: "",
         date: [],
-        project_id: '',
-        from_org: '',
-        keyword: '',
-        sources: '',
-        online_user: '',
-        all: '',
-        all_in: '',
+        project_id: "",
+        from_org: "",
+        keyword: "",
+        sources: "",
+        online_user: "",
+        all: "",
+        all_in: "",
       },
       listData: [],
       listLoading: false,
@@ -256,26 +260,26 @@ export default {
       listTotal: 0,
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
+          key: "date",
+          type: "datePicker",
           attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd',
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
           },
         },
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
           width: 120,
           events: {
             change: this.handleTypeChange,
           },
           attrs: {
-            placeholder: '所属分类',
+            placeholder: "所属分类",
             clearable: true,
             props: { checkStrictly: true },
             filterable: true,
@@ -283,14 +287,14 @@ export default {
           },
         },
         {
-          key: 'project_id',
-          type: 'select',
+          key: "project_id",
+          type: "select",
           width: 120,
           options: [],
-          optionValue: 'project_id',
-          optionLabel: 'project_name',
+          optionValue: "project_id",
+          optionLabel: "project_name",
           attrs: {
-            placeholder: '所属项目',
+            placeholder: "所属项目",
             clearable: true,
             filterable: true,
           },
@@ -308,117 +312,117 @@ export default {
         //   },
         // },
         {
-          key: 'from_org',
-          type: 'cascader',
+          key: "from_org",
+          type: "cascader",
           width: 120,
           attrs: {
-            placeholder: '推荐机构',
+            placeholder: "推荐机构",
             clearable: true,
             filterable: true,
             options: [],
           },
         },
         {
-          key: 'sources',
-          type: 'select',
+          key: "sources",
+          type: "select",
           width: 120,
-          optionValue: 'value',
-          optionLabel: 'label',
+          optionValue: "value",
+          optionLabel: "label",
           options: [],
           attrs: {
             clearable: true,
-            placeholder: '渠道来源',
+            placeholder: "渠道来源",
           },
         },
         {
-          key: 'pay_status',
-          type: 'select',
+          key: "pay_status",
+          type: "select",
           width: 120,
           options: [
             {
-              value: '0',
-              label: '待验证/等待付款 ',
+              value: "0",
+              label: "待验证/等待付款 ",
             },
             {
-              value: '1',
-              label: '新订单/待入账/已付款',
+              value: "1",
+              label: "新订单/待入账/已付款",
             },
             {
-              value: '2',
-              label: '部分入账',
+              value: "2",
+              label: "部分入账",
             },
             {
-              value: '3',
-              label: '已入账',
+              value: "3",
+              label: "已入账",
             },
             {
-              value: '4',
-              label: '已作废',
+              value: "4",
+              label: "已作废",
             },
             {
-              value: '5',
-              label: '已退款',
+              value: "5",
+              label: "已退款",
             },
           ],
           attrs: {
             clearable: true,
-            placeholder: '成交状态',
+            placeholder: "成交状态",
           },
         },
         {
-          key: 'online_user',
-          type: 'select',
+          key: "online_user",
+          type: "select",
           width: 120,
           options: [
             {
-              value: '1',
-              label: '网课学生',
+              value: "1",
+              label: "网课学生",
             },
             {
-              value: '0',
-              label: '非网课学生',
+              value: "0",
+              label: "非网课学生",
             },
           ],
           attrs: {
             clearable: true,
-            placeholder: '学生类型',
+            placeholder: "学生类型",
           },
         },
         {
-          key: 'keyword',
+          key: "keyword",
 
           attrs: {
-            placeholder: '客户姓名/手机号码',
+            placeholder: "客户姓名/手机号码",
             clearable: true,
           },
         },
       ],
       schoolData: [],
       ruleForm: {
-        surname: '',
-        mobile: '',
-        id_card_number: '',
+        surname: "",
+        mobile: "",
+        id_card_number: "",
         sex: 0,
-        birthday: '',
+        birthday: "",
         marry: 0,
-        qq: '',
-        email: '',
-        culture: '',
-        province: '',
-        city: '',
-        from_organization_id: '',
-        sources: '',
-        tips: '',
+        qq: "",
+        email: "",
+        culture: "",
+        province: "",
+        city: "",
+        from_organization_id: "",
+        sources: "",
+        tips: "",
       },
       curstomerVisible: false,
       tabFun: [
         {
           id: 1,
-          name: '全部客户',
+          name: "全部客户",
         },
         {
           id: 2,
-          name: '我的客户',
+          name: "我的客户",
         },
       ],
       page: 1,
@@ -427,20 +431,20 @@ export default {
       selectData: [],
       projectData: [],
       field_content: [],
-      date: '',
-    }
+      date: "",
+    };
   },
   created() {
-    this.date = this.searchData.date = this.AddDays(new Date(), 7)
-    this.getCateList()
-    this.getfieldinfo()
+    this.date = this.searchData.date = this.AddDays(new Date(), 7);
+    this.getCateList();
+    this.getfieldinfo();
 
     // this.getInstitutionList()
-    this.getInstitutionSelectData()
-    this.getCustomerList()
+    this.getInstitutionSelectData();
+    this.getCustomerList();
   },
   mounted() {
-    console.log(this.date)
+    console.log(this.date);
   },
   filters: {
     // dealType(is_verify) {
@@ -456,105 +460,105 @@ export default {
   methods: {
     // 复制
     handleCopy(val) {
-      const input = document.createElement('input')
-      document.body.appendChild(input)
-      input.setAttribute('value', val)
-      input.select()
-      if (document.execCommand('copy')) {
-        document.execCommand('copy')
-        document.body.removeChild(input)
-        this.$message.success('复制成功')
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
       }
     },
     AddDays(date, days) {
-      var nd = new Date(date)
-      var Y = nd.getFullYear()
-      var M = nd.getMonth() + 1
-      var D = nd.getDate()
-      if (M <= 9) M = '0' + M
-      if (D <= 9) D = '0' + D
-      var nowcdate = Y + '-' + M + '-' + D
+      var nd = new Date(date);
+      var Y = nd.getFullYear();
+      var M = nd.getMonth() + 1;
+      var D = nd.getDate();
+      if (M <= 9) M = "0" + M;
+      if (D <= 9) D = "0" + D;
+      var nowcdate = Y + "-" + M + "-" + D;
 
-      nd = nd.valueOf()
-      nd = nd - days * 24 * 60 * 60 * 1000
-      nd = new Date(nd)
-      var y = nd.getFullYear()
-      var m = nd.getMonth() + 1
-      var d = nd.getDate()
-      if (m <= 9) m = '0' + m
-      if (d <= 9) d = '0' + d
-      var cdate = y + '-' + m + '-' + d
+      nd = nd.valueOf();
+      nd = nd - days * 24 * 60 * 60 * 1000;
+      nd = new Date(nd);
+      var y = nd.getFullYear();
+      var m = nd.getMonth() + 1;
+      var d = nd.getDate();
+      if (m <= 9) m = "0" + m;
+      if (d <= 9) d = "0" + d;
+      var cdate = y + "-" + m + "-" + d;
       // date = cdate + ' - ' + nowcdate
-      var dateArr = []
-      dateArr.push(cdate)
-      dateArr.push(nowcdate)
+      var dateArr = [];
+      dateArr.push(cdate);
+      dateArr.push(nowcdate);
 
-      return dateArr
+      return dateArr;
       // return cdate
     },
 
     handlePageChange(val) {
-      this.pageNum = val
-      this.getCustomerList()
+      this.pageNum = val;
+      this.getCustomerList();
     },
     //客户列表
     async getCustomerList() {
-      this.checkedIds = []
+      this.checkedIds = [];
 
-      this.intent_id = ''
-      console.log(this.searchData.date)
+      this.intent_id = "";
+      console.log(this.searchData.date);
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        date: this.searchData.date[0] + ' - ' + this.searchData.date[1],
+        date: this.searchData.date[0] + " - " + this.searchData.date[1],
         // all: 1,
-      }
-      console.log(data)
-      this.listLoading = true
-      const res = await getCustomerList(data)
-      this.listLoading = false
-      this.listData = res.data.list
-      this.analysis = res.data.analysis[0]
-      this.listTotal = res.data.total
+      };
+      console.log(data);
+      this.listLoading = true;
+      const res = await getCustomerList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.analysis = res.data.analysis[0];
+      this.listTotal = res.data.total;
     },
     toCusDetail(ab) {
       this.$router.push({
-        name: 'cusdetail',
+        name: "cusdetail",
         query: {
           uid: ab.uid,
         },
-      })
+      });
     },
     // 当分类选择时
     handleTypeChange(ids) {
-      const id = ids ? [...ids].pop() : ''
+      const id = ids ? [...ids].pop() : "";
       // this.getcourseallclass(id);
-      this.getproject(id)
+      this.getproject(id);
     },
     // 获取所属分类
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
-          'category_name',
-          'category_id',
-          'son'
-        )
+          "category_name",
+          "category_id",
+          "son"
+        );
       }
     },
     // 获取机构
     async getInstitutionSelectData() {
-      const data = { list: true }
-      const res = await getInstitutionSelectData(data)
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
         this.searchOptions[3].attrs.options = cloneOptions(
           res.data,
-          'institution_name',
-          'institution_id',
-          'children'
-        )
+          "institution_name",
+          "institution_id",
+          "children"
+        );
       }
     },
     // // 获取所属机构
@@ -569,80 +573,80 @@ export default {
     // 获取渠道来源
     async getfieldinfo() {
       const data = {
-        field_text: '渠道来源',
-      }
-      const res = await getfieldinfo(data)
+        field_text: "渠道来源",
+      };
+      const res = await getfieldinfo(data);
       if (res.code === 0) {
         let field_content = res.data.field_content.map((i, index) => {
-          var obj = {}
-          obj.value = index
-          obj.label = i
-          return obj
-        })
-        this.searchOptions[4].options = this.field_content = field_content
+          var obj = {};
+          obj.value = index;
+          obj.label = i;
+          return obj;
+        });
+        this.searchOptions[4].options = this.field_content = field_content;
       }
     },
     // 获取项目下拉
-    async getproject(category_id = '') {
+    async getproject(category_id = "") {
       const data = {
         category_id,
-      }
-      const res = await getproject(data)
+      };
+      const res = await getproject(data);
       if (res.code === 0) {
-        this.searchOptions[2].options = res.data
+        this.searchOptions[2].options = res.data;
       }
     },
     handleSearch(data) {
-      const times = data.date || ['', '']
-      console.log(times)
-      delete data.date
-      this.pageNum = 1
+      const times = data.date || ["", ""];
+      console.log(times);
+      delete data.date;
+      this.pageNum = 1;
 
       this.searchData = {
         // category_id: data.category_id?.pop() || 0,
         ...data,
-        from_org: data.from_org ? data.from_org.pop() : '',
-        category_id: data.category_id ? data.category_id.pop() : '',
+        from_org: data.from_org ? data.from_org.pop() : "",
+        category_id: data.category_id ? data.category_id.pop() : "",
         date: times,
         // date: times[0] + ' - ' + times[1],
-      }
-      this.getCustomerList()
+      };
+      this.getCustomerList();
     },
     toOnlineStudents() {
       this.$router.push({
-        path: '/etm/onlineStudents',
-      })
+        path: "/etm/onlineStudents",
+      });
     },
 
     //保存
     preserve(formName, num) {
       //没有自动填充生日
-      if (this.ruleForm.birthday == '') {
-        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number)
+      if (this.ruleForm.birthday == "") {
+        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number);
       }
       //没有自动填充性别
-      if (this.ruleForm.sex == '') {
-        this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
+      if (this.ruleForm.sex == "") {
+        this.ruleForm.sex = getSex(this.ruleForm.id_card_number);
       }
     },
 
     toCustomeRegist() {
       this.$router.push({
-        path: '/etm/customeRegist',
-      })
+        path: "/etm/customeRegist",
+      });
     },
     getInnerStatus(status) {
-      this.innerVisible = status
+      this.innerVisible = status;
     },
     addCustomer() {
-      this.innerVisible = true
+      this.innerVisible = true;
     },
     doPageChange(page) {
-      this.page = page
-      this.getCustomerList()
+      this.page = page;
+      this.getCustomerList();
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -747,7 +751,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: baseline;
-    font-family: 'Microsoft YaHei UI', sans-serif;
+    font-family: "Microsoft YaHei UI", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
