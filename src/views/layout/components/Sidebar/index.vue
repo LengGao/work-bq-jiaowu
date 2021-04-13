@@ -2,7 +2,7 @@
   <scroll-bar>
     <transition name="fade">
       <div v-if="sidebar.opened">
-        <div style="color: #fff; cursor: pointer" class="img-style">
+        <div class="img-style">
           <router-link to="/" tag="li"
             ><img :src="logo" alt="logo"
           /></router-link>
@@ -109,19 +109,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .img-style {
-  width: 141px;
-  height: 35px;
-  margin: auto;
-  display: block;
-  margin-top: 16px;
-  margin-bottom: 10px;
+  width: 150px;
+  margin: 16px 22px;
 }
-img {
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
-}
+
 .el-button--primary {
   background-color: #1890ff !important ;
   width: 170px !important;

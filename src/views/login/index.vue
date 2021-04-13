@@ -83,7 +83,7 @@
 import { isvalidUsername } from "@/utils/validate";
 import { setSupport, getSupport, setCookie, getCookie } from "@/utils/support";
 import login_center_bg from "@/assets/images/login-img.jpg";
-import logologin from "@/assets/images/logo-login.jpg";
+import logologin from "@/assets/images/logo-login.png";
 import { resetRouter } from "@/router/index";
 const Base64 = require("js-base64").Base64;
 export default {
@@ -233,8 +233,7 @@ export default {
   max-height: 100%;
 }
 img {
-  width: 261px;
-  height: 75px;
+  width: 280px;
   max-width: 100%;
   max-height: 100%;
 }

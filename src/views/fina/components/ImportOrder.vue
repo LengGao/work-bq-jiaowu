@@ -45,8 +45,9 @@
               placeholder="请选择所属分类"
               :options="typeOptions"
               filterable
-          clearable
-          :props="{ checkStrictly: true }"
+              clearable
+              :props="{ checkStrictly: true }"
+              @change="handleTypeChange"
             >
             </el-cascader>
           </el-form-item>
@@ -58,6 +59,7 @@
             <el-select
               v-model="formData.project_id"
               placeholder="请选择所属项目"
+              :disabled="!formData.category_id"
             >
               <el-option
                 v-for="item in projectOptions"
@@ -172,10 +174,14 @@ export default {
     },
     handleOpen() {
       this.getInstitutionSelectData();
-      this.getproject();
       this.getCateList();
     },
-
+    // 选择分类时
+    handleTypeChange(val) {
+      this.formData.project_id = "";
+      const id = val ? [...val].pop() : "";
+      this.getproject(id);
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
