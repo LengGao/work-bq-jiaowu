@@ -7,20 +7,51 @@
     <div class="mainwrap">
       <section class="main-right">
         <div class="client_head">
-          <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+          <SearchList
+            :options="searchOptions"
+            :data="searchData"
+            @on-search="handleSearch"
+          />
 
           <el-button type="primary" @click="addStaff">添加员工</el-button>
         </div>
         <!--表格-->
         <div class="userTable">
-          <el-table ref="multipleTable" :data="listData" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-            <el-table-column label="员工编号" show-overflow-tooltip min-width="90" prop="staff_id">
+          <el-table
+            ref="multipleTable"
+            :data="listData"
+            style="width: 100%"
+            class="min_table"
+            :header-cell-style="{ 'text-align': 'center' }"
+            :cell-style="{ 'text-align': 'center' }"
+          >
+            <el-table-column
+              label="员工编号"
+              show-overflow-tooltip
+              min-width="90"
+              prop="staff_id"
+            >
             </el-table-column>
-            <el-table-column label="员工姓名" show-overflow-tooltip min-width="100" prop="staff_name">
+            <el-table-column
+              label="员工姓名"
+              show-overflow-tooltip
+              min-width="100"
+              prop="staff_name"
+            >
             </el-table-column>
-            <el-table-column label="账号" show-overflow-tooltip min-width="90" prop="account">
+            <el-table-column
+              label="账号"
+              show-overflow-tooltip
+              min-width="90"
+              prop="account"
+            >
             </el-table-column>
-            <el-table-column label="身份" show-overflow-tooltip min-width="90" prop="identity">
+            <el-table-column
+              label="身份"
+              show-overflow-tooltip
+              min-width="90"
+              prop="identity"
+            >
             </el-table-column>
             <el-table-column label="角色" show-overflow-tooltip min-width="90">
               <template slot-scope="{ row }">
@@ -30,121 +61,261 @@
                 <span v-else>--</span>
               </template>
             </el-table-column>
-            <el-table-column label="机构" show-overflow-tooltip min-width="150" prop="institution_name">
+            <el-table-column
+              label="机构"
+              show-overflow-tooltip
+              min-width="150"
+              prop="institution_name"
+            >
             </el-table-column>
-            <el-table-column label="联系方式" show-overflow-tooltip min-width="120" prop="mobile_num">
+            <el-table-column
+              label="联系方式"
+              show-overflow-tooltip
+              min-width="120"
+              prop="mobile_num"
+            >
             </el-table-column>
 
-            <el-table-column label="账号状态" min-width="90" show-overflow-tooltip>
+            <el-table-column
+              label="账号状态"
+              min-width="90"
+              show-overflow-tooltip
+            >
               <template slot-scope="scope">
-                <el-switch active-color="#13ce66" v-model="scope.row.account_status" :active-value="1" :inactive-value="2" @change="accountSwitch(scope.row)">
+                <el-switch
+                  active-color="#13ce66"
+                  v-model="scope.row.account_status"
+                  :active-value="1"
+                  :inactive-value="2"
+                  @change="accountSwitch(scope.row)"
+                >
                 </el-switch>
               </template>
             </el-table-column>
-            <el-table-column label="是否为超管" min-width="90" show-overflow-tooltip>
+            <el-table-column
+              label="是否为超管"
+              min-width="90"
+              show-overflow-tooltip
+            >
               <template slot-scope="scope">
-                <el-switch active-color="#13ce66" v-model="scope.row.is_super" :active-value="1" :inactive-value="0" @change="adminSwitch(scope.row)">
+                <el-switch
+                  active-color="#13ce66"
+                  v-model="scope.row.is_super"
+                  :active-value="1"
+                  :inactive-value="0"
+                  @change="adminSwitch(scope.row)"
+                >
                 </el-switch>
               </template>
             </el-table-column>
-            <el-table-column label="班主任" min-width="90" show-overflow-tooltip>
+            <el-table-column
+              label="班主任"
+              min-width="90"
+              show-overflow-tooltip
+            >
               <template slot-scope="scope">
-                <el-switch active-color="#13ce66" v-model="scope.row.as_headmaster" :active-value="1" :inactive-value="2" @change="headSwitch(scope.row)">
+                <el-switch
+                  active-color="#13ce66"
+                  v-model="scope.row.as_headmaster"
+                  :active-value="1"
+                  :inactive-value="2"
+                  @change="headSwitch(scope.row)"
+                >
                 </el-switch>
               </template>
             </el-table-column>
             <el-table-column label="操作" fixed="right" min-width="200">
               <template slot-scope="scope">
                 <div style="display:flex;justify-content:center">
-                  <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
-                  <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+                  <el-button type="text" @click="handleEdit(scope.row)"
+                    >编辑</el-button
+                  >
+                  <el-button type="text" @click="handleDelete(scope.row)"
+                    >删除</el-button
+                  >
                 </div>
               </template>
             </el-table-column>
           </el-table>
           <div class="table_bottom">
-            <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+            <page
+              :data="listTotal"
+              :curpage="pageNum"
+              @pageChange="handlePageChange"
+            />
           </div>
         </div>
       </section>
     </div>
     <!--弹框-->
-    <el-dialog title="添加员工" :visible.sync="dialogVisible" width="425px" @open="handleOpen">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="员工头像">
-          <div v-show="!haschoose">
-            <div class="headPortrait el-icon-plus" @click="addIcon"></div>
-            <div style="color:#aaa;ling-height:20px">
-              <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
-              <p><span> 2. 推荐尺寸200*200px或者1:1</span></p>
+    <el-dialog
+      title="添加员工"
+      :visible.sync="dialogVisible"
+      width="783px"
+      @open="handleOpen"
+    >
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <div class="staffBox">
+          <el-form-item
+            label="员工姓名"
+            placeholder="请输入员工姓名"
+            prop="staff_name"
+          >
+            <el-input
+              v-model="ruleForm.staff_name"
+              class="common-width"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="员工头像">
+            <div
+              v-show="!haschoose"
+              style="display:flex;
+        "
+            >
+              <div class="headPortrait el-icon-plus" @click="addIcon"></div>
+              <!-- <div style="color:#aaa;ling-height:0px!important">
+                <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
+                <p><span> 2. 推荐尺寸200*200px或者1:1</span></p>
+              </div> -->
             </div>
-          </div>
-          <div v-show="haschoose" class=" imageBox ">
-            <i class=" iconjia el-icon-plus" @click="addIcon"></i>
-            <img style="width:100%;height:100%;border-radius:3px;" :src="ruleForm.head_photo" alt="" />
-          </div>
-        </el-form-item>
-        <el-form-item label="员工姓名" placeholder="请输入员工姓名" prop="staff_name">
-          <el-input v-model="ruleForm.staff_name" class="common-width"></el-input>
-        </el-form-item>
-        <el-form-item label="手机号码" prop="mobile_num">
-          <el-input v-model="ruleForm.mobile_num" placeholder="请输入手机号码" class="common-width"></el-input>
-        </el-form-item>
-        <el-form-item label="登录账号" prop="account">
-          <el-input v-model="ruleForm.account" placeholder="请输入登录账号" class="common-width"></el-input>
-        </el-form-item>
-        <el-form-item label="登录密码" prop="password">
-          <el-input v-model="ruleForm.password" placeholder="请输入登录密码" class="common-width"></el-input>
-        </el-form-item>
-        <el-form-item label="班主任" prop="password">
-          <el-radio-group v-model="ruleForm.as_headmaster">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="2">不是</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="超管" prop="password">
-          <el-radio-group v-model="ruleForm.is_super">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">不是</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="所属机构" prop="institution_id">
-          <el-select v-model="ruleForm.institution_id" placeholder="请输入所属机构" class="common-width" filterable @change="handleInstitution">
-            <el-option v-for="item in instituData" :key="item.institution_id" :label="item.institution_name" :value="item.institution_id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="所属校区" prop="school_id">
-          <el-select v-model="ruleForm.school_id" placeholder="请输入所属校区" class="common-width" filterable @change="handleInstitution">
-            <el-option v-for="item in schoolData" :key="item.institution_id" :label="item.institution_name" :value="item.institution_id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="所属角色" prop="role_ids">
-          <el-select multiple v-model="ruleForm.role_ids" placeholder="请输入所属角色" class="common-width">
-            <el-option v-for="item in roleData" :key="item.role_id" :label="item.role_name" :value="item.role_id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="账号身份" prop="identity">
-          <el-select v-model="ruleForm.identity" placeholder="请输入账号权限" class="common-width">
-            <el-option v-for="item in IdentityData" :key="item.id" :label="item.name" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item>
+            <div v-show="haschoose" class=" imageBox ">
+              <i class=" iconjia el-icon-plus" @click="addIcon"></i>
+              <img
+                style="width:100%;height:100%;border-radius:3px;"
+                :src="ruleForm.head_photo"
+                alt=""
+              />
+            </div>
+          </el-form-item>
+          <el-form-item label="手机号码" prop="mobile_num">
+            <el-input
+              v-model="ruleForm.mobile_num"
+              placeholder="请输入手机号码"
+              class="common-width"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="登录账号" prop="account">
+            <el-input
+              v-model="ruleForm.account"
+              placeholder="请输入登录账号"
+              class="common-width"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="登录密码" prop="password">
+            <el-input
+              v-model="ruleForm.password"
+              placeholder="请输入登录密码"
+              class="common-width"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="班主任" prop="password">
+            <el-radio-group v-model="ruleForm.as_headmaster">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="2">不是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="超管" prop="password">
+            <el-radio-group v-model="ruleForm.is_super">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">不是</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="所属机构" prop="institution_id">
+            <el-select
+              v-model="ruleForm.institution_id"
+              placeholder="请输入所属机构"
+              class="common-width"
+              filterable
+              @change="handleInstitution"
+            >
+              <el-option
+                v-for="item in instituData"
+                :key="item.institution_id"
+                :label="item.institution_name"
+                :value="item.institution_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属校区" prop="school_id">
+            <el-select
+              v-model="ruleForm.school_id"
+              placeholder="请输入所属校区"
+              class="common-width"
+              filterable
+              @change="handleInstitution"
+            >
+              <el-option
+                v-for="item in schoolData"
+                :key="item.institution_id"
+                :label="item.institution_name"
+                :value="item.institution_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属角色" prop="role_ids">
+            <el-select
+              multiple
+              v-model="ruleForm.role_ids"
+              placeholder="请输入所属角色"
+              class="common-width"
+            >
+              <el-option
+                v-for="item in roleData"
+                :key="item.role_id"
+                :label="item.role_name"
+                :value="item.role_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="账号身份" prop="identity">
+            <el-select
+              v-model="ruleForm.identity"
+              placeholder="请输入账号权限"
+              class="common-width"
+            >
+              <el-option
+                v-for="item in IdentityData"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
       </el-form>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleConfirm('ruleForm')">确 定</el-button>
+        <el-button type="primary" @click="handleConfirm('ruleForm')"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
     <!--图片空间弹框-->
-    <imgDialog v-if="pictureVisible" @closeImg="closeImg" @clearUrl="clearUrl"></imgDialog>
+    <imgDialog
+      v-if="pictureVisible"
+      @closeImg="closeImg"
+      @clearUrl="clearUrl"
+    ></imgDialog>
   </section>
 </template>
 <script>
-import { getStaffList, getIdentitySelect, getOrganizationSelect, getSchoolSelect } from '@/api/set'
+import {
+  getStaffList,
+  getIdentitySelect,
+  getOrganizationSelect,
+  getSchoolSelect,
+} from '@/api/set'
 export default {
   name: 'staff',
   data() {
@@ -257,7 +428,9 @@ export default {
         { id: 6, name: '岗顶-技术部' },
       ],
       rules: {
-        surname: [{ required: true, message: '请填写学生姓名', trigger: 'blur' }],
+        surname: [
+          { required: true, message: '请填写学生姓名', trigger: 'blur' },
+        ],
         account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         // mail: [{ validator: validMail, trigger: 'blur', required: true }],
         // mobile_num: [
@@ -274,7 +447,9 @@ export default {
         //   },
         // ],
 
-        sources: [{ required: true, message: '请填写渠道来源', trigger: 'change' }],
+        sources: [
+          { required: true, message: '请填写渠道来源', trigger: 'change' },
+        ],
       },
     }
   },
@@ -463,6 +638,9 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
+/deep/.el-form-item {
+  width: 340px;
+}
 .head_remind {
   padding: 20px;
   font-weight: 400;
@@ -580,5 +758,10 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.staffBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 </style>
