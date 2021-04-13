@@ -57,6 +57,7 @@
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="所属项目" prop="project_id">
             <el-select
+              style="width: 100%"
               v-model="formData.project_id"
               placeholder="请选择所属项目"
               :disabled="!formData.category_id"
