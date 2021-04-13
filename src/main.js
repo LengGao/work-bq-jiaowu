@@ -26,7 +26,7 @@ Vue.prototype.$url = url //axios相关
 Vue.prototype.$api = api //axios相关
 Vue.prototype._ = _ //lodash相关https://www.lodashjs.com/
 Vue.prototype.rootDir = process.env.VUE_APP_LOACTION //上传地址
-Vue.prototype.downLoad = process.env.VUE_APP_downLoad //下载图片地址
+Vue.prototype.downLoad = process.env.VUE_APP_DOWNLOAD //下载图片地址
 Vue.prototype.Base64 = Base64
   // 节流自定义全局命令
   ; (function () {

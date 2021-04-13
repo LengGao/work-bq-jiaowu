@@ -13,7 +13,7 @@
       <!--订单信息-->
       <div>
         <h3>订单信息</h3>
-        <el-row style="min-width:1100px;margin-top:30px">
+        <el-row style="min-width: 1100px; margin-top: 30px">
           <el-col :lg="21" :sm="21" :xs="21" :md="21">
             <el-form
               ref="ruleForm"
@@ -35,7 +35,7 @@
                 <el-col :lg="8" :md="8" :sm="8" :xs="8">
                   <el-form-item label="收费学生" prop="user_img">
                     <div class="ruleWord">
-                      {{ schoolData.account ? schoolData.account.surname : '' }}
+                      {{ schoolData.account ? schoolData.account.surname : "" }}
                     </div>
                   </el-form-item>
                 </el-col>
@@ -144,13 +144,13 @@
       </div>
       <!--订单详情-->
       <div>
-        <h3 style="margin-bottom:15px">订单详情</h3>
+        <h3 style="margin-bottom: 15px">订单详情</h3>
         <el-table
           ref="multipleTable"
           :data="projectData"
           tooltip-effect="light"
           stripe
-          style="width: 100%;"
+          style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
@@ -208,7 +208,7 @@
             </div>
             <div>
               订单应收:
-              <span style="color:#199fff"
+              <span style="color: #199fff"
                 >￥{{
                   schoolData.order_money - schoolData.reduction
                     ? schoolData.order_money - schoolData.reduction
@@ -220,14 +220,14 @@
         </div>
       </div>
       <!--缴费记录-->
-      <div style="margin-top:20px">
-        <h3 style="margin-bottom:15px">缴费记录</h3>
+      <div style="margin-top: 20px">
+        <h3 style="margin-bottom: 15px">缴费记录</h3>
         <el-table
           ref="multipleTable"
           :data="pay_log"
           tooltip-effect="light"
           stripe
-          style="width: 100%;"
+          style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
@@ -266,14 +266,14 @@
         </el-table>
       </div>
       <!--经办信息-->
-      <div style="margin-top:20px">
-        <h3 style="margin-bottom:15px">经办信息</h3>
+      <div style="margin-top: 20px">
+        <h3 style="margin-bottom: 15px">经办信息</h3>
         <el-table
           ref="multipleTable"
           :data="pay_log"
           tooltip-effect="light"
           stripe
-          style="width: 100%;"
+          style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
@@ -316,7 +316,7 @@
       <!--关闭-->
       <div
         class="customer_colse"
-        style="display:flex;justify-content:center;margin-top:20px"
+        style="display: flex; justify-content: center; margin-top: 20px"
       >
         <el-button type="primary" @click="toCustomerDetail">关 闭</el-button>
       </div>
@@ -343,58 +343,59 @@ export default {
       openStatus: this.orderVisible,
       ruleForm: {},
       schoolData: {},
-    }
+    };
   },
   watch: {
     orderVisible(val) {
-      this.openStatus = val
+      this.openStatus = val;
     },
     orderInfo() {
-      this.$api.getOrderDetail(this, 'schoolData')
+      this.$api.getOrderDetail(this, "schoolData");
     },
   },
   filters: {
     payStatusSwich(val) {
       switch (val) {
         case 0:
-          return '待验证/等待付款'
-          break
+          return "待验证/等待付款";
+          break;
         case 1:
-          return '新订单/待入账/已付款'
-          break
+          return "新订单/待入账/已付款";
+          break;
         case 2:
-          return '部分入账 '
-          break
+          return "部分入账 ";
+          break;
         case 3:
-          return '已入账 '
-          break
+          return "已入账 ";
+          break;
         case 4:
-          return '已作废'
-          break
+          return "已作废";
+          break;
         case 5:
-          return '已退款'
-          break
+          return "已退款";
+          break;
       }
     },
   },
   created() {},
   methods: {
     toCustomerDetail() {
+      this.doClose();
       this.$router.push({
-        name: 'cusdetail',
+        name: "cusdetail",
         query: {
           uid: this.schoolData.uid,
         },
-      })
+      });
     },
     doClose() {
-      this.projectData = []
-      this.pay_log = []
-      this.ruleForm = {}
-      this.$emit('orderDialog', false)
+      this.projectData = [];
+      this.pay_log = [];
+      this.ruleForm = {};
+      this.$emit("orderDialog", false);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -408,7 +409,7 @@ export default {
   margin-top: 20px;
   font-size: 14px;
   color: #909399;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
   display: flex;

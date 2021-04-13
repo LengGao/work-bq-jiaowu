@@ -19,7 +19,7 @@ export function getOrderList(params) {
  * @param {*} data 
  */
 export const importUrl = `${process.env.VUE_APP_LOACTION}/UserArchives/import`
-export const downloadUrl = `${process.env.VUE_APP_downLoad}/static/order_import.xlsx`
+export const downloadUrl = `${process.env.VUE_APP_DOWNLOAD}/static/order_import.xlsx`
 /**
  * 订单收款
  * @param {*} data 
