@@ -17,7 +17,7 @@
           <el-input
             name="username"
             type="text"
-            v-model="loginForm.username"
+            v-model.trim="loginForm.username"
             autoComplete="on"
             placeholder="请输入用户名"
           >
@@ -187,11 +187,9 @@ export default {
               this.loading = false;
               // setCookie('username', this.loginForm.username, 15)
               // setCookie('password', this.loginForm.password, 15)
-              console.log("跳转路由");
               this.$router.push({ path: "/" });
             })
-            .catch((res) => {
-              console.log(res);
+            .catch(() => {
               this.loading = false;
             });
         } else {

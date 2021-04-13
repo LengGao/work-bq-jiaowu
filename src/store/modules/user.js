@@ -5,9 +5,8 @@ import {
   setStaff_id,
   getStaff_id,
 } from '@/utils/auth'
-import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
 import { getIdentity } from "@/api/workbench.js";
-import { getUnreadCount, getMenu, logout } from "@/api/login";
+import { getUnreadCount, getMenu, logout, login } from "@/api/login";
 import defaultRouter, { resetRouter, createUserRouter } from '@/router'
 const userInfoJson = sessionStorage.getItem('userInfo')
 const user = {
@@ -78,31 +77,25 @@ const user = {
       }
     },
     // 登录
-    Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
-      return new Promise((resolve, reject) => {
-        let config = {
-          Account: username,
-          Password: userInfo.password,
-        }
-        console.log(config)
-        axiosHttp({
-          url: url.login,
-          data: config,
-          method: 'POST',
-          then(res) {
-            const tokenStr = res.data.data.token
-            const userData = res.data.data.info
-            console.log(userData)
-            setToken(tokenStr)
-            setStaff_id(res.data.data.info.staff_id)
-            sessionStorage.setItem('userInfo', JSON.stringify(userData))
-            commit('SET_USER_INFO', userData)
-            commit('SET_TOKEN', tokenStr)
-            resolve()
-          },
-        })
+    async Login({ commit }, userInfo) {
+      const data = {
+        Account: userInfo.username,
+        Password: userInfo.password,
+      }
+      const res = await login(data).catch(() => {
+        return Promise.reject()
       })
+      if (res.code === 0) {
+        const data = res.data || {}
+        const tokenStr = data?.token || ''
+        const userData = data?.info || {}
+        setToken(tokenStr)
+        setStaff_id(data?.info?.staff_id)
+        sessionStorage.setItem('userInfo', JSON.stringify(userData))
+        commit('SET_USER_INFO', userData)
+        commit('SET_TOKEN', tokenStr)
+        return Promise.resolve()
+      }
     },
     // 登出
     async logout({ commit }) {

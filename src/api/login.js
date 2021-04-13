@@ -1,15 +1,6 @@
 import request from '@/utils/request'
 
-export function login(username, password) {
-  return request({
-    url: '/admin/login',
-    method: 'post',
-    data: {
-      username,
-      password
-    }
-  })
-}
+
 
 export function getInfo() {
   return request({
@@ -128,5 +119,13 @@ export function logout(params) {
     url: '/passport/logout',
     method: 'get',
     params
+  })
+}
+// 登录
+export function login(data) {
+  return request({
+    url: '/passport/login',
+    method: 'post',
+    data
   })
 }
