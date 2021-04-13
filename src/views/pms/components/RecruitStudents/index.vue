@@ -45,7 +45,7 @@
               'text-align': 'center',
               background: '#f8f8f8',
             }"
-            height="430"
+            height="500"
             :cell-style="{ 'text-align': 'center' }"
             style="margin-bottom: 10px"
           >
@@ -61,34 +61,20 @@
             <el-table-column
               prop="type_name"
               label="待办类型"
-              min-width="110"
+              min-width="100"
               show-overflow-tooltip
             ></el-table-column>
             <el-table-column
               prop="describe"
               label="待办事项"
-              min-width="180"
+              min-width="280"
               show-overflow-tooltip
             >
-              <template slot-scope="{ row }">
-                <div>
-                  <span>{{ row.describe }}</span>
-                  <el-button
-                    style="margin-left: 6px"
-                    v-if="followRoute[row.follow_type]"
-                    type="text"
-                    @click="
-                      linkTo(followRoute[row.follow_type], row.param_list || {})
-                    "
-                    >去跟进></el-button
-                  >
-                </div>
-              </template>
             </el-table-column>
             <el-table-column
               prop="update_time"
               label="完成状态"
-              min-width="140"
+              min-width="100"
               show-overflow-tooltip
             >
               <template slot-scope="{ row }">
@@ -124,15 +110,24 @@
                     </li>
                   </ul>
                 </el-popover>
-                <!-- <el-select
-                  v-model="row.follow_state"
-                  placeholder="请选择"
-                  style="width: 80px"
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="describe"
+              label="操作"
+              min-width="80"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <el-button
+                  style="margin-left: 6px"
+                  v-if="followRoute[row.follow_type]"
+                  type="text"
+                  @click="
+                    linkTo(followRoute[row.follow_type], row.param_list || {})
+                  "
+                  >去跟进</el-button
                 >
-                  <el-option label="未开始" value="1"> </el-option>
-                  <el-option label="进行中" value="2"> </el-option>
-                  <el-option label="已完成" value="3"> </el-option>
-                </el-select> -->
               </template>
             </el-table-column>
           </el-table>
@@ -153,17 +148,17 @@
   </div>
 </template>
 <script>
-import Msg from '../Msg/index'
-import AddEntry from './components/addEntry'
-import { followRoute } from '@/utils/index'
+import Msg from "../Msg/index";
+import AddEntry from "./components/addEntry";
+import { followRoute } from "@/utils/index";
 import {
   getStaffWorkData,
   getFollowPage,
   setStaffQuickEntry,
   updateState,
-} from '@/api/workbench.js'
+} from "@/api/workbench.js";
 export default {
-  name: 'RecruitStudents',
+  name: "RecruitStudents",
   components: {
     Msg,
     AddEntry,
@@ -171,7 +166,7 @@ export default {
   data() {
     return {
       followRoute,
-      activeName: '-1',
+      activeName: "-1",
       loading: false,
       msgData: [],
       entrys: [],
@@ -184,56 +179,56 @@ export default {
       statusMap: {
         //代办类型 -1 全部 0 驳回 1未开始 2 进行中 3已经完成
         0: {
-          text: '驳回',
-          color: '#FD6500',
+          text: "驳回",
+          color: "#FD6500",
         },
         1: {
-          text: '未开始',
-          color: '#FD6500',
+          text: "未开始",
+          color: "#FD6500",
         },
         2: {
-          text: '进行中',
-          color: '#FDC400',
+          text: "进行中",
+          color: "#FDC400",
         },
         3: {
-          text: '已完成',
-          color: '#43D100',
+          text: "已完成",
+          color: "#43D100",
         },
       },
-    }
+    };
   },
   created() {
-    this.getStaffWorkData()
-    this.getFollowPage()
+    this.getStaffWorkData();
+    this.getFollowPage();
   },
   methods: {
     handleOpen() {
-      this.dialogVisible = true
+      this.dialogVisible = true;
     },
     handleEntryLink(name) {
-      this.$router.push({ name })
+      this.$router.push({ name });
     },
     async setStaffQuickEntry(ids) {
       const data = {
         menu_ids_arr: ids,
-      }
-      const res = await setStaffQuickEntry(data)
+      };
+      const res = await setStaffQuickEntry(data);
       if (res.code === 0) {
-        this.$message.success('编辑成功')
-        this.getStaffWorkData()
+        this.$message.success("编辑成功");
+        this.getStaffWorkData();
       }
     },
     // 更新待办状态
     async updateState(row, follow_state) {
-      document.body.click()
+      document.body.click();
       const data = {
         id: row.id,
         follow_state,
-      }
-      const res = await updateState(data)
+      };
+      const res = await updateState(data);
       if (res.code === 0) {
-        row.follow_state = follow_state
-        this.$message.success(res.message)
+        row.follow_state = follow_state;
+        this.$message.success(res.message);
       }
     },
     //获取待办提醒
@@ -242,43 +237,43 @@ export default {
         follow_state: this.activeName,
         limit: this.pageSize,
         page: this.pageNum,
-      }
-      this.remindLoading = true
-      const res = await getFollowPage(data)
-      this.remindLoading = false
+      };
+      this.remindLoading = true;
+      const res = await getFollowPage(data);
+      this.remindLoading = false;
       if (res.code === 0) {
-        this.total = res.data.total
-        this.remindList = res.data.list
+        this.total = res.data.total;
+        this.remindList = res.data.list;
       }
     },
     // 获取招生、教务工作台信息
     async getStaffWorkData() {
-      this.loading = true
-      const res = await getStaffWorkData()
-      this.loading = false
-      this.msgData = res.data?.message || []
-      this.entrys = res.data?.quick_entry
+      this.loading = true;
+      const res = await getStaffWorkData();
+      this.loading = false;
+      this.msgData = res.data?.message || [];
+      this.entrys = res.data?.quick_entry;
     },
     handleClick() {
-      this.getFollowPage()
+      this.getFollowPage();
     },
     handleSizeChange(size) {
-      this.pageSize = size
-      this.pageNum = 1
-      this.getFollowPage()
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getFollowPage();
     },
     handleCurrentChange(page) {
-      this.pageNum = page
-      this.getFollowPage()
+      this.pageNum = page;
+      this.getFollowPage();
     },
     linkTo(name, query) {
       this.$router.push({
         name,
         query,
-      })
+      });
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .recruit-students {
@@ -315,7 +310,6 @@ export default {
       padding: 20px;
       border: 1px solid #dcdfe6;
       margin-bottom: 20px;
-      min-height: 220px;
       .entry-title {
         font-weight: normal;
       }
@@ -325,12 +319,11 @@ export default {
         flex-wrap: wrap;
         padding: 15px 20px 5px 20px;
         .entry-item {
-          width: calc(100% / 6);
+          width: calc(100% / 7);
           display: flex;
           align-items: center;
           margin-bottom: 16px;
           padding: 6px;
-          // justify-content: center;
           font-size: 14px;
           cursor: pointer;
           border-radius: 15px;

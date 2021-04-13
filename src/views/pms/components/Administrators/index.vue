@@ -1,7 +1,7 @@
 <template>
   <div class="admin" v-loading="loading">
-    <!-- <div class="admin-top" v-if="isShowStep"> -->
-    <div class="admin-top">
+    <div class="admin-top" v-if="isShowStep">
+      <!-- <div class="admin-top"> -->
       <div class="admin-top-title">
         <h4 class="title">任务助手</h4>
         <span>六步完成教务系统基本设置</span>

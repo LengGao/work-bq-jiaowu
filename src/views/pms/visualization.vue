@@ -25,40 +25,37 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'workbench',
+  name: "workbench",
   data() {
     return {
-      activeName: this.$store.state.user.identity + '',
+      activeName: this.$store.state.user.identity + "",
       componentNames: {
         //1教务 2招生 3老师 4财务 5管理员
-        5: 'Administrators',
-        1: 'RecruitStudents',
-        4: 'RecruitStudents',
-        2: 'RecruitStudents',
-        //===============
-        // 5: 'Administrators',
-        5: 'RecruitStudents',
+        5: "Administrators",
+        1: "RecruitStudents",
+        4: "RecruitStudents",
+        2: "RecruitStudents",
       },
-    }
+    };
   },
   computed: {
-    ...mapGetters(['identity']),
+    ...mapGetters(["identity"]),
     getComponent() {
       if (this.activeName) {
         return () =>
-          import(`./components/${this.componentNames[this.activeName]}/index`)
+          import(`./components/${this.componentNames[this.activeName]}/index`);
       }
-      return ''
+      return "";
     },
   },
   watch: {
     identity(val) {
-      this.activeName = val + ''
+      this.activeName = val + "";
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .workbench {
