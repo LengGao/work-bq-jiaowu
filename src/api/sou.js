@@ -445,3 +445,51 @@ export function questionBankDetail(params) {
     params,
   })
 }
+// 章节列表
+export function getvideochapterList(params) {
+  return request({
+    url: 'video/getvideochapter',
+    method: 'get',
+    params,
+  })
+}
+// 章节删除
+export function deletevideochapter(data) {
+  return request({
+    url: 'video/deletevideochapter',
+    method: 'post',
+    data,
+  })
+}
+// 编辑视频科室
+export function editvideoclass(data) {
+  return request({
+    url: 'video/editvideoclass',
+    method: 'post',
+    data,
+  })
+}
+// 添加视频章节
+export function addvideochapter(data) {
+  return request({
+    url: 'video/addvideochapter',
+    method: 'post',
+    data,
+  })
+}
+// 编辑视频章节
+export function editvideochapter(data) {
+  return request({
+    url: 'video/editvideochapter',
+    method: 'post',
+    data,
+  })
+}
+// 根据id获取视频章节
+export function getVideochapterDetail(params) {
+  return request({
+    url: 'video/editvideochapter',
+    method: 'get',
+    params,
+  })
+}
