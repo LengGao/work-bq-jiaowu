@@ -77,6 +77,8 @@
 
         <el-form-item label="文化程度" prop="culture">
           <el-select
+            clearable
+            filterable
             v-model="ruleForm.culture"
             placeholder="请选择文化程度"
             class="input-width"
@@ -97,6 +99,8 @@
             class="input-width"
             :options="provinceAndCityData"
             v-model="selectedOptions"
+            clearable
+            filterable
             @change="handleChange"
           >
           </el-cascader>
@@ -106,6 +110,8 @@
           <el-cascader
             size="large"
             class="input-width"
+            clearable
+            filterable
             :options="provinceAndCityData"
             v-model="selectedOptionsLocal"
             @change="handleLocal"
@@ -116,6 +122,8 @@
         <el-form-item label="推荐机构" prop="from_organization_id">
           <el-cascader
             class="input-width"
+            clearable
+            filterable
             v-model="ruleForm.from_organization_id"
             :options="institutionOption"
           ></el-cascader>
@@ -124,6 +132,8 @@
         <el-form-item label="渠道来源" prop="sources">
           <el-select
             v-model="ruleForm.sources"
+            clearable
+            filterable
             placeholder="请选择"
             class="input-width"
           >
