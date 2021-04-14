@@ -461,14 +461,7 @@ export function deletevideochapter(data) {
     data,
   })
 }
-// 编辑视频科室
-export function editvideoclass(data) {
-  return request({
-    url: 'video/editvideoclass',
-    method: 'post',
-    data,
-  })
-}
+
 // 添加视频章节
 export function addvideochapter(data) {
   return request({
@@ -489,6 +482,54 @@ export function editvideochapter(data) {
 export function getVideochapterDetail(params) {
   return request({
     url: 'video/editvideochapter',
+    method: 'get',
+    params,
+  })
+}
+// 章节列表-添加课时
+export function addvideoclass(data) {
+  return request({
+    url: 'video/addvideoclass',
+    method: 'post',
+    data,
+  })
+}
+// 章节列表-编辑课时
+export function editvideoclass(data) {
+  return request({
+    url: 'video/editvideoclass',
+    method: 'post',
+    data,
+  })
+}
+// 章节列表-课时详情
+export function getvideoclassDetail(params) {
+  return request({
+    url: 'video/editvideoclass',
+    method: 'get',
+    params,
+  })
+}
+// 阿里云上传凭证
+export function updatecreate(data) {
+  return request({
+    url: 'live/updatecreate',
+    method: 'post',
+    data,
+  })
+}
+// 阿里云上传凭证刷新
+export function refreshuploadvideo(data) {
+  return request({
+    url: 'live/refreshuploadvideo',
+    method: 'post',
+    data,
+  })
+}
+// 获取课时
+export function getvideoclass(params) {
+  return request({
+    url: 'video/getvideoclass',
     method: 'get',
     params,
   })

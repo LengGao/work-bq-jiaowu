@@ -8,7 +8,10 @@
         :data="searchData"
         @on-search="handleSearch"
       />
-      <el-button type="primary" @click="openAdd">添加章节</el-button>
+      <div>
+        <el-button type="primary" @click="openAdd">添加章节</el-button>
+        <el-button type="primary" @click="openAddClassHour">添加课时</el-button>
+      </div>
     </div>
     <!--表格-->
     <div class="userTable">
@@ -23,64 +26,41 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
+        row-key="index"
+        lazy
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        :load="loadTableChildren"
       >
+        <el-table-column width="50" type="selection"> </el-table-column>
         <el-table-column
-          label="ID"
-          show-overflow-tooltip
-          min-width="90"
-          prop="id"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="rule_name"
-          label="报考章节"
+          prop="video_chapter_name"
+          label="章节名称"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="category_name"
-          label="所属分类"
+          label="视频缩略图"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
           prop="exam_type"
-          label="报考省市"
+          label="时长"
           min-width="110"
           show-overflow-tooltip
         >
-          <template slot-scope="{ row }">
-            <span>{{ row.province + " " + row.city }}</span>
-          </template>
         </el-table-column>
         <el-table-column
-          prop="comment"
-          label="备注信息"
+          prop="video_chapter_sort"
+          label="排序"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="binding_count"
-          label="关联计划数"
-          min-width="110"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <div style="display: flex; justify-content: center">
-              <el-button
-                v-if="row.binding_count"
-                type="text"
-                @click="linkTo(row.id)"
-                >{{ row.binding_count }}</el-button
-              >
-              <span v-else>{{ row.binding_count }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
           prop="student_number"
-          label="是否启用"
+          label="免费试用"
           min-width="110"
           show-overflow-tooltip
         >
@@ -98,8 +78,12 @@
         <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
-              <el-button type="text" @click="openEdit(row.id)">编辑</el-button>
-              <el-button type="text" @click="deleteConfirm(row.id)"
+              <el-button type="text" @click="openEdit(row.video_chapter_id)"
+                >编辑</el-button
+              >
+              <el-button
+                type="text"
+                @click="deleteConfirm(row.video_chapter_id)"
                 >删除</el-button
               >
             </div>
@@ -120,6 +104,12 @@
       :id="currentId"
       @on-success="getvideochapterList"
     />
+    <ClassHourDialog
+      v-model="classHourDialogVisible"
+      :title="classHourDialogTitle"
+      :id="classHourId"
+      @on-success="getvideochapterList"
+    />
   </div>
 </template>
 
@@ -128,11 +118,14 @@ import {
   getvideochapterList,
   deletevideochapter,
   editvideoclass,
+  getvideoclass,
 } from "@/api/sou";
 import ChapterDIalog from "./chapterDIalog";
+import ClassHourDialog from "./classHourDialog";
 export default {
   name: "Subject",
   components: {
+    ClassHourDialog,
     ChapterDIalog,
   },
   data() {
@@ -142,21 +135,24 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        search_box: "",
+        video_chapter_name: "",
       },
       searchOptions: [
         {
-          key: "search_box",
+          key: "video_chapter_name",
           attrs: {
             placeholder: "章节名称",
           },
         },
       ],
-
+      //章节
       currentId: "",
       dialogTitle: "添加章节",
       dialogVisible: false,
-      typeOptions: [],
+      // 课时
+      classHourId: "",
+      classHourDialogTitle: "添加课时",
+      classHourDialogVisible: false,
     };
   },
 
@@ -210,6 +206,16 @@ export default {
       this.dialogTitle = "添加章节";
       this.dialogVisible = true;
     },
+    openEditClassHour(id) {
+      this.classHourDialogTitle = "编辑课时";
+      this.classHourId = id;
+      this.classHourDialogVisible = true;
+    },
+    openAddClassHour() {
+      this.classHourId = "";
+      this.classHourDialogTitle = "添加课时";
+      this.classHourDialogVisible = true;
+    },
     // 搜索
     handleSearch(data) {
       this.pageNum = 1;
@@ -233,8 +239,26 @@ export default {
       this.listLoading = true;
       const res = await getvideochapterList(data);
       this.listLoading = false;
-      this.listData = res.data.data;
+      this.listData = res.data.data.map((item, index) => ({
+        ...item,
+        index,
+        hasChildren: true,
+        children: [],
+      }));
       this.listTotal = res.data.total;
+    },
+    // 课时列表
+    async loadTableChildren(tree, treeNode, resolve) {
+      const data = {
+        video_collection_id: this.$route.query?.video_collection_id || "",
+      };
+      const res = await getvideoclass(data);
+      const children = res.data.data.map((item, index) => ({
+        ...item,
+        index: (index + "1" + tree.index) * 1,
+      }));
+      console.log(children);
+      resolve(children);
     },
   },
 };

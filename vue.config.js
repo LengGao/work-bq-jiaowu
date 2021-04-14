@@ -4,7 +4,8 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const path = require('path')
 console.log('当前环境：', process.env.NODE_ENV)
 console.log('当前baseUrl：', process.env.VUE_APP_LOACTION)
-const isProduction = process.env.NODE_ENV !== 'development'
+// const envs = ['production', 'testing']
+const isProduction = process.env.NODE_ENV === 'production'
 // 是否使用cdn
 const openCdn = isProduction && true
 // CDN外链，会插入到index.html中
@@ -44,7 +45,7 @@ module.exports = {
         // target: 'http://thing.com',
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
-        target: 'http://testadmin.beiqujy.com/apidata', //测试
+        // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://dpadmin.beiqujy.com/apidata', //测试
         //target: 'http://dongpei.local', //孝华
         // target: 'http://a.cc',

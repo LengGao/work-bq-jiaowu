@@ -1,5 +1,5 @@
 <template>
-  <!--添加编辑章节弹窗-->
+  <!--添加编辑课时弹窗-->
   <el-dialog
     :title="title"
     :visible.sync="visible"
@@ -15,29 +15,40 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="章节名称" prop="video_chapter_name">
-        <el-input
-          v-model="formData.video_chapter_name"
-          placeholder="请输入章节名称"
-          maxlength="14"
-          show-word-limit
-        />
+      <el-form-item label="章节名称" prop="video_chapter_id">
+        <el-select
+          v-model="formData.video_chapter_id"
+          clearable
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in chapterOptions"
+            :key="item.video_chapter_id"
+            :label="item.video_chapter_name"
+            :value="item.video_chapter_id"
+          >
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="章节简介" prop="video_chapter_profile">
+      <el-form-item label="课时名称" prop="video_class_name">
         <el-input
-          type="textarea"
-          v-model="formData.video_chapter_profile"
+          v-model="formData.video_class_name"
           placeholder="请输入章节简介"
-          maxlength="200"
-          show-word-limit
+          maxlength="20"
         />
       </el-form-item>
-      <el-form-item label="章节排序" prop="video_chapter_sort">
+      <el-form-item label="章节排序" prop="video_class_sort">
         <el-input
           type="number"
-          v-model="formData.video_chapter_sort"
+          v-model="formData.video_class_sort"
           placeholder="请输入章节排序"
           maxlength="10"
+        />
+      </el-form-item>
+      <el-form-item label="上传视频" prop="media_id">
+        <AliyunUpload
+          v-model="formData.media_id"
+          :on-success="handleUploadSuccess"
         />
       </el-form-item>
     </el-form>
@@ -55,10 +66,12 @@
 
 <script>
 import {
-  editvideochapter,
-  addvideochapter,
-  getVideochapterDetail,
+  editvideoclass,
+  addvideoclass,
+  getvideoclassDetail,
+  getvideochapterList,
 } from "@/api/sou";
+import AliyunUpload from "@/components/AliyunUpload/index";
 export default {
   props: {
     value: {
@@ -74,22 +87,32 @@ export default {
       default: "",
     },
   },
+  components: {
+    AliyunUpload,
+  },
   data() {
     return {
       visible: this.value,
       formData: {
-        video_chapter_name: "",
+        video_class_name: "",
         video_chapter_profile: "",
-        video_chapter_sort: "",
+        video_class_sort: "",
+        media_id: "",
+        media_name: "",
       },
       rules: {
-        video_chapter_name: [
+        video_class_name: [
           { required: true, message: "请输入", trigger: "blur" },
         ],
-        video_chapter_sort: [
+        video_class_sort: [
           { required: true, message: "请输入", trigger: "blur" },
         ],
+        video_chapter_id: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
+        media_id: [{ required: true, message: "请上传", trigger: "change" }],
       },
+      chapterOptions: [],
       addLoading: false,
       detaiLoading: false,
     };
@@ -102,17 +125,22 @@ export default {
 
   methods: {
     handleOpen() {
+      this.getvideochapterList();
       if (this.id) {
-        this.getVideochapterDetail();
+        this.getvideoclassDetail();
       }
     },
-
-    async getVideochapterDetail() {
+    handleUploadSuccess(data) {
+      console.log(data);
+      const filename = data.file.name;
+      this.formData.media_name = filename;
+    },
+    async getvideoclassDetail() {
       const data = {
         video_chapter_id: this.id,
       };
       this.detaiLoading = true;
-      const res = await getVideochapterDetail(data).catch(() => {
+      const res = await getvideoclassDetail(data).catch(() => {
         this.detaiLoading = false;
       });
       this.detaiLoading = false;
@@ -121,6 +149,14 @@ export default {
           this.formData[k] = res.data[k];
         }
       }
+    },
+    // 章节选项
+    async getvideochapterList() {
+      const data = {
+        video_collection_id: this.$route.query?.video_collection_id || "",
+      };
+      const res = await getvideochapterList(data);
+      this.chapterOptions = res.data.data;
     },
     async submit() {
       const data = {
@@ -131,7 +167,7 @@ export default {
       } else {
         data.video_collection_id = this.$route.query?.video_collection_id || "";
       }
-      const api = this.id ? editvideochapter : addvideochapter;
+      const api = this.id ? editvideoclass : addvideoclass;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
