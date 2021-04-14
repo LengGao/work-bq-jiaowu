@@ -33,7 +33,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-
       <el-row>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="班级封面" prop="class_icon">
@@ -69,7 +68,6 @@
     </span>
   </el-dialog>
 </template>
-
 <script>
 import { uploadImageUrl } from '@/api/educational'
 import {
@@ -322,5 +320,8 @@ export default {
       }
     }
   }
+}
+/deep/.el-dialog__body {
+  padding: 30px 40px 20px 20px;
 }
 </style>
