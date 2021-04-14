@@ -1,121 +1,44 @@
 <template>
   <section class="mainwrap">
     <div class="recommend_head">
-      <search2
-        api="getRecommender"
-        :contentShow="true"
-        @getTable="getTableList"
-        inputText="机构名称"
-      ></search2>
+      <search2 api="getRecommender" :contentShow="true" @getTable="getTableList" inputText="机构名称"></search2>
       <el-button type="primary" @click="toEditOrgan">添加机构</el-button>
     </div>
     <!--表格-->
     <div class="userTable">
-      <el-table
-        ref="multipleTable"
-        :data="schoolData.list"
-        style="width: 100%"
-        class="min_table"
-        row-key="institution_id"
-        :tree-props="{ children: 'Blocks' }"
-        :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
-      >
-        <el-table-column
-          prop="institution_name"
-          label="机构名称"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="host_man"
-          label="负责人"
-          min-width="150"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="telephone"
-          label="联系方式"
-          min-width="150"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="recommend_num"
-          label="推荐学员"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="transactions_num"
-          label="成交学员"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="refund_quantity"
-          label="退费学员"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
+      <el-table ref="multipleTable" :data="schoolData.list" style="width: 100%" class="min_table" row-key="institution_id" :tree-props="{ children: 'Blocks' }" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
+        <el-table-column prop="institution_name" label="机构名称" min-width="110" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="host_man" label="负责人" min-width="150" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="telephone" label="联系方式" min-width="150" show-overflow-tooltip>
+          <template slot-scope="{ row }">
+            <div>
+              {{ row.telephone | filterPhone }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="recommend_num" label="推荐学员" min-width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="transactions_num" label="成交学员" min-width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="refund_quantity" label="退费学员" min-width="100" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
             <div style="display:flex;justify-content:center;">
-              <el-button
-                type="text"
-                @click="handleEdit(scope.row)"
-                style="padding-right:20px"
-                >编辑</el-button
-              >
-              <el-button
-                type="text"
-                v-if="scope.row.parent_id == '0'"
-                @click="addCampus(scope.row)"
-                style="padding-right:20px"
-                >添加校区</el-button
-              >
-              <el-button
-                type="text"
-                v-if="scope.row.account && scope.row.parent_id == '0'"
-                @click="addAccount(scope.row)"
-                style="padding-right:20px;color:green"
-                >修改账号</el-button
-              >
-              <el-button
-                type="text"
-                v-if="!scope.row.account && scope.row.parent_id == '0'"
-                @click="addAccount(scope.row)"
-                style="padding-right:20px"
-                >添加账号</el-button
-              >
-              <el-button type="text" @click="handleDelete(scope.row)"
-                >删除</el-button
-              >
+              <el-button type="text" @click="handleEdit(scope.row)" style="padding-right:20px">编辑</el-button>
+              <el-button type="text" v-if="scope.row.parent_id == '0'" @click="addCampus(scope.row)" style="padding-right:20px">添加校区</el-button>
+              <el-button type="text" v-if="scope.row.account && scope.row.parent_id == '0'" @click="addAccount(scope.row)" style="padding-right:20px;color:green">修改账号</el-button>
+              <el-button type="text" v-if="!scope.row.account && scope.row.parent_id == '0'" @click="addAccount(scope.row)" style="padding-right:20px">添加账号</el-button>
+              <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
       <div class="table_bottom">
         <div class="table_bottom">
-          <page
-            :data="schoolData.total"
-            :curpage="page"
-            @pageChange="doPageChange"
-          />
+          <page :data="schoolData.total" :curpage="page" @pageChange="doPageChange" />
         </div>
       </div>
       <!--校区弹框-->
-      <el-dialog
-        :title="dialogTitle == true ? '编辑校区' : '添加校区'"
-        :visible.sync="dialogVisible"
-        width="30%"
-      >
-        <el-form
-          :model="ruleForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+      <el-dialog :title="dialogTitle == true ? '编辑校区' : '添加校区'" :visible.sync="dialogVisible" width="30%">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="所属机构" prop="organizationName">
             <el-input v-model="ruleForm.organizationName" disabled></el-input>
           </el-form-item>
@@ -125,20 +48,12 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="conserve('ruleForm')"
-            >保 存</el-button
-          >
+          <el-button type="primary" @click="conserve('ruleForm')">保 存</el-button>
         </span>
       </el-dialog>
       <!--添加机构账号弹框-->
       <el-dialog title="添加机构账号" :visible.sync="organVisible" width="30%">
-        <el-form
-          :model="accountForm"
-          :rules="accountRules"
-          ref="accountForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
+        <el-form :model="accountForm" :rules="accountRules" ref="accountForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="机构账号" prop="account">
             <el-input v-model="accountForm.account"></el-input>
           </el-form-item>
@@ -148,9 +63,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="organVisible = false">取 消</el-button>
-          <el-button type="primary" @click="accountConserve('accountForm')"
-            >保 存</el-button
-          >
+          <el-button type="primary" @click="accountConserve('accountForm')">保 存</el-button>
         </span>
       </el-dialog>
     </div>
