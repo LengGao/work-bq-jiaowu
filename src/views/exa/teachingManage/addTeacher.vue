@@ -83,7 +83,6 @@
               >
               </el-option>
             </el-select>
-
             <!-- <el-tag
           class="tags"
           v-for="tag in taglist"
@@ -105,12 +104,16 @@
         ></el-input>
       </el-form-item>
       <el-form-item prop="introduction" label="老师简介">
+<<<<<<< HEAD
         <el-input
           type="textarea"
           v-model="ruleForm.introduction"
           style="width: 650px; height: 200px"
           placeholder="请输入老师简介 (必填)"
         ></el-input>
+=======
+        <el-input type="textarea" v-model="ruleForm.introduction" style="width:650px;height:150px;" placeholder="请输入老师简介 (必填)"></el-input>
+>>>>>>> yqq
       </el-form-item>
       <el-form-item>
         <el-button @click="cancel">取消</el-button>
@@ -310,7 +313,6 @@ export default {
   },
 };
 </script>
-
 <style lang="scss" scoped>
 /deep/.el-table__header th,
 .el-table__header tr {
@@ -381,5 +383,8 @@ export default {
 }
 .imageBox:hover i {
   display: block;
+}
+/deep/.el-textarea__inner {
+  height: 120px;
 }
 </style>

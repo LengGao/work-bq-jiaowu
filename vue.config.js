@@ -44,7 +44,7 @@ module.exports = {
         // target: 'http://thing.com',
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
-        // target: 'http://testadmin.beiqujy.com/apidata', //测试
+        target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://dpadmin.beiqujy.com/apidata', //测试
         //target: 'http://dongpei.local', //孝华
         // target: 'http://a.cc',
