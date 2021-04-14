@@ -20,7 +20,7 @@
         element-loading-text="loading"
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
-        style="width: 100%;"
+        style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
@@ -77,9 +77,7 @@
             <div v-if="row.classroom_name">
               {{ row.classroom_name }}
             </div>
-            <span v-else>
-              --
-            </span>
+            <span v-else> -- </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -98,9 +96,7 @@
             <div v-if="row.schoole_name">
               {{ row.schoole_name }}
             </div>
-            <span v-else>
-              --
-            </span>
+            <span v-else> -- </span>
           </template>
         </el-table-column>
 
@@ -143,13 +139,13 @@
 </template>
 
 <script>
-import { onlineUserList, getfieldinfo, getCourseSelect } from '@/api/etm'
-import { cloneOptions } from '@/utils/index'
-import { getcourseallclass } from '@/api/eda'
-import { getCateList, getInstitutionSelectData } from '@/api/sou'
-import AddLearner from './components/AddLearner'
+import { onlineUserList, getfieldinfo, getCourseSelect } from "@/api/etm";
+import { cloneOptions } from "@/utils/index";
+import { getcourseallclass } from "@/api/eda";
+import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import AddLearner from "./components/AddLearner";
 export default {
-  name: 'seaStudent',
+  name: "seaStudent",
   components: {
     AddLearner,
   },
@@ -162,78 +158,78 @@ export default {
       listLoading: false,
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
+          key: "date",
+          type: "datePicker",
           attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd',
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
           },
         },
         {
-          key: 'course_category_id',
-          type: 'cascader',
+          key: "course_category_id",
+          type: "cascader",
           events: {
             change: this.handleTypeChange,
           },
           width: 120,
           attrs: {
-            placeholder: '所属分类',
+            placeholder: "所属分类",
             clearable: true,
             options: [],
           },
         },
         {
-          key: 'course_id',
-          type: 'select',
-          optionValue: 'course_id',
-          optionLabel: 'course_name',
+          key: "course_id",
+          type: "select",
+          optionValue: "course_id",
+          optionLabel: "course_name",
           width: 120,
           options: [],
           attrs: {
             clearable: true,
-            placeholder: '所属课程',
+            placeholder: "所属课程",
           },
         },
         {
-          key: 'classroom_id',
-          type: 'select',
+          key: "classroom_id",
+          type: "select",
           width: 120,
           options: [],
-          optionValue: 'classroom_id',
-          optionLabel: 'classroom_name',
+          optionValue: "classroom_id",
+          optionLabel: "classroom_name",
           attrs: {
-            placeholder: '所属班级',
+            placeholder: "所属班级",
             clearable: true,
           },
         },
 
         {
-          key: 'organization_id',
-          type: 'cascader',
+          key: "organization_id",
+          type: "cascader",
           width: 120,
           attrs: {
-            placeholder: '推荐机构',
+            placeholder: "推荐机构",
             clearable: true,
             options: [],
           },
         },
         {
-          key: 'sources',
-          type: 'select',
+          key: "sources",
+          type: "select",
           width: 120,
           options: [
             {
-              value: '1',
-              label: 'test',
+              value: "1",
+              label: "test",
             },
           ],
           attrs: {
             clearable: true,
-            placeholder: '渠道来源',
+            placeholder: "渠道来源",
           },
         },
         // {
@@ -272,153 +268,153 @@ export default {
         //   },
         // },
         {
-          key: 'keyword',
+          key: "keyword",
           attrs: {
-            placeholder: '客户姓名/手机号码',
+            placeholder: "客户姓名/手机号码",
           },
         },
       ],
       institutionOption: [],
       searchData: {
         type: 0,
-        date: '',
+        date: "",
         course_category_id: [],
-        project_id: '',
-        classroom_id: '',
+        project_id: "",
+        classroom_id: "",
         organization_id: [],
-        keyboard: '',
+        keyboard: "",
         student_type: 1,
       },
       listData: [],
-
-      checked: '',
-    }
+      field_content: [],
+      checked: "",
+    };
   },
   created() {
-    this.getInstitutionSelectData()
-    this.onlineUserList()
-    this.getCateList()
-    this.getfieldinfo()
+    this.getInstitutionSelectData();
+    this.onlineUserList();
+    this.getCateList();
+    this.getfieldinfo();
   },
   methods: {
     getInnerStatus(val) {
-      console.log(val)
-      this.learnVisible = val
+      console.log(val);
+      this.learnVisible = val;
     },
     handleAdd(row) {
-      this.learnVisible = true
+      this.learnVisible = true;
       this.userInfo = {
         uid: row.uid,
 
         realname: row.realname,
         mobile: row.mobile,
         identity_card: row.identity_card,
-      }
+      };
     },
     handleSearch(data) {
-      const times = data.date || ['', '']
-      delete data.date
-      this.pageNum = 1
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
       this.searchData = {
         ...data,
-        organization_id: data.organization_id ? data.organization_id.pop() : '',
+        organization_id: data.organization_id ? data.organization_id.pop() : "",
         course_category_id: data.course_category_id.pop(),
         start_time: times[0],
         end_time: times[1],
-      }
-      this.onlineUserList()
+      };
+      this.onlineUserList();
     },
     // 获取渠道来源
     async getfieldinfo() {
       const data = {
-        field_text: '渠道来源',
-      }
-      const res = await getfieldinfo(data)
+        field_text: "渠道来源",
+      };
+      const res = await getfieldinfo(data);
       if (res.code === 0) {
         this.field_content = res.data.field_content.map((i, index) => {
-          var obj = {}
-          obj.value = index + 1
-          obj.label = i
-          return obj
-        })
+          var obj = {};
+          obj.value = index;
+          obj.label = i;
+          return obj;
+        });
 
-        this.searchOptions[5].options = this.field_content
+        this.searchOptions[5].options = this.field_content;
       }
     },
     // 获取机构
     async getInstitutionSelectData() {
-      const data = { list: true }
-      const res = await getInstitutionSelectData(data)
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
         this.searchOptions[4].attrs.options = this.institutionOption = cloneOptions(
           res.data,
-          'institution_name',
-          'institution_id',
-          'children'
-        )
+          "institution_name",
+          "institution_id",
+          "children"
+        );
       }
     },
     // 当分类选择时
     handleTypeChange(ids) {
-      const id = ids ? [...ids].pop() : ''
-      this.getcourseallclass(id)
-      this.getCourseSelect(id)
+      const id = ids ? [...ids].pop() : "";
+      this.getcourseallclass(id);
+      this.getCourseSelect(id);
       // this.getproject(id)
     },
     // 获取班级下拉
     async getcourseallclass(category_id) {
-      const data = { category_id }
-      const res = await getcourseallclass(data)
+      const data = { category_id };
+      const res = await getcourseallclass(data);
       if (res.code === 0) {
-        this.classOptions = res.data
-        this.searchOptions[3].options = res.data
+        this.classOptions = res.data;
+        this.searchOptions[3].options = res.data;
       }
     },
     // 获取课程下拉
     async getCourseSelect(category_id) {
-      const data = { category_id }
-      const res = await getCourseSelect(data)
+      const data = { category_id };
+      const res = await getCourseSelect(data);
       if (res.code === 0) {
         // this.classOptions = res.data.list
-        this.searchOptions[2].options = res.data.list
+        this.searchOptions[2].options = res.data.list;
       }
     },
     // 获取分类
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
-          'category_name',
-          'category_id',
-          'son'
-        )
+          "category_name",
+          "category_id",
+          "son"
+        );
       }
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.onlineUserList()
+      this.pageNum = val;
+      this.onlineUserList();
     },
     async onlineUserList() {
       const data = {
         aid: 0,
         page: this.pageNum,
         ...this.searchData,
-      }
-      this.listLoading = true
-      const res = await onlineUserList(data)
-      this.listLoading = false
+      };
+      this.listLoading = true;
+      const res = await onlineUserList(data);
+      this.listLoading = false;
       // res.data.data = res.data.data.forEach((i) => {
       //   i.create_time = this.$moment
       //     .unix(i.create_time)
       //     .format('YYYY-MM-DD HH:mm:ss')
       // })
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,
