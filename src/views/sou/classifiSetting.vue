@@ -42,7 +42,7 @@
         </el-table>
       </div>
       <!--弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="500px">
+      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="500px" :close-on-click-modal="false">
         <el-form label-width="100px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true">
           <el-form-item label="所属分类：">
             <el-select v-model="ruleForm.pid" clearable placeholder="请选择分类">

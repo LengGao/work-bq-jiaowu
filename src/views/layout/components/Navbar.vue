@@ -1,11 +1,7 @@
 <template>
   <header class="header" mode="horizontal">
     <div class="header-left">
-      <hamburger
-        class="btn"
-        :toggleClick="toggleSideBar"
-        :isActive="sidebar.opened"
-      ></hamburger>
+      <hamburger class="btn" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
       <breadcrumb></breadcrumb>
     </div>
     <div class="header-right">
@@ -18,31 +14,14 @@
         <span>清除缓存</span>
       </div> -->
       <div class="message-container">
-        <el-popover
-          trigger="click"
-          placement="bottom"
-          width="370"
-          popper-class="msg-popover"
-          @show="handlePopoverShow"
-          @after-leave="handlePopoverColse"
-        >
-          <el-badge
-            slot="reference"
-            :value="msgCount || ''"
-            class="message-badge"
-          >
+        <el-popover trigger="click" placement="bottom" width="370" popper-class="msg-popover" @show="handlePopoverShow" @after-leave="handlePopoverColse">
+          <el-badge slot="reference" :value="msgCount || ''" class="message-badge">
             <i class="el-icon-bell message-bell"></i>
           </el-badge>
           <div class="message-content">
             <div class="message-content-head">
               <h4>任务中心</h4>
-              <el-button
-                circle
-                @click="handleMsgRefresh"
-                icon="el-icon-refresh"
-                size="mini"
-                :loading="refershLoading"
-              ></el-button>
+              <el-button circle @click="handleMsgRefresh" icon="el-icon-refresh" size="mini" :loading="refershLoading"></el-button>
             </div>
             <ul class="message-content-list" v-infinite-scroll="loadMore">
               <li class="msg-list-item" v-for="msg in msgList" :key="msg.id">
@@ -58,24 +37,16 @@
                       <span class="msg-date">{{ msg.create_time }}</span>
                     </div>
                     <div class="msg-actions" v-if="msg.download">
-                      <span @click.stop="handleDownload(msg.download)"
-                        >下载</span
-                      >
+                      <span @click.stop="handleDownload(msg.download)">下载</span>
                     </div>
                     <div class="msg-actions" v-if="msg.queue_status == 1">
                       <span>执行中</span>
                     </div>
                   </div>
                   <div class="content-bottom">
-                    <span class="download__status download__status--primary"
-                      >总条数：{{ msg.count }}</span
-                    >
-                    <span class="download__status download__status--success"
-                      >成功：{{ msg.success }}</span
-                    >
-                    <span class="download__status download__status--error"
-                      >失败：{{ msg.fail }}</span
-                    >
+                    <span class="download__status download__status--primary">总条数：{{ msg.count }}</span>
+                    <span class="download__status download__status--success">成功：{{ msg.success }}</span>
+                    <span class="download__status download__status--error">失败：{{ msg.fail }}</span>
                   </div>
                 </div>
               </li>
@@ -91,10 +62,7 @@
       </div>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img
-            class="user-avatar"
-            :src="userInfo.head_photo ? userInfo.head_photo : touxiang"
-          />
+          <img class="user-avatar" :src="userInfo.head_photo ? userInfo.head_photo : touxiang" />
           <span>{{ userInfo.staff_name }}</span>
           <i class="el-icon-caret-bottom"></i>
         </div>
@@ -109,20 +77,8 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-dialog
-      title="修改个人密码"
-      :visible.sync="dialog"
-      :append-to-body="true"
-      width="600px"
-      @close="$refs['rulef'].resetFields()"
-    >
-      <el-form
-        :model="form"
-        :rules="ru"
-        ref="rulef"
-        label-width="95px"
-        label-position="left"
-      >
+    <el-dialog title="修改个人密码" :visible.sync="dialog" :append-to-body="true" width="600px" @close="$refs['rulef'].resetFields()">
+      <el-form :model="form" :rules="ru" ref="rulef" label-width="95px" label-position="left">
         <el-form-item label="原密码：" prop="origin">
           <el-input v-model="form.origin" type="passWord"></el-input>
         </el-form-item>
@@ -142,49 +98,45 @@
 </template>
 
 <script>
-let timeId = null;
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
-import touxiang from "@/assets/images/touxiang.png";
-import { getAdminQueueList, baseUrl } from "@/api/login";
-import { mapGetters, mapActions } from "vuex";
+let timeId = null
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
+import touxiang from '@/assets/images/touxiang.png'
+import { getAdminQueueList, baseUrl } from '@/api/login'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     const validatePass = (rule, value, callback) => {
       if (value.length < 3) {
-        callback(new Error("密码不能小于3位"));
+        callback(new Error('密码不能小于3位'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.form.password) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       touxiang,
       dialog: false,
       form: {
-        origin: "",
-        password: "",
-        confirm: "",
+        origin: '',
+        password: '',
+        confirm: '',
       },
       ru: {
         origin: [
-          { required: true, message: "请填写原密码", trigger: "blur" },
-          { min: 6, message: "密码最少6位数", trigger: "blur" },
+          { required: true, message: '请填写原密码', trigger: 'blur' },
+          { min: 6, message: '密码最少6位数', trigger: 'blur' },
         ],
-        password: [
-          { required: true, trigger: "blur", validator: validatePass },
-        ],
-        confirm: [
-          { required: true, validator: validatePass2, trigger: "blur" },
-        ],
+        password: [{ required: true, trigger: 'blur', validator: validatePass }],
+        confirm: [{ required: true, validator: validatePass2, trigger: 'blur' }],
       },
       msgList: [],
       msgPageNum: 1,
@@ -193,121 +145,119 @@ export default {
       msgLoading: false,
       msgNoMore: false,
       refershLoading: false,
-    };
+    }
   },
   components: {
     Breadcrumb,
     Hamburger,
   },
   computed: {
-    ...mapGetters(["sidebar", "msgCount", "userInfo"]),
+    ...mapGetters(['sidebar', 'msgCount', 'userInfo']),
   },
   created() {
-    this.getUnreadCount();
-    const time = 1000 * 30;
-    timeId = setInterval(this.getUnreadCount, time);
+    this.getUnreadCount()
+    const time = 1000 * 30
+    timeId = setInterval(this.getUnreadCount, time)
   },
   beforeDestroy() {
-    clearInterval(timeId);
+    clearInterval(timeId)
   },
   methods: {
     //getUnreadCount：获取未读数量
-    ...mapActions(["getUnreadCount"]),
+    ...mapActions(['getUnreadCount']),
     // msg 下载
     handleDownload(url) {
-      console.log(baseUrl + url);
-      window.location.href = baseUrl + url;
+      console.log(baseUrl + url)
+      window.location.href = baseUrl + url
     },
     // msg 加载更多
     loadMore() {
-      const leng = this.msgList.length;
+      const leng = this.msgList.length
       if (leng < this.msgTotal) {
-        this.msgPageNum++;
-        this.getAdminQueueList();
+        this.msgPageNum++
+        this.getAdminQueueList()
       } else {
-        this.msgNoMore = true;
+        this.msgNoMore = true
       }
     },
     // msg 刷新
     async handleMsgRefresh() {
-      this.msgPageNum = 1;
-      this.refershLoading = true;
-      await this.getAdminQueueList();
-      this.refershLoading = false;
+      this.msgPageNum = 1
+      this.refershLoading = true
+      await this.getAdminQueueList()
+      this.refershLoading = false
     },
-
     // 弹窗关闭时
     handlePopoverColse() {
-      this.msgNoMore = false;
-      this.msgTotal = 0;
-      this.msgList = [];
+      this.msgNoMore = false
+      this.msgTotal = 0
+      this.msgList = []
     },
     // 弹窗打开时
     async handlePopoverShow() {
-      this.msgPageNum = 1;
-      await this.getAdminQueueList();
-      this.getUnreadCount();
+      this.msgPageNum = 1
+      await this.getAdminQueueList()
+      this.getUnreadCount()
     },
     // msg 列表
     async getAdminQueueList() {
       const data = {
         page: this.msgPageNum,
         limit: this.msgPageSize,
-      };
-      this.msgLoading = true;
-      const res = await getAdminQueueList(data).catch(() => {
-        this.msgLoading = false;
-      });
-      this.msgLoading = false;
-      if (this.msgPageNum === 1) {
-        this.msgList = res.data.list;
-      } else {
-        this.msgList.push(...res.data.list);
       }
-      this.msgTotal = res.data.total;
+      this.msgLoading = true
+      const res = await getAdminQueueList(data).catch(() => {
+        this.msgLoading = false
+      })
+      this.msgLoading = false
+      if (this.msgPageNum === 1) {
+        this.msgList = res.data.list
+      } else {
+        this.msgList.push(...res.data.list)
+      }
+      this.msgTotal = res.data.total
     },
     // 刷新按钮
     handclick() {
-      console.log("点了我");
-      window.location.reload();
+      console.log('点了我')
+      window.location.reload()
     },
     modifyPassword() {
-      this.dialog = true;
+      this.dialog = true
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$api.resetPassword(this, this.form);
+          this.$api.resetPassword(this, this.form)
           // if (this.$cookies.get('organization_id')) {
           //   this.$api.resetOrgPassword(this)
           // } else {
           //   this.$api.resetAdminPassword(this)
           // }
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     huanfu(theme) {
-      window.document.documentElement.setAttribute("data-theme", theme);
+      window.document.documentElement.setAttribute('data-theme', theme)
     },
     clearStorage() {
-      this.$api.clearCache(this);
+      this.$api.clearCache(this)
     },
     toggleSideBar() {
-      this.$store.dispatch("ToggleSideBar");
+      this.$store.dispatch('ToggleSideBar')
     },
     logout() {
-      this.$store.dispatch("logout").then((res) => {
-        this.$message.success(res.message);
-        this.$router.push("/login");
-      });
+      this.$store.dispatch('logout').then((res) => {
+        this.$message.success(res.message)
+        this.$router.push('/login')
+      })
     },
   },
-};
+}
 </script>
-
 <style lang="less" scoped>
 .header {
   display: flex;
@@ -342,7 +292,6 @@ export default {
       }
     }
   }
-
   .avatar-container {
     display: flex;
     span {
@@ -375,7 +324,6 @@ export default {
     }
   }
 }
-
 .msg-popover {
   .message-content {
     .message-content-head {
