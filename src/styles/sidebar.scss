@@ -12,9 +12,12 @@
   // 侧边栏
   .sidebar-container {
     .horizontal-collapse-transition {
-      transition: 0s width ease-in-out, 0s padding-left ease-in-out,
-        0s padding-right ease-in-out;
-    }
+      transition: 0s width ease-in-out, 0s padding-left ease-in-out,        0s padding-right ease-in-out;
+      -webkit-transition: 0s width ease-in-out, 0s padding-left ease-in-out,        0s padding-right ease-in-out;
+      -moz-transition: 0s width ease-in-out, 0s padding-left ease-in-out,        0s padding-right ease-in-out;
+      -ms-transition: 0s width ease-in-out, 0s padding-left ease-in-out,        0s padding-right ease-in-out;
+      -o-transition: 0s width ease-in-out, 0s padding-left ease-in-out,        0s padding-right ease-in-out;
+}
 
     transition: width 0.28s;
     width: 200px !important;
@@ -78,7 +81,6 @@
       }
     }
   }
-
   .sidebar-container .nest-menu .el-submenu > .el-submenu__title,
   .sidebar-container .el-submenu .el-menu-item {
     min-width: 180px !important;
@@ -88,7 +90,6 @@
       @include hover($menuHover);
     }
   }
-
   .el-menu--collapse .el-menu .el-submenu {
     min-width: 180px !important;
   }

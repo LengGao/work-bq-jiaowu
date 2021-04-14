@@ -31,12 +31,7 @@
         <el-tab-pane label="跟进记录" name="FollowUpRecord"></el-tab-pane>
         <el-tab-pane label="学员历史" name="CustomerHistory"></el-tab-pane>
       </el-tabs>
-      <component
-        :is="getComponent"
-        @on-basic-success="getStudentBasicDetail"
-        :datas="detailData"
-        :uid="detailData.uid"
-      />
+      <component :is="getComponent" @on-basic-success="getStudentBasicDetail" :datas="detailData" :uid="detailData.uid" />
     </section>
     <!-- 报名 -->
     <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
@@ -88,7 +83,6 @@ export default {
   },
 }
 </script>
-
 <style lang="scss" scoped>
 .student-detail {
   .head_remind {
