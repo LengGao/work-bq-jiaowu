@@ -9,13 +9,7 @@
         <li style=" cursor: pointer;" @click="imgSplit()">
           全部图片({{ list }})
         </li>
-        <li
-          v-for="(item, index) of spaceList.list"
-          :key="index"
-          style=" cursor: pointer;"
-          @click="imgSplit(item.bucket_id, index)"
-          :class="{ activeColor: colorIndex === index }"
-        >
+        <li v-for="(item, index) of spaceList.list" :key="index" style=" cursor: pointer;" @click="imgSplit(item.bucket_id, index)" :class="{ activeColor: colorIndex === index }">
           {{ item.name }}--({{ item.imageTotal }})
           <i class="el-icon-delete" @click.stop.prevent="sapceDelete(item)"></i>
           <i class="el-icon-edit" @click.stop.prevent="sapceEditor(item)"></i>
@@ -25,96 +19,32 @@
     <section class="right-container">
       <header>
         <div class="left-zoom">
-          <search
-            :hideTime="true"
-            :hideOtherOption="true"
-            :searchType="info"
-            api="getImagesList"
-            data="imgData"
-            @getTable="getTableList"
-            :bucket_id="bucket_id"
-          ></search>
+          <search :hideTime="true" :hideOtherOption="true" :searchType="info" api="getImagesList" data="imgData" @getTable="getTableList" :bucket_id="bucket_id"></search>
           <div>
-            <el-button
-              type="primary"
-              style="margin-left:20px"
-              @click="SingleUpload"
-              >上传图片</el-button
-            >
+            <el-button type="primary" style="margin-left:20px" @click="SingleUpload">上传图片</el-button>
           </div>
         </div>
         <div class="userTable" style="margin-top:20px">
-          <el-table
-            ref="multipleTable"
-            :data="imgData"
-            style="width: 100%"
-            class="min_table"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column
-              type="selection"
-              width="60"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="images_name"
-              label="图片名称"
-              show-overflow-tooltip
-              min-width="70"
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="width_height"
-              label="尺寸"
-              min-width="210"
-              show-overflow-tooltip
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="size"
-              label="大小"
-              min-width="150"
-              show-overflow-tooltip
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="create_time"
-              label="上传时间"
-              min-width="150"
-              show-overflow-tooltip
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              label="图片预览"
-              min-width="140"
-              show-overflow-tooltip
-            >
+          <el-table ref="multipleTable" :data="imgData" style="width: 100%" class="min_table" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="60" align="center"></el-table-column>
+            <el-table-column prop="images_name" label="图片名称" show-overflow-tooltip min-width="70" align="center"></el-table-column>
+            <el-table-column prop="width_height" label="尺寸" min-width="210" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="size" label="大小" min-width="150" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column prop="create_time" label="上传时间" min-width="150" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="图片预览" min-width="140" show-overflow-tooltip>
               <template slot-scope="scope">
                 <div style="width:50px ;height:50px">
                   <img :src="scope.row.url" alt class="school_class_box" />
                 </div>
               </template>
             </el-table-column>
-            <el-table-column
-              label="操作"
-              fixed="right"
-              min-width="180"
-              align="center"
-            >
+            <el-table-column label="操作" fixed="right" min-width="180" align="center">
               <template slot-scope="scope">
                 <div style="display:flex;justify-content:space-around">
-                  <el-button type="text" @click="editor(scope.row)"
-                    >编辑</el-button
-                  >
-                  <el-button type="text" @click="transform(scope.row)"
-                    >移动</el-button
-                  >
-                  <el-button type="text" @click="download(scope.row)"
-                    >下载</el-button
-                  >
-                  <el-button type="text" @click="delbtn(scope.row)"
-                    >删除</el-button
-                  >
+                  <el-button type="text" @click="editor(scope.row)">编辑</el-button>
+                  <el-button type="text" @click="transform(scope.row)">移动</el-button>
+                  <el-button type="text" @click="download(scope.row)">下载</el-button>
+                  <el-button type="text" @click="delbtn(scope.row)">删除</el-button>
                 </div>
               </template>
             </el-table-column>
@@ -123,20 +53,11 @@
       </header>
       <div class="table_bottom">
         <div>
-          <el-button type="warning" @click="multiTransforms"
-            >批量移动</el-button
-          >
+          <el-button type="warning" @click="multiTransforms">批量移动</el-button>
           <el-button type="danger" @click="multiDel">批量删除</el-button>
-          <el-button type="primary" @click="multiDownLoad" :loading="downStatus"
-            >批量下载</el-button
-          >
+          <el-button type="primary" @click="multiDownLoad" :loading="downStatus">批量下载</el-button>
         </div>
-        <page
-          :data="total"
-          :pageSize="10"
-          :curpage="page"
-          @pageChange="doPageChange"
-        />
+        <page :data="total" :pageSize="10" :curpage="page" @pageChange="doPageChange" />
       </div>
       <main></main>
       <el-dialog
@@ -180,12 +101,7 @@
         <el-form>
           <el-form-item label="图片分组：">
             <el-select v-model="value" clearable filterable>
-              <el-option
-                v-for="(item, index) in spaceList.list"
-                :key="index"
-                :label="item.name"
-                :value="item.bucket_id"
-              ></el-option>
+              <el-option v-for="(item, index) in spaceList.list" :key="index" :label="item.name" :value="item.bucket_id"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -203,20 +119,11 @@
         <el-form :model="createVideo" ref="reasonForm" label-width="150px">
           <el-form-item label="图片分组：">
             <el-select v-model="ruleForm.bucket_id" clearable filterable>
-              <el-option
-                v-for="(item, index) in spaceList.list"
-                :key="index"
-                :label="item.name"
-                :value="item.bucket_id"
-              ></el-option>
+              <el-option v-for="(item, index) in spaceList.list" :key="index" :label="item.name" :value="item.bucket_id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="图片上传：">
-            <SingleUpload
-              ref="mychild"
-              :ruleForm="ruleForm"
-              @imgSuccess="imgSuccess"
-            />
+            <SingleUpload ref="mychild" :ruleForm="ruleForm" @imgSuccess="imgSuccess" />
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -232,10 +139,7 @@
       >
         <el-form :model="sapceEditors" ref="reasonForm" label-width="150px">
           <el-form-item label="空间名称：">
-            <el-input
-              v-model="sapceEditors.name"
-              class="input-width"
-            ></el-input>
+            <el-input v-model="sapceEditors.name" class="input-width"></el-input>
           </el-form-item>
           <!-- <el-form-item label="空间排序：">
             <el-select v-model="keytype" slot="prepend">
@@ -472,7 +376,6 @@ export default {
           for (let item of this.multiDels) {
             this.imgId.push(item.image_id)
           }
-
           this.$api.deleteImages(this, 'imgId')
         })
         .catch(() => {})
@@ -541,7 +444,6 @@ img {
   color: #bdbebe;
   line-height: 48px;
 }
-
 .el-icon-circle-plus-outline {
   font-size: 20px;
   float: right;
@@ -558,7 +460,6 @@ img {
 .home {
   display: flex;
   background: #ffffff;
-
   padding: 30px;
   font-size: 14px;
 }

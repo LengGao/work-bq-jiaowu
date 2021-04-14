@@ -378,7 +378,7 @@ export default {
     font-size: 28px;
     color: hsl(215, 8%, 58%);
     width: 120px;
-    height: 90px;
+    height: 100px;
     line-height: 90px;
     text-align: center;
   }
@@ -389,7 +389,6 @@ export default {
     display: block;
   }
 }
-
 /deep/.el-button.is-circle {
   padding: 7px;
 }
@@ -447,7 +446,6 @@ h3 {
   //   color: #fd6500;
   // }
 }
-
 .customer_colse {
   width: 100%;
   display: flex;
