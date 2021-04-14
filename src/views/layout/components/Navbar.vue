@@ -113,7 +113,6 @@
       title="修改个人密码"
       :visible.sync="dialog"
       :append-to-body="true"
-      :close-on-click-modal="false"
       width="600px"
       @close="$refs['rulef'].resetFields()"
     >
@@ -236,7 +235,6 @@ export default {
       await this.getAdminQueueList()
       this.refershLoading = false
     },
-
     // 弹窗关闭时
     handlePopoverColse() {
       this.msgNoMore = false
@@ -308,7 +306,6 @@ export default {
   },
 }
 </script>
-
 <style lang="less" scoped>
 .header {
   display: flex;
@@ -343,7 +340,6 @@ export default {
       }
     }
   }
-
   .avatar-container {
     display: flex;
     span {
@@ -376,7 +372,6 @@ export default {
     }
   }
 }
-
 .msg-popover {
   .message-content {
     .message-content-head {

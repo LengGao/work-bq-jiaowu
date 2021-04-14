@@ -3,7 +3,7 @@
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    width="800px"
+    width="830px"
     class="question-bank-dialog"
     @open="handleOpen"
     :close-on-click-modal="false"
@@ -262,5 +262,11 @@ export default {
       }
     }
   }
+}
+/deep/.el-dialog__body {
+  padding: 30px 50px 30px 20px;
+}
+.dialog-footer {
+  padding: 30px;
 }
 </style>

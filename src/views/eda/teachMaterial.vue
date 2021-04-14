@@ -15,7 +15,13 @@
         <el-table ref="multipleTable" :data="listData" tooltip-effect="light" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" stripe style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" @selection-change="handleSeletChange">
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column prop="id" label="学员编号" show-overflow-tooltip min-width="90"></el-table-column>
-          <el-table-column prop="nickname" label="学生姓名" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="nickname" label="学生姓名" min-width="110" show-overflow-tooltip>
+            <template slot-scope="{ row }">
+              <div class="nickname" @click="toStudentDetail(row.uid)">
+                {{ row.nickname }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="mobile" label="手机号码" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <span>{{ row.mobile | filterPhone }}</span>
@@ -274,6 +280,12 @@ export default {
       this.listData = res.data.list
       this.listTotal = res.data.total
     },
+    toStudentDetail(id) {
+      this.$router.push({
+        path: '/eda/studentDetail',
+        query: { id },
+      })
+    },
   },
 }
 </script>
@@ -299,5 +311,9 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.nickname {
+  color: #199fff;
+  cursor: pointer;
 }
 </style>

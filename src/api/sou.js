@@ -445,3 +445,92 @@ export function questionBankDetail(params) {
     params,
   })
 }
+// 章节列表
+export function getvideochapterList(params) {
+  return request({
+    url: 'video/getvideochapter',
+    method: 'get',
+    params,
+  })
+}
+// 章节删除
+export function deletevideochapter(data) {
+  return request({
+    url: 'video/deletevideochapter',
+    method: 'post',
+    data,
+  })
+}
+
+// 添加视频章节
+export function addvideochapter(data) {
+  return request({
+    url: 'video/addvideochapter',
+    method: 'post',
+    data,
+  })
+}
+// 编辑视频章节
+export function editvideochapter(data) {
+  return request({
+    url: 'video/editvideochapter',
+    method: 'post',
+    data,
+  })
+}
+// 根据id获取视频章节
+export function getVideochapterDetail(params) {
+  return request({
+    url: 'video/editvideochapter',
+    method: 'get',
+    params,
+  })
+}
+// 章节列表-添加课时
+export function addvideoclass(data) {
+  return request({
+    url: 'video/addvideoclass',
+    method: 'post',
+    data,
+  })
+}
+// 章节列表-编辑课时
+export function editvideoclass(data) {
+  return request({
+    url: 'video/editvideoclass',
+    method: 'post',
+    data,
+  })
+}
+// 章节列表-课时详情
+export function getvideoclassDetail(params) {
+  return request({
+    url: 'video/editvideoclass',
+    method: 'get',
+    params,
+  })
+}
+// 阿里云上传凭证
+export function updatecreate(data) {
+  return request({
+    url: 'live/updatecreate',
+    method: 'post',
+    data,
+  })
+}
+// 阿里云上传凭证刷新
+export function refreshuploadvideo(data) {
+  return request({
+    url: 'live/refreshuploadvideo',
+    method: 'post',
+    data,
+  })
+}
+// 获取课时
+export function getvideoclass(params) {
+  return request({
+    url: 'video/getvideoclass',
+    method: 'get',
+    params,
+  })
+}

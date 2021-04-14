@@ -64,6 +64,11 @@
             min-width="70"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <div class="surname" @click="toStudentDetail(row.uid)">
+                {{ row.surname }}
+              </div>
+            </template>
           </el-table-column>
           <el-table-column
             label="联系方式"
@@ -243,6 +248,12 @@ export default {
     this.Approvalist()
   },
   methods: {
+    toStudentDetail(id) {
+      this.$router.push({
+        path: '/eda/studentDetail',
+        query: { id },
+      })
+    },
     // 显示项目名称
     formatProjectName(json) {
       const projectData = JSON.parse(json)
@@ -452,5 +463,9 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.surname {
+  color: #199fff;
+  cursor: pointer;
 }
 </style>

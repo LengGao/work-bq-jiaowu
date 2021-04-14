@@ -57,7 +57,7 @@
             type="date"
             format="yyyy-MM-dd "
             value-format="yyyy-MM-dd "
-            style="width:240px"
+            style="width: 240px"
             placeholder="选择日期"
           >
           </el-date-picker>
@@ -77,6 +77,8 @@
 
         <el-form-item label="文化程度" prop="culture">
           <el-select
+            clearable
+            filterable
             v-model="ruleForm.culture"
             placeholder="请选择文化程度"
             class="input-width"
@@ -97,6 +99,8 @@
             class="input-width"
             :options="provinceAndCityData"
             v-model="selectedOptions"
+            clearable
+            filterable
             @change="handleChange"
           >
           </el-cascader>
@@ -106,6 +110,8 @@
           <el-cascader
             size="large"
             class="input-width"
+            clearable
+            filterable
             :options="provinceAndCityData"
             v-model="selectedOptionsLocal"
             @change="handleLocal"
@@ -116,6 +122,8 @@
         <el-form-item label="推荐机构" prop="from_organization_id">
           <el-cascader
             class="input-width"
+            clearable
+            filterable
             v-model="ruleForm.from_organization_id"
             :options="institutionOption"
           ></el-cascader>
@@ -124,6 +132,8 @@
         <el-form-item label="渠道来源" prop="sources">
           <el-select
             v-model="ruleForm.sources"
+            clearable
+            filterable
             placeholder="请选择"
             class="input-width"
           >
@@ -137,7 +147,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="备注信息" prop="tips" style="width:100%">
+        <el-form-item label="备注信息" prop="tips" style="width: 100%">
           <el-input v-model="ruleForm.tips" type="textarea"></el-input>
         </el-form-item>
       </el-form>
@@ -162,9 +172,9 @@ import {
   regionData,
   provinceAndCityData,
   TextToCode,
-} from 'element-china-area-data'
+} from "element-china-area-data";
 // import { getInstitutionSelectData } from '@/api/sou'
-import { getBirth, getSex } from '@/utils/index'
+import { getBirth, getSex } from "@/utils/index";
 export default {
   props: {
     learnVisible: {
@@ -181,8 +191,8 @@ export default {
     },
     userInfo: {
       type: Object,
-      default: function() {
-        return {}
+      default: function () {
+        return {};
       },
     },
   },
@@ -194,57 +204,57 @@ export default {
       selectedOptionsLocal: [],
       organData: {},
       ruleForm: {
-        wechat: '',
-        second_mobile: '',
-        location: '',
-        surname: '',
+        wechat: "",
+        second_mobile: "",
+        location: "",
+        surname: "",
         marry: 0,
-        mobile: '',
-        id_card_number: '',
+        mobile: "",
+        id_card_number: "",
         sex: 0,
-        birthday: '',
+        birthday: "",
         marry: 0,
-        qq: '',
-        email: '',
-        culture: '',
-        province: '',
-        city: '',
-        from_organization_id: '',
-        sources: '',
-        tips: '',
-        uid: '',
+        qq: "",
+        email: "",
+        culture: "",
+        province: "",
+        city: "",
+        from_organization_id: "",
+        sources: "",
+        tips: "",
+        uid: "",
       },
       addVisible: false,
       openStatus: this.learnVisible,
       cultures: [
         {
           value: 1,
-          label: '文化',
+          label: "文化",
         },
         {
           value: 2,
-          label: '小学',
+          label: "小学",
         },
         {
           value: 3,
-          label: '初中',
+          label: "初中",
         },
         {
           value: 4,
-          label: '高中',
+          label: "高中",
         },
         {
           value: 5,
-          label: '专科',
+          label: "专科",
         },
         {
           value: 6,
-          label: '本科',
+          label: "本科",
         },
       ],
       rules: {
         surname: [
-          { required: true, message: '请填写学生姓名', trigger: 'blur' },
+          { required: true, message: "请填写学生姓名", trigger: "blur" },
         ],
         // mail: [{ validator: validMail, trigger: 'blur', required: true }],
         // mobile: [
@@ -261,37 +271,39 @@ export default {
         //   },
         // ],
         id_card_number: [
-          { required: true, message: '请输入身份证ID', trigger: 'blur' },
+          { required: true, message: "请输入身份证ID", trigger: "blur" },
           {
-            validator: function(rule, value, callback) {
+            validator: function (rule, value, callback) {
               if (
                 /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(value) == false
               ) {
-                callback(new Error('你的身份证格式不正确'))
+                callback(new Error("你的身份证格式不正确"));
               } else {
-                callback()
+                callback();
               }
             },
-            trigger: 'blur',
+            trigger: "blur",
           },
         ],
         // sources: [
         //   { required: true, message: '请填写渠道来源', trigger: 'change' },
         // ],
       },
-    }
+    };
   },
   watch: {
     learnVisible(val) {
-      this.openStatus = val
+      this.openStatus = val;
     },
     userInfo(val) {
       //   console.log(this.userInfo)
 
-      this.ruleForm.surname = this.userInfo.realname
-      this.ruleForm.uid = this.userInfo.uid
-      this.ruleForm.mobile = this.userInfo.mobile
-      this.ruleForm.id_card_number = this.userInfo.identity_card
+      this.ruleForm.surname = this.userInfo.realname;
+      this.ruleForm.uid = this.userInfo.uid;
+      this.ruleForm.mobile = this.userInfo.mobile;
+      this.ruleForm.id_card_number = this.userInfo.identity_card;
+      this.ruleForm.from_organization_id = this.userInfo.institution_id;
+      this.ruleForm.sources = this.userInfo.sources;
       //   this.$refs['ruleForm'].resetFields()
     },
   },
@@ -315,58 +327,58 @@ export default {
     //   }
     // },
     handleChange(value) {
-      console.log(this.selectedOptions)
-      console.log(value) // ["110000", "110100", "110101"]
+      console.log(this.selectedOptions);
+      console.log(value); // ["110000", "110100", "110101"]
       //CodeToText是个大对象，属性是区域码，属性值是汉字 用法例如：CodeToText['110000']输出北京市
       // console.log(
       //   CodeToText[value[0]],
       //   CodeToText[value[1]],
       //   CodeToText[value[2]]
       // ) //北京市 市辖区 东城区
-      this.ruleForm.province = value[0]
-      this.ruleForm.city = value[1]
+      this.ruleForm.province = value[0];
+      this.ruleForm.city = value[1];
     },
     handleLocal(value) {
-      console.log(value)
-      this.ruleForm.location = CodeToText[value[0]] + CodeToText[value[1]]
+      console.log(value);
+      this.ruleForm.location = CodeToText[value[0]] + CodeToText[value[1]];
     },
     getaddStatus(status) {
-      this.addVisible = status
+      this.addVisible = status;
     },
     preserve(formName, num) {
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       // this.addVisible = true //客户报名弹框显示
       //没有自动填充生日
-      if (this.ruleForm.birthday == '') {
-        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number)
+      if (this.ruleForm.birthday == "") {
+        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number);
       }
       //没有自动填充性别
-      if (this.ruleForm.sex == '') {
-        this.ruleForm.sex = getSex(this.ruleForm.id_card_number)
+      if (this.ruleForm.sex == "") {
+        this.ruleForm.sex = getSex(this.ruleForm.id_card_number);
       }
 
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$api.addCustomers(this, this.ruleForm, num)
+          this.$api.addCustomers(this, this.ruleForm, num);
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
     doClose() {
       for (var item in this.ruleForm) {
-        this.ruleForm[item] = ''
+        this.ruleForm[item] = "";
       }
-      this.$emit('innerDialog', false)
+      this.$emit("innerDialog", false);
     },
     hanldeCancel(formName) {
-      this.$refs[formName].resetFields()
-      this.doClose()
+      this.$refs[formName].resetFields();
+      this.doClose();
       //   this.$emit('input', false)
     },
   },
-}
+};
 </script>
 
 <style lang="scss" socped>

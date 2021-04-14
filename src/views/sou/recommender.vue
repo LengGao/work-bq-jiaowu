@@ -38,7 +38,13 @@
           label="联系方式"
           min-width="150"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <div>
+              {{ row.telephone | filterPhone }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="recommend_num"
           label="推荐学员"
@@ -107,7 +113,6 @@
       <el-dialog
         :title="dialogTitle == true ? '编辑校区' : '添加校区'"
         :visible.sync="dialogVisible"
-        :close-on-click-modal="false"
         width="30%"
       >
         <el-form
@@ -132,12 +137,7 @@
         </span>
       </el-dialog>
       <!--添加机构账号弹框-->
-      <el-dialog
-        title="添加机构账号"
-        :visible.sync="organVisible"
-        width="30%"
-        :close-on-click-modal="false"
-      >
+      <el-dialog title="添加机构账号" :visible.sync="organVisible" width="30%">
         <el-form
           :model="accountForm"
           :rules="accountRules"

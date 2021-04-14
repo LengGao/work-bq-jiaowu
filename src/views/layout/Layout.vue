@@ -7,13 +7,11 @@
     </div>
   </div>
 </template>
-
 <script>
-import { Navbar, Sidebar, AppMain } from "./components";
-import ResizeMixin from "./mixin/ResizeHandler";
-
+import { Navbar, Sidebar, AppMain } from './components'
+import ResizeMixin from './mixin/ResizeHandler'
 export default {
-  name: "layout",
+  name: 'layout',
   components: {
     Navbar,
     Sidebar,
@@ -22,28 +20,27 @@ export default {
   mixins: [ResizeMixin],
   computed: {
     sidebar() {
-      return this.$store.state.app.sidebar;
+      return this.$store.state.app.sidebar
     },
     device() {
-      return this.$store.state.app.device;
+      return this.$store.state.app.device
     },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
-        mobile: this.device === "mobile",
-      };
+        mobile: this.device === 'mobile',
+      }
     },
   },
   created() {
     // 获取用户身份
-    this.$store.dispatch("setIdentity");
+    this.$store.dispatch('setIdentity')
   },
-};
+}
 </script>
-
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/mixin.scss";
+@import 'src/styles/mixin.scss';
 .app-wrapper {
   @include clearfix;
   position: relative;
@@ -52,6 +49,6 @@ export default {
   background: #fff;
 }
 .sidebar-container {
-  background-color: #560b3c;
+  background-color: #380638;
 }
 </style>
