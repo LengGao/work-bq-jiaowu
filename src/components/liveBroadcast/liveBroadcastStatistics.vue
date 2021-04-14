@@ -116,7 +116,12 @@
         </div>
       </div>
     </div>
-    <el-dialog title="观看详情" :visible.sync="dialogVisible" width="50%">
+    <el-dialog
+      title="观看详情"
+      :visible.sync="dialogVisible"
+      width="50%"
+      :close-on-click-modal="false"
+    >
       <el-table
         ref="multipleTable"
         :data="detailData"

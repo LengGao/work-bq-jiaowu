@@ -163,7 +163,12 @@
         />
       </div>
       <main></main>
-      <el-dialog title="添加视频章节" :visible.sync="dialogVisible" width="30%">
+      <el-dialog
+        title="添加视频章节"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form :model="addPicture" ref="reasonForm" label-width="150px">
           <el-form-item label="分组名称：">
             <el-input v-model="addPicture.name" class="input-width"></el-input>
@@ -181,7 +186,12 @@
           <el-button type="primary" @click="handleConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="编辑课时" :visible.sync="dialogEditor" width="30%">
+      <el-dialog
+        title="编辑课时"
+        :visible.sync="dialogEditor"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form :model="createVideo" ref="reasonForm" label-width="150px">
           <el-form-item label="章节名称：">
             <el-select
@@ -227,6 +237,7 @@
       <el-dialog
         title="移动课时到："
         :visible.sync="dialogTransform"
+        :close-on-click-modal="false"
         width="30%"
       >
         <el-form>
@@ -246,7 +257,12 @@
           <el-button type="primary" @click="transformConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="添加课时" :visible.sync="dialogUpload" width="30%">
+      <el-dialog
+        title="添加课时"
+        :visible.sync="dialogUpload"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form :model="createVideo" ref="reasonForm" label-width="150px">
           <el-form-item label="章节名称：">
             <el-select v-model="ruleForm.video_chapter_id" clearable filterable>
@@ -281,7 +297,12 @@
           <el-button type="primary" @click="uploadConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="编辑名称" :visible.sync="dialogSpace" width="30%">
+      <el-dialog
+        title="编辑名称"
+        :visible.sync="dialogSpace"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form :model="sapceEditors" ref="reasonForm" label-width="150px">
           <el-form-item label="空间名称：">
             <el-input

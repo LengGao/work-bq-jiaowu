@@ -4,6 +4,7 @@
     :visible.sync="openStatus"
     @close="doClose"
     @open="handleOpen"
+    :close-on-click-modal="false"
     width="1000px"
     append-to-body
   >

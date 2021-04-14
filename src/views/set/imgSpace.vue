@@ -139,7 +139,12 @@
         />
       </div>
       <main></main>
-      <el-dialog title="添加图片分组" :visible.sync="dialogVisible" width="30%">
+      <el-dialog
+        title="添加图片分组"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form :model="addPicture" ref="reasonForm" label-width="150px">
           <el-form-item label="分组名称：">
             <el-input v-model="addPicture.name" class="input-width"></el-input>
@@ -150,7 +155,12 @@
           <el-button type="primary" @click="handleConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="编辑图片" :visible.sync="dialogEditor" width="30%">
+      <el-dialog
+        title="编辑图片"
+        :visible.sync="dialogEditor"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form label-width="150px">
           <el-form-item label="图片名称：">
             <el-input v-model="imgName" class="input-width"></el-input>
@@ -161,7 +171,12 @@
           <el-button type="primary" @click="EditorConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="移动图片" :visible.sync="dialogTransform" width="30%">
+      <el-dialog
+        title="移动图片"
+        :visible.sync="dialogTransform"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form>
           <el-form-item label="图片分组：">
             <el-select v-model="value" clearable filterable>
@@ -179,7 +194,12 @@
           <el-button type="primary" @click="transformConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="上传图片" :visible.sync="dialogUpload" width="30%">
+      <el-dialog
+        title="上传图片"
+        :visible.sync="dialogUpload"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form :model="createVideo" ref="reasonForm" label-width="150px">
           <el-form-item label="图片分组：">
             <el-select v-model="ruleForm.bucket_id" clearable filterable>
@@ -204,7 +224,12 @@
           <el-button type="primary" @click="uploadConfirm">确 定</el-button>
         </span>
       </el-dialog>
-      <el-dialog title="编辑空间" :visible.sync="dialogSpace" width="30%">
+      <el-dialog
+        title="编辑空间"
+        :visible.sync="dialogSpace"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form :model="sapceEditors" ref="reasonForm" label-width="150px">
           <el-form-item label="空间名称：">
             <el-input
@@ -450,8 +475,7 @@ export default {
 
           this.$api.deleteImages(this, 'imgId')
         })
-        .catch(() => {
-        })
+        .catch(() => {})
     },
     multiTransforms() {
       if (this.multiTransform.length == 0) {
@@ -475,9 +499,7 @@ export default {
           ;(this.imgId.length = 0), this.imgId.push(data.image_id)
           this.$api.deleteImages(this, 'imgId')
         })
-        .catch(() => {
-          
-        })
+        .catch(() => {})
     },
     uploadConfirm() {
       this.$refs.mychild.submitUpload('嘿嘿嘿')

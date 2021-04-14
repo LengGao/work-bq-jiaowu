@@ -81,6 +81,7 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogUpload"
+      :close-on-click-modal="false"
       width="576px"
       :before-close="handleClose"
     >

@@ -239,87 +239,87 @@
 </template>
 
 <script>
-import { createMenuData, updateMenuData, updateShowStatus } from "@/api/login";
-import { createUserRouter } from "@/router";
+import { createMenuData, updateMenuData, updateShowStatus } from '@/api/login'
+import { createUserRouter } from '@/router'
 export default {
   data() {
     return {
       funShow: false,
       parent_id_arr: [],
-      nameLabel: "",
-      nameInputword: "",
+      nameLabel: '',
+      nameInputword: '',
       optionProps: {
-        label: "menu_name",
-        value: "id",
-        children: "children",
+        label: 'menu_name',
+        value: 'id',
+        children: 'children',
         checkStrictly: true,
       },
-      menu_status: "",
+      menu_status: '',
       ruleForm: {
-        id: "",
-        menu_name: "",
+        id: '',
+        menu_name: '',
         parent_id: [],
-        node: "",
-        auth: "",
-        icon: "",
-        sort: "",
-        menu_type: "",
+        node: '',
+        auth: '',
+        icon: '',
+        sort: '',
+        menu_type: '',
       },
       schoolData: [],
       ThumbData: [],
-      index_category_id: "",
-      dialogTitle: "",
+      index_category_id: '',
+      dialogTitle: '',
       addClassify: {
-        index_category_name: "",
-        sort: "",
+        index_category_name: '',
+        sort: '',
       },
       datas: {},
-      url: "",
+      url: '',
       pictureVisible: false,
       haschoose: false,
       page: 1,
       dialogVisible: false,
       iconList: [
-        "icon21zhangjielianxi",
-        "icon20meiridaka",
-        "icon23shuatitiaozhan",
-        "icon18dingdanguanli",
-        "icon06shouyefenlei",
-        "icon26kechenglubo",
-        "icon24monikaoshi",
-        "icon25zizhuchuti",
-        "icon29jigouxueyuan",
-        "icon27zhibohuigu",
-        "icon22linianzhenti",
-        "icon34xiaoxihudong",
-        "icon33pc",
-        "icon28mianshouyueke",
-        "icon30tupiankongjian",
-        "icon19caozuorizhi",
-        "iconshuiyin",
-        "icon32xiaochengxu",
-        "icon01wodekehu",
-        "icon05kechengfenlei",
-        "icon04kehuziduan",
-        "icon08tikuguanli",
-        "icon02gonghaixueyuan",
-        "icon09kaoshipeizhi",
-        "icon07shipinguanli",
-        "icon03chaxunxueyuan",
-        "icon10zhiboguanli",
-        "icon11kechengguanli",
-        "icon13xueyuanguanli",
-        "icon16jiaoseguanli",
-        "icon17yuangongguanli",
-        "icon14banjiguanli",
-        "icon15mianshouyueke",
+        'icon21zhangjielianxi',
+        'icon20meiridaka',
+        'icon23shuatitiaozhan',
+        'icon18dingdanguanli',
+        'icon06shouyefenlei',
+        'icon26kechenglubo',
+        'icon24monikaoshi',
+        'icon25zizhuchuti',
+        'icon29jigouxueyuan',
+        'icon27zhibohuigu',
+        'icon22linianzhenti',
+        'icon34xiaoxihudong',
+        'icon33pc',
+        'icon28mianshouyueke',
+        'icon30tupiankongjian',
+        'icon19caozuorizhi',
+        'iconshuiyin',
+        'icon32xiaochengxu',
+        'icon01wodekehu',
+        'icon05kechengfenlei',
+        'icon04kehuziduan',
+        'icon08tikuguanli',
+        'icon02gonghaixueyuan',
+        'icon09kaoshipeizhi',
+        'icon07shipinguanli',
+        'icon03chaxunxueyuan',
+        'icon10zhiboguanli',
+        'icon11kechengguanli',
+        'icon13xueyuanguanli',
+        'icon16jiaoseguanli',
+        'icon17yuangongguanli',
+        'icon14banjiguanli',
+        'icon15mianshouyueke',
       ],
       iconDialog: false,
-    };
+    }
   },
   mounted() {
-    this.$api.getMenuList(this, "schoolData");
-    this.$api.getThumbMenuList(this, "ThumbData");
+    this.$api.getMenuList(this, 'schoolData')
+    this.$api.getThumbMenuList(this, 'ThumbData')
   },
   created() {
     // this.$api.getHomeclassifiList(this, 'schoolData')
@@ -333,19 +333,19 @@ export default {
   // },
   methods: {
     handleIconChange(icon) {
-      this.ruleForm.icon = icon;
-      this.iconDialog = false;
+      this.ruleForm.icon = icon
+      this.iconDialog = false
     },
     checkDepart(ab) {
-      console.log(ab);
-      let end = ab[ab.length - 1];
-      console.log(end);
+      console.log(ab)
+      let end = ab[ab.length - 1]
+      console.log(end)
       // this.ruleForm.parent_id = end
     },
     switchStatus(ab) {
-      this.menu_status = ab.menu_status;
-      this.ruleForm.id = ab.id;
-      this.$api.updateStatus(this, this.ruleForm);
+      this.menu_status = ab.menu_status
+      this.ruleForm.id = ab.id
+      this.$api.updateStatus(this, this.ruleForm)
     },
     // doPageChange(page) {
     //   this.page = page
@@ -353,131 +353,135 @@ export default {
     // },
     // 获取数据
     getTableList(state, val, datas) {
-      console.log(state, val);
-      if (state == "page") {
-        this.page = val;
-        this.datas = datas;
-      } else if (state == "data") {
-        this.schoolData = val;
+      console.log(state, val)
+      if (state == 'page') {
+        this.page = val
+        this.datas = datas
+      } else if (state == 'data') {
+        this.schoolData = val
       }
     },
     topayment(zx) {
-      console.log(zx);
-      this.ruleForm.menu_type = zx.menu_type;
+      console.log(zx)
+      this.$api.getThumbMenuList(this, 'ThumbData')
+      this.ruleForm.menu_type = zx.menu_type
       if (this.ruleForm.menu_type == 1) {
-        this.dialogTitle = "编辑菜单";
+        this.dialogTitle = '编辑菜单'
       } else {
-        this.dialogTitle = "编辑功能";
+        this.dialogTitle = '编辑功能'
       }
 
-      this.ruleForm.id = zx.id;
-      this.dialogVisible = true;
-      this.$api.getMenuDetail(this, zx.id);
-      console.log(this.ruleForm);
+      this.ruleForm.id = zx.id
+      this.dialogVisible = true
+      this.$api.getMenuDetail(this, zx.id)
+      console.log(this.ruleForm)
     },
     scopes(id, sorts) {
-      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/;
-      var re = new RegExp(regu);
+      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
+      var re = new RegExp(regu)
       if (!re.test(sorts)) {
-        this.$message.error("请输入正确的排序！");
-        return false;
+        this.$message.error('请输入正确的排序！')
+        return false
       } else {
-        this.$api.updateSort(id, sorts, this);
+        this.$api.updateSort(id, sorts, this)
       }
     },
     toStudentDetail() {
       this.$router.push({
-        name: "studentDetail",
-      });
+        name: 'studentDetail',
+      })
     },
     delbtn(ab) {
-      var warnTitle = "";
+      var warnTitle = ''
       ab.menu_type == 1
-        ? (warnTitle = "确定要删除当前菜单吗?")
-        : (warnTitle = "确定要删除当前功能吗?");
-      this.$confirm(warnTitle, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+        ? (warnTitle = '确定要删除当前菜单吗?')
+        : (warnTitle = '确定要删除当前功能吗?')
+      this.$confirm(warnTitle, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
         .then(() => {
-          this.$api.deleteMenuData(this, ab.id);
+          this.$api.deleteMenuData(this, ab.id)
         })
         .catch(() => {
           this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
 
     addFunction() {
-      this.$api.getThumbMenuList(this, "ThumbData"); //获取下拉数据
+      this.$api.getThumbMenuList(this, 'ThumbData') //获取下拉数据
       //添加功能按钮
-      this.dialogTitle = "添加功能";
-      this.nameLabel = "功能名称";
-      this.nameInputword = "请输入功能名称";
+      this.dialogTitle = '添加功能'
+      this.nameLabel = '功能名称'
+      this.nameInputword = '请输入功能名称'
       // this.funShow = true
-      this.parent_id_arr = [];
+      this.parent_id_arr = []
       for (let key in this.ruleForm) {
-        this.ruleForm[key] = "";
+        this.ruleForm[key] = ''
       }
 
-      this.ruleForm.menu_type = 0;
-      this.dialogVisible = true;
+      this.ruleForm.menu_type = 0
+      this.dialogVisible = true
     },
     addMenu() {
       // this.funShow = false
-      this.$api.getThumbMenuList(this, "ThumbData"); //获取下拉数据
+      this.$api.getThumbMenuList(this, 'ThumbData') //获取下拉数据
       //添加菜单按钮
-      this.dialogTitle = "添加菜单";
-      this.nameLabel = "菜单名称";
-      this.nameInputword = "请输入菜单名称";
-      this.parent_id_arr = [];
+      this.dialogTitle = '添加菜单'
+      this.nameLabel = '菜单名称'
+      this.nameInputword = '请输入菜单名称'
+      this.parent_id_arr = []
       for (let key in this.ruleForm) {
-        this.ruleForm[key] = "";
+        this.ruleForm[key] = ''
       }
-      this.ruleForm.menu_type = 1;
+      this.ruleForm.menu_type = 1
 
-      this.dialogVisible = true;
+      this.dialogVisible = true
     },
     // 更新路由+菜单
     updateRouter() {
-      this.$store.dispatch("setRouterAndMenu");
+      this.$store.dispatch('setRouterAndMenu')
     },
     // 是否中菜单中展示
     async updateShowStatus(row) {
       const data = {
         id: row.id,
         show_at_list: row.show_at_list,
-      };
+      }
       const res = await updateShowStatus(data).catch(() => {
-        row.show_at_list = row.show_at_list ? 0 : 1;
-      });
+        row.show_at_list = row.show_at_list ? 0 : 1
+      })
       if (res?.code === 0) {
-        this.$message.success("菜单状态修改成功！");
-        this.$api.getMenuList(this, "schoolData");
-        this.updateRouter();
+        this.$message.success('菜单状态修改成功！')
+        this.$api.getMenuList(this, 'schoolData')
+        this.updateRouter()
       }
     },
     async handleConfirm() {
-      console.log(this.parent_id_arr);
-      const api = this.ruleForm.id ? updateMenuData : createMenuData;
+      console.log(this.parent_id_arr)
+      const api = this.ruleForm.id ? updateMenuData : createMenuData
       if (Array.isArray(this.parent_id_arr)) {
-        let end = this.parent_id_arr[this.parent_id_arr.length - 1]; //添加时取最后一位为父级
-        this.ruleForm.parent_id = end;
+        let end = this.parent_id_arr[this.parent_id_arr.length - 1] //添加时取最后一位为父级
+        let start = this.parent_id_arr[0] //编辑时取第一位为父级
+        if (!this.ruleForm.id) {
+          this.ruleForm.parent_id = end
+        } else {
+          this.ruleForm.parent_id = start
+        }
       }
       const data = {
         ...this.ruleForm,
-      };
-      const res = await api(data);
+      }
+      const res = await api(data)
       if (res.code === 0) {
-        this.dialogVisible = false;
-        this.$message.success(
-          `菜单${this.ruleForm.id ? "修改" : "新增"}成功！`
-        );
-        this.$api.getMenuList(this, "schoolData");
-        this.updateRouter();
+        this.dialogVisible = false
+        this.$message.success(`菜单${this.ruleForm.id ? '修改' : '新增'}成功！`)
+        this.$api.getMenuList(this, 'schoolData')
+        this.updateRouter()
       }
 
       // if (this.ruleForm.id != "" && this.ruleForm.id != undefined) {
@@ -507,7 +511,7 @@ export default {
     //   this.pictureVisible = true
     // },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

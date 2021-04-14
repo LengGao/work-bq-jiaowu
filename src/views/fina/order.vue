@@ -5,12 +5,21 @@
     </div>
     <section class="mainwrap">
       <ul class="customer_navigation">
-        <li v-for="(item, index) in tabFun" :key="index" :class="{ active: index === activeIndex }" @click="statusSwitch(index, item.status)">
+        <li
+          v-for="(item, index) in tabFun"
+          :key="index"
+          :class="{ active: index === activeIndex }"
+          @click="statusSwitch(index, item.status)"
+        >
           {{ item.name }}
         </li>
       </ul>
       <div class="client_head">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <div>
           <!-- <el-button type="primary" @click="toCreateClass"
             >导出数据</el-button
@@ -20,43 +29,86 @@
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" style="width: 100%" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          style="width: 100%"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          class="min_table"
+        >
           <el-table-column type="selection" width="45"> </el-table-column>
-          <el-table-column prop="create_time" label="订单时间" show-overflow-tooltip min-width="100"></el-table-column>
-          <el-table-column prop="order_no" label="订单编号" min-width="180" column-key="course_id" show-overflow-tooltip>
+          <el-table-column
+            prop="create_time"
+            label="订单时间"
+            show-overflow-tooltip
+            min-width="100"
+          ></el-table-column>
+          <el-table-column
+            prop="order_no"
+            label="订单编号"
+            min-width="180"
+            column-key="course_id"
+            show-overflow-tooltip
+          >
             <template slot-scope="scope">
               <el-button type="text" @click="orderDetail(scope.row)">
                 {{ scope.row.order_no }}
               </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="surname" label="学员姓名" min-width="70" show-overflow-tooltip>
+          <el-table-column
+            prop="surname"
+            label="学员姓名"
+            min-width="70"
+            show-overflow-tooltip
+          >
           </el-table-column>
-          <el-table-column label="联系方式" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            label="联系方式"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div>
                 {{ row.mobile | filterPhone }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="项目名称" min-width="180" show-overflow-tooltip>
+          <el-table-column
+            label="项目名称"
+            min-width="180"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div>
                 {{ formatProjectName(row.project) }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="pay_money" label="实付金额" min-width="80" show-overflow-tooltip>
+          <el-table-column
+            prop="pay_money"
+            label="实付金额"
+            min-width="80"
+            show-overflow-tooltip
+          >
           </el-table-column>
-          <el-table-column label="财务状态" min-width="80" show-overflow-tooltip>
+          <el-table-column
+            label="财务状态"
+            min-width="80"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
-              <div :class="
+              <div
+                :class="
                   row.pay_status == 1
                     ? 'wordcolor'
                     : row.pay_status == 3
                     ? 'wordcolor2'
                     : ''
-                ">
+                "
+              >
                 {{ statusMap[row.pay_status] }}
               </div>
             </template>
@@ -64,8 +116,13 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div>
-                <el-button type="text" @click="Entrydetail(scope.row)">订单详情</el-button>
-                <el-button type="text" @click="Entry(scope.row)" :class="
+                <el-button type="text" @click="Entrydetail(scope.row)"
+                  >订单详情</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="Entry(scope.row)"
+                  :class="
                     scope.row.pay_status == 3
                       ? 'entry2'
                       : scope.row.pay_status == 0
@@ -79,16 +136,28 @@
                       : scope.row.pay_status == 5
                       ? 'entry2'
                       : ''
-                  " style="margin-left: 20px">入账</el-button>
+                  "
+                  style="margin-left: 20px"
+                  >入账</el-button
+                >
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
-      <el-dialog title="提示" :visible.sync="dialogVisible" width="25%">
+      <el-dialog
+        title="提示"
+        :visible.sync="dialogVisible"
+        width="25%"
+        :close-on-click-modal="false"
+      >
         <span style="font-size: 20px">是否将此笔订单入账？</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -177,7 +246,9 @@ export default {
     // 显示项目名称
     formatProjectName(json) {
       const projectData = JSON.parse(json)
-      const projectArr = Array.isArray(projectData) ? projectData : [projectData]
+      const projectArr = Array.isArray(projectData)
+        ? projectData
+        : [projectData]
       return projectArr.map((item) => item.project_name).join('，')
     },
     //订单审批列表接口

@@ -88,7 +88,12 @@
       </div>
     </div>
     <!--弹框-->
-    <el-dialog title="历史成绩" :visible.sync="dialogVisible" width="60%">
+    <el-dialog
+      title="历史成绩"
+      :visible.sync="dialogVisible"
+      width="60%"
+      :close-on-click-modal="false"
+    >
       <div class="dialog-head">
         <p>
           学生姓名<span>{{ hisUserData.user_realname }}</span>

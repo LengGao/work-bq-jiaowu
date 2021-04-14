@@ -122,6 +122,7 @@
         <el-dialog
           title="添加客户"
           :visible.sync="curstomerVisible"
+          :close-on-click-modal="false"
           width="70%"
           style="min-width:1070px"
         >

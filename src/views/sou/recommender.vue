@@ -107,6 +107,7 @@
       <el-dialog
         :title="dialogTitle == true ? '编辑校区' : '添加校区'"
         :visible.sync="dialogVisible"
+        :close-on-click-modal="false"
         width="30%"
       >
         <el-form
@@ -131,7 +132,12 @@
         </span>
       </el-dialog>
       <!--添加机构账号弹框-->
-      <el-dialog title="添加机构账号" :visible.sync="organVisible" width="30%">
+      <el-dialog
+        title="添加机构账号"
+        :visible.sync="organVisible"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form
           :model="accountForm"
           :rules="accountRules"

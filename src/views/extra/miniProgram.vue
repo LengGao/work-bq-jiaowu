@@ -584,7 +584,12 @@
         <el-button type="primary" @click="edithandleConfirm">确 定</el-button>
       </span>
     </el-dialog> -->
-    <el-dialog :title="swiperTitle" :visible.sync="swiperVisible" width="30%">
+    <el-dialog
+      :title="swiperTitle"
+      :visible.sync="swiperVisible"
+      width="30%"
+      :close-on-click-modal="false"
+    >
       <el-form label-width="100px">
         <el-form-item label="轮播图名称：">
           <el-input
@@ -663,6 +668,7 @@
       :title="warnTitle"
       :visible.sync="remindDialogVisible"
       width="40%"
+      :close-on-click-modal="false"
     >
       <el-form label-width="100px">
         <el-form-item label="通知名称：">
@@ -735,7 +741,12 @@
     </el-dialog>
 
     <!--模板消息记录弹框-->
-    <el-dialog title="" :visible.sync="boardVisible" width="30%">
+    <el-dialog
+      title=""
+      :visible.sync="boardVisible"
+      width="30%"
+      :close-on-click-modal="false"
+    >
       <div v-html="messDetail" class="boardDialog"></div>
       <!--
       <span slot="footer" class="dialog-footer">
@@ -751,6 +762,7 @@
       :title="dialogTitle"
       :visible.sync="dialogVisibleHome"
       width="576px"
+      :close-on-click-modal="false"
     >
       <el-form label-width="100px">
         <el-form-item label="分类名称：">

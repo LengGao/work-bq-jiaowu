@@ -83,18 +83,18 @@
 </template>
 
 <script>
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-import { quillEditor } from "vue-quill-editor";
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
 import {
   updateQuestionBank,
   addQuestionBank,
   questionBankDetail,
-} from "@/api/sou";
-import UploadImg from "@/components/ImgUpload/index.vue";
+} from '@/api/sou'
+import UploadImg from '@/components/ImgUpload/index.vue'
 export default {
-  name: "QuestionBankDialog",
+  name: 'QuestionBankDialog',
   props: {
     value: {
       type: Boolean,
@@ -102,11 +102,11 @@ export default {
     },
     title: {
       type: String,
-      default: "",
+      default: '',
     },
     id: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
     typeOptions: {
       type: Array,
@@ -120,60 +120,60 @@ export default {
   data() {
     return {
       visible: this.value,
-      ageStart: "",
-      ageEnd: "",
-      workYear: "",
-      eduValue: "",
+      ageStart: '',
+      ageEnd: '',
+      workYear: '',
+      eduValue: '',
       formData: {
-        title: "",
+        title: '',
         category_id: [],
-        remark: "",
-        price: "",
-        sort: "",
-        cover: "",
+        remark: '',
+        price: '',
+        sort: '',
+        cover: '',
       },
       rules: {
-        title: [{ required: true, message: "请输入题库名称", trigger: "blur" }],
-        category_id: [{ required: true, message: "请选择", trigger: "change" }],
+        title: [{ required: true, message: '请输入题库名称', trigger: 'blur' }],
+        category_id: [{ required: true, message: '请选择', trigger: 'change' }],
       },
       addLoading: false,
       detaiLoading: false,
       editorOption: {
-        placeholder: "",
-        theme: "snow", // or 'bubble'
+        placeholder: '',
+        theme: 'snow', // or 'bubble'
         modules: {
           toolbar: {
             container: [
-              ["bold", "italic", "underline", "strike"], // toggled buttons
+              ['bold', 'italic', 'underline', 'strike'], // toggled buttons
               [{ header: 1 }, { header: 2 }], // custom button values
-              [{ list: "ordered" }, { list: "bullet" }],
-              [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-              [{ direction: "rtl" }], // text direction
-              [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+              [{ direction: 'rtl' }], // text direction
+              [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
               //[{ header: [1, 2, 3, 4, 5, 6, false] }],
               [{ color: [] }, { background: [] }], // dropdown with defaults from theme
               [{ font: [] }],
               [{ align: [] }],
-              ["clean"],
+              ['clean'],
             ],
             handlers: {
-              image: function (value) {
+              image: function(value) {
                 if (value) {
                   // 触发input框选择图片文件
-                  document.querySelector(".avatar-uploader input").click();
+                  document.querySelector('.avatar-uploader input').click()
                 } else {
-                  this.quill.format("image", false);
+                  this.quill.format('image', false)
                 }
               },
             },
           },
         },
       },
-    };
+    }
   },
   watch: {
     value(val) {
-      this.visible = val;
+      this.visible = val
     },
   },
 
@@ -181,24 +181,24 @@ export default {
     // dialog 打开时
     handleOpen() {
       if (this.id) {
-        this.questionBankDetail();
+        this.questionBankDetail()
       }
     },
     // 规则详情
     async questionBankDetail() {
       const data = {
         id: this.id,
-      };
-      this.detaiLoading = true;
+      }
+      this.detaiLoading = true
       const res = await questionBankDetail(data).catch(() => {
-        this.detaiLoading = false;
-      });
-      this.detaiLoading = false;
+        this.detaiLoading = false
+      })
+      this.detaiLoading = false
       if (res.code === 0) {
         for (const k in this.formData) {
-          this.formData[k] = res.data[k];
-          if (k === "price") {
-            this.formData[k] = +res.data[k];
+          this.formData[k] = res.data[k]
+          if (k === 'price') {
+            this.formData[k] = +res.data[k]
           }
         }
       }
@@ -209,41 +209,41 @@ export default {
         category_id: Array.isArray(this.formData.category_id)
           ? [...this.formData.category_id].pop()
           : this.formData.category_id,
-      };
-      if (this.id) {
-        data.id = this.id;
       }
-      const api = this.id ? updateQuestionBank : addQuestionBank;
-      this.addLoading = true;
+      if (this.id) {
+        data.id = this.id
+      }
+      const api = this.id ? updateQuestionBank : addQuestionBank
+      this.addLoading = true
       const res = await api(data).catch(() => {
-        this.addLoading = false;
-      });
-      this.addLoading = false;
+        this.addLoading = false
+      })
+      this.addLoading = false
       if (res.code === 0) {
-        this.$message.success(res.message);
-        this.resetForm("formData");
-        this.$emit("on-success");
+        this.$message.success(res.message)
+        this.resetForm('formData')
+        this.$emit('on-success')
       }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.submit()
         }
-      });
+      })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
       for (const k in this.formData) {
-        this.formData[k] = "";
+        this.formData[k] = ''
       }
-      this.hanldeCancel();
+      this.hanldeCancel()
     },
     hanldeCancel() {
-      this.$emit("input", false);
+      this.$emit('input', false)
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

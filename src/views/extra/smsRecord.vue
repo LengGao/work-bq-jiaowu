@@ -131,7 +131,12 @@
       </div>
     </div>
     <!--详情弹框-->
-    <el-dialog title="" :visible.sync="smsVisible" width="30%">
+    <el-dialog
+      title=""
+      :visible.sync="smsVisible"
+      width="30%"
+      :close-on-click-modal="false"
+    >
       <div v-html="messDetail" class="boardDialog"></div>
       <!--
       <span slot="footer" class="dialog-footer">

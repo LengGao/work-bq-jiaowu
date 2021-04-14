@@ -49,6 +49,7 @@
         title="修改个人密码"
         :visible.sync="dialog"
         :append-to-body="true"
+        :close-on-click-modal="false"
         width="600px"
         @close="$refs['rulef'].resetFields()"
       >

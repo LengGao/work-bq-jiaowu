@@ -4,6 +4,7 @@
     append-to-body
     :visible.sync="pictureVisible"
     width="50%"
+    :close-on-click-modal="false"
     :before-close="cancelmine"
   >
     <div class="home">
@@ -154,6 +155,7 @@
         <main></main>
         <el-dialog
           append-to-body
+          :close-on-click-modal="false"
           title="添加图片分组"
           :visible.sync="dialogVisible"
           width="30%"
@@ -171,7 +173,12 @@
             <el-button type="primary" @click="handleConfirm">确 定</el-button>
           </span>
         </el-dialog>
-        <el-dialog title="编辑图片" :visible.sync="dialogEditor" width="30%">
+        <el-dialog
+          title="编辑图片"
+          :visible.sync="dialogEditor"
+          width="30%"
+          :close-on-click-modal="false"
+        >
           <el-form label-width="150px">
             <el-form-item label="图片名称：">
               <el-input v-model="imgName" class="input-width"></el-input>
@@ -182,7 +189,12 @@
             <el-button type="primary" @click="EditorConfirm">确 定</el-button>
           </span>
         </el-dialog>
-        <el-dialog title="移动图片" :visible.sync="dialogTransform" width="30%">
+        <el-dialog
+          title="移动图片"
+          :visible.sync="dialogTransform"
+          width="30%"
+          :close-on-click-modal="false"
+        >
           <el-form>
             <el-form-item label="图片分组：">
               <el-select v-model="value" clearable>
@@ -206,6 +218,7 @@
           title="上传图片"
           :visible.sync="dialogUpload"
           append-to-body
+          :close-on-click-modal="false"
           width="30%"
         >
           <el-form :model="createVideo" ref="reasonForm" label-width="150px">
@@ -234,6 +247,7 @@
         </el-dialog>
         <el-dialog
           title="编辑空间"
+          :close-on-click-modal="false"
           :visible.sync="dialogSpace"
           append-to-body
           width="30%"

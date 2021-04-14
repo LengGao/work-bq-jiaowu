@@ -5,17 +5,47 @@
     </div>
     <section class="mainwrap">
       <div class="client_head">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <el-button type="primary" @click="addClassiFion">添加分类</el-button>
       </div>
       <!-- 表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'left' }" :cell-style="{ 'text-align': 'left' }" :props="optionProps" row-key="category_id" :tree-props="{ children: 'son' }">
-          <el-table-column prop="category_name" label="分类名称" min-width="180" style="padding-left: 20px" show-overflow-tooltip>
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          style="width: 100%"
+          class="min_table"
+          :header-cell-style="{ 'text-align': 'left' }"
+          :cell-style="{ 'text-align': 'left' }"
+          :props="optionProps"
+          row-key="category_id"
+          :tree-props="{ children: 'son' }"
+        >
+          <el-table-column
+            prop="category_name"
+            label="分类名称"
+            min-width="180"
+            style="padding-left: 20px"
+            show-overflow-tooltip
+          >
           </el-table-column>
-          <el-table-column label="分类ID" show-overflow-tooltip min-width="130" prop="category_id">
+          <el-table-column
+            label="分类ID"
+            show-overflow-tooltip
+            min-width="130"
+            prop="category_id"
+          >
           </el-table-column>
-          <el-table-column label="分类图标" min-width="130" show-overflow-tooltip prop="icon">
+          <el-table-column
+            label="分类图标"
+            min-width="130"
+            show-overflow-tooltip
+            prop="icon"
+          >
             <template slot-scope="scope">
               <div style="width: 50px; height: 50px">
                 <img :src="scope.row.icon" alt class="school_class_box" />
@@ -26,7 +56,12 @@
             <template slot-scope="scope">
               <div>
                 <el-col :span="12">
-                  <el-input v-model="scope.row.sort" placeholder size="small" @blur="scopes(scope.row.category_id, scope.row.sort)"></el-input>
+                  <el-input
+                    v-model="scope.row.sort"
+                    placeholder
+                    size="small"
+                    @blur="scopes(scope.row.category_id, scope.row.sort)"
+                  ></el-input>
                 </el-col>
               </div>
             </template>
@@ -34,29 +69,65 @@
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="scope">
               <div style="display: flex">
-                <el-button type="text" @click="topayment(scope.row)">编辑</el-button>
-                <el-button type="text" style="padding-left: 10px" @click="delbtn(scope.row)">删除</el-button>
+                <el-button type="text" @click="topayment(scope.row)"
+                  >编辑</el-button
+                >
+                <el-button
+                  type="text"
+                  style="padding-left: 10px"
+                  @click="delbtn(scope.row)"
+                  >删除</el-button
+                >
               </div>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <!--弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="500px">
-        <el-form label-width="100px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible"
+        width="500px"
+        :close-on-click-modal="false"
+      >
+        <el-form
+          label-width="100px"
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          :show-message="true"
+        >
           <el-form-item label="所属分类：">
-            <el-select v-model="ruleForm.pid" clearable placeholder="请选择分类">
-              <el-option v-for="item in selectData" :key="item.value" :label="item.label" :value="item.value" class="input-width">
+            <el-select
+              v-model="ruleForm.pid"
+              clearable
+              placeholder="请选择分类"
+            >
+              <el-option
+                v-for="item in selectData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                class="input-width"
+              >
               </el-option>
             </el-select>
             <!-- <el-cascader ref="cascader" clearable class="input-width" placeholder="请选择分类" v-model="ruleForm.pid" :options="selectData" :props="{ checkStrictly: true }"></el-cascader> -->
           </el-form-item>
           <el-form-item label="分类名称：" class="input-width">
-            <el-input :placeholder="
-                ruleForm.pid == 0 ? '请输入分类名称' : '请输入分类名称'" v-model="ruleForm.category_name"></el-input>
+            <el-input
+              :placeholder="
+                ruleForm.pid == 0 ? '请输入分类名称' : '请输入分类名称'
+              "
+              v-model="ruleForm.category_name"
+            ></el-input>
           </el-form-item>
           <el-form-item label="分类描述：" v-if="ruleForm.pid == 0">
-            <el-input type="textarea" v-model="ruleForm.describe" style="width: 91%"></el-input>
+            <el-input
+              type="textarea"
+              v-model="ruleForm.describe"
+              style="width: 91%"
+            ></el-input>
           </el-form-item>
           <el-form-item label="分类图标：" style v-if="ruleForm.pid == 0">
             <div v-show="!haschoose" style="display: flex">
@@ -68,11 +139,20 @@
             </div>
             <div v-show="haschoose" class="imageBox">
               <i class="iconjia el-icon-plus" @click="addIcon"></i>
-              <img style="width: 100%; height: 100%" :src="ruleForm.icon" alt="" />
+              <img
+                style="width: 100%; height: 100%"
+                :src="ruleForm.icon"
+                alt=""
+              />
             </div>
           </el-form-item>
           <el-form-item label="分类排序：" v-if="ruleForm.pid == 0">
-            <el-input v-model="ruleForm.sort" class="input-width" placeholder=" 排序数字越大分类越靠前" type="number"></el-input>
+            <el-input
+              v-model="ruleForm.sort"
+              class="input-width"
+              placeholder=" 排序数字越大分类越靠前"
+              type="number"
+            ></el-input>
             <!-- <p style="color:#aaa;ling-height:20px">
             排序数字越大分类越靠前,最小值为1
           </p> -->
@@ -80,10 +160,16 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
-      <imgDialog v-if="pictureVisible" @closeImg="closeImg" @clearUrl="clearUrl"></imgDialog>
+      <imgDialog
+        v-if="pictureVisible"
+        @closeImg="closeImg"
+        @clearUrl="clearUrl"
+      ></imgDialog>
     </section>
   </div>
 </template>
