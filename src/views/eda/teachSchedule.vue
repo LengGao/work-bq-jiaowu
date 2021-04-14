@@ -25,7 +25,13 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="classroom_name" label="班级名称" min-width="110" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="classroom_name" label="班级名称" min-width="110" show-overflow-tooltip>
+            <template slot-scope="{ row }">
+              <div class="classroom_name" @click="toClassDetail(row.classroom_id)">
+                {{ row.classroom_name }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="category_name" label="所属分类" min-width="110" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div v-if="row.category_name">
@@ -125,6 +131,14 @@ export default {
     // this.$api.getTimetableList(this, 'schoolData')
   },
   methods: {
+    toClassDetail(id) {
+      this.$router.push({
+        name: 'classDetail',
+        query: {
+          id,
+        },
+      })
+    },
     showStudent(classroom_id) {
       this.studentdialogShow = true
       this.class_id = classroom_id
@@ -233,5 +247,9 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.classroom_name {
+  color: #199fff;
+  cursor: pointer;
 }
 </style>
