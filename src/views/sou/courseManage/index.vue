@@ -4,8 +4,8 @@
     <section class="mainwrap">
       <el-tabs v-model="activeName" style="margin-bottom: 10px">
         <el-tab-pane label="章节视频" name="chapterVideo"></el-tab-pane>
-        <el-tab-pane label="课程资料" name="studyMaterial"></el-tab-pane>
-        <el-tab-pane label="通用配置" name="generalConfig"></el-tab-pane>
+        <el-tab-pane label="课程资料" name="courseMaterials"></el-tab-pane>
+        <!-- <el-tab-pane label="通用配置" name="generalConfig"></el-tab-pane> -->
       </el-tabs>
       <component :is="getComponent" />
     </section>
@@ -17,7 +17,6 @@ export default {
   data() {
     return {
       activeName: "chapterVideo",
-      detailData: {},
     };
   },
   computed: {
@@ -27,7 +26,6 @@ export default {
       }
     },
   },
-  created() {},
 };
 </script>
 

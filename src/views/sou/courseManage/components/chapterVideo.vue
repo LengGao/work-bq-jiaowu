@@ -40,7 +40,7 @@
         <el-table-column
           prop="name"
           label="章节名称"
-          min-width="110"
+          min-width="180"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -76,14 +76,12 @@
         <el-table-column
           prop="sort"
           label="排序"
-          min-width="110"
+          min-width="70"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span v-if="row.sort">
-              {{ row.sort }}
-            </span>
-            <span v-else>--</span>
+            <span>{{ row.sort }}</span>
+            <!-- <el-input v-model="row.sort" @blur="videoChapterSort(row)" /> -->
           </template>
         </el-table-column>
         <el-table-column
@@ -105,7 +103,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" fixed="right" min-width="160">
+        <el-table-column label="操作" fixed="right" min-width="140">
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
@@ -147,6 +145,7 @@ import {
   editvideoclass,
   getvideoclass,
   deletevideoclass,
+  videoChapterSort,
 } from "@/api/sou";
 import ChapterDIalog from "./chapterDIalog";
 import ClassHourDialog from "./classHourDialog";
@@ -190,6 +189,18 @@ export default {
   },
 
   methods: {
+    // 章节排序
+    async videoChapterSort(row) {
+      const data = {
+        sortAry: {
+          [row.id]: row.sort,
+        },
+      };
+      const res = await videoChapterSort(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
     // 只能选择课时
     formatSelectable(row) {
       return !row.hasChildren;
