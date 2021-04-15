@@ -89,7 +89,7 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        keyboard: "",
+        keyword: "",
       },
       searchOptions: [
         {
@@ -104,7 +104,7 @@ export default {
           },
         },
         {
-          key: "keyboard",
+          key: "keyword",
           attrs: {
             placeholder: "教材名称",
           },

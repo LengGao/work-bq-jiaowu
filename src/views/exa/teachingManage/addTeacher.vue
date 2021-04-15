@@ -45,8 +45,7 @@
           :key="tag.problem_chapter_id"
           v-show="tag == '' ? false : true"
           closable
-          @close="handleClose(tag)"
-        >
+          @close="handleClose(tag)">
           {{ tag.chapter_name }}
         </el-tag> -->
           </el-form-item>

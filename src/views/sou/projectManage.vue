@@ -10,9 +10,7 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary" @click="projectDialog">
-          添加项目
-        </el-button>
+        <el-button type="primary" @click="projectDialog"> 添加项目 </el-button>
       </div>
       <!--表格-->
       <div class="userTable">
@@ -82,7 +80,7 @@
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
-              <div style="display:flex;justify-content:center">
+              <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="handleEdit(scope.row)"
                   >编辑</el-button
                 >
@@ -115,9 +113,7 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <h3 class="project-h3" style="margin-bottom:20px">
-            基本信息
-          </h3>
+          <h3 class="project-h3" style="margin-bottom: 20px">基本信息</h3>
           <el-row>
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="项目名称" prop="project_name">
@@ -224,56 +220,44 @@
             <el-col :lg="12" :sm="12" :xs="12" :md="12"> </el-col>
           </el-row>
         </el-form>
-        <h3 class="project-h3" style="margin-bottom:20px">
-          项目配置
-        </h3>
+        <h3 class="project-h3" style="margin-bottom: 20px">项目配置</h3>
         <ul class="project-ul">
-          <li>
-            课程
-          </li>
+          <li>课程</li>
           <li class="project-tag">
             <el-tag
               v-for="item in courseTag"
               :key="item.course_id"
-              style="margin:0 5px 5px 0"
+              style="margin: 0 5px 5px 0"
               >{{ item.course_name }}</el-tag
             >
           </li>
-          <li @click="courseDialogShow(courseTag)" style="cursor:pointer">
+          <li @click="courseDialogShow(courseTag)" style="cursor: pointer">
             选择
           </li>
         </ul>
         <ul class="project-ul">
-          <li>
-            题库
-          </li>
+          <li>题库</li>
           <li class="project-tag">
             <el-tag
               v-for="item in quesTag"
               :key="item.id"
-              style="margin:0 5px 5px 0"
+              style="margin: 0 5px 5px 0"
               >{{ item.title }}</el-tag
             >
           </li>
-          <li style="cursor:pointer" @click="questionShow">
-            选择
-          </li>
+          <li style="cursor: pointer" @click="questionShow">选择</li>
         </ul>
         <ul class="project-ul">
-          <li>
-            教材
-          </li>
+          <li>教材</li>
           <li class="project-tag">
             <el-tag
               v-for="item in materialTag"
               :key="item.book_id"
-              style="margin:0 5px 5px 0"
+              style="margin: 0 5px 5px 0"
               >{{ item.book_name }}</el-tag
             >
           </li>
-          <li @click="materialDialogShow" style="cursor:pointer">
-            选择
-          </li>
+          <li @click="materialDialogShow" style="cursor: pointer">选择</li>
         </ul>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -302,12 +286,12 @@
 </template>
 
 <script>
-import { getCateList } from '@/api/sou'
-import CourseDialog from './components/courseDialog'
-import MaterialDialog from './components/materialDialog'
-import QuestionBank from './components/QuestionBank'
+import { getCateList } from "@/api/sou";
+import CourseDialog from "./components/courseDialog";
+import MaterialDialog from "./components/materialDialog";
+import QuestionBank from "./components/QuestionBank";
 export default {
-  name: 'projectManage',
+  name: "projectManage",
   components: {
     CourseDialog,
     MaterialDialog,
@@ -315,76 +299,76 @@ export default {
   },
   data() {
     return {
-      dialogTitle: '添加项目',
+      dialogTitle: "添加项目",
       selectData: [],
       pageNum: 1,
       listTotal: 0,
       searchData: {
         category_id: [],
-        keyboard: '',
+        keyword: "",
       },
       ruleForm: {
-        project_name: '',
-        category_id: '',
-        price: '',
-        lowest_price: '',
-        service_period: '',
+        project_name: "",
+        category_id: "",
+        price: "",
+        lowest_price: "",
+        service_period: "",
         service_type: 1,
-        service_effective: '',
+        service_effective: "",
         course: [1, 2, 3],
         problem: [1, 2, 3],
         textbooks: [1, 2, 3],
-        status: '',
+        status: "",
 
-        school: '',
+        school: "",
       },
       searchOptions: [
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
 
           attrs: {
             clearable: true,
-            placeholder: '选择类别',
-            options: [{ value: 1, label: 'test' }],
+            placeholder: "选择类别",
+            options: [{ value: 1, label: "test" }],
           },
         },
         {
-          key: 'keyboard',
+          key: "keyword",
           attrs: {
-            placeholder: '项目名称',
+            placeholder: "项目名称",
           },
         },
       ],
       rules: {
         project_name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { required: true, message: "请输入活动名称", trigger: "blur" },
         ],
         category_id: [
-          { required: true, message: '请输入活动名称', trigger: 'change' },
+          { required: true, message: "请输入活动名称", trigger: "change" },
         ],
-        price: [{ required: true, message: '请输入活动名称', trigger: 'blur' }],
+        price: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
         lowest_price: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { required: true, message: "请输入活动名称", trigger: "blur" },
         ],
       },
 
       timeOptions: [
         {
           id: 1,
-          value: '1年',
+          value: "1年",
         },
         {
           id: 2,
-          value: '2年',
+          value: "2年",
         },
         {
           id: 3,
-          value: '3年',
+          value: "3年",
         },
         {
           id: 4,
-          value: '永久',
+          value: "永久",
         },
       ],
       schoolData: [],
@@ -395,40 +379,40 @@ export default {
       quesTag: [],
       showMaterial: false,
       showQues: false,
-    }
+    };
   },
   created() {
-    this.getCateList()
-    this.$api.getProjectList(this, 'schoolData')
+    this.getCateList();
+    this.$api.getProjectList(this, "schoolData");
   },
   methods: {
     handlecourse(selection) {
-      console.log(selection)
-      this.courseTag = selection
+      console.log(selection);
+      this.courseTag = selection;
     },
     handleMaterial(selection) {
-      this.materialTag = selection
+      this.materialTag = selection;
     },
     handleQuestion(selection) {
-      this.quesTag = selection
+      this.quesTag = selection;
     },
     questionShow() {
-      this.showQues = true
+      this.showQues = true;
     },
     materialDialogShow() {
-      this.showMaterial = true
+      this.showMaterial = true;
     },
 
     courseDialogShow() {
-      this.showCourse = true
+      this.showCourse = true;
 
       // this.courseTag  = courseTag
     },
     handleChange() {
-      console.log(this.ruleForm.category_id)
+      console.log(this.ruleForm.category_id);
     },
     changeSwitch(ab) {
-      console.log(ab)
+      console.log(ab);
       let formData = {
         project_id: ab.project_id,
         project_name: ab.project_name,
@@ -436,131 +420,131 @@ export default {
         price: ab.project_price,
         lowest_price: ab.lowest_price,
         status: ab.project_status,
-      }
-      this.$api.editProject(this, formData, 'POST')
+      };
+      this.$api.editProject(this, formData, "POST");
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.$api.getProjectList(this, 'schoolData')
+      this.pageNum = val;
+      this.$api.getProjectList(this, "schoolData");
     },
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.$api.getProjectList(this, 'schoolData')
+      this.pageNum = 1;
+      this.searchData = data;
+      this.$api.getProjectList(this, "schoolData");
     },
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        console.log(this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
+        this.cloneData(res.data, this.selectData);
+        console.log(this.selectData);
+        this.searchOptions[0].attrs.options = this.selectData;
       }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
     choseServicetype(ab) {
       switch (ab) {
         case 1:
-          this.ruleForm.service_effective = ''
-          break
+          this.ruleForm.service_effective = "";
+          break;
         case 2:
-          this.ruleForm.service_period = ''
-          break
+          this.ruleForm.service_period = "";
+          break;
       }
     },
     handleEdit(ab) {
       // for (var item in this.ruleForm) {
       //   this.ruleForm[item] = ''
       // }
-      this.ruleForm.project_id = ab.project_id
-      this.dialogTitle = '编辑项目'
-      this.dialogVisible = true
-      this.$api.editProject(this, this.ruleForm, 'GET')
+      this.ruleForm.project_id = ab.project_id;
+      this.dialogTitle = "编辑项目";
+      this.dialogVisible = true;
+      this.$api.editProject(this, this.ruleForm, "GET");
     },
     handleDelete(ab) {
-      this.$confirm('此操作将删除该项目, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("此操作将删除该项目, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.deleteproject(this, ab.project_id)
+          this.$api.deleteproject(this, ab.project_id);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     getTableList() {},
     projectDialog() {
-      this.courseTag = []
-      this.materialTag = []
-      this.quesTag = []
-      this.dialogTitle = '添加项目'
-      this.dialogVisible = true
+      this.courseTag = [];
+      this.materialTag = [];
+      this.quesTag = [];
+      this.dialogTitle = "添加项目";
+      this.dialogVisible = true;
       //初始化参数
       this.ruleForm = {
-        project_name: '',
-        category_id: '',
-        price: '',
-        lowest_price: '',
-        service_period: '',
+        project_name: "",
+        category_id: "",
+        price: "",
+        lowest_price: "",
+        service_period: "",
         service_type: 1,
-        service_effective: '',
+        service_effective: "",
         course: [],
         problem: [],
         textbooks: [],
-        status: '',
+        status: "",
 
-        school: '',
-      }
+        school: "",
+      };
     },
     handleConfirm(formName) {
       //所选课程
       this.ruleForm.course = this.courseTag.map((i) => {
-        return i.course_id
-      })
+        return i.course_id;
+      });
       //所选教材
       this.ruleForm.textbooks = this.materialTag.map((i) => {
-        return i.book_id
-      })
+        return i.book_id;
+      });
       //所选题库
       this.ruleForm.problem = this.quesTag.map((i) => {
-        return i.id
-      })
+        return i.id;
+      });
       // console.log(this.quesTag)
       // console.log(this.ruleForm)
       if (this.ruleForm.category_id.length) {
-        this.ruleForm.category_id = this.ruleForm.category_id.pop()
+        this.ruleForm.category_id = this.ruleForm.category_id.pop();
       }
-      console.log(this.ruleForm.course_id)
+      console.log(this.ruleForm.course_id);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.id) {
-            this.$api.editProject(this, this.ruleForm, 'POST')
+            this.$api.editProject(this, this.ruleForm, "POST");
           } else {
-            this.$api.createProject(this, this.ruleForm)
+            this.$api.createProject(this, this.ruleForm);
           }
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -588,7 +572,7 @@ export default {
   justify-content: space-between;
 }
 .project-h3 {
-  font-family: 'Microsoft YaHei UI', sans-serif;
+  font-family: "Microsoft YaHei UI", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;

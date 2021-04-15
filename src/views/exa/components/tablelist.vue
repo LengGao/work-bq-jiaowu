@@ -147,140 +147,119 @@
 </template>
 
 <script>
-import SearchList from '@/components/SearchList/index'
-import { getCateList } from '@/api/sou'
-import { provinceAndCityData } from 'element-china-area-data'
+import SearchList from "@/components/SearchList/index";
+import { getCateList } from "@/api/sou";
+import { provinceAndCityData } from "element-china-area-data";
 
 export default {
-    name: 'examination',
+  name: "examination",
 
-    data() {
+  data() {
     return {
-      subjectData:[],
-      data:[],
-      classTitle:'',
-       changeSwitch:'',
-       kmdata: [
+      subjectData: [],
+      data: [],
+      classTitle: "",
+      changeSwitch: "",
+      kmdata: [
         {
-          value: '选项1',
-          label: '系统集成基础知识',
+          value: "选项1",
+          label: "系统集成基础知识",
         },
         {
-          value: '选项2',
-          label: '系统集成应用技术',
+          value: "选项2",
+          label: "系统集成应用技术",
         },
-
       ],
-      oppos:[{
-        value:'1',
-        label:'必考',
-      },
-      {
-        value:'2',
-        label:'选考',
-      }
+      oppos: [
+        {
+          value: "1",
+          label: "必考",
+        },
+        {
+          value: "2",
+          label: "选考",
+        },
       ],
       searchData: {
         category_id: [],
-        keyboard: '',
+        keyword: "",
       },
       searchDatas: {
         category_id: [],
-        keyboard: '',
+        keyword: "",
       },
       searchOptions: [
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
           attrs: {
-            placeholder: '所属分类',
+            placeholder: "所属分类",
             clearable: true,
             options: [],
           },
         },
-
       ],
 
-    ruleForm: {
-          rule_name:'',
-          photo_limit:'',
-          id_card_limit:'',
-          place_limit:'',
-          age_limit:'',
-          edu_limit:'',
-          work_limit:'',
-          health_limit:'',
+      ruleForm: {
+        rule_name: "",
+        photo_limit: "",
+        id_card_limit: "",
+        place_limit: "",
+        age_limit: "",
+        edu_limit: "",
+        work_limit: "",
+        health_limit: "",
 
-          region:'',
-          desc:'',
-          id:'',
-          category_name:'',
-          subject_name:'',
-          cate_id: '',
-          cost: '',
-          total_score: '',
-          pass_score: ''
-        },  
+        region: "",
+        desc: "",
+        id: "",
+        category_name: "",
+        subject_name: "",
+        cate_id: "",
+        cost: "",
+        total_score: "",
+        pass_score: "",
+      },
 
-    rules: {
-          cate_id: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
-          id_card_limit: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
-          place_limit: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
-          age_limit: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
-          edu_limit: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
-          work_limit: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
-          health_limit: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
+      rules: {
+        cate_id: [{ required: true, message: "", trigger: "blur" }],
+        id_card_limit: [{ required: true, message: "", trigger: "blur" }],
+        place_limit: [{ required: true, message: "", trigger: "blur" }],
+        age_limit: [{ required: true, message: "", trigger: "blur" }],
+        edu_limit: [{ required: true, message: "", trigger: "blur" }],
+        work_limit: [{ required: true, message: "", trigger: "blur" }],
+        health_limit: [{ required: true, message: "", trigger: "blur" }],
 
-          category_name: [
-            { required: true, message: '请选择所属分类', trigger: 'blur' },
-          ],
-          subject_name: [
-            { required: true, message: '请输入科目名称', trigger: 'blur' },
-          ],
-          total_score: [
-            { required: true, message: '请输入考试总分', trigger: 'blur' },
-          ],
-          pass_score: [
-            { required: true, message: '请输入合格分数', trigger: 'blur' },
-          ],
-          exam_type: [
-            { required: true, message: '', trigger: 'blur' },
-          ],
-          credit_hour: [
-            { required: true, message: '请输入科目学分', trigger: 'blur' },
-          ],
-          cost: [
-            { required: true, message: '请输入补考费用', trigger: 'blur' },
-          ]
-        },
+        category_name: [
+          { required: true, message: "请选择所属分类", trigger: "blur" },
+        ],
+        subject_name: [
+          { required: true, message: "请输入科目名称", trigger: "blur" },
+        ],
+        total_score: [
+          { required: true, message: "请输入考试总分", trigger: "blur" },
+        ],
+        pass_score: [
+          { required: true, message: "请输入合格分数", trigger: "blur" },
+        ],
+        exam_type: [{ required: true, message: "", trigger: "blur" }],
+        credit_hour: [
+          { required: true, message: "请输入科目学分", trigger: "blur" },
+        ],
+        cost: [{ required: true, message: "请输入补考费用", trigger: "blur" }],
+      },
 
-      
-      
       dialogVisible: false,
-      guizeVisible:false,
+      guizeVisible: false,
       isTagactive: 1,
       tabFun: [
         {
           id: 1,
-          name: '考试科目',
+          name: "考试科目",
         },
         {
           id: 2,
-          name: '报考规则',
+          name: "报考规则",
         },
       ],
       page: 1,
@@ -291,54 +270,52 @@ export default {
       course_ids: [],
       datas: {},
       selectData: [],
-    }
+    };
   },
 
   mounted() {
-    this.$api.subjectList(this, 'subjectData')  //考试科目列表
-    this.getCateList()
+    this.$api.subjectList(this, "subjectData"); //考试科目列表
+    this.getCateList();
     // this.$api.updateSubject(this, 'subjectData')
     // this.$api.createRule(this, 'schoolData')  //添加规则
   },
-    methods: {
-
-      handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.$api.subjectList(this, 'subjectData')
+  methods: {
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = data;
+      this.$api.subjectList(this, "subjectData");
     },
     handleSearchs(data) {
-      this.pageNum = 1
-      this.searchDatas = data
-      console.log(this.isTagactive)
-      if(this.isTagactive === 2){
-      this.$api.ruleList(this, 'schoolData')
-      }else{
-   this.$api.subjectList(this, 'subjectData')  //考试科目列表
+      this.pageNum = 1;
+      this.searchDatas = data;
+      console.log(this.isTagactive);
+      if (this.isTagactive === 2) {
+        this.$api.ruleList(this, "schoolData");
+      } else {
+        this.$api.subjectList(this, "subjectData"); //考试科目列表
       }
-
     },
 
-      //考试科目search
-      async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+    //考试科目search
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
-        this.searchOptionss[0].attrs.options = this.selectData
+        this.cloneData(res.data, this.selectData);
+        this.searchOptions[0].attrs.options = this.selectData;
+        this.searchOptionss[0].attrs.options = this.selectData;
       }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
 
     async subjectList() {
@@ -346,138 +323,132 @@ export default {
         page: this.pageNum,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
-      }
-      this.listLoading = true
-      const res = await subjectList(data)
-      this.listLoading = false
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      };
+      this.listLoading = true;
+      const res = await subjectList(data);
+      this.listLoading = false;
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
 
-      deleteOneClass(index){
-        this.data.splice(index,1)
-      },
-      addOneClass() {
-      var obj = {}
-      this.data.push(obj)
+    deleteOneClass(index) {
+      this.data.splice(index, 1);
+    },
+    addOneClass() {
+      var obj = {};
+      this.data.push(obj);
     },
 
-      submitForm(formName) {
-        console.log(this.ruleForm)
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-           if (this.ruleForm.id) {
+    submitForm(formName) {
+      console.log(this.ruleForm);
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.ruleForm.id) {
             //修改
-            this.$api.updateSubject(this, this.ruleForm)
-            this.$api.subjectList(this, 'subjectData') 
+            this.$api.updateSubject(this, this.ruleForm);
+            this.$api.subjectList(this, "subjectData");
           } else {
             //添加科目
-            this.$api.createSubject(this, this.ruleForm)
+            this.$api.createSubject(this, this.ruleForm);
           }
-          }else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-
-    addSubject(){
-      this.classTitle = '添加科目'
-      this.dialogVisible = true
-       this.ruleForm = {
-        subject_name:'',
-          category_name: '',
-          cost: '',
-          total_score: '',
-          pass_score: ''
-      }
-      
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
-    addRegistration(){
-      this.ruleTitle = '添加报考规则'
-      this.guizeVisible = true
-       this.ruleForm = {
-        subject_name:'',
 
-      }
-      
+    addSubject() {
+      this.classTitle = "添加科目";
+      this.dialogVisible = true;
+      this.ruleForm = {
+        subject_name: "",
+        category_name: "",
+        cost: "",
+        total_score: "",
+        pass_score: "",
+      };
+    },
+    addRegistration() {
+      this.ruleTitle = "添加报考规则";
+      this.guizeVisible = true;
+      this.ruleForm = {
+        subject_name: "",
+      };
     },
 
     handleDelete(ab) {
-      console.log(ab)
-      this.$confirm('此操作将删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      console.log(ab);
+      this.$confirm("此操作将删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          console.log(ab.id)
-          this.$api.deleteSubject(this, ab.id)
+          console.log(ab.id);
+          this.$api.deleteSubject(this, ab.id);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
 
     deleterule(ab) {
-      console.log(ab)
-      this.$confirm('此操作将删除, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      console.log(ab);
+      this.$confirm("此操作将删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          console.log(ab.id)
-          this.$api.deleteRule(this, ab.id)
-
+          console.log(ab.id);
+          this.$api.deleteRule(this, ab.id);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
-      editNotice(id) {
-      this.classTitle = '编辑科目'
-      this.ruleForm = id
-      this.dialogVisible = true
-      this.$api.updateSubject(this, this.ruleForm, 'GET')
+    editNotice(id) {
+      this.classTitle = "编辑科目";
+      this.ruleForm = id;
+      this.dialogVisible = true;
+      this.$api.updateSubject(this, this.ruleForm, "GET");
     },
-
   },
-
-}
+};
 </script>
 
 <style lang="scss" scoped>
 .userTable {
   margin-top: 20px;
 }
-.table_bottom{
+.table_bottom {
   text-align: right;
 }
-.colright{
+.colright {
   text-align: right;
 }
-/deep/.el-radio-group{
+/deep/.el-radio-group {
   display: flex;
   align-items: center;
 }
-.inputach{
-  width:25px;
-  height:28px;
-  border:1px solid #ccc;
+.inputach {
+  width: 25px;
+  height: 28px;
+  border: 1px solid #ccc;
   text-align: center;
   margin: 0 10px;
 }
-/deep/.el-form-item__content{
+/deep/.el-form-item__content {
   display: flex;
 }
-.demo-ruleForm h3{
+.demo-ruleForm h3 {
   border-left: 4px solid #199fff;
   font-size: 16px;
   font-weight: normal;
@@ -486,15 +457,14 @@ export default {
   margin-bottom: 15px;
   margin-left: 20px;
 }
-.gztitle{
+.gztitle {
   border-left: 4px solid #199fff;
   font-size: 16px;
   margin: 0 0 20px 20px;
   padding-left: 8px;
 }
-.radiocss{
+.radiocss {
   margin-top: 12px;
 }
-
 </style>
 

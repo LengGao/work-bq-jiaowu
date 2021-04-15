@@ -3,7 +3,7 @@ let videoManger = {
   videocollectionlist(self, name, data) {
     console.log(data)
     let course_category_id = '',
-      keyboard = ''
+      keyword = ''
 
     // let ab = self.ruleForm.course_category_id
     // console.log(ab)
@@ -13,7 +13,7 @@ let videoManger = {
     if (data != undefined && data != '') {
       console.log(data.id)
       course_category_id = data.id
-      keyboard = data.name
+      keyword = data.name
     }
     console.log(self.ruleForm.course_category_id)
     let course_category = self.ruleForm.course_category_id
@@ -22,7 +22,7 @@ let videoManger = {
     }
     let config = {
       course_category_id: course_category_id,
-      keyboard: keyboard,
+      keyword: keyword,
       page: self.page,
     }
     axiosHttp({
@@ -240,14 +240,14 @@ let videoManger = {
   },
   getvideoclass(self, name, data) {
     console.log(data)
-    let keyboard = ''
+    let keyword = ''
     if (data != undefined) {
-      keyboard = data.name
+      keyword = data.name
     }
     let config = {
       video_collection_id: self.$route.query.video_collection_id,
       video_chapter_id: self.video_chapter_id,
-      keyboard: keyboard,
+      keyword: keyword,
       page: self.page,
     }
     console.log(config)
@@ -532,12 +532,12 @@ let videoManger = {
     })
   },
   livecourselist(self, name, data) {
-    let keyboard = ''
+    let keyword = ''
     if (data != undefined) {
-      keyboard = data.name
+      keyword = data.name
     }
     let config = {
-      keyboard: keyboard,
+      keyword: keyword,
       course_category_id: '',
       page: self.page,
     }
@@ -555,12 +555,12 @@ let videoManger = {
     })
   },
   livelist(self, name, data) {
-    let keyboard = ''
+    let keyword = ''
     if (data != undefined) {
-      keyboard = data.name
+      keyword = data.name
     }
     let config = {
-      keyboard: keyboard,
+      keyword: keyword,
       course_id: self.$route.query.course_id,
       live_type: self.$route.query.biaoshi,
       page: self.page,
@@ -579,12 +579,12 @@ let videoManger = {
     })
   },
   livevideolist(self, name, data) {
-    let keyboard = ''
+    let keyword = ''
     if (data != undefined) {
-      keyboard = data.name
+      keyword = data.name
     }
     let config = {
-      keyboard: keyboard,
+      keyword: keyword,
       course_id: '',
       class_room_id: '',
       live_id: self.$route.query.live_id,
@@ -642,7 +642,7 @@ let videoManger = {
   classroom(self, name) {
     let config = {
       course_id: 10,
-      keyboard: '',
+      keyword: '',
     }
     console.log(config)
     axiosHttp({
@@ -898,7 +898,7 @@ let videoManger = {
       search_box = ''
     if (data != undefined) {
       console.log(data)
-      ;(opinion_type = data.id), (search_box = data.name)
+        ; (opinion_type = data.id), (search_box = data.name)
     }
     let config = {
       opinion_type: opinion_type,

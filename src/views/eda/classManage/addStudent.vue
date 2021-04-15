@@ -124,7 +124,7 @@ export default {
       searchData: {
         date: "",
         organization_id: [],
-        keyboard: "",
+        keyword: "",
       },
       searchOptions: [
         {
@@ -148,7 +148,7 @@ export default {
           },
         },
         {
-          key: "keyboard",
+          key: "keyword",
           attrs: {
             placeholder: "学生姓名/手机号码",
           },

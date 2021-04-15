@@ -1,8 +1,14 @@
 <template>
   <div class="ali-yun-upload">
     <el-button size="small" @click="handleFileSelect">选择文件</el-button>
+    <transition name="el-fade-in-linear">
+      <el-progress
+        v-show="percentage && percentage !== 100"
+        :percentage="percentage"
+      ></el-progress>
+    </transition>
     <ul class="file-list">
-      <li class="file-item" v-for="(file, index) in fileList" :key="file.size">
+      <li class="file-item" v-for="(file, index) in fileList" :key="file.id">
         <span class="file-item-name">{{ file.name }}</span>
         <i
           class="el-icon-close file-item-delete"
@@ -22,11 +28,6 @@ export default {
       type: String,
       default: "",
     },
-
-    autpUpload: {
-      type: Boolean,
-      default: true,
-    },
     onSuccess: {
       type: Function,
       default: () => {},
@@ -34,6 +35,10 @@ export default {
     onError: {
       type: Function,
       default: () => {},
+    },
+    defaultFiles: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
@@ -43,11 +48,16 @@ export default {
       aliyunRegion: "cn-shanghai",
       aliyunUserId: "1160528473305736",
       fileList: [],
+      percentage: 0,
     };
   },
   watch: {
     value(val) {
       this.requestId = val;
+    },
+    defaultFiles(data) {
+      console.log(data);
+      this.fileList = [...data];
     },
   },
   created() {
@@ -56,26 +66,33 @@ export default {
   methods: {
     handleFileDelete(index) {
       this.fileList.splice(index, 1);
+      this.$emit("on-remove", index);
     },
     handleFileSelect() {
       let input = document.createElement("input");
       input.value = "选择文件";
       input.type = "file";
+      input.accept = "video/*";
       input.onchange = (event) => {
         let file = event.target.files[0];
-        this.fileList = [];
-        this.fileList.push(file);
-        if (this.autpUpload) {
-          const paramsJson = '{"Vod":{}}';
-          this.aliyunUpload.addFile(file, null, null, null, paramsJson);
-          this.upload();
-        }
+        this.beforeUpload(file);
       };
       input.click();
     },
+    beforeUpload(file) {
+      if (file.type.indexOf("video") === -1) {
+        this.$message.error("请上传视频");
+        return;
+      }
+      const paramsJson = '{"Vod":{}}';
+      this.aliyunUpload.addFile(file, null, null, null, paramsJson);
+      this.upload();
+    },
     upload() {
+      console.log("start");
       this.aliyunUpload.startUpload();
     },
+    //获取上传凭证
     async updatecreate(uploadInfo) {
       const file = uploadInfo.file;
       const file_name = file.name;
@@ -93,8 +110,10 @@ export default {
           data.UploadAddress,
           data.VideoId
         );
+        return data.UploadAuth;
       }
     },
+    // 刷新上传凭证
     async refreshuploadvideo(videoId) {
       const data = {
         videoId,
@@ -108,9 +127,9 @@ export default {
           data.UploadAddress,
           data.VideoId
         );
-        // this.aliyunUpload.resumeUploadWithAuth(res.UploadAuth);
       }
     },
+    //初始化
     initAliYun() {
       this.aliyunUpload = new AliyunUpload.Vod({
         //阿里账号ID，必须有值
@@ -136,8 +155,13 @@ export default {
         },
         //文件上传成功
         onUploadSucceed: (uploadInfo) => {
-          this.$emit("input", uploadInfo.videoId);
           this.onSuccess(uploadInfo);
+          console.log(uploadInfo);
+          this.fileList = [];
+          this.fileList.push({
+            name: uploadInfo.file.name,
+            id: uploadInfo.videoId,
+          });
         },
         //文件上传失败
         onUploadFailed: (uploadInfo, code, message) => {
@@ -145,9 +169,18 @@ export default {
           this.onError(uploadInfo, code, message);
         },
         //文件上传进度，单位：字节
-        onUploadProgress: function (uploadInfo, totalSize, loadedPercent) {},
+        onUploadProgress: (uploadInfo, totalSize, loadedPercent) => {
+          const progress = loadedPercent * 100;
+          this.percentage = progress === 100 ? 99 : progress;
+          setTimeout(() => {
+            this.percentage = 100;
+          }, 1000);
+        },
         //上传凭证或STS token超时
-        onUploadTokenExpired: function (uploadInfo) {},
+        onUploadTokenExpired: (uploadInfo) => {
+          const uploadAuth = this.updatecreate();
+          this.aliyunUpload.resumeUploadWithAuth(uploadAuth);
+        },
         //全部文件上传结束
         onUploadEnd: (uploadInfo) => {},
       });

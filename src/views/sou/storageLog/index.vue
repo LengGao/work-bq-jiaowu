@@ -98,7 +98,7 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        keyboard: "",
+        keyword: "",
         type: "",
         date: [],
       },
@@ -127,7 +127,7 @@ export default {
           },
         },
         {
-          key: "keyboard",
+          key: "keyword",
           attrs: {
             placeholder: "教材名称/操作人",
           },
@@ -166,7 +166,7 @@ export default {
       const data = {
         storage_id: this.$route.query.id,
         page: this.pageNum,
-        keyboard: this.searchData.keyboard,
+        keyword: this.searchData.keyword,
         type: this.searchData.type,
         start_time: date[0] || "",
         end_time: date[1] || "",

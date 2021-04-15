@@ -45,7 +45,10 @@
             show-overflow-tooltip
           ></el-table-column>
         </el-table>
-        <div class="table_bottom" style="display:flex;justify-content:flex-end">
+        <div
+          class="table_bottom"
+          style="display: flex; justify-content: flex-end"
+        >
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -56,9 +59,7 @@
       <div class="main-right">
         <div class="right-head">
           <div>已选教材:{{ selection.length }}</div>
-          <p @click="hadleResetUser" style="cursor:pointer">
-            清空
-          </p>
+          <p @click="hadleResetUser" style="cursor: pointer">清空</p>
         </div>
         <ul>
           <li v-for="(item, index) in selection" :key="item.book_id">
@@ -78,7 +79,7 @@
 </template>
 
 <script>
-import { getBookList, getCateList } from '@/api/sou'
+import { getBookList, getCateList } from "@/api/sou";
 export default {
   data() {
     return {
@@ -90,28 +91,28 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        keyboard: '',
+        keyword: "",
       },
       choseCourse: [],
       searchOptions: [
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
           attrs: {
             clearable: true,
-            options: [{ value: 1, label: 'test' }],
+            options: [{ value: 1, label: "test" }],
           },
         },
         {
-          key: 'keyboard',
+          key: "keyword",
           attrs: {
-            placeholder: '课程名称',
+            placeholder: "课程名称",
           },
         },
       ],
       selectData: [],
       listData: [],
-    }
+    };
   },
   props: {
     value: {
@@ -125,105 +126,105 @@ export default {
   },
   watch: {
     value(val) {
-      this.visible = val
+      this.visible = val;
     },
   },
   created() {},
   methods: {
     handleOpen() {
-      this.getCateList()
-      this.getBookList()
+      this.getCateList();
+      this.getBookList();
       this.$nextTick(() => {
-        this.selection = [...this.materialTag]
+        this.selection = [...this.materialTag];
         // 替换掉this.$refs.multipleTable.selection上原有的
-        const len = this.$refs.multipleTable.selection.length
-        this.$refs.multipleTable.selection.splice(0, len, ...this.materialTag)
-      })
+        const len = this.$refs.multipleTable.selection.length;
+        this.$refs.multipleTable.selection.splice(0, len, ...this.materialTag);
+      });
     },
     hanldeCancel() {
-      this.$emit('input', false)
-      this.pageNum = 1
+      this.$emit("input", false);
+      this.pageNum = 1;
     },
     handleconfirm() {
-      this.$emit('on-materialsuccess', [...this.selection])
-      this.hanldeCancel()
+      this.$emit("on-materialsuccess", [...this.selection]);
+      this.hanldeCancel();
     },
     // 切换列表选择状态
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row)
-        })
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
       } else {
-        this.$refs.multipleTable.clearSelection()
+        this.$refs.multipleTable.clearSelection();
       }
     },
     // 指定一个唯一标识。id或者其他唯一的
     getRowKeys(row) {
-      return row.book_id
+      return row.book_id;
     },
 
     // 右侧已选删除
     handleRemoveUser(index) {
-      this.$refs.multipleTable.selection.splice(index, 1)
-      this.selection.splice(index, 1)
+      this.$refs.multipleTable.selection.splice(index, 1);
+      this.selection.splice(index, 1);
     },
     // 右侧已选清空
     hadleResetUser() {
-      this.toggleSelection()
+      this.toggleSelection();
     },
     // table选中
     handleTableChange(selection) {
-      this.selection = selection ? [...selection] : []
+      this.selection = selection ? [...selection] : [];
     },
     // closeMaterial() {
     //   this.$emit('closeMaterial')
     // },
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        console.log(this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
+        this.cloneData(res.data, this.selectData);
+        console.log(this.selectData);
+        this.searchOptions[0].attrs.options = this.selectData;
       }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
     handleSearch(data) {
-      this.pageNum = 1
+      this.pageNum = 1;
       this.searchData = {
         ...data,
-      }
-      this.getBookList()
+      };
+      this.getBookList();
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getBookList()
+      this.pageNum = val;
+      this.getBookList();
     },
     async getBookList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
-      }
-      this.listLoading = true
-      const res = await getBookList(data)
-      this.listLoading = false
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      };
+      this.listLoading = true;
+      const res = await getBookList(data);
+      this.listLoading = false;
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -241,7 +242,7 @@ export default {
     border: 1px solid rgb(220, 223, 230);
     .right-head {
       display: flex;
-      font-family: 'Arial Negreta', 'Arial Normal', 'Arial', sans-serif;
+      font-family: "Arial Negreta", "Arial Normal", "Arial", sans-serif;
       font-weight: 700;
       font-style: normal;
       color: #909399;
@@ -261,7 +262,7 @@ export default {
         display: flex;
         padding: 14px 25px;
         justify-content: space-between;
-        font-family: 'Arial Normal', 'Arial', sans-serif;
+        font-family: "Arial Normal", "Arial", sans-serif;
         font-weight: 400;
         font-style: normal;
         color: #909399;

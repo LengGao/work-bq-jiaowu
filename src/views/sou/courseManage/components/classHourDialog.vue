@@ -47,8 +47,9 @@
       </el-form-item>
       <el-form-item label="上传视频" prop="media_id">
         <AliyunUpload
-          v-model="formData.media_id"
+          :defaultFiles="defaultFiles"
           :on-success="handleUploadSuccess"
+          @on-remove="handleVideoRemove"
         />
       </el-form-item>
     </el-form>
@@ -94,12 +95,14 @@ export default {
     return {
       visible: this.value,
       formData: {
+        video_chapter_id: "",
         video_class_name: "",
         video_chapter_profile: "",
         video_class_sort: "",
         media_id: "",
         media_name: "",
       },
+      defaultFiles: [],
       rules: {
         video_class_name: [
           { required: true, message: "请输入", trigger: "blur" },
@@ -124,6 +127,10 @@ export default {
   },
 
   methods: {
+    handleVideoRemove() {
+      this.formData.media_name = "";
+      this.formData.media_id = "";
+    },
     handleOpen() {
       this.getvideochapterList();
       if (this.id) {
@@ -131,13 +138,13 @@ export default {
       }
     },
     handleUploadSuccess(data) {
-      console.log(data);
       const filename = data.file.name;
+      this.formData.media_id = data.videoId;
       this.formData.media_name = filename;
     },
     async getvideoclassDetail() {
       const data = {
-        video_chapter_id: this.id,
+        video_class_id: this.id,
       };
       this.detaiLoading = true;
       const res = await getvideoclassDetail(data).catch(() => {
@@ -148,6 +155,14 @@ export default {
         for (const k in this.formData) {
           this.formData[k] = res.data[k];
         }
+        const media_id = res.data.media_int_id;
+        this.formData.media_id = media_id;
+        this.defaultFiles = [
+          {
+            name: res.data.media_name,
+            id: media_id,
+          },
+        ];
       }
     },
     // 章节选项
@@ -163,7 +178,7 @@ export default {
         ...this.formData,
       };
       if (this.id) {
-        data.video_chapter_id = this.id;
+        data.video_class_id = this.id;
       } else {
         data.video_collection_id = this.$route.query?.video_collection_id || "";
       }
@@ -191,7 +206,7 @@ export default {
         this.formData[k] = "";
       }
       this.$refs[formName].resetFields();
-      this.selection = [];
+      this.defaultFiles = [];
       this.hanldeCancel();
     },
     hanldeCancel() {

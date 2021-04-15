@@ -1,55 +1,23 @@
 <template>
   <section class="mainwrap">
     <header>
-      <SearchList
-        :options="searchOptions"
-        :data="searchData"
-        @on-search="handleSearch"
-      />
+      <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
       <el-button type="primary" @click="openBatch">批量录入</el-button>
     </header>
-    <el-table
-      :data="listData"
-      tooltip-effect="light"
-      stripe
-      @selection-change="handleSelectionChange"
-      style="width: 100%"
-      v-loading="listLoading"
-      element-loading-text="loading"
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="#fff"
-      class="min_table"
-      :header-cell-style="{ 'text-align': 'center' }"
-      :cell-style="{ 'text-align': 'center' }"
-    >
+    <el-table :data="listData" tooltip-effect="light" stripe @selection-change="handleSelectionChange" style="width: 100%" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
       <el-table-column type="selection" width="45"> </el-table-column>
-      <el-table-column
-        :prop="item.prop"
-        :label="item.title"
-        min-width="100"
-        v-for="item in title"
-        :key="item.prop"
-      >
+      <el-table-column :prop="item.prop" :label="item.title" min-width="100" v-for="item in title" :key="item.prop">
         <template slot-scope="scope">
-          <div
-            :class="{
+          <div :class="{
               green: scope.row[scope.column.property] === '通过',
               red: scope.row[scope.column.property] === '补考',
               blue: scope.row[scope.column.property] === '待定',
-            }"
-          >
+            }">
             {{ scope.row[scope.column.property] }}
           </div>
         </template>
 
-        <el-table-column
-          min-width="60"
-          v-show="item.children && item.children.length"
-          v-for="i in item.children"
-          :key="i.prop"
-          :prop="i.prop"
-          :label="i.title"
-        >
+        <el-table-column min-width="60" v-show="item.children && item.children.length" v-for="i in item.children" :key="i.prop" :prop="i.prop" :label="i.title">
         </el-table-column>
       </el-table-column>
 
@@ -57,8 +25,7 @@
         <template slot-scope="{ row }">
           <div style="display: flex; justify-content: center">
             <el-button type="text" @click="openScoreDialog(row.id)">
-              {{ row.update_time ? '修改' : '录入' }}</el-button
-            >
+              {{ row.update_time ? '修改' : '录入' }}</el-button>
           </div>
         </template>
       </el-table-column>
@@ -69,29 +36,14 @@
         <el-button @click="batchpassStudent">批量通过</el-button>
       </div>
       <div class="table_bottom">
-        <page
-          :data="listTotal"
-          :curpage="pageNum"
-          @pageChange="handlePageChange"
-        />
+        <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
       </div>
     </div>
 
     <!--添加成绩弹框--->
-    <AddScore
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      :id="currentId"
-      :typeOptions="typeOptions"
-      @on-success="getGradeListByPlan"
-    />
+    <AddScore v-model="dialogVisible" :title="dialogTitle" :id="currentId" :typeOptions="typeOptions" @on-success="getGradeListByPlan" />
     <!--添加报考弹框--->
-    <AddRegistration
-      v-model="regisVisible"
-      :userName="userName"
-      :uids="uids"
-      @on-success="getGradeListByPlan"
-    />
+    <AddRegistration v-model="regisVisible" :userName="userName" :uids="uids" @on-success="getGradeListByPlan" />
     <!--批量录入弹框--->
     <BatchEntry v-model="batchVisible" :pid="pid" />
   </section>
@@ -246,11 +198,7 @@ export default {
       const res = await getPlanGradeSelect(data)
 
       if (res.code === 0) {
-        this.searchOptions[0].options = cloneOptions(
-          res.data.exam_type,
-          'name',
-          'id'
-        )
+        this.searchOptions[0].options = cloneOptions(res.data.exam_type, 'name', 'id')
         console.log(this.searchOptions[0].options)
         this.searchOptions[1].options = this.typeOptions = cloneOptions(
           res.data.grade_status,
@@ -300,5 +248,8 @@ header {
 }
 .blue {
   color: #199fff;
+}
+.table_bottom {
+  text-align: right;
 }
 </style>

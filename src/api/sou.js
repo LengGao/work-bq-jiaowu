@@ -534,3 +534,11 @@ export function getvideoclass(params) {
     params,
   })
 }
+// 删除课时
+export function deletevideoclass(data) {
+  return request({
+    url: 'video/deletevideoclass',
+    method: 'post',
+    data,
+  })
+}

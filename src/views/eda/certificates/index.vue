@@ -215,4 +215,7 @@ export default {
   color: #199fff;
   cursor: pointer;
 }
+.table_bottom {
+  text-align: right;
+}
 </style>

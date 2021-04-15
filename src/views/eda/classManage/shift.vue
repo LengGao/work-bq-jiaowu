@@ -103,11 +103,11 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        keyboard: "",
+        keyword: "",
       },
       searchOptions: [
         {
-          key: "keyboard",
+          key: "keyword",
           attrs: {
             placeholder: "班级名称、班主任",
           },
