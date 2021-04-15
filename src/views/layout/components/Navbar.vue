@@ -1,7 +1,11 @@
 <template>
   <header class="header" mode="horizontal">
     <div class="header-left">
-      <hamburger class="btn" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
+      <hamburger
+        class="btn"
+        :toggleClick="toggleSideBar"
+        :isActive="sidebar.opened"
+      ></hamburger>
       <breadcrumb></breadcrumb>
     </div>
     <div class="header-right">
@@ -14,14 +18,31 @@
         <span>清除缓存</span>
       </div> -->
       <div class="message-container">
-        <el-popover trigger="click" placement="bottom" width="370" popper-class="msg-popover" @show="handlePopoverShow" @after-leave="handlePopoverColse">
-          <el-badge slot="reference" :value="msgCount || ''" class="message-badge">
+        <el-popover
+          trigger="click"
+          placement="bottom"
+          width="370"
+          popper-class="msg-popover"
+          @show="handlePopoverShow"
+          @after-leave="handlePopoverColse"
+        >
+          <el-badge
+            slot="reference"
+            :value="msgCount || ''"
+            class="message-badge"
+          >
             <i class="el-icon-bell message-bell"></i>
           </el-badge>
           <div class="message-content">
             <div class="message-content-head">
               <h4>任务中心</h4>
-              <el-button circle @click="handleMsgRefresh" icon="el-icon-refresh" size="mini" :loading="refershLoading"></el-button>
+              <el-button
+                circle
+                @click="handleMsgRefresh"
+                icon="el-icon-refresh"
+                size="mini"
+                :loading="refershLoading"
+              ></el-button>
             </div>
             <ul class="message-content-list" v-infinite-scroll="loadMore">
               <li class="msg-list-item" v-for="msg in msgList" :key="msg.id">
@@ -37,16 +58,24 @@
                       <span class="msg-date">{{ msg.create_time }}</span>
                     </div>
                     <div class="msg-actions" v-if="msg.download">
-                      <span @click.stop="handleDownload(msg.download)">下载</span>
+                      <span @click.stop="handleDownload(msg.download)"
+                        >下载</span
+                      >
                     </div>
                     <div class="msg-actions" v-if="msg.queue_status == 1">
                       <span>执行中</span>
                     </div>
                   </div>
                   <div class="content-bottom">
-                    <span class="download__status download__status--primary">总条数：{{ msg.count }}</span>
-                    <span class="download__status download__status--success">成功：{{ msg.success }}</span>
-                    <span class="download__status download__status--error">失败：{{ msg.fail }}</span>
+                    <span class="download__status download__status--primary"
+                      >总条数：{{ msg.count }}</span
+                    >
+                    <span class="download__status download__status--success"
+                      >成功：{{ msg.success }}</span
+                    >
+                    <span class="download__status download__status--error"
+                      >失败：{{ msg.fail }}</span
+                    >
                   </div>
                 </div>
               </li>
@@ -62,7 +91,10 @@
       </div>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img class="user-avatar" :src="userInfo.head_photo ? userInfo.head_photo : touxiang" />
+          <img
+            class="user-avatar"
+            :src="userInfo.head_photo ? userInfo.head_photo : touxiang"
+          />
           <span>{{ userInfo.staff_name }}</span>
           <i class="el-icon-caret-bottom"></i>
         </div>
@@ -77,8 +109,20 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-dialog title="修改个人密码" :visible.sync="dialog" :append-to-body="true" width="600px" @close="$refs['rulef'].resetFields()">
-      <el-form :model="form" :rules="ru" ref="rulef" label-width="95px" label-position="left">
+    <el-dialog
+      title="修改个人密码"
+      :visible.sync="dialog"
+      :append-to-body="true"
+      width="600px"
+      @close="$refs['rulef'].resetFields()"
+    >
+      <el-form
+        :model="form"
+        :rules="ru"
+        ref="rulef"
+        label-width="95px"
+        label-position="left"
+      >
         <el-form-item label="原密码：" prop="origin">
           <el-input v-model="form.origin" type="passWord"></el-input>
         </el-form-item>
@@ -135,8 +179,12 @@ export default {
           { required: true, message: '请填写原密码', trigger: 'blur' },
           { min: 6, message: '密码最少6位数', trigger: 'blur' },
         ],
-        password: [{ required: true, trigger: 'blur', validator: validatePass }],
-        confirm: [{ required: true, validator: validatePass2, trigger: 'blur' }],
+        password: [
+          { required: true, trigger: 'blur', validator: validatePass },
+        ],
+        confirm: [
+          { required: true, validator: validatePass2, trigger: 'blur' },
+        ],
       },
       msgList: [],
       msgPageNum: 1,

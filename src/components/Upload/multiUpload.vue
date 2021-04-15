@@ -1,10 +1,21 @@
-<template> 
+<template>
   <div>
-    <el-upload :action="useOss?ossUploadUrl:minioUploadUrl" :data="useOss?dataObj:null" list-type="picture-card" :file-list="fileList" :before-upload="beforeUpload" :on-remove="handleRemove" :on-success="handleUploadSuccess" :on-preview="handlePreview" :limit="maxCount" :on-exceed="handleExceed">
+    <el-upload
+      :action="useOss ? ossUploadUrl : minioUploadUrl"
+      :data="useOss ? dataObj : null"
+      list-type="picture-card"
+      :file-list="fileList"
+      :before-upload="beforeUpload"
+      :on-remove="handleRemove"
+      :on-success="handleUploadSuccess"
+      :on-preview="handlePreview"
+      :limit="maxCount"
+      :on-exceed="handleExceed"
+    >
       <i class="el-icon-plus"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="dialogImageUrl" alt="">
+      <img width="100%" :src="dialogImageUrl" alt="" />
     </el-dialog>
   </div>
 </template>
@@ -104,7 +115,4 @@ export default {
   },
 }
 </script>
-<style>
-</style>
-
-
+<style></style>

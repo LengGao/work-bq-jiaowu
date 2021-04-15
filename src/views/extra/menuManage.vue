@@ -119,9 +119,22 @@
       </div> -->
     </div>
     <!--弹框-->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="576px">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="576px"
+      :close-on-click-modal="false"
+    >
       <el-form label-width="100px">
         <el-form-item label="上级菜单">
+          <!-- <el-cascader
+            v-model="parent_id_arr"
+            :options="ThumbData"
+            :props="optionProps"
+            clearable
+            @change="checkDepart"
+          ></el-cascader> -->
+          <!-- sfdffd -->
           <el-cascader
             v-model="parent_id_arr"
             :options="ThumbData"
@@ -248,8 +261,8 @@ export default {
   methods: {
     checkDepart(ab) {
       console.log(ab)
-      let end = ab[ab.length - 1]
-      console.log(end)
+      // let end = ab[ab.length - 1]
+      // console.log(end)
       // this.ruleForm.parent_id = end
     },
     switchStatus(ab) {
@@ -340,7 +353,7 @@ export default {
       // this.funShow = false
       this.$api.getThumbMenuList(this, 'ThumbData') //获取下拉数据
       //添加菜单按钮
-      this.dialogTitle = '添加菜单'
+      this.dialogTitle = '添加2343菜单'
       this.nameLabel = '菜单名称'
       this.nameInputword = '请输入菜单名称'
       this.parent_id_arr = []

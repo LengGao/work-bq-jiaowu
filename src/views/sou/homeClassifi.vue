@@ -93,7 +93,12 @@
       </div>
     </div>
     <!--弹框-->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="576px">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="576px"
+      :close-on-click-modal="false"
+    >
       <el-form label-width="100px">
         <el-form-item label="分类名称：">
           <el-input

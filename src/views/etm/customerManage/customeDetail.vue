@@ -387,7 +387,12 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="提示" :visible.sync="orderVisible" width="70%">
+    <el-dialog
+      title="提示"
+      :visible.sync="orderVisible"
+      width="70%"
+      :close-on-click-modal="false"
+    >
       <h3 style="margin-bottom: 10px">订单信息</h3>
       <el-row>
         <el-col

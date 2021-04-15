@@ -100,7 +100,12 @@
       </div> -->
       </div>
       <!--添加项目弹框-->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="50%">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible"
+        width="50%"
+        :close-on-click-modal="false"
+      >
         <el-form
           :model="ruleForm"
           :rules="rules"

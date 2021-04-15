@@ -5,6 +5,7 @@
           <el-dialog
           :title="classTitle"
           :visible.sync="dialogVisible"
+           :close-on-click-modal="false"
           width="43%"
         >
           <el-form

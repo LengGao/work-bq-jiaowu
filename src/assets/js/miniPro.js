@@ -609,7 +609,6 @@ let minipro = {
       data: config,
       method: 'GET',
       then(res) {
-        console.log(res.data.data)
         let data = res.data.data
         self.ruleForm.menu_name = data.menu_name
         //对数组进行倒序处理
@@ -628,10 +627,9 @@ let minipro = {
             arr.splice(0, 1)
           }
         }
-
-        console.log(data.parent_id_arr)
-        self.parent_id_arr = data.parent_id_arr
+        self.parent_id_arr = [...data.parent_id_arr]
         self.ruleForm.parent_id = data.parent_id
+        console.log(data.parent_id)
         self.ruleForm.node = data.node
         self.ruleForm.auth = data.auth
         self.ruleForm.icon = data.icon
@@ -709,7 +707,6 @@ let minipro = {
             type: 'success',
             message: res.data.message,
           })
-          // self.dialogVisible = false
           self.$api.getMenuList(self, 'schoolData')
           self.updateRouter()
         }
@@ -718,7 +715,6 @@ let minipro = {
   },
   //删除菜单
   deleteMenuData(self, id) {
-    // let config_id = parseInt(self.$route.query.config_id)
     let config = {
       id: id,
     }

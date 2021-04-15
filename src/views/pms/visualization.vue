@@ -44,7 +44,8 @@ export default {
     ...mapGetters(['identity']),
     getComponent() {
       if (this.activeName) {
-        return () => import(`./components/${this.componentNames[this.activeName]}/index`)
+        return () =>
+          import(`./components/${this.componentNames[this.activeName]}/index`)
       }
       return ''
     },

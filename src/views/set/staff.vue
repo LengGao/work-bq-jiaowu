@@ -151,7 +151,8 @@
     <el-dialog
       title="添加员工"
       :visible.sync="dialogVisible"
-      width="783px"
+      width="920px"
+      :close-on-click-modal="false"
       @open="handleOpen"
     >
       <el-form
@@ -179,10 +180,16 @@
         "
             >
               <div class="headPortrait el-icon-plus" @click="addIcon"></div>
-              <!-- <div style="color:#aaa;ling-height:0px!important">
-                <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
-                <p><span> 2. 推荐尺寸200*200px或者1:1</span></p>
-              </div> -->
+              <div class="headImage-title">
+                <div class="headImage">
+                  <p>
+                    1.支持jpg、png、格式；
+                  </p>
+                  <p>
+                    2.推荐尺寸200*200px
+                  </p>
+                </div>
+              </div>
             </div>
             <div v-show="haschoose" class=" imageBox ">
               <i class=" iconjia el-icon-plus" @click="addIcon"></i>
@@ -763,5 +770,23 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.headImage {
+  margin-left: 10px;
+  font-size: 12px;
+  color: #ccc;
+  p {
+    line-height: 20px;
+  }
+}
+.headImage-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 </style>

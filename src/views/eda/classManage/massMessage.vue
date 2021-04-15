@@ -257,6 +257,7 @@
     <!--弹框-->
     <el-dialog
       title="提示"
+      :close-on-click-modal="false"
       :visible.sync="dialogVisible"
       width="70%"
       height="50%"

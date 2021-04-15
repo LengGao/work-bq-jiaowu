@@ -3,20 +3,29 @@
     <section>
       <ul class="left-container">
         <li style="color:#909399">
-          图片分组
+          章节名称
           <i class="el-icon-circle-plus-outline" @click="addVideo"></i>
         </li>
         <li style=" cursor: pointer;" @click="imgSplit()">
-          全部图片({{ list }})
+          全部课时({{ spaceList.all_class_number }})
+        </li>
+        <li style=" cursor: pointer;" @click="imgSplit(0, '')">
+          未分类课时({{ spaceList.nochapter_class_number }})
         </li>
         <li
-          v-for="(item, index) of spaceList.list"
+          v-for="(item, index) of spaceList.data"
           :key="index"
-          style=" cursor: pointer;"
-          @click="imgSplit(item.bucket_id, index)"
+          style=" cursor: pointer;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+          @click="imgSplit(item.video_chapter_id, index)"
           :class="{ activeColor: colorIndex === index }"
+          :title="item.video_chapter_name"
         >
-          {{ item.name }}--({{ item.imageTotal }})
+          <span
+            style="width: 195px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; float: left; cursor: pointer;"
+            >{{ item.video_chapter_name }}--({{
+              item.video_class_number
+            }})</span
+          >
           <i class="el-icon-delete" @click.stop.prevent="sapceDelete(item)"></i>
           <i class="el-icon-edit" @click.stop.prevent="sapceEditor(item)"></i>
         </li>
@@ -29,8 +38,7 @@
             :hideTime="true"
             :hideOtherOption="true"
             :searchType="info"
-            api="getImagesList"
-            data="imgData"
+            api="getvideoclass"
             @getTable="getTableList"
             :bucket_id="bucket_id"
           ></search>
@@ -39,14 +47,14 @@
               type="primary"
               style="margin-left:20px"
               @click="SingleUpload"
-              >上传图片</el-button
+              >添加课时</el-button
             >
           </div>
         </div>
         <div class="userTable" style="margin-top:20px">
           <el-table
             ref="multipleTable"
-            :data="imgData"
+            :data="videoData.data"
             style="width: 100%"
             class="min_table"
             @selection-change="handleSelectionChange"
@@ -57,44 +65,66 @@
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="images_name"
-              label="图片名称"
-              show-overflow-tooltip
-              min-width="70"
-              align="center"
+              type="index"
+              label="课时序号"
+              width="80"
             ></el-table-column>
             <el-table-column
-              prop="width_height"
-              label="尺寸"
-              min-width="210"
+              prop="video_class_name"
+              label="课时名称"
               show-overflow-tooltip
-              align="center"
-            ></el-table-column>
-            <el-table-column
-              prop="size"
-              label="大小"
               min-width="150"
+              align="left"
+            ></el-table-column>
+            <el-table-column
+              prop="video_class_coverurl"
+              label="视频缩略图"
+              min-width="100"
               show-overflow-tooltip
               align="center"
             ></el-table-column>
             <el-table-column
-              prop="create_time"
-              label="上传时间"
-              min-width="150"
+              prop="video_class_duration"
+              label="时长"
+              min-width="90"
               show-overflow-tooltip
               align="center"
             ></el-table-column>
+            <el-table-column label="排序" min-width="100" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <el-col :span="12">
+                  <el-input
+                    v-model="scope.row.video_chapter_sort"
+                    placeholder
+                    size="small"
+                    @blur="scopes(scope.row, scope.row.video_chapter_sort)"
+                  ></el-input>
+                </el-col>
+              </template>
+            </el-table-column>
             <el-table-column
-              label="图片预览"
-              min-width="140"
+              prop="video_class_free"
+              label="是否免费"
+              min-width="80"
               show-overflow-tooltip
+              align="center"
             >
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.video_class_free"
+                  :active-value="2"
+                  :inactive-value="1"
+                  @change="switchStatus(scope.row, scope)"
+                ></el-switch>
+              </template>
+            </el-table-column>
+            <!-- <el-table-column label="图片预览" min-width="140" show-overflow-tooltip>
               <template slot-scope="scope">
                 <div style="width:50px ;height:50px">
                   <img :src="scope.row.url" alt class="school_class_box" />
                 </div>
               </template>
-            </el-table-column>
+            </el-table-column>-->
             <el-table-column
               label="操作"
               fixed="right"
@@ -108,9 +138,6 @@
                   >
                   <el-button type="text" @click="transform(scope.row)"
                     >移动</el-button
-                  >
-                  <el-button type="text" @click="download(scope.row)"
-                    >下载</el-button
                   >
                   <el-button type="text" @click="delbtn(scope.row)"
                     >删除</el-button
@@ -127,20 +154,17 @@
             >批量移动</el-button
           >
           <el-button type="danger" @click="multiDel">批量删除</el-button>
-          <el-button type="primary" @click="multiDownLoad" :loading="downStatus"
-            >批量下载</el-button
-          >
         </div>
         <page
-          :data="total"
-          :pageSize="10"
+          :data="videoData.total"
+          :pageSize="videoData.limit"
           :curpage="page"
           @pageChange="doPageChange"
         />
       </div>
       <main></main>
       <el-dialog
-        title="添加图片分组"
+        title="添加视频章节"
         :visible.sync="dialogVisible"
         width="30%"
         :close-on-click-modal="false"
@@ -149,6 +173,13 @@
           <el-form-item label="分组名称：">
             <el-input v-model="addPicture.name" class="input-width"></el-input>
           </el-form-item>
+          <el-form-item label="章节排序：">
+            <el-input
+              v-model="addPicture.sort"
+              class="input-width"
+              placeholder="数值越大越靠前"
+            ></el-input>
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -156,14 +187,46 @@
         </span>
       </el-dialog>
       <el-dialog
-        title="编辑图片"
+        title="编辑课时"
         :visible.sync="dialogEditor"
         width="30%"
         :close-on-click-modal="false"
       >
-        <el-form label-width="150px">
-          <el-form-item label="图片名称：">
-            <el-input v-model="imgName" class="input-width"></el-input>
+        <el-form :model="createVideo" ref="reasonForm" label-width="150px">
+          <el-form-item label="章节名称：">
+            <el-select
+              v-model="editvideo.video_chapter_id"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="(item, index) in spaceList.data"
+                :key="index"
+                :label="item.video_chapter_name"
+                :value="item.video_chapter_id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="课时名称：">
+            <el-input
+              v-model="editvideo.video_class_name"
+              class="input-width"
+              placeholder="请输入课时名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="课时排序：">
+            <el-input
+              v-model="editvideo.video_class_sort"
+              class="input-width"
+              placeholder="排序数字越小课时越靠前最小值为1"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="视频上传：">
+            <videoUpload
+              ref="mychild"
+              :videoName="editvideo.media_name"
+              editor="ediotr"
+            />
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -172,19 +235,19 @@
         </span>
       </el-dialog>
       <el-dialog
-        title="移动图片"
+        title="移动课时到："
         :visible.sync="dialogTransform"
-        width="30%"
         :close-on-click-modal="false"
+        width="30%"
       >
         <el-form>
-          <el-form-item label="图片分组：">
-            <el-select v-model="value" clearable filterable>
+          <el-form-item label="章节名称：">
+            <el-select v-model="transvideo_chapter_id" clearable filterable>
               <el-option
-                v-for="(item, index) in spaceList.list"
+                v-for="(item, index) in spaceList.data"
                 :key="index"
-                :label="item.name"
-                :value="item.bucket_id"
+                :label="item.video_chapter_name"
+                :value="item.video_chapter_id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -195,28 +258,38 @@
         </span>
       </el-dialog>
       <el-dialog
-        title="上传图片"
+        title="添加课时"
         :visible.sync="dialogUpload"
         width="30%"
         :close-on-click-modal="false"
       >
         <el-form :model="createVideo" ref="reasonForm" label-width="150px">
-          <el-form-item label="图片分组：">
-            <el-select v-model="ruleForm.bucket_id" clearable filterable>
+          <el-form-item label="章节名称：">
+            <el-select v-model="ruleForm.video_chapter_id" clearable filterable>
               <el-option
-                v-for="(item, index) in spaceList.list"
+                v-for="(item, index) in spaceList.data"
                 :key="index"
-                :label="item.name"
-                :value="item.bucket_id"
+                :label="item.video_chapter_name"
+                :value="item.video_chapter_id"
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="图片上传：">
-            <SingleUpload
-              ref="mychild"
-              :ruleForm="ruleForm"
-              @imgSuccess="imgSuccess"
-            />
+          <el-form-item label="课时名称：">
+            <el-input
+              v-model="video_class_name"
+              class="input-width"
+              placeholder="请输入课时名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="课时排序：">
+            <el-input
+              v-model="video_class_sort"
+              class="input-width"
+              placeholder="排序数字越小课时越靠前最小值为1"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="视频上传：">
+            <videoUpload ref="mychild" />
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -225,7 +298,7 @@
         </span>
       </el-dialog>
       <el-dialog
-        title="编辑空间"
+        title="编辑名称"
         :visible.sync="dialogSpace"
         width="30%"
         :close-on-click-modal="false"
@@ -234,6 +307,12 @@
           <el-form-item label="空间名称：">
             <el-input
               v-model="sapceEditors.name"
+              class="input-width"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="空间排序：">
+            <el-input
+              v-model="sapceEditors.sort"
               class="input-width"
             ></el-input>
           </el-form-item>
@@ -264,14 +343,17 @@ const defaultcreateVideo = {
 }
 const defaultAddPicture = {
   name: null,
+  sort: '',
 }
 export default {
   name: 'imgSpace',
+  inject: ['reload'],
   data() {
     return {
       ruleForm: {
-        bucket_id: '',
+        video_chapter_id: '',
       },
+      video_chapter_id: '',
       info: 'info',
       dialogVisible: false,
       dialogEditor: false,
@@ -286,13 +368,14 @@ export default {
       ],
       sapceEditors: {
         name: '',
-        bucket_id: '',
+        video_chapter_id: '',
+        sort: '',
       },
       imgId: [],
       total: 12,
       bucket_id: '',
       page: 1,
-      imgData: [],
+      videoData: [],
       createVideo: Object.assign({}, defaultcreateVideo),
       multipleSelection: [],
       list: '23',
@@ -313,21 +396,62 @@ export default {
       imgName: '',
       imgSingleId: '',
       colorIndex: -1,
-      downStatus: false,
+      video_collection_id: '',
+      video_class_sort: '',
+      video_class_name: '',
+      spaceData: '',
+      editvideo: [],
+      singleImgId: '',
+      video_class_id: '',
+      transFormId: '',
+      transvideo_chapter_id: '',
     }
   },
   created() {
-    this.$api.getBucketList(this, 'spaceList') //左侧列表
-    this.$api.getImagesList(this, 'imgData') //右侧列表
+    this.video_collection_id = this.$route.query.video_collection_id
+    this.$api.getvideochapter(this, 'spaceList') //左侧列表
+    this.$api.getvideoclass(this, 'videoData') //右侧列表
   },
   mounted() {
     console.log(this.spaceList)
   },
   methods: {
+    switchStatus(ab) {
+      console.log(ab)
+      console.log(ab.video_class_free)
+      console.log(ab.video_class_free == 1)
+      // if (ab.video_class_free == 1) {
+      //   this.video_class_free = 2
+      // } else {
+      //   this.video_class_free = 1
+      // }
+      // console.log(this.video_class_free)
+      this.$api.addvideochapterfree(this, ab)
+      // if (ab == 1) {
+      //   this.ruleForm.video_class_free = ab
+      //   this.$api.addvideochapter(this, 'addPicture')
+      // }
+    },
+    //排序
+    scopes(ab, sorts) {
+      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
+      var re = new RegExp(regu)
+      var obj = {}
+      var key = ab.video_chapter_id + ''
+      var value = sorts - 0
+      obj[key] = value
+      if (!re.test(sorts)) {
+        this.$message.error('请输入正确的排序！')
+        return false
+      } else {
+        //对应接口
+        this.$api.videoChapterSort(obj, this)
+      }
+    },
     imgSuccess() {
       this.dialogUpload = false
-      this.$api.getBucketList(this, 'spaceList') //左侧列表
-      this.$api.getImagesList(this, 'imgData') //右侧列表
+      this.$api.getvideochapter(this, 'spaceList') //左侧列表
+      this.$api.getImagesList(this, 'videoData') //右侧列表
     },
     currOperatorChange(val) {
       this.$forceUpdate()
@@ -348,21 +472,23 @@ export default {
     },
     // 获取数据
     getTableList(state, val) {
+      console.log(val)
       if (state == 'page') {
         this.page = val
       } else if (state == 'data') {
-        this.imgData = val
+        console.log(val)
+        this.videoData = val
       }
     },
     sapceDelete(data) {
       console.log(data)
-      this.$confirm('确定要删除当前分类吗?', '提示', {
+      this.$confirm('删除章节后章节包含的课时也会被删除，请谨慎操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
         .then(() => {
-          this.$api.deleteBucket(this, data.bucket_id)
+          this.$api.deletevideochapter(this, data.video_chapter_id)
         })
         .catch(() => {
           this.$message({
@@ -374,28 +500,23 @@ export default {
     sapceEditor(item) {
       console.log(item)
       this.sapceEditors.name = ''
-      this.sapceEditors.bucket_id = ''
-      this.sapceEditors.name = item.name
-      this.sapceEditors.bucket_id = item.bucket_id
+      this.sapceEditors.video_chapter_id = ''
+      this.sapceEditor.sort = ''
+      this.sapceEditors.name = item.video_chapter_name
+      this.sapceEditors.sort = item.video_chapter_sort
+      this.sapceEditors.video_chapter_id = item.video_chapter_id
       this.dialogSpace = true
-    },
-    download(item) {
-      console.log(item)
-
-      this.imgArr = ''
-      this.imgArr += item.image_id
-      this.$api.downloadImages(this, 'imgArr')
     },
     transformConfirm() {
       console.log(this.mutiSelectTrans)
+      this.multiTransformConfirm.length = 0
       if (this.mutiSelectTrans == 1) {
         for (let item of this.multiTransform) {
-          this.multiTransformConfirm.push(item.image_id)
+          this.multiTransformConfirm.push(item.video_class_id)
         }
-        this.$api.mvImages(this, 'multiTransformConfirm')
+        this.$api.mutilbatchmovevideoclass(this, 'multiTransformConfirm')
       } else {
-        console.log(this.imgId)
-        this.$api.mvImages(this, 'imgId')
+        this.$api.batchmovevideoclass(this)
       }
     },
     editor(data) {
@@ -403,55 +524,38 @@ export default {
       this.imgName = data.images_name
       this.imgSingleId = data.image_id
       this.dialogEditor = true
+      this.spaceData = data
+      this.$api.editvideoclass(this)
     },
     SingleUpload() {
       this.dialogUpload = true
     },
     EditorConfirm() {
-      if (this.imgName == '') {
-        self.$message({
-          type: 'error',
-          message: '名称不可为空!',
-        })
-        return
-      }
-      this.$api.updateImage(this)
-    },
-    multiDownLoad() {
-      if (this.multipleSelection.length == 0) {
-        this.$message({
-          message: '请先勾选操作选项！',
-          type: 'warning',
-        })
-        return
-      }
-      let imgId = ''
-      for (let item of this.multipleSelection) {
-        imgId += item.image_id + ','
-      }
-      // this.downStatus = true
-      this.imgId = imgId
-      this.$api.downloadImages(this, 'imgId')
+      // this.$api.editVideoSuccess(this);
+      this.$refs.mychild.submitUpload('嘿嘿嘿')
     },
     addVideo() {
       this.dialogVisible = true
     },
     handleConfirm() {
-      this.$api.insertBucket(this, 'addPicture')
+      this.$api.addvideochapter(this, 'addPicture')
     },
     doPageChange(page) {
       this.page = page
-      this.$api.getImagesList(this, 'imgData')
+      this.$api.getvideoclass(this, 'videoData') //右侧列表
+      // this.$api.getImagesList(this, 'videoData')
     },
     handleSelectionChange(val) {
+      console.log(val)
       this.multipleSelection = val
       this.multiTransform = val
       this.multiDels = val
       console.log(this.multipleSelection)
     },
     transform(data) {
-      this.imgId.length = 0
-      this.imgId.push(data.image_id)
+      console.log(data)
+      this.transFormId = ''
+      this.transFormId = data.video_class_id
       this.dialogTransform = true
     },
     multiDel() {
@@ -470,12 +574,16 @@ export default {
         .then(() => {
           this.imgId.length = 0
           for (let item of this.multiDels) {
-            this.imgId.push(item.image_id)
+            this.imgId.push(item.video_class_id)
           }
-
-          this.$api.deleteImages(this, 'imgId')
+          this.$api.multideleteVideo(this, 'imgId')
         })
-        .catch(() => {})
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
     multiTransforms() {
       if (this.multiTransform.length == 0) {
@@ -485,34 +593,42 @@ export default {
         })
         return
       }
+      this.transvideo_chapter_id = ''
       this.dialogTransform = true
       this.mutiSelectTrans = 1
     },
     delbtn(data) {
       console.log(data)
-      this.$confirm('确定要删除当前图片吗?', '提示', {
+      this.$confirm('确定要删除当前课时吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
         .then(() => {
-          ;(this.imgId.length = 0), this.imgId.push(data.image_id)
-          this.$api.deleteImages(this, 'imgId')
+          // (this.imgId.length = 0), this.imgId.push(data.video_class_id);
+          this.singleImgId = data.video_class_id
+          this.$api.deletevideoclass(this)
         })
-        .catch(() => {})
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
     uploadConfirm() {
       this.$refs.mychild.submitUpload('嘿嘿嘿')
     },
     imgSplit(id, index) {
+      console.log(id)
       this.colorIndex = index
-      this.bucket_id = ''
-      this.bucket_id = id
-      this.$api.getImagesList(this, 'imgData')
+      this.video_chapter_id = ''
+      this.video_chapter_id = id
+      this.$api.getvideoclass(this, 'videoData') //右侧列表
     },
     spaceConfirm(id) {
       console.log(this.sapceEditors)
-      this.$api.updateBucket(this, 'sapceEditors')
+      this.$api.editvideochapter(this, 'sapceEditors')
     },
   },
 }
@@ -558,8 +674,9 @@ img {
 .home {
   display: flex;
   background: #ffffff;
+  // margin: 23px 0px 0px 23px;
+  // padding: 23px 0px 23px 23px;
 
-  padding: 30px;
   font-size: 14px;
 }
 .left-container {
@@ -582,10 +699,8 @@ img {
 }
 
 .right-container {
-  display: flex;
-  flex-direction: column;
   margin-left: 23px;
-  flex: 1;
+  width: 100%;
   margin-right: 35px;
   overflow: hidden;
 }

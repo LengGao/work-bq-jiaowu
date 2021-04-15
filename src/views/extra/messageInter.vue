@@ -144,7 +144,12 @@
           />
         </div>
       </div>
-      <el-dialog title="添加课程分类" :visible.sync="dialogVisible" width="30%">
+      <el-dialog
+        title="添加课程分类"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form label-width="100px">
           <el-form-item label="分类名称：">
             <el-input
@@ -284,7 +289,12 @@
           />
         </div>
       </div>
-      <el-dialog title="添加课程分类" :visible.sync="dialogVisible" width="30%">
+      <el-dialog
+        title="添加课程分类"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form label-width="100px">
           <el-form-item label="分类名称：">
             <el-input
@@ -439,7 +449,12 @@
           </div>
         </div>
       </div>
-      <el-dialog title="添加课程分类" :visible.sync="dialogVisible" width="30%">
+      <el-dialog
+        title="添加课程分类"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :close-on-click-modal="false"
+      >
         <el-form label-width="100px">
           <el-form-item label="分类名称：">
             <el-input

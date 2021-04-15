@@ -10,7 +10,11 @@
     <div v-if="activeName !== '5'">
       <el-tabs v-model="activeNames" @tab-click="handleClick">
         <el-tab-pane name="1">
-          <span slot="label">未读<el-badge v-if="activeNames == 1" :value="noreadcount"></el-badge>
+          <span slot="label"
+            >未读<el-badge
+              v-if="activeNames == 1"
+              :value="noreadcount"
+            ></el-badge>
           </span>
         </el-tab-pane>
         <el-tab-pane label="已读" name="2"> </el-tab-pane>
@@ -20,14 +24,29 @@
       <li class="msg-item" v-for="(item, index) in listdata" :key="index">
         <!-- <span class="msg-icon"></span> -->
         <span class="msg-item-info" :title="item.title" @click="msgclick(item)">
-          {{ item.title }}</span>
-        <span class="msg-item-date" style="margin-left: auto;">{{ item.create_time }}</span>
+          {{ item.title }}</span
+        >
+        <span class="msg-item-date" style="margin-left: auto;">{{
+          item.create_time
+        }}</span>
       </li>
     </ul>
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[8, 16, 24]" layout="total, prev, pager, next, jumper" :total="total">
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageNum"
+      :page-sizes="[8, 16, 24]"
+      layout="total, prev, pager, next, jumper"
+      :total="total"
+    >
     </el-pagination>
     <!-- 弹窗 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="35%"
+      :close-on-click-modal="false"
+    >
       <div :model="ruleForm" :rules="rules" ref="ruleForm">
         <h3 class="detailtitle">
           {{ ruleForm.title }}
@@ -42,7 +61,13 @@
       </div>
     </el-dialog>
     <!-- 弹窗 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" v-if="activeName !== '5'">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="35%"
+      v-if="activeName !== '5'"
+      :close-on-click-modal="false"
+    >
       <div :model="ruleForm" :rules="rules" ref="ruleForm">
         <h3 class="detailtitle">
           {{ ruleForm.title }}
@@ -56,14 +81,22 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="Markunread" v-if="activeNames == 2">标为未读</el-button>
-        <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
+        <el-button @click="Markunread" v-if="activeNames == 2"
+          >标为未读</el-button
+        >
+        <el-button type="primary" @click="dialogVisible = false"
+          >知道了</el-button
+        >
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getSystemAnnouncementList, getAnnouncementInfo, setUnread } from '@/api/workbench'
+import {
+  getSystemAnnouncementList,
+  getAnnouncementInfo,
+  setUnread,
+} from '@/api/workbench'
 import { followRoute } from '@/utils/index'
 export default {
   name: 'Msg',

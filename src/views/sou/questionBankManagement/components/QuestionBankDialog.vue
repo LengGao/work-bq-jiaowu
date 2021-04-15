@@ -1,31 +1,83 @@
 <template>
   <!--题库弹框-->
-  <el-dialog :title="title" :visible.sync="visible" width="830px" class="question-bank-dialog" @open="handleOpen" :close-on-click-modal="false" @closed="resetForm('formData')">
-    <el-form label-width="100px" :model="formData" :rules="rules" ref="formData" v-loading="detaiLoading" class="question-bank-form">
+  <el-dialog
+    :title="title"
+    :visible.sync="visible"
+    width="830px"
+    class="question-bank-dialog"
+    @open="handleOpen"
+    :close-on-click-modal="false"
+    @closed="resetForm('formData')"
+  >
+    <el-form
+      label-width="100px"
+      :model="formData"
+      :rules="rules"
+      ref="formData"
+      v-loading="detaiLoading"
+      class="question-bank-form"
+    >
       <el-form-item label="所属分类" prop="category_id">
-        <el-cascader class="w-100" filterable clearable :props="{ checkStrictly: true }" v-model="formData.category_id" placeholder="请选择所属分类" :options="typeOptions">
+        <el-cascader
+          class="w-100"
+          filterable
+          clearable
+          :props="{ checkStrictly: true }"
+          v-model="formData.category_id"
+          placeholder="请选择所属分类"
+          :options="typeOptions"
+        >
         </el-cascader>
       </el-form-item>
       <el-form-item label="题库名称" prop="title">
-        <el-input class="w-100" v-model="formData.title" placeholder="请输入题库名称" type="text" maxlength="20" show-word-limit />
+        <el-input
+          class="w-100"
+          v-model="formData.title"
+          placeholder="请输入题库名称"
+          type="text"
+          maxlength="20"
+          show-word-limit
+        />
       </el-form-item>
       <el-form-item label="题库价格">
-        <el-input class="w-100" v-model="formData.price" placeholder="请输入题库价格" type="number" maxlength="20" />
+        <el-input
+          class="w-100"
+          v-model="formData.price"
+          placeholder="请输入题库价格"
+          type="number"
+          maxlength="20"
+        />
       </el-form-item>
       <el-form-item label="题库排序">
-        <el-input class="w-100" v-model="formData.sort" placeholder="排序数字越大题库越靠前" type="number" maxlength="20" />
+        <el-input
+          class="w-100"
+          v-model="formData.sort"
+          placeholder="排序数字越大题库越靠前"
+          type="number"
+          maxlength="20"
+        />
       </el-form-item>
       <el-form-item label="题库封面">
         <UploadImg width="280" height="130" v-model="formData.cover" />
       </el-form-item>
       <el-form-item label="题库介绍" class="edit">
-        <quill-editor v-model="formData.remark" :options="editorOption" ref="myQuillEditor" style="height: 200px">
+        <quill-editor
+          v-model="formData.remark"
+          :options="editorOption"
+          ref="myQuillEditor"
+          style="height: 200px"
+        >
         </quill-editor>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
-      <el-button type="primary" :loading="addLoading" @click="submitForm('formData')">确 定</el-button>
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('formData')"
+        >确 定</el-button
+      >
     </span>
   </el-dialog>
 </template>
@@ -35,7 +87,11 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
-import { updateQuestionBank, addQuestionBank, questionBankDetail } from '@/api/sou'
+import {
+  updateQuestionBank,
+  addQuestionBank,
+  questionBankDetail,
+} from '@/api/sou'
 import UploadImg from '@/components/ImgUpload/index.vue'
 export default {
   name: 'QuestionBankDialog',
@@ -101,7 +157,7 @@ export default {
               ['clean'],
             ],
             handlers: {
-              image: function (value) {
+              image: function(value) {
                 if (value) {
                   // 触发input框选择图片文件
                   document.querySelector('.avatar-uploader input').click()

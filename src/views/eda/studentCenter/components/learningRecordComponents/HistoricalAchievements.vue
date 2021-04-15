@@ -7,6 +7,7 @@
     top="30px"
     @open="handleOpen"
     @closed="hanldeCancel"
+    :close-on-click-modal="false"
     class="historical-achievements"
   >
     <div class="info">
@@ -50,9 +51,9 @@
 </template>
 
 <script>
-import { getHistoryGradeList } from "@/api/eda";
+import { getHistoryGradeList } from '@/api/eda'
 export default {
-  name: "HistoricalAchievements",
+  name: 'HistoricalAchievements',
   props: {
     value: {
       type: Boolean,
@@ -60,11 +61,11 @@ export default {
     },
     uid: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
     sid: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
   },
   data() {
@@ -77,28 +78,28 @@ export default {
       listLoading: false,
       examMap: {
         1: {
-          text: "合格",
-          color: "#43D152",
+          text: '合格',
+          color: '#43D152',
         },
         2: {
-          text: "不合格",
-          color: "#FD6500",
+          text: '不合格',
+          color: '#FD6500',
         },
         3: {
-          text: "已过期",
-          color: "#909399",
+          text: '已过期',
+          color: '#909399',
         },
       },
-    };
+    }
   },
   watch: {
     value(val) {
-      this.visible = val;
+      this.visible = val
     },
   },
   methods: {
     handleOpen() {
-      this.getHistoryGradeList();
+      this.getHistoryGradeList()
     },
 
     //仓库教材
@@ -106,22 +107,22 @@ export default {
       const data = {
         uid: this.uid,
         sid: this.sid,
-      };
-      this.listLoading = true;
+      }
+      this.listLoading = true
       const res = await getHistoryGradeList(data).catch(() => {
-        this.listLoading = false;
-      });
-      this.listLoading = false;
+        this.listLoading = false
+      })
+      this.listLoading = false
       if (res.code === 0) {
-        this.historyData = res.data;
+        this.historyData = res.data
       }
     },
 
     hanldeCancel() {
-      this.$emit("input", false);
+      this.$emit('input', false)
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

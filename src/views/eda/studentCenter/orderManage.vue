@@ -180,6 +180,7 @@
         <el-dialog
           title="批量导入"
           :visible.sync="importVisible"
+          :close-on-click-modal="false"
           width="50%"
           style="min-width:1070px"
         >

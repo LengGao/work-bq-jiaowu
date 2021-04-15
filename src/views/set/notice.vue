@@ -5,43 +5,107 @@
     </div>
     <section class="mainwrap">
       <div class="client_head">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <el-button type="primary" @click="addClassiFion">新建通知</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
-          <el-table-column prop="id" label="序号" min-width="80" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="title" label="通知标题" min-width="200" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column label="通知内容" prop="content" min-width="180" show-overflow-tooltip>
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%;"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          class="min_table"
+        >
+          <el-table-column
+            prop="id"
+            label="序号"
+            min-width="80"
+            column-key="role_id"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="title"
+            label="通知标题"
+            min-width="200"
+            column-key="role_id"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            label="通知内容"
+            prop="content"
+            min-width="180"
+            show-overflow-tooltip
+          >
             <template slot-scope="scope">
               <span>
-                {{scope.row.content | removeTag}}
+                {{ scope.row.content | removeTag }}
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="receiver_name" label="通知对象" min-width="150" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="read_count" label="已读人数" min-width="80" show-overflow-tooltip>
+          <el-table-column
+            prop="receiver_name"
+            label="通知对象"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="read_count"
+            label="已读人数"
+            min-width="80"
+            show-overflow-tooltip
+          >
             <template slot-scope="scope">
-              <el-button type="text" @click="readDetail(scope.row)"> {{scope.row.read_count}}</el-button>
+              <el-button type="text" @click="readDetail(scope.row)">
+                {{ scope.row.read_count }}</el-button
+              >
             </template>
           </el-table-column>
-          <el-table-column label="是否推送" min-width="120" show-overflow-tooltip>
-            <template slot-scope="{row}">
-              <div v-if="row.sent==1" :class="row.sent==1?'wordcolor':''">
-                {{noticeMap[row.sent] }}
+          <el-table-column
+            label="是否推送"
+            min-width="120"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <div
+                v-if="row.sent == 1"
+                :class="row.sent == 1 ? 'wordcolor' : ''"
+              >
+                {{ noticeMap[row.sent] }}
               </div>
-              <div v-if="row.sent==0" @click="noticeDetail(row)">
-                <el-button type="text"> {{noticeMap[row.sent] }}</el-button>
+              <div v-if="row.sent == 0" @click="noticeDetail(row)">
+                <el-button type="text"> {{ noticeMap[row.sent] }}</el-button>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="editNotice(scope.row)" :class="scope.row.sent==1?'details':''">编辑</el-button>
-                <el-button type="text" @click="handleDelete(scope.row)" :class="scope.row.sent==1?'details':''">删除</el-button>
-                <el-button type="text" :class="scope.row.sent==0?'details':''" @click="viewdetails(scope.row)">查看详情</el-button>
+                <el-button
+                  type="text"
+                  @click="editNotice(scope.row)"
+                  :class="scope.row.sent == 1 ? 'details' : ''"
+                  >编辑</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="handleDelete(scope.row)"
+                  :class="scope.row.sent == 1 ? 'details' : ''"
+                  >删除</el-button
+                >
+                <el-button
+                  type="text"
+                  :class="scope.row.sent == 0 ? 'details' : ''"
+                  @click="viewdetails(scope.row)"
+                  >查看详情</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -49,22 +113,56 @@
           </el-pagination>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
       <!-- 弹窗 -->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="45%">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible"
+        width="45%"
+        :close-on-click-modal="false"
+      >
         <div>
-          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="80px"
+            class="demo-ruleForm"
+          >
             <el-form-item label="通知标题" prop="title">
-              <el-input v-model="ruleForm.title" placeholder="请输入通知标题" style="width:300px"></el-input>
+              <el-input
+                v-model="ruleForm.title"
+                placeholder="请输入通知标题"
+                style="width:300px"
+              ></el-input>
             </el-form-item>
-            <quill-editor ref="myTextEditor" v-model="ruleForm.content" prop="content" :options="editorOption" style="display:block;height:280px;margin-bottom:80px;margin-top:20px">
+            <quill-editor
+              ref="myTextEditor"
+              v-model="ruleForm.content"
+              prop="content"
+              :options="editorOption"
+              style="display:block;height:280px;margin-bottom:80px;margin-top:20px"
+            >
             </quill-editor>
             <div class="abstract">
               <el-form-item label="通知对象" prop="receiver">
-                <el-select v-model="ruleForm.receiver" multiple placeholder="请选择账号身份（可多选）">
-                  <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+                <el-select
+                  v-model="ruleForm.receiver"
+                  multiple
+                  placeholder="请选择账号身份（可多选）"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -82,19 +180,26 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
       <!-- 弹窗 -->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible2" width="45%">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible2"
+        width="45%"
+        :close-on-click-modal="false"
+      >
         <div :model="ruleForm" :rules="rules" ref="ruleForm">
           <h3 class="detailtitle">
-            {{ruleForm.title}}
+            {{ ruleForm.title }}
           </h3>
           <div class="notictitle">
-            <p>发布时间：{{ruleForm.update_time}}</p>
-            <p>发布人：{{ruleForm.staff_name}}</p>
-            <p>已读人数：{{ruleForm.read_count}}</p>
+            <p>发布时间：{{ ruleForm.update_time }}</p>
+            <p>发布人：{{ ruleForm.staff_name }}</p>
+            <p>已读人数：{{ ruleForm.read_count }}</p>
           </div>
           <div class="noticontent">
             <div v-html="ruleForm.content"></div>
@@ -102,11 +207,18 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible2 = false">确 定</el-button>
+          <el-button type="primary" @click="dialogVisible2 = false"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
       <!-- 弹窗 -->
-      <el-dialog :title="dialogTitle" :visible.sync="dialogVisible3" width="25%">
+      <el-dialog
+        :title="dialogTitle"
+        :visible.sync="dialogVisible3"
+        width="25%"
+        :close-on-click-modal="false"
+      >
         <span style="font-size:20px;">是否进行通知消息推送？</span>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible3 = false">取 消</el-button>
@@ -182,7 +294,9 @@ export default {
       },
       rules: {
         title: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
-        abstract: [{ required: true, message: '请输入公告摘要', trigger: 'blur' }],
+        abstract: [
+          { required: true, message: '请输入公告摘要', trigger: 'blur' },
+        ],
         type: [
           {
             type: 'array',

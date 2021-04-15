@@ -94,7 +94,12 @@
       </div>
     </div>
     <!--弹框部分-->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="576px">
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      width="576px"
+      :close-on-click-modal="false"
+    >
       <div class="fieldbox">
         <el-form
           :model="ruleForm"

@@ -37,6 +37,7 @@
           <el-dialog
           :title="classTitle"
           :visible.sync="dialogVisible"
+           :close-on-click-modal="false"
           width="43%"
           >
           <el-form
@@ -182,6 +183,7 @@
           <el-dialog
           :title="ruleTitle"
           :visible.sync="guizeVisible"
+           :close-on-click-modal="false"
           width="46%"
           >
           <el-form
