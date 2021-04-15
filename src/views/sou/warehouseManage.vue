@@ -150,7 +150,6 @@ export default {
       this.dialogTitle = '添加仓库'
       this.addDialog = true
     },
-
     handleSearch(data) {
       this.pageNum = 1
       this.searchData = data
