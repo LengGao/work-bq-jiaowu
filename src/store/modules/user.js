@@ -8,7 +8,7 @@ import {
 import { getIdentity } from "@/api/workbench.js";
 import { getUnreadCount, getMenu, logout, login } from "@/api/login";
 import defaultRouter, { resetRouter, createUserRouter } from '@/router'
-const userInfoJson = sessionStorage.getItem('userInfo')
+const userInfoJson = localStorage.getItem('userInfo')
 const user = {
   state: {
     token: getToken(),
@@ -91,7 +91,7 @@ const user = {
         const userData = data?.info || {}
         setToken(tokenStr)
         setStaff_id(data?.info?.staff_id)
-        sessionStorage.setItem('userInfo', JSON.stringify(userData))
+        localStorage.setItem('userInfo', JSON.stringify(userData))
         commit('SET_USER_INFO', userData)
         commit('SET_TOKEN', tokenStr)
         return Promise.resolve()
@@ -108,7 +108,8 @@ const user = {
         commit('SET_TOKEN', '')
         commit('SET_USER_ROUTERS', [])
         commit('SET_MENUS', [])
-        sessionStorage.clear()
+
+        localStorage.clear()
         return Promise.resolve(res)
       }
     },
@@ -125,7 +126,7 @@ const user = {
         commit('SET_USER_ROUTERS', [])
         commit('SET_MENUS', [])
         removeToken()
-        sessionStorage.clear()
+        localStorage.clear()
         resolve()
       })
     },
