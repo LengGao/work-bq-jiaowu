@@ -31,7 +31,12 @@
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         :load="loadTableChildren"
       >
-        <el-table-column width="50" type="selection"> </el-table-column>
+        <el-table-column
+          width="50"
+          type="selection"
+          :selectable="formatSelectable"
+        >
+        </el-table-column>
         <el-table-column
           prop="name"
           label="章节名称"
@@ -46,12 +51,15 @@
         >
           <template slot-scope="{ row }">
             <div class="video-cover" v-if="row.coverurl">
-              <img :src="row.coverurl" alt="" />
+              <img
+                @click="handlePreview(row.coverurl)"
+                :src="row.coverurl"
+                alt=""
+              />
             </div>
             <span v-else>--</span>
           </template>
         </el-table-column>
-
         <el-table-column
           prop="duration"
           label="时长"
@@ -59,8 +67,8 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span v-if="row.coverurl">
-              {{ row.duration }}
+            <span v-if="row.duration">
+              {{ row.duration | filterDuration }}
             </span>
             <span v-else>--</span>
           </template>
@@ -128,6 +136,7 @@
       :id="classHourId"
       @on-success="getvideochapterList"
     />
+    <PreviewImg ref="view" />
   </div>
 </template>
 
@@ -142,7 +151,7 @@ import {
 import ChapterDIalog from "./chapterDIalog";
 import ClassHourDialog from "./classHourDialog";
 export default {
-  name: "Subject",
+  name: "chapterVideo",
   components: {
     ClassHourDialog,
     ChapterDIalog,
@@ -181,8 +190,12 @@ export default {
   },
 
   methods: {
-    linkTo(id) {
-      this.$router.push({ name: "apply", query: { id } });
+    // 只能选择课时
+    formatSelectable(row) {
+      return !row.hasChildren;
+    },
+    handlePreview(src) {
+      this.$refs.view.show(src);
     },
     //修章节试看状态
     async editvideoclass(row) {

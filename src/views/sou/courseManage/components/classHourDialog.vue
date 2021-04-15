@@ -206,7 +206,7 @@ export default {
         this.formData[k] = "";
       }
       this.$refs[formName].resetFields();
-      this.selection = [];
+      this.defaultFiles = [];
       this.hanldeCancel();
     },
     hanldeCancel() {

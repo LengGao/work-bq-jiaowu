@@ -28,11 +28,6 @@ export default {
       type: String,
       default: "",
     },
-
-    autpUpload: {
-      type: Boolean,
-      default: true,
-    },
     onSuccess: {
       type: Function,
       default: () => {},
@@ -77,21 +72,27 @@ export default {
       let input = document.createElement("input");
       input.value = "选择文件";
       input.type = "file";
+      input.accept = "video/*";
       input.onchange = (event) => {
         let file = event.target.files[0];
-
-        if (this.autpUpload) {
-          const paramsJson = '{"Vod":{}}';
-          this.aliyunUpload.addFile(file, null, null, null, paramsJson);
-          this.upload();
-        }
+        this.beforeUpload(file);
       };
       input.click();
+    },
+    beforeUpload(file) {
+      if (file.type.indexOf("video") === -1) {
+        this.$message.error("请上传视频");
+        return;
+      }
+      const paramsJson = '{"Vod":{}}';
+      this.aliyunUpload.addFile(file, null, null, null, paramsJson);
+      this.upload();
     },
     upload() {
       console.log("start");
       this.aliyunUpload.startUpload();
     },
+    //获取上传凭证
     async updatecreate(uploadInfo) {
       const file = uploadInfo.file;
       const file_name = file.name;
@@ -109,8 +110,10 @@ export default {
           data.UploadAddress,
           data.VideoId
         );
+        return data.UploadAuth;
       }
     },
+    // 刷新上传凭证
     async refreshuploadvideo(videoId) {
       const data = {
         videoId,
@@ -124,9 +127,9 @@ export default {
           data.UploadAddress,
           data.VideoId
         );
-        // this.aliyunUpload.resumeUploadWithAuth(res.UploadAuth);
       }
     },
+    //初始化
     initAliYun() {
       this.aliyunUpload = new AliyunUpload.Vod({
         //阿里账号ID，必须有值
@@ -145,10 +148,8 @@ export default {
         onUploadstarted: async (uploadInfo) => {
           console.log(!uploadInfo.videoId);
           if (!uploadInfo.videoId) {
-            console.log(111111111);
             this.updatecreate(uploadInfo);
           } else {
-            console.log(22222222);
             this.refreshuploadvideo(uploadInfo.videoId);
           }
         },
@@ -176,7 +177,10 @@ export default {
           }, 1000);
         },
         //上传凭证或STS token超时
-        onUploadTokenExpired: function (uploadInfo) {},
+        onUploadTokenExpired: (uploadInfo) => {
+          const uploadAuth = this.updatecreate();
+          this.aliyunUpload.resumeUploadWithAuth(uploadAuth);
+        },
         //全部文件上传结束
         onUploadEnd: (uploadInfo) => {},
       });
