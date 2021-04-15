@@ -97,7 +97,6 @@ export default {
   width: 150px;
   margin: 30px 22px;
 }
-
 .el-button--primary {
   background-color: #1890ff !important ;
   width: 170px !important;
