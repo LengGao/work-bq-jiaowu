@@ -123,18 +123,19 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="所属角色" prop="role_ids">
-            <el-select multiple v-model="ruleForm.role_ids" placeholder="请输入所属角色" class="common-width">
-              <el-option v-for="item in roleData" :key="item.role_id" :label="item.role_name" :value="item.role_id">
-              </el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="账号身份" prop="identity">
             <el-select v-model="ruleForm.identity" placeholder="请输入账号权限" class="common-width">
               <el-option v-for="item in IdentityData" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="所属角色" prop="role_ids">
+            <el-select multiple v-model="ruleForm.role_ids" placeholder="请输入所属角色" class="common-width">
+              <el-option v-for="item in roleData" :key="item.role_id" :label="item.role_name" :value="item.role_id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -260,8 +261,11 @@ export default {
         { id: 6, name: '岗顶-技术部' },
       ],
       rules: {
-        surname: [{ required: true, message: '请填写学生姓名', trigger: 'blur' }],
+        staff_name: [{ required: true, message: '请输入员工姓名', trigger: 'blur' }],
         account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入登录密码', trigger: 'blur' }],
+        institution_id: [{ required: true, message: '请输入所选机构', trigger: 'blur' }],
+        identity: [{ required: true, message: '请输入账号权限', trigger: 'blur' }],
         // mail: [{ validator: validMail, trigger: 'blur', required: true }],
         // mobile_num: [
         //   { required: true, message: '请输入手机号码', trigger: 'blur' },
