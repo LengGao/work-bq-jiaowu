@@ -182,16 +182,16 @@ import {
   updateCategory,
   deleteCategory,
   updateCategorySort,
-} from '@/api/sou'
-import SearchList from '@/components/SearchList/index'
+} from "@/api/sou";
+import SearchList from "@/components/SearchList/index";
 export default {
   data() {
     return {
-      row: '',
+      row: "",
       optionProps: {
-        label: 'category_name',
-        value: 'category_id',
-        children: 'son',
+        label: "category_name",
+        value: "category_id",
+        children: "son",
         checkStrictly: true,
       },
       pageNum: [],
@@ -200,198 +200,198 @@ export default {
       //搜索数据
       searchData: {
         category_id: [],
-        keyboard: '',
+        keyword: "",
       },
       listData: [],
       selectData: [],
       schoolData: [],
-      dialogTitle: '',
+      dialogTitle: "",
       datas: {},
       data: [],
-      url: '',
+      url: "",
       pictureVisible: false,
       page: 1,
       dialogVisible: false,
-      keyboard: '',
-      icon: '',
+      keyword: "",
+      icon: "",
       // 搜索框
       searchOptions: [
         {
-          key: 'keyboard',
+          key: "keyword",
           attrs: {
-            placeholder: '分类名称',
+            placeholder: "分类名称",
             clearable: true,
           },
         },
       ],
       ruleForm: {
-        category_name: '',
-        pid: '',
-        sort: '',
-        index_category_name: '',
-        describe: '',
-        icon: '',
+        category_name: "",
+        pid: "",
+        sort: "",
+        index_category_name: "",
+        describe: "",
+        icon: "",
       },
       rules: {
         index_category_name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
+          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
         ],
       },
-    }
+    };
   },
   created() {
-    this.getCateList()
-    this.getCategoryList()
+    this.getCateList();
+    this.getCategoryList();
   },
   methods: {
     checkDepart(ab) {
-      console.log(ab)
-      let end = ab[ab.length - 1]
-      console.log(end)
+      console.log(ab);
+      let end = ab[ab.length - 1];
+      console.log(end);
       // this.ruleForm.parent_id = end
     },
     clearUrl() {
       // this.url = ''
       // this.haschoose = false
-      this.pictureVisible = false
+      this.pictureVisible = false;
     },
     closeImg(radioUrl) {
       // console.log(radioUrl + '我')
-      this.pictureVisible = false
+      this.pictureVisible = false;
       if (radioUrl != undefined) {
-        this.haschoose = true
-        this.ruleForm.icon = radioUrl
+        this.haschoose = true;
+        this.ruleForm.icon = radioUrl;
       } else {
-        this.ruleForm.icon = ''
-        this.haschoose = false
+        this.ruleForm.icon = "";
+        this.haschoose = false;
       }
     },
     addIcon() {
-      this.pictureVisible = true
+      this.pictureVisible = true;
     },
     //搜索功能
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.getCategoryList()
+      this.pageNum = 1;
+      this.searchData = data;
+      this.getCategoryList();
     },
     doPageChange(page) {
-      this.page = page
-      this.getCategoryList()
+      this.page = page;
+      this.getCategoryList();
     },
     // 获取数据
     getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+      console.log(state, val);
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.schoolData = val;
       }
     },
     topayment(ab) {
-      this.dialogTitle = '编辑首页分类'
-      this.haschoose = true
+      this.dialogTitle = "编辑首页分类";
+      this.haschoose = true;
       // this.index_category_id = zx.index_category_id
       // this.$api.getCategoryList(this, this.index_category_id)
-      this.ruleForm = ab
-      this.icon = ab.icon
-      console.log(ab)
-      this.dialogVisible = true
-      this.category_name = ab.category_name
-      this.sort = ab.sort
+      this.ruleForm = ab;
+      this.icon = ab.icon;
+      console.log(ab);
+      this.dialogVisible = true;
+      this.category_name = ab.category_name;
+      this.sort = ab.sort;
       // this.pid = ab.pid.pop()
-      this.describe = ab.describe
+      this.describe = ab.describe;
     },
     scopes(category_id, sorts) {
-      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      var re = new RegExp(regu)
+      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/;
+      var re = new RegExp(regu);
       if (!re.test(sorts)) {
-        this.$message.error('请输入正确的排序！')
-        return false
+        this.$message.error("请输入正确的排序！");
+        return false;
       } else {
-        this.updateCategorySort(category_id, sorts)
+        this.updateCategorySort(category_id, sorts);
         // this.$api.changeUpdateSort(this, category_id, sorts)
         // this.getCategoryList()
       }
     },
     delbtn(row) {
-      this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("此操作将永久删除该分类, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.deleteCategory(row.category_id)
+          this.deleteCategory(row.category_id);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     addClassiFion() {
-      this.dialogTitle = '添加分类'
+      this.dialogTitle = "添加分类";
       this.ruleForm = {
-        icon: '',
-        pid: '',
-        cate_id: '',
-        category_name: '',
-        sort: '',
-        describe: '',
-      }
-      this.haschoose = false
-      this.dialogVisible = true
+        icon: "",
+        pid: "",
+        cate_id: "",
+        category_name: "",
+        sort: "",
+        describe: "",
+      };
+      this.haschoose = false;
+      this.dialogVisible = true;
     },
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
-        console.log(res.data)
+        console.log(res.data);
         let topMenu = {
           category_id: 0,
-          category_name: '顶级分类',
+          category_name: "顶级分类",
           pid: 0,
           son: [],
-        }
-        res.data.unshift(topMenu)
-        this.cloneData(res.data, this.selectData)
-        this.deepDisabled(this.selectData, false)
+        };
+        res.data.unshift(topMenu);
+        this.cloneData(res.data, this.selectData);
+        this.deepDisabled(this.selectData, false);
       }
     },
     deepDisabled(data, disabled) {
       data.forEach((item, index) => {
-        item.disabled = disabled
+        item.disabled = disabled;
         if (item.children && item.children.length) {
-          this.deepDisabled(item.children, true)
+          this.deepDisabled(item.children, true);
         }
-      })
+      });
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
     //分类列表接口
     async getCategoryList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-      }
-      const res = await getCategoryList(data)
-      this.listLoading = false
-      this.listData = res.data
-      console.log(res)
-      this.listLoading = true
-      this.listTotal = res.data.total
+      };
+      const res = await getCategoryList(data);
+      this.listLoading = false;
+      this.listData = res.data;
+      console.log(res);
+      this.listLoading = true;
+      this.listTotal = res.data.total;
     },
     //添加分类接口
     async insertCategory() {
@@ -405,14 +405,14 @@ export default {
         // sort: this.ruleForm.sort,
         // describe: this.  describe,
         ...this.ruleForm,
-      }
-      const res = await insertCategory(data)
-      this.listLoading = false
+      };
+      const res = await insertCategory(data);
+      this.listLoading = false;
       if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.getCategoryList()
-        this.getCateList()
+        console.log(res);
+        this.$message.success(res.message);
+        this.getCategoryList();
+        this.getCateList();
       }
     },
     //编辑分类接口
@@ -427,30 +427,30 @@ export default {
         sort: this.ruleForm.sort,
         describe: this.ruleForm.describe,
         category_id: this.ruleForm.category_id,
-      }
-      console.log(data)
-      const res = await updateCategory(data)
-      this.listLoading = false
+      };
+      console.log(data);
+      const res = await updateCategory(data);
+      this.listLoading = false;
       if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.getCategoryList()
-        this.getCateList()
-        this.dialogVisible = false
+        console.log(res);
+        this.$message.success(res.message);
+        this.getCategoryList();
+        this.getCateList();
+        this.dialogVisible = false;
       }
     },
     //删除分类接口
     async deleteCategory(category_id) {
       const data = {
         category_id,
-      }
-      console.log(data)
-      const res = await deleteCategory(data)
+      };
+      console.log(data);
+      const res = await deleteCategory(data);
       if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.getCategoryList()
-        this.dialogVisible = false
+        console.log(res);
+        this.$message.success(res.message);
+        this.getCategoryList();
+        this.dialogVisible = false;
       }
     },
     //校区排序
@@ -458,59 +458,59 @@ export default {
       let config = {
         id: id,
         sort: sort,
-      }
-      console.log(config)
+      };
+      console.log(config);
       axiosHttp({
         url: url.changeUpdateSort,
         data: config,
         // method: 'GET',
         then(res) {
-          console.log(res.data.data)
+          console.log(res.data.data);
           if (res.data.code == 0) {
             self.$message({
-              type: 'success',
+              type: "success",
               message: res.data.message,
-            })
-            self.$api.getSchoolList(self, 'schoolData')
+            });
+            self.$api.getSchoolList(self, "schoolData");
           }
         },
-      })
+      });
     },
     //分类排序接口
     async updateCategorySort(category_id, sort) {
       const data = {
         category_id: category_id,
         sort: sort,
-      }
-      console.log(data)
-      const res = await updateCategorySort(data)
+      };
+      console.log(data);
+      const res = await updateCategorySort(data);
       if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.getCategoryList()
-        this.dialogVisible = false
+        console.log(res);
+        this.$message.success(res.message);
+        this.getCategoryList();
+        this.dialogVisible = false;
       }
     },
     submitForm(formName) {
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.category_id) {
             //修改
-            this.updateCategory()
+            this.updateCategory();
           } else {
             //添加分类
-            this.insertCategory()
-            this.dialogVisible = false
+            this.insertCategory();
+            this.dialogVisible = false;
           }
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,

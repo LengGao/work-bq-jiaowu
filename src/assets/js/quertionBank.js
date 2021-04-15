@@ -244,13 +244,13 @@ let quertionBank = {
     })
   },
   livenumberlist(self, name, search) {
-    let keyboard = ''
+    let keyword = ''
     if (search != undefined) {
-      keyboard = search.name
+      keyword = search.name
     }
     let config = {
       page: self.page,
-      keyboard: keyboard,
+      keyword: keyword,
       live_class_id: self.$route.query.live_class_id,
     }
     console.log(config)

@@ -184,7 +184,7 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        keyboard: "",
+        keyword: "",
       },
       searchOptions: [
         {
@@ -193,13 +193,13 @@ export default {
           attrs: {
             placeholder: "所属分类",
             clearable: true,
-              props: { checkStrictly: true },
+            props: { checkStrictly: true },
             filterable: true,
             options: [],
           },
         },
         {
-          key: "keyboard",
+          key: "keyword",
           attrs: {
             placeholder: "教材名称",
           },

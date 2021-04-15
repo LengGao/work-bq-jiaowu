@@ -282,7 +282,7 @@ export default {
         project_id: "",
         classroom_id: "",
         organization_id: [],
-        keyboard: "",
+        keyword: "",
         student_type: 1,
       },
       listData: [],

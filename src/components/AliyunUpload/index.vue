@@ -1,8 +1,14 @@
 <template>
   <div class="ali-yun-upload">
     <el-button size="small" @click="handleFileSelect">选择文件</el-button>
+    <transition name="el-fade-in-linear">
+      <el-progress
+        v-show="percentage && percentage !== 100"
+        :percentage="percentage"
+      ></el-progress>
+    </transition>
     <ul class="file-list">
-      <li class="file-item" v-for="(file, index) in fileList" :key="file.size">
+      <li class="file-item" v-for="(file, index) in fileList" :key="file.id">
         <span class="file-item-name">{{ file.name }}</span>
         <i
           class="el-icon-close file-item-delete"
@@ -35,6 +41,10 @@ export default {
       type: Function,
       default: () => {},
     },
+    defaultFiles: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -43,11 +53,16 @@ export default {
       aliyunRegion: "cn-shanghai",
       aliyunUserId: "1160528473305736",
       fileList: [],
+      percentage: 0,
     };
   },
   watch: {
     value(val) {
       this.requestId = val;
+    },
+    defaultFiles(data) {
+      console.log(data);
+      this.fileList = [...data];
     },
   },
   created() {
@@ -56,6 +71,7 @@ export default {
   methods: {
     handleFileDelete(index) {
       this.fileList.splice(index, 1);
+      this.$emit("on-remove", index);
     },
     handleFileSelect() {
       let input = document.createElement("input");
@@ -63,8 +79,7 @@ export default {
       input.type = "file";
       input.onchange = (event) => {
         let file = event.target.files[0];
-        this.fileList = [];
-        this.fileList.push(file);
+
         if (this.autpUpload) {
           const paramsJson = '{"Vod":{}}';
           this.aliyunUpload.addFile(file, null, null, null, paramsJson);
@@ -74,6 +89,7 @@ export default {
       input.click();
     },
     upload() {
+      console.log("start");
       this.aliyunUpload.startUpload();
     },
     async updatecreate(uploadInfo) {
@@ -129,15 +145,22 @@ export default {
         onUploadstarted: async (uploadInfo) => {
           console.log(!uploadInfo.videoId);
           if (!uploadInfo.videoId) {
+            console.log(111111111);
             this.updatecreate(uploadInfo);
           } else {
+            console.log(22222222);
             this.refreshuploadvideo(uploadInfo.videoId);
           }
         },
         //文件上传成功
         onUploadSucceed: (uploadInfo) => {
-          this.$emit("input", uploadInfo.videoId);
           this.onSuccess(uploadInfo);
+          console.log(uploadInfo);
+          this.fileList = [];
+          this.fileList.push({
+            name: uploadInfo.file.name,
+            id: uploadInfo.videoId,
+          });
         },
         //文件上传失败
         onUploadFailed: (uploadInfo, code, message) => {
@@ -145,7 +168,13 @@ export default {
           this.onError(uploadInfo, code, message);
         },
         //文件上传进度，单位：字节
-        onUploadProgress: function (uploadInfo, totalSize, loadedPercent) {},
+        onUploadProgress: (uploadInfo, totalSize, loadedPercent) => {
+          const progress = loadedPercent * 100;
+          this.percentage = progress === 100 ? 99 : progress;
+          setTimeout(() => {
+            this.percentage = 100;
+          }, 1000);
+        },
         //上传凭证或STS token超时
         onUploadTokenExpired: function (uploadInfo) {},
         //全部文件上传结束

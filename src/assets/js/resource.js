@@ -557,12 +557,12 @@ let resource = {
   videocollectionlist(self, name, data) {
     // console.log(data)
     // let course_category_id = '',
-    //   keyboard = ''
+    //   keyword = ''
 
     // if (data != undefined && data != '') {
     //   console.log(data.id)
     //   course_category_id = data.id
-    //   keyboard = data.name
+    //   keyword = data.name
     // }
     // console.log(self.ruleForm.course_category_id)
     // let course_category = self.ruleForm.course_category_id
@@ -571,7 +571,7 @@ let resource = {
     // }
     let config = {
       // course_category_id: course_category_id,
-      // keyboard: keyboard,
+      // keyword: keyword,
       // page: self.page,
     }
     axiosHttp({
@@ -1292,14 +1292,14 @@ let resource = {
   },
   getvideoclass(self, name, data) {
     console.log(data)
-    let keyboard = ''
+    let keyword = ''
     if (data != undefined) {
-      keyboard = data.name
+      keyword = data.name
     }
     let config = {
       video_collection_id: self.$route.query.video_collection_id,
       video_chapter_id: self.video_chapter_id,
-      keyboard: keyboard,
+      keyword: keyword,
       page: self.page,
     }
     console.log(config)

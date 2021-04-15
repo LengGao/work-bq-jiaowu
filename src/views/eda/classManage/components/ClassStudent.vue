@@ -94,11 +94,11 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        keyboard: "",
+        keyword: "",
       },
       searchOptions: [
         {
-          key: "keyboard",
+          key: "keyword",
           attrs: {
             placeholder: "姓名/手机号码",
           },

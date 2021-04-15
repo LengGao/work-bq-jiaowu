@@ -653,11 +653,11 @@ let api = {
   },
   //班级学员列表
   getclasstudents(self, name, data = {}) {
-    let keyboard = ''
+    let keyword = ''
     let organization_id = ''
     let school_id = ''
     if (data.name != '' || data.name != undefined) {
-      keyboard = data.name
+      keyword = data.name
     }
     if (data.organization_id != '' || data.organization_id != undefined) {
       organization_id = data.organization_id
@@ -668,7 +668,7 @@ let api = {
     let config = {
       course_id: self.$route.query.course_id,
       class_id: self.$route.query.classroom_id,
-      keyboard: keyboard,
+      keyword: keyword,
       organization_id: organization_id,
       page: self.page,
       school_id: school_id,

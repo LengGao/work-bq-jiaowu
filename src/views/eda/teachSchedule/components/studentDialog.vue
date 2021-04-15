@@ -144,9 +144,9 @@
 </template>
 
 <script>
-import { getClassstudentList } from '@/api/eda'
-import { getInstitutionSelectData } from '@/api/sou'
-import { cloneOptions } from '@/utils/index'
+import { getClassstudentList } from "@/api/eda";
+import { getInstitutionSelectData } from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
 export default {
   props: {
     value: {
@@ -155,7 +155,7 @@ export default {
     },
     class_id: {
       type: [Number, String],
-      default: '',
+      default: "",
     },
 
     cateOptions: {
@@ -168,7 +168,7 @@ export default {
     },
     id: {
       type: [String, Number],
-      default: '',
+      default: "",
     },
   },
   data() {
@@ -179,94 +179,94 @@ export default {
       listTotal: 0,
       searchData: {
         organization_id: [],
-        keyboard: '',
+        keyword: "",
       },
       searchOptions: [
         {
-          key: 'organization_id',
-          type: 'cascader',
+          key: "organization_id",
+          type: "cascader",
           attrs: {
-            placeholder: '所属机构',
+            placeholder: "所属机构",
             clearable: true,
             options: this.cateOptions,
           },
         },
         {
-          key: 'keyboard',
+          key: "keyword",
           attrs: {
-            placeholder: '学生姓名/手机号码',
+            placeholder: "学生姓名/手机号码",
           },
         },
       ],
       visible: this.value,
-    }
+    };
   },
   watch: {
     value(val) {
-      this.visible = val
+      this.visible = val;
     },
   },
   methods: {
     handleSearch(data) {
-      const times = data.date || ['', '']
-      delete data.date
-      this.pageNum = 1
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
       this.searchData = {
         ...data,
         organization_id: data.organization_id.pop(),
-      }
-      this.getClassstudentList()
+      };
+      this.getClassstudentList();
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getClassstudentList()
+      this.pageNum = val;
+      this.getClassstudentList();
     },
     // 获取机构
     async getInstitutionSelectData() {
-      const data = { list: true }
-      const res = await getInstitutionSelectData(data)
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
         this.searchOptions[0].attrs.options = cloneOptions(
           res.data,
-          'institution_name',
-          'institution_id',
-          'children'
-        )
+          "institution_name",
+          "institution_id",
+          "children"
+        );
       }
     },
     //班级学生列表
     async getClassstudentList() {
-      this.selectionIds = []
-      this.courseStudentIds = []
+      this.selectionIds = [];
+      this.courseStudentIds = [];
 
       const data = {
         class_id: this.class_id,
 
         page: this.pageNum,
         ...this.searchData,
-      }
-      console.log(data)
-      delete data.date
-      this.listLoading = true
-      const res = await getClassstudentList(data)
-      this.listLoading = false
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      };
+      console.log(data);
+      delete data.date;
+      this.listLoading = true;
+      const res = await getClassstudentList(data);
+      this.listLoading = false;
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
     handleOpen() {
       this.searchData = {
         organization_id: [],
-        keyboard: '',
-      }
-      this.getClassstudentList()
-      this.getInstitutionSelectData()
+        keyword: "",
+      };
+      this.getClassstudentList();
+      this.getInstitutionSelectData();
     },
     //根据教室id获取课程
     hanldeCancel() {
-      this.$emit('input', false)
+      this.$emit("input", false);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -292,7 +292,7 @@ export default {
       position: absolute;
       left: 5px;
       top: 11px;
-      content: '';
+      content: "";
       width: 8px;
       height: 8px;
       background-color: #199fff;
