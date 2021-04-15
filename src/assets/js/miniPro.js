@@ -613,6 +613,7 @@ let minipro = {
         self.ruleForm.menu_name = data.menu_name
         //对数组进行倒序处理
         let arr = data.parent_id_arr
+        console.log(arr)
         if (data.menu_type == 1) {
           //菜单对上级目录进行反选
           arr.reverse()
@@ -627,6 +628,7 @@ let minipro = {
             arr.splice(0, 1)
           }
         }
+
         self.parent_id_arr = [...data.parent_id_arr]
         self.ruleForm.parent_id = data.parent_id
         console.log(data.parent_id)

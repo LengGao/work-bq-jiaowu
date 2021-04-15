@@ -466,7 +466,13 @@ export default {
       const api = this.ruleForm.id ? updateMenuData : createMenuData
       if (Array.isArray(this.parent_id_arr)) {
         let end = this.parent_id_arr[this.parent_id_arr.length - 1] //添加时取最后一位为父级
-        let start = this.parent_id_arr[0] //编辑时取第一位为父级
+        let start = ''
+        if (this.parent_id_arr.length > 2) {
+          start = this.parent_id_arr[this.parent_id_arr.length - 2] //编辑时取第一位为父级
+        } else {
+          start = this.parent_id_arr[0] //编辑时取第一位为父级
+        }
+
         if (!this.ruleForm.id) {
           this.ruleForm.parent_id = end
         } else {
