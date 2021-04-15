@@ -266,9 +266,9 @@ export default {
   margin: 20px;
   background: #fff;
 }
-/deep/.el-form-item {
-  margin-bottom: 40px;
-}
+// /deep/.el-form-item {
+//   margin-bottom: 40px;
+// }
 .el-select {
   width: 250px;
 }
