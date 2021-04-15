@@ -1,67 +1,19 @@
 <template>
   <section class="mainwrap">
     <header>
-      <SearchList
-        :options="searchOptions"
-        :data="searchData"
-        @on-search="handleSearch"
-      />
+      <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
     </header>
 
     <div class="userTable">
-      <el-table
-        ref="multipleTable"
-        :data="listData"
-        tooltip-effect="light"
-        v-loading="listLoading"
-        element-loading-text="loading"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="#fff"
-        stripe
-        style="width: 100%;"
-        :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
-        class="min_table"
-      >
+      <el-table ref="multipleTable" :data="listData" tooltip-effect="light" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
         <el-table-column type="selection" width="45"> </el-table-column>
-        <el-table-column
-          prop="subject_name"
-          label="考试科目"
-          show-overflow-tooltip
-          min-width="80"
-        ></el-table-column>
+        <el-table-column prop="subject_name" label="考试科目" show-overflow-tooltip min-width="80"></el-table-column>
 
-        <el-table-column
-          prop="category_name"
-          label="所属分类"
-          min-width="100"
-          column-key="course_id"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="exam_type_name"
-          label="科目性质"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="total_score"
-          label="试卷满分"
-          min-width="200"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="max_score"
-          label="最高成绩"
-          min-width="80"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          label="考试状态"
-          prop=""
-          min-width="100"
-          show-overflow-tooltip
-        >
+        <el-table-column prop="category_name" label="所属分类" min-width="100" column-key="course_id" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="exam_type_name" label="科目性质" min-width="110" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="total_score" label="试卷满分" min-width="200" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="max_score" label="最高成绩" min-width="80" show-overflow-tooltip></el-table-column>
+        <el-table-column label="考试状态" prop="" min-width="100" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <div :class="row.exam_result == 1 ? 'green' : 'red'">
               {{ row.exam_result | exam_resulType }}
@@ -72,28 +24,17 @@
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
-              <el-button type="text" @click="showDialog(row.id)"
-                >历史成绩</el-button
-              >
+              <el-button type="text" @click="showDialog(row.id)">历史成绩</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <page
-          :data="listTotal"
-          :curpage="pageNum"
-          @pageChange="handlePageChange"
-        />
+        <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
       </div>
     </div>
     <!--弹框-->
-    <el-dialog
-      title="历史成绩"
-      :visible.sync="dialogVisible"
-      width="60%"
-      :close-on-click-modal="false"
-    >
+    <el-dialog title="历史成绩" :visible.sync="dialogVisible" width="60%" :close-on-click-modal="false">
       <div class="dialog-head">
         <p>
           学生姓名<span>{{ hisUserData.user_realname }}</span>
@@ -105,35 +46,13 @@
           试卷满分<span>{{ hisUserData.total_score }}</span>
         </p>
       </div>
-      <el-table
-        ref="multipleTable"
-        :data="hisData"
-        tooltip-effect="light"
-        v-loading="hisLoading"
-        element-loading-text="loading"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="#fff"
-        stripe
-        style="width: 100%;"
-        :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
-        class="min_table"
-      >
-        <el-table-column
-          v-for="(item, index) in title"
-          :key="index"
-          :prop="item.prop"
-          :label="item.title"
-          show-overflow-tooltip
-          min-width="150"
-        >
+      <el-table ref="multipleTable" :data="hisData" tooltip-effect="light" v-loading="hisLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
+        <el-table-column v-for="(item, index) in title" :key="index" :prop="item.prop" :label="item.title" show-overflow-tooltip min-width="150">
           <template slot-scope="scope">
-            <div
-              :class="{
+            <div :class="{
                 green: scope.row[scope.column.property] === '合格',
                 red: scope.row[scope.column.property] === '补考',
-              }"
-            >
+              }">
               {{ scope.row[scope.column.property] }}
             </div>
           </template>
@@ -141,9 +60,7 @@
       </el-table>
       <span slot="footer" class="dialog-footer">
         <div style="display:flex;justify-content:center;width:100%">
-          <el-button @click="dialogVisible = false" type="primary"
-            >关 闭</el-button
-          >
+          <el-button @click="dialogVisible = false" type="primary">关 闭</el-button>
         </div>
       </span>
     </el-dialog>
@@ -152,11 +69,7 @@
 
 <script>
 import { cloneOptions } from '@/utils/index'
-import {
-  getPlanGradeSelect,
-  getHistoryGradeList,
-  getSubjectListByUser,
-} from '@/api/exa'
+import { getPlanGradeSelect, getHistoryGradeList, getSubjectListByUser } from '@/api/exa'
 import { getCateList } from '@/api/sou'
 
 export default {
@@ -241,11 +154,7 @@ export default {
       const res = await getPlanGradeSelect(data)
 
       if (res.code === 0) {
-        this.searchOptions[1].options = cloneOptions(
-          res.data.exam_type,
-          'name',
-          'id'
-        )
+        this.searchOptions[1].options = cloneOptions(res.data.exam_type, 'name', 'id')
       }
     },
     toAchieveDetail(ab) {
@@ -344,5 +253,8 @@ export default {
 }
 .red {
   color: $error_color;
+}
+.table_bottom {
+  text-align: right;
 }
 </style>
