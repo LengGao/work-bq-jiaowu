@@ -189,4 +189,7 @@ export default {
 .userTable {
   margin-top: 20px;
 }
+.table_bottom {
+  text-align: right;
+}
 </style>

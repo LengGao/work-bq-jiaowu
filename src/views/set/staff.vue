@@ -90,8 +90,8 @@
               <img style="width:100%;height:100%;border-radius:3px;" :src="ruleForm.head_photo" alt="" />
             </div>
           </el-form-item>
-          <el-form-item label="手机号码" prop="mobile_num">
-            <el-input v-model="ruleForm.mobile_num" placeholder="请输入手机号码" class="common-width"></el-input>
+          <el-form-item label="手机号码" prop="account">
+            <el-input v-model="ruleForm.account" placeholder="请输入手机号码" class="common-width"></el-input>
           </el-form-item>
           <!-- <el-form-item label="登录账号" prop="account">
             <el-input v-model="ruleForm.account" placeholder="请输入登录账号" class="common-width"></el-input>
