@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper-login">
     <div class="forgetimg">
-      <img :src="logologin" alt="">
+      <img :src="logologin" alt="" />
     </div>
     <el-card class="login-form-layout">
       <div class="wrapper-img">
@@ -9,27 +9,55 @@
         <!-- <img :src="logologin" alt=""> -->
         <p class="forgetPassword">设置新密码</p>
       </div>
-      <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
+      <el-form
+        autoComplete="on"
+        :model="loginForm"
+        :rules="loginRules"
+        ref="loginForm"
+        label-position="left"
+      >
         <!-- <h2 class="login-title color-main">beiqu--jiaoyu</h2> -->
         <el-form-item prop="mail">
-          <el-input type="text" v-model="loginForm.mail" autoComplete="on" placeholder="请输入新密码">
+          <el-input
+            type="text"
+            v-model="loginForm.mail"
+            autoComplete="on"
+            placeholder="请输入新密码"
+          >
           </el-input>
         </el-form-item>
         <el-form-item prop="code" style="margin-bottom:20px;text-align: center">
           <div style="display:flex;align-item:center">
-            <el-input name="password" v-model="loginForm.code" @keyup.enter.native="handleLogin" autoComplete="on" placeholder="请再次确认新密码" 
-            type="text" style="width:100%">
+            <el-input
+              name="password"
+              v-model="loginForm.code"
+              @keyup.enter.native="handleLogin"
+              autoComplete="on"
+              placeholder="请再次确认新密码"
+              type="text"
+              style="width:100%"
+            >
             </el-input>
           </div>
         </el-form-item>
-        <el-form-item style="margin-bottom:20px;text-align: center;margin-top:40px;">
-          <el-button style="width: 45%" type="primary" :loading="loading" @click.native.prevent="handleLogin" @keypress.native.enter="handleLogin" to="/resetpage" >确定</el-button>
+        <el-form-item
+          style="margin-bottom:20px;text-align: center;margin-top:40px;"
+        >
+          <el-button
+            style="width: 45%"
+            type="primary"
+            :loading="loading"
+            @click.native.prevent="handleLogin"
+            @keypress.native.enter="handleLogin"
+            to="/resetpage"
+            >确定</el-button
+          >
         </el-form-item>
         <el-form-item style="margin-bottom:48px;text-align: center">
         </el-form-item>
       </el-form>
     </el-card>
-    <img :src="login_center_bg" class="login-center-layout">
+    <!-- <img :src="login_center_bg" class="login-center-layout"> -->
   </div>
 </template>
 
@@ -107,7 +135,7 @@ export default {
       }
       this.setCookie('remember', data)
     },
-    setCookie: function (cName, value, expiredays) {
+    setCookie: function(cName, value, expiredays) {
       var exdate = new Date()
       exdate.setDate(exdate.getDate() + expiredays)
       document.cookie =
@@ -148,7 +176,13 @@ export default {
   },
 }
 </script>
-<style lang='scss' scoped>
+<style lang="scss" scoped>
+.wrapper-login {
+  height: 100%;
+  width: 100%;
+  background: url('../../assets/images/login-img.jpg') no-repeat;
+  background-size: cover;
+}
 .forgetPassword {
   font-family: 'Arial Negreta', 'Arial Normal', 'Arial', sans-serif;
   font-weight: 700;
@@ -212,6 +246,5 @@ img {
   height: 48px;
   margin: 20px 0 0 20px;
   position: absolute;
-  }
+}
 </style>
-
