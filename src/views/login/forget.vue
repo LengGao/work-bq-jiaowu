@@ -63,7 +63,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <img :src="login_center_bg" class="login-center-layout" />
+    <!-- <img :src="login_center_bg" class="login-center-layout" /> -->
   </div>
 </template>
 <script>
@@ -182,6 +182,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.wrapper-login {
+  height: 100%;
+  width: 100%;
+  background: url('../../assets/images/login-img.jpg') no-repeat;
+  background-size: cover;
+}
 .forgetPassword {
   font-family: 'Arial Negreta', 'Arial Normal', 'Arial', sans-serif;
   font-weight: 700;

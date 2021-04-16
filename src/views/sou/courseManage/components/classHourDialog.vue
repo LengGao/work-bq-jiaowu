@@ -142,6 +142,7 @@ export default {
       this.formData.media_id = data.videoId;
       this.formData.media_name = filename;
     },
+    //获取详情
     async getvideoclassDetail() {
       const data = {
         video_class_id: this.id,

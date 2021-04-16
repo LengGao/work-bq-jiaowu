@@ -33,6 +33,22 @@ const filters = {
             m = m % 60
         }
         return `${min(h)}:${min(m)}:${min(s)}`
+    },
+    // 视频时长
+    filterFileSize(b) {
+        let kb = 0
+        let mb = 0
+        if (b / 1024 >= 1) {
+            kb = (b / 1024).toFixed(2)
+            if (kb < 1024) {
+                return `${kb}KB`
+            }
+        }
+        if (kb / 1024 >= 1) {
+            mb = (kb / 1024).toFixed(2)
+            return `${mb}MB`
+        }
+        return `${b}B`
     }
 }
 
