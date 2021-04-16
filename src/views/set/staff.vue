@@ -65,7 +65,7 @@
       </section>
     </div>
     <!--弹框-->
-    <el-dialog title="添加员工" :visible.sync="dialogVisible" width="820px" :close-on-click-modal="false" @open="handleOpen">
+    <el-dialog :title="classTitle" :visible.sync="dialogVisible" width="820px" :close-on-click-modal="false" @open="handleOpen">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <div class="staffBox">
           <el-form-item label="员工姓名" placeholder="请输入员工姓名" prop="staff_name">
@@ -93,24 +93,30 @@
           <el-form-item label="手机号码" prop="account">
             <el-input v-model="ruleForm.account" placeholder="请输入手机号码" class="common-width"></el-input>
           </el-form-item>
-          <!-- <el-form-item label="登录账号" prop="account">
-            <el-input v-model="ruleForm.account" placeholder="请输入登录账号" class="common-width"></el-input>
-          </el-form-item> -->
-          <el-form-item label="登录密码" prop="password">
-            <el-input v-model="ruleForm.password" placeholder="请输入登录密码" class="common-width"></el-input>
+
+          <el-form-item label="登录密码" v-if="classTitle === '编辑员工'">
+            <el-input v-model="ruleForm.password" placeholder="请输入登录密码" class="common-width">
+            </el-input>
           </el-form-item>
+          <el-form-item label="登录密码" prop="password" v-else>
+            <el-input v-model="ruleForm.password" placeholder="请输入登录密码" class="common-width">
+            </el-input>
+          </el-form-item>
+
           <!-- <el-form-item label="班主任" prop="password">
             <el-radio-group v-model="ruleForm.as_headmaster">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="2">不是</el-radio>
             </el-radio-group>
           </el-form-item> -->
+
           <!-- <el-form-item label="超管" prop="password">
             <el-radio-group v-model="ruleForm.is_super">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">不是</el-radio>
             </el-radio-group>
           </el-form-item> -->
+
           <el-form-item label="所属机构" prop="institution_id">
             <el-select v-model="ruleForm.institution_id" placeholder="请输入所属机构" class="common-width" filterable @change="handleInstitution">
               <el-option v-for="item in instituData" :key="item.institution_id" :label="item.institution_name" :value="item.institution_id">
@@ -139,7 +145,7 @@
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="handleCancel('ruleForm')">取 消</el-button>
         <el-button type="primary" @click="handleConfirm('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
@@ -153,6 +159,7 @@ export default {
   name: 'staff',
   data() {
     return {
+      classTitle: '',
       searchOptions: [
         {
           key: 'identity',
@@ -263,7 +270,14 @@ export default {
       rules: {
         staff_name: [{ required: true, message: '请输入员工姓名', trigger: 'blur' }],
         account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入登录密码', trigger: 'blur' }],
+        password: [
+          { required: true, message: '请输入登录密码', trigger: 'blur' },
+          { min: 5, max: 25, message: '长度在 5 到 25个字符' },
+          {
+            pattern: /^(\w){5,25}$/,
+            message: '只能输入5-25个字母、数字、下划线',
+          },
+        ],
         institution_id: [{ required: true, message: '请输入所选机构', trigger: 'blur' }],
         identity: [{ required: true, message: '请输入账号权限', trigger: 'blur' }],
         // mail: [{ validator: validMail, trigger: 'blur', required: true }],
@@ -355,7 +369,8 @@ export default {
     },
     handleEdit(ab) {
       console.log(ab)
-      // this.ruleForm.id = ab.staff_id
+      this.classTitle = '编辑员工'
+      this.ruleForm.id = ab.staff_id
       this.dialogVisible = true
       this.$api.getStaffInfo(this, ab.staff_id)
     },
@@ -387,6 +402,10 @@ export default {
             message: '已取消删除',
           })
         })
+    },
+    handleCancel(formName) {
+      this.$refs[formName].resetFields()
+      this.dialogVisible = false
     },
     handleConfirm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -420,6 +439,7 @@ export default {
       this.isTagactiveName = cd.name
     },
     addStaff() {
+      this.classTitle = '添加员工'
       // this.ruleForm = {
       //   staff_name: '',
       //   mobile_num: '',
@@ -446,7 +466,7 @@ export default {
       this.pictureVisible = false
     },
     closeImg(radioUrl) {
-      // console.log(radioUrl + '我好睡')
+      // console.log(radioUrl + '好睡')
       this.pictureVisible = false
       if (radioUrl != undefined) {
         this.haschoose = true
