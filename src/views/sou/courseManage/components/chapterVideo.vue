@@ -25,7 +25,6 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
         row-key="treeId"
         lazy
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -35,12 +34,14 @@
           prop="name"
           label="章节名称"
           min-width="220"
+          align="left"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="coverurl"
           label="视频缩略图"
           min-width="110"
+          align="center"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -57,6 +58,7 @@
         <el-table-column
           prop="duration"
           label="时长"
+          align="center"
           min-width="110"
           show-overflow-tooltip
         >
@@ -69,6 +71,7 @@
         </el-table-column>
         <el-table-column
           prop="sort"
+          align="center"
           label="排序"
           min-width="70"
           show-overflow-tooltip
@@ -82,6 +85,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="student_number"
           label="免费试用"
           min-width="110"
@@ -100,7 +104,12 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" fixed="right" min-width="140">
+        <el-table-column
+          label="操作"
+          fixed="right"
+          align="center"
+          min-width="140"
+        >
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
