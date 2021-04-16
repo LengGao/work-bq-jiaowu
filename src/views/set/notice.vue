@@ -70,15 +70,7 @@
                 </el-select>
               </el-form-item>
             </div>
-            <!-- <el-col :lg="12" :sm="12" :xs="12" :md="12">
-              <el-form-item label="发送短信">
-                <el-radio-group v-model="ruleForm.send_sms">
-                  <el-radio :label="1">是</el-radio>
-                  <el-radio :label="2">否</el-radio>
-                  <el-radio :label="3">指定校区</el-radio> -->
-            <!-- </el-radio-group>
-              </el-form-item>
-            </el-col> -->
+
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
@@ -94,7 +86,7 @@
           </h3>
           <div class="notictitle">
             <p>发布时间：{{ ruleForm.update_time }}</p>
-            <p>发布人：{{ ruleForm.staff_name }}</p>
+            <p>发布人：{{ruleForm.staff_name }}</p>
             <p>已读人数：{{ ruleForm.read_count }}</p>
           </div>
           <div class="noticontent">
@@ -137,6 +129,7 @@ export default {
   name: 'role',
   data() {
     return {
+      staff_name: '',
       id: '',
       noticeMap: {
         1: '已推送',
