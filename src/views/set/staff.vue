@@ -504,7 +504,6 @@ export default {
 .main {
   display: flex;
   justify-content: center;
-
   .left-container {
     width: 250px;
     margin-right: 20px;
@@ -526,7 +525,6 @@ export default {
     font-weight: 700;
     font-style: normal;
     font-size: 16px;
-
     letter-spacing: normal;
     color: #333333;
     width: 100%;
