@@ -26,7 +26,7 @@
         <span class="msg-item-info" :title="item.title" @click="msgclick(item)">
           {{ item.title }}</span
         >
-        <span class="msg-item-date" style="margin-left: auto;">{{
+        <span class="msg-item-date" style="margin-left: auto">{{
           item.create_time
         }}</span>
       </li>
@@ -45,43 +45,23 @@
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       width="35%"
-      :close-on-click-modal="false"
-    >
-      <div :model="ruleForm" :rules="rules" ref="ruleForm">
-        <h3 class="detailtitle">
-          {{ ruleForm.title }}
-        </h3>
-        <div class="notictitle">
-          <p>发布时间：{{ ruleForm.create_time }}</p>
-          <p>发布人：{{ ruleForm.staff_name }}</p>
-        </div>
-        <div class="noticontent">
-          <div v-html="ruleForm.content"></div>
-        </div>
-      </div>
-    </el-dialog>
-    <!-- 弹窗 -->
-    <el-dialog
-      :title="dialogTitle"
-      :visible.sync="dialogVisible"
-      width="35%"
       v-if="activeName !== '5'"
       :close-on-click-modal="false"
     >
-      <div :model="ruleForm" :rules="rules" ref="ruleForm">
+      <div>
         <h3 class="detailtitle">
-          {{ ruleForm.title }}
+          {{ noticData.title }}
         </h3>
         <div class="notictitle">
-          <p>发布时间：{{ ruleForm.create_time }}</p>
-          <p>发布人：{{ ruleForm.staff_name }}</p>
+          <p>发布时间：{{ noticData.create_time }}</p>
+          <p>发布人：{{ noticData.staff_name }}</p>
         </div>
         <div class="noticontent">
-          <div v-html="ruleForm.content"></div>
+          <div v-html="noticData.content"></div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="Markunread" v-if="activeNames == 2"
+        <el-button @click="Markunread(noticData.id)" v-if="activeNames == 2"
           >标为未读</el-button
         >
         <el-button type="primary" @click="dialogVisible = false"
@@ -96,10 +76,10 @@ import {
   getSystemAnnouncementList,
   getAnnouncementInfo,
   setUnread,
-} from '@/api/workbench'
-import { followRoute } from '@/utils/index'
+} from "@/api/workbench";
+import { followRoute } from "@/utils/index";
 export default {
-  name: 'Msg',
+  name: "Msg",
   props: {
     data: {
       type: Array,
@@ -108,41 +88,41 @@ export default {
   },
   data() {
     return {
-      activeName: '1',
-      activeNames: '1',
-      readType: '',
+      activeName: "1",
+      activeNames: "1",
+      readType: "",
       readMap: {
-        1: '已读',
-        2: '未读',
+        1: "已读",
+        2: "未读",
       },
-      pageSize: '7',
+      pageSize: "7",
       total: 0,
       pageNum: 1,
       dialogVisible: false,
-      dialogTitle: '',
-      handleSizeChanges: '',
-      id: '',
+      dialogTitle: "",
+      handleSizeChanges: "",
+      id: "",
       rules: {},
-      ruleForm: {
-        id: '',
-        datatime: '',
-        content: '',
-        title: '',
-        read: '',
-        read_count: '',
-        staff_name: '',
+      noticData: {
+        id: "",
+        datatime: "",
+        content: "",
+        title: "",
+        read: "",
+        read_count: "",
+        staff_name: "",
       },
       listdata: [],
-      noreadcount: '',
-    }
+      noreadcount: "",
+    };
   },
   created() {
-    this.getSystemAnnouncementList()
+    this.getSystemAnnouncementList();
   },
   methods: {
     Markunread(id) {
-      this.setUnread(id)
-      this.dialogVisible = false
+      this.setUnread(id);
+      this.dialogVisible = false;
     },
     //公告列表接口
     async getSystemAnnouncementList() {
@@ -150,64 +130,60 @@ export default {
         limit: this.pageSize,
         page: this.pageNum,
         read: this.activeNames,
-      }
-      const res = await getSystemAnnouncementList(data)
-      console.log(res.data.list)
-      this.listdata = res.data.list
-      this.activeNames == 1 ? (this.noreadcount = res.data.list.length) : ''
-      this.total = res.data.total
+      };
+      const res = await getSystemAnnouncementList(data);
+      console.log(res.data.list);
+      this.listdata = res.data.list;
+      this.activeNames == 1 ? (this.noreadcount = res.data.list.length) : "";
+      this.total = res.data.total;
     },
-    msgclick(ab) {
-      console.log(ab)
-      this.dialogTitle = '公告详情'
-      this.ruleForm = ab
-      this.dialogVisible = true
-      this.id = ab.id
-      this.getAnnouncementInfo()
+    msgclick(row) {
+      this.dialogTitle = "公告详情";
+      this.dialogVisible = true;
+      this.id = row.id;
+      this.getAnnouncementInfo();
     },
     // 公告详情接口
     async getAnnouncementInfo() {
       const data = {
-        id: this.ruleForm.id,
-        // read: this.ruleForm.read,
-      }
-      console.log(data)
-      const res = await getAnnouncementInfo(data)
+        id: this.id,
+        // read: this.noticData.read,
+      };
+      const res = await getAnnouncementInfo(data);
       if (res.code == 0) {
-        console.log('未读')
-        this.getSystemAnnouncementList()
+        this.noticData = res.data;
+        this.getSystemAnnouncementList();
       }
     },
     // 已读未读接口
-    async setUnread() {
+    async setUnread(id) {
       const data = {
-        id: this.ruleForm.id,
-      }
-      console.log(data)
-      const res = await setUnread(data)
+        id,
+      };
+      const res = await setUnread(data);
       if (res.code == 0) {
-        this.$message.success(res.message)
-        this.getSystemAnnouncementList()
+        this.$message.success(res.message);
+        this.getSystemAnnouncementList();
       }
     },
     handleSizeChange(size) {
-      this.pageSize = size
-      this.pageNum = 1
-      this.getSystemAnnouncementList()
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getSystemAnnouncementList();
     },
     handleCurrentChange(page) {
-      this.pageNum = page
-      this.getSystemAnnouncementList()
+      this.pageNum = page;
+      this.getSystemAnnouncementList();
     },
 
     handleClick(val) {
-      console.log(val)
-      this.readType = val
-      console.log(this.activeNames)
-      this.getSystemAnnouncementList()
+      console.log(val);
+      this.readType = val;
+      console.log(this.activeNames);
+      this.getSystemAnnouncementList();
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-badge {
@@ -276,7 +252,7 @@ export default {
   font-size: 16px;
 }
 .notictitle p {
-  width: 33%;
+  margin-right: 10px;
 }
 .noticontent {
   border: 1px solid rgb(231, 230, 230);
