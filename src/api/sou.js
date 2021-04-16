@@ -545,7 +545,15 @@ export function deletevideoclass(data) {
 // 章节排序
 export function videoChapterSort(data) {
   return request({
-    url: 'batchSort/VideoChapter',
+    url: 'sort/videoChapter',
+    method: 'post',
+    data,
+  })
+}
+// 课时排序
+export function videoClassSort(data) {
+  return request({
+    url: 'sort/videoClass',
     method: 'post',
     data,
   })

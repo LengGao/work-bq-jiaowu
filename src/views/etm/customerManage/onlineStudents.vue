@@ -221,12 +221,7 @@ export default {
           key: "sources",
           type: "select",
           width: 120,
-          options: [
-            {
-              value: "1",
-              label: "test",
-            },
-          ],
+          options: [],
           attrs: {
             clearable: true,
             placeholder: "渠道来源",
@@ -266,7 +261,26 @@ export default {
         //     clearable: true,
         //     placeholder: '成交状态',
         //   },
-        // },
+        // },0 课程  1学员
+        {
+          key: "aid",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "课程",
+            },
+            {
+              value: 1,
+              label: "学员",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "排序方式",
+          },
+        },
         {
           key: "keyword",
           attrs: {
@@ -276,6 +290,7 @@ export default {
       ],
       institutionOption: [],
       searchData: {
+        aid: 0,
         type: 0,
         date: "",
         course_category_id: [],
@@ -398,7 +413,6 @@ export default {
     },
     async onlineUserList() {
       const data = {
-        aid: 0,
         page: this.pageNum,
         ...this.searchData,
       };
