@@ -542,3 +542,39 @@ export function deletevideoclass(data) {
     data,
   })
 }
+// 章节排序
+export function videoChapterSort(data) {
+  return request({
+    url: 'batchSort/VideoChapter',
+    method: 'post',
+    data,
+  })
+}
+// 课程资料列表
+export function getCourseMaterialList(params) {
+  return request({
+    url: '/courseFile/fileList',
+    method: 'get',
+    params,
+  })
+}
+// 删除课程资料
+export function deleteCourseMaterial(data) {
+  return request({
+    url: 'courseFile/deleteFile',
+    method: 'post',
+    data,
+  })
+}
+// 添加课程资料
+export const addCourseMaterial = `${process.env.VUE_APP_LOACTION}/courseFile/appendFile`
+// 修改课程资料
+export const updateCourseMaterial = `${process.env.VUE_APP_LOACTION}/courseFile/updateFile`
+// 课程资料详情
+export function getCourseMaterialDetail(params) {
+  return request({
+    url: '/courseFile/flieInfo',
+    method: 'get',
+    params,
+  })
+}
