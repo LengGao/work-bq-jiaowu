@@ -299,14 +299,18 @@ export const asyncRouter = [
         meta: { title: '订单管理', icon: 'product-cate' },
         hidden: true,
       },
-      //学生中心组件结束
       {
         path: 'classManage',
         name: 'classManage',
         component: () => import('@/views/eda/classManage.vue'),
         meta: { title: '班级管理', icon: 'product-cate' },
       },
-      //班级管理组件开始
+      {
+        path: 'classLive',
+        name: 'classLive',
+        component: () => import('@/views/eda/classLive/index.vue'),
+        meta: { title: '班级直播', icon: 'product-cate' },
+      },
       {
         path: 'learnerManage',
         name: 'learnerManage',
