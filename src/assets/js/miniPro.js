@@ -612,23 +612,25 @@ let minipro = {
         let data = res.data.data
         self.ruleForm.menu_name = data.menu_name
         //对数组进行倒序处理
-        let arr = data.parent_id_arr
+        var arr = data.parent_id_arr
         console.log(arr)
-        if (data.menu_type == 1) {
-          //菜单对上级目录进行反选
-          arr.reverse()
-          if (arr.length > 1) {
-            arr.splice(0, 1)
-            arr.push(data.id)
-          }
-        } else {
-          //功能对上级目录进行反选
-          arr.reverse()
-          if (arr.length > 1) {
-            arr.splice(0, 1)
-          }
+        // if (data.menu_type == 1) {
+        //菜单对上级目录进行反选
+        arr.reverse()
+        if (arr.length > 1) {
+          arr.splice(0, 1)
+          // arr.push(data.id)
         }
-
+        // }
+        // else {
+        //   //功能对上级目录进行反选
+        //   arr.reverse()
+        //   if (arr.length > 1) {
+        //     arr.splice(0, 1)
+        //     // arr.push(data.id)
+        //   }
+        // }
+        console.log(arr)
         self.parent_id_arr = [...data.parent_id_arr]
         self.ruleForm.parent_id = data.parent_id
         console.log(data.parent_id)
