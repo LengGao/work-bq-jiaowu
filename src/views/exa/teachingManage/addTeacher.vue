@@ -129,7 +129,6 @@ export default {
           { required: true, message: '请输入老师简介', trigger: 'blur' },
           { min: 3, max: 250, message: '长度在 3 到 250 个字符' },
         ],
-
         telephone: [
           { required: true, message: '请输入手机号码', trigger: 'blur' },
           {
