@@ -56,7 +56,6 @@ export default {
       this.requestId = val;
     },
     defaultFiles(data) {
-      console.log(data);
       this.fileList = [...data];
     },
   },
@@ -89,7 +88,6 @@ export default {
       this.upload();
     },
     upload() {
-      console.log("start");
       this.aliyunUpload.startUpload();
     },
     //获取上传凭证
@@ -101,7 +99,10 @@ export default {
         title,
         file_name,
       };
-      const res = await updatecreate(data);
+      const res = await updatecreate(data).catch(() => {
+        // 重置
+        this.initAliYun();
+      });
       if (res.code === 0) {
         const data = res.data;
         this.aliyunUpload.setUploadAuthAndAddress(
@@ -118,7 +119,10 @@ export default {
       const data = {
         videoId,
       };
-      const res = await refreshuploadvideo(data);
+      const res = await refreshuploadvideo(data).catch(() => {
+        // 重置
+        this.initAliYun();
+      });
       if (res.code === 0) {
         const data = res.data;
         this.aliyunUpload.setUploadAuthAndAddress(
@@ -146,17 +150,17 @@ export default {
         retryDuration: 2,
         //开始上传
         onUploadstarted: async (uploadInfo) => {
-          console.log(!uploadInfo.videoId);
+          // 没有videoId就获取凭证后上传
           if (!uploadInfo.videoId) {
             this.updatecreate(uploadInfo);
           } else {
+            // 有就刷新凭证后上传
             this.refreshuploadvideo(uploadInfo.videoId);
           }
         },
         //文件上传成功
         onUploadSucceed: (uploadInfo) => {
           this.onSuccess(uploadInfo);
-          console.log(uploadInfo);
           this.fileList = [];
           this.fileList.push({
             name: uploadInfo.file.name,
@@ -166,15 +170,13 @@ export default {
         //文件上传失败
         onUploadFailed: (uploadInfo, code, message) => {
           this.fileList = [];
+          console.log("文件上传失败", code, message);
           this.onError(uploadInfo, code, message);
         },
         //文件上传进度，单位：字节
         onUploadProgress: (uploadInfo, totalSize, loadedPercent) => {
-          const progress = loadedPercent * 100;
-          this.percentage = progress === 100 ? 99 : progress;
-          setTimeout(() => {
-            this.percentage = 100;
-          }, 1000);
+          let progress = Math.floor(loadedPercent * 100);
+          this.percentage = progress || +(Math.random() * 1).toFixed(2);
         },
         //上传凭证或STS token超时
         onUploadTokenExpired: (uploadInfo) => {

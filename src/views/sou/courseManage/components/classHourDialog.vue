@@ -33,19 +33,21 @@
       <el-form-item label="课时名称" prop="video_class_name">
         <el-input
           v-model="formData.video_class_name"
-          placeholder="请输入章节简介"
+          placeholder="请输入课时名称"
           maxlength="20"
         />
       </el-form-item>
-      <el-form-item label="章节排序" prop="video_class_sort">
+      <el-form-item label="课时排序" prop="video_class_sort">
         <el-input
           type="number"
           v-model="formData.video_class_sort"
-          placeholder="请输入章节排序"
+          placeholder="序号越大越靠前"
           maxlength="10"
         />
       </el-form-item>
       <el-form-item label="上传视频" prop="media_id">
+        <!-- 用来更新验证用 不显示 -->
+        <el-input v-show="false" v-model="formData.media_id"></el-input>
         <AliyunUpload
           :defaultFiles="defaultFiles"
           :on-success="handleUploadSuccess"
@@ -190,9 +192,9 @@ export default {
       });
       this.addLoading = false;
       if (res.code === 0) {
+        this.$emit("on-success", this.formData.video_chapter_id);
         this.$message.success(res.message);
         this.resetForm("formData");
-        this.$emit("on-success");
       }
     },
     submitForm(formName) {

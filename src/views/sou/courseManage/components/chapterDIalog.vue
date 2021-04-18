@@ -36,7 +36,7 @@
         <el-input
           type="number"
           v-model="formData.video_chapter_sort"
-          placeholder="请输入章节排序"
+          placeholder="序号越大越靠前"
           maxlength="10"
         />
       </el-form-item>

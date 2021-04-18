@@ -65,9 +65,11 @@
                 v-model="ruleForm.location"
               ></el-input> -->
         </el-form-item>
+
         <el-form-item label="推荐机构" prop="from_organization_id">
-          <el-cascader class="input-width" v-model="ruleForm.from_organization_id" :options="institutionOption"></el-cascader>
+          <el-cascader class="input-width" v-model="ruleForm.from_organization_id" :options="institutionOption" filterable clearable></el-cascader>
         </el-form-item>
+
         <el-form-item label="渠道来源" prop="sources">
           <el-select v-model="ruleForm.sources" placeholder="请选择" class="input-width">
             <el-option v-for="item in field_content" :key="item.value" :label="item.label" :value="item.value">

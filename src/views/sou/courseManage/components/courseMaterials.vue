@@ -100,11 +100,11 @@ export default {
       listTotal: 0,
       searchData: {
         cate_id: [],
-        search_box: "",
+        fileName: "",
       },
       searchOptions: [
         {
-          key: "search_box",
+          key: "fileName",
           attrs: {
             placeholder: "资料名称",
           },
@@ -172,7 +172,7 @@ export default {
       this.listLoading = true;
       const res = await getCourseMaterialList(data);
       this.listLoading = false;
-      this.listData = res.data;
+      this.listData = res.data.data;
       this.listTotal = res.data.total;
     },
   },

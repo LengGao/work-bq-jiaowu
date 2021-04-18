@@ -39,17 +39,19 @@
           element-loading-background="#fff"
           tooltip-effect="light"
           stripe
-          style="width: 100%;"
+          style="width: 100%"
           :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
           class="min_table"
         >
+          <!-- :cell-style="{ 'text-align': 'center' }" -->
+
           <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
             prop="course_id"
             label="课程编号"
             show-overflow-tooltip
             min-width="90"
+            align="center"
           ></el-table-column>
 
           <el-table-column
@@ -57,29 +59,34 @@
             label="课程名称"
             min-width="200"
             column-key="course_id"
+            align="left"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="category_name"
             label="课程分类"
             min-width="100"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="class_type_name"
             label="课程班型"
+            align="center"
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="course_price"
             label="课程价格"
+            align="center"
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
             label="是否上架"
+            align="center"
             min-width="100"
             show-overflow-tooltip
           >
@@ -96,9 +103,14 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column
+            label="操作"
+            fixed="right"
+            align="center"
+            min-width="200"
+          >
             <template slot-scope="scope">
-              <div style="display: flex; justify-content:center;">
+              <div style="display: flex; justify-content: center">
                 <el-button
                   type="text"
                   v-if="scope.row.class_type == 1"
@@ -138,33 +150,33 @@
 </template>
 
 <script>
-import SearchList from '@/components/SearchList/index'
+import SearchList from "@/components/SearchList/index";
 import {
   getCourseList,
   getCateList,
   bashPublish,
   deleteCourses,
-} from '@/api/sou'
+} from "@/api/sou";
 export default {
-  course_id: '',
+  course_id: "",
   components: {
     SearchList,
   },
-  name: 'courseManage',
+  name: "courseManage",
   data() {
     return {
       ruleForm: {
-        category_id: '',
+        category_id: "",
       },
       isTagactive: 1,
       tabFun: [
         {
           id: 1,
-          name: '自建课程',
+          name: "自建课程",
         },
         {
           id: 2,
-          name: '公共课程',
+          name: "公共课程",
         },
       ],
       selectData: [],
@@ -174,128 +186,128 @@ export default {
       listTotal: 0,
       searchData: {
         course_category_id: [],
-        course_name: '',
+        course_name: "",
       },
       searchOptions: [
         {
-          key: 'course_category_id',
-          type: 'cascader',
+          key: "course_category_id",
+          type: "cascader",
           attrs: {
             clearable: true,
-            options: [{ value: 1, label: 'test' }],
+            options: [{ value: 1, label: "test" }],
           },
         },
         {
-          key: 'course_name',
+          key: "course_name",
           attrs: {
-            placeholder: '课程名称',
+            placeholder: "课程名称",
           },
         },
       ],
-    }
+    };
   },
   created() {
-    this.getCourseList()
-    this.getCateList()
+    this.getCourseList();
+    this.getCateList();
   },
   mounted() {},
 
   methods: {
     toPackageDetail(row) {
       this.$router.push({
-        name: 'packageDetail',
+        name: "packageDetail",
         query: {
           setMeal: row.class_type,
           course_id: row.course_id,
         },
-      })
+      });
     },
     handleDelete(row) {
-      this.$confirm('你正在删除该课程,,请谨慎操作?', '提示', {
-        confirmButtonText: '删除',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("你正在删除该课程,,请谨慎操作?", "提示", {
+        confirmButtonText: "删除",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.deleteCourses(row.course_id)
+          this.deleteCourses(row.course_id);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     toConfigureCourses(ab) {
       this.$router.push({
-        path: '/sou/configureCourses',
+        path: "/sou/configureCourses",
         query: {
           course_id: ab.course_id,
           video_collection_id: ab.video_collection_id,
         },
-      })
+      });
     },
     async bashPublish(ab) {
-      const data = { course_ids: [ab.course_id], is_publish: ab.is_publish }
-      const res = await bashPublish(data)
-      console.log(res)
+      const data = { course_ids: [ab.course_id], is_publish: ab.is_publish };
+      const res = await bashPublish(data);
+      console.log(res);
       if (res.code === 0) {
-        this.$message.success(res.message)
-        this.getCourseList()
+        this.$message.success(res.message);
+        this.getCourseList();
       }
     },
     async deleteCourses(course_id) {
-      const data = { course_id: course_id }
-      const res = await deleteCourses(data)
-      console.log(res)
+      const data = { course_id: course_id };
+      const res = await deleteCourses(data);
+      console.log(res);
       if (res.code === 0) {
-        this.$message.success(res.message)
-        this.getCourseList()
+        this.$message.success(res.message);
+        this.getCourseList();
       }
     },
     release(ab, status) {
-      this.bashPublish(ab)
+      this.bashPublish(ab);
     },
     statusSwitch(ab) {
-      console.log(ab.id)
-      this.isTagactive = ab.id
+      console.log(ab.id);
+      this.isTagactive = ab.id;
     },
 
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
+        this.cloneData(res.data, this.selectData);
+        this.searchOptions[0].attrs.options = this.selectData;
       }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
     toCreateClass(ab) {
       this.$router.push({
-        path: '/sou/createClass',
+        path: "/sou/createClass",
         query: {
           course_id: ab.course_id,
         },
-      })
+      });
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getCourseList()
+      this.pageNum = val;
+      this.getCourseList();
     },
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.getCourseList()
+      this.pageNum = 1;
+      this.searchData = data;
+      this.getCourseList();
     },
     async getCourseList() {
       const data = {
@@ -303,15 +315,15 @@ export default {
         ...this.searchData,
         // category_id: data.category_id ? data.category_id.pop() : '',
         course_category_id: this.searchData.course_category_id.pop(),
-      }
-      this.listLoading = true
-      const res = await getCourseList(data)
-      this.listLoading = false
-      this.listData = res.data.list
-      this.listTotal = res.data.total
+      };
+      this.listLoading = true;
+      const res = await getCourseList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -339,7 +351,7 @@ export default {
   width: 133px;
   display: flex;
   justify-content: space-between;
-  font-family: 'Microsoft YaHei UI', sans-serif;
+  font-family: "Microsoft YaHei UI", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
