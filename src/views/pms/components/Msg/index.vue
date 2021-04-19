@@ -36,7 +36,7 @@
         </h3>
         <div class="notictitle">
           <p>发布时间：{{ noticData.create_time }}</p>
-          <p>发布人：{{ noticData.staff_name }}</p>
+          <p style="margin-left:30px">发布人：{{ noticData.staff_name }}</p>
         </div>
         <div class="noticontent">
           <div v-html="noticData.content"></div>
