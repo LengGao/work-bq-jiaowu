@@ -52,17 +52,14 @@
           ></el-table-column>
 
           <el-table-column
-            prop="project_price"
             label="项目价格"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
-          <!-- <el-table-column
-            prop="category_name"
-            label="适用校区"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column> -->
+          >
+            <template slot-scope="{ row }">
+              <div>￥{{ row.project_price }}</div>
+            </template>
+          </el-table-column>
         </el-table>
         <div class="table_bottom" style="display:flex;justify-content:flex-end">
           <page
@@ -133,13 +130,14 @@ export default {
           type: 'cascader',
           attrs: {
             clearable: true,
+            placeholder: '请选择所属分类',
             options: [{ value: 1, label: 'test' }],
           },
         },
         {
           key: 'course_name',
           attrs: {
-            placeholder: '课程名称',
+            placeholder: '请输入项目名称',
           },
         },
       ],

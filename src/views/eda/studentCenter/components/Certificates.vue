@@ -3,18 +3,34 @@
   <div class="certificates" v-loading="loading">
     <div class="certificates-header">
       <el-button @click="handlePreview">查看大图</el-button>
-      <el-button :loading="downloadLoading" @click="zipDownload">打包下载</el-button>
+      <el-button :loading="downloadLoading" @click="zipDownload"
+        >打包下载</el-button
+      >
     </div>
     <div class="certificates-uploads">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
-        <el-upload name="image" :headers="headers" :action="uploadImageUrl" :show-file-list="false" :on-error="() => handleUploadError(index)" :on-success="
+        <el-upload
+          name="image"
+          :headers="headers"
+          :action="uploadImageUrl"
+          :show-file-list="false"
+          :on-error="() => handleUploadError(index)"
+          :on-success="
             (res, file) => handleUploadSuccess(res, file, item.key, index)
-          " :before-upload="(file) => beforeUpload(file, index)">
+          "
+          :before-upload="(file) => beforeUpload(file, index)"
+        >
           <div v-if="photoData[item.key]" class="imgs">
             <img :src="photoData[item.key]" />
-            <i class="del el-icon-close" @click.stop="hanldeDelete(item.key)"></i>
+            <i
+              class="del el-icon-close"
+              @click.stop="hanldeDelete(item.key)"
+            ></i>
           </div>
-          <i v-if="!item.loading && !photoData[item.key]" class="el-icon-plus upload-item-icon"></i>
+          <i
+            v-if="!item.loading && !photoData[item.key]"
+            class="el-icon-plus upload-item-icon"
+          ></i>
           <i class="el-icon-loading upload-loading" v-if="item.loading"></i>
         </el-upload>
         <p>{{ item.name }}</p>

@@ -59,7 +59,6 @@ export const constantRouterMap = [
 ]
 
 export const asyncRouter = [
-
   {
     path: '/sou',
     component: Layout,
@@ -669,6 +668,7 @@ const routeToMap = (routers) => {
   const deep = (routers, routesMap) => {
     routers.forEach((route) => {
       const { children, ...reset } = route
+
       routesMap[route.name] = reset
       if (route.children && route.children.length) {
         deep(route.children, routesMap)
@@ -676,12 +676,14 @@ const routeToMap = (routers) => {
     })
   }
   deep(routers, routerMap)
+
   return routerMap
 }
 const asyncRouterMap = routeToMap(asyncRouter)
 
 // 根据接口返回的数据创建路由
 export const createUserRouter = (data) => {
+  console.log(data)
   const userRouter = []
   const menuList = []
   const deepCreate = (data, userRouter, menuList) => {
