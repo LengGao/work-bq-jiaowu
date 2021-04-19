@@ -311,6 +311,12 @@ export const asyncRouter = [
         meta: { title: '班级直播', icon: 'product-cate' },
       },
       {
+        path: 'liveSessions',
+        name: 'liveSessions',
+        component: () => import('@/views/eda/liveSessions/index.vue'),
+        meta: { title: '直播场次', icon: 'product-cate' },
+      },
+      {
         path: 'learnerManage',
         name: 'learnerManage',
         component: () => import('@/views/eda/classManage/learnerManage.vue'),

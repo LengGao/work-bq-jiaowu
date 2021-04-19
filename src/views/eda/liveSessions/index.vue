@@ -9,7 +9,6 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary" @click="openAdd">添加直播</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
@@ -34,49 +33,38 @@
           </el-table-column>
           <el-table-column
             prop="classroom_name"
-            label="直播名称"
+            label="直播场次"
             min-width="220"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="category_name"
-            label="直播班级"
+            label="最早推流时间"
             min-width="120"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="project_name"
-            label="课程类型"
+            label="最晚断流时间"
             min-width="180"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="course_name"
-            label="课程名称"
+            label="实时在线人数"
             min-width="180"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
-            prop="staff_name"
-            label="状态"
-            min-width="110"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span class="live-status">无直播</span>
-              <span class="live-status live-status-active">无直播</span>
-            </template>
-          </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="240">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text">开始直播</el-button>
-                <el-button type="text" @click="linkTo(row)">直播场次</el-button>
+                <el-button type="text">直播链接</el-button>
+                <el-button type="text">直播详情</el-button>
                 <el-button type="text" @click="openEdit(row.classroom_id)"
-                  >编辑</el-button
+                  >回顾视频</el-button
                 >
-                <el-button type="text">删除</el-button>
+                <el-button type="text">学习资料</el-button>
               </div>
             </template>
           </el-table-column>
@@ -90,26 +78,21 @@
         </div>
       </div>
       <!--弹框-->
-      <LiveDialog
+      <!-- <LiveDialog
         v-model="dialogVisible"
         :title="dialogTitle"
         :id="currentId"
         :typeOptions="typeOptions"
         @on-success="getClassList"
-      />
+      /> -->
     </section>
   </div>
 </template>
 
 <script>
 import { getClassList } from "@/api/eda";
-import { cloneOptions } from "@/utils/index";
-import { getCateList } from "@/api/sou";
-import LiveDialog from "./components/LiveDialog";
+// import LiveDialog from "./components/LiveDialog";
 export default {
-  components: {
-    LiveDialog,
-  },
   data() {
     return {
       listData: [],
@@ -123,41 +106,9 @@ export default {
       },
       searchOptions: [
         {
-          key: "category_id",
-          type: "cascader",
-          width: 120,
-          attrs: {
-            placeholder: "所属分类",
-            clearable: true,
-            props: { checkStrictly: true },
-            filterable: true,
-            options: [],
-          },
-        },
-        {
-          key: "project_id",
-          type: "select",
-          options: [
-            {
-              label: 0,
-              value: "无直播",
-            },
-            {
-              label: 1,
-              value: "直播中",
-            },
-          ],
-          optionValue: "project_id",
-          optionLabel: "project_name",
-          attrs: {
-            placeholder: "直播状态",
-            clearable: true,
-          },
-        },
-        {
           key: "keyword",
           attrs: {
-            placeholder: "直播名称/班级名称",
+            placeholder: "直播名称",
           },
         },
       ],
@@ -169,7 +120,6 @@ export default {
   },
 
   created() {
-    this.getCateList();
     this.getClassList();
   },
   methods: {
@@ -187,7 +137,6 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: data.category_id ? data.category_id.pop() : "",
       };
       this.getClassList();
     },
@@ -195,19 +144,7 @@ export default {
       this.pageNum = val;
       this.getClassList();
     },
-    // 获取所属分类
-    async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
-      if (res.code === 0) {
-        this.searchOptions[0].attrs.options = this.typeOptions = cloneOptions(
-          res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
-      }
-    },
+
     async getClassList() {
       const data = {
         page: this.pageNum,
@@ -218,9 +155,6 @@ export default {
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
-    },
-    linkTo(row) {
-      this.$router.push({ name: "liveSessions" });
     },
   },
 };
@@ -253,25 +187,6 @@ export default {
 }
 .userTable {
   margin-top: 20px;
-  .live-status {
-    color: #999999;
-    &::before {
-      display: inline-block;
-      content: "";
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background-color: #999999;
-      vertical-align: middle;
-      margin-right: 4px;
-    }
-    &-active {
-      color: #00c297;
-      &::before {
-        background-color: #00c297;
-      }
-    }
-  }
 }
 .table_bottom {
   text-align: right;
