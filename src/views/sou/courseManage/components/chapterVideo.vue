@@ -77,11 +77,8 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <el-input
-              type="number"
-              v-model="row.sort"
-              @blur="handleSort(row)"
-            />
+            <el-input type="number" v-if="isEdit" v-model="row.sort" />
+            <span v-else>{{ row.sort }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -121,6 +118,14 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
+        <div v-if="isEdit">
+          <el-button @click="handleEditCancel">取消</el-button>
+          <el-button type="primary" @click="handleBatchSort">保存</el-button>
+        </div>
+        <div v-else>
+          <el-button @click="showEdit">批量排序</el-button>
+        </div>
+
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -189,6 +194,8 @@ export default {
       classHourDialogVisible: false,
       treeId: 0,
       treeLoadMap: new Map(),
+      //排序
+      isEdit: false,
     };
   },
 
@@ -198,6 +205,30 @@ export default {
   },
 
   methods: {
+    handleBatchSort() {
+      const videoSortMaps = {};
+      this.listData.forEach((item) => {
+        videoSortMaps[item.id] = item.sort;
+      });
+      const classSortMaps = {};
+      const allChildren = [];
+      const lazyTreeNodeMap = this.$refs.multipleTable.store.states
+        .lazyTreeNodeMap;
+      for (let k in lazyTreeNodeMap) {
+        allChildren.push(...lazyTreeNodeMap[k]);
+      }
+      allChildren.forEach((item) => {
+        classSortMaps[item.id] = item.sort;
+      });
+      allChildren.length && this.videoClassSort(classSortMaps);
+      this.videoChapterSort(videoSortMaps);
+    },
+    handleEditCancel() {
+      this.getvideochapterList();
+    },
+    showEdit() {
+      this.isEdit = true;
+    },
     handleSort(row) {
       if (row.parentId) {
         this.videoClassSort(row);
@@ -206,22 +237,20 @@ export default {
       }
     },
     // 课时排序
-    async videoClassSort(row) {
+    async videoClassSort(sortAry) {
       const data = {
-        video_class_id: row.id,
-        sort: row.sort * 1,
+        sortAry,
       };
       const res = await videoClassSort(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.updateTableChildren(row.parentId);
+        this.getvideochapterList();
       }
     },
     // 章节排序
-    async videoChapterSort(row) {
+    async videoChapterSort(sortAry) {
       const data = {
-        video_chapter_id: row.id,
-        sort: row.sort,
+        sortAry,
       };
       const res = await videoChapterSort(data);
       if (res.code === 0) {
@@ -327,6 +356,7 @@ export default {
     },
     // 章节列表
     async getvideochapterList() {
+      this.isEdit = false;
       const data = {
         video_collection_id: this.$route.query?.video_collection_id || "",
         page: this.pageNum,
@@ -412,7 +442,9 @@ export default {
     }
   }
   .table_bottom {
-    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 </style>

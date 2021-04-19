@@ -318,6 +318,12 @@ export const asyncRouter = [
         meta: { title: '直播场次', icon: 'product-cate' },
       },
       {
+        path: 'liveDetails',
+        name: 'liveDetails',
+        component: () => import('@/views/eda/liveDetails/index.vue'),
+        meta: { title: '直播详情', icon: 'product-cate' },
+      },
+      {
         path: 'learnerManage',
         name: 'learnerManage',
         component: () => import('@/views/eda/classManage/learnerManage.vue'),
