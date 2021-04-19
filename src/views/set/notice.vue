@@ -70,7 +70,6 @@
                 </el-select>
               </el-form-item>
             </div>
-
           </el-form>
         </div>
         <span slot="footer" class="dialog-footer">
@@ -80,17 +79,17 @@
       </el-dialog>
       <!-- 弹窗 -->
       <el-dialog :title="dialogTitle" :visible.sync="dialogVisible2" width="45%" :close-on-click-modal="false">
-        <div :model="ruleForm" :rules="rules" ref="ruleForm">
+        <div>
           <h3 class="detailtitle">
-            {{ ruleForm.title }}
+            {{ noticData.title }}
           </h3>
           <div class="notictitle">
-            <p>发布时间：{{ ruleForm.update_time }}</p>
-            <p>发布人：{{ruleForm.staff_name }}</p>
-            <p>已读人数：{{ ruleForm.read_count }}</p>
+            <p>发布时间：{{ noticData.update_time }}</p>
+            <p>发布人：{{ noticData.staff_name }}</p>
+            <p>已读人数：{{ noticData.read_count }}</p>
           </div>
           <div class="noticontent">
-            <div v-html="ruleForm.content"></div>
+            <div v-html="noticData.content"></div>
           </div>
         </div>
         <span slot="footer" class="dialog-footer">
@@ -174,6 +173,15 @@ export default {
         datatime: '',
         content: '',
       },
+      noticData: {
+        id: '',
+        datatime: '',
+        content: '',
+        title: '',
+        read: '',
+        read_count: '',
+        staff_name: '',
+      },
       rules: {
         title: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
         content: [{ required: true, message: '请输入公告摘要', trigger: 'blur' }],
@@ -210,6 +218,7 @@ export default {
       this.dialogTitle = '推送提醒'
       this.id = id.id
       this.dialogVisible3 = true
+      this.noticelist()
     },
     pushentry(id) {
       this.dialogVisible3 = false
@@ -303,12 +312,12 @@ export default {
     //公告详情
     async noticeinfo() {
       const data = {
-        id: this.ruleForm.id,
+        id: this.id,
       }
       console.log(data)
       const res = await noticeinfo(data)
       if (res.code == 0) {
-        this.noticelist()
+        this.noticData = res.data
         this.dialogVisible = false
       }
     },
@@ -323,6 +332,7 @@ export default {
         }
       })
     },
+    noticdetailcl() {},
     //搜索功能
     handleSearch(data) {
       this.pageNum = 1
@@ -348,13 +358,12 @@ export default {
       this.dialogVisible = true
       this.id = ab.id
     },
-    viewdetails(ab) {
-      console.log(ab)
-      this.dialogTitle = '公告详情'
-      this.ruleForm = ab
-      this.dialogVisible2 = true
-      this.id = ab.id
+    viewdetails(row) {
+      this.id = row.id
       this.noticeinfo()
+      this.dialogTitle = '公告详情'
+      this.dialogVisible2 = true
+      this.noticelist()
     },
     submitForm(formName) {
       console.log(this.ruleForm)

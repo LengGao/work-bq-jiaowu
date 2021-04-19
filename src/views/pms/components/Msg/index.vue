@@ -10,11 +10,7 @@
     <div v-if="activeName !== '5'">
       <el-tabs v-model="activeNames" @tab-click="handleClick">
         <el-tab-pane name="1">
-          <span slot="label"
-            >未读<el-badge
-              v-if="activeNames == 1"
-              :value="noreadcount"
-            ></el-badge>
+          <span slot="label">未读<el-badge v-if="activeNames == 1" :value="noreadcount"></el-badge>
           </span>
         </el-tab-pane>
         <el-tab-pane label="已读" name="2"> </el-tab-pane>
@@ -24,30 +20,16 @@
       <li class="msg-item" v-for="(item, index) in listdata" :key="index">
         <!-- <span class="msg-icon"></span> -->
         <span class="msg-item-info" :title="item.title" @click="msgclick(item)">
-          {{ item.title }}</span
-        >
+          {{ item.title }}</span>
         <span class="msg-item-date" style="margin-left: auto">{{
           item.create_time
         }}</span>
       </li>
     </ul>
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="pageNum"
-      :page-sizes="[8, 16, 24]"
-      layout="total, prev, pager, next, jumper"
-      :total="total"
-    >
+    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :page-sizes="[8, 16, 24]" layout="total, prev, pager, next, jumper" :total="total">
     </el-pagination>
     <!-- 弹窗 -->
-    <el-dialog
-      :title="dialogTitle"
-      :visible.sync="dialogVisible"
-      width="35%"
-      v-if="activeName !== '5'"
-      :close-on-click-modal="false"
-    >
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="35%" :close-on-click-modal="false">
       <div>
         <h3 class="detailtitle">
           {{ noticData.title }}
@@ -61,25 +43,17 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="Markunread(noticData.id)" v-if="activeNames == 2"
-          >标为未读</el-button
-        >
-        <el-button type="primary" @click="dialogVisible = false"
-          >知道了</el-button
-        >
+        <el-button @click="Markunread(noticData.id)" v-if="activeNames == 2">标为未读</el-button>
+        <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
-import {
-  getSystemAnnouncementList,
-  getAnnouncementInfo,
-  setUnread,
-} from "@/api/workbench";
-import { followRoute } from "@/utils/index";
+import { getSystemAnnouncementList, getAnnouncementInfo, setUnread } from '@/api/workbench'
+import { followRoute } from '@/utils/index'
 export default {
-  name: "Msg",
+  name: 'Msg',
   props: {
     data: {
       type: Array,
@@ -88,41 +62,41 @@ export default {
   },
   data() {
     return {
-      activeName: "1",
-      activeNames: "1",
-      readType: "",
+      activeName: '1',
+      activeNames: '1',
+      readType: '',
       readMap: {
-        1: "已读",
-        2: "未读",
+        1: '已读',
+        2: '未读',
       },
-      pageSize: "7",
+      pageSize: '7',
       total: 0,
       pageNum: 1,
       dialogVisible: false,
-      dialogTitle: "",
-      handleSizeChanges: "",
-      id: "",
+      dialogTitle: '',
+      handleSizeChanges: '',
+      id: '',
       rules: {},
       noticData: {
-        id: "",
-        datatime: "",
-        content: "",
-        title: "",
-        read: "",
-        read_count: "",
-        staff_name: "",
+        id: '',
+        datatime: '',
+        content: '',
+        title: '',
+        read: '',
+        read_count: '',
+        staff_name: '',
       },
       listdata: [],
-      noreadcount: "",
-    };
+      noreadcount: '',
+    }
   },
   created() {
-    this.getSystemAnnouncementList();
+    this.getSystemAnnouncementList()
   },
   methods: {
     Markunread(id) {
-      this.setUnread(id);
-      this.dialogVisible = false;
+      this.setUnread(id)
+      this.dialogVisible = false
     },
     //公告列表接口
     async getSystemAnnouncementList() {
@@ -130,60 +104,60 @@ export default {
         limit: this.pageSize,
         page: this.pageNum,
         read: this.activeNames,
-      };
-      const res = await getSystemAnnouncementList(data);
-      console.log(res.data.list);
-      this.listdata = res.data.list;
-      this.activeNames == 1 ? (this.noreadcount = res.data.list.length) : "";
-      this.total = res.data.total;
+      }
+      const res = await getSystemAnnouncementList(data)
+      console.log(res.data.list)
+      this.listdata = res.data.list
+      this.activeNames == 1 ? (this.noreadcount = res.data.list.length) : ''
+      this.total = res.data.total
     },
     msgclick(row) {
-      this.dialogTitle = "公告详情";
-      this.dialogVisible = true;
-      this.id = row.id;
-      this.getAnnouncementInfo();
+      this.dialogTitle = '公告详情'
+      this.dialogVisible = true
+      this.id = row.id
+      this.getAnnouncementInfo()
     },
     // 公告详情接口
     async getAnnouncementInfo() {
       const data = {
         id: this.id,
         // read: this.noticData.read,
-      };
-      const res = await getAnnouncementInfo(data);
+      }
+      const res = await getAnnouncementInfo(data)
       if (res.code == 0) {
-        this.noticData = res.data;
-        this.getSystemAnnouncementList();
+        this.noticData = res.data
+        this.getSystemAnnouncementList()
       }
     },
     // 已读未读接口
     async setUnread(id) {
       const data = {
         id,
-      };
-      const res = await setUnread(data);
+      }
+      const res = await setUnread(data)
       if (res.code == 0) {
-        this.$message.success(res.message);
-        this.getSystemAnnouncementList();
+        this.$message.success(res.message)
+        this.getSystemAnnouncementList()
       }
     },
     handleSizeChange(size) {
-      this.pageSize = size;
-      this.pageNum = 1;
-      this.getSystemAnnouncementList();
+      this.pageSize = size
+      this.pageNum = 1
+      this.getSystemAnnouncementList()
     },
     handleCurrentChange(page) {
-      this.pageNum = page;
-      this.getSystemAnnouncementList();
+      this.pageNum = page
+      this.getSystemAnnouncementList()
     },
 
     handleClick(val) {
-      console.log(val);
-      this.readType = val;
-      console.log(this.activeNames);
-      this.getSystemAnnouncementList();
+      console.log(val)
+      this.readType = val
+      console.log(this.activeNames)
+      this.getSystemAnnouncementList()
     },
   },
-};
+}
 </script>
 <style lang="scss" scoped>
 /deep/.el-badge {
