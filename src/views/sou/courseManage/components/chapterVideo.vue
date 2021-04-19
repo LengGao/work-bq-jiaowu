@@ -207,16 +207,18 @@ export default {
   methods: {
     handleBatchSort() {
       const videoSortMaps = {};
-      this.listData.forEach((item) => {
-        videoSortMaps[item.id] = item.sort;
-      });
       const classSortMaps = {};
       const allChildren = [];
       const lazyTreeNodeMap = this.$refs.multipleTable.store.states
         .lazyTreeNodeMap;
+      // 设置章节排序参数
+      this.listData.forEach((item) => {
+        videoSortMaps[item.id] = item.sort;
+      });
       for (let k in lazyTreeNodeMap) {
         allChildren.push(...lazyTreeNodeMap[k]);
       }
+      // 设置课时排序参数
       allChildren.forEach((item) => {
         classSortMaps[item.id] = item.sort;
       });
@@ -241,11 +243,7 @@ export default {
       const data = {
         sortAry,
       };
-      const res = await videoClassSort(data);
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.getvideochapterList();
-      }
+      await videoClassSort(data);
     },
     // 章节排序
     async videoChapterSort(sortAry) {
