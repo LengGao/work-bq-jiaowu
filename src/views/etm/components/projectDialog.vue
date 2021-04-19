@@ -78,7 +78,7 @@
           </p>
         </div>
         <ul>
-          <li v-for="(item, index) in choseCourse" :key="item.course_id">
+          <li v-for="item in choseCourse" :key="item.course_id">
             <p>{{ item.project_name }}</p>
             <i class="el-icon-delete" @click="handleRowClick(item)"></i>
           </li>
@@ -121,7 +121,7 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        course_name: '',
+        keyword: '',
       },
 
       searchOptions: [
@@ -135,7 +135,7 @@ export default {
           },
         },
         {
-          key: 'course_name',
+          key: 'keyword',
           attrs: {
             placeholder: '请输入项目名称',
           },
