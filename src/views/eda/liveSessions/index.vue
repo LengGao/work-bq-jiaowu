@@ -56,14 +56,14 @@
             min-width="180"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="240">
+          <el-table-column label="操作" fixed="right" min-width="280">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text">直播链接</el-button>
-                <el-button type="text">直播详情</el-button>
                 <el-button type="text" @click="openEdit(row.classroom_id)"
-                  >回顾视频</el-button
+                  >直播链接</el-button
                 >
+                <el-button type="text" @click="linkTo(row)">直播详情</el-button>
+                <el-button type="text">回顾视频</el-button>
                 <el-button type="text">学习资料</el-button>
               </div>
             </template>
@@ -78,21 +78,22 @@
         </div>
       </div>
       <!--弹框-->
-      <!-- <LiveDialog
+      <LiveLinkDialog
         v-model="dialogVisible"
-        :title="dialogTitle"
+        title="直播链接"
         :id="currentId"
-        :typeOptions="typeOptions"
-        @on-success="getClassList"
-      /> -->
+      />
     </section>
   </div>
 </template>
 
 <script>
 import { getClassList } from "@/api/eda";
-// import LiveDialog from "./components/LiveDialog";
+import LiveLinkDialog from "./components/LiveLinkDialog";
 export default {
+  components: {
+    LiveLinkDialog,
+  },
   data() {
     return {
       listData: [],
@@ -113,7 +114,6 @@ export default {
         },
       ],
       currentId: "",
-      dialogTitle: "添加直播",
       dialogVisible: false,
       typeOptions: [],
     };
@@ -123,14 +123,11 @@ export default {
     this.getClassList();
   },
   methods: {
-    openEdit(id) {
-      this.dialogTitle = "编辑直播";
-      this.currentId = id;
-      this.dialogVisible = true;
+    linkTo(row) {
+      this.$router.push({ name: "liveDetails" });
     },
-    openAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加直播";
+    openEdit(id) {
+      this.currentId = id;
       this.dialogVisible = true;
     },
     handleSearch(data) {

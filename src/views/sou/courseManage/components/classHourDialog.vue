@@ -41,7 +41,7 @@
         <el-input
           type="number"
           v-model="formData.video_class_sort"
-          placeholder="序号越大越靠前"
+          placeholder="请输入"
           maxlength="10"
         />
       </el-form-item>
