@@ -8,6 +8,7 @@
           :data="searchData"
           @on-search="handleSearch"
         />
+        <el-button type="primary" @click="openAdd">添加视频</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
@@ -27,47 +28,55 @@
             label="编号"
             show-overflow-tooltip
             min-width="70"
-            prop="live_id"
+            prop="live_video_id"
           >
           </el-table-column>
           <el-table-column
-            prop="live_name"
-            label="直播场次"
+            prop="live_video_name"
+            label="视频名称"
             min-width="220"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="start_push_time"
-            label="最早推流时间"
+            prop="cover_url"
+            label="视频缩略图"
             min-width="120"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <div class="video-cover" v-if="row.cover_url">
+                <img
+                  @click="handlePreview(row.cover_url)"
+                  :src="row.cover_url"
+                  alt=""
+                />
+              </div>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="end_push_time"
-            label="最晚断流时间"
+            label="时长"
             min-width="180"
             show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="total_pople"
-            label="实时在线人数"
-            min-width="180"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="280">
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.media_duration">
+                {{ row.media_duration | filterDuration }}
+              </span>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="140">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openLiveLink(row.live_id)"
-                  >直播链接</el-button
+                <el-button type="text" @click="openEdit(row.live_video_id)"
+                  >编辑</el-button
                 >
-                <el-button type="text" @click="linkTo('liveDetails', row)"
-                  >直播详情</el-button
+                <el-button type="text" @click="deleteConfirm(row.live_video_id)"
+                  >删除</el-button
                 >
-                <el-button type="text" @click="linkTo('playbackVideo', row)"
-                  >回顾视频</el-button
-                >
-                <el-button type="text">学习资料</el-button>
               </div>
             </template>
           </el-table-column>
@@ -80,23 +89,24 @@
           />
         </div>
       </div>
-      <!--弹框-->
-      <LiveLinkDialog
+      <!-- 弹框 -->
+      <PlaybackVideoDialog
         v-model="dialogVisible"
-        title="直播链接"
-        :id="$route.query.live_class_id"
-        :sessionId="currentId"
+        :title="dialogTitle"
+        :id="currentId"
+        @on-success="livevideolist"
       />
+      <PreviewImg ref="view" />
     </section>
   </div>
 </template>
 
 <script>
-import { liveSessionList } from "@/api/eda";
-import LiveLinkDialog from "./components/LiveLinkDialog";
+import { livevideolist, deletelivevideo } from "@/api/eda";
+import PlaybackVideoDialog from "./components/PlaybackVideoDialog";
 export default {
   components: {
-    LiveLinkDialog,
+    PlaybackVideoDialog,
   },
   data() {
     return {
@@ -105,31 +115,57 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        search_box: "",
+        keyword: "",
       },
       searchOptions: [
         {
-          key: "search_box",
+          key: "keyword",
           attrs: {
-            placeholder: "直播名称",
+            placeholder: "视频名称",
           },
         },
       ],
       currentId: "",
       dialogVisible: false,
+      dialogTitle: "",
       typeOptions: [],
     };
   },
 
   created() {
-    this.liveSessionList();
+    this.livevideolist();
   },
   methods: {
-    linkTo(name, { live_class_id, live_id, course_id }) {
-      this.$router.push({ name, query: { live_class_id, live_id, course_id } });
+    // 删除视频
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此视频吗?", { type: "warning" })
+        .then(() => {
+          this.deletelivevideo(id);
+        })
+        .catch(() => {});
     },
-    openLiveLink(id) {
+    async deletelivevideo(live_video_id) {
+      const data = { live_video_id };
+      const res = await deletelivevideo(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.livevideolist();
+      }
+    },
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
+    linkTo(live_id) {
+      this.$router.push({ name: "liveDetails", query: { live_id } });
+    },
+    openEdit(id) {
       this.currentId = id;
+      this.dialogTitle = "编辑视频";
+      this.dialogVisible = true;
+    },
+    openAdd() {
+      this.currentId = "";
+      this.dialogTitle = "添加视频";
       this.dialogVisible = true;
     },
     handleSearch(data) {
@@ -137,23 +173,23 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.liveSessionList();
+      this.livevideolist();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.liveSessionList();
+      this.livevideolist();
     },
 
-    async liveSessionList() {
+    async livevideolist() {
       const data = {
-        id: this.$route.query.live_class_id || "",
+        live_id: this.$route.query.live_id || "",
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await liveSessionList(data);
+      const res = await livevideolist(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.data;
       this.listTotal = res.data.total;
     },
   },

@@ -648,3 +648,43 @@ export function livevideocount(params) {
     params,
   })
 }
+// 班级直播 -直播场次列表-回顾视频列表
+export function livevideolist(params) {
+  return request({
+    url: '/live/livevideolist',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-回顾视频列表-添加视频
+export function addlivevideo(data) {
+  return request({
+    url: '/live/addlivevideo',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -直播场次列表-回顾视频列表-编辑视频
+export function editlivevideo(data) {
+  return request({
+    url: '/live/editlivevideo',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -直播场次列表-回顾视频列表-视频详情
+export function getlivevideoDetail(params) {
+  return request({
+    url: '/live/editlivevideo',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-回顾视频列表-视频详情
+export function deletelivevideo(data) {
+  return request({
+    url: '/live/deletelivevideo',
+    method: 'post',
+    data,
+  })
+}

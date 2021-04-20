@@ -318,6 +318,12 @@ export const asyncRouter = [
         meta: { title: '直播场次', icon: 'product-cate' },
       },
       {
+        path: 'playbackVideo',
+        name: 'playbackVideo',
+        component: () => import('@/views/eda/liveSessions/playbackVideo/index.vue'),
+        meta: { title: '回顾视频', icon: 'product-cate' },
+      },
+      {
         path: 'liveDetails',
         name: 'liveDetails',
         component: () => import('@/views/eda/liveDetails/index.vue'),
