@@ -600,3 +600,51 @@ export function liveSessionList(params) {
     params,
   })
 }
+// 班级直播 -直播场次列表-直播详情
+export function getLiveDetail(params) {
+  return request({
+    url: '/LiveStatistic/getLiveDetail',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-直播详情-直播概况
+export function getLiveSummary(params) {
+  return request({
+    url: '/LiveStatistic/getLiveSummary',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-直播详情-直播统计
+export function getLiveStatisticForAdmin(params) {
+  return request({
+    url: '/LiveStatistic/getLiveStatisticForAdmin',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-直播详情-直播统计-班级选项
+export function getClassroomSelectByLiveId(params) {
+  return request({
+    url: '/LiveStatistic/getClassroomSelect',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-直播详情-直播统计-导出
+export function exportLiveStatisticForAdmin(params) {
+  return request({
+    url: '/LiveStatistic/exportLiveStatisticForAdmin',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-直播详情-回播统计
+export function livevideocount(params) {
+  return request({
+    url: '/live/livevideocount',
+    method: 'get',
+    params,
+  })
+}

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="head_remind">*本模块展示所有的班级直播。</div>
     <section class="mainwrap">
       <div class="client_head">
         <!--搜索模块-->
@@ -62,7 +61,9 @@
                 <el-button type="text" @click="openLiveLink(row.live_id)"
                   >直播链接</el-button
                 >
-                <el-button type="text" @click="linkTo(row)">直播详情</el-button>
+                <el-button type="text" @click="linkTo(row.live_id)"
+                  >直播详情</el-button
+                >
                 <el-button type="text">回顾视频</el-button>
                 <el-button type="text">学习资料</el-button>
               </div>
@@ -122,8 +123,8 @@ export default {
     this.liveSessionList();
   },
   methods: {
-    linkTo(row) {
-      this.$router.push({ name: "liveDetails" });
+    linkTo(live_id) {
+      this.$router.push({ name: "liveDetails", query: { live_id } });
     },
     openLiveLink(id) {
       this.currentId = id;
