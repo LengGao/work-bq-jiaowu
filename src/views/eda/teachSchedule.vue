@@ -83,10 +83,28 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
+            prop="last_class_time"
             label="结束日期"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
+          <el-table-column
+            prop="statue_name"
+            label="开课状态"
+            min-width="110"
+            show-overflow-tooltip
+          >
+            <template slot-scope="scope">
+              <div
+                :class="{
+                  green: scope.row[scope.column.property] === '开课中',
+                  red: scope.row[scope.column.property] === '已结束',
+                }"
+              >
+                {{ scope.row.statue_name }}
+              </div>
+            </template>
+          </el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
@@ -112,11 +130,12 @@
 </template>
 
 <script>
-import StudentDialog from "./teachSchedule/components/studentDialog";
-import { getTimetableList, getCateList } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
+import StudentDialog from './teachSchedule/components/studentDialog'
+import { getTimetableList, getCateList } from '@/api/sou'
+import { cloneOptions } from '@/utils/index'
+import { getcourseallclass } from '@/api/eda'
 export default {
-  name: "teachSchedule",
+  name: 'teachSchedule',
   components: {
     StudentDialog,
   },
@@ -127,97 +146,119 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-      class_id: "",
+      class_id: '',
       searchData: {
         category_id: [],
-        keyword: "",
+        keyword: '',
+        classroom_id: '',
       },
       searchOptions: [
         {
-          key: "date",
-          type: "datePicker",
+          key: 'date',
+          type: 'datePicker',
           attrs: {
-            type: "daterange",
-            "range-separator": "至",
-            "start-placeholder": "开始日期",
-            "end-placeholder": "结束日期",
-            format: "yyyy-MM-dd",
-            "value-format": "yyyy-MM-dd",
+            type: 'daterange',
+            'range-separator': '至',
+            'start-placeholder': '开始日期',
+            'end-placeholder': '结束日期',
+            format: 'yyyy-MM-dd',
+            'value-format': 'yyyy-MM-dd',
           },
         },
         {
-          key: "category_id",
-          type: "cascader",
+          key: 'category_id',
+          type: 'cascader',
           width: 120,
           attrs: {
-            placeholder: "所属分类",
+            placeholder: '所属分类',
             clearable: true,
             options: [],
           },
         },
         // {
-        //   key: 'keyword',
+        //   key: 'classroom_id',
+        //   type: 'select',
+        //   options: [],
+        //   optionValue: 'classroom_id',
+        //   optionLabel: 'classroom_name',
         //   attrs: {
-        //     placeholder: '教材名称/教材条码',
+        //     placeholder: '所属班级',
+        //     clearable: true,
         //   },
         // },
+        {
+          key: 'keyword',
+          attrs: {
+            placeholder: '请输入所属班级',
+          },
+        },
       ],
       schoolData: [],
       cateOptions: [],
 
       page: 1,
       studentdialogShow: false,
-    };
+    }
   },
   created() {
-    this.getCateList();
-    this.getTimetableList();
+    this.getcourseallclass()
+    this.getCateList()
+    this.getTimetableList()
     // this.$api.getTimetableList(this, 'schoolData')
   },
   methods: {
+    // 获取班级下拉
+    async getcourseallclass() {
+      const data = {}
+      const res = await getcourseallclass(data)
+      if (res.code === 0) {
+        this.classOptions = res.data
+        this.searchOptions[2].options = res.data
+      }
+    },
     toClassDetail(id) {
       this.$router.push({
-        name: "classDetail",
+        name: 'classDetail',
         query: {
           id,
         },
-      });
+      })
     },
     showStudent(classroom_id) {
-      this.studentdialogShow = true;
-      this.class_id = classroom_id;
-      console.log(this.class_id);
+      this.studentdialogShow = true
+      this.class_id = classroom_id
+      console.log(this.class_id)
     },
     handlePageChange(val) {
-      this.pageNum = val;
-      this.getTimetableList();
+      this.pageNum = val
+      this.getTimetableList()
     },
     handleSearch(data) {
-      console.log(data);
-      const times = data.date || ["", ""];
-      console.log(times);
-      delete data.date;
-      this.pageNum = 1;
+      console.log(data)
+      const times = data.date || ['', '']
+      console.log(times)
+      delete data.date
+      this.pageNum = 1
       this.searchData = {
         ...data,
         start_time: times[0],
         end_time: times[1],
 
-        category_id: data.category_id ? data.category_id.pop() : "",
-      };
-      this.getTimetableList();
+        category_id: data.category_id ? data.category_id.pop() : '',
+      }
+      this.getTimetableList()
     },
     // 获取所属分类
     async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
+      const data = { list: true }
+      const res = await getCateList(data)
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = this.cateOptions = cloneOptions(
           res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
+          'category_name',
+          'category_id',
+          'son'
+        )
       }
     },
     async getTimetableList() {
@@ -225,46 +266,53 @@ export default {
         page: this.pageNum,
         ...this.searchData,
         // category_id: this.searchData.category_id.pop(),
-      };
-      this.listLoading = true;
-      const res = await getTimetableList(data);
-      this.listLoading = false;
+      }
+      this.listLoading = true
+      const res = await getTimetableList(data)
+      this.listLoading = false
       for (var item of res.data.list) {
         if (item.frist_class_time != 0) {
           item.frist_class_time = this.$moment
             .unix(item.frist_class_time)
-            .format("YYYY-MM-DD");
+            .format('YYYY-MM-DD')
         } else {
-          item.frist_class_time = "未确定时间";
+          item.frist_class_time = '未确定时间'
+        }
+        if (item.last_class_time != 0) {
+          item.last_class_time = this.$moment
+            .unix(item.last_class_time)
+            .format('YYYY-MM-DD')
+        } else {
+          item.last_class_time = '未确定时间'
         }
       }
-      this.listData = res.data.list;
-      this.listTotal = res.data.total;
+      this.listData = res.data.list
+      this.listTotal = res.data.total
     },
 
     toTimetablePreview(ab) {
-      console.log(ab);
+      console.log(ab)
 
       this.$router.push({
-        path: "/eda/timetablePreview",
+        path: '/eda/timetablePreview',
         query: {
           param: JSON.stringify(ab),
         },
-      });
+      })
     },
 
     toAllSchedule() {
       this.$router.push({
-        path: "/eda/allSchedule",
-      });
+        path: '/eda/allSchedule',
+      })
     },
     toAddSchedule() {
       this.$router.push({
-        path: "/eda/addSchedule",
-      });
+        path: '/eda/addSchedule',
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -297,5 +345,17 @@ export default {
 .classroom_name {
   color: #199fff;
   cursor: pointer;
+}
+.green {
+  color: #43d100;
+}
+.unqualified {
+  color: #fd6500;
+}
+.red {
+  color: $error_color;
+}
+.blue {
+  color: #199fff;
 }
 </style>

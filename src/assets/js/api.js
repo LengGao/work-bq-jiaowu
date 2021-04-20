@@ -453,6 +453,7 @@ let api = {
           self.allDay = data.map((item) => item.date)
           data.forEach((item) => {
             self.infoMap[item.date] = item
+            console.log(self.infoMap)
           })
 
           // data.map((i) => {
