@@ -1,9 +1,15 @@
 <template>
   <section class="mainwrap">
-    <el-form ref="ruleForm" label-width="100px" label-position="right">
+    <el-form
+      ref="ruleForm"
+      :rules="rules"
+      label-width="100px"
+      :model="ruleForm"
+      label-position="right"
+    >
       <el-row>
         <el-col :lg="6" :md="6">
-          <el-form-item label="所属分类" prop="region">
+          <el-form-item label="所属分类" prop="category_id">
             <el-cascader
               class="com-width"
               v-model="ruleForm.category_id"
@@ -12,25 +18,12 @@
               @change="handleTypeChange"
             >
             </el-cascader>
-            <!-- <el-select
-          class="com-width"
-          v-model="ruleForm.category_id"
-          placeholder="请选择所属分类"
-          @change="categoryChange"
-        >
-          <el-option
-            v-for="item in cateData.list"
-            :key="item.category_id"
-            :label="item.category_name"
-            :value="item.category_id"
-          ></el-option>
-        </el-select> -->
           </el-form-item>
         </el-col>
         <el-col :lg="6" :md="6">
           <el-form-item
             label="班级名称"
-            prop="region"
+            prop="classroom_id_arr"
             v-if="ruleForm.category_id"
           >
             <el-select
@@ -51,7 +44,7 @@
       </el-row>
       <el-row>
         <el-col :lg="6" :md="6">
-          <el-form-item label="上课日期" prop="date">
+          <el-form-item label="上课日期">
             <el-date-picker
               class="com-width"
               ref="datesRef"
@@ -66,7 +59,7 @@
           </el-form-item>
         </el-col>
         <el-col :lg="6" :md="6">
-          <el-form-item label="默认上课时间" prop="classTime">
+          <el-form-item label="默认上课时间">
             <el-time-picker
               @change="choseTime"
               is-range
@@ -122,6 +115,7 @@
           <el-form-item label="默认教室" prop="schoolroom_id">
             <el-select
               class="com-width"
+              clearable=""
               v-model="ruleForm.schoolroom_id"
               placeholder="请选择默认教室"
             >
@@ -135,7 +129,7 @@
           </el-form-item>
         </el-col>
         <el-col :lg="6" :md="6">
-          <el-form-item label="默认跟班人员" prop="schoolroom_id">
+          <el-form-item label="默认跟班人员">
             <el-select
               v-model="ruleForm.staff_id"
               placeholder="请选择"
@@ -158,7 +152,7 @@
               plain
               type="primary"
               style="margin-left:50px"
-              @click="createCourse"
+              @click="createCourse('ruleForm')"
             >
               生成预排课
             </el-button>
@@ -190,16 +184,17 @@
               v-model="scope.row.date"
               type="date"
               placeholder="选择日期"
+              @change="changeDate"
             >
             </el-date-picker>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="project_name"
-          label="星期"
-          min-width="80"
-          show-overflow-tooltip
-        >
+        <el-table-column label="星期" min-width="80" show-overflow-tooltip>
+          <template slot-scope="{ row }">
+            <div>
+              {{ row.date | date }}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column label="上课时间" min-width="260" show-overflow-tooltip>
           <template slot-scope="scope">
@@ -347,7 +342,9 @@
         <!-- <el-checkbox v-model="checked">检查上课冲突</el-checkbox> -->
         <div>
           <el-button>取 消</el-button>
-          <el-button type="primary" @click="handleSave">保 存</el-button>
+          <el-button type="primary" @click="handleSave('ruleForm')"
+            >保 存</el-button
+          >
         </div>
       </footer>
     </div>
@@ -356,7 +353,7 @@
 
 <script>
 import { getCateList } from '@/api/sou'
-import { cloneOptions } from '@/utils/index'
+import { cloneOptions, getweekday } from '@/utils/index'
 export default {
   data() {
     return {
@@ -374,6 +371,32 @@ export default {
           name: '直播',
         },
       ],
+      rules: {
+        category_id: [
+          { required: true, message: '请输入所属分类', trigger: 'change' },
+        ],
+        classroom_id_arr: [
+          { required: true, message: '请输入班级名称', trigger: 'change' },
+        ],
+        dateArr: [
+          { required: true, message: '请输入上课日期', trigger: 'change' },
+        ],
+        classTimeArr: [
+          { required: true, message: '请输入上课时间', trigger: 'change' },
+        ],
+        teacher_id: [
+          { required: true, message: '请输入默认老师', trigger: 'change' },
+        ],
+        region: [
+          { required: true, message: '请输入默认方式', trigger: 'change' },
+        ],
+        schoolroom_id: [
+          { required: true, message: '请输入默认教室', trigger: 'change' },
+        ],
+        staff_id: [
+          { required: true, message: '请输入跟班人员', trigger: 'change' },
+        ],
+      },
       classTimeArr: '',
       dateArr: [],
       teacherData: {},
@@ -388,6 +411,7 @@ export default {
         start_time: '',
         end_time: '',
         stfaa_id: '',
+        staff_id: '',
         remark: '',
         class_hour: [],
       },
@@ -396,6 +420,11 @@ export default {
       typeOptions: [],
       classRoomData: [],
     }
+  },
+  filters: {
+    date(val) {
+      if (val) return getweekday(val)
+    },
   },
   mounted() {
     this.getCateList()
@@ -413,10 +442,16 @@ export default {
     })
   },
   methods: {
+    changeDate(val) {
+      // console.log(val)
+    },
     handleTypeChange(ids) {
       const id = ids ? [...ids].pop() : ''
       this.$api.getcourseallclass(this, id, 'classRoomData')
-      // this.getproject(id)
+      this.schoolData.forEach((i) => {
+        // console.log(i)
+        i.category_id = id
+      })
     },
     async getCateList() {
       const data = { list: true }
@@ -432,15 +467,15 @@ export default {
         console.log(this.typeOptions)
       }
     },
-    categoryChange(e) {
-      console.log(e)
-      if (this.schoolData.length != 0) {
-        console.log(this.schoolData)
-        this.schoolData.forEach((i) => {
-          i.category_id = this.ruleForm.category_id
-        })
-      }
-    },
+    // categoryChange(e) {
+    //   console.log(e)
+    //   if (this.schoolData.length != 0) {
+    //     console.log(this.schoolData)
+    //     this.schoolData.forEach((i) => {
+    //       i.category_id = this.ruleForm.category_id
+    //     })
+    //   }
+    // },
     choseTime(e) {},
     addTime(ab, index) {
       let arr = ab[0]
@@ -453,7 +488,7 @@ export default {
         ab.splice(index, 1)
       }
     },
-    handleSave() {
+    handleSave(formName) {
       //对上课时间进行处理
       var date = new Date()
       this.schoolData.forEach((i) => {
@@ -506,16 +541,19 @@ export default {
           i.class_hour.push(obj)
         }
       })
-      console.log(this.schoolData)
+      // console.log(this.schoolData)
       this.$api.addScheduling(this, this.schoolData)
     },
     addOneClass() {
+      console.log(this.ruleForm.category_id)
+      let category_id =
+        JSON.parse(JSON.stringify(this.ruleForm.category_id))?.pop() || 0
       var obj = {
         date: '',
         title: new Date(),
         classroom_id_arr: this.ruleForm.classroom_id_arr,
         // classroom_id_arr: [55, 56, 57],
-        category_id: this.ruleForm.category_id,
+        category_id: category_id,
         teacher_id: this.ruleForm.teacher_id,
         teaching_type: this.ruleForm.region,
         schoolroom_id: this.ruleForm.schoolroom_id,
@@ -524,38 +562,45 @@ export default {
         remark: this.ruleForm.teaching_type,
         class_hour: [],
       }
+
       this.schoolData.push(obj)
     },
 
-    createCourse() {
+    createCourse(formName) {
       this.schoolData = []
-      // console.log(this.ruleForm)
-      // console.log(this.classTimeArr)
-      let timeArr = []
-      timeArr.push(JSON.parse(JSON.stringify(this.classTimeArr)))
-      // timeArr.push(this.classTimeArr)
+      if (this.dateArr.length) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let timeArr = []
+            timeArr.push(JSON.parse(JSON.stringify(this.classTimeArr)))
+            let category_id =
+              JSON.parse(JSON.stringify(this.ruleForm.category_id))?.pop() || 0
+            this.dateArr.forEach((i) => {
+              console.log(getweekday(i))
+              var obj = {
+                date: i,
+                title: i,
+                classroom_id_arr: this.ruleForm.classroom_id_arr,
+                category_id: category_id,
+                teacher_id: this.ruleForm.teacher_id,
+                teaching_type: this.ruleForm.region,
+                schoolroom_id: this.ruleForm.schoolroom_id,
+                timeArr: [...timeArr],
+                staff_id: this.ruleForm.staff_id,
+                remark: this.ruleForm.teaching_type,
+                class_hour: [],
+              }
+              this.schoolData.push(obj)
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      } else {
+        this.$message.error('您还没有选择日期')
+      }
 
-      console.log(timeArr)
-      this.dateArr.forEach((i) => {
-        var obj = {
-          date: i,
-          title: i,
-          classroom_id_arr: this.ruleForm.classroom_id_arr,
-          // classroom_id_arr: [],
-          category_id: this.ruleForm.category_id,
-          teacher_id: this.ruleForm.teacher_id,
-          teaching_type: this.ruleForm.region,
-          schoolroom_id: this.ruleForm.schoolroom_id,
-          timeArr: [...timeArr],
-          staff_id: this.ruleForm.staff_id,
-          remark: this.ruleForm.teaching_type,
-          class_hour: [],
-        }
-        // obj.timeArr.push(timeArr)
-        // console.log(obj.timeArr)
-        this.schoolData.push(obj)
-        console.log(obj)
-      })
       console.log(this.schoolData)
     },
   },

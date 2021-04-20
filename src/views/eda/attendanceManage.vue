@@ -3,20 +3,52 @@
     <div class="head_remind">*本模块用于学生的上课点名签到和考勤统计管理。</div>
     <section class="mainwrap">
       <div class="header">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" stripe style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-          <el-table-column prop="uid" label="序号" show-overflow-tooltip min-width="90">
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          stripe
+          style="width: 100%"
+          class="min_table"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+        >
+          <el-table-column
+            prop="uid"
+            label="序号"
+            show-overflow-tooltip
+            min-width="90"
+          >
             <template slot-scope="scope">
               <div>
                 {{ scope.$index + 1 }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="date" label="上课日期" min-width="110" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="telphone" label="星期" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="date"
+            label="上课日期"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="telphone"
+            label="星期"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div>
                 {{ row.start_time | weekType }}
@@ -24,7 +56,12 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="start_time" label="上课时间" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="start_time"
+            label="上课时间"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div>
                 {{ row.start_time + ' ~ ' + row.end_time }}
@@ -32,23 +69,47 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="class_list" label="班级名称" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="class_list"
+            label="班级名称"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div class="class_list" @click="toClassDetail(row.classroom_id)">
                 {{ row.class_list }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="teacher_name" label="上课老师" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column label="授课方式" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="teacher_name"
+            label="上课老师"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            label="授课方式"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div>
                 {{ row.teaching_type | teaching_type }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="schoolroom_name" label="上课教室" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="staff_list" label="跟班人员" min-width="100" show-overflow-tooltip></el-table-column>
+          <el-table-column
+            prop="schoolroom_name"
+            label="上课教室"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="staff_list"
+            label="跟班人员"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
           <el-table-column label="状态" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div :style="row.state == 1 ? 'color:#43d100' : 'color:#fd6500'">
@@ -56,26 +117,65 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="people_number" label="学生人数" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="class_hour_number" label="课节数量" min-width="100" show-overflow-tooltip></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200" max-width="200">
+          <el-table-column
+            prop="people_number"
+            label="学生人数"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="class_hour_number"
+            label="课节数量"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            fixed="right"
+            min-width="200"
+            max-width="200"
+          >
             <template slot-scope="{ row }">
               <div class="operation_btn">
-                <el-button type="text" @click="scheduleShow(row)" v-if="row.class_hour_number > 1">排班详情</el-button>
+                <el-button
+                  type="text"
+                  @click="scheduleShow(row)"
+                  v-if="row.class_hour_number > 1"
+                  >排班详情</el-button
+                >
                 <div v-if="row.class_hour_number == 1">
-                  <el-button type="text" @click="callinClass(row)">上课点名</el-button>
-                  <el-button type="text" @click="signShow(row)">签到码</el-button>
-                  <el-button type="text" @click="toStatistics(row)">考勤统计</el-button>
+                  <el-button type="text" @click="callinClass(row)"
+                    >上课点名</el-button
+                  >
+                  <el-button type="text" @click="signShow(row)"
+                    >签到码</el-button
+                  >
+                  <el-button type="text" @click="toStatistics(row)"
+                    >考勤统计</el-button
+                  >
                 </div>
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
-        <ScheduleDialog v-model="scheduleVisible" :arrange_id="arrange_id" :classDate="classDate" :classInfoData="classInfoData" />
-        <SignCode v-model="signVisible" :arrange_id="arrange_id" :class_hour_id="class_hour_id" />
+        <ScheduleDialog
+          v-model="scheduleVisible"
+          :arrange_id="arrange_id"
+          :classDate="classDate"
+          :classInfoData="classInfoData"
+        />
+        <SignCode
+          v-model="signVisible"
+          :arrange_id="arrange_id"
+          :class_hour_id="class_hour_id"
+        />
       </div>
     </section>
   </section>
@@ -327,8 +427,10 @@ export default {
       for (var item of res.data.list) {
         item.date = timestampToTime(item.date)
         // console.log(item)
-        item.start_time && (item.start_time = this.$moment.unix(item.start_time).format('LT'))
-        item.end_time && (item.end_time = this.$moment.unix(item.end_time).format('LT'))
+        item.start_time &&
+          (item.start_time = this.$moment.unix(item.start_time).format('LT'))
+        item.end_time &&
+          (item.end_time = this.$moment.unix(item.end_time).format('LT'))
       }
       this.listData = res.data.list
 

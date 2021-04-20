@@ -1,42 +1,118 @@
 <template>
   <section class="mainwrap">
     <div class="header">
-      <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+      <SearchList
+        :options="searchOptions"
+        :data="searchData"
+        @on-search="handleSearch"
+      />
       <el-button type="primary" @click="exportTable">导出排课表</el-button>
     </div>
 
     <!--表格-->
     <div class="userTable">
-      <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe style="width: 100%;" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-        <el-table-column prop="uid" label="序号" show-overflow-tooltip min-width="90">
-          <template slot-scope="scope">
+      <el-table
+        ref="multipleTable"
+        :data="listData"
+        tooltip-effect="light"
+        stripe
+        style="width: 100%;"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column
+          prop="id"
+          label="序号"
+          show-overflow-tooltip
+          min-width="50"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="date"
+          label="上课日期"
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="week"
+          label="星期"
+          min-width="60"
+          show-overflow-tooltip
+        ></el-table-column>
+
+        <el-table-column label="上课时间" min-width="150" show-overflow-tooltip>
+          <template slot-scope="{ row }">
             <div>
-              {{ scope.$index + 1 }}
+              {{ row.period }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="上课日期" min-width="110" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="week" label="星期" min-width="100" show-overflow-tooltip></el-table-column>
 
-        <el-table-column prop="start_time" label="上课时间" min-width="100" show-overflow-tooltip></el-table-column>
-
-        <el-table-column prop="classroom_name" label="班级名称" min-width="100" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="teacher_name" label="上课老师" min-width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column
+          prop="classroom_name"
+          label="班级名称"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="teacher_name"
+          label="上课老师"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
         <el-table-column label="授课方式" min-width="100" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.teaching_type | teaching_type }}
+            <div :class="scope.row.teaching_type == 1 ? 'red' : 'blue'">
+              {{ scope.row.teaching_type | teaching_type }}
+            </div>
           </template>
         </el-table-column>
-        <el-table-column prop="schoolroom_name" label="上课教室" min-width="100" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="staff_name" label="跟班人员" min-width="100" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="remark" label="备注信息" min-width="100" show-overflow-tooltip></el-table-column>
+        <el-table-column
+          prop="schoolroom_name"
+          label="上课教室"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="staff_name"
+          label="跟班人员"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="classStatus"
+          label="上课状态"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <div :class="row.classStatusNum == 1 ? 'red' : 'grey'">
+              {{ row.classStatus }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="remark"
+          label="备注信息"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
       </el-table>
       <div class="table_bottom">
-        <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
     <!--导出提示框-->
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :close-on-click-modal="false">
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :close-on-click-modal="false"
+    >
       <span>数据导出成功，请点击下载按钮下载Excel表格</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -47,8 +123,14 @@
 </template>
 
 <script>
-import { getAllForPageList, getcourseallclass, getTeacherList, getRoomSelect } from '@/api/eda'
-import {} from '@/api/eda'
+import {
+  getAllForPageList,
+  getcourseallclass,
+  getTeacherList,
+  getRoomSelect,
+} from '@/api/eda'
+// import { formatTime2 } from '@/utils/index'
+
 export default {
   name: 'seaStudent',
   data() {
@@ -199,6 +281,39 @@ export default {
         this.searchOptions[4].options = res.data
       }
     },
+    //判断多少天后上课
+    formatTime2(time, option) {
+      time = +time * 1000
+      const d = new Date(time)
+      const now = Date.now()
+      const diff = (d - now) / 1000
+      if (diff < 30) {
+        return '将上课'
+      } else if (diff < 3600) {
+        // less 1 hour
+        return Math.ceil(diff / 60) + '分钟后上课'
+      } else if (diff < 3600 * 24) {
+        return Math.ceil(diff / 3600) + '小时后上课'
+      } else if (diff < 3600 * 24 * 2) {
+        return '1天后上课'
+      }
+      if (option) {
+        return parseTime(time, option)
+      } else {
+        return (
+          d.getMonth() +
+          1 +
+          '月' +
+          d.getDate() +
+          '日' +
+          d.getHours() +
+          '时' +
+          d.getMinutes() +
+          '分' +
+          '后上课'
+        )
+      }
+    },
     // 获全部排课列表
     async getAllForPageList() {
       const data = {
@@ -209,7 +324,33 @@ export default {
       this.listLoading = true
       const res = await getAllForPageList(data)
       this.listLoading = false
+      var nowday = parseInt(new Date().getTime() / 1000)
+      console.log(nowday)
+
+      for (var item of res.data.list) {
+        console.log(nowday < item.start_time)
+        console.log(item.start_time)
+        if (nowday < item.start_time) {
+          item.classStatus = this.formatTime2(item.start_time)
+        } else if (nowday >= item.start_time && nowday < item.end_time) {
+          item.classStatus = '上课中'
+          item.classStatusNum = 1
+        } else {
+          console.log(item.start_time)
+          item.classStatus = '已上课'
+          item.classStatusNum = 2
+        }
+        // console.log(item.classStatus)
+        // if (item.frist_class_time != 0) {
+        //   item.frist_class_time = this.$moment
+        //     .unix(item.frist_class_time)
+        //     .format('YYYY-MM-DD')
+        // } else {
+        //   item.frist_class_time = '未确定时间'
+        // }
+      }
       this.listData = res.data.list
+
       this.listTotal = res.data.total
     },
     exportTable() {
@@ -249,5 +390,14 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.red {
+  color: $error_color;
+}
+.blue {
+  color: #199fff;
+}
+.grey {
+  color: #ccc;
 }
 </style>

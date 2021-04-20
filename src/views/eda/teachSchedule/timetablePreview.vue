@@ -67,6 +67,16 @@
                 </p>
                 <p>老师：{{ infoMap[data.day].teacher_name }}</p>
               </div>
+              <!--添加小按钮-->
+              <div class="littleAdd">
+                <p
+                  v-if="data.isSelected == true && allDay.includes(data.day)"
+                  class="addBtn"
+                  @click.stop="addProgramme(data)"
+                >
+                  添加
+                </p>
+              </div>
 
               <div id="productStatus" v-if="allDay.includes(data.day)">
                 <span
@@ -141,7 +151,7 @@
     <el-dialog
       title="添加上课信息"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="473px"
       :close-on-click-modal="false"
       :before-close="handleClose"
     >
@@ -325,7 +335,6 @@ export default {
   },
   created() {
     this.createYears()
-
     this.param = JSON.parse(this.$route.query.param)
     this.ruleForm.category_id = this.param.category_id
     this.ruleForm.classroom_id = this.param.classroom_id
@@ -634,6 +643,25 @@ export default {
       transform: rotate(0deg);
       -webkit-transform: rotate(0deg);
     }
+  }
+}
+.littleAdd {
+  position: absolute;
+  left: 0px;
+  top: 88px;
+  display: flex;
+  align-items: center;
+  .addBtn {
+    background-color: #199fff;
+    width: 38px;
+    height: 16px;
+    color: #fff;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #d9ecff;
+    border-radius: 16px;
+    align-items: center;
   }
 }
 </style>
