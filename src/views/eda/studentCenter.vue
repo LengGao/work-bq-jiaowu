@@ -413,14 +413,9 @@ export default {
         );
       }
     },
-    toOrderManage() {
-      this.$router.push({
-        path: "/eda/orderManage",
-      });
-    },
     toStudentDetail(id) {
       this.$router.push({
-        path: "/eda/studentDetail",
+        name: "studentDetail",
         query: { id },
       });
     },
@@ -432,13 +427,6 @@ export default {
       console.log(this.ruleForm);
       this.$api.addCustomers(this, this.ruleForm);
     },
-
-    toCustomeRegist() {
-      this.$router.push({
-        path: "/etm/customeRegist",
-      });
-    },
-
     addCustomer() {
       //添加用户弹框打开
       this.importVisible = true;
