@@ -23,49 +23,69 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column label="头像" min-width="70" prop="classroom_id">
+        <el-table-column
+          label="头像"
+          align="center"
+          min-width="70"
+          prop="user_img"
+        >
+          <template slot-scope="{ row }">
+            <el-avatar
+              :src="row.user_img"
+              icon="el-icon-user-solid"
+            ></el-avatar>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="classroom_name"
+          prop="course_username"
           label="学生姓名"
           min-width="220"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="category_name"
+          align="center"
+          prop="telphone"
           label="手机号码"
-          min-width="120"
+          min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.telphone | filterPhone }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="project_name"
+          prop="classroom_name"
           label="所属班级"
           min-width="180"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="course_name"
+          align="center"
+          prop="entry_time"
           label="最早加入时间"
-          min-width="180"
+          min-width="140"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="course_name"
+          align="center"
+          prop="leave_time"
           label="最后离开时间"
-          min-width="180"
+          min-width="140"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="course_name"
+          align="center"
+          prop="play_duration"
           label="观看时长"
-          min-width="180"
+          min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="course_name"
+          align="center"
+          prop="progress"
           label="观看进度"
-          min-width="180"
+          min-width="110"
           show-overflow-tooltip
         ></el-table-column>
       </el-table>
@@ -81,9 +101,19 @@
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
+import { livevideocount, getClassroomSelectByLiveId } from "@/api/eda";
 export default {
   name: "PlaybackStatistics",
+  props: {
+    liveId: {
+      type: [String, Number],
+      default: "",
+    },
+    liveClassId: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
@@ -91,19 +121,24 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        project_id: "",
-        keyword: "",
+        class_id: "",
+        search_box: "",
       },
       searchOptions: [
         {
           type: "select",
           options: [],
+          optionValue: "id",
+          optionLabel: "name",
+          key: "class_id",
           attrs: {
+            clearable: true,
+            filterable: true,
             placeholder: "班级名称",
           },
         },
         {
-          key: "keyword",
+          key: "search_box",
           attrs: {
             placeholder: "学生姓名/手机号码",
           },
@@ -112,7 +147,8 @@ export default {
     };
   },
   created() {
-    this.getClassList();
+    this.livevideocount();
+    this.getClassroomSelectByLiveId();
   },
   methods: {
     handleSearch(data) {
@@ -120,22 +156,33 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.getClassList();
+      this.livevideocount();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.livevideocount();
     },
-
-    async getClassList() {
+    // 获取班级选项
+    async getClassroomSelectByLiveId() {
       const data = {
+        live_id: this.liveId || "",
+      };
+      const res = await getClassroomSelectByLiveId(data);
+      if (res.code === 0) {
+        this.searchOptions[0].options = res.data;
+      }
+    },
+    async livevideocount() {
+      const data = {
+        live_id: this.liveId,
+        live_class_id: this.liveClassId,
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await livevideocount(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.data;
       this.listTotal = res.data.total;
     },
   },

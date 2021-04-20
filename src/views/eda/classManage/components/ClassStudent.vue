@@ -25,6 +25,11 @@
           min-width="90"
           prop="user_realname"
         >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="linkTo(row.uid)">{{
+              row.user_realname
+            }}</el-button>
+          </template>
         </el-table-column>
         <el-table-column
           label="手机号码"
@@ -124,6 +129,9 @@ export default {
     this.getClassstudentList();
   },
   methods: {
+    linkTo(id) {
+      this.$router.push({ name: "studentDetail", query: { id } });
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;

@@ -19,8 +19,7 @@
         <el-input
           v-model="formData.video_chapter_name"
           placeholder="请输入章节名称"
-          maxlength="14"
-          show-word-limit
+          maxlength="100"
         />
       </el-form-item>
       <el-form-item label="章节简介" prop="video_chapter_profile">
@@ -28,8 +27,7 @@
           type="textarea"
           v-model="formData.video_chapter_profile"
           placeholder="请输入章节简介"
-          maxlength="200"
-          show-word-limit
+          maxlength="1000"
         />
       </el-form-item>
       <el-form-item label="章节排序" prop="video_chapter_sort">

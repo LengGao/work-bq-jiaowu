@@ -3,15 +3,15 @@
     <div class="detail-header">
       <div class="label">
         <span class="label-name">所属分类</span>
-        <span class="label-content">职称考证</span>
+        <span class="label-content">{{ detailData.category_name }}</span>
       </div>
       <div class="label">
         <span class="label-name">直播名称</span>
-        <span class="label-content">系统集成第一章 基础入门</span>
+        <span class="label-content">{{ detailData.live_class_name }}</span>
       </div>
       <div class="label">
         <span class="label-name">直播场次</span>
-        <span class="label-content">2020-06-04 16:30场次</span>
+        <span class="label-content">{{ detailData.live_name }}</span>
       </div>
       <div class="label">
         <span class="label-name">推流详情</span>
@@ -23,25 +23,23 @@
       </div>
       <div class="label">
         <span class="label-name">任课老师 </span>
-        <span class="label-content">林老师</span>
+        <span class="label-content">{{ detailData.teacher_name }}</span>
       </div>
       <div class="label label-large">
         <span class="label-name">关联班级 </span>
-        <span class="label-content">
-          2020春-系统集成VIP1班、2020春-系统集成VIP学霸1班</span
-        >
+        <span class="label-content"> {{ detailData.live_class_name }}</span>
       </div>
       <div class="label">
         <span class="label-name">上课时间 </span>
-        <span class="label-content"> 2021-04-16 17:30</span>
+        <span class="label-content">{{ detailData.start_push_time }}</span>
       </div>
       <div class="label">
         <span class="label-name">下课时间 </span>
-        <span class="label-content"> 2021-04-16 17:30</span>
+        <span class="label-content">{{ detailData.end_push_time }}</span>
       </div>
       <div class="label">
         <span class="label-name">上课时长 </span>
-        <span class="label-content"> 60分钟</span>
+        <span class="label-content">{{ detailData.live_time }}</span>
       </div>
       <div class="label">
         <span class="label-name">录制视频 </span>
@@ -57,16 +55,23 @@
       <el-tab-pane label="直播统计" name="LiveStatistics"></el-tab-pane>
       <el-tab-pane label="回播统计" name="PlaybackStatistics"></el-tab-pane>
     </el-tabs>
-    <component :is="getComponent" />
-    <PushFlowDialog v-model="pushFlowVisible" :id="currentId" />
-    <VideoRecordDialog v-model="videoRecordVisible" :id="currentId" />
+    <component
+      :is="getComponent"
+      :liveId="detailData.live"
+      :liveClassId="detailData.live_class_id"
+    />
+    <PushFlowDialog v-model="pushFlowVisible" :datas="detailData.push_detail" />
+    <VideoRecordDialog
+      v-model="videoRecordVisible"
+      :datas="detailData.video_list"
+    />
   </div>
 </template>
 
 <script>
 import PushFlowDialog from "./components/PushFlowDialog";
 import VideoRecordDialog from "./components/VideoRecordDialog";
-import { getClassroomDetail } from "@/api/eda";
+import { getLiveDetail } from "@/api/eda";
 export default {
   name: "ClassDetail",
   components: {
@@ -90,22 +95,20 @@ export default {
     },
   },
   created() {
-    this.getClassroomDetail();
+    this.getLiveDetail();
   },
   methods: {
-    openVideoRecordDialog(row) {
-      this.currentId = row.id;
+    openVideoRecordDialog() {
       this.videoRecordVisible = true;
     },
-    openPushFlowDialog(row) {
-      this.currentId = row.id;
+    openPushFlowDialog() {
       this.pushFlowVisible = true;
     },
-    async getClassroomDetail() {
+    async getLiveDetail() {
       const data = {
-        classroom_id: this.$route.query?.id || "",
+        live_id: this.$route.query?.live_id || "",
       };
-      const res = await getClassroomDetail(data);
+      const res = await getLiveDetail(data);
       if (res.code === 0) {
         this.detailData = res.data;
       }
