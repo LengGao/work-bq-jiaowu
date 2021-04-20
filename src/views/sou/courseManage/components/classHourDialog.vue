@@ -17,6 +17,7 @@
     >
       <el-form-item label="章节名称" prop="video_chapter_id">
         <el-select
+          style="width: 100%"
           v-model="formData.video_chapter_id"
           clearable
           placeholder="请选择"
@@ -34,7 +35,7 @@
         <el-input
           v-model="formData.video_class_name"
           placeholder="请输入课时名称"
-          maxlength="20"
+          maxlength="100"
         />
       </el-form-item>
       <el-form-item label="课时排序" prop="video_class_sort">

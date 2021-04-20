@@ -504,3 +504,99 @@ export function updateFollow(data) {
     data,
   })
 }
+// 班级直播列表
+export function classLiveList(params) {
+  return request({
+    url: '/NewLive/classLiveList',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -添加直播-教师选项
+export function getTeacherSelect(params) {
+  return request({
+    url: '/NewLive/getTeacherSelect',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -添加直播-课程选项
+export function getCourseSelect(params) {
+  return request({
+    url: '/NewLive/getCourseSelect',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -添加直播-班级选项
+export function getClassroomSelect(params) {
+  return request({
+    url: '/NewLive/getClassroomSelect',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -添加直播
+export function createClassLive(data) {
+  return request({
+    url: '/NewLive/createClassLive',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -修改直播
+export function updateClassLive(data) {
+  return request({
+    url: '/NewLive/updateClassLive',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -修改直播-获取直播详情
+export function classLiveInfo(params) {
+  return request({
+    url: '/NewLive/classLiveInfo',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -删除直播
+export function deleteClassLive(data) {
+  return request({
+    url: '/NewLive/deleteClassLive',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -开始直播
+export function livestart(data) {
+  return request({
+    url: '/plwlive/livestart',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -关闭直播
+export function closelive(data) {
+  return request({
+    url: '/live/closelive',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -直播链接
+export function liveLinkdetail(params) {
+  return request({
+    url: '/plwlive/livedetail',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表
+export function liveSessionList(params) {
+  return request({
+    url: '/NewLive/liveList',
+    method: 'get',
+    params,
+  })
+}

@@ -7,56 +7,53 @@
     class="live-dialog"
     @open="handleOpen"
     :close-on-click-modal="false"
-    @closed="resetForm('formData')"
+    @closed="resetForm('detailData')"
   >
     <el-form
       label-width="120px"
-      :model="formData"
-      :rules="rules"
-      ref="formData"
+      :model="detailData"
+      ref="detailData"
       v-loading="detaiLoading"
       class="question-bank-form"
     >
       <el-form-item label="网页开播链接">
         <div class="link-input">
-          <el-input v-model="formData.title" type="text" />
-          <el-button type="success" plain>打开</el-button>
+          <el-input :value="detailData.webUrl" type="text" />
+          <a :href="detailData.webUrl" target="_blank">
+            <el-button type="success" plain>打开</el-button>
+          </a>
         </div>
       </el-form-item>
       <el-form-item label="启动客户端链接">
         <div class="link-input">
-          <el-input v-model="formData.title" type="text" />
-          <el-button type="success" plain>打开</el-button>
+          <el-input :value="detailData.clientUrl" type="text" />
+          <a :href="detailData.clientUrl" target="_blank">
+            <el-button type="success" plain>打开</el-button>
+          </a>
         </div>
       </el-form-item>
       <el-form-item label=" ">
         <div>
-          <span>频道号：20210253</span>
-          <span class="m-l">登录密码：TGlah7</span>
+          <span>频道号：{{ detailData.channelId }}</span>
+          <span class="m-l">登录密码：{{ detailData.channelPasswd }}</span>
         </div>
       </el-form-item>
       <el-form-item label="助教后台链接">
         <div class="link-input">
-          <el-input class="w-100" v-model="formData.title" type="text" />
-          <el-button type="success" plain>打开</el-button>
+          <el-input class="w-100" :value="detailData.teacherUrl" type="text" />
+          <a :href="detailData.teacherUrl" target="_blank">
+            <el-button type="success" plain>打开</el-button>
+          </a>
         </div>
       </el-form-item>
-      <el-form-item label=" ">
+      <el-form-item
+        label=" "
+        v-for="(item, index) in detailData.channel_account"
+        :key="index"
+      >
         <div>
-          <span>频道号：20210253</span>
-          <span class="m-l">登录密码：TGlah7</span>
-        </div>
-      </el-form-item>
-      <el-form-item label=" ">
-        <div>
-          <span>频道号：20210253</span>
-          <span class="m-l">登录密码：TGlah7</span>
-        </div>
-      </el-form-item>
-      <el-form-item label=" ">
-        <div>
-          <span>频道号：20210253</span>
-          <span class="m-l">登录密码：TGlah7</span>
+          <span>频道号：{{ item.account }}</span>
+          <span class="m-l">登录密码：{{ item.passwd }}</span>
         </div>
       </el-form-item>
     </el-form>
@@ -64,13 +61,7 @@
 </template>
 
 <script>
-import {
-  updateRule,
-  createRule,
-  getRuleDetail,
-  getRuleSelect,
-  getSelectForPlan,
-} from "@/api/exa";
+import { liveLinkdetail } from "@/api/eda";
 export default {
   name: "LiveLinkDialog",
   props: {
@@ -82,44 +73,23 @@ export default {
       type: String,
       default: "",
     },
+    sessionId: {
+      type: [String, Number],
+      default: "",
+    },
     id: {
       type: [String, Number],
       default: "",
     },
-    typeOptions: {
-      type: Array,
-      default: () => [],
+    datas: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
     return {
       visible: this.value,
-      ageStart: "",
-      ageEnd: "",
-      workYear: "",
-      eduValue: "",
-      formData: {
-        cate_id: "",
-        rule_name: "",
-        city: "",
-        subject_id_str: [],
-      },
-      rules: {
-        rule_name: [
-          { required: true, message: "请输入直播名称", trigger: "blur" },
-        ],
-        city: [{ required: true, message: "请选择", trigger: "change" }],
-        subject_id_str: [
-          {
-            required: true,
-            message: "请选择",
-            trigger: "change",
-            type: "array",
-          },
-        ],
-        cate_id: [{ required: true, message: "请选择", trigger: "change" }],
-      },
-      addLoading: false,
+      detailData: {},
       detaiLoading: false,
       classOptions: [],
       teacherOptions: [],
@@ -135,29 +105,40 @@ export default {
     // dialog 打开时
     handleOpen() {
       if (this.id) {
-        this.getRuleDetail();
+        this.liveLinkdetail();
+      } else {
+        this.detailData = this.datas;
       }
     },
     // 直播详情
-    async getRuleDetail() {
+    async liveLinkdetail() {
       const data = {
-        id: this.id,
+        live_class_id: this.id,
+        live_id: this.sessionId || "",
       };
       this.detaiLoading = true;
-      const res = await getRuleDetail(data).catch(() => {
+      const res = await liveLinkdetail(data).catch(() => {
         this.detaiLoading = false;
       });
       this.detaiLoading = false;
       if (res.code === 0) {
-        for (const k in this.formData) {
-          this.formData[k] = res.data[k];
-        }
+        const data = res.data || {};
+        this.detailData = {
+          webUrl:
+            "https://live.polyv.net/web-start/classroom?channelId=" +
+            data.channelId,
+          clientUrl:
+            "https://live.polyv.net/start-client.html?channelId=" +
+            data.channelId,
+          channelId: data.channelId,
+          channelPasswd: data.channelPasswd,
+          channel_account: data.channel_accout,
+          teacherUrl: "https://live.polyv.net/teacher.html",
+        };
       }
     },
     resetForm() {
-      for (const k in this.formData) {
-        this.formData[k] = "";
-      }
+      this.detailData = {};
       this.hanldeCancel();
     },
     hanldeCancel() {

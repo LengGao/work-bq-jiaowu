@@ -28,30 +28,30 @@
             label="编号"
             show-overflow-tooltip
             min-width="70"
-            prop="classroom_id"
+            prop="live_id"
           >
           </el-table-column>
           <el-table-column
-            prop="classroom_name"
+            prop="live_name"
             label="直播场次"
             min-width="220"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="category_name"
+            prop="start_push_time"
             label="最早推流时间"
             min-width="120"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="project_name"
+            prop="end_push_time"
             label="最晚断流时间"
             min-width="180"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="course_name"
+            prop="total_pople"
             label="实时在线人数"
             min-width="180"
             show-overflow-tooltip
@@ -59,7 +59,7 @@
           <el-table-column label="操作" fixed="right" min-width="280">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openEdit(row.classroom_id)"
+                <el-button type="text" @click="openLiveLink(row.live_id)"
                   >直播链接</el-button
                 >
                 <el-button type="text" @click="linkTo(row)">直播详情</el-button>
@@ -81,14 +81,15 @@
       <LiveLinkDialog
         v-model="dialogVisible"
         title="直播链接"
-        :id="currentId"
+        :id="$route.query.live_class_id"
+        :sessionId="currentId"
       />
     </section>
   </div>
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
+import { liveSessionList } from "@/api/eda";
 import LiveLinkDialog from "./components/LiveLinkDialog";
 export default {
   components: {
@@ -101,13 +102,11 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        project_id: "",
-        keyword: "",
-        category_id: [],
+        search_box: "",
       },
       searchOptions: [
         {
-          key: "keyword",
+          key: "search_box",
           attrs: {
             placeholder: "直播名称",
           },
@@ -120,13 +119,13 @@ export default {
   },
 
   created() {
-    this.getClassList();
+    this.liveSessionList();
   },
   methods: {
     linkTo(row) {
       this.$router.push({ name: "liveDetails" });
     },
-    openEdit(id) {
+    openLiveLink(id) {
       this.currentId = id;
       this.dialogVisible = true;
     },
@@ -135,20 +134,21 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.getClassList();
+      this.liveSessionList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.liveSessionList();
     },
 
-    async getClassList() {
+    async liveSessionList() {
       const data = {
+        id: this.$route.query.live_class_id || "",
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await liveSessionList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
