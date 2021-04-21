@@ -36,7 +36,7 @@
             slot="trigger"
             size="small"
             type="primary"
-            >选取文件</el-button
+            >{{ uploadLoading ? `${progress}%` : `选取文件` }}</el-button
           >
         </el-upload>
       </el-form-item>
@@ -58,7 +58,7 @@ import {
   updateLiveData,
   createLiveData,
   getliveDataInfo,
-  sliceUpload,
+  liveDataUpload,
   recordForUpload,
 } from "@/api/eda";
 import AliyunUpload from "@/components/AliyunUpload/index";
@@ -96,6 +96,11 @@ export default {
       guid: "",
       uploadLoading: false,
       fileList: [],
+      parallel: 5, // 并发数量
+      partSize: 5, // 单片大小 5mb
+      partArr: [], // 所有切片
+      progress: 0, // 上传进度
+      isDestroy: false, // 用于离开当前页面时取消上传
     };
   },
   watch: {
@@ -103,7 +108,9 @@ export default {
       this.visible = val;
     },
   },
-
+  beforeDestroy() {
+    this.isDestroy = true;
+  },
   methods: {
     handleRemove() {
       this.formData.path = "";
@@ -114,10 +121,11 @@ export default {
       }
     },
     async beforeUpload(file) {
-      const bytesPerPiece = 1024 * 1024 * 5;
+      const bytesPerPiece = 1024 * 1024 * this.partSize;
       const filesize = file.size;
       const totalPieces = Math.ceil(filesize / bytesPerPiece);
       this.uploadLoading = true;
+      this.progress = 0;
       // 获取凭证
       await this.recordForUpload(totalPieces);
       // 开始切片
@@ -143,18 +151,32 @@ export default {
         formData.append("name", filename);
         formData.append("index_slice", index);
         formData.append("guid", this.guid);
-        // 发起上传请求
-        this.sliceUpload(formData, filename);
+        this.partArr.push({ formData, filename });
         start = end;
         index++;
       }
+      // 发起上传请求
+      this.partUpload();
+    },
+    // 分片上传
+    partUpload() {
+      const leng = this.partArr.length;
+      const end = leng > this.parallel ? this.parallel : leng;
+      // 每次取 发起 this.parallel 个上传请求
+      const arr = this.partArr.splice(0, end);
+      Promise.all(arr.map((item) => this.liveDataUpload(item))).then(() => {
+        if (leng && !this.isDestroy) {
+          this.partUpload();
+        }
+      });
     },
     // 上传请求
-    async sliceUpload(formData, filename) {
-      const res = await sliceUpload(formData).catch(() => {
+    async liveDataUpload({ formData, filename }) {
+      const res = await liveDataUpload(formData).catch(() => {
         this.uploadLoading = false;
       });
       if (res.code === 0) {
+        this.progress = res.data.progress;
         if (res.data.progress === 100) {
           this.uploadLoading = false;
           this.formData.path = res.data.path;

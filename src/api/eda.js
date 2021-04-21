@@ -737,7 +737,7 @@ export function recordForUpload(data) {
   })
 }
 // 班级直播 -直播场次列表-学习资料列表-切片上传
-export function sliceUpload(data) {
+export function liveDataUpload(data) {
   return request({
     url: '/LiveData/upload',
     method: 'post',
