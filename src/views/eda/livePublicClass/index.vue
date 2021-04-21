@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="head_remind">*本模块可以开通班级联合直播。</div>
+    <div class="head_remind">*本模块可以开通公开课直播。</div>
     <section class="mainwrap">
       <div class="client_head">
         <!--搜索模块-->
@@ -41,13 +41,6 @@
           >
           </el-table-column>
           <el-table-column
-            prop="class_name"
-            label="班级名称"
-            min-width="180"
-            align="left"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
             prop="category_name"
             label="所属分类"
             min-width="130"
@@ -59,6 +52,13 @@
             label="任课老师"
             align="center"
             min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="live_time"
+            label="上课时间"
+            min-width="180"
+            align="left"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -127,12 +127,12 @@
         </div>
       </div>
       <!--弹框-->
-      <LiveDialog
+      <LivePublicDialog
         v-model="dialogVisible"
         :title="dialogTitle"
         :id="currentId"
         :typeOptions="typeOptions"
-        @on-success="classLiveList"
+        @on-success="publicLiveList"
       />
       <LiveLinkDialog
         v-model="liveDetailDialog"
@@ -146,18 +146,18 @@
 
 <script>
 import {
-  classLiveList,
+  publicLiveList,
   deleteClassLive,
   livestart,
   closelive,
 } from "@/api/eda";
 import { cloneOptions } from "@/utils/index";
 import { getCateList } from "@/api/sou";
-import LiveDialog from "./components/LiveDialog";
+import LivePublicDialog from "./components/LivePublicDialog";
 import LiveLinkDialog from "../liveSessions/components/LiveLinkDialog";
 export default {
   components: {
-    LiveDialog,
+    LivePublicDialog,
     LiveLinkDialog,
   },
   data() {
@@ -169,6 +169,7 @@ export default {
       searchData: {
         live_class_name: "",
         cate_id: [],
+        date: [],
       },
       searchOptions: [
         {
@@ -181,6 +182,17 @@ export default {
             props: { checkStrictly: true },
             filterable: true,
             options: [],
+          },
+        },
+        {
+          key: "date",
+          type: "datePicker",
+          attrs: {
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
           },
         },
         {
@@ -202,7 +214,7 @@ export default {
 
   created() {
     this.getCateList();
-    this.classLiveList();
+    this.publicLiveList();
   },
   methods: {
     openLinkDetail(id) {
@@ -223,7 +235,7 @@ export default {
       const res = await closelive(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.classLiveList();
+        this.publicLiveList();
       }
     },
     // 开始直播
@@ -255,7 +267,7 @@ export default {
         this.liveDetailDialog = true;
         this.liveDetailTitle = "发布成功";
         this.currentId = "";
-        this.classLiveList();
+        this.publicLiveList();
       }
     },
     // 删除直播
@@ -271,7 +283,7 @@ export default {
       const res = await deleteClassLive(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.classLiveList();
+        this.publicLiveList();
       }
     },
     openEdit(id) {
@@ -285,16 +297,20 @@ export default {
       this.dialogVisible = true;
     },
     handleSearch(data) {
+      const times = data.date || ["", ""];
+      delete data.date;
       this.pageNum = 1;
       this.searchData = {
         ...data,
         cate_id: data.cate_id ? data.cate_id.pop() : "",
+        start_time: times[0],
+        end_time: times[1],
       };
-      this.classLiveList();
+      this.publicLiveList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.classLiveList();
+      this.publicLiveList();
     },
     // 获取所属分类
     async getCateList() {
@@ -309,13 +325,13 @@ export default {
         );
       }
     },
-    async classLiveList() {
+    async publicLiveList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await classLiveList(data);
+      const res = await publicLiveList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

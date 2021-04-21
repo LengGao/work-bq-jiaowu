@@ -688,3 +688,84 @@ export function deletelivevideo(data) {
     data,
   })
 }
+// 班级直播 -直播场次列表-学习资料列表
+export function getLiveDataList(params) {
+  return request({
+    url: '/LiveData/getLiveDataList',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次-学习资料列表-删除资料
+export function deleteLiveData(data) {
+  return request({
+    url: '/LiveData/deleteLiveData',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -直播场次列表-学习资料列表-添加资料
+export function createLiveData(data) {
+  return request({
+    url: '/LiveData/createLiveData',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -直播场次列表-学习资料列表-添加资料
+export function updateLiveData(data) {
+  return request({
+    url: '/LiveData/updateLiveData',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -直播场次列表-学习资料列表-资料详情
+export function getliveDataInfo(params) {
+  return request({
+    url: '/LiveData/liveDataInfo',
+    method: 'get',
+    params,
+  })
+}
+// 班级直播 -直播场次列表-学习资料列表-获取上传凭证
+export function recordForUpload(data) {
+  return request({
+    url: '/LiveData/recordForUpload',
+    method: 'post',
+    data,
+  })
+}
+// 班级直播 -直播场次列表-学习资料列表-切片上传
+export function sliceUpload(data) {
+  return request({
+    url: '/LiveData/upload',
+    method: 'post',
+    data,
+    timeout: 60 * 1000
+  })
+}
+// 公开课直播列表
+export function publicLiveList(params) {
+  return request({
+    url: '/NewLive/publicLiveList',
+    method: 'get',
+    params,
+  })
+}
+// 公开课直播列表-添加
+export function createPublicLive(data) {
+  return request({
+    url: '/NewLive/createPublicLive',
+    method: 'post',
+    data,
+  })
+}
+// 公开课直播列表-修改
+export function updatePublicLive(data) {
+  return request({
+    url: '/NewLive/updatePublicLive',
+    method: 'post',
+    data,
+  })
+}

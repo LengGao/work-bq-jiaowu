@@ -1,21 +1,22 @@
 <template>
-  <!--直播弹框-->
+  <!--公开课直播弹框-->
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    width="800px"
-    class="live-dialog"
+    width="830px"
+    top="50px"
+    class="public-live-dialog"
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
   >
     <el-form
-      label-width="80px"
+      label-width="100px"
       :model="formData"
       :rules="rules"
       ref="formData"
       v-loading="detaiLoading"
-      class="question-bank-form"
+      class="public-live-form"
     >
       <el-form-item label="直播名称" prop="live_class_name">
         <el-input
@@ -63,7 +64,6 @@
           filterable
           clearable
           placeholder="请选择"
-          @change="handleCourseChange"
         >
           <el-option
             v-for="item in courseOptions"
@@ -74,24 +74,43 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="关联班级" prop="class_id">
-        <el-select
-          :disabled="!formData.course_id"
-          v-model="formData.class_id"
-          class="w-100"
-          filterable
-          multiple
-          clearable
-          placeholder="请选择"
+      <el-form-item label="上课时间" class="large" prop="date">
+        <el-date-picker
+          v-model="formData.date"
+          type="datetimerange"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :default-time="['12:00:00']"
         >
-          <el-option
-            v-for="item in classOptions"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="直播简介" class="large" prop="live_class_common">
+        <el-input
+          v-model="formData.live_class_common"
+          type="textarea"
+          maxlength="100"
+          :autosize="{ minRows: 3, maxRows: 4 }"
+          placeholder="请输入简介"
+          show-word-limit
+        >
+        </el-input>
+      </el-form-item>
+      <el-form-item label="直播封面" prop="live_class_icon">
+        <UploadImg
+          width="280"
+          height="130"
+          v-model="formData.live_class_icon"
+        />
+      </el-form-item>
+      <el-form-item label="图文详情" class="edit" prop="live_class_detail">
+        <quill-editor
+          v-model="formData.live_class_detail"
+          :options="editorOption"
+          ref="myQuillEditor"
+          style="height: 200px"
+        >
+        </quill-editor>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -107,15 +126,20 @@
 </template>
 
 <script>
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor";
 import {
   classLiveInfo,
-  updateClassLive,
-  createClassLive,
+  updatePublicLive,
+  createPublicLive,
   getTeacherSelect,
   getCourseSelect,
-  getClassroomSelect,
 } from "@/api/eda";
+import UploadImg from "@/components/ImgUpload/index.vue";
 export default {
+  name: "QuestionBankDialog",
   props: {
     value: {
       type: Boolean,
@@ -134,35 +158,82 @@ export default {
       default: () => [],
     },
   },
+  components: {
+    UploadImg,
+    quillEditor,
+  },
   data() {
     return {
       visible: this.value,
       formData: {
         live_class_name: "",
         cate_id: "",
-        course_id: "",
-        class_id: [],
         teacher_id: "",
+        course_id: "",
+        date: [],
+        live_class_common: "",
+        live_class_detail: "",
+        live_class_icon: "",
       },
       rules: {
+        live_class_detail: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
+        live_class_common: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
         live_class_name: [
           { required: true, message: "请输入直播名称", trigger: "blur" },
         ],
+        live_class_icon: [
+          { required: true, message: "请上传", trigger: "change" },
+        ],
         teacher_id: [{ required: true, message: "请选择", trigger: "change" }],
         course_id: [{ required: true, message: "请选择", trigger: "change" }],
-        class_id: [
+        date: [
           {
             required: true,
             message: "请选择",
-            trigger: "change",
             type: "array",
+            trigger: "change",
           },
         ],
         cate_id: [{ required: true, message: "请选择", trigger: "change" }],
       },
       addLoading: false,
       detaiLoading: false,
-      classOptions: [],
+      editorOption: {
+        placeholder: "",
+        theme: "snow", // or 'bubble'
+        modules: {
+          toolbar: {
+            container: [
+              ["bold", "italic", "underline", "strike"], // toggled buttons
+              [{ header: 1 }, { header: 2 }], // custom button values
+              [{ list: "ordered" }, { list: "bullet" }],
+              [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+              [{ direction: "rtl" }], // text direction
+              [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+              //[{ header: [1, 2, 3, 4, 5, 6, false] }],
+              [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+              [{ font: [] }],
+              [{ align: [] }],
+              ["link", "image"],
+              ["clean"],
+            ],
+            handlers: {
+              image: function (value) {
+                if (value) {
+                  // 触发input框选择图片文件
+                  document.querySelector(".avatar-uploader input").click();
+                } else {
+                  this.quill.format("image", false);
+                }
+              },
+            },
+          },
+        },
+      },
       teacherOptions: [],
       courseOptions: [],
     };
@@ -181,16 +252,30 @@ export default {
       }
       this.getTeacherSelect();
     },
+    // 规则详情
+    async classLiveInfo() {
+      const data = {
+        id: this.id,
+      };
+      this.detaiLoading = true;
+      const res = await classLiveInfo(data).catch(() => {
+        this.detaiLoading = false;
+      });
+      this.detaiLoading = false;
+      if (res.code === 0) {
+        for (const k in this.formData) {
+          this.formData[k] = res.data[k];
+        }
+        this.formData.date = res.data.live_start_time
+          ? [res.data.live_start_time, res.data.live_end_time]
+          : [];
+        this.getCourseSelect(res.data.cate_id);
+      }
+    },
     // 选择分类时
     handleTypeChange(val) {
       this.formData.course_id = "";
-      this.formData.class_id = [];
       val && val.length && this.getCourseSelect([...val].pop());
-    },
-    // 选择课程时
-    handleCourseChange(val) {
-      this.formData.class_id = [];
-      val && this.getClassroomSelect(val);
     },
     // 获取教师
     async getTeacherSelect() {
@@ -207,46 +292,21 @@ export default {
         this.courseOptions = res.data;
       }
     },
-    // 获取班级
-    async getClassroomSelect(course_id) {
-      const data = { course_id };
-      const res = await getClassroomSelect(data);
-      if (res.code === 0) {
-        this.classOptions = res.data;
-      }
-    },
-    // 直播详情
-    async classLiveInfo() {
-      const data = {
-        id: this.id,
-      };
-      this.detaiLoading = true;
-      const res = await classLiveInfo(data).catch(() => {
-        this.detaiLoading = false;
-      });
-      this.detaiLoading = false;
-      if (res.code === 0) {
-        for (const k in this.formData) {
-          this.formData[k] = res.data[k];
-        }
-        this.formData.class_id = res.data.class_id
-          .split(",")
-          .map((item) => +item);
-        this.getCourseSelect(res.data.cate_id);
-        this.getClassroomSelect(res.data.course_id);
-      }
-    },
     async submit() {
+      const date = this.formData.date;
       const data = {
         ...this.formData,
         cate_id: Array.isArray(this.formData.cate_id)
           ? [...this.formData.cate_id].pop()
           : this.formData.cate_id,
+        live_start_time: date[0],
+        live_end_time: date[1],
       };
+      delete data.date;
       if (this.id) {
         data.id = this.id;
       }
-      const api = this.id ? updateClassLive : createClassLive;
+      const api = this.id ? updatePublicLive : createPublicLive;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
@@ -266,10 +326,10 @@ export default {
       });
     },
     resetForm(formName) {
+      this.$refs[formName].resetFields();
       for (const k in this.formData) {
         this.formData[k] = "";
       }
-      this.$refs[formName].resetFields();
       this.hanldeCancel();
     },
     hanldeCancel() {
@@ -280,17 +340,36 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.live-dialog {
+.public-live-dialog {
   .w-100 {
     width: 100%;
   }
-  .question-bank-form {
+  /deep/.el-dialog__body {
+    height: 750px;
+    overflow-y: auto;
+  }
+  .public-live-form {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+
     .el-form-item {
-      width: 48%;
+      width: calc(100% / 2);
+      &.large {
+        width: 100%;
+      }
+      &.edit {
+        width: 100%;
+        /deep/.el-form-item__content {
+          height: 300px;
+        }
+      }
     }
   }
+}
+/deep/.el-dialog__body {
+  padding: 30px 50px 30px 20px;
+}
+.dialog-footer {
+  padding: 30px;
 }
 </style>

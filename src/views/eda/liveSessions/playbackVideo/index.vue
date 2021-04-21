@@ -155,9 +155,6 @@ export default {
     handlePreview(src) {
       this.$refs.view.show(src);
     },
-    linkTo(live_id) {
-      this.$router.push({ name: "liveDetails", query: { live_id } });
-    },
     openEdit(id) {
       this.currentId = id;
       this.dialogTitle = "编辑视频";

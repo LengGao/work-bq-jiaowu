@@ -19,7 +19,7 @@
         <el-input
           v-model="formData.file_name"
           placeholder="请输入资料名称"
-          maxlength="20"
+          maxlength="50"
         />
       </el-form-item>
       <el-form-item label="上传资料">
