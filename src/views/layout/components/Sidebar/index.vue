@@ -3,7 +3,9 @@
     <transition name="fade">
       <div v-if="sidebar.opened">
         <div class="img-style">
-          <router-link to="/" tag="li"><img :src="logo" alt="logo" /></router-link>
+          <router-link to="/" tag="li"
+            ><img :src="logo" alt="logo"
+          /></router-link>
         </div>
         <!-- <div>
           <el-button type="primary" icon="el-icon-plus" @click="something"
@@ -27,19 +29,32 @@
         </div> -->
       </div>
     </transition>
-    <el-menu mode="vertical" :show-timeout="200" :default-active="$route.path" :collapse="isCollapse" background-color="#380638" text-color="#bfcbd9" :unique-opened="true" :collapse-transition="true" active-text-color="#409EFF" @select="handleMenuSelect" style="overflow: hidden" router>
+    <el-menu
+      mode="vertical"
+      :show-timeout="200"
+      :default-active="$route.path"
+      :collapse="isCollapse"
+      background-color="#380638"
+      text-color="#bfcbd9"
+      :unique-opened="true"
+      :collapse-transition="true"
+      active-text-color="#409EFF"
+      @select="handleMenuSelect"
+      style="overflow: hidden"
+      router
+    >
       <!-- <sidebar-item :routes="routes"></sidebar-item> -->
-      <MenuItem :data="menuData" />
+      <MenuItem :data="menuData" :isCollapse="isCollapse" />
     </el-menu>
   </scroll-bar>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 // import SidebarItem from "./SidebarItem";
-import MenuItem from './MenuItem'
-import ScrollBar from '@/components/ScrollBar'
-import logo from '@/assets/images/logos.png'
+import MenuItem from "./MenuItem";
+import ScrollBar from "@/components/ScrollBar";
+import logo from "@/assets/images/logos.png";
 export default {
   // components: { SidebarItem, ScrollBar },
   components: { ScrollBar, MenuItem },
@@ -50,47 +65,47 @@ export default {
       current: -1,
       content: [
         {
-          name: '我的客户',
-          links: '/etm/enrollmentManagement',
-          icon: 'colorMyClient',
+          name: "我的客户",
+          links: "/etm/enrollmentManagement",
+          icon: "colorMyClient",
         },
         {
-          name: '查询学员',
-          links: '/etm/queryStudent',
-          icon: 'myQueryStudent',
+          name: "查询学员",
+          links: "/etm/queryStudent",
+          icon: "myQueryStudent",
         },
-        { name: '班级管理', links: '/eda/classManage', icon: 'MyClassMan' },
-        { name: '直播管理', links: '/eda/liveManager', icon: 'MyVideoMan' },
+        { name: "班级管理", links: "/eda/classManage", icon: "MyClassMan" },
+        { name: "直播管理", links: "/eda/liveManager", icon: "MyVideoMan" },
       ],
-    }
+    };
   },
   methods: {
     handleMenuSelect(index, indexPath) {
-      console.log(indexPath)
+      console.log(indexPath);
       // this.$route
       // this.breads = indexPath
     },
     something() {
-      this.showMenu = !this.showMenu
+      this.showMenu = !this.showMenu;
     },
     doActive(index) {
-      this.current = index
-      this.something()
+      this.current = index;
+      this.something();
     },
   },
   computed: {
-    ...mapGetters(['sidebar', 'routers', 'menus']),
+    ...mapGetters(["sidebar", "routers", "menus"]),
     menuData() {
-      return this.menus
+      return this.menus;
     },
     routes() {
-      return this.routers
+      return this.routers;
     },
     isCollapse() {
-      return !this.sidebar.opened
+      return !this.sidebar.opened;
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .img-style {
