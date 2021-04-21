@@ -59,7 +59,6 @@ export const constantRouterMap = [
 ]
 
 export const asyncRouter = [
-
   {
     path: '/sou',
     component: Layout,
@@ -310,6 +309,24 @@ export const asyncRouter = [
         name: 'classLive',
         component: () => import('@/views/eda/classLive/index.vue'),
         meta: { title: '班级直播', icon: 'product-cate' },
+      },
+      {
+        path: 'liveSessions',
+        name: 'liveSessions',
+        component: () => import('@/views/eda/liveSessions/index.vue'),
+        meta: { title: '直播场次', icon: 'product-cate' },
+      },
+      {
+        path: 'playbackVideo',
+        name: 'playbackVideo',
+        component: () => import('@/views/eda/liveSessions/playbackVideo/index.vue'),
+        meta: { title: '回顾视频', icon: 'product-cate' },
+      },
+      {
+        path: 'liveDetails',
+        name: 'liveDetails',
+        component: () => import('@/views/eda/liveDetails/index.vue'),
+        meta: { title: '直播详情', icon: 'product-cate' },
       },
       {
         path: 'learnerManage',
@@ -669,6 +686,7 @@ const routeToMap = (routers) => {
   const deep = (routers, routesMap) => {
     routers.forEach((route) => {
       const { children, ...reset } = route
+
       routesMap[route.name] = reset
       if (route.children && route.children.length) {
         deep(route.children, routesMap)
@@ -676,12 +694,14 @@ const routeToMap = (routers) => {
     })
   }
   deep(routers, routerMap)
+
   return routerMap
 }
 const asyncRouterMap = routeToMap(asyncRouter)
 
 // 根据接口返回的数据创建路由
 export const createUserRouter = (data) => {
+  console.log(data)
   const userRouter = []
   const menuList = []
   const deepCreate = (data, userRouter, menuList) => {

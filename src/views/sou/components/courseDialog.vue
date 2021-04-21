@@ -224,6 +224,7 @@ export default {
     async getCourseList() {
       const data = {
         page: this.pageNum,
+        class_type: 1,
         ...this.searchData,
         course_category_id: this.searchData.category_id.pop(),
       }

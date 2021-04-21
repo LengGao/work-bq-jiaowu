@@ -2,7 +2,7 @@
   <!-- <div class="about"> -->
   <div
     id="myChart"
-    :style="{ width: '83%', height: '90%', float: 'left', marginLeft: '10px' }"
+    :style="{ width: width, height: '90%', float: 'left', marginLeft: '10px' }"
   ></div>
   <!-- </div> -->
 </template>
@@ -24,6 +24,10 @@ export default {
     title: {
       type: String,
       default: "访问量",
+    },
+    width: {
+      type: String,
+      default: "83%",
     },
   },
   data() {

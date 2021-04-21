@@ -545,7 +545,7 @@ export function deletevideoclass(data) {
 // 章节排序
 export function videoChapterSort(data) {
   return request({
-    url: 'sort/videoChapter',
+    url: 'batchSort/VideoChapter',
     method: 'post',
     data,
   })
@@ -553,7 +553,7 @@ export function videoChapterSort(data) {
 // 课时排序
 export function videoClassSort(data) {
   return request({
-    url: 'sort/videoClass',
+    url: 'batchSort/VideoClass',
     method: 'post',
     data,
   })

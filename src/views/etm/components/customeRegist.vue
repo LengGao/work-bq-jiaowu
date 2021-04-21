@@ -1,19 +1,44 @@
 <template>
   <section>
-    <el-dialog title="客户报名" :visible.sync="openStatus" @close="doClose" :close-on-click-modal="false" append-to-body width="60%" class="add-teaching-material" style="min-width: 1070px;">
-      <el-form label-width="90px" class="demo-ruleForm" :show-message="true" label-position="left">
+    <el-dialog
+      title="客户报名"
+      :visible.sync="openStatus"
+      @close="doClose"
+      :close-on-click-modal="false"
+      append-to-body
+      width="60%"
+      class="add-teaching-material"
+      style="min-width: 1070px;"
+    >
+      <el-form
+        label-width="90px"
+        class="demo-ruleForm"
+        :show-message="true"
+        label-position="left"
+      >
         <div class="customer_sum_up">
           <h3>客户信息</h3>
           <div class="coustomer_Detail">
             <el-form-item label="客户姓名">
-              <el-input class="input-width" disabled v-model="userInfo.surname"></el-input>
+              <el-input
+                class="input-width"
+                disabled
+                v-model="userInfo.surname"
+              ></el-input>
             </el-form-item>
 
             <el-form-item label="手机号码">
-              <el-input disabled class="input-width" v-model="userInfo.mobile"></el-input>
+              <el-input
+                disabled
+                class="input-width"
+                v-model="userInfo.mobile"
+              ></el-input>
             </el-form-item>
             <el-form-item label="开通网课">
-              <el-radio-group v-model="ruleForm.online_course" style="width: 240px">
+              <el-radio-group
+                v-model="ruleForm.online_course"
+                style="width: 240px"
+              >
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
@@ -30,37 +55,76 @@
 
               <!--表格-->
               <div class="userTable">
-                <el-table ref="multipleTable" :data="projectData" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-                  <el-table-column label="项目名称" show-overflow-tooltip min-width="90" prop="project_name">
+                <el-table
+                  ref="multipleTable"
+                  :data="projectData"
+                  style="width: 100%"
+                  class="min_table"
+                  :header-cell-style="{ 'text-align': 'center' }"
+                  :cell-style="{ 'text-align': 'center' }"
+                >
+                  <el-table-column
+                    label="项目名称"
+                    show-overflow-tooltip
+                    min-width="150"
+                    prop="project_name"
+                  >
                   </el-table-column>
-                  <el-table-column prop="project_price" label="项目价格" min-width="110" show-overflow-tooltip>
+                  <el-table-column
+                    prop="project_price"
+                    label="项目价格"
+                    min-width="110"
+                    show-overflow-tooltip
+                  >
                     <template slot-scope="{ row }">
                       <div>￥{{ row.project_price }}</div>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="lowest_price" label="最低价格" min-width="150" show-overflow-tooltip>
+                  <el-table-column
+                    prop="lowest_price"
+                    label="最低价格"
+                    min-width="150"
+                    show-overflow-tooltip
+                  >
                     <template slot-scope="{ row }">
                       <div>￥{{ row.lowest_price }}</div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="优惠金额" min-width="150" show-overflow-tooltip>
+                  <el-table-column
+                    label="优惠金额"
+                    min-width="150"
+                    show-overflow-tooltip
+                  >
                     <template slot-scope="scope">
                       <el-col :span="12">
-                        <el-input v-model="scope.row.save_price" type="number" :controls="false" :min="0" :max="
+                        <el-input
+                          v-model="scope.row.save_price"
+                          type="number"
+                          :controls="false"
+                          :min="0"
+                          :max="
                             parseFloat(scope.row.project_price) -
-                            parseFloat(scope.row.lowest_price)
-                          " size="small" @input="
+                              parseFloat(scope.row.lowest_price)
+                          "
+                          size="small"
+                          @input="
                             changeAmount(
                               scope.$index,
                               scope.row.save_price,
                               projectData
                             )
-                          "></el-input>
+                          "
+                        ></el-input>
                       </el-col>
                     </template>
                   </el-table-column>
 
-                  <el-table-column prop="pay_price" label="应收金额" min-width="150" show-overflow-tooltip>
+                  <el-table-column
+                    prop="pay_price"
+                    label="应收金额"
+                    min-width="150"
+                    show-overflow-tooltip
+                  >
                     <template slot-scope="{ row }">
                       <div>￥{{ row.pay_price }}</div>
                     </template>
@@ -69,7 +133,13 @@
                   <el-table-column label="操作" fixed="right" min-width="200">
                     <template slot-scope="scope">
                       <div style="display: flex; justify-content: center">
-                        <el-button type="danger" icon="el-icon-delete" circle plain @click="delbtn(scope.$index, projectData)"></el-button>
+                        <el-button
+                          type="danger"
+                          icon="el-icon-delete"
+                          circle
+                          plain
+                          @click="delbtn(scope.$index, projectData)"
+                        ></el-button>
                       </div>
                     </template>
                   </el-table-column>
@@ -84,9 +154,11 @@
             <el-row>
               <el-col :sm="4">
                 <div class="expense_summary_label">
-                  订单总价<span>￥{{
-                      ruleForm.order_money ? ruleForm.order_money : ""
-                    }}</span>
+                  订单总价<span
+                    >￥{{
+                      ruleForm.order_money ? ruleForm.order_money : ''
+                    }}</span
+                  >
                 </div>
               </el-col>
               <el-col :sm="4">
@@ -96,7 +168,9 @@
               </el-col>
               <el-col :sm="4">
                 <div class="expense_summary_label">
-                  应收金额<span style="color: #fd6500">￥{{ receivableMoney ? receivableMoney : "" }}</span>
+                  应收金额<span style="color: #fd6500"
+                    >￥{{ receivableMoney ? receivableMoney : '' }}</span
+                  >
                 </div>
               </el-col>
             </el-row>
@@ -106,18 +180,41 @@
           <h3>支付信息</h3>
           <div class="coustomer_Detail">
             <el-form-item label="支付方式" style="margin-bottom:0">
-              <el-select v-model="ruleForm.pay_type" placeholder="请选择支付方式">
-                <el-option v-for="item in payWays" :key="item.value" :label="item.label" :value="item.label">
+              <el-select
+                v-model="ruleForm.pay_type"
+                placeholder="请选择支付方式"
+              >
+                <el-option
+                  v-for="item in payWays"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.label"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="支付金额" style="margin-bottom:0">
-              <el-input class="input-width" type="number" v-model="ruleForm.pay_money"></el-input>
+              <el-input
+                class="input-width"
+                type="number"
+                v-model="ruleForm.pay_money"
+              ></el-input>
             </el-form-item>
 
-            <el-form-item label="上传收据" class="receiptUpLoad" style="margin-bottom:0">
-              <el-upload name="image" :headers="headers" :action="uploadImageUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <el-form-item
+              label="上传收据"
+              class="receiptUpLoad"
+              style="margin-bottom:0"
+            >
+              <el-upload
+                name="image"
+                :headers="headers"
+                :action="uploadImageUrl"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
                 <img v-if="imgSrc" :src="imgSrc" class="img" />
                 <i v-else class="el-icon-plus upload-cover-icon"></i>
               </el-upload>
@@ -133,17 +230,27 @@
                 <span style="color: #fd6500">￥{{ ruleForm.pay_money }}</span>
               </div>
               <div class="expense_summary_label">
-                欠费金额<span>￥{{
+                欠费金额<span
+                  >￥{{
                     receivableMoney - ruleForm.pay_money
                       ? receivableMoney - ruleForm.pay_money
                       : 0
-                  }}</span>
+                  }}</span
+                >
               </div>
             </el-col>
 
             <el-col :sm="8">
               <el-form-item label="补缴时间">
-                <el-date-picker v-model="ruleForm.supplement_time" type="date" format="yyyy-MM-dd " value-format="yyyy-MM-dd " class="input-width" placeholder="选择日期" :disabled="receivableMoney <= ruleForm.pay_money">
+                <el-date-picker
+                  v-model="ruleForm.supplement_time"
+                  type="date"
+                  format="yyyy-MM-dd "
+                  value-format="yyyy-MM-dd "
+                  class="input-width"
+                  placeholder="选择日期"
+                  :disabled="receivableMoney <= ruleForm.pay_money"
+                >
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -153,14 +260,25 @@
           <el-form-item>
             <div style="display: flex; justify-content: flex-end">
               <el-button @click="doClose">取消</el-button>
-              <el-button type="primary" @click="orderDeatilShow">报名缴费</el-button>
+              <el-button type="primary" @click="orderDeatilShow"
+                >报名缴费</el-button
+              >
             </div>
           </el-form-item>
         </el-row>
       </el-form>
     </el-dialog>
-    <orderDialog :orderVisible="orderVisible" :orderInfo="orderInfo" v-on:orderDialog="getorderStatus($event)"></orderDialog>
-    <projectDialog :projectData="projectData" :projectVisible="projectVisible" @courseArr="getCourseArr" v-on:projectDialog="getprojectStatus($event)"></projectDialog>
+    <orderDialog
+      :orderVisible="orderVisible"
+      :orderInfo="orderInfo"
+      v-on:orderDialog="getorderStatus($event)"
+    ></orderDialog>
+    <projectDialog
+      :projectData="projectData"
+      :projectVisible="projectVisible"
+      @courseArr="getCourseArr"
+      v-on:projectDialog="getprojectStatus($event)"
+    ></projectDialog>
   </section>
 </template>
 
@@ -267,7 +385,9 @@ export default {
       })
       this.ruleForm.order_money = parsePrice(order_money)
       this.ruleForm.reduction = parsePrice(reduction)
-      this.ruleForm.pay_money = this.receivableMoney = parsePrice(receivableMoney)
+      this.ruleForm.pay_money = this.receivableMoney = parsePrice(
+        receivableMoney
+      )
 
       console.log(order_money, reduction, receivableMoney)
     },
@@ -317,10 +437,11 @@ export default {
       this.projectData[av].save_price = parseFloat(ab)
       console.log(this.projectData[av].save_price)
       this.projectData[av].pay_price =
-        parseFloat(this.projectData[av].project_price) - parseFloat(this.projectData[av].save_price)
+        parseFloat(this.projectData[av].project_price) -
+        parseFloat(this.projectData[av].save_price)
       //应收金额小于最低金额
       if (this.projectData[av].pay_price < this.projectData[av].lowest_price) {
-        this.$message.error('该项目优惠金额已超')
+        this.$message.error('该项目优惠后金额低于项目最低价格')
         this.projectData[av].save_price =
           this.projectData[av].project_price - this.projectData[av].lowest_price
         this.projectData[av].pay_price = this.projectData[av].lowest_price
@@ -350,7 +471,8 @@ export default {
     },
     orderDeatilShow() {
       // this.orderVisible = true
-      this.ruleForm.overdue_money = this.receivableMoney - this.ruleForm.pay_money
+      this.ruleForm.overdue_money =
+        this.receivableMoney - this.ruleForm.pay_money
       this.ruleForm.order_token = Math.floor(Math.random() * 1000000 + 1) + ''
       this.projectData.forEach((i) => {})
       this.ruleForm.project = JSON.stringify(this.projectData)

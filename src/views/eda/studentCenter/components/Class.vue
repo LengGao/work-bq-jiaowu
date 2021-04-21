@@ -15,32 +15,36 @@
         style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
+          align="center"
           label="项目编号"
           prop="project_id"
           min-width="90"
         ></el-table-column>
         <el-table-column
+          align="left"
           prop="project_name"
           label="项目名称"
           min-width="200"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          align="center"
           prop="category_name"
           label="所属分类"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          align="center"
           prop="price"
           label="项目价格"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          align="left"
           prop="project_name"
           label="课程"
           min-width="220"
@@ -55,9 +59,10 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="classroom_id"
           label="题库"
-          min-width="100"
+          min-width="140"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -69,9 +74,10 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="left"
           prop="total_books"
           label="教材"
-          min-width="100"
+          min-width="140"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -83,6 +89,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="create_time"
           label="报名时间"
           min-width="130"
@@ -104,30 +111,38 @@
         style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column label="编号" type="index" width="60"></el-table-column>
+        <el-table-column
+          label="编号"
+          align="center"
+          type="index"
+          width="60"
+        ></el-table-column>
         <el-table-column
           prop="classroom_name"
           label="班级名称"
           min-width="220"
+          align="left"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="category_name"
           label="所属分类"
           min-width="120"
+          align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="project_name"
           label="项目名称"
           min-width="200"
+          align="left"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="staff_name"
           label="班主任"
+          align="center"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
@@ -135,15 +150,22 @@
           prop="student_number"
           label="班级人数"
           min-width="100"
+          align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="add_time"
           label="加入时间"
+          align="center"
           min-width="130"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="100">
+        <el-table-column
+          label="操作"
+          align="center"
+          fixed="right"
+          min-width="100"
+        >
           <template slot-scope="{ row }">
             <div class="operation_btn">
               <el-button type="text" @click="toClassDetail(row.classroom_id)"

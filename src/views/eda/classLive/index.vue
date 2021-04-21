@@ -23,60 +23,97 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
             label="编号"
             show-overflow-tooltip
             min-width="70"
-            prop="classroom_id"
+            align="center"
+            prop="live_class_id"
           >
           </el-table-column>
           <el-table-column
-            prop="classroom_name"
+            prop="live_class_name"
             label="直播名称"
             min-width="220"
+            align="left"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
+            prop="class_name"
+            label="班级名称"
+            min-width="180"
+            align="left"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
             prop="category_name"
-            label="直播班级"
-            min-width="120"
+            label="所属分类"
+            min-width="130"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="project_name"
-            label="课程类型"
-            min-width="180"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="course_name"
-            label="课程名称"
-            min-width="180"
+            prop="teacher_name"
+            label="任课老师"
+            align="center"
+            min-width="110"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="staff_name"
             label="状态"
-            min-width="110"
+            align="center"
+            min-width="100"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span class="live-status">无直播</span>
-              <span class="live-status live-status-active">无直播</span>
+              <el-link
+                type="success"
+                class="live-status live-status-active"
+                v-if="row.live_status"
+                @click="openLinkDetail(row.live_class_id)"
+                >直播中</el-link
+              >
+              <span class="live-status" v-else>无直播</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="240">
+          <el-table-column
+            label="操作"
+            align="center"
+            fixed="right"
+            min-width="240"
+          >
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text">开始直播</el-button>
-                <el-button type="text">直播场次</el-button>
-                <el-button type="text" @click="openEdit(row.classroom_id)"
+                <el-button
+                  v-if="row.live_status"
+                  type="text"
+                  @click="closeLiveConfirm(row.live_class_id)"
+                  >关闭直播</el-button
+                >
+                <el-button
+                  type="text"
+                  v-if="!row.live_status"
+                  @click="openLiveConfirm(row.live_class_id)"
+                  >开始直播</el-button
+                >
+                <el-button type="text" @click="linkTo(row.live_class_id)"
+                  >直播场次</el-button
+                >
+                <el-button
+                  v-if="!row.live_status"
+                  type="text"
+                  @click="openEdit(row.live_class_id)"
                   >编辑</el-button
                 >
-                <el-button type="text">删除</el-button>
+                <el-button
+                  type="text"
+                  v-if="!row.live_status"
+                  @click="deleteConfirm(row.live_class_id)"
+                  >删除</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -90,22 +127,39 @@
         </div>
       </div>
       <!--弹框-->
-      <!-- <AddClass
+      <LiveDialog
         v-model="dialogVisible"
         :title="dialogTitle"
         :id="currentId"
         :typeOptions="typeOptions"
-        @on-success="getClassList"
-      /> -->
+        @on-success="classLiveList"
+      />
+      <LiveLinkDialog
+        v-model="liveDetailDialog"
+        :id="currentId"
+        :title="liveDetailTitle"
+        :datas="liveDetail"
+      />
     </section>
   </div>
 </template>
 
 <script>
-import { getClassList } from "@/api/eda";
-// import AddClass from "./components/AddClass";
+import {
+  classLiveList,
+  deleteClassLive,
+  livestart,
+  closelive,
+} from "@/api/eda";
+import { cloneOptions } from "@/utils/index";
+import { getCateList } from "@/api/sou";
+import LiveDialog from "./components/LiveDialog";
+import LiveLinkDialog from "../liveSessions/components/LiveLinkDialog";
 export default {
-  components: {},
+  components: {
+    LiveDialog,
+    LiveLinkDialog,
+  },
   data() {
     return {
       listData: [],
@@ -113,49 +167,113 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        project_id: "",
-        keyword: "",
+        live_class_name: "",
+        cate_id: [],
       },
       searchOptions: [
         {
-          key: "project_id",
-          type: "select",
-          options: [],
-          optionValue: "project_id",
-          optionLabel: "project_name",
+          key: "cate_id",
+          type: "cascader",
+          width: 120,
           attrs: {
-            placeholder: "课程类型",
+            placeholder: "所属分类",
             clearable: true,
+            props: { checkStrictly: true },
+            filterable: true,
+            options: [],
           },
         },
         {
-          key: "project_id",
-          type: "select",
-          options: [],
-          optionValue: "project_id",
-          optionLabel: "project_name",
+          key: "live_class_name",
           attrs: {
-            placeholder: "课程名称",
-            clearable: true,
-          },
-        },
-        {
-          key: "keyword",
-          attrs: {
-            placeholder: "直播名称/直播直播",
+            placeholder: "直播名称/班级名称",
           },
         },
       ],
       currentId: "",
       dialogTitle: "添加直播",
       dialogVisible: false,
+      typeOptions: [],
+      liveDetail: {},
+      liveDetailDialog: false,
+      liveDetailTitle: "",
     };
   },
 
   created() {
-    this.getClassList();
+    this.getCateList();
+    this.classLiveList();
   },
   methods: {
+    openLinkDetail(id) {
+      this.currentId = id;
+      this.liveDetailTitle = "直播链接";
+      this.liveDetailDialog = true;
+    },
+    // 关闭直播
+    closeLiveConfirm(id) {
+      this.$confirm("确定要关闭直播吗?", { type: "warning" })
+        .then(() => {
+          this.closelive(id);
+        })
+        .catch(() => {});
+    },
+    async closelive(live_class_id) {
+      const data = { live_class_id };
+      const res = await closelive(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.classLiveList();
+      }
+    },
+    // 开始直播
+    openLiveConfirm(id) {
+      this.$confirm("确定要开始直播吗?", { type: "warning" })
+        .then(() => {
+          this.livestart(id);
+        })
+        .catch(() => {});
+    },
+    async livestart(live_class_id) {
+      const data = { live_class_id };
+      const res = await livestart(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        const data = res.data.data || {};
+        this.liveDetail = {
+          webUrl:
+            "https://live.polyv.net/web-start/classroom?channelId=" +
+            data.channelId,
+          clientUrl:
+            "https://live.polyv.net/start-client.html?channelId=" +
+            data.channelId,
+          channelId: data.channelId,
+          channelPasswd: data.channelPasswd,
+          channel_account: data.channel_account,
+          teacherUrl: "https://live.polyv.net/teacher.html",
+        };
+        this.liveDetailDialog = true;
+        this.liveDetailTitle = "发布成功";
+        this.currentId = "";
+        this.classLiveList();
+      }
+    },
+    // 删除直播
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此直播吗?", { type: "warning" })
+        .then(() => {
+          this.deleteClassLive(id);
+        })
+        .catch(() => {});
+    },
+    async deleteClassLive(id) {
+      const data = { id };
+      const res = await deleteClassLive(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.classLiveList();
+      }
+    },
     openEdit(id) {
       this.dialogTitle = "编辑直播";
       this.currentId = id;
@@ -170,23 +288,40 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
+        cate_id: data.cate_id ? data.cate_id.pop() : "",
       };
-      this.getClassList();
+      this.classLiveList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassList();
+      this.classLiveList();
     },
-    async getClassList() {
+    // 获取所属分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[0].attrs.options = this.typeOptions = cloneOptions(
+          res.data,
+          "category_name",
+          "category_id",
+          "son"
+        );
+      }
+    },
+    async classLiveList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassList(data);
+      const res = await classLiveList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
+    },
+    linkTo(live_class_id) {
+      this.$router.push({ name: "liveSessions", query: { live_class_id } });
     },
   },
 };

@@ -25,6 +25,11 @@
           min-width="90"
           prop="user_realname"
         >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="linkTo(row.uid)">{{
+              row.user_realname
+            }}</el-button>
+          </template>
         </el-table-column>
         <el-table-column
           label="手机号码"
@@ -32,17 +37,13 @@
           min-width="90"
           prop="telphone"
         >
+          <template slot-scope="{ row }">
+            <span>{{ row.telphone | filterPhone }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="institution_name"
           label="所属机构"
-          min-width="110"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="schoole_name"
-          label="所属校区"
           min-width="110"
           show-overflow-tooltip
         >
@@ -54,19 +55,37 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="course_username"
+          prop="ExamLogAvg"
+          label="模拟考试平均分"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="RealTopicLogAvg"
+          label="历年真题平均分"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="ProblemSelfDeterminationMax"
+          label="自主出题最高分"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="attendance_num"
           label="出勤次数"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="staff_name"
+          prop="absence_num"
           label="缺勤次数"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="staff_name"
+          prop="attendance_rate"
           label="出勤率"
           min-width="110"
           show-overflow-tooltip
@@ -110,6 +129,9 @@ export default {
     this.getClassstudentList();
   },
   methods: {
+    linkTo(id) {
+      this.$router.push({ name: "studentDetail", query: { id } });
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;
@@ -136,5 +158,5 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 </style>
