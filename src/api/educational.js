@@ -14,10 +14,20 @@ export function getCertificates(params) {
     })
 }
 /**
- * shang
- * @param {*} data 
+ * 上传图片url
  */
 export const uploadImageUrl = `${process.env.VUE_APP_LOACTION}/oss/uploadImage`
+/**
+ * 上传图片
+ * @param {*} data 
+ */
+export function ossUploadImage(data) {
+    return request({
+        url: '/oss/uploadImage',
+        method: 'post',
+        data
+    })
+}
 
 /**
  * 根据id修改证件资料

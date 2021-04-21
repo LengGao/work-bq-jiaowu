@@ -3,6 +3,7 @@
     <el-upload
       class="upload-button"
       name="image"
+      accept="image/*"
       :headers="headers"
       :action="uploadImageUrl"
       :show-file-list="false"
