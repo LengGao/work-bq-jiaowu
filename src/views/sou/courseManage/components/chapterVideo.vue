@@ -84,7 +84,7 @@
         <el-table-column
           align="center"
           prop="student_number"
-          label="免费试用"
+          label="免费试看"
           min-width="110"
           show-overflow-tooltip
         >
