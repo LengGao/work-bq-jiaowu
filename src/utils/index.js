@@ -263,9 +263,10 @@ export const download = async (url, filename = '') => {
   const splitArr = url.split('.')
   const currentSuffix = splitArr[splitArr.length - 1]
   const imgSuffix = ["png", "jpg", "jpeg", "gif"];
-  const videoSuffix = ['mp4', 'MOV', 'AVI', 'QT', 'ASF', 'WMV', 'm3u8', 'ASF', 'WebM', 'Ogg', 'flv']
-  // 视频就打开新窗口
-  if (videoSuffix.includes(currentSuffix)) {
+  const videoSuffix = ['mp4', 'MOV', 'AVI', 'QT', 'ASF', 'WMV', 'm3u8', 'ASF', 'WebM', 'Ogg', 'flv', '']
+  console.log(currentSuffix)
+  // 视频或者没有后缀的url 打开新窗口
+  if (videoSuffix.includes(currentSuffix) || currentSuffix.length > 5) {
     window.open(url)
     return Promise.resolve()
   }

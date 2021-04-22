@@ -131,10 +131,7 @@ export default {
   methods: {
     async handleDownload(row) {
       row.loading = true;
-      const url = downloadBaseUrl + row.path;
-      await download(url, row.file_name + "." + row.suffix).catch(() => {
-        row.loading = false;
-      });
+      download(row.oss_url, row.file_name + "." + row.suffix);
       row.loading = false;
     },
     // 删除课程资料
