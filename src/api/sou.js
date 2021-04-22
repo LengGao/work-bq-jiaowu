@@ -586,3 +586,11 @@ export function getCourseMaterialDetail(params) {
     params,
   })
 }
+// 获取视频url
+export function getVideoUrlByid(params) {
+  return request({
+    url: '/video/getVideoUrl',
+    method: 'get',
+    params,
+  })
+}

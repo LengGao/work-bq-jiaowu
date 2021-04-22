@@ -152,10 +152,10 @@ export default {
       const res = await getVideoUrl(data).catch(() => {
         row.loading = false;
       });
-      row.loading = false;
       if (res.code === 0) {
+        row.loading = false;
         const fileObj = res.data.Mezzanine || {};
-        download(fileObj.FileURL, fileObj.FileName, true);
+        download(fileObj.FileURL, fileObj.FileName);
       }
     },
     // 删除视频

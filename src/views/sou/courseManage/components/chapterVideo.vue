@@ -109,6 +109,13 @@
         >
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
+              <el-button
+                type="text"
+                v-if="row.parentId"
+                @click="getVideoUrlByid(row)"
+                :loading="row.loading"
+                >下载</el-button
+              >
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
               <el-button type="text" @click="deleteConfirm(row)"
                 >删除</el-button
@@ -158,9 +165,11 @@ import {
   deletevideoclass,
   videoClassSort,
   videoChapterSort,
+  getVideoUrlByid,
 } from "@/api/sou";
 import ChapterDIalog from "./chapterDIalog";
 import ClassHourDialog from "./classHourDialog";
+import { download } from "@/utils/index";
 export default {
   name: "chapterVideo",
   components: {
@@ -205,6 +214,21 @@ export default {
   },
 
   methods: {
+    // 下载
+    async getVideoUrlByid(row) {
+      const data = {
+        video_class_id: row.id,
+      };
+      row.loading = true;
+      const res = await getVideoUrlByid(data).catch(() => {
+        row.loading = false;
+      });
+      if (res.code === 0) {
+        row.loading = false;
+        const fileObj = res.data.Mezzanine || {};
+        download(fileObj.FileURL, fileObj.FileName);
+      }
+    },
     handleBatchSort() {
       const videoSortMaps = {};
       const classSortMaps = {};
@@ -409,6 +433,7 @@ export default {
         duration: item.video_class_duration,
         coverurl: item.video_class_coverurl,
         treeId: this.setId(),
+        loading: false,
       }));
       return children;
     },
