@@ -57,6 +57,19 @@
           </el-table-column>
           <el-table-column
             prop="end_push_time"
+            label="大小"
+            min-width="180"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.media_duration">
+                {{ row.media_size | filterFileSize }}
+              </span>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="end_push_time"
             label="时长"
             min-width="180"
             show-overflow-tooltip
