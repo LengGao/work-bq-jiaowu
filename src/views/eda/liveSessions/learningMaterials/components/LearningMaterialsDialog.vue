@@ -23,6 +23,7 @@
         />
       </el-form-item>
       <el-form-item label="上传资料" prop="path">
+        <el-input v-show="false" v-model="formData.path"></el-input>
         <el-upload
           ref="upload"
           action="/"
@@ -95,7 +96,7 @@ export default {
       },
       rules: {
         name: [{ required: true, message: "请输入", trigger: "blur" }],
-        path: [{ required: true, message: "请上传", trigger: "blur" }],
+        path: [{ required: true, message: "请上传", trigger: "change" }],
       },
       addLoading: false,
       detaiLoading: false,

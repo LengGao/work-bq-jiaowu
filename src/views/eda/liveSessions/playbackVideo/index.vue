@@ -259,6 +259,12 @@ export default {
 .userTable {
   margin-top: 20px;
 }
+.video-cover {
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  height: 80px;
+}
 .table_bottom {
   text-align: right;
 }
