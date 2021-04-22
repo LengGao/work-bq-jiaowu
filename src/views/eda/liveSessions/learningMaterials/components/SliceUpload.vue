@@ -68,9 +68,14 @@ export default {
     async _beforeUpload(file) {
       this.uploadLoading = true;
       this.progress = 0;
-      await this.beforeUpload(file);
-      const bytesPerPiece = 1024 * 1024 * this.sliceSize;
-      this.sliceFile(file, bytesPerPiece);
+      try {
+        await this.beforeUpload(file);
+        const bytesPerPiece = 1024 * 1024 * this.sliceSize;
+        this.sliceFile(file, bytesPerPiece);
+      } catch {
+        this.uploadLoading = false;
+      }
+
       return Promise.reject();
     },
     dataToFormData(data) {
