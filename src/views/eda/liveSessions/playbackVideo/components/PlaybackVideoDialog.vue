@@ -82,6 +82,7 @@ export default {
         video_id: "",
         live_video_name: "",
         media_name: "",
+        description: "",
       },
       defaultFiles: [],
       rules: {
@@ -118,6 +119,7 @@ export default {
       const filename = data.file.name;
       this.formData.video_id = data.videoId;
       this.formData.media_name = filename;
+      this.formData.description = data.duration;
     },
     //获取详情
     async getlivevideoDetail() {

@@ -104,6 +104,7 @@ export default {
         video_class_sort: "",
         media_id: "",
         media_name: "",
+        video_class_duration: "",
       },
       defaultFiles: [],
       rules: {
@@ -144,6 +145,7 @@ export default {
       const filename = data.file.name;
       this.formData.media_id = data.videoId;
       this.formData.media_name = filename;
+      this.formData.video_class_duration = data.duration;
     },
     //获取详情
     async getvideoclassDetail() {

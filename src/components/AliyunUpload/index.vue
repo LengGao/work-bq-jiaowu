@@ -21,6 +21,7 @@
 
 <script>
 import { updatecreate, refreshuploadvideo } from "@/api/sou";
+import classigisettingVue from "../../views/sou/components/classigisetting.vue";
 export default {
   name: "AliyunUpload",
   props: {
@@ -49,6 +50,7 @@ export default {
       aliyunUserId: "1160528473305736",
       fileList: [],
       percentage: 0,
+      duration: 0,
     };
   },
   watch: {
@@ -86,6 +88,16 @@ export default {
       const paramsJson = '{"Vod":{}}';
       this.aliyunUpload.addFile(file, null, null, null, paramsJson);
       this.upload();
+      this.getDuration(file);
+    },
+    // 获取视频时长
+    getDuration(file) {
+      const url = URL.createObjectURL(file);
+      const video = document.createElement("video");
+      video.src = url;
+      video.onloadeddata = () => {
+        this.duration = video.duration;
+      };
     },
     upload() {
       this.aliyunUpload.startUpload();
@@ -148,6 +160,10 @@ export default {
         retryCount: 3,
         //网络原因失败时，重新上传间隔时间，默认为2秒
         retryDuration: 2,
+        // 添加文件成功
+        addFileSuccess: (uploadInfo) => {
+          this.percentage = +(Math.random() * 1).toFixed(2);
+        },
         //开始上传
         onUploadstarted: async (uploadInfo) => {
           // 没有videoId就获取凭证后上传
@@ -160,7 +176,7 @@ export default {
         },
         //文件上传成功
         onUploadSucceed: (uploadInfo) => {
-          this.onSuccess(uploadInfo);
+          this.onSuccess({ ...uploadInfo, duration: this.duration });
           this.fileList = [];
           this.fileList.push({
             name: uploadInfo.file.name,
@@ -176,7 +192,7 @@ export default {
         //文件上传进度，单位：字节
         onUploadProgress: (uploadInfo, totalSize, loadedPercent) => {
           let progress = Math.floor(loadedPercent * 100);
-          this.percentage = progress || +(Math.random() * 1).toFixed(2);
+          progress && (this.percentage = progress);
         },
         //上传凭证或STS token超时
         onUploadTokenExpired: (uploadInfo) => {
