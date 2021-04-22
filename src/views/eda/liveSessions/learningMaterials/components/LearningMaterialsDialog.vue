@@ -36,8 +36,13 @@
             slot="trigger"
             size="small"
             type="primary"
-            >{{ uploadLoading ? `${progress}%` : `选取文件` }}</el-button
+            >上传文件</el-button
           >
+          <el-progress
+            v-if="uploadLoading"
+            class="upload-progress"
+            :percentage="progress"
+          ></el-progress>
         </el-upload>
       </el-form-item>
     </el-form>
@@ -54,6 +59,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import {
   updateLiveData,
   createLiveData,
@@ -100,7 +106,7 @@ export default {
       partSize: 5, // 单片大小 5mb
       partArr: [], // 所有切片
       progress: 0, // 上传进度
-      isDestroy: false, // 用于离开当前页面时取消上传
+      cancelPool: [],
     };
   },
   watch: {
@@ -109,7 +115,7 @@ export default {
     },
   },
   beforeDestroy() {
-    this.isDestroy = true;
+    this.clearCancel();
   },
   methods: {
     handleRemove() {
@@ -151,7 +157,7 @@ export default {
         formData.append("name", filename);
         formData.append("index_slice", index);
         formData.append("guid", this.guid);
-        this.partArr.push({ formData, filename });
+        this.partArr.push({ formData, filename, index });
         start = end;
         index++;
       }
@@ -165,19 +171,41 @@ export default {
       // 每次取 发起 this.parallel 个上传请求
       const arr = this.partArr.splice(0, end);
       Promise.all(arr.map((item) => this.liveDataUpload(item))).then(() => {
-        if (leng && !this.isDestroy) {
+        if (leng) {
           this.partUpload();
         }
       });
     },
+    // 创建 CancelToken 用来取消上传请求
+    createCancel(id) {
+      const CancelToken = axios.CancelToken;
+      return new CancelToken((cancel) => {
+        this.cancelPool.push({ cancel, id });
+      });
+    },
+    // 移除完成的
+    removeCancel(id) {
+      this.cancelPool.forEach((item, index) => {
+        if (id === item.id) {
+          this.cancelPool.splice(index, 1);
+        }
+      });
+    },
+    // 取消并清空请求
+    clearCancel() {
+      this.cancelPool.forEach(({ cancel }) => cancel());
+      this.cancelPool = [];
+    },
     // 上传请求
-    async liveDataUpload({ formData, filename }) {
-      const res = await liveDataUpload(formData).catch(() => {
+    async liveDataUpload({ formData, filename, index }) {
+      const cancelToken = this.createCancel(index);
+      const res = await liveDataUpload(formData, cancelToken).catch(() => {
         this.uploadLoading = false;
       });
       if (res.code === 0) {
+        this.removeCancel(index);
         this.progress = res.data.progress;
-        if (res.data.progress === 100) {
+        if (res.data.progress === 100 && this.visible) {
           this.uploadLoading = false;
           this.formData.path = res.data.path;
           this.$message.success(res.message);
@@ -255,10 +283,13 @@ export default {
         this.formData[k] = "";
       }
       this.fileList = [];
+      this.uploadLoading = false;
+      this.partArr = [];
       this.$refs[formName].resetFields();
       this.hanldeCancel();
     },
     hanldeCancel() {
+      this.clearCancel();
       this.$emit("input", false);
     },
   },
@@ -266,4 +297,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.upload-progress {
+  /deep/.el-progress-bar {
+    margin-right: -60px;
+    padding-right: 55px;
+  }
+}
 </style>

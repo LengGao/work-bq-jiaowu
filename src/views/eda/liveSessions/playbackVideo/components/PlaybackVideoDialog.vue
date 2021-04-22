@@ -35,6 +35,7 @@
         <!-- 用来更新验证用 不显示 -->
         <el-input v-show="false" v-model="formData.video_id"></el-input>
         <AliyunUpload
+          ref="aliyunUpload"
           :defaultFiles="defaultFiles"
           :on-success="handleUploadSuccess"
           @on-remove="handleVideoRemove"
@@ -185,6 +186,7 @@ export default {
       this.hanldeCancel();
     },
     hanldeCancel() {
+      this.$refs.aliyunUpload.cancelUpload();
       this.$emit("input", false);
     },
   },

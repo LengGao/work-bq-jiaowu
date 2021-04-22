@@ -1,3 +1,4 @@
+
 /**
  * 教务相关
  */
@@ -736,9 +737,11 @@ export function recordForUpload(data) {
     data,
   })
 }
+
 // 班级直播 -直播场次列表-学习资料列表-切片上传
-export function liveDataUpload(data) {
+export function liveDataUpload(data, cancelToken) {
   return request({
+    cancelToken,
     url: '/LiveData/upload',
     method: 'post',
     data,

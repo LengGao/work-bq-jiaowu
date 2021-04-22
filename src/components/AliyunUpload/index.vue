@@ -1,6 +1,8 @@
 <template>
   <div class="ali-yun-upload">
-    <el-button size="small" @click="handleFileSelect">选择文件</el-button>
+    <el-button size="small" @click="handleFileSelect" :loading="uploadLoading"
+      >选择文件</el-button
+    >
     <transition name="el-fade-in-linear">
       <el-progress
         v-show="percentage && percentage !== 100"
@@ -51,6 +53,7 @@ export default {
       fileList: [],
       percentage: 0,
       duration: 0,
+      uploadLoading: false,
     };
   },
   watch: {
@@ -65,6 +68,12 @@ export default {
     this.initAliYun();
   },
   methods: {
+    // 取消上传
+    cancelUpload() {
+      this.aliyunUpload.cancelFile(0);
+      this.percentage = 0;
+      this.uploadLoading = false;
+    },
     handleFileDelete(index) {
       this.fileList.splice(index, 1);
       this.$emit("on-remove", index);
@@ -113,6 +122,7 @@ export default {
       };
       const res = await updatecreate(data).catch(() => {
         // 重置
+        this.uploadLoading = false;
         this.initAliYun();
       });
       if (res.code === 0) {
@@ -133,6 +143,7 @@ export default {
       };
       const res = await refreshuploadvideo(data).catch(() => {
         // 重置
+        this.uploadLoading = false;
         this.initAliYun();
       });
       if (res.code === 0) {
@@ -162,6 +173,7 @@ export default {
         retryDuration: 2,
         // 添加文件成功
         addFileSuccess: (uploadInfo) => {
+          this.uploadLoading = true;
           this.percentage = +(Math.random() * 1).toFixed(2);
         },
         //开始上传
@@ -176,6 +188,7 @@ export default {
         },
         //文件上传成功
         onUploadSucceed: (uploadInfo) => {
+          this.uploadLoading = false;
           this.onSuccess({ ...uploadInfo, duration: this.duration });
           this.fileList = [];
           this.fileList.push({
@@ -186,6 +199,7 @@ export default {
         //文件上传失败
         onUploadFailed: (uploadInfo, code, message) => {
           this.fileList = [];
+          this.uploadLoading = false;
           console.log("文件上传失败", code, message);
           this.onError(uploadInfo, code, message);
         },
@@ -196,11 +210,14 @@ export default {
         },
         //上传凭证或STS token超时
         onUploadTokenExpired: (uploadInfo) => {
+          this.uploadLoading = false;
           const uploadAuth = this.updatecreate();
           this.aliyunUpload.resumeUploadWithAuth(uploadAuth);
         },
         //全部文件上传结束
-        onUploadEnd: (uploadInfo) => {},
+        onUploadEnd: (uploadInfo) => {
+          this.uploadLoading = false;
+        },
       });
     },
   },
