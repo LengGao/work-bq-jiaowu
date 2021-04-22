@@ -172,11 +172,8 @@
           <span v-else>{{ datas.from_organization_name }}</span>
         </el-form-item>
         <el-form-item label="所属老师">
-          <el-input
-            v-model="ruleForm.admin_name"
-            v-if="isEdit"
-            disabled
-          ></el-input>
+          {{ ruleForm.admin_name }}
+          <el-input :value="datas.admin_name" v-if="isEdit" disabled></el-input>
           <span v-else>{{ datas.admin_name || "--" }}</span>
         </el-form-item>
 

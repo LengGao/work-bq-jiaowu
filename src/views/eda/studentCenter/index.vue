@@ -4,9 +4,9 @@
       <div class="detail-header">
         <div class="header-item header-user">
           <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
-          <span class="name">{{ detailData.surname || '--' }}</span>
+          <span class="name">{{ detailData.surname || "--" }}</span>
         </div>
-        <div class="header-item">ID：{{ detailData.uid || '--' }}</div>
+        <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
         <div class="header-item">
           手机号码：{{ detailData.mobile | filterPhone }}
         </div>
@@ -14,7 +14,7 @@
           身份证码：{{ detailData.id_card_number | filterIdCard }}
         </div>
         <div class="header-item">
-          注册日期：{{ detailData.create_time || '--' }}
+          注册日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
           <el-button type="primary" @click="openSingUpDialog">报名</el-button>
@@ -23,15 +23,20 @@
       </div>
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
+        <el-tab-pane label="跟进记录" name="FollowUpRecord"></el-tab-pane>
         <el-tab-pane label="证件资料" name="Certificates"></el-tab-pane>
         <el-tab-pane label="项目班级" name="Class"></el-tab-pane>
         <el-tab-pane label="学习记录" name="LearningRecords"></el-tab-pane>
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
-        <el-tab-pane label="跟进记录" name="FollowUpRecord"></el-tab-pane>
         <el-tab-pane label="学员历史" name="CustomerHistory"></el-tab-pane>
       </el-tabs>
-      <component :is="getComponent" @on-basic-success="getStudentBasicDetail" :datas="detailData" :uid="detailData.uid" />
+      <component
+        :is="getComponent"
+        @on-basic-success="getStudentBasicDetail"
+        :datas="detailData"
+        :uid="detailData.uid"
+      />
     </section>
     <!-- 报名 -->
     <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
@@ -39,49 +44,49 @@
 </template>
 
 <script>
-import { getStudentBasicDetail } from '@/api/eda'
-import CustomeRegist from '@/views/etm/components/customeRegist'
+import { getStudentBasicDetail } from "@/api/eda";
+import CustomeRegist from "@/views/etm/components/customeRegist";
 export default {
-  name: 'studentDetail',
+  name: "studentDetail",
   components: {
     CustomeRegist,
   },
   data() {
     return {
-      activeName: 'BasicInfo',
+      activeName: "BasicInfo",
       detailData: {},
       detailLoading: false,
       signUpDialog: false,
-    }
+    };
   },
   computed: {
     getComponent() {
       if (this.activeName) {
-        return () => import(`./components/${this.activeName}.vue`)
+        return () => import(`./components/${this.activeName}.vue`);
       }
     },
   },
   created() {
-    this.getStudentBasicDetail()
+    this.getStudentBasicDetail();
   },
   methods: {
     openSingUpDialog() {
-      this.signUpDialog = true
+      this.signUpDialog = true;
     },
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {
-        uid: this.$route.query?.id || '',
-      }
-      this.detailLoading = true
-      const res = await getStudentBasicDetail(data)
-      this.detailLoading = false
+        uid: this.$route.query?.id || "",
+      };
+      this.detailLoading = true;
+      const res = await getStudentBasicDetail(data);
+      this.detailLoading = false;
       if (res.code === 0) {
-        this.detailData = res.data
+        this.detailData = res.data;
       }
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .student-detail {
