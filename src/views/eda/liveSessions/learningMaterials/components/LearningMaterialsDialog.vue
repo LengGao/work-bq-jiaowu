@@ -24,27 +24,15 @@
       </el-form-item>
       <el-form-item label="上传资料" prop="path">
         <el-input v-show="false" v-model="formData.path"></el-input>
-        <el-upload
-          ref="upload"
-          action="/"
-          :show-file-list="!uploadLoading"
+        <SliceUpload
+          :data="uploadData"
+          :slice-size="sliceSize"
           :before-upload="beforeUpload"
+          @on-remove="handleRemove"
           :file-list="fileList"
-          :on-remove="handleRemove"
-        >
-          <el-button
-            :loading="uploadLoading"
-            slot="trigger"
-            size="small"
-            type="primary"
-            >上传文件</el-button
-          >
-          <el-progress
-            v-if="uploadLoading"
-            class="upload-progress"
-            :percentage="progress"
-          ></el-progress>
-        </el-upload>
+          @on-success="handleUploadSuccess"
+          ref="sliceUpload"
+        />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -60,15 +48,13 @@
 </template>
 
 <script>
-import axios from "axios";
 import {
   updateLiveData,
   createLiveData,
   getliveDataInfo,
-  liveDataUpload,
   recordForUpload,
 } from "@/api/eda";
-import AliyunUpload from "@/components/AliyunUpload/index";
+import SliceUpload from "./SliceUpload";
 export default {
   props: {
     value: {
@@ -85,7 +71,7 @@ export default {
     },
   },
   components: {
-    AliyunUpload,
+    SliceUpload,
   },
   data() {
     return {
@@ -100,14 +86,11 @@ export default {
       },
       addLoading: false,
       detaiLoading: false,
-      guid: "",
-      uploadLoading: false,
+      sliceSize: 3,
       fileList: [],
-      parallel: 5, // 并发数量
-      partSize: 5, // 单片大小 5mb
-      partArr: [], // 所有切片
-      progress: 0, // 上传进度
-      cancelPool: [],
+      uploadData: {
+        guid: "",
+      },
     };
   },
   watch: {
@@ -115,116 +98,36 @@ export default {
       this.visible = val;
     },
   },
-  beforeDestroy() {
-    this.clearCancel();
-  },
+
   methods: {
+    handleUploadSuccess(res, file) {
+      this.formData.path = res.data.path;
+      this.$message.success(res.message);
+      this.fileList = [{ name: file.name, url: res.data.path }];
+    },
+    async beforeUpload(file) {
+      const bytesPerPiece = 1024 * 1024 * this.sliceSize;
+      const filesize = file.size;
+      const totalPieces = Math.ceil(filesize / bytesPerPiece);
+      // 获取凭证
+      await this.recordForUpload(totalPieces);
+    },
+    // 获取上传凭证
+    async recordForUpload(total_slice) {
+      const data = { total_slice };
+      const res = await recordForUpload(data).catch(() => {
+        this.uploadLoading = false;
+      });
+      if (res.code === 0) {
+        this.uploadData.guid = res.data.guid;
+      }
+    },
     handleRemove() {
       this.formData.path = "";
     },
     handleOpen() {
       if (this.id) {
         this.getliveDataInfo();
-      }
-    },
-    async beforeUpload(file) {
-      const bytesPerPiece = 1024 * 1024 * this.partSize;
-      const filesize = file.size;
-      const totalPieces = Math.ceil(filesize / bytesPerPiece);
-      this.uploadLoading = true;
-      this.progress = 0;
-      // 获取凭证
-      await this.recordForUpload(totalPieces);
-      // 开始切片
-      this.sliceFile(file, bytesPerPiece);
-      return Promise.reject();
-    },
-    //文件切片
-    sliceFile(file, bytesPerPiece) {
-      let start = 0;
-      let end;
-      let index = 0;
-      const filesize = file.size;
-      const filename = file.name;
-      //计算文件切片总数
-      while (start < filesize) {
-        end = start + bytesPerPiece;
-        if (end > filesize) {
-          end = filesize;
-        }
-        const chunk = file.slice(start, end); //切割文件
-        const formData = new FormData();
-        formData.append("data", chunk, filename);
-        formData.append("name", filename);
-        formData.append("index_slice", index);
-        formData.append("guid", this.guid);
-        this.partArr.push({ formData, filename, index });
-        start = end;
-        index++;
-      }
-      // 发起上传请求
-      this.partUpload();
-    },
-    // 分片上传
-    partUpload() {
-      const leng = this.partArr.length;
-      const end = leng > this.parallel ? this.parallel : leng;
-      // 每次取 发起 this.parallel 个上传请求
-      const arr = this.partArr.splice(0, end);
-      Promise.all(arr.map((item) => this.liveDataUpload(item))).then(() => {
-        if (leng) {
-          this.partUpload();
-        }
-      });
-    },
-    // 创建 CancelToken 用来取消上传请求
-    createCancel(id) {
-      const CancelToken = axios.CancelToken;
-      return new CancelToken((cancel) => {
-        this.cancelPool.push({ cancel, id });
-      });
-    },
-    // 移除完成的
-    removeCancel(id) {
-      this.cancelPool.forEach((item, index) => {
-        if (id === item.id) {
-          this.cancelPool.splice(index, 1);
-        }
-      });
-    },
-    // 取消并清空请求
-    clearCancel() {
-      this.cancelPool.forEach(({ cancel }) => cancel());
-      this.cancelPool = [];
-    },
-    // 上传请求
-    async liveDataUpload({ formData, filename, index }) {
-      const cancelToken = this.createCancel(index);
-      const res = await liveDataUpload(formData, cancelToken).catch(() => {
-        this.uploadLoading = false;
-      });
-      if (res.code === 0) {
-        this.removeCancel(index);
-        this.progress = res.data.progress;
-        if (res.data.progress === 100 && this.visible) {
-          this.uploadLoading = false;
-          this.formData.path = res.data.path;
-          this.$message.success(res.message);
-          this.fileList = [{ name: filename, url: res.data.path }];
-        }
-      }
-    },
-
-    // 获取上传凭证
-    async recordForUpload(total_slice) {
-      const data = { total_slice };
-      const res = await recordForUpload(data).catch(() => {
-        this.uploadLoading = false;
-        return Promise.reject();
-      });
-      if (res.code === 0) {
-        this.guid = res.data.guid;
-        return Promise.resolve(res);
       }
     },
     //获取详情
@@ -290,7 +193,7 @@ export default {
       this.hanldeCancel();
     },
     hanldeCancel() {
-      this.clearCancel();
+      this.$refs.sliceUpload.clearCancel();
       this.$emit("input", false);
     },
   },
