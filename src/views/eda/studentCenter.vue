@@ -76,12 +76,7 @@
             min-width="150"
             show-overflow-tooltip
           ></el-table-column>
-          <!-- <el-table-column
-            prop="schoole_name"
-            label="所属校区"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column> -->
+
           <el-table-column
             prop="classroom_name"
             label="所属班级"
@@ -94,7 +89,26 @@
               }}</span>
             </template>
           </el-table-column>
-
+          <el-table-column
+            prop="online_course"
+            label="是否开通网课"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.online_course ? "是" : "否" }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="is_graduate"
+            label="是否毕业"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.is_graduate === 3 ? "是" : "否" }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="create_time"
             label="创建时间"
@@ -116,6 +130,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
           @pageChange="handlePageChange"
         />
       </div>
@@ -175,6 +190,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       checkedIds: [],
       searchData: {
@@ -369,6 +385,10 @@ export default {
       };
       this.getStudentList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getStudentList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getStudentList();
@@ -379,6 +399,7 @@ export default {
       this.intent_id = "";
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;

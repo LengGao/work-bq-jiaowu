@@ -71,6 +71,12 @@
           <el-table-column label="操作" fixed="right" min-width="140">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
+                <el-button
+                  type="text"
+                  :loading="row.loading"
+                  @click="getVideoUrl(row)"
+                  >下载</el-button
+                >
                 <el-button type="text" @click="openEdit(row.live_video_id)"
                   >编辑</el-button
                 >
@@ -102,8 +108,9 @@
 </template>
 
 <script>
-import { livevideolist, deletelivevideo } from "@/api/eda";
+import { livevideolist, deletelivevideo, getVideoUrl } from "@/api/eda";
 import PlaybackVideoDialog from "./components/PlaybackVideoDialog";
+import { download } from "@/utils/index";
 export default {
   components: {
     PlaybackVideoDialog,
@@ -136,6 +143,21 @@ export default {
     this.livevideolist();
   },
   methods: {
+    // 下载
+    async getVideoUrl(row) {
+      const data = {
+        live_video_id: row.live_video_id,
+      };
+      row.loading = true;
+      const res = await getVideoUrl(data).catch(() => {
+        row.loading = false;
+      });
+      row.loading = false;
+      if (res.code === 0) {
+        const fileObj = res.data.Mezzanine || {};
+        download(fileObj.FileURL, fileObj.FileName, true);
+      }
+    },
     // 删除视频
     deleteConfirm(id) {
       this.$confirm("确定要删除此视频吗?", { type: "warning" })
@@ -186,7 +208,10 @@ export default {
       this.listLoading = true;
       const res = await livevideolist(data);
       this.listLoading = false;
-      this.listData = res.data.data;
+      this.listData = res.data.data.map((item) => ({
+        ...item,
+        loading: false,
+      }));
       this.listTotal = res.data.total;
     },
   },

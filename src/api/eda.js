@@ -681,12 +681,20 @@ export function getlivevideoDetail(params) {
     params,
   })
 }
-// 班级直播 -直播场次列表-回顾视频列表-视频详情
+// 班级直播 -直播场次列表-回顾视频列表-删除视频
 export function deletelivevideo(data) {
   return request({
     url: '/live/deletelivevideo',
     method: 'post',
     data,
+  })
+}
+// 班级直播 -直播场次列表-回顾视频列表-下载视频
+export function getVideoUrl(params) {
+  return request({
+    url: '/NewLive/getVideoUrl',
+    method: 'get',
+    params,
   })
 }
 // 班级直播 -直播场次列表-学习资料列表
@@ -705,6 +713,8 @@ export function deleteLiveData(data) {
     data,
   })
 }
+//
+export const downloadBaseUrl = process.env.VUE_APP_DOWNLOAD
 // 班级直播 -直播场次列表-学习资料列表-添加资料
 export function createLiveData(data) {
   return request({
@@ -713,7 +723,7 @@ export function createLiveData(data) {
     data,
   })
 }
-// 班级直播 -直播场次列表-学习资料列表-添加资料
+// 班级直播 -直播场次列表-学习资料列表-修改资料
 export function updateLiveData(data) {
   return request({
     url: '/LiveData/updateLiveData',

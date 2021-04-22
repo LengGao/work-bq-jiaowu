@@ -55,6 +55,12 @@
           <el-table-column label="操作" fixed="right" min-width="140">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
+                <el-button
+                  type="text"
+                  :loading="row.loading"
+                  @click="handleDownload(row)"
+                  >下载</el-button
+                >
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
                 >
@@ -85,8 +91,9 @@
 </template>
 
 <script>
-import { getLiveDataList, deleteLiveData } from "@/api/eda";
+import { getLiveDataList, deleteLiveData, downloadBaseUrl } from "@/api/eda";
 import LearningMaterialsDialog from "./components/LearningMaterialsDialog";
+import { download } from "@/utils/index";
 export default {
   components: {
     LearningMaterialsDialog,
@@ -119,6 +126,14 @@ export default {
     this.getLiveDataList();
   },
   methods: {
+    async handleDownload(row) {
+      row.loading = true;
+      const url = downloadBaseUrl + row.path;
+      await download(url, row.data_name + "." + row.extension).catch(() => {
+        row.loading = false;
+      });
+      row.loading = false;
+    },
     // 删除资料
     deleteConfirm(id) {
       this.$confirm("确定要删除此资料吗?", { type: "warning" })
@@ -167,7 +182,10 @@ export default {
       this.listLoading = true;
       const res = await getLiveDataList(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        loading: false,
+      }));
       this.listTotal = res.data.total;
     },
   },
