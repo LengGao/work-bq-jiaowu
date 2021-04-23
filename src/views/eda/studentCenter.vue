@@ -54,7 +54,18 @@
               </div>
             </template>
           </el-table-column>
-
+          <el-table-column
+            prop="sex"
+            label="性别"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.sex === 1">男</span>
+              <span v-else-if="row.sex === 2">女</span>
+              <span v-else>未知</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="mobile"
             label="手机号码"
