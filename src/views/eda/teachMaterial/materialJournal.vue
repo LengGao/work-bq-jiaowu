@@ -82,6 +82,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
           @pageChange="handlePageChange"
         />
       </div>
@@ -102,6 +103,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       types: {
         1: "现场发放",
@@ -147,6 +149,10 @@ export default {
       };
       this.dispenseLog();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.dispenseLog();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.dispenseLog();
@@ -155,6 +161,7 @@ export default {
     async dispenseLog() {
       const data = {
         id: this.$route.query?.id || "",
+        limit: this.pageSize,
         page: this.pageNum,
         ...this.searchData,
       };

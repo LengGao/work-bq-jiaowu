@@ -19,13 +19,15 @@
     >
       <el-button class="page_btn" type="success" plain>跳转</el-button>
     </el-pagination> -->
+
+    <!-- sizes 有些接口不支持 暂时去掉 -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="doPageChange"
       :current-page="curpage"
       :page-sizes="[10, 20, 30, 40]"
       :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
+      layout="total, prev, pager, next, jumper"
       :total="data"
       class="hidden-xs-only"
     >
