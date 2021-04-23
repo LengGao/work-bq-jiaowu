@@ -197,7 +197,9 @@ a:hover {
 .el-cascader-menu__list{
     .el-radio {
       width: 100%;
+      height: 100%;
       position: absolute;
+      left: 0;
       .el-radio__input{
         span,input{
           display: none;
