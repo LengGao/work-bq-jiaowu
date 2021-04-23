@@ -10,6 +10,7 @@
       </el-submenu>
       <el-menu-item
         v-else
+        :class="{ 'p-l': item.path === '/visualization' && isCollapse }"
         :index="`${defaultPath}${reg(item.path) ? '' : '/'}${item.path}`"
       >
         <i :class="['iconfont', item.icon || '']"></i
@@ -31,6 +32,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    isCollapse: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     reg(path) {
@@ -44,5 +49,8 @@ export default {
 .iconfont {
   font-size: 22px;
   margin-right: 8px;
+}
+.p-l {
+  padding-left: 10px !important;
 }
 </style>

@@ -101,8 +101,6 @@ export function batchPass(data) {
  * @param {*} data
  */
 export const importGrade = `${process.env.VUE_APP_LOACTION}/Graduation/importGrade`
-const baseUrl = process.env.NODE_ENV === 'development' ? 'http://thing.com' : ''
-export const downloadUrl = `${baseUrl}/static/order_import.xlsx`
 //成绩导入模板下载
 export function getImportTemplate(params) {
   return request({

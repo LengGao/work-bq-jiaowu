@@ -35,9 +35,9 @@
 
 <script>
 export default {
-  name: 'page',
+  name: "page",
   data() {
-    return {}
+    return {};
   },
   props: {
     data: Number,
@@ -53,22 +53,21 @@ export default {
 
   mounted() {
     document.getElementsByClassName(
-      'el-pagination__jump'
-    )[0].childNodes[0].nodeValue = '跳至'
+      "el-pagination__jump"
+    )[0].childNodes[0].nodeValue = "跳至";
 
-    console.log(this.curpage)
+    console.log(this.curpage);
   },
   methods: {
     doPageChange(page) {
-      console.log(page)
-      this.$emit('pageChange', page)
+      console.log(page);
+      this.$emit("pageChange", page);
     },
     handleSizeChange(pageSizeNum) {
-      console.log(pageSizeNum)
-      this.$emit('pageSizeChange', pageSizeNum)
+      this.$emit("pageSizeChange", pageSizeNum);
     },
   },
-}
+};
 </script>
 
 <style lang="scss"></style>

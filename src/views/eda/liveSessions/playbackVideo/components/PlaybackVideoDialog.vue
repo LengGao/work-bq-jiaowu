@@ -15,41 +15,27 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="章节名称" prop="video_chapter_id">
-        <el-select
-          style="width: 100%"
-          v-model="formData.video_chapter_id"
-          clearable
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in chapterOptions"
-            :key="item.video_chapter_id"
-            :label="item.video_chapter_name"
-            :value="item.video_chapter_id"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="课时名称" prop="video_class_name">
+      <el-form-item label="视频名称" prop="live_video_name">
         <el-input
-          v-model="formData.video_class_name"
-          placeholder="请输入课时名称"
+          v-model="formData.live_video_name"
+          placeholder="请输入视频名称"
           maxlength="100"
         />
       </el-form-item>
-      <el-form-item label="课时排序" prop="video_class_sort">
+      <el-form-item label="视频简介" prop="live_video_des">
         <el-input
-          type="number"
-          v-model="formData.video_class_sort"
+          type="textarea"
+          :autosize="{ minRows: 6, maxRows: 10 }"
+          v-model="formData.live_video_des"
           placeholder="请输入"
-          maxlength="10"
+          maxlength="500"
         />
       </el-form-item>
-      <el-form-item label="上传视频" prop="media_id">
+      <el-form-item label="上传视频" prop="video_id">
         <!-- 用来更新验证用 不显示 -->
-        <el-input v-show="false" v-model="formData.media_id"></el-input>
+        <el-input v-show="false" v-model="formData.video_id"></el-input>
         <AliyunUpload
+          ref="aliyunUpload"
           :defaultFiles="defaultFiles"
           :on-success="handleUploadSuccess"
           @on-remove="handleVideoRemove"
@@ -69,12 +55,7 @@
 </template>
 
 <script>
-import {
-  editvideoclass,
-  addvideoclass,
-  getvideoclassDetail,
-  getvideochapterList,
-} from "@/api/sou";
+import { editlivevideo, addlivevideo, getlivevideoDetail } from "@/api/eda";
 import AliyunUpload from "@/components/AliyunUpload/index";
 export default {
   props: {
@@ -98,26 +79,21 @@ export default {
     return {
       visible: this.value,
       formData: {
-        video_chapter_id: "",
-        video_class_name: "",
-        video_chapter_profile: "",
-        video_class_sort: "",
-        media_id: "",
+        live_video_des: "",
+        video_id: "",
+        live_video_name: "",
         media_name: "",
-        video_class_duration: "",
+        description: "",
       },
       defaultFiles: [],
       rules: {
-        video_class_name: [
+        live_video_name: [
           { required: true, message: "请输入", trigger: "blur" },
         ],
-        video_class_sort: [
+        live_video_des: [
           { required: true, message: "请输入", trigger: "blur" },
         ],
-        video_chapter_id: [
-          { required: true, message: "请选择", trigger: "change" },
-        ],
-        media_id: [{ required: true, message: "请上传", trigger: "change" }],
+        video_id: [{ required: true, message: "请上传", trigger: "change" }],
       },
       chapterOptions: [],
       addLoading: false,
@@ -133,27 +109,26 @@ export default {
   methods: {
     handleVideoRemove() {
       this.formData.media_name = "";
-      this.formData.media_id = "";
+      this.formData.video_id = "";
     },
     handleOpen() {
-      this.getvideochapterList();
       if (this.id) {
-        this.getvideoclassDetail();
+        this.getlivevideoDetail();
       }
     },
     handleUploadSuccess(data) {
       const filename = data.file.name;
-      this.formData.media_id = data.videoId;
+      this.formData.video_id = data.videoId;
       this.formData.media_name = filename;
-      this.formData.video_class_duration = data.duration;
+      this.formData.description = data.duration;
     },
     //获取详情
-    async getvideoclassDetail() {
+    async getlivevideoDetail() {
       const data = {
-        video_class_id: this.id,
+        live_video_id: this.id,
       };
       this.detaiLoading = true;
-      const res = await getvideoclassDetail(data).catch(() => {
+      const res = await getlivevideoDetail(data).catch(() => {
         this.detaiLoading = false;
       });
       this.detaiLoading = false;
@@ -161,41 +136,36 @@ export default {
         for (const k in this.formData) {
           this.formData[k] = res.data[k];
         }
-        const media_id = res.data.media_int_id;
-        this.formData.media_id = media_id;
+        const video_id = res.data.media_id;
+        this.formData.video_id = video_id;
         this.defaultFiles = [
           {
             name: res.data.media_name,
-            id: media_id,
+            id: video_id,
           },
         ];
       }
-    },
-    // 章节选项
-    async getvideochapterList() {
-      const data = {
-        video_collection_id: this.$route.query?.video_collection_id || "",
-      };
-      const res = await getvideochapterList(data);
-      this.chapterOptions = res.data.data;
     },
     async submit() {
       const data = {
         ...this.formData,
       };
       if (this.id) {
-        data.video_class_id = this.id;
+        data.live_video_id = this.id;
+        data.media_id = this.formData.video_id;
       } else {
-        data.video_collection_id = this.$route.query?.video_collection_id || "";
+        data.course_id = this.$route.query?.course_id || "";
+        data.live_id = this.$route.query?.live_id || "";
+        data.class_room_id = this.$route.query?.live_class_id || "";
       }
-      const api = this.id ? editvideoclass : addvideoclass;
+      const api = this.id ? editlivevideo : addlivevideo;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
-        this.$emit("on-success", this.formData.video_chapter_id);
+        this.$emit("on-success");
         this.$message.success(res.message);
         this.resetForm("formData");
       }
@@ -216,6 +186,7 @@ export default {
       this.hanldeCancel();
     },
     hanldeCancel() {
+      this.$refs.aliyunUpload.cancelUpload();
       this.$emit("input", false);
     },
   },

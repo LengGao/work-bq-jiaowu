@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { importGrade, downloadUrl, getImportTemplate } from '@/api/exa'
+import { importGrade, getImportTemplate } from '@/api/exa'
 export default {
   name: 'batchEntry',
   props: {

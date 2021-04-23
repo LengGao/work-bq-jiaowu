@@ -32,8 +32,8 @@
         </el-form-item>
       </div>
     </el-form>
-    <div class="record-list" v-loading="listLoading">
-      <ul>
+    <div class="record-list">
+      <ul v-loading="listLoading">
         <li v-for="item in listData" :key="item.id">
           <el-card class="box-card" shadow="never">
             <div class="list-row">
@@ -73,6 +73,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
           @pageChange="handlePageChange"
         />
       </div>
@@ -103,6 +104,7 @@ export default {
       },
       listData: [],
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
     };
   },
@@ -130,6 +132,7 @@ export default {
     async getFollowPage() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         uid: this.uid,
         follow_type: 5, //5:学习进度
         follow_state: 3, //3:已完成
@@ -141,6 +144,10 @@ export default {
         this.listData = res.data.list;
         this.listTotal = res.data.total;
       }
+    },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getFollowPage();
     },
     handlePageChange(val) {
       this.pageNum = val;

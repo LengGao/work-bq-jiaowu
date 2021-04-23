@@ -15,32 +15,36 @@
         style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
+          align="center"
           label="项目编号"
           prop="project_id"
           min-width="90"
         ></el-table-column>
         <el-table-column
+          align="left"
           prop="project_name"
           label="项目名称"
           min-width="200"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          align="center"
           prop="category_name"
           label="所属分类"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          align="center"
           prop="price"
           label="项目价格"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          align="left"
           prop="project_name"
           label="课程"
           min-width="220"
@@ -55,9 +59,10 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="classroom_id"
           label="题库"
-          min-width="100"
+          min-width="140"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -69,9 +74,10 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="left"
           prop="total_books"
           label="教材"
-          min-width="100"
+          min-width="140"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -83,6 +89,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="create_time"
           label="报名时间"
           min-width="130"

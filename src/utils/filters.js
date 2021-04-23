@@ -34,10 +34,11 @@ const filters = {
         }
         return `${min(h)}:${min(m)}:${min(s)}`
     },
-    // 视频时长
+    // 视频大小
     filterFileSize(b) {
         let kb = 0
         let mb = 0
+        let g = 0
         if (b / 1024 >= 1) {
             kb = (b / 1024).toFixed(2)
             if (kb < 1024) {
@@ -46,7 +47,13 @@ const filters = {
         }
         if (kb / 1024 >= 1) {
             mb = (kb / 1024).toFixed(2)
-            return `${mb}MB`
+            if (mb < 1024) {
+                return `${mb}MB`
+            }
+        }
+        if (mb / 1024 >= 1) {
+            g = (mb / 1024).toFixed(2)
+            return `${g}G`
         }
         return `${b}B`
     }

@@ -305,6 +305,12 @@ export const asyncRouter = [
         meta: { title: '班级管理', icon: 'product-cate' },
       },
       {
+        path: 'livePublicClass',
+        name: 'livePublicClass',
+        component: () => import('@/views/eda/livePublicClass/index.vue'),
+        meta: { title: '公开课直播', icon: 'product-cate' },
+      },
+      {
         path: 'classLive',
         name: 'classLive',
         component: () => import('@/views/eda/classLive/index.vue'),
@@ -315,6 +321,18 @@ export const asyncRouter = [
         name: 'liveSessions',
         component: () => import('@/views/eda/liveSessions/index.vue'),
         meta: { title: '直播场次', icon: 'product-cate' },
+      },
+      {
+        path: 'playbackVideo',
+        name: 'playbackVideo',
+        component: () => import('@/views/eda/liveSessions/playbackVideo/index.vue'),
+        meta: { title: '回顾视频', icon: 'product-cate' },
+      },
+      {
+        path: 'learningMaterials',
+        name: 'learningMaterials',
+        component: () => import('@/views/eda/liveSessions/learningMaterials/index.vue'),
+        meta: { title: '学习资料', icon: 'product-cate' },
       },
       {
         path: 'liveDetails',

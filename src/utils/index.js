@@ -258,3 +258,29 @@ export const followRoute = {
   9: 'finance',
   10: 'returnVisit',
 }
+// a 标签下载
+export const download = async (url, filename = '') => {
+  const splitArr = url.split('.')
+  const currentSuffix = splitArr[splitArr.length - 1]
+  const imgSuffix = ["png", "jpg", "jpeg", "gif"];
+  const videoSuffix = ['mp4', 'MOV', 'AVI', 'QT', 'ASF', 'WMV', 'm3u8', 'ASF', 'WebM', 'Ogg', 'flv', '']
+  console.log(currentSuffix)
+  // 视频或者没有后缀的url 打开新窗口
+  if (videoSuffix.includes(currentSuffix) || currentSuffix.length > 5) {
+    window.open(url)
+    return Promise.resolve()
+  }
+  //只有图片通过请求之后在下载，其他的直接下载
+  if (imgSuffix.includes(currentSuffix)) {
+    const blob = await fetch(url).then(async res => await res.blob())
+    url = URL.createObjectURL(blob)
+  }
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  return Promise.resolve()
+}

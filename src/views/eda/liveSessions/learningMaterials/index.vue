@@ -8,6 +8,7 @@
           :data="searchData"
           @on-search="handleSearch"
         />
+        <el-button type="primary" @click="openAdd">添加资料</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
@@ -27,48 +28,44 @@
             label="编号"
             show-overflow-tooltip
             min-width="70"
-            prop="live_id"
+            prop="id"
           >
           </el-table-column>
           <el-table-column
-            prop="live_name"
-            label="直播场次"
+            prop="data_name"
+            label="资料名称"
             min-width="220"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="start_push_time"
-            label="最早推流时间"
+            prop="extension"
+            label="文件格式"
             min-width="120"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+          </el-table-column>
           <el-table-column
-            prop="end_push_time"
-            label="最晚断流时间"
+            prop="size"
+            label="文件大小"
             min-width="180"
             show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="total_pople"
-            label="实时在线人数"
-            min-width="180"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="280">
+          >
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="140">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openLiveLink(row.live_id)"
-                  >直播链接</el-button
+                <el-button
+                  type="text"
+                  :loading="row.loading"
+                  @click="handleDownload(row)"
+                  >下载</el-button
                 >
-                <el-button type="text" @click="linkTo('liveDetails', row)"
-                  >直播详情</el-button
+                <el-button type="text" @click="openEdit(row.id)"
+                  >编辑</el-button
                 >
-                <el-button type="text" @click="linkTo('playbackVideo', row)"
-                  >回顾视频</el-button
-                >
-                <el-button type="text" @click="linkTo('learningMaterials', row)"
-                  >学习资料</el-button
+                <el-button type="text" @click="deleteConfirm(row.id)"
+                  >删除</el-button
                 >
               </div>
             </template>
@@ -82,23 +79,24 @@
           />
         </div>
       </div>
-      <!--弹框-->
-      <LiveLinkDialog
+      <!-- 弹框 -->
+      <LearningMaterialsDialog
         v-model="dialogVisible"
-        title="直播链接"
-        :id="$route.query.live_class_id"
-        :sessionId="currentId"
+        :title="dialogTitle"
+        :id="currentId"
+        @on-success="getLiveDataList"
       />
     </section>
   </div>
 </template>
 
 <script>
-import { liveSessionList } from "@/api/eda";
-import LiveLinkDialog from "./components/LiveLinkDialog";
+import { getLiveDataList, deleteLiveData, downloadBaseUrl } from "@/api/eda";
+import LearningMaterialsDialog from "./components/LearningMaterialsDialog";
+import { download } from "@/utils/index";
 export default {
   components: {
-    LiveLinkDialog,
+    LearningMaterialsDialog,
   },
   data() {
     return {
@@ -107,31 +105,60 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        search_box: "",
+        keyword: "",
       },
       searchOptions: [
         {
-          key: "search_box",
+          key: "keyword",
           attrs: {
-            placeholder: "直播名称",
+            placeholder: "资料名称",
           },
         },
       ],
       currentId: "",
       dialogVisible: false,
+      dialogTitle: "",
       typeOptions: [],
     };
   },
 
   created() {
-    this.liveSessionList();
+    this.getLiveDataList();
   },
   methods: {
-    linkTo(name, { live_class_id, live_id, course_id }) {
-      this.$router.push({ name, query: { live_class_id, live_id, course_id } });
+    async handleDownload(row) {
+      row.loading = true;
+      const url = downloadBaseUrl + row.path;
+      await download(url, row.data_name + "." + row.extension).catch(() => {
+        row.loading = false;
+      });
+      row.loading = false;
     },
-    openLiveLink(id) {
+    // 删除资料
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此资料吗?", { type: "warning" })
+        .then(() => {
+          this.deleteLiveData(id);
+        })
+        .catch(() => {});
+    },
+    async deleteLiveData(id) {
+      const data = { id };
+      const res = await deleteLiveData(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getLiveDataList();
+      }
+    },
+
+    openEdit(id) {
       this.currentId = id;
+      this.dialogTitle = "编辑资料";
+      this.dialogVisible = true;
+    },
+    openAdd() {
+      this.currentId = "";
+      this.dialogTitle = "添加资料";
       this.dialogVisible = true;
     },
     handleSearch(data) {
@@ -139,23 +166,26 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.liveSessionList();
+      this.getLiveDataList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.liveSessionList();
+      this.getLiveDataList();
     },
 
-    async liveSessionList() {
+    async getLiveDataList() {
       const data = {
-        id: this.$route.query.live_class_id || "",
+        live_id: this.$route.query.live_id || "",
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await liveSessionList(data);
+      const res = await getLiveDataList(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        loading: false,
+      }));
       this.listTotal = res.data.total;
     },
   },

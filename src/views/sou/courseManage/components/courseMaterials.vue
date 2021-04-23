@@ -57,6 +57,12 @@
         <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
+              <el-button
+                type="text"
+                :loading="row.loading"
+                @click="handleDownload(row)"
+                >下载</el-button
+              >
               <el-button type="text" @click="openEdit(row.course_file_id)"
                 >编辑</el-button
               >
@@ -85,6 +91,8 @@
 </template>
 
 <script>
+import { downloadBaseUrl } from "@/api/eda";
+import { download } from "@/utils/index";
 import CourseMaterialsDialog from "./courseMaterialsDialog";
 import { getCourseMaterialList, deleteCourseMaterial } from "@/api/sou";
 export default {
@@ -121,6 +129,11 @@ export default {
   },
 
   methods: {
+    async handleDownload(row) {
+      row.loading = true;
+      download(row.oss_url, row.file_name + "." + row.suffix);
+      row.loading = false;
+    },
     // 删除课程资料
     deleteConfirm(id) {
       this.$confirm("确定要删除此资料吗?", { type: "warning" })
@@ -172,7 +185,10 @@ export default {
       this.listLoading = true;
       const res = await getCourseMaterialList(data);
       this.listLoading = false;
-      this.listData = res.data.data;
+      this.listData = res.data.data.map((item) => ({
+        ...item,
+        loading: false,
+      }));
       this.listTotal = res.data.total;
     },
   },

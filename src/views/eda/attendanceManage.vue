@@ -64,7 +64,7 @@
           >
             <template slot-scope="{ row }">
               <div>
-                {{ row.start_time + ' ~ ' + row.end_time }}
+                {{ row.start_time + " ~ " + row.end_time }}
               </div>
             </template>
           </el-table-column>
@@ -72,7 +72,7 @@
           <el-table-column
             prop="class_list"
             label="班级名称"
-            min-width="100"
+            min-width="300"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -182,12 +182,12 @@
 </template>
 
 <script>
-import { getWorkPageList, getTeacherList, getcourseallclass } from '@/api/eda'
-import { getweek, timestampToTime } from '@/utils/index'
-import ScheduleDialog from './attendanceManage/components/ScheduleDialog'
-import SignCode from './attendanceManage/components/SignCode'
+import { getWorkPageList, getTeacherList, getcourseallclass } from "@/api/eda";
+import { getweek, timestampToTime } from "@/utils/index";
+import ScheduleDialog from "./attendanceManage/components/ScheduleDialog";
+import SignCode from "./attendanceManage/components/SignCode";
 export default {
-  name: 'attendanceManage',
+  name: "attendanceManage",
   components: {
     ScheduleDialog,
     SignCode,
@@ -197,53 +197,53 @@ export default {
       signVisible: false,
       schoolData: [],
       scheduleVisible: false,
-      classDate: '',
+      classDate: "",
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
+          key: "date",
+          type: "datePicker",
           attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            'value-format': 'yyyy-MM-dd',
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
           },
         },
 
         {
-          key: 'classroom_id',
-          type: 'select',
+          key: "classroom_id",
+          type: "select",
           options: [],
-          optionValue: 'classroom_id',
-          optionLabel: 'classroom_name',
+          optionValue: "classroom_id",
+          optionLabel: "classroom_name",
           attrs: {
-            placeholder: '所属班级',
+            placeholder: "所属班级",
             clearable: true,
           },
         },
         {
-          key: 'teacher_id',
-          type: 'select',
+          key: "teacher_id",
+          type: "select",
           options: [],
-          optionValue: 'teacher_id',
-          optionLabel: 'teacher_name',
+          optionValue: "teacher_id",
+          optionLabel: "teacher_name",
           attrs: {
-            placeholder: '上课老师',
+            placeholder: "上课老师",
             clearable: true,
           },
         },
         {
-          key: 'teacher_type',
-          type: 'select',
+          key: "teacher_type",
+          type: "select",
           options: [
-            { value: 1, lable: '面授' },
-            { value: 2, lable: '直播' },
+            { value: 1, lable: "面授" },
+            { value: 2, lable: "直播" },
           ],
-          optionValue: 'value',
-          optionLabel: 'lable',
+          optionValue: "value",
+          optionLabel: "lable",
           attrs: {
-            placeholder: '授课方式',
+            placeholder: "授课方式",
             clearable: true,
           },
         },
@@ -270,83 +270,83 @@ export default {
         //   },
         // },
       ],
-      arrange_id: '',
+      arrange_id: "",
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-      class_hour_id: '',
+      class_hour_id: "",
       searchData: {
-        teacher_id: '',
-        teacher_type: '',
-        date: '',
-        classroom_id: '',
+        teacher_id: "",
+        teacher_type: "",
+        date: "",
+        classroom_id: "",
       },
       classInfoData: {},
-    }
+    };
   },
   filters: {
     teaching_type(val) {
       switch (val) {
         case 1:
-          return '面授'
-          break
+          return "面授";
+          break;
         case 2:
-          return '直播'
-          break
+          return "直播";
+          break;
         default:
-          return '未知'
+          return "未知";
       }
     },
     start_time(val) {
-      if (!val) return '--'
-      return val.substr(11, 5)
+      if (!val) return "--";
+      return val.substr(11, 5);
     },
     weekType(val) {
-      return getweek(val)
+      return getweek(val);
     },
     state(val) {
       switch (val) {
         case 0:
-          return '未上课'
-          break
+          return "未上课";
+          break;
         case 1:
-          return '已上课'
-          break
+          return "已上课";
+          break;
 
         default:
-          return '未知'
+          return "未知";
       }
     },
   },
   mounted() {
-    this.getcourseallclass()
-    this.getTeacherList()
-    this.getWorkPageList()
+    this.getcourseallclass();
+    this.getTeacherList();
+    this.getWorkPageList();
   },
   methods: {
     toClassDetail(id) {
       this.$router.push({
-        name: 'classDetail',
+        name: "classDetail",
         query: {
           id,
         },
-      })
+      });
     },
     toStatistics(row) {
       this.$router.push({
-        path: '/eda/attendanceStatistics',
+        path: "/eda/attendanceStatistics",
         query: {
           class_hour_id: row.class_hour_list[0],
           arrange_id: row.id,
         },
-      })
+      });
     },
     signShow(row) {
-      console.log()
-      this.arrange_id = row.id
-      this.class_hour_id = row.class_hour_list[0]
-      this.signVisible = true
+      console.log();
+      this.arrange_id = row.id;
+      this.class_hour_id = row.class_hour_list[0];
+      this.signVisible = true;
     },
     callinClass(row) {
       let obj = {
@@ -354,15 +354,15 @@ export default {
         start_time: row.start_time,
         classroom_name: row.classroom_name,
         people_number: row.people_number,
-      }
+      };
       this.$router.push({
-        path: '/eda/callinClass',
+        path: "/eda/callinClass",
         query: {
           class_hour_id: row.class_hour_list[0],
           arrange_id: row.id,
           param: JSON.stringify(obj),
         },
-      })
+      });
     },
     //打开排课详情弹框
     scheduleShow(row) {
@@ -371,47 +371,47 @@ export default {
         start_time: row.start_time,
         classroom_name: row.classroom_name,
         people_number: row.people_number,
-      }
+      };
 
-      this.classInfoData = obj
-      console.log(this.classInfoData)
-      this.arrange_id = row.id
-      this.classDate = row.date
-      this.scheduleVisible = true
+      this.classInfoData = obj;
+      console.log(this.classInfoData);
+      this.arrange_id = row.id;
+      this.classDate = row.date;
+      this.scheduleVisible = true;
     },
     // 获取班级下拉
     async getcourseallclass() {
-      const data = {}
-      const res = await getcourseallclass(data)
+      const data = {};
+      const res = await getcourseallclass(data);
       if (res.code === 0) {
-        this.classOptions = res.data
-        this.searchOptions[1].options = res.data
+        this.classOptions = res.data;
+        this.searchOptions[1].options = res.data;
       }
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getWorkPageList()
+      this.pageNum = val;
+      this.getWorkPageList();
     },
     handleSearch(data) {
       // console.log(data)
-      const times = data.date || ['', '']
-      delete data.date
-      this.pageNum = 1
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
       this.searchData = {
         ...data,
-        start_date: times[0].split('-').join(''),
-        end_date: times[1].split('-').join(''),
-      }
-      this.getWorkPageList()
+        start_date: times[0].split("-").join(""),
+        end_date: times[1].split("-").join(""),
+      };
+      this.getWorkPageList();
     },
     // 获取班级老师
     async getTeacherList() {
-      const data = {}
-      const res = await getTeacherList(data)
+      const data = {};
+      const res = await getTeacherList(data);
       if (res.code === 0) {
-        this.classOptions = res.data
-        console.log(res.data)
-        this.searchOptions[2].options = res.data
+        this.classOptions = res.data;
+        console.log(res.data);
+        this.searchOptions[2].options = res.data;
       }
     },
     // 获学员列表
@@ -419,26 +419,26 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-      }
-      delete data.date
-      this.listLoading = true
-      const res = await getWorkPageList(data)
-      this.listLoading = false
+      };
+      delete data.date;
+      this.listLoading = true;
+      const res = await getWorkPageList(data);
+      this.listLoading = false;
       for (var item of res.data.list) {
-        item.date = timestampToTime(item.date)
+        item.date = timestampToTime(item.date);
         // console.log(item)
         item.start_time &&
-          (item.start_time = this.$moment.unix(item.start_time).format('LT'))
+          (item.start_time = this.$moment.unix(item.start_time).format("LT"));
         item.end_time &&
-          (item.end_time = this.$moment.unix(item.end_time).format('LT'))
+          (item.end_time = this.$moment.unix(item.end_time).format("LT"));
       }
-      this.listData = res.data.list
+      this.listData = res.data.list;
 
       // console.log(this.listData)
-      this.listTotal = res.data.total
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,

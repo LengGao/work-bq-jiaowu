@@ -172,12 +172,22 @@
           <span v-else>{{ datas.from_organization_name }}</span>
         </el-form-item>
         <el-form-item label="所属老师">
-          <el-input
-            v-model="ruleForm.admin_name"
-            v-if="isEdit"
-            disabled
-          ></el-input>
+          <el-input :value="datas.admin_name" v-if="isEdit" disabled></el-input>
           <span v-else>{{ datas.admin_name || "--" }}</span>
+        </el-form-item>
+        <el-form-item label="是否开通网课">
+          <el-radio-group v-model="ruleForm.online_course" v-if="isEdit">
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+          <span v-else>{{ datas.online_course ? "是" : "否" }}</span>
+        </el-form-item>
+        <el-form-item label="是否毕业">
+          <el-radio-group v-model="ruleForm.is_graduate" v-if="isEdit">
+            <el-radio :label="3">是</el-radio>
+            <el-radio :label="0">否</el-radio>
+          </el-radio-group>
+          <span v-else>{{ datas.is_graduate === 3 ? "是" : "否" }}</span>
         </el-form-item>
 
         <el-form-item label="备注信息" class="desc">
@@ -265,6 +275,8 @@ export default {
         sources: "",
         from_organization_id: "",
         tips: "",
+        is_graduate: "",
+        online_course: "",
       },
       selectOptions: [],
       city2: "",
@@ -315,8 +327,6 @@ export default {
       } else {
         this.ruleForm.location = val[1];
       }
-      console.log(this.ruleForm);
-      console.log(val, type);
     },
     // 机构下拉
     async getInstitutionSelectData() {
@@ -337,7 +347,7 @@ export default {
     },
     initDatas() {
       for (const key in this.ruleForm) {
-        this.ruleForm[key] = this.datas[key] || "";
+        this.ruleForm[key] = this.datas[key];
       }
     },
     submitForm(formName) {
