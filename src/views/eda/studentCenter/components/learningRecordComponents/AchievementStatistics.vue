@@ -19,7 +19,7 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
-        height="450"
+        height="490"
       >
         <el-table-column
           label="ID"
@@ -82,14 +82,12 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageSizeChange="handleSizeChange"
-            @pageChange="handlePageChange"
-          />
-        </div>
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
     <HistoricalAchievements
