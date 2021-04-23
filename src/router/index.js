@@ -90,6 +90,12 @@ export const asyncRouter = [
         component: () => import('@/views/sou/questionBankManagement/index.vue'),
         meta: { title: '题库管理', icon: 'product-add' },
       },
+      {
+        path: 'configureScore',
+        name: 'configureScore',
+        component: () => import('@/views/sou/questionBankManagement/configureScore/index.vue'),
+        meta: { title: '配置分数', icon: 'product-add' },
+      },
       //课程管理组件开始
       {
         path: 'createClass',
@@ -713,7 +719,6 @@ const asyncRouterMap = routeToMap(asyncRouter)
 
 // 根据接口返回的数据创建路由
 export const createUserRouter = (data) => {
-  console.log(data)
   const userRouter = []
   const menuList = []
   const deepCreate = (data, userRouter, menuList) => {
