@@ -562,10 +562,8 @@ export default {
         remark: this.ruleForm.teaching_type,
         class_hour: [],
       }
-
       this.schoolData.push(obj)
     },
-
     createCourse(formName) {
       this.schoolData = []
       if (this.dateArr.length) {

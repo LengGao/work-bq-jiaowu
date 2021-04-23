@@ -747,6 +747,7 @@ let quertionBank = {
         })
       })
     }
+    console.log(self[name].problem_description)
     let ignore_order = self.value1 ? 1 : 0
     let config = {
       parent_problem: {
