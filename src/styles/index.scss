@@ -193,3 +193,16 @@ a:hover {
 .common-width {
   width: 240px;
 }
+// 去掉element-ui 级联选择器前面圆圈样式
+.el-cascader-menu__list{
+    .el-radio {
+      width: 100%;
+      position: absolute;
+      .el-radio__input{
+        span,input{
+          display: none;
+        }
+    }
+  }
+}
+
