@@ -41,6 +41,7 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
+        height="400"
       >
         <el-table-column
           label="序号"
@@ -104,6 +105,7 @@
       <div class="table_bottom">
         <page
           :data="listTotal"
+          @pageSizeChange="handleSizeChange"
           :curpage="pageNum"
           @pageChange="handlePageChange"
         />
@@ -146,6 +148,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         date: "",
@@ -210,6 +213,10 @@ export default {
       this.personalAttendanceSummary();
       this.getAttendanceList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getAttendanceList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getAttendanceList();
@@ -228,6 +235,7 @@ export default {
     async getAttendanceList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         uid: this.uid,
         ...this.searchData,
         teaching_type: this.searchData.teaching_type || 0,

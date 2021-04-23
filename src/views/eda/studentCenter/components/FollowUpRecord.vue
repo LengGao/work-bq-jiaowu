@@ -106,6 +106,7 @@ export default {
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
+      listLoading: false,
     };
   },
   created() {

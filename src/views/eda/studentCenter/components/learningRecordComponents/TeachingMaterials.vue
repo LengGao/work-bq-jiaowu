@@ -14,6 +14,7 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
+        height="500"
       >
         <el-table-column type="index" label="序号" min-width="60">
         </el-table-column>
@@ -70,6 +71,7 @@
           <page
             :data="listTotal"
             :curpage="pageNum"
+            @pageSizeChange="handleSizeChange"
             @pageChange="handlePageChange"
           />
         </div>
@@ -97,6 +99,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
     };
   },
@@ -104,6 +107,10 @@ export default {
     this.getMaterial();
   },
   methods: {
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getMaterial();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getMaterial();
@@ -112,6 +119,7 @@ export default {
       const data = {
         uid: this.uid,
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;

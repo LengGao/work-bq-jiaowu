@@ -24,6 +24,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
           @pageChange="handlePageChange"
         />
       </div>
@@ -45,7 +46,9 @@ export default {
     return {
       listData: [],
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
+      listLoading: false,
     };
   },
   created() {
@@ -55,6 +58,7 @@ export default {
     // 跟进记录
     async userArchivesRecord() {
       const data = {
+        limit: this.pageSize,
         page: this.pageNum,
         uid: this.uid,
       };
@@ -65,6 +69,10 @@ export default {
         this.listData = res.data.list;
         this.listTotal = res.data.total;
       }
+    },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.userArchivesRecord();
     },
     handlePageChange(val) {
       this.pageNum = val;
