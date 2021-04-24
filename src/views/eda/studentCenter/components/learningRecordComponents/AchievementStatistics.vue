@@ -19,6 +19,7 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
+        height="490"
       >
         <el-table-column
           label="ID"
@@ -81,13 +82,12 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="handlePageChange"
-          />
-        </div>
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
     <HistoricalAchievements
@@ -119,6 +119,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         cate_id: [],
@@ -197,6 +198,10 @@ export default {
       };
       this.getSubjectListByUser();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getSubjectListByUser();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getSubjectListByUser();
@@ -205,6 +210,7 @@ export default {
       const data = {
         uid: this.uid,
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;

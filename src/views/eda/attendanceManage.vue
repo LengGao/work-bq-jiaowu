@@ -76,9 +76,13 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <div class="class_list" @click="toClassDetail(row.classroom_id)">
-                {{ row.class_list }}
-              </div>
+              <el-button
+                type="text"
+                @click="toClassDetail(id)"
+                v-for="(id, index) in row.class_id_list"
+                :key="index"
+                >{{ getClassRoomName(row.class_list, index) }}</el-button
+              >
             </template>
           </el-table-column>
           <el-table-column
@@ -162,6 +166,7 @@
           <page
             :data="listTotal"
             :curpage="pageNum"
+            @pageSizeChange="handleSizeChange"
             @pageChange="handlePageChange"
           />
         </div>
@@ -274,6 +279,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       class_hour_id: "",
       searchData: {
@@ -325,6 +331,11 @@ export default {
     this.getWorkPageList();
   },
   methods: {
+    getClassRoomName(str, index) {
+      if (!str) return "";
+      const arr = str.split(",");
+      return arr[index];
+    },
     toClassDetail(id) {
       this.$router.push({
         name: "classDetail",
@@ -388,6 +399,10 @@ export default {
         this.searchOptions[1].options = res.data;
       }
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getWorkPageList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getWorkPageList();
@@ -417,6 +432,7 @@ export default {
     // 获学员列表
     async getWorkPageList() {
       const data = {
+        limit: this.pageSize,
         page: this.pageNum,
         ...this.searchData,
       };

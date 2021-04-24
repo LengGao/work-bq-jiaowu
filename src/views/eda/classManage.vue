@@ -115,6 +115,7 @@
           <page
             :data="listTotal"
             :curpage="pageNum"
+            @pageSizeChange="handleSizeChange"
             @pageChange="handlePageChange"
           />
         </div>
@@ -145,6 +146,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         category_id: [],
@@ -217,6 +219,10 @@ export default {
       };
       this.getClassList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getClassList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getClassList();
@@ -224,6 +230,7 @@ export default {
     async getClassList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;

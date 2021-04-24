@@ -9,23 +9,23 @@
     <div class="card-list">
       <div class="card-item">
         <p>排课次数</p>
-        <p class="number">{{ statisticsData.total }}</p>
+        <p class="number">{{ statisticsData.total || 0 }}</p>
       </div>
       <div class="card-item">
         <p>出勤次数</p>
-        <p class="number">{{ statisticsData.attendance_num }}</p>
+        <p class="number">{{ statisticsData.attendance_num || 0 }}</p>
       </div>
       <div class="card-item">
         <p>缺勤次数</p>
-        <p class="number">{{ statisticsData.absenteeism_num }}</p>
+        <p class="number">{{ statisticsData.absenteeism_num || 0 }}</p>
       </div>
       <div class="card-item">
         <p>未点名次数</p>
-        <p class="number">{{ statisticsData.not_named_num }}</p>
+        <p class="number">{{ statisticsData.not_named_num || 0 }}</p>
       </div>
       <div class="card-item">
         <p>出勤率</p>
-        <p class="number">{{ statisticsData.rate }}</p>
+        <p class="number">{{ statisticsData.rate || 0 }}</p>
       </div>
     </div>
     <!--表格-->
@@ -41,6 +41,7 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
+        height="407"
       >
         <el-table-column
           label="序号"
@@ -104,6 +105,7 @@
       <div class="table_bottom">
         <page
           :data="listTotal"
+          @pageSizeChange="handleSizeChange"
           :curpage="pageNum"
           @pageChange="handlePageChange"
         />
@@ -146,6 +148,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         date: "",
@@ -210,6 +213,10 @@ export default {
       this.personalAttendanceSummary();
       this.getAttendanceList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getAttendanceList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getAttendanceList();
@@ -228,6 +235,7 @@ export default {
     async getAttendanceList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         uid: this.uid,
         ...this.searchData,
         teaching_type: this.searchData.teaching_type || 0,

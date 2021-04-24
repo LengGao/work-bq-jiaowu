@@ -18,6 +18,7 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
+        height="550"
       >
         <el-table-column label="序号" width="60" type="index">
         </el-table-column>
@@ -110,6 +111,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
           @pageChange="handlePageChange"
         />
       </div>
@@ -131,6 +133,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       typeMap: {
         1: "面授",
@@ -225,6 +228,10 @@ export default {
       };
       this.classAttendanceStatistics();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.classAttendanceStatistics();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.classAttendanceStatistics();
@@ -241,7 +248,7 @@ export default {
     async classAttendanceStatistics() {
       const data = {
         classroom_id: this.$route.query?.id,
-        // classroom_id: 55,
+        limit: this.pageSize,
         page: this.pageNum,
         ...this.searchData,
       };
