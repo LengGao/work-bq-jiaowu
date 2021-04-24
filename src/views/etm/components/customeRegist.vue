@@ -13,6 +13,9 @@
       <el-form
         label-width="90px"
         class="demo-ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        :model="ruleForm"
         :show-message="true"
         label-position="left"
       >
@@ -34,7 +37,7 @@
                 v-model="userInfo.mobile"
               ></el-input>
             </el-form-item>
-            <el-form-item label="开通网课">
+            <el-form-item label="开通网课" prop="online_course">
               <el-radio-group
                 v-model="ruleForm.online_course"
                 style="width: 240px"
@@ -179,7 +182,11 @@
         <div class="customer_sum_up">
           <h3>支付信息</h3>
           <div class="coustomer_Detail">
-            <el-form-item label="支付方式" style="margin-bottom:0">
+            <el-form-item
+              label="支付方式"
+              style="margin-bottom:0"
+              prop="pay_type"
+            >
               <el-select
                 v-model="ruleForm.pay_type"
                 placeholder="请选择支付方式"
@@ -194,7 +201,11 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="支付金额" style="margin-bottom:0">
+            <el-form-item
+              label="支付金额"
+              style="margin-bottom:0"
+              prop="pay_money"
+            >
               <el-input
                 class="input-width"
                 type="number"
@@ -260,7 +271,7 @@
           <el-form-item>
             <div style="display: flex; justify-content: flex-end">
               <el-button @click="doClose">取消</el-button>
-              <el-button type="primary" @click="orderDeatilShow"
+              <el-button type="primary" @click="orderDeatilShow('ruleForm')"
                 >报名缴费</el-button
               >
             </div>
@@ -357,6 +368,17 @@ export default {
         receipt_file: '',
         supplement_time: '',
       },
+      rules: {
+        online_course: [
+          { required: true, message: '请选择活动资源', trigger: 'change' },
+        ],
+        pay_type: [
+          { required: true, message: '请选择活动资源', trigger: 'change' },
+        ],
+        pay_money: [
+          { required: true, message: '请选择活动资源', trigger: 'change' },
+        ],
+      },
       customerInfo: {},
       receivableMoney: 0,
       orderVisible: false,
@@ -430,6 +452,7 @@ export default {
       for (var item in this.ruleForm) {
         this.ruleForm[item] = ''
       }
+      this.$refs[formName].resetFields()
       this.projectData = []
       this.$emit('input', false)
     },
@@ -469,21 +492,31 @@ export default {
     delbtn(index, rows) {
       rows.splice(index, 1)
     },
-    orderDeatilShow() {
-      // this.orderVisible = true
-      this.ruleForm.overdue_money =
-        this.receivableMoney - this.ruleForm.pay_money
-      this.ruleForm.order_token = Math.floor(Math.random() * 1000000 + 1) + ''
-      this.projectData.forEach((i) => {})
-      this.ruleForm.project = JSON.stringify(this.projectData)
-      // console.log(this.ruleForm)
-      this.$api.createOrder(this, this.ruleForm)
+    orderDeatilShow(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.ruleForm.overdue_money =
+            this.receivableMoney - this.ruleForm.pay_money
+          this.ruleForm.order_token =
+            Math.floor(Math.random() * 1000000 + 1) + ''
+          this.projectData.forEach((i) => {})
+          this.ruleForm.project = JSON.stringify(this.projectData)
+
+          this.$api.createOrder(this, this.ruleForm)
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.zZindex {
+  z-index: 3000000000000000 !important;
+}
 .receiptUpLoad {
   margin: 0;
   /deep/.el-upload {
