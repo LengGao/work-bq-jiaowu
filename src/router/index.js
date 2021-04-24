@@ -591,6 +591,12 @@ export const asyncRouter = [
         component: () => import('@/views/fina/order.vue'),
         meta: { title: '订单审批', icon: 'product-add' },
       },
+      {
+        path: 'contract ',
+        name: 'contract',
+        component: () => import('@/views/fina/contract.vue'),
+        meta: { title: '合同审批', icon: 'product-add' },
+      }
     ],
   },
 
@@ -601,6 +607,12 @@ export const asyncRouter = [
     meta: { title: '系统设置', icon: 'zhaoshengguanli' },
     name: 'set',
     children: [
+      {
+        path: 'contracttemp',
+        name: 'contracttemp',
+        component: () => import('@/views/set/contracttemp.vue'),
+        meta: { title: '合同模板', icon: 'product-add' },
+      },
       {
         path: 'imgSpace',
         name: 'imgSpace',

@@ -7,22 +7,12 @@
       <!--搜索模块-->
       <div style="color: #909399; margin-bottom: 10px"></div>
       <header>
-        <SearchList
-          :options="searchOptions"
-          :data="searchData"
-          @on-search="handleSearch"
-        />
+        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
         <div>
-          <el-button
-            type="primary"
-            style="height: 40px"
-            @click="toOnlineStudents"
-          >
-            学生导入</el-button
-          >
+          <el-button type="primary" style="height: 40px" @click="toOnlineStudents">
+            学生导入</el-button>
           <el-button type="primary" style="height: 40px" @click="addCustomer">
-            添加客户</el-button
-          >
+            添加客户</el-button>
         </div>
       </header>
 
@@ -88,73 +78,31 @@
       </el-row>
       <!--列表-->
       <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="listData"
-          tooltip-effect="light"
-          stripe
-          v-loading="listLoading"
-          element-loading-text="loading"
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="#fff"
-          style="width: 100%"
-          class="min_table"
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-        >
-          <el-table-column
-            prop="uid"
-            label="ID"
-            show-overflow-tooltip
-            min-width="90"
-          ></el-table-column>
-          <el-table-column
-            prop="surname"
-            label="客户姓名"
-            min-width="110"
-            show-overflow-tooltip
-          >
+        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading" element-loading-background="#fff" style="width: 100%" class="min_table" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
+          <el-table-column prop="uid" label="ID" show-overflow-tooltip min-width="90"></el-table-column>
+          <el-table-column prop="surname" label="客户姓名" min-width="110" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div class="surname" @click="toCusDetail(row)">
                 {{ row.surname }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="手机号码"
-            min-width="130"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="mobile" label="手机号码" min-width="130" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <span>
                 {{ row.mobile | filterPhone }}
               </span>
-              <i
-                class="el-icon-document-copy copy-number"
-                @click="handleCopy(row.mobile)"
-                title="复制"
-              ></i>
+              <i class="el-icon-document-copy copy-number" @click="handleCopy(row.mobile)" title="复制"></i>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="sex"
-            label="性别"
-            min-width="100"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="sex" label="性别" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div>
                 {{ row.sex == 1 ? '男' : row.sex == 2 ? '女' : '未知' }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            label="报读项目"
-            prop="project"
-            min-width="150"
-            show-overflow-tooltip
-          >
+          <el-table-column label="报读项目" prop="project" min-width="150" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div v-if="row.project">
                 {{ row.project }}
@@ -163,12 +111,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            prop="from_organization_name"
-            label="推荐机构"
-            min-width="100"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="from_organization_name" label="推荐机构" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div v-if="row.from_organization_name">
                 {{ row.from_organization_name }}
@@ -177,11 +120,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            label="渠道来源"
-            min-width="100"
-            show-overflow-tooltip
-          >
+          <el-table-column label="渠道来源" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div v-if="row.sources">
                 {{
@@ -194,34 +133,30 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            prop="create_time"
-            label="创建时间"
-            min-width="100"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="150">
+          <el-table-column prop="create_time" label="创建时间" min-width="72" show-overflow-tooltip></el-table-column>
+
+          <el-table-column prop="project" label="合同状态" min-width="100" show-overflow-tooltip>
+            <template slot-scope="{ row }">
+              <span style="margin-right:8px">已生成</span>
+              <el-button type="text" @click="seebtn(row)">预览合同</el-button>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="scope">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="toCusDetail(scope.row)"
-                  >客户详情</el-button
-                >
+                <el-button type="text" @click="toCusDetail(scope.row)">客户详情</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="handlePageChange"
-          />
+          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
         </div>
 
-        <addCustomeDialog
-          :innerVisible="innerVisible"
-          v-on:innerDialog="getInnerStatus($event)"
-        />
+        <Viewcontract v-model="viewcondialog" :id="id" />
+
+        <addCustomeDialog :innerVisible="innerVisible" v-on:innerDialog="getInnerStatus($event)" />
       </div>
     </div>
   </section>
@@ -233,10 +168,12 @@ import { getproject } from '@/api/eda'
 import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
 import { cloneOptions } from '@/utils/index'
 import addCustomeDialog from './components/addCustomeDialog'
+import Viewcontract from './components/viewcontract'
 export default {
   name: 'myClients',
   components: {
     addCustomeDialog,
+    Viewcontract,
   },
   data() {
     let validMail = (rule, value, callback) => {
@@ -252,6 +189,8 @@ export default {
       }
     }
     return {
+      id: '',
+      viewcondialog: false,
       analysis: {},
       innerVisible: false,
       searchData: {
@@ -654,6 +593,9 @@ export default {
     doPageChange(page) {
       this.page = page
       this.getCustomerList()
+    },
+    seebtn() {
+      this.viewcondialog = true
     },
   },
 }
