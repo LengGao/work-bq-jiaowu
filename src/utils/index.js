@@ -277,12 +277,12 @@ export const download = async (url, filename = '') => {
   // }
   const a = document.createElement('a');
   a.style.display = 'none';
-  a.href = url;
+  a.href = url + '?response-content-type=application/octet-stream';
   a.target = '_blank'
-  console.log(a)
   a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+  window.URL && window.URL.revokeObjectURL(url) // 下载完成进行释放
   return Promise.resolve()
 }
