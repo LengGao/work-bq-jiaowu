@@ -10,24 +10,26 @@
       <!--表格-->
       <div class="userTable">
         <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
-          <el-table-column prop="role_id" label="合同名称" min-width="200" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="role_id" label="签署时间" min-width="250" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="role_id" label="签署人" min-width="200" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="role_id" label="项目名称" min-width="200" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="role_id" label="项目价格" min-width="200" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="role_id" label="签署价格" min-width="200" column-key="role_id" show-overflow-tooltip></el-table-column>
-          <el-table-column label="审批状态" fixed="right" min-width="150">
-            <template slot-scope="scope">
-              <div style="display: flex; justify-content:center;">
-                <span style="color:green;">已审批</span>
+          <el-table-column prop="order_no" label="订单编号" min-width="200" column-key="order_no" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="project_str" label="项目名称" min-width="200" column-key="project_str" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="surname" label="签署人" min-width="200" column-key="surname" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="pay_money" label="应收金额" min-width="200" column-key="pay_money" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="order_money" label="签署价格" min-width="200" column-key="order_money" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="create_time" label="上传时间" min-width="250" column-key="create_time" show-overflow-tooltip></el-table-column>
+          <el-table-column label="合同状态" fixed="right" min-width="150" prop="contract_status">
+            <template slot-scope="{row}">
+              <div style="display: flex; justify-content:center;" :class="row.contract_status==4?'colorgreen' :'colored' ">
+                {{ statusMap[row.contract_status] }}
               </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="220">
-            <template slot-scope="scope">
+            <template slot-scope="{row}">
               <div style="display: flex; justify-content:center;">
-                <el-button type="text">查看合同</el-button>
-                <el-button type="text">查看收据</el-button>
+                <el-button type="text" @click="Approval(row)" :class="row.contract_status == 1? 'entry2':'entry1'">审核</el-button>
+                <el-button type="text" :class="row.contract_status == 1? 'entry1':'entry2'" @click="pcontract(row.sign_url)">查看合同</el-button>
+
+                <!-- <el-button type="text" :class="row.contract_status == 1? 'entry1':'entry2'">查看收据</el-button> -->
               </div>
             </template>
           </el-table-column>
@@ -38,48 +40,93 @@
           <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
         </div>
       </div>
+      <Toexamine v-model="toexadialog" @on-success="auditlist" :contractInfo="contractInfo" :id="currentId" />
+
     </section>
   </section>
 </template>
 <script>
+import { auditlist } from '@/api/fina'
+import Toexamine from './components/toexadialog'
+
 export default {
   name: 'contract',
+  components: {
+    Toexamine,
+  },
   data() {
     return {
+      seetempdialog: false,
+      contractInfo: {},
+      order_no: '',
+      currentId: '',
+      dialogTitle: '',
+      toexadialog: false,
+      contract_status: '',
+      id: '',
+      audit_type: '',
+      audit_content: '',
+      statusMap: {
+        1: '待审核',
+        2: '待签署',
+        3: '审核不通过',
+        4: '签署完成',
+      },
       searchOptions: [
         {
-          key: 'search_box',
+          key: 'order_no',
           attrs: {
-            placeholder: '请输入合同名称',
+            placeholder: '请输入订单编号',
             clearable: true,
           },
         },
       ],
       options: [],
       searchData: {
-        category_id: [],
-        search_box: '',
+        keyword: '',
       },
       listTotal: 0,
       pageNum: 1,
-      listData: [
-        { role_id: '2021' },
-        { role_id: '系统集成项目管理工程师' },
-        { role_id: '309080898988767' },
-      ],
+      listData: [],
     }
   },
-  created() {},
+  created() {
+    this.auditlist()
+  },
   methods: {
     //搜索功能
     handleSearch(data) {
       this.pageNum = 1
       this.searchData = data
-      this.noticelist()
+      this.auditlist()
     },
     handlePageChange(val) {
       this.pageNum = val
-      this.noticelist()
+      this.auditlist()
+    },
+    // 合同审核列表接口
+    async auditlist() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      const res = await auditlist(data)
+      console.log(res.data.data)
+      this.listData = res.data.data
+      this.listTotal = res.data.total
+    },
+    Approval(row) {
+      this.toexadialog = true
+      this.dialogTitle = '合同审核'
+      // this.currentId = id
+      this.contractInfo = row
+    },
+    pcontract(sign_url) {
+      console.log(sign_url)
+      // this.sign_url = row.sign_url
+      var tempwindow = window.open('_blank')
+      tempwindow.location = sign_url
+      this.auditlist()
     },
   },
 }
@@ -130,5 +177,17 @@ header {
 .table_bottom {
   text-align: right;
   margin-top: 40px;
+}
+.colorgreen {
+  color: green;
+}
+.colored {
+  color: red;
+}
+.entry1 {
+  display: none;
+}
+.entry2 {
+  display: inline;
 }
 </style>

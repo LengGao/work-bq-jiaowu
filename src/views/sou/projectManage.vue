@@ -216,6 +216,7 @@ export default {
           key: 'keyword',
           attrs: {
             placeholder: '项目名称',
+            clearable: true,
           },
         },
       ],
