@@ -153,7 +153,6 @@
         <div class="table_bottom">
           <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
         </div>
-
         <Viewcontract v-model="viewcondialog" :id="id" />
 
         <addCustomeDialog :innerVisible="innerVisible" v-on:innerDialog="getInnerStatus($event)" />
@@ -453,7 +452,6 @@ export default {
     //客户列表
     async getCustomerList() {
       this.checkedIds = []
-
       this.intent_id = ''
       console.log(this.searchData.date)
       const data = {
