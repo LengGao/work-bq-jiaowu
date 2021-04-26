@@ -85,7 +85,9 @@ let enrollStu = {
       province: ruleForm.province,
       wechat: ruleForm.wechat,
       city: ruleForm.city,
-      from_organization_id: Array.isArray(ruleForm.from_organization_id) ? [...ruleForm.from_organization_id].pop() : ruleForm.from_organization_id,
+      from_organization_id: Array.isArray(ruleForm.from_organization_id)
+        ? [...ruleForm.from_organization_id].pop()
+        : ruleForm.from_organization_id,
       sources: ruleForm.sources,
       tips: ruleForm.tips,
     }
@@ -167,6 +169,7 @@ let enrollStu = {
           self.$message({
             type: 'success',
             message: res.data.message,
+            customClass: 'zZindex',
           })
         }
       },
