@@ -278,7 +278,8 @@ export const download = async (url, filename = '') => {
   const a = document.createElement('a');
   a.style.display = 'none';
   a.href = url;
-  a.tagert = '_blank'
+  a.target = '_blank'
+  console.log(a)
   a.download = filename;
   document.body.appendChild(a);
   a.click();
