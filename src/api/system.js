@@ -92,3 +92,67 @@ import request from '@/utils/request'
         params
     })
 }
+
+/**
+ * 合同模板列表
+ * @param {*} params 
+ */
+ export function templatelist(params) {
+    return request({
+        url: 'contract/template_list',
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 添加合同模板
+ * @param {*} data 
+ */
+ export function templateadd(data) {
+    return request({
+        url: 'contract/template_add',
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * 编辑合同模板
+ * @param {*} data 
+ */
+ export function templateedit(data) {
+    return request({
+        url: 'contract/template_edit',
+        method: 'post',
+        data
+    })
+}
+
+
+/**
+ * 上传合同模板
+ */
+ export const uploadUrl = `${process.env.VUE_APP_LOACTION}/contract/upload_template`
+
+ /**
+ * 删除合同模板
+ */
+  export function templatedel(data) {
+    return request({
+        url: 'contract/template_del',
+        method: 'post',
+        data
+    })
+}
+
+ /**
+ * 关联合同模板
+ */
+  export function contractlink(data) {
+    return request({
+        url: 'contract/link',
+        method: 'post',
+        data
+    })
+}
