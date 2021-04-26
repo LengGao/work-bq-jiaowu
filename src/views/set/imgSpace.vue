@@ -95,6 +95,7 @@
           <el-button type="primary" @click="transformConfirm">确 定</el-button>
         </span>
       </el-dialog>
+
       <el-dialog title="上传图片" :visible.sync="dialogUpload" width="30%" :close-on-click-modal="false">
         <el-form :model="createVideo" ref="reasonForm" label-width="150px">
           <el-form-item label="图片分组：">
@@ -111,6 +112,7 @@
           <el-button type="primary" @click="uploadConfirm">确 定</el-button>
         </span>
       </el-dialog>
+
       <el-dialog title="编辑空间" :visible.sync="dialogSpace" width="30%" :close-on-click-modal="false">
         <el-form :model="sapceEditors" ref="reasonForm" label-width="150px">
           <el-form-item label="空间名称：">

@@ -133,6 +133,7 @@ export default {
         })
         .catch(() => {})
     },
+
     async deletePlan(id) {
       const data = {
         id,
