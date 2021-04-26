@@ -7,12 +7,7 @@
       <el-tab-pane label="模拟考试配置" name="Certificates"></el-tab-pane>
       <el-tab-pane label="自主出题配置" name="CustomerHistory"></el-tab-pane>
     </el-tabs>
-    <component
-      :is="getComponent"
-      @on-basic-success="getStudentBasicDetail"
-      :datas="detailData"
-      :uid="detailData.uid"
-    />
+    <component :is="getComponent" />
   </div>
 </template>
 

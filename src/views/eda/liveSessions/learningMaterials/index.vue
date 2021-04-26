@@ -129,9 +129,7 @@ export default {
     async handleDownload(row) {
       row.loading = true;
       const url = downloadBaseUrl + row.path;
-      await download(url, row.data_name + "." + row.extension).catch(() => {
-        row.loading = false;
-      });
+      download(url, row.data_name + "." + row.extension);
       row.loading = false;
     },
     // 删除资料

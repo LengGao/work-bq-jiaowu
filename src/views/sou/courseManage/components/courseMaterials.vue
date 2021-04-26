@@ -91,7 +91,6 @@
 </template>
 
 <script>
-import { downloadBaseUrl } from "@/api/eda";
 import { download } from "@/utils/index";
 import CourseMaterialsDialog from "./courseMaterialsDialog";
 import { getCourseMaterialList, deleteCourseMaterial } from "@/api/sou";
