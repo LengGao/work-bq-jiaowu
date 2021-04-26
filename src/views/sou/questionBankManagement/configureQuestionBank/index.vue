@@ -24,7 +24,7 @@
               <span class="list-item-title">{{ item.chapter_name }}</span>
               <div class="list-item-actions">
                 <i class="el-icon-edit" @click="openEdit(item.id)"></i>
-                <i class="el-icon-delete"></i>
+                <i class="el-icon-delete" @click="deleteConfirm(item.id)"></i>
               </div>
             </li>
           </ul>
@@ -137,6 +137,7 @@ import {
   updateQuestionBankStatus,
   deleteQuestionBank,
   getTopicChapterList,
+  deletedTopicChapter,
 } from "@/api/sou";
 import editChapterDialog from "./components/editChapterDialog";
 export default {
@@ -209,6 +210,22 @@ export default {
     linkTo(name, id) {
       this.$router.push({ name, query: { id } });
     },
+    // 删除章节
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此章节吗?", { type: "warning" })
+        .then(() => {
+          this.deletedTopicChapter(id);
+        })
+        .catch(() => {});
+    },
+    async deletedTopicChapter(id) {
+      const data = { id };
+      const res = await deletedTopicChapter(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getTopicChapterList();
+      }
+    },
     // 获取章节列表
     async getTopicChapterList() {
       const data = {
@@ -223,14 +240,6 @@ export default {
       if (res.code === 0) {
         this.chapterList = res.data;
       }
-    },
-    // 删除题库
-    deleteConfirm(id) {
-      this.$confirm("确定要删除此题库吗?", { type: "warning" })
-        .then(() => {
-          this.deleteQuestionBank(id);
-        })
-        .catch(() => {});
     },
     async deleteQuestionBank(id) {
       const data = { id };

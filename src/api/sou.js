@@ -610,6 +610,14 @@ export function updateTopicChapter(data) {
     data,
   })
 }
+// 修改题库章节
+export function deletedTopicChapter(data) {
+  return request({
+    url: '/topicChapter/deleted',
+    method: 'post',
+    data,
+  })
+}
 // 获取题库章节详情
 export function getTopicChapterInfo(params) {
   return request({
