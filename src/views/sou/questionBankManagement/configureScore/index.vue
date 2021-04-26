@@ -3,9 +3,9 @@
   <div class="configure-score">
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本配置" name="BasicConfig"></el-tab-pane>
-      <el-tab-pane label="历年真题配置" name="FollowUpRecord"></el-tab-pane>
-      <el-tab-pane label="模拟考试配置" name="Certificates"></el-tab-pane>
-      <el-tab-pane label="自主出题配置" name="CustomerHistory"></el-tab-pane>
+      <el-tab-pane label="历年真题配置" name="OverTheYearConfig"></el-tab-pane>
+      <el-tab-pane label="模拟考试配置" name="MocksConfig"></el-tab-pane>
+      <el-tab-pane label="自主出题配置" name="AutonomyConfig"></el-tab-pane>
     </el-tabs>
 
     <component :is="getComponent" class="configure-components" />

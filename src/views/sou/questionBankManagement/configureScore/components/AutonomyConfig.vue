@@ -1,5 +1,6 @@
+
 <template>
-  <div>
+  <div class="cutonomy-config">
     <el-form
       label-width="100px"
       :model="formData"
@@ -7,39 +8,87 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="题目总数" class="w-300" prop="video_chapter_name">
+      <el-form-item label="单选题" prop="video_chapter_name">
+        <span>每题</span>
         <el-input
+          class="input-scores"
           type="number"
           v-model="formData.video_chapter_name"
-          placeholder="请输入题目总数"
+          placeholder="请输入"
           maxlength="10"
         />
+        <span>分</span>
       </el-form-item>
-      <el-form-item label="考试总分" class="w-300" prop="video_chapter_sort">
+      <el-form-item label="多选题" prop="video_chapter_name">
+        <span>每题</span>
         <el-input
+          class="input-scores"
           type="number"
-          v-model="formData.video_chapter_sort"
-          placeholder="请输入考试总分"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
           maxlength="10"
         />
+        <span>分</span>
       </el-form-item>
-      <el-form-item label="合格分数" class="w-300" prop="video_chapter_sort">
+      <el-form-item label="判断题" prop="video_chapter_name">
+        <span>每题</span>
         <el-input
+          class="input-scores"
           type="number"
-          v-model="formData.video_chapter_sort"
-          placeholder="请输入合格分数"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
           maxlength="10"
         />
+        <span>分</span>
       </el-form-item>
-      <el-form-item label="考试时长" class="w-300" prop="video_chapter_sort">
+      <el-form-item label="填空题" prop="video_chapter_name">
+        <span>每题</span>
         <el-input
+          class="input-scores"
           type="number"
-          v-model="formData.video_chapter_sort"
-          placeholder="请输入考试时长"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
           maxlength="10"
-          class="input-time"
         />
-        <span>分钟</span>
+        <span>分</span>
+      </el-form-item>
+      <el-form-item label="简答题" prop="video_chapter_name">
+        <span>每题</span>
+        <el-input
+          class="input-scores"
+          type="number"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
+          maxlength="10"
+        />
+        <span>分</span>
+      </el-form-item>
+      <el-form-item label="案例题" prop="video_chapter_name">
+        <span>每题</span>
+        <el-input
+          class="input-scores"
+          type="number"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
+          maxlength="10"
+        />
+        <span>分</span>
+      </el-form-item>
+      <el-form-item label="多选题场景" prop="video_chapter_name">
+        {{ formData.resource }}
+        <el-radio-group v-model="formData.resource">
+          <el-radio label="1">少选不得分</el-radio>
+          <el-radio label="2"
+            >少选每个选项<el-input
+              class="input-scores"
+              type="number"
+              v-model="formData.video_chapter_name"
+              placeholder="请输入"
+              maxlength="10"
+            />
+            <span>分</span></el-radio
+          >
+        </el-radio-group>
       </el-form-item>
       <el-form-item class="form-item-submit">
         <el-button @click="hanldeCancel">取 消</el-button>
@@ -61,7 +110,7 @@ import {
   getVideochapterDetail,
 } from "@/api/sou";
 export default {
-  name: "BasicConfig",
+  name: "OverTheYearConfig",
   props: {
     id: {
       type: [String, Number],
@@ -147,16 +196,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.w-300 {
-  width: 400px;
-}
-.input-time {
-  width: 250px;
-  margin-right: 10px;
-}
-.form-item-submit {
-  button {
-    margin-left: 26px;
+.cutonomy-config {
+  .el-form-item {
+    width: 500px;
+    color: #606266;
+    /deep/.el-form-item__label {
+      padding-right: 20px;
+    }
+    .input-scores {
+      margin: 0 10px;
+      width: 90px;
+    }
   }
 }
 </style>
