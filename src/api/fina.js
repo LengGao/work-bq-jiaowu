@@ -67,3 +67,26 @@ export function Orderentry(data) {
     })
 }
 
+/**
+ * 合同审核列表
+ * @param {*} params 
+ */
+ export function auditlist(params) {
+    return request({
+        url: 'contract/audit_list',
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * 合同审核
+ * @param {*} data 
+ */
+ export function contractaudit(data) {
+    return request({
+        url: 'contract/audit',
+        method: 'post',
+        data
+    })
+}

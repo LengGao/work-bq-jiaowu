@@ -20,12 +20,10 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content:center;">
-                <el-button type="primary" plain @click="edittemplate(row)">关联模板</el-button>
+                <el-button type="primary" plain @click="edittemplate(row)" size="small" style="font-size:14px">关联模板</el-button>
               </div>
             </template>
           </el-table-column>
-          <el-pagination background layout="prev, pager, next" :total="1000">
-          </el-pagination>
         </el-table>
         <div class="table_bottom">
           <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
@@ -137,7 +135,6 @@ export default {
       this.listData = res.data.data
       this.listTotal = res.data.total
     },
-
     seetemplate(row) {
       console.log(row)
       this.dialogVisible = true
@@ -149,7 +146,6 @@ export default {
         project_id: this.project_id,
         template_id: this.template_id,
       }
-      console.log()
       const res = await contractlink(data)
       if (res.code == 0) {
         console.log(res)
