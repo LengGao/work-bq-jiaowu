@@ -10,28 +10,28 @@
 </template>
 <script>
 export default {
-  name: 'app',
+  name: "app",
   provide() {
     return {
       reload: this.reload,
-    }
+    };
   },
   data() {
     return {
       isRouterAlive: true, //控制视图是否显示的变量
-    }
+    };
   },
   mounted() {},
   methods: {
     reload() {
-      this.isRouterAlive = false
+      this.isRouterAlive = false;
       //先关闭，
-      this.$nextTick(function() {
-        this.isRouterAlive = true //再打开
-      })
+      this.$nextTick(function () {
+        this.isRouterAlive = true; //再打开
+      });
     },
   },
-}
+};
 </script>
 <style lang="scss">
 #app {
@@ -47,5 +47,9 @@ export default {
 }
 html {
   background: #f0f2f5;
+}
+.question-type-popover.el-popover {
+  min-width: 0;
+  padding: 6px 0;
 }
 </style>
