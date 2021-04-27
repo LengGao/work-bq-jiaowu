@@ -76,7 +76,7 @@
         ></el-table-column>
         <el-table-column
           align="center"
-          prop="play_duration"
+          prop="live_video_learn_time"
           label="观看时长"
           min-width="110"
           show-overflow-tooltip
@@ -176,6 +176,7 @@ export default {
       const data = {
         live_id: this.liveId,
         live_class_id: this.liveClassId,
+        live_course_id: this.$route.query.course_id,
         page: this.pageNum,
         ...this.searchData,
       };
