@@ -445,12 +445,6 @@ export default {
         );
       }
     },
-    toStudentDetail(id) {
-      this.$router.push({
-        name: "studentDetail",
-        query: { id },
-      });
-    },
     batchImport() {
       this.importVisible = true;
     },

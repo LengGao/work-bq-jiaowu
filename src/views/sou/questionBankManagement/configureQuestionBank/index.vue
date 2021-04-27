@@ -1,34 +1,17 @@
 <template>
   <div class="configure-question">
     <section class="mainwrap">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tabs v-model="activeName">
         <el-tab-pane label="章节练习" name="1"></el-tab-pane>
         <el-tab-pane label="历年真题" name="2"></el-tab-pane>
         <el-tab-pane label="自主出题" name="3"></el-tab-pane>
       </el-tabs>
       <div class="container">
-        <div class="container-left">
-          <div class="container-left-header">
-            <h4>章节名称</h4>
-            <el-button
-              type="primary"
-              plain
-              circle
-              size="mini"
-              icon="el-icon-plus"
-              @click="openAdd"
-            ></el-button>
-          </div>
-          <ul class="container-left-list" v-loading="chapterLoading">
-            <li class="list-item" v-for="item in chapterList" :key="item.id">
-              <span class="list-item-title">{{ item.chapter_name }}</span>
-              <div class="list-item-actions">
-                <i class="el-icon-edit" @click="openEdit(item.id)"></i>
-                <i class="el-icon-delete" @click="deleteConfirm(item.id)"></i>
-              </div>
-            </li>
-          </ul>
-        </div>
+        <ChapterMenu
+          @on-change="handleChapterChange"
+          :chapterType="activeName"
+          class="container-left"
+        />
         <div class="container-right">
           <div class="client_head">
             <SearchList
@@ -47,7 +30,11 @@
                   >添加题目</el-button
                 >
                 <ul class="question-type-list">
-                  <li v-for="item in questionOptions" :key="item.value">
+                  <li
+                    v-for="item in questionOptions"
+                    :key="item.value"
+                    @click="handleQuestionChange(item.value)"
+                  >
                     {{ item.name }}
                   </li>
                   <li>单选题</li>
@@ -121,29 +108,21 @@
         </div>
       </div>
     </section>
-    <editChapterDialog
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      :id="currentId"
-      :chapterType="activeName"
-      @on-success="getTopicChapterList"
-    />
   </div>
 </template>
 
 <script>
+import ChapterMenu from "./components/ChapterMenu";
 import {
   getQuestionBankList,
   updateQuestionBankStatus,
   deleteQuestionBank,
-  getTopicChapterList,
-  deletedTopicChapter,
 } from "@/api/sou";
-import editChapterDialog from "./components/editChapterDialog";
+
 export default {
   name: "questionBank",
   components: {
-    editChapterDialog,
+    ChapterMenu,
   },
   data() {
     return {
@@ -164,9 +143,6 @@ export default {
           },
         },
       ],
-      currentId: "",
-      dialogTitle: "添加章节",
-      dialogVisible: false,
       questionOptions: [
         {
           name: "单选题",
@@ -193,53 +169,23 @@ export default {
           value: 6,
         },
       ],
-      chapterList: [],
-      chapterLoading: false,
     };
   },
 
   created() {
-    this.getTopicChapterList();
     this.getQuestionBankList();
   },
 
   methods: {
-    handleClick() {
-      this.getTopicChapterList();
+    // 添加题目
+    handleQuestionChange(type) {
+      this.$router.push({ name: "questionConfigure", query: { type } });
     },
     linkTo(name, id) {
       this.$router.push({ name, query: { id } });
     },
-    // 删除章节
-    deleteConfirm(id) {
-      this.$confirm("确定要删除此章节吗?", { type: "warning" })
-        .then(() => {
-          this.deletedTopicChapter(id);
-        })
-        .catch(() => {});
-    },
-    async deletedTopicChapter(id) {
-      const data = { id };
-      const res = await deletedTopicChapter(data);
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.getTopicChapterList();
-      }
-    },
-    // 获取章节列表
-    async getTopicChapterList() {
-      const data = {
-        question_bank_id: this.$route.query.id,
-        chapter_type: this.activeName,
-      };
-      this.chapterLoading = true;
-      const res = await getTopicChapterList(data).catch(() => {
-        this.chapterLoading = false;
-      });
-      this.chapterLoading = false;
-      if (res.code === 0) {
-        this.chapterList = res.data;
-      }
+    handleChapterChange(id) {
+      console.log(id);
     },
     async deleteQuestionBank(id) {
       const data = { id };
@@ -266,16 +212,7 @@ export default {
     link(id) {
       this.$router.push({ name: "inventoryDetails", query: { id } });
     },
-    openEdit(id) {
-      this.dialogTitle = "编辑章节";
-      this.currentId = id;
-      this.dialogVisible = true;
-    },
-    openAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加章节";
-      this.dialogVisible = true;
-    },
+
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
@@ -329,52 +266,7 @@ export default {
       width: 300px;
       border: 1px solid #e4e7ed;
       flex-shrink: 0;
-      &-header {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px;
-        border-bottom: 1px solid #e4e7ed;
-      }
-      &-list {
-        font-size: 14px;
-        .list-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 12px;
-          height: 44px;
-          border-bottom: 1px solid #e4e7ed;
-          cursor: pointer;
-          &-actions {
-            display: none;
-            i {
-              font-size: 18px;
-              padding: 0 10px;
-            }
-          }
-          &:hover {
-            background-color: #ecf5ff;
-            color: #199fff;
-            .list-item-actions {
-              display: block;
-            }
-          }
-          &--active {
-            color: #fff;
-            background-color: #199fff;
-            .list-item-actions {
-              display: block;
-            }
-          }
-          &--active:hover {
-            color: #fff;
-            background-color: #199fff;
-            .list-item-actions {
-              display: block;
-            }
-          }
-        }
-      }
+      height: 800px;
     }
     &-right {
       flex: 1;

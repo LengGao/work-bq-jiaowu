@@ -27,7 +27,11 @@
       </div>
       <div class="label label-large">
         <span class="label-name">关联班级 </span>
-        <span class="label-content"> {{ detailData.live_class_name }}</span>
+        <span class="label-content"> {{ detailData.classroom_name_str }}</span>
+      </div>
+      <div class="label">
+        <span class="label-name">课程明称 </span>
+        <span class="label-content"> {{ detailData.course_name }}</span>
       </div>
       <div class="label">
         <span class="label-name">上课时间 </span>
@@ -137,7 +141,7 @@ export default {
       }
     }
     .label-large {
-      width: 75%;
+      width: 50%;
     }
   }
 }

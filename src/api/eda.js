@@ -288,6 +288,17 @@ export function getClassstudentList(params) {
   })
 }
 /**
+ * 获取未分班学生
+ * @param {*} params
+ */
+export function unClassCourse(params) {
+  return request({
+    url: 'classstudents/unClassCourse',
+    method: 'get',
+    params,
+  })
+}
+/**
  * 班级考勤统计
  * @param {*} params
  */

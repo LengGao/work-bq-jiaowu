@@ -248,12 +248,6 @@ export default {
     this.Approvalist()
   },
   methods: {
-    toStudentDetail(id) {
-      this.$router.push({
-        path: '/eda/studentDetail',
-        query: { id },
-      })
-    },
     // 显示项目名称
     formatProjectName(json) {
       const projectData = JSON.parse(json)
