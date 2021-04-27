@@ -41,7 +41,6 @@
         </div>
       </div>
       <Toexamine v-model="toexadialog" @on-success="auditlist" :contractInfo="contractInfo" :id="currentId" />
-
     </section>
   </section>
 </template>

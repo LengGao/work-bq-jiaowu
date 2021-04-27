@@ -15,7 +15,6 @@
             添加客户</el-button>
         </div>
       </header>
-
       <el-row class="dataPanel" style="">
         <template>
           <el-col :lg="{ span: '4-8' }">
@@ -110,7 +109,6 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-
           <el-table-column prop="from_organization_name" label="推荐机构" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div v-if="row.from_organization_name">
@@ -119,7 +117,6 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-
           <el-table-column label="渠道来源" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <div v-if="row.sources">
@@ -132,16 +129,13 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-
           <el-table-column prop="create_time" label="创建时间" min-width="72" show-overflow-tooltip></el-table-column>
-
           <el-table-column prop="project" label="合同状态" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
               <span style="margin-right:8px">已生成</span>
               <el-button type="text" @click="seebtn(row)">预览合同</el-button>
             </template>
           </el-table-column>
-
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="scope">
               <div style="display: flex; justify-content: center">
