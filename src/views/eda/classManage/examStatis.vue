@@ -468,15 +468,6 @@ export default {
     //       query: { intent_id: ab.intent_id },
     //     })
     //   },
-    //   toStudentDetail(zx) {
-    //     console.log(zx)
-    //     let intent_id = zx.intent_id
-    //     let uid = zx.uid
-    //     this.$router.push({
-    //       path: '/etm/studentDetail',
-    //       query: { intent_id: intent_id, uid: uid },
-    //     })
-    //   },
     //   toIntentionEntry(ab) {
     //     console.log(ab)
     //     let intent_id = ab.intent_id

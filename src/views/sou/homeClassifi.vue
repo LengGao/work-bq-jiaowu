@@ -220,11 +220,6 @@ export default {
         this.$api.updateHomeClassifiSort(index_category_id, sorts, this)
       }
     },
-    toStudentDetail() {
-      this.$router.push({
-        name: 'studentDetail',
-      })
-    },
     delbtn(id) {
       this.$confirm('确定要删除当前分类吗?', '提示', {
         confirmButtonText: '确定',

@@ -130,12 +130,6 @@ export default {
     this.getCertificates()
   },
   methods: {
-    toStudentDetail(id) {
-      this.$router.push({
-        path: '/eda/studentDetail',
-        query: { id },
-      })
-    },
     hanldeLink(id) {
       this.$router.push({ name: 'certificatesLog', query: { id } })
     },

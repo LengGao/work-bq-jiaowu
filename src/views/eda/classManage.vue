@@ -267,14 +267,6 @@ export default {
         );
       }
     },
-    toClassDetail(id) {
-      this.$router.push({
-        name: "classDetail",
-        query: {
-          id,
-        },
-      });
-    },
     toMassMessage(row) {
       this.$router.push({
         name: "massMessage",

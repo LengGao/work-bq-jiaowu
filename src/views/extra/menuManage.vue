@@ -308,11 +308,6 @@ export default {
         this.$api.updateSort(id, sorts, this)
       }
     },
-    toStudentDetail() {
-      this.$router.push({
-        name: 'studentDetail',
-      })
-    },
     delbtn(ab) {
       var warnTitle = ''
       ab.menu_type == 1

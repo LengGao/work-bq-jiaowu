@@ -27,7 +27,7 @@
           prop="user_realname"
         >
           <template slot-scope="{ row }">
-            <el-button type="text" @click="linkTo(row.uid)">{{
+            <el-button type="text" @click="toStudentDetail(row.uid)">{{
               row.user_realname
             }}</el-button>
           </template>
@@ -132,9 +132,6 @@ export default {
     this.getClassstudentList();
   },
   methods: {
-    linkTo(id) {
-      this.$router.push({ name: "studentDetail", query: { id } });
-    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;

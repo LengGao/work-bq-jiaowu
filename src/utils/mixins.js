@@ -8,6 +8,15 @@ const mixin = {
                 query: { id },
             });
         },
+        // 跳转到班级详情
+        toClassDetail(id) {
+            this.$router.push({
+                name: "classDetail",
+                query: {
+                    id,
+                },
+            });
+        },
     }
 }
 Vue.mixin(mixin)
