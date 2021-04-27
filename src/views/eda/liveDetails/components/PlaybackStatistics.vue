@@ -39,9 +39,14 @@
         <el-table-column
           prop="course_username"
           label="学生姓名"
-          min-width="220"
+          min-width="120"
           show-overflow-tooltip
         >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toStudentDetail(row.uid)">
+              {{ row.course_username }}
+            </el-button>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -57,7 +62,7 @@
         <el-table-column
           prop="classroom_name"
           label="所属班级"
-          min-width="180"
+          min-width="250"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column

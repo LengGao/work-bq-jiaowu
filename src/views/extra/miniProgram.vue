@@ -1196,11 +1196,6 @@ export default {
         }
       )
     },
-    toStudentDetail() {
-      this.$router.push({
-        name: 'studentDetail',
-      })
-    },
     delbtn(row) {
       console.log(row)
       this.$confirm('确定要删除当前轮播图吗?', '提示', {

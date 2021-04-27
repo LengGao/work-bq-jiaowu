@@ -364,12 +364,6 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
-    toStudentDetail(id) {
-      this.$router.push({
-        path: "/eda/studentDetail",
-        query: { id },
-      });
-    },
   },
 };
 </script>

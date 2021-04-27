@@ -49,7 +49,7 @@
 import { getStudentBasicDetail } from "@/api/eda";
 import CustomeRegist from "@/views/etm/components/customeRegist";
 export default {
-  name: "studentDetail",
+  name: "customeDetail",
   components: {
     CustomeRegist,
   },

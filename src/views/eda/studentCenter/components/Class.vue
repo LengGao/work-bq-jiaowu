@@ -7,6 +7,7 @@
         ref="multipleTable"
         :data="listData"
         tooltip-effect="light"
+        border
         v-loading="listLoading"
         element-loading-text="loading"
         element-loading-spinner="el-icon-loading"
@@ -14,7 +15,7 @@
         stripe
         style="width: 100%"
         class="min_table"
-        :header-cell-style="{ 'text-align': 'center' }"
+        :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
       >
         <el-table-column
           align="center"
@@ -108,9 +109,10 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         stripe
+        border
         style="width: 100%"
         class="min_table"
-        :header-cell-style="{ 'text-align': 'center' }"
+        :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
       >
         <el-table-column
           label="编号"
@@ -176,11 +178,92 @@
         </el-table-column>
       </el-table>
     </div>
+    <h4 class="table-title">未分班课程</h4>
+    <div class="userTable">
+      <el-table
+        ref="multipleTable"
+        border
+        :data="unClassData"
+        tooltip-effect="light"
+        v-loading="unClassLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
+        stripe
+        style="width: 100%"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
+      >
+        <el-table-column
+          prop="course_name"
+          label="课程名称"
+          min-width="220"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="video_time_total"
+          label="学习时长"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="video_progress"
+          label="学习进度"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="total_problem"
+          label="做题总数"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="problem_rate"
+          label="做题进度"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="real_topic_score"
+          label="历年真题平均分"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="exam_score"
+          label="模拟考试平均分"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="self_determination_score"
+          label="自主出题最高分"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="video_time"
+          label="参加直播时长"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
 <script>
-import { getstudendclass, getuserproject } from "@/api/eda";
+import { getstudendclass, getuserproject, unClassCourse } from "@/api/eda";
 export default {
   name: "class",
   props: {
@@ -195,21 +278,27 @@ export default {
       listLoading: false,
       classData: [],
       classLoading: false,
+      unClassData: [],
+      unClassLoading: false,
     };
   },
   created() {
     this.getstudendclass();
     this.getuserproject();
+    this.unClassCourse();
   },
   methods: {
-    toClassDetail(id) {
-      console.log(id);
-      this.$router.push({
-        path: "/eda/classDetail",
-        query: {
-          id,
-        },
-      });
+    // 未分班课程列表
+    async unClassCourse() {
+      const data = {
+        uid: this.uid,
+      };
+      this.unClassLoading = true;
+      const res = await unClassCourse(data);
+      this.unClassLoading = false;
+      if (res.code === 0) {
+        this.unClassData = res.data;
+      }
     },
     //学生所在项目列表
     async getuserproject() {

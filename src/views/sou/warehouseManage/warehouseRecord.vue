@@ -90,14 +90,14 @@
 // import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
-  name: 'seaStudent',
+  name: "seaStudent",
   data() {
     return {
       schoolData: [],
       page: 1,
       status: 3,
       datas: {},
-    }
+    };
   },
   mounted() {
     // let status = 3
@@ -105,34 +105,26 @@ export default {
   },
   methods: {
     getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+      console.log(state, val);
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.schoolData = val;
       }
     },
 
-    toStudentDetail(zx) {
-      console.log(zx)
-      let intent_id = zx.intent_id
-      this.$router.push({
-        path: '/etm/studentDetail',
-        query: { intent_id: intent_id, uid: zx.uid },
-      })
-    },
     receiveStudent(zx) {
-      console.log(zx)
-      this.$api.receive(this, zx.intent_id)
+      console.log(zx);
+      this.$api.receive(this, zx.intent_id);
     },
     doPageChange(page) {
-      this.page = page
+      this.page = page;
       // this.$api.getMyclient(this, 'myclient', status)
-      this.$api.getCommonUserList(this, 'schoolData', this.datas)
+      this.$api.getCommonUserList(this, "schoolData", this.datas);
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,

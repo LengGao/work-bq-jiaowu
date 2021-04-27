@@ -48,6 +48,11 @@
           min-width="120"
           show-overflow-tooltip
         >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toStudentDetail(row.uid)">
+              {{ row.user_realname }}
+            </el-button>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"

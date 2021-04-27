@@ -30,7 +30,11 @@
                   >添加题目</el-button
                 >
                 <ul class="question-type-list">
-                  <li v-for="item in questionOptions" :key="item.value">
+                  <li
+                    v-for="item in questionOptions"
+                    :key="item.value"
+                    @click="handleQuestionChange(item.value)"
+                  >
                     {{ item.name }}
                   </li>
                   <li>单选题</li>
@@ -139,7 +143,6 @@ export default {
           },
         },
       ],
-
       questionOptions: [
         {
           name: "单选题",
@@ -174,6 +177,10 @@ export default {
   },
 
   methods: {
+    // 添加题目
+    handleQuestionChange(type) {
+      this.$router.push({ name: "questionConfigure", query: { type } });
+    },
     linkTo(name, id) {
       this.$router.push({ name, query: { id } });
     },

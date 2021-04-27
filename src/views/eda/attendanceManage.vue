@@ -336,14 +336,6 @@ export default {
       const arr = str.split(",");
       return arr[index];
     },
-    toClassDetail(id) {
-      this.$router.push({
-        name: "classDetail",
-        query: {
-          id,
-        },
-      });
-    },
     toStatistics(row) {
       this.$router.push({
         path: "/eda/attendanceStatistics",

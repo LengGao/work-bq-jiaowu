@@ -15,6 +15,7 @@ import _ from 'lodash' //引入lodash
 import '@/icons' // icon
 import '@/permission' // permission control
 import '@/utils/filters'
+import '@/utils/mixins'
 import './cropper'
 // import './mock/mock'
 moment.locale('zh-cn') //设置语言 或 moment.lang('zh-cn');

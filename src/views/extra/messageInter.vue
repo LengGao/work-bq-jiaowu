@@ -751,11 +751,7 @@ export default {
         }
       )
     },
-    toStudentDetail() {
-      this.$router.push({
-        name: 'studentDetail',
-      })
-    },
+ 
     delbtn(id) {
       console.log(id)
       this.$confirm('确定要删除当前分类吗?', '提示', {
