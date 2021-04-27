@@ -29,7 +29,7 @@
       </div>
       <div class="question-form-right"></div>
     </el-form>
-    <div class="question-form-submit">
+    <div class="question-form-submit question-form-submit--fixed">
       <el-button type="primary" @click="submitForm('ruleForm')"
         >立即创建</el-button
       >
@@ -107,6 +107,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.$refs.editorForm.resetFields();
     },
   },
 };
@@ -132,5 +133,10 @@ export default {
       flex-shrink: 0;
     }
   }
+}
+.question-form-submit {
+  width: 50%;
+  text-align: center;
+  margin-bottom: 50px;
 }
 </style>
