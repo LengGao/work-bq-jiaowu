@@ -14,11 +14,14 @@ const toolOptions = [
     [{ 'script': 'sub' }, { 'script': 'super' }],
     [{ 'indent': '-1' }, { 'indent': '+1' }],
     [{ 'direction': 'rtl' }],
-    [{ 'size': ['small', false, 'large', 'huge'] }],
-    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
     [{ 'color': [] }, { 'background': [] }],
     [{ 'font': [] }],
     [{ 'align': [] }],
+    ['clean'],
+    ['link', 'image']
+];
+const questionToolOptions = [
+    ['bold', 'italic', 'underline', 'strike'],
     ['clean'],
     ['link', 'image']
 ];
@@ -61,6 +64,17 @@ export default {
     modules: {
         toolbar: {
             container: toolOptions,  // 工具栏选项
+            handlers: handlers  // 事件重写
+        }
+    }
+};
+// 题目的编辑器配置
+export const questionEditor = {
+    placeholder: '',
+    theme: 'snow',  // 主题
+    modules: {
+        toolbar: {
+            container: questionToolOptions,  // 工具栏选项
             handlers: handlers  // 事件重写
         }
     }

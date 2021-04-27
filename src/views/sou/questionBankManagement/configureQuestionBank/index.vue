@@ -143,7 +143,6 @@ export default {
           },
         },
       ],
-
       questionOptions: [
         {
           name: "单选题",
