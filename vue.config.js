@@ -40,9 +40,9 @@ module.exports = {
         // target: 'http://120.27.63.9:8080',
         // target: 'http://dongpei.kaifa',
         //target: 'http://sc.dp.com', //超
-        // target: 'http://admin.bqjy.com', //李博文
+        target: 'http://admin.bqjy.com', //李博文
         // target: 'http://thing.com',
-        target: 'http://testadmin.beiqujy.com/apidata', //测试
+        // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://dpadmin.beiqujy.com/apidata', //测试
