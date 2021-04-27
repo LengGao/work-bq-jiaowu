@@ -123,7 +123,7 @@
           <el-table-column
             prop="create_time"
             label="创建时间"
-            min-width="110"
+            min-width="140"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column label="操作" fixed="right" min-width="200">

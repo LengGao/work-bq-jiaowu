@@ -1,6 +1,7 @@
 <template>
   <quill-editor
     :options="questionEditor"
+    :style="{ height: height + 'px' }"
     v-bind="$attrs"
     v-on="$listeners"
   ></quill-editor>
@@ -14,7 +15,12 @@ import { quillEditor } from "vue-quill-editor";
 import { questionEditor } from "@/utils/quill-config";
 export default {
   name: "Editor",
-  props: {},
+  props: {
+    height: {
+      type: [String, Number],
+      default: 140,
+    },
+  },
   components: {
     quillEditor,
   },
@@ -28,5 +34,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+/deep/.ql-toolbar.ql-snow {
+  padding: 0 8px;
+}
+/deep/.ql-container {
+  height: calc(100% - 58px);
+}
 </style>

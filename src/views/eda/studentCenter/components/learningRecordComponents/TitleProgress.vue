@@ -45,7 +45,11 @@
           label="学习进度"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.video_progress }}%</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="total_problem"
           label="做题总数"
@@ -57,7 +61,11 @@
           label="做题进度"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.problem_rate }}%</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="real_topic_score"
           label="历年真题平均分"

@@ -169,11 +169,12 @@
           min-width="100"
         >
           <template slot-scope="{ row }">
-            <div class="operation_btn">
-              <el-button type="text" @click="toClassDetail(row.classroom_id)"
-                >班级详情</el-button
-              >
-            </div>
+            <el-button
+              type="text"
+              style="padding: 0"
+              @click="toClassDetail(row.classroom_id)"
+              >班级详情</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -214,7 +215,11 @@
           min-width="100"
           align="center"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.video_progress }}%</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="total_problem"
@@ -228,7 +233,11 @@
           label="做题进度"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.problem_rate }}%</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="real_topic_score"
