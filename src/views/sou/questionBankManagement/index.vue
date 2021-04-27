@@ -76,9 +76,16 @@
           <el-table-column label="操作" fixed="right" min-width="110">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="linkTo('configureScore', row.id)"
-                  >配置分数</el-button
+                <el-button
+                  type="text"
+                  @click="
+                    linkTo('configureQuestionBank', row.id, row.topic_course_id)
+                  "
+                  >配置题库</el-button
                 >
+                <!-- <el-button type="text" @click="linkTo('configureScore', row.id)"
+                  >配置分数</el-button
+                > -->
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
                 >
@@ -164,8 +171,8 @@ export default {
   },
 
   methods: {
-    linkTo(name, id) {
-      this.$router.push({ name, query: { id } });
+    linkTo(name, id, topic_course_id) {
+      this.$router.push({ name, query: { id, topic_course_id } });
     },
     // 删除题库
     deleteConfirm(id) {

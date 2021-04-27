@@ -594,3 +594,43 @@ export function getVideoUrlByid(params) {
     params,
   })
 }
+// 添加题库章节
+export function addTopicChapter(data) {
+  return request({
+    url: 'topicChapter/insert',
+    method: 'post',
+    data,
+  })
+}
+// 修改题库章节
+export function updateTopicChapter(data) {
+  return request({
+    url: 'topicChapter/modify',
+    method: 'post',
+    data,
+  })
+}
+// 修改题库章节
+export function deletedTopicChapter(data) {
+  return request({
+    url: '/topicChapter/deleted',
+    method: 'post',
+    data,
+  })
+}
+// 获取题库章节详情
+export function getTopicChapterInfo(params) {
+  return request({
+    url: '/topicChapter/info',
+    method: 'get',
+    params,
+  })
+}
+// 获取题库章节不分页列表
+export function getTopicChapterList(params) {
+  return request({
+    url: '/topicChapter/list',
+    method: 'get',
+    params,
+  })
+}
