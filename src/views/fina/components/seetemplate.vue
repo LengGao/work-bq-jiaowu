@@ -1,22 +1,25 @@
 <template>
   <!-- 查看模板弹窗 -->
   <section>
-    <el-dialog @open="handleOpen" title="查看模板" :visible.sync="visible" width="930px" :close-on-click-modal="false" @closed="resetForm('ruleForm')">
+    <el-dialog title="查看合同" :visible.sync="visible" width="900px" @open="handleOpen" :close-on-click-modal="false" @closed="resetForm('ruleForm')">
+      <div style="width:800px; height:650px; overflow:hidden; margin-top: 0; ">
+        <iframe :src="sign_url" ref="iframe" type="application/x-google-chrome-pdf" width="1200px" height="800px" border="0" style="margin-top:-150px;margin-left:-150px" />
 
-      <iframe ref="iframe" :src="template_url" type="application/x-google-chrome-pdf" width="890px" height="650px" border="0" />
-
+      </div>
     </el-dialog>
   </section>
 </template>
 
 <script>
+import Header from '../../../components/Header.vue'
 export default {
+  components: { Header },
   props: {
     value: {
       type: Boolean,
       default: false,
     },
-    template_url: {
+    sign_url: {
       type: [String, Number],
       default: '',
     },
@@ -27,7 +30,6 @@ export default {
       currentPage: 0,
       pageCount: 0,
       src: '',
-      // template_url: ``,
     }
   },
   watch: {
@@ -36,8 +38,9 @@ export default {
     },
   },
   mounted() {
-    this.url = this.template_url
+    this.url = this.sign_url
     // console.log(pdf.createLoadingTask(this.template_url))
+    console.log(this.$refs.iframe)
   },
   methods: {
     resetForm() {
@@ -65,7 +68,15 @@ export default {
 /deep/.el-dialog__body {
   padding: 10px 30px 10px 20px;
 }
-:host ::ng-deep div#content {
-  --viewer-pdf-sidenav-width: 100px;
+.ds-signatures-sider__container {
+  position: relative;
+}
+.sin {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+:host ::ng-deep #sidenav-container {
+  width: 100px;
 }
 </style>

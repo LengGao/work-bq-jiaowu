@@ -5,8 +5,8 @@
       <div class="content">
 
         <el-form label-width="80px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true" class="formmargin">
-          <el-form-item label="合同ID" prop="id">
-            <el-input placeholder="合同id" v-model="ruleForm.id" style="width:340px"></el-input>
+          <el-form-item label="项目名称" prop="project_str">
+            <el-input placeholder="项目名称" v-model="ruleForm.project_str" style="width:340px"></el-input>
           </el-form-item>
 
           <el-form-item label="审核类型" prop="audit_type">
@@ -55,6 +55,10 @@ export default {
         return {}
       },
     },
+    project_str: {
+      type: [String, Number],
+      default: '',
+    },
   },
 
   mounted() {
@@ -68,9 +72,10 @@ export default {
         id: '',
         audit_type: 0,
         audit_content: '',
+        project_str: '',
       },
       rules: {
-        id: [{ required: true, message: '请输入合同id', trigger: 'blur' }],
+        project_str: [{ required: true, message: '请输入合同id', trigger: 'blur' }],
         audit_type: [{ required: true, message: '请选择', trigger: 'blur' }],
         audit_content: [{ required: true, message: '请输入拒绝原因', trigger: 'blur' }],
       },

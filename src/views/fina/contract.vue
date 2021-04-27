@@ -26,6 +26,7 @@
           <el-table-column label="操作" fixed="right" min-width="220">
             <template slot-scope="{row}">
               <div style="display: flex; justify-content:center;">
+                <el-button type="text" :class="row.contract_status == 1? 'entry2':'entry1'" @click="pcontractsee(row.sign_url)">查看</el-button>
                 <el-button type="text" @click="Approval(row)" :class="row.contract_status == 1? 'entry2':'entry1'">审核</el-button>
                 <el-button type="text" :class="row.contract_status == 1? 'entry1':'entry2'" @click="pcontract(row.sign_url)">查看合同</el-button>
 
@@ -41,20 +42,25 @@
         </div>
       </div>
       <Toexamine v-model="toexadialog" @on-success="auditlist" :contractInfo="contractInfo" :id="currentId" />
+
+      <Seetemplate v-model="seetempdialog" :id="currentId" :sign_url="sign_url" />
     </section>
   </section>
 </template>
 <script>
 import { auditlist } from '@/api/fina'
 import Toexamine from './components/toexadialog'
+import Seetemplate from './components/seetemplate'
 
 export default {
   name: 'contract',
   components: {
     Toexamine,
+    Seetemplate,
   },
   data() {
     return {
+      sign_url: '',
       seetempdialog: false,
       contractInfo: {},
       order_no: '',
@@ -122,10 +128,14 @@ export default {
     },
     pcontract(sign_url) {
       console.log(sign_url)
-      // this.sign_url = row.sign_url
       var tempwindow = window.open('_blank')
       tempwindow.location = sign_url
       this.auditlist()
+    },
+    pcontractsee(sign_url) {
+      console.log(sign_url)
+      this.sign_url = sign_url
+      this.seetempdialog = true
     },
   },
 }

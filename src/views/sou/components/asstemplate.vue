@@ -20,7 +20,8 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content:center;">
-                <el-button type="primary" plain @click="edittemplate(row)" size="small" style="font-size:14px">关联模板</el-button>
+                <el-button type="primary" plain @click="contractlink(row.id)" size="small" style="font-size:14px" v-if="template_id !== row.id">关联模板</el-button>
+                <el-button type="success" v-else>已关联</el-button>
               </div>
             </template>
           </el-table-column>
@@ -59,15 +60,16 @@ export default {
       type: [String, Number],
       default: '',
     },
+    template_id: {
+      type: [String, Number],
+      default: '',
+    },
   },
   data() {
     return {
-      template_id: '',
       template_url: '',
       dialogVisible: false,
       visible: this.value,
-      // id: '',
-
       searchOptions: [
         {
           key: 'keyword',
@@ -105,6 +107,7 @@ export default {
         this.formData[k] = ''
       }
       this.hanldeCancel()
+      this.$emit('on-success')
     },
     hanldeCancel() {
       this.$emit('input', false)
@@ -141,22 +144,17 @@ export default {
       this.template_url = row.template_url
     },
     // 关联模板接口
-    async contractlink() {
+    async contractlink(template_id) {
       const data = {
         project_id: this.project_id,
-        template_id: this.template_id,
+        template_id,
       }
       const res = await contractlink(data)
       if (res.code == 0) {
-        console.log(res)
+        this.templatelist
         this.$message.success(res.message)
+        this.$emit('on-success', template_id)
       }
-    },
-    edittemplate(row) {
-      console.log(row)
-      // this.project_id = row.
-      this.template_id = row.id
-      this.contractlink()
     },
   },
 }
@@ -194,5 +192,16 @@ export default {
 }
 /deep/.search-lise .search-item[data-v-a11328ce] {
   width: 300px;
+}
+.entry1 {
+  display: inline;
+  margin: 0;
+}
+.entry2 {
+  display: none;
+  margin: 0;
+}
+:host ::ng-deep #sidenav-container {
+  --viewer-pdf-sidenav-width: 200px;
 }
 </style>

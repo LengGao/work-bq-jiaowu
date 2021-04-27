@@ -29,7 +29,8 @@
 
           <el-table-column prop="1" label="合同模板" min-width="100" show-overflow-tooltip>
             <template slot-scope="{row}">
-              <el-button type="text" class="templatebtn" @click="templatebtn(row)">关联模板</el-button>
+              <el-button type="text" class="templatebtn" @click="templatebtn(row)" :class="row.template_id == null? 'entry1':'entry2'">关联模板</el-button>
+              <el-button type="text" class="templatebtn" @click="templatebtn(row)" :class="row.template_id == null? 'entry2':'entry1'">更改模板</el-button>
             </template>
           </el-table-column>
 
@@ -150,7 +151,7 @@
       <MaterialDialog v-model="showMaterial" @on-materialsuccess="handleMaterial" :materialTag="materialTag" />
       <QuestionBank v-model="showQues" :quesTag="quesTag" @on-quesuccess="handleQuestion" />
 
-      <Asstemplate v-model="assdialog" :id="currentId" :project_id='project_id' @on-success="getCateList" :contractInfo="contractInfo" />
+      <Asstemplate v-model="assdialog" :id="currentId" :project_id='project_id' :contractInfo="contractInfo" @on-success="handleSuccess" :template_id="template_id" />
 
     </section>
   </div>
@@ -173,6 +174,7 @@ export default {
   },
   data() {
     return {
+      template_id: '',
       project_id: '',
       contractInfo: {},
       currentId: '',
@@ -198,14 +200,12 @@ export default {
         problem: [1, 2, 3],
         textbooks: [1, 2, 3],
         status: '',
-
         school: '',
       },
       searchOptions: [
         {
           key: 'category_id',
           type: 'cascader',
-
           attrs: {
             clearable: true,
             placeholder: '选择类别',
@@ -261,12 +261,18 @@ export default {
   },
 
   methods: {
+    handleSuccess(id) {
+      this.template_id = id
+      this.$api.getProjectList(this, 'schoolData')
+    },
     templatebtn(row) {
       this.assdialog = true
       this.project_id = row.project_id
-      // this.currentId = id
+      this.template_id = row.template_id
+      console.log(this.template_id)
       this.contractInfo = row
       console.log(row)
+      this.$api.getProjectList(this, 'schoolData')
     },
     handlecourse(selection) {
       console.log(selection)
@@ -507,5 +513,13 @@ export default {
   background: #f5fcff;
   border: 1px solid #cbe9f6;
   padding: 10px 8px;
+}
+.entry1 {
+  display: inline;
+  margin: 0;
+}
+.entry2 {
+  display: none;
+  margin: 0;
 }
 </style>

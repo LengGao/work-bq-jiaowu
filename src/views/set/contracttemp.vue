@@ -200,4 +200,8 @@ export default {
   text-align: right;
   margin-top: 40px;
 }
+
+:host ::ng-deep {
+  --viewer-pdf-sidenav-width: 100px;
+}
 </style>
