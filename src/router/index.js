@@ -97,6 +97,12 @@ export const asyncRouter = [
         meta: { title: '配置题库', icon: 'product-add' },
       },
       {
+        path: 'questionConfigure',
+        name: 'questionConfigure',
+        component: () => import('@/views/sou/questionBankManagement/configureQuestionBank/questionConfigure/index.vue'),
+        meta: { title: '题目配置', icon: 'product-add' },
+      },
+      {
         path: 'configureScore',
         name: 'configureScore',
         component: () => import('@/views/sou/questionBankManagement/configureScore/index.vue'),

@@ -39,14 +39,7 @@ module.exports = {
       '/ai': {
         // target: 'http://120.27.63.9:8080',
         // target: 'http://dongpei.kaifa',
-<<<<<<< HEAD
         target: 'http://sc.dp.com', //超
-=======
-        //target: 'http://sc.dp.com', //超
-<<<<<<< HEAD
->>>>>>> ac384669638a0915308614e43a0a70afe58a0857
-=======
->>>>>>> yqq
         // target: 'http://admin.bqjy.com', //李博文
         // target: 'http://thing.com',
         target: 'http://testadmin.beiqujy.com/apidata', //测试
