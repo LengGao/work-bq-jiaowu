@@ -43,10 +43,13 @@ module.exports = {
         target: 'http://sc.dp.com', //超
 =======
         //target: 'http://sc.dp.com', //超
+<<<<<<< HEAD
 >>>>>>> ac384669638a0915308614e43a0a70afe58a0857
+=======
+>>>>>>> yqq
         // target: 'http://admin.bqjy.com', //李博文
         // target: 'http://thing.com',
-        //target: 'http://testadmin.beiqujy.com/apidata', //测试
+        target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://dpadmin.beiqujy.com/apidata', //测试
