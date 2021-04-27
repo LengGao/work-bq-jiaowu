@@ -19,7 +19,6 @@
           </el-form-item>
         </el-form>
       </div>
-
       <span slot="footer" class="dialog-footer">
         <el-button @click="hanldeCancel">取 消</el-button>
         <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
@@ -30,7 +29,6 @@
 
 <script>
 import { templateadd, templateedit, uploadUrl } from '@/api/system'
-
 export default {
   props: {
     value: {
