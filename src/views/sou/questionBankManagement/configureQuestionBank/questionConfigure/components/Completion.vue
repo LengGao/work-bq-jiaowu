@@ -84,7 +84,9 @@ export default {
       this.inputOptins.push(item);
     },
     validate(cb) {
-      this.$refs.editorRules.validate(cb);
+      this.$refs.editorRules.validate((valid) => {
+        cb(valid, { ...this.editorForm, type: 4 });
+      });
     },
     resetFields() {
       for (const k in this.editorForm) {
