@@ -37,7 +37,6 @@
                   >
                     {{ item.name }}
                   </li>
-                  <li>单选题</li>
                 </ul>
               </el-popover>
               <el-button type="primary">批量录入</el-button>

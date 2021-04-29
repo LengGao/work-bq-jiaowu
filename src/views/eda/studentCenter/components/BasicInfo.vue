@@ -106,6 +106,8 @@
             v-model="ruleForm.culture"
             placeholder="请选择文化程度"
             class="w-100"
+            filterable
+            clearable
           >
             <el-option
               v-for="(item, index) in educationOptions"
@@ -118,6 +120,8 @@
         </el-form-item>
         <el-form-item label="籍贯">
           <el-cascader
+            filterable
+            clearable
             v-if="isEdit"
             v-model="city1"
             placeholder="请选择籍贯"
@@ -134,6 +138,8 @@
         </el-form-item>
         <el-form-item label="常住地">
           <el-cascader
+            filterable
+            clearable
             v-if="isEdit"
             v-model="city2"
             placeholder="请选择常住地"
@@ -146,6 +152,8 @@
         </el-form-item>
         <el-form-item label="渠道来源">
           <el-select
+            filterable
+            clearable
             v-if="isEdit"
             v-model="ruleForm.sources"
             placeholder="请选择渠道来源"
@@ -162,6 +170,8 @@
         </el-form-item>
         <el-form-item label="所属机构">
           <el-cascader
+            filterable
+            clearable
             v-if="isEdit"
             v-model="ruleForm.from_organization_id"
             placeholder="请选择机构"
