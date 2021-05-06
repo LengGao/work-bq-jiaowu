@@ -223,7 +223,7 @@ export default {
           },
         },
         {
-          key: "flom",
+          key: "from",
           type: "select",
           width: 120,
           options: [
