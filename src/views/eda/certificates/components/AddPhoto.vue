@@ -2,7 +2,7 @@
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    width="600px"
+    width="1000px"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :show-close="false"
@@ -10,31 +10,9 @@
   >
     <div class="uploads" v-loading="detailLoading">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
-        <el-upload
-          name="image"
-          :headers="headers"
-          :action="uploadImageUrl"
-          :show-file-list="false"
-          :on-error="(err) => handleUploadError(err, index)"
-          :on-success="
-            (res, file) => handleUploadSuccess(res, file, item.key, index)
-          "
-          :before-upload="(file) => beforeUpload(file, index)"
-        >
-          <div v-if="photoData[item.key]" class="imgs">
-            <img :src="photoData[item.key]" />
-            <i
-              class="del el-icon-close"
-              @click.stop="hanldeDelete(item.key)"
-            ></i>
-          </div>
-          <i
-            v-if="!item.loading && !photoData[item.key]"
-            class="el-icon-plus upload-item-icon"
-          ></i>
-          <i class="el-icon-loading upload-loading" v-if="item.loading"></i>
-        </el-upload>
-        <p>{{ item.name }}</p>
+        <ImageUpload v-model="photoData[item.key]">
+          <p slot="tips">{{ item.name }}</p>
+        </ImageUpload>
       </div>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -47,13 +25,13 @@
 </template>
 
 <script>
-import {
-  uploadImageUrl,
-  modifyCertificate,
-  getCertificateInfo,
-} from "@/api/educational";
+import { modifyCertificate, getCertificateInfo } from "@/api/educational";
+import ImageUpload from "@/components/ImgUpload";
 export default {
   name: "AddPhoto",
+  components: {
+    ImageUpload,
+  },
   props: {
     visible: {
       type: Boolean,
@@ -70,40 +48,34 @@ export default {
   },
   data() {
     return {
-      uploadImageUrl,
-      headers: {
-        token: this.$store.state.user.token,
-      },
       uploads: [
         {
           key: "portrait",
           name: "免冠正面照",
-          loading: false,
         },
         {
           key: "photo_id_card",
-          name: "身份证扫描件",
-          loading: false,
+          name: "身份证国徽面",
+        },
+        {
+          key: "photo_id_card",
+          name: "身份证人像面",
         },
         {
           key: "photo_residence_permit",
           name: "社保卡/居住证",
-          loading: false,
         },
         {
           key: "graduation_certificate",
           name: "毕业证扫描件",
-          loading: false,
         },
         {
           key: "photo_commitment",
           name: "工作年限承诺书",
-          loading: false,
         },
         {
           key: "photo_health",
           name: "个人健康承诺书",
-          loading: false,
         },
       ],
       photoData: {
@@ -156,38 +128,14 @@ export default {
             this.$emit("on-success");
           }, 2000);
         } else {
+          this.btnLoading = false;
           this.$message.success("资料修改成功");
           this.handleCancel();
           this.$emit("on-success");
         }
       }
     },
-    hanldeDelete(key) {
-      this.photoData[key] = "";
-    },
-    handleUploadSuccess(res, file, key, index) {
-      this.photoData[key] = res.data?.data?.url || "";
-      this.uploads[index].loading = false;
-    },
-    handleUploadError(err, index) {
-      this.$message.error(err.message || "上传失败");
-      this.uploads[index].loading = false;
-    },
-    beforeUpload(file, index) {
-      const isImg = file.type.indexOf("image") !== -1;
-      const isLt20M = file.size / 1024 / 1024 < 20;
-      if (!isImg) {
-        this.$message.error("请上传图片");
-        return false;
-      }
-      if (!isLt20M) {
-        this.$message.error("上传图片大小不能超过 20MB!");
-        return false;
-      }
-      this.uploads[index].loading = true;
-    },
     handleOk() {
-      // this.$emit("on-ok", ids);
       this.modifyCertificate();
     },
     handleCancel() {
@@ -204,11 +152,13 @@ export default {
 .uploads {
   display: flex;
   text-align: center;
-  justify-content: space-around;
   flex-wrap: wrap;
   .upload-item {
     position: relative;
-    margin: 0 16px 16px 0;
+    margin: 0 22px 16px 0;
+    &:nth-of-type(4n) {
+      margin-right: 0;
+    }
   }
   .upload-item /deep/.el-upload {
     border: 1px dashed #d9d9d9;

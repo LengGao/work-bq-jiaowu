@@ -9,31 +9,15 @@
     </div>
     <div class="certificates-uploads">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
-        <el-upload
-          name="image"
-          :headers="headers"
-          :action="uploadImageUrl"
-          :show-file-list="false"
-          :on-error="() => handleUploadError(index)"
-          :on-success="
-            (res, file) => handleUploadSuccess(res, file, item.key, index)
-          "
-          :before-upload="(file) => beforeUpload(file, index)"
+        <ImageUpload
+          width="300"
+          height="180"
+          v-model="photoData[item.key]"
+          @on-delete="modifyCertificate"
+          @on-success="modifyCertificate"
         >
-          <div v-if="photoData[item.key]" class="imgs">
-            <img :src="photoData[item.key]" />
-            <i
-              class="del el-icon-close"
-              @click.stop="hanldeDelete(item.key)"
-            ></i>
-          </div>
-          <i
-            v-if="!item.loading && !photoData[item.key]"
-            class="el-icon-plus upload-item-icon"
-          ></i>
-          <i class="el-icon-loading upload-loading" v-if="item.loading"></i>
-        </el-upload>
-        <p>{{ item.name }}</p>
+          <p slot="tips">{{ item.name }}</p>
+        </ImageUpload>
       </div>
     </div>
     <a ref="a"></a>
@@ -44,99 +28,99 @@
 <script>
 import {
   zipDownload,
-  uploadImageUrl,
   modifyCertificate,
   getCertificateInfo,
-} from '@/api/educational'
+} from "@/api/educational";
+import ImageUpload from "@/components/ImgUpload";
 export default {
-  name: 'certificates',
+  name: "certificates",
+  components: {
+    ImageUpload,
+  },
+  components: {
+    ImageUpload,
+  },
   props: {
     uid: {
       type: [String, Number],
-      default: '',
+      default: "",
     },
   },
   data() {
     return {
-      uploadImageUrl,
-      headers: {
-        token: this.$store.state.user.token,
-      },
       loading: false,
       uploads: [
         {
-          loading: false,
-          key: 'portrait',
-          name: '免冠正面照',
+          key: "portrait",
+          name: "免冠正面照",
         },
         {
-          loading: false,
-          key: 'photo_id_card',
-          name: '身份证扫描件',
+          key: "photo_id_card",
+          name: "身份证国徽面",
         },
         {
-          loading: false,
-          key: 'photo_residence_permit',
-          name: '社保卡/居住证',
+          key: "photo_id_card",
+          name: "身份证人像面",
         },
         {
-          loading: false,
-          key: 'graduation_certificate',
-          name: '毕业证扫描件',
+          key: "photo_residence_permit",
+          name: "社保卡/居住证",
         },
         {
-          loading: false,
-          key: 'photo_commitment',
-          name: '工作年限承诺书',
+          key: "graduation_certificate",
+          name: "毕业证扫描件",
         },
         {
-          loading: false,
-          key: 'photo_health',
-          name: '个人健康承诺书',
+          key: "photo_commitment",
+          name: "工作年限承诺书",
+        },
+        {
+          key: "photo_health",
+          name: "个人健康承诺书",
         },
       ],
       photoData: {
-        portrait: '',
-        photo_id_card: '',
-        photo_residence_permit: '',
-        graduation_certificate: '',
-        photo_commitment: '',
-        photo_health: '',
+        portrait: "",
+        photo_id_card: "",
+        photo_residence_permit: "",
+        graduation_certificate: "",
+        photo_commitment: "",
+        photo_health: "",
       },
       downloadLoading: false,
-    }
+    };
   },
   created() {
-    this.getCertificateInfo()
+    this.getCertificateInfo();
   },
   methods: {
     handlePreview() {
-      const srcs = Object.values(this.photoData).filter((src) => !!src)
+      const srcs = Object.values(this.photoData).filter((src) => !!src);
       if (!srcs.length) {
-        this.$message.warning('暂无图片')
-        return
+        this.$message.warning("暂无图片");
+        return;
       }
-      this.$refs.view.show(srcs)
+      this.$refs.view.show(srcs);
     },
     // 下载
     download(url) {
-      const a = this.$refs.a
-      a.href = url
-      a.click()
+      const a = this.$refs.a;
+      a.href = url;
+      a.click();
     },
     async zipDownload() {
       const data = {
         uid: this.uid,
-      }
-      this.downloadLoading = true
+      };
+      this.downloadLoading = true;
       const res = await zipDownload(data).catch(() => {
-        this.downloadLoading = false
-      })
+        this.downloadLoading = false;
+      });
       if (res.code === 0) {
-        this.download(res.data.url)
+        this.download(res.data.url);
         setTimeout(() => {
-          this.downloadLoading = false
-        }, 1000)
+          this.downloadLoading = false;
+        }, 1000);
       }
     },
     // 修改
@@ -144,58 +128,31 @@ export default {
       const data = {
         uid: this.uid,
         ...this.photoData,
-      }
-      const res = await modifyCertificate(data)
+      };
+      const res = await modifyCertificate(data);
       if (res.code === 0) {
-        this.$message.success('资料修改成功')
-        this.getCertificateInfo()
+        this.$message.success("资料修改成功");
+        this.getCertificateInfo();
       }
     },
     // 获取
     async getCertificateInfo() {
-      this.loading = true
+      this.loading = true;
       const data = {
         uid: this.uid,
-      }
+      };
       const res = await getCertificateInfo(data).catch(() => {
-        this.loading = false
-      })
-      this.loading = false
+        this.loading = false;
+      });
+      this.loading = false;
       if (res.code === 0) {
         for (const k in this.photoData) {
-          this.photoData[k] = res.data[k]
+          this.photoData[k] = res.data[k];
         }
       }
     },
-
-    handleUploadSuccess(res, file, key, index) {
-      this.uploads[index].loading = false
-      this.photoData[key] = res.data?.data?.url || ''
-      this.modifyCertificate()
-    },
-    handleUploadError(index) {
-      this.uploads[index].loading = false
-    },
-    hanldeDelete(key) {
-      this.photoData[key] = ''
-      this.modifyCertificate()
-    },
-    beforeUpload(file, index) {
-      const isImg = file.type.indexOf('image') !== -1
-      const isLt20M = file.size / 1024 / 1024 < 20
-
-      if (!isImg) {
-        this.$message.error('请上传图片')
-        return false
-      }
-      if (!isLt20M) {
-        this.$message.error('上传图片大小不能超过 20MB!')
-        return false
-      }
-      this.uploads[index].loading = true
-    },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -214,8 +171,7 @@ export default {
     flex-wrap: wrap;
     .upload-item {
       position: relative;
-      margin: 0 16px 16px 0;
-      width: calc(100% / 4);
+      margin: 0 40px 26px 0;
     }
     .upload-item /deep/.el-upload {
       border: 1px dashed #d9d9d9;
