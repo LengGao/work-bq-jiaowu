@@ -20,7 +20,7 @@
         </ImageUpload>
       </div>
     </div>
-    <a ref="a"></a>
+    <a ref="a" download="证件资料"></a>
     <PreviewImg ref="view" />
   </div>
 </template>
@@ -55,7 +55,7 @@ export default {
           name: "免冠正面照",
         },
         {
-          key: "photo_id_card",
+          key: "photo_id_card_emblem",
           name: "身份证国徽面",
         },
         {
@@ -82,6 +82,7 @@ export default {
       photoData: {
         portrait: "",
         photo_id_card: "",
+        photo_id_card_emblem: "",
         photo_residence_permit: "",
         graduation_certificate: "",
         photo_commitment: "",
