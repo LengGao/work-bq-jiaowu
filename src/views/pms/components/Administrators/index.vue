@@ -30,6 +30,7 @@
         <ul class="center-data-content">
           <li class="data-item" v-for="(item, index) in dataList" :key="index">
             <p class="number" :class="item.type">
+              <span v-if="item.name.includes('额')" class="unit">￥</span>
               {{ item.value }}
             </p>
             <p class="desc">{{ item.name }}</p>
@@ -433,6 +434,9 @@ export default {
           border-bottom: 1px solid #e4e7ed;
           .number {
             font-size: 28px;
+            .unit {
+              font-size: 14px;
+            }
           }
         }
       }

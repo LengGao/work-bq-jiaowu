@@ -81,8 +81,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 16px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #e4e7ed;
   .chart-head-tabs {
     display: flex;
     align-items: center;
