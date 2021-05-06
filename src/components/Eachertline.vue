@@ -61,12 +61,12 @@ export default {
         tooltip: {
           show: true,
           trigger: "axis",
-          // axisPointer: {
-          //   type: "cross",
-          //   label: {
-          //     backgroundColor: "#6a7985",
-          //   },
-          // },
+          axisPointer: {
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985",
+            },
+          },
         },
         title: {
           text: this.title,

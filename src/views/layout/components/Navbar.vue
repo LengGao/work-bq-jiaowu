@@ -216,7 +216,7 @@ export default {
   },
   created() {
     this.getUnreadCount();
-    const time = 1000 * 30;
+    const time = 1000 * 60 * 3;
     timeId = setInterval(this.getUnreadCount, time);
   },
   beforeDestroy() {
