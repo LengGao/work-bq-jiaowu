@@ -16,6 +16,7 @@ import eventBus from '../../utils/eventbus.js'
 import Examination from '@/assets/js/Examination'
 import Finance from '@/assets/js/Finance'
 import system from '@/assets/js/system'
+import faceTeach from '@/assets/js/faceTeach'
 
 let api = {
   /**
@@ -705,6 +706,7 @@ Object.assign(
   loginApi,
   Examination,
   Finance,
-  system
+  system,
+  faceTeach
 )
 export default api
