@@ -162,9 +162,9 @@ let enrollStu = {
       then(res) {
         self.doClose();
         if (res.data.code == 0) {
-          let data = res.data.data
-          self.orderVisible = true //订单详情弹框呈现
-          self.orderInfo = data
+          // let data = res.data.data
+          // self.orderVisible = true //订单详情弹框呈现
+          // self.orderInfo = data
           self.$message({
             type: 'success',
             message: res.data.message,

@@ -205,6 +205,7 @@
               prop="pay_money"
             >
               <el-input
+                placeholder="请输入支付金额"
                 class="input-width"
                 type="number"
                 v-model="ruleForm.pay_money"
@@ -362,13 +363,13 @@ export default {
       },
       rules: {
         online_course: [
-          { required: true, message: "请选择活动资源", trigger: "change" },
+          { required: true, message: "请选择", trigger: "change" },
         ],
         pay_type: [
-          { required: true, message: "请选择活动资源", trigger: "change" },
+          { required: true, message: "请选择支付方式", trigger: "change" },
         ],
         pay_money: [
-          { required: true, message: "请选择活动资源", trigger: "change" },
+          { required: true, message: "请选择支付金额", trigger: "change" },
         ],
       },
       customerInfo: {},
