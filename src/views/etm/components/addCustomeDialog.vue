@@ -20,46 +20,49 @@
         <el-form-item label="客户姓名" prop="surname">
           <el-input class="input-width" v-model="ruleForm.surname"></el-input>
         </el-form-item>
-
-        <el-form-item label="手机号码" prop="mobile">
-          <el-input class="input-width" v-model="ruleForm.mobile"></el-input>
-        </el-form-item>
-
-        <el-form-item label="备用号码" prop="second_mobile">
-          <el-input
-            class="input-width"
-            v-model="ruleForm.second_mobile"
-          ></el-input>
-        </el-form-item>
-
         <el-form-item label="身份证号" prop="id_card_number">
           <el-input
             class="input-width"
             v-model="ruleForm.id_card_number"
           ></el-input>
         </el-form-item>
-
+        <el-form-item label="手机号码" prop="mobile">
+          <el-input class="input-width" v-model="ruleForm.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="推荐机构" prop="from_organization_id">
+          <el-cascader
+            class="input-width"
+            v-model="ruleForm.from_organization_id"
+            :options="institutionOption"
+            filterable
+            clearable
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="备用号码" prop="second_mobile">
+          <el-input
+            class="input-width"
+            v-model="ruleForm.second_mobile"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="出生日期" prop="birthday">
           <el-date-picker
             v-model="ruleForm.birthday"
             type="date"
-            format="yyyy-MM-dd "
-            value-format="yyyy-MM-dd "
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
             style="width: 240px"
             placeholder="选择日期"
           >
           </el-date-picker>
         </el-form-item>
-
+        <el-form-item label="微信">
+          <el-input class="input-width" v-model="ruleForm.wechat"></el-input>
+        </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="ruleForm.sex">
             <el-radio :label="1">男</el-radio>
             <el-radio :label="2">女</el-radio>
           </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="微信">
-          <el-input class="input-width" v-model="ruleForm.wechat"></el-input>
         </el-form-item>
 
         <el-form-item label="QQ" prop="qq">
@@ -76,6 +79,8 @@
                     v-model="ruleForm.culture"
                   ></el-input> -->
           <el-select
+            filterable
+            clearable
             v-model="ruleForm.culture"
             placeholder="请选择文化程度"
             class="input-width"
@@ -91,6 +96,8 @@
         </el-form-item>
         <el-form-item label="籍贯" prop="province">
           <el-cascader
+            filterable
+            clearable
             size="large"
             class="input-width"
             :options="provinceAndCityData"
@@ -101,6 +108,8 @@
         </el-form-item>
         <el-form-item label="常住地" prop="city">
           <el-cascader
+            filterable
+            clearable
             size="large"
             class="input-width"
             :options="provinceAndCityData"
@@ -114,18 +123,10 @@
               ></el-input> -->
         </el-form-item>
 
-        <el-form-item label="推荐机构" prop="from_organization_id">
-          <el-cascader
-            class="input-width"
-            v-model="ruleForm.from_organization_id"
-            :options="institutionOption"
-            filterable
-            clearable
-          ></el-cascader>
-        </el-form-item>
-
         <el-form-item label="渠道来源" prop="sources">
           <el-select
+            filterable
+            clearable
             v-model="ruleForm.sources"
             placeholder="请选择"
             class="input-width"
@@ -158,7 +159,7 @@
     <customeRegist
       v-model="addVisible"
       :userInfo="userInfo"
-      v-on:addDialog="getaddStatus($event)"
+      @input="$emit('on-success')"
     />
   </section>
 </template>
@@ -255,6 +256,9 @@ export default {
         },
       ],
       rules: {
+        from_organization_id: [
+          { required: true, message: "请选择推荐机构", trigger: "change" },
+        ],
         surname: [
           { required: true, message: "请填写学生姓名", trigger: "blur" },
         ],
@@ -302,6 +306,12 @@ export default {
       this.ruleForm.uid = this.seaUserInfo.uid;
       this.ruleForm.mobile = this.seaUserInfo.mobile;
       this.ruleForm.surname = this.seaUserInfo.realname;
+    },
+    "ruleForm.id_card_number"(val) {
+      //自动填充生日
+      this.ruleForm.birthday = getBirth(val);
+      //自动填充性别
+      this.ruleForm.sex = getSex(val);
     },
   },
   created() {},
@@ -355,21 +365,10 @@ export default {
 
       this.ruleForm.location = value[0];
     },
-    getaddStatus(status) {
-      this.addVisible = status;
-    },
     preserve(formName, num) {
       // console.log(this.ruleForm)
       // this.addVisible = true //客户报名弹框显示
-      console.log(this.addVisible);
-      //没有自动填充生日
-      if (this.ruleForm.birthday == "") {
-        this.ruleForm.birthday = getBirth(this.ruleForm.id_card_number);
-      }
-      //没有自动填充性别
-      if (this.ruleForm.sex == "") {
-        this.ruleForm.sex = getSex(this.ruleForm.id_card_number);
-      }
+
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$api.addCustomers(this, this.ruleForm, num);
