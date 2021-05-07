@@ -196,7 +196,7 @@ export function timeago(dateTimeStamp) {
 //1、获取出生日期：
 
 export function getBirth(cardId) {
-  console.log(cardId)
+  if (!cardId || cardId.length !== 18) return ''
   var birth =
     cardId.substring(6, 10) +
     '-' +
@@ -210,6 +210,7 @@ export function getBirth(cardId) {
 //2、获取性别：
 
 export function getSex(cardId) {
+  if (!cardId || cardId.length !== 18) return ''
   if (parseInt(cardId.substr(16, 1)) % 2 == 1) {
     return 1 //男
   } else {
