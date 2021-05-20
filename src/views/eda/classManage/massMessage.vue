@@ -78,7 +78,7 @@
           <el-checkbox
             v-model="messVal"
             @change="checkMess"
-            style="padding-left:10px"
+            style="padding-left: 10px"
             >模板消息</el-checkbox
           >
         </el-form-item>
@@ -104,14 +104,10 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="考试时间" prop="time">
-          <el-date-picker
+          <el-input
             v-model="ruleForm.time"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm:ss"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="请输入上课时间"
-          >
-          </el-date-picker>
+            placeholder="请输入考试时间"
+          ></el-input>
         </el-form-item>
         <el-form-item label="考试地点" prop="address">
           <el-input
@@ -157,7 +153,10 @@
             >
             </el-option>
           </el-select>
-          <el-button type="primary" @click="dialogShow" style="margin-left:20px"
+          <el-button
+            type="primary"
+            @click="dialogShow"
+            style="margin-left: 20px"
             >添加学员</el-button
           >
         </el-form-item>
@@ -271,7 +270,7 @@
       <el-table
         ref="multipleTable"
         :data="studentData.data"
-        style="width: 100%;margin-top:20px"
+        style="width: 100%; margin-top: 20px"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
@@ -326,7 +325,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <div style="display:flex;justify-content:space-around">
+            <div style="display: flex; justify-content: space-around">
               <el-button
                 type="text"
                 @click="handleAdd(scope.row.intent_id)"
@@ -357,41 +356,41 @@
 </template>
 <script>
 export default {
-  name: 'massMessage',
+  name: "massMessage",
   data() {
     return {
-      value: '',
+      value: "",
       teacherData: [],
       studentData: [],
       page: 1,
       messVal: true,
       dialogVisible: false,
       ruleForm: {
-        title: '',
-        type: '',
-        teacher: '',
-        time: '',
-        content: '',
-        address: '',
-        remarks: '',
+        title: "",
+        type: "",
+        teacher: "",
+        time: "",
+        content: "",
+        address: "",
+        remarks: "",
         uid_arr: [],
         wechat_notice: 1,
       },
       classroom_id: 0,
-      current: '0',
+      current: "0",
       topfun: [
-        { name: '上课通知' },
-        { name: '考试通知' },
-        { name: '差生提醒' },
+        { name: "上课通知" },
+        { name: "考试通知" },
+        { name: "差生提醒" },
       ],
       schoolData: [],
-    }
+    };
   },
   mounted() {
-    this.classroom_id = this.$route.query.classroom_id
-    this.$api.getMessageInfo(this, 'schoolData')
+    this.classroom_id = this.$route.query.classroom_id;
+    this.$api.getMessageInfo(this, "schoolData");
     // this.$api.getTeacherList(this, 'teacherData')
-    this.$api.getclasstudents(this, 'studentData')
+    this.$api.getclasstudents(this, "studentData");
   },
 
   methods: {
@@ -399,139 +398,139 @@ export default {
     checkMess(val) {
       val
         ? (this.ruleForm.wechat_notice = 1)
-        : (this.ruleForm.wechat_notice = 0)
+        : (this.ruleForm.wechat_notice = 0);
     },
     getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.studentData = val
+      console.log(state, val);
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.studentData = val;
       }
     },
     doPageChange(page) {
-      this.page = page
-      this.$api.getMessageInfo(this, 'schoolData')
+      this.page = page;
+      this.$api.getMessageInfo(this, "schoolData");
     },
     doPageChange2(page) {
-      this.page = page
-      this.$api.getclasstudents(this, 'studentData', this.datas)
+      this.page = page;
+      this.$api.getclasstudents(this, "studentData", this.datas);
     },
     removeStu(ev) {
-      console.log(ev)
+      console.log(ev);
       this.studentData.data.forEach((v) => {
         if (ev == v.intent_id) {
-          this.$set(v, 'addChose', 0)
+          this.$set(v, "addChose", 0);
         }
-      })
+      });
     },
     //取消添加
     cancelAdd(ab) {
-      console.log(ab)
-      var uid_arr = this.ruleForm.uid_arr
-      var that = this
+      console.log(ab);
+      var uid_arr = this.ruleForm.uid_arr;
+      var that = this;
       // var data = studentData.data
       if (uid_arr.length > 0) {
         uid_arr.forEach((i, index) => {
           if (i == ab) {
-            uid_arr.splice(index, 1)
-            console.log(uid_arr, index)
+            uid_arr.splice(index, 1);
+            console.log(uid_arr, index);
             that.studentData.data.forEach((v) => {
               if (i == v.intent_id) {
-                that.$set(v, 'addChose', 0)
+                that.$set(v, "addChose", 0);
               }
-            })
+            });
           }
-        })
+        });
       }
-      console.log(that.studentData.data)
-      this.ruleForm.uid_arr = uid_arr
+      console.log(that.studentData.data);
+      this.ruleForm.uid_arr = uid_arr;
     },
     handleAdd(zx) {
-      let uid_arr = this.ruleForm.uid_arr
-      console.log(uid_arr.length)
+      let uid_arr = this.ruleForm.uid_arr;
+      console.log(uid_arr.length);
       this.studentData.data.forEach((v) => {
         if (zx == v.intent_id) {
-          this.$set(v, 'addChose', 1)
-          this.ruleForm.uid_arr.push(zx)
+          this.$set(v, "addChose", 1);
+          this.ruleForm.uid_arr.push(zx);
         }
-      })
-      console.log(this.ruleForm.uid_arr)
+      });
+      console.log(this.ruleForm.uid_arr);
     },
     //显示弹框
     dialogShow() {
       // console.log(this.)
-      let uid_arr = this.ruleForm.uid_arr
+      let uid_arr = this.ruleForm.uid_arr;
       if (uid_arr.length > 0) {
         uid_arr.forEach((i) => {
           this.studentData.data.forEach((v) => {
             if (i == v.intent_id) {
-              v.addChose = 1
+              v.addChose = 1;
             }
-          })
-        })
+          });
+        });
       }
 
-      this.dialogVisible = true
+      this.dialogVisible = true;
     },
     //差生
     poorStuSend() {
-      this.ruleForm.type = 3
-      console.log(this.ruleForm)
-      this.$confirm('你正在群发差生提醒,是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.ruleForm.type = 3;
+      console.log(this.ruleForm);
+      this.$confirm("你正在群发差生提醒,是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.sendMessage(this, this.ruleForm)
+          this.$api.sendMessage(this, this.ruleForm);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消',
-          })
-        })
+            type: "info",
+            message: "已取消",
+          });
+        });
     },
     //上课通知
     classSend() {
-      this.ruleForm.type = 1
-      console.log(this.ruleForm)
-      this.$confirm('你正在群发短信,是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.ruleForm.type = 1;
+      console.log(this.ruleForm);
+      this.$confirm("你正在群发短信,是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.sendMessage(this, this.ruleForm)
+          this.$api.sendMessage(this, this.ruleForm);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消',
-          })
-        })
+            type: "info",
+            message: "已取消",
+          });
+        });
     },
     //考试通知
     testSend() {
-      console.log(this.ruleForm)
-      this.ruleForm.type = 2
-      console.log(this.ruleForm)
-      this.$confirm('你正在群发考试通知,是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      console.log(this.ruleForm);
+      this.ruleForm.type = 2;
+      console.log(this.ruleForm);
+      this.$confirm("你正在群发考试通知,是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.sendMessage(this, this.ruleForm)
+          this.$api.sendMessage(this, this.ruleForm);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消',
-          })
-        })
+            type: "info",
+            message: "已取消",
+          });
+        });
     },
     cancel() {
       // this.$router.push({
@@ -539,10 +538,10 @@ export default {
       // })
     },
     doActive(index) {
-      this.current = index
+      this.current = index;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

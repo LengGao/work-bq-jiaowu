@@ -381,12 +381,12 @@ export default {
   methods: {
     toCustomerDetail() {
       this.doClose();
-      this.$router.push({
-        name: "cusdetail",
-        query: {
-          uid: this.schoolData.uid,
-        },
-      });
+      // this.$router.push({
+      //   name: "cusdetail",
+      //   query: {
+      //     uid: this.schoolData.uid,
+      //   },
+      // });
     },
     doClose() {
       this.projectData = [];

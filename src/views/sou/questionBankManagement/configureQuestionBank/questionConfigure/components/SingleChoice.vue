@@ -49,11 +49,13 @@
 <script>
 //  <!-- 单选题 -->
 import Editor from "./Editor";
+import mixins from "../mixins/index";
 export default {
   name: "SingleChoice",
   components: {
     Editor,
   },
+  mixins: [mixins],
   data() {
     return {
       editorForm: {
@@ -107,13 +109,15 @@ export default {
       this.editorOptions.push(id);
     },
     validate(cb) {
-      this.$refs.editorRules.validate(cb);
+      this.$refs.editorRules.validate((valid) => {
+        cb(valid, { ...this.editorForm, type: 1 });
+      });
     },
     resetFields() {
+      this.$refs.editorRules.resetFields();
       for (const k in this.editorForm) {
         this.editorForm[k] = "";
       }
-      this.$refs.editorRules.resetFields();
     },
   },
 };

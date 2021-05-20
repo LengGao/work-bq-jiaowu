@@ -225,4 +225,24 @@ export default {
   getcourseallclass: '/classroom/getcourseallclass', ///班级
   getRoomSelect: '/Schoolroom/getRoomSelect', //教室
   getcategorytree: '/courseCategory/getcategorytree', //分类
+  // 面授约课
+  addSubscribeClassroom: '/subscribe/addSubscribeClassroom',
+  getCourseList: '/statistics/getCourseList',
+  getBlackStudentsList: '/subscribe/getBlackStudentsList',
+  getRecommender: 'institution/index',
+  insertBlacklist: '/subscribe/insertBlacklist',
+  getAdditionalStudentList: '/subscribe/getAdditionalStudentList',
+  insertStudent: '/subscribe/insertStudent',
+  getPracticeList: '/statistics/getPracticeList',
+  getTeacherList: '/teacher/index',
+  getSubscribeClassroomInfo: '/subscribe/getSubscribeClassroomInfo',
+  saveSubscribeClassroom: '/subscribe/saveSubscribeClassroom',
+  getBlacklist: '/subscribe/getBlacklist',
+  removeBlacklist: '/subscribe/removeBlacklist',
+  getSubscribeClassroomList: '/subscribe/getSubscribeClassroomList',
+  getSubMessageInfo: '/subscribe/getSubMessageInfo',
+  sendSubMessage: '/subscribe/sendSubMessage',
+  getQrCode: '/subscribe/getQrCode',
+  getStudentList: '/subscribe/getStudentList',
+  updateStudentStatus: '/subscribe/updateStudentStatus',
 }

@@ -60,7 +60,9 @@ export default {
       this.editorForm.correct = value;
     },
     validate(cb) {
-      this.$refs.editorRules.validate(cb);
+      this.$refs.editorRules.validate((valid) => {
+        cb(valid, { ...this.editorForm, type: 5 });
+      });
     },
     resetFields() {
       for (const k in this.editorForm) {

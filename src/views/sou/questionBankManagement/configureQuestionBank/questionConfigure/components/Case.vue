@@ -14,15 +14,37 @@
       <el-form-item label="案例题目">
         <div
           class="item-input"
-          v-for="(item, index) in subjectList"
-          :key="item"
+          v-for="(item, index) in caseQusetionList"
+          :key="index"
         >
-          <el-input :value="editorForm['text' + item]" disabled></el-input>
+          <el-button
+            @click="handleQuestionChange(item.type)"
+            class="btn-text-content"
+            >{{ editorForm["text" + index] }}</el-button
+          >
           <el-button @click="handleDeleteInput(index)"
             ><i class="el-icon-delete"></i
           ></el-button>
         </div>
-        <el-button @click="handleAddInput">添加题目</el-button>
+        <el-popover
+          placement="bottom"
+          popper-class="question-type-popover"
+          width="100"
+          trigger="hover"
+        >
+          <el-button slot="reference" style="margin-right: 10px"
+            >添加题目</el-button
+          >
+          <ul class="question-type-list">
+            <li
+              v-for="item in questionOptions"
+              :key="item.value"
+              @click="handleQuestionChange(item.value)"
+            >
+              {{ item.name }}
+            </li>
+          </ul>
+        </el-popover>
       </el-form-item>
     </el-form>
   </div>
@@ -35,6 +57,16 @@ export default {
   name: "Case",
   components: {
     Editor,
+  },
+  props: {
+    questionOptions: {
+      type: Array,
+      default: () => [],
+    },
+    caseQusetionList: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -49,13 +81,15 @@ export default {
         correct: [{ required: true, message: "请选择", trigger: "change" }],
       },
       eId: 2,
-      subjectList: [1, 2],
     };
   },
   methods: {
+    handleQuestionChange(val) {
+      this.$emit("on-change", val);
+    },
     // 删除答案输入框
     handleDeleteInput(index) {
-      this.subjectList.splice(index, 1);
+      this.caseQusetionList.splice(index, 1);
     },
     // 添加答案输入框
     handleAddInput() {},
@@ -77,14 +111,21 @@ export default {
   .item-input {
     display: flex;
     margin-bottom: 10px;
-    button {
-      margin-left: 10px;
+    .btn-text-content {
+      width: 100%;
     }
   }
-  .checkbox {
-    margin-left: 30px;
-    .desc {
-      color: #909399;
+}
+.question-type-popover {
+  .question-type-list {
+    li {
+      padding: 6px;
+      cursor: pointer;
+      text-align: center;
+      &:hover {
+        background-color: #ecf5ff;
+        color: #199fff;
+      }
     }
   }
 }

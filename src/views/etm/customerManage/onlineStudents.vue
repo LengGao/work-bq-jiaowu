@@ -52,7 +52,7 @@
         <el-table-column
           prop="create_time"
           label="注册时间"
-          min-width="100"
+          min-width="140"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -139,7 +139,7 @@
 </template>
 
 <script>
-import { onlineUserList, getfieldinfo, getCourseSelect } from "@/api/etm";
+import { onlineUserList, getCourseSelect } from "@/api/etm";
 import { cloneOptions } from "@/utils/index";
 import { getcourseallclass } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
@@ -167,6 +167,7 @@ export default {
             "end-placeholder": "结束日期",
             format: "yyyy-MM-dd",
             "value-format": "yyyy-MM-dd",
+            clearable: true,
           },
         },
         {
@@ -179,6 +180,7 @@ export default {
           attrs: {
             placeholder: "所属分类",
             clearable: true,
+            filterable: true,
             options: [],
           },
         },
@@ -191,6 +193,7 @@ export default {
           options: [],
           attrs: {
             clearable: true,
+            filterable: true,
             placeholder: "所属课程",
           },
         },
@@ -204,6 +207,7 @@ export default {
           attrs: {
             placeholder: "所属班级",
             clearable: true,
+            filterable: true,
           },
         },
 
@@ -214,16 +218,35 @@ export default {
           attrs: {
             placeholder: "推荐机构",
             clearable: true,
+            filterable: true,
             options: [],
           },
         },
         {
-          key: "sources",
+          key: "from",
           type: "select",
           width: 120,
-          options: [],
+          options: [
+            {
+              value: 1,
+              label: "小程序注册",
+            },
+            {
+              value: 2,
+              label: "PC序注册",
+            },
+            {
+              value: 3,
+              label: "网课意向录入",
+            },
+            {
+              value: 4,
+              label: "教务系统录入",
+            },
+          ],
           attrs: {
             clearable: true,
+            filterable: true,
             placeholder: "渠道来源",
           },
         },
@@ -265,19 +288,20 @@ export default {
         {
           key: "aid",
           type: "select",
-          width: 120,
+          width: 180,
           options: [
             {
               value: 0,
-              label: "课程",
+              label: "网课未加入教务系统",
             },
             {
               value: 1,
-              label: "学员",
+              label: "网课已加入教务系统",
             },
           ],
           attrs: {
             clearable: true,
+            filterable: true,
             placeholder: "排序方式",
           },
         },
@@ -309,7 +333,6 @@ export default {
     this.getInstitutionSelectData();
     this.onlineUserList();
     this.getCateList();
-    this.getfieldinfo();
   },
   methods: {
     getInnerStatus(val) {
@@ -339,23 +362,7 @@ export default {
       };
       this.onlineUserList();
     },
-    // 获取渠道来源
-    async getfieldinfo() {
-      const data = {
-        field_text: "渠道来源",
-      };
-      const res = await getfieldinfo(data);
-      if (res.code === 0) {
-        this.field_content = res.data.field_content.map((i, index) => {
-          var obj = {};
-          obj.value = index;
-          obj.label = i;
-          return obj;
-        });
 
-        this.searchOptions[5].options = this.field_content;
-      }
-    },
     // 获取机构
     async getInstitutionSelectData() {
       const data = { list: true };

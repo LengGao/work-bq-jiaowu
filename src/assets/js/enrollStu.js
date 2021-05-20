@@ -99,6 +99,7 @@ let enrollStu = {
       then(res) {
         console.log(res.data.data)
         if (res.data.code == 0) {
+          self.doClose()
           self.$message({
             type: 'success',
             message: res.data.message,
@@ -106,17 +107,16 @@ let enrollStu = {
 
           if (num && num == 2) {
             //保存并跳转详情
-            self.$router.push({
-              name: 'cusdetail',
-              query: {
-                uid: res.data.data.uid,
-              },
-            })
+            // self.$router.push({
+            //   name: 'cusdetail',
+            //   query: {
+            //     uid: res.data.data.uid,
+            //   },
+            // })
+            self.$emit('on-success')
           } else if (num && num == 3) {
             //导入学员添加
-            console.log('2344')
             self.$emit('on-success')
-            self.doClose()
           } else {
             //保存并弹框
             console.log(self.addVisible)
@@ -160,12 +160,11 @@ let enrollStu = {
       data: config,
       // method: 'GET',
       then(res) {
-        console.log(res.data.data)
-
+        self.doClose();
         if (res.data.code == 0) {
-          let data = res.data.data
-          self.orderVisible = true //订单详情弹框呈现
-          self.orderInfo = data
+          // let data = res.data.data
+          // self.orderVisible = true //订单详情弹框呈现
+          // self.orderInfo = data
           self.$message({
             type: 'success',
             message: res.data.message,

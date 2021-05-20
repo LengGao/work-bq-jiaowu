@@ -92,6 +92,7 @@ export default {
       this.uploadImg = res.data?.data?.url || "";
       this.uploadLoading = false;
       this.handleEmit();
+      this.$emit("on-success");
     },
     handleUploadError() {
       this.uploadImg = "";
@@ -101,6 +102,7 @@ export default {
     hanldeDelete() {
       this.uploadImg = "";
       this.handleEmit();
+      this.$emit("on-delete");
     },
     beforeUpload(file) {
       const isImg = file.type.indexOf("image") !== -1;
@@ -125,7 +127,7 @@ export default {
     p {
       line-height: 1.5;
       font-size: 12px;
-      color: #c0c4cc;
+      color: #909399;
     }
   }
   .upload-button {

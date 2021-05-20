@@ -177,6 +177,7 @@ export default {
           attrs: {
             placeholder: "所属项目",
             clearable: true,
+            filterable: true,
           },
         },
         {

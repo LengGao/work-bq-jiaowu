@@ -40,7 +40,12 @@
           <div class="time_num">
             <span
               >￥{{
-                (panelData.order_money - panelData.reduction).toFixed(2)
+                (
+                  panelData.order_money -
+                  panelData.reduction -
+                  panelData.overdue_money -
+                  panelData.refund_money
+                ).toFixed(2)
               }}</span
             >
           </div>

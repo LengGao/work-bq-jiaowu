@@ -49,6 +49,18 @@ export default {
       let myChart = this.$echarts.init(document.getElementById("myChart"));
       // 绘制图表
       myChart.setOption({
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+            shadowStyle: {
+              opacity: 0,
+            },
+            label: {
+              backgroundColor: "#cecece",
+            },
+          },
+        },
         title: {
           text: "销售趋势",
           left: "left",
@@ -72,15 +84,7 @@ export default {
           bottom: "6%",
           containLabel: true,
         },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "shadow",
-            label: {
-              backgroundColor: "#cecece",
-            },
-          },
-        },
+
         xAxis: {
           type: "category",
           data: this.xdata,
