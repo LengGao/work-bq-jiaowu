@@ -688,17 +688,11 @@ export default {
       this.page = page;
       this.getCustomerList();
     },
-<<<<<<< HEAD
     // seebtn(sign_url) {
     //   this.viewcondialog = true
     //   // this.project = sing_url.project
     //   this.sign_url = sign_url
     // },
-=======
-    seebtn() {
-      this.viewcondialog = true;
-    },
->>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
   },
 };
 </script>
