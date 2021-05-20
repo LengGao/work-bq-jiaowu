@@ -90,3 +90,15 @@ export function Orderentry(data) {
         data
     })
 }
+
+/**
+ * 生成合同
+ * @param {*} data 
+ */
+ export function generate(data) {
+    return request({
+        url: 'contract/generate',
+        method: 'post',
+        data
+    })
+}

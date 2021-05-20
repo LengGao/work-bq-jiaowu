@@ -92,13 +92,6 @@ export default {
       this.$emit('on-success')
     },
     handleOpen() {
-      // this.ruleForm = {
-      //   id: '',
-      //   template_name: '',
-      //   template_code: '',
-      //   template_url: '',
-      // }
-      // this.ruleForm.template_code = this.id
       console.log(this.contractInfo)
       if (this.contractInfo.id) {
         for (var i in this.contractInfo) {
@@ -107,7 +100,6 @@ export default {
       }
       console.log(this.ruleForm)
     },
-
     //添加模板接口
     async templateadd() {
       const data = {
@@ -162,8 +154,8 @@ export default {
       if (res.code == 0) {
         console.log(res)
         this.$message.success(res.message)
-        this.$emit('on-success')
         this.$refs[formName].resetFields()
+        this.$emit('on-success')
       }
     },
 

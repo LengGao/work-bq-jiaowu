@@ -29,7 +29,6 @@
         />
         <Tablelist v-show="isTagactive === 1" />
       </div>
-
       <!--表格-->
       <div class="userTable" v-show="isTagactive === 1">
         <el-table
