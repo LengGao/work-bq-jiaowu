@@ -136,16 +136,7 @@
               ></i>
             </template>
           </el-table-column>
-<<<<<<< HEAD
           <el-table-column prop="sex" label="性别" min-width="60" show-overflow-tooltip>
-=======
-          <el-table-column
-            prop="sex"
-            label="性别"
-            min-width="100"
-            show-overflow-tooltip
-          >
->>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
             <template slot-scope="{ row }">
               <div>
                 {{ row.sex == 1 ? "男" : row.sex == 2 ? "女" : "未知" }}
@@ -165,16 +156,7 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-<<<<<<< HEAD
           <el-table-column prop="from_organization_name" label="推荐机构" min-width="90" show-overflow-tooltip>
-=======
-          <el-table-column
-            prop="from_organization_name"
-            label="推荐机构"
-            min-width="100"
-            show-overflow-tooltip
-          >
->>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
             <template slot-scope="{ row }">
               <div v-if="row.from_organization_name">
                 {{ row.from_organization_name }}
@@ -251,7 +233,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import { getCateList, getInstitutionSelectData } from '@/api/sou'
 import { generate } from '@/api/fina'
 import { getproject } from '@/api/eda'
@@ -259,14 +240,6 @@ import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
 import { cloneOptions } from '@/utils/index'
 import addCustomeDialog from './components/addCustomeDialog'
 import Viewcontract from './components/viewcontract'
-=======
-import { getCateList, getInstitutionSelectData } from "@/api/sou";
-import { getproject } from "@/api/eda";
-import { getCustomerList, getInstitutionList, getfieldinfo } from "@/api/etm";
-import { cloneOptions } from "@/utils/index";
-import addCustomeDialog from "./components/addCustomeDialog";
-import Viewcontract from "./components/viewcontract";
->>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
 export default {
   name: "myClients",
   components: {
@@ -287,7 +260,6 @@ export default {
       }
     };
     return {
-<<<<<<< HEAD
       dialogVisible: false,
       sign_url: '',
       statusMap: {
@@ -301,9 +273,6 @@ export default {
       currentId: '',
       project: '',
       id: '',
-=======
-      id: "",
->>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
       viewcondialog: false,
       analysis: {},
       innerVisible: false,
@@ -462,16 +431,10 @@ export default {
       ],
       schoolData: [],
       ruleForm: {
-<<<<<<< HEAD
         order_id: '',
         surname: '',
         mobile: '',
         id_card_number: '',
-=======
-        surname: "",
-        mobile: "",
-        id_card_number: "",
->>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
         sex: 0,
         birthday: "",
         marry: 0,
