@@ -1,12 +1,11 @@
 <template>
   <!-- 预览合同弹窗 -->
   <section>
-    <el-dialog title="预览合同" :visible.sync="visible" width="50%" @open="handleOpen" :close-on-click-modal="false" @closed="resetForm('ruleForm')">
+    <el-dialog title="生成合同" :visible.sync="visible" width="50%" @open="handleOpen" :close-on-click-modal="false" @closed="resetForm('ruleForm')">
       <div style="display: flex;justify-content: space-between;">
         <div class="left">
-          <div class="title">
-            合同文本
-          </div>
+          <!-- <span style="display:block;padding:0 0 20px 0;">报读项目：{{project}}</span> -->
+          <iframe ref="iframe" :src="sign_url" type="application/x-google-chrome-pdf" width="650px" height="650px" border="0" />
         </div>
         <div class="right">
           <el-button type="primary">发送合同链接</el-button>
@@ -18,6 +17,7 @@
 </template>
 
 <script>
+import { generate } from '@/api/fina'
 export default {
   props: {
     value: {
@@ -28,14 +28,18 @@ export default {
       type: [String, Number],
       default: '',
     },
+    project: {
+      type: [String, Number],
+      default: '',
+    },
+    sign_url: {
+      type: [String, Number],
+      default: '',
+    },
   },
   data() {
     return {
       visible: this.value,
-      tempForm: {
-        category_name: '',
-        category_names: '',
-      },
       searchOptions: [
         {
           key: 'search_box',
@@ -60,7 +64,12 @@ export default {
       this.visible = val
     },
   },
-  created() {},
+  created() {
+    // this.generate()
+  },
+  mounted() {
+    this.url = this.sign_url
+  },
   methods: {
     resetForm() {
       for (const k in this.formData) {
@@ -85,6 +94,15 @@ export default {
     },
     handleAllSelect(selection) {
       this.selection = selection
+    },
+    // 生成合同接口
+    async generate(order_id) {
+      const data = {
+        order_id,
+      }
+      const res = await generate(data)
+      console.log(res.data.data)
+      this.listData = res.data.data
     },
   },
 }

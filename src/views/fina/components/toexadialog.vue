@@ -143,7 +143,8 @@ export default {
             this.$emit('on-success')
           }
         } else {
-          console.log('error submit!!')
+          console.log('审核已拒绝')
+          this.hanldeCancel()
           return false
         }
       })
@@ -181,5 +182,13 @@ export default {
 }
 /deep/.el-dialog__footer {
   padding: 0 40px 40px 0;
+}
+.el-radio-group label {
+  width: 70px;
+  margin-top: 15px;
+  // display: flex;
+}
+/deep/.el-radio-group {
+  display: flex;
 }
 </style>

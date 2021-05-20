@@ -136,12 +136,16 @@
               ></i>
             </template>
           </el-table-column>
+<<<<<<< HEAD
+          <el-table-column prop="sex" label="性别" min-width="60" show-overflow-tooltip>
+=======
           <el-table-column
             prop="sex"
             label="性别"
             min-width="100"
             show-overflow-tooltip
           >
+>>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
             <template slot-scope="{ row }">
               <div>
                 {{ row.sex == 1 ? "男" : row.sex == 2 ? "女" : "未知" }}
@@ -161,12 +165,16 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
+<<<<<<< HEAD
+          <el-table-column prop="from_organization_name" label="推荐机构" min-width="90" show-overflow-tooltip>
+=======
           <el-table-column
             prop="from_organization_name"
             label="推荐机构"
             min-width="100"
             show-overflow-tooltip
           >
+>>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
             <template slot-scope="{ row }">
               <div v-if="row.from_organization_name">
                 {{ row.from_organization_name }}
@@ -190,21 +198,19 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="create_time"
-            label="创建时间"
-            min-width="72"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="project"
-            label="合同状态"
-            min-width="100"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="create_time" label="创建时间" min-width="90" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="contract_status" label="合同状态" min-width="100" show-overflow-tooltip>
             <template slot-scope="{ row }">
-              <span style="margin-right: 8px">已生成</span>
-              <el-button type="text" @click="seebtn(row)">预览合同</el-button>
+              <div style="display: flex; justify-content:center;">
+                <div :class="row.contract_status==4?'colorgreen' :'colored'" style="margin:10px 5px 0 0;">
+                  {{ statusMap[row.contract_status] }}
+                </div>
+                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status == null">生成合同</el-button>
+                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==1">未审核</el-button>
+                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==2">待审核</el-button>
+                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==3">驳回</el-button>
+                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==4">已完成</el-button>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
@@ -224,7 +230,15 @@
             @pageChange="handlePageChange"
           />
         </div>
-        <Viewcontract v-model="viewcondialog" :id="id" />
+
+        <el-dialog title="生成合同" :visible.sync="dialogVisible" width="25%" :close-on-click-modal="false">
+          <span style="font-size: 20px">是否生成合同？</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="Entryenter">确 定</el-button>
+          </span>
+        </el-dialog>
+        <!-- <Viewcontract v-model="viewcondialog" :id="currentId" :project="project" :sign_url="sign_url" /> -->
 
         <addCustomeDialog
           :innerVisible="innerVisible"
@@ -237,12 +251,22 @@
 </template>
 
 <script>
+<<<<<<< HEAD
+import { getCateList, getInstitutionSelectData } from '@/api/sou'
+import { generate } from '@/api/fina'
+import { getproject } from '@/api/eda'
+import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
+import { cloneOptions } from '@/utils/index'
+import addCustomeDialog from './components/addCustomeDialog'
+import Viewcontract from './components/viewcontract'
+=======
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getproject } from "@/api/eda";
 import { getCustomerList, getInstitutionList, getfieldinfo } from "@/api/etm";
 import { cloneOptions } from "@/utils/index";
 import addCustomeDialog from "./components/addCustomeDialog";
 import Viewcontract from "./components/viewcontract";
+>>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
 export default {
   name: "myClients",
   components: {
@@ -263,7 +287,23 @@ export default {
       }
     };
     return {
+<<<<<<< HEAD
+      dialogVisible: false,
+      sign_url: '',
+      statusMap: {
+        null: '未生成',
+        1: '未审核',
+        2: '已审核',
+        3: '已驳回',
+        4: '签署完成',
+      },
+      contract_status: '',
+      currentId: '',
+      project: '',
+      id: '',
+=======
       id: "",
+>>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
       viewcondialog: false,
       analysis: {},
       innerVisible: false,
@@ -422,9 +462,16 @@ export default {
       ],
       schoolData: [],
       ruleForm: {
+<<<<<<< HEAD
+        order_id: '',
+        surname: '',
+        mobile: '',
+        id_card_number: '',
+=======
         surname: "",
         mobile: "",
         id_card_number: "",
+>>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
         sex: 0,
         birthday: "",
         marry: 0,
@@ -481,6 +528,26 @@ export default {
     // },
   },
   methods: {
+    seebtn(row) {
+      this.order_id = row.order_id
+      this.dialogVisible = true
+    },
+    Entryenter(order_id) {
+      order_id, 
+      this.dialogVisible = false
+      this.generate()
+    },
+    // 生成合同接口
+    async generate() {
+      const data = {
+        order_id: this.order_id,
+      }
+      // console.log(data)
+      const res = await generate(data)
+      if (res.code == 0) {
+        this.$message.success(res.message)
+      }
+    },
     // 复制
     handleCopy(val) {
       const input = document.createElement("input");
@@ -583,15 +650,6 @@ export default {
         );
       }
     },
-    // // 获取所属机构
-    // async getInstitutionList() {
-    //   const data = {}
-    //   const res = await getInstitutionList(data)
-    //   if (res.code === 0) {
-    //     // console.log(res.data)
-    //     this.searchOptions[3].options = res.data.list
-    //   }
-    // },
     // 获取渠道来源
     async getfieldinfo() {
       const data = {
@@ -667,12 +725,21 @@ export default {
       this.page = page;
       this.getCustomerList();
     },
+<<<<<<< HEAD
+    // seebtn(sign_url) {
+    //   this.viewcondialog = true
+    //   // this.project = sing_url.project
+    //   this.sign_url = sign_url
+    // },
+=======
     seebtn() {
       this.viewcondialog = true;
     },
+>>>>>>> 9c1da3e814b8ce703bc4d888c863edd5ddf0304f
   },
 };
 </script>
+
 
 <style lang="scss" scoped>
 /deep/.el-input__inner {
@@ -725,7 +792,6 @@ header {
   li {
     height: 28px;
     font-size: 14px;
-
     border-bottom: 2px solid #fff;
     display: flex;
     justify-content: center;
@@ -797,5 +863,11 @@ header {
   color: #199fff;
   cursor: pointer;
   margin-left: 8px;
+}
+.colorgreen {
+  color: green;
+}
+.colored {
+  color: red;
 }
 </style>
