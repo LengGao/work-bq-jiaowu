@@ -42,7 +42,6 @@ export function orderCancel(params) {
         params
     })
 }
-
 /**
  * 订单审批列表
  * @param {*} params 
@@ -54,7 +53,6 @@ export function Approvalist(params) {
         params
     })
 }
-
 /**
  * 订单入账
  * @param {*} data 
@@ -66,7 +64,6 @@ export function Orderentry(data) {
         data
     })
 }
-
 /**
  * 合同审核列表
  * @param {*} params 
@@ -78,7 +75,6 @@ export function Orderentry(data) {
         params
     })
 }
-
 /**
  * 合同审核
  * @param {*} data 
@@ -90,7 +86,6 @@ export function Orderentry(data) {
         data
     })
 }
-
 /**
  * 生成合同
  * @param {*} data 

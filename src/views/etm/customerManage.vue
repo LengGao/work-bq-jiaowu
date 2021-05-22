@@ -25,7 +25,7 @@
           >
         </div>
       </header>
-      <el-row class="dataPanel" style="">
+      <el-row class="dataPanel">
         <template>
           <el-col :lg="{ span: '4-8' }">
             <div class="timeCard">
@@ -188,8 +188,8 @@
                   {{ statusMap[row.contract_status] }}
                 </div>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status == null">生成合同</el-button>
-                <el-button type="text" @click="viewbtn(row)" v-if="row.contract_status !== null">查看合同</el-button>
-                <el-button type="text" @click="exambtn(row)" v-if="row.contract_status==1">审核</el-button>
+                <el-button type="text" @click="seeview(row)" v-if="row.contract_status !== null">查看合同</el-button>
+                <el-button type="text" @click="Approval(row)" v-if="row.contract_status==1">审核</el-button>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==2">待审核</el-button>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==3">驳回</el-button>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==4">已完成</el-button>
@@ -212,7 +212,6 @@
             @pageChange="handlePageChange"
           />
         </div>
-
         <el-dialog title="生成合同" :visible.sync="dialogVisible" width="25%" :close-on-click-modal="false">
           <span style="font-size: 20px">是否生成合同？</span>
           <span slot="footer" class="dialog-footer">
@@ -221,39 +220,30 @@
           </span>
         </el-dialog>
 
-        <el-dialog title="合同审核" :visible.sync="examdialogVisible" width="25%" :close-on-click-modal="false">
-          <div class="content">
-            <el-form label-width="80px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true" class="formmargin">
-              <el-form-item label="项目名称" prop="project">
-                <el-input placeholder="项目名称" v-model="ruleForm.project" style="width:340px"></el-input>
-              </el-form-item>
-    
-              <el-form-item label="审核类型" prop="audit_type">
-                <el-radio-group v-model="ruleForm.audit_type">
-                  <el-radio :label="1">同意</el-radio>
-                  <el-radio :label="2">拒绝</el-radio>
-                </el-radio-group>
-              </el-form-item>
-    
-              <el-form-item label="拒绝原因" prop="audit_content" v-if="ruleForm.audit_type == 2">
-                <el-input type="textarea" v-model="ruleForm.audit_content" style="width:340px"></el-input>
-              </el-form-item>
-    
-            </el-form>
-          </div>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="examdialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="Entryenter">确 定</el-button>
-          </span>
-        </el-dialog>
+        <!-- <Viewcontract v-model="viewcondialog" :id="currentId" :project="project" :template_url="template_url" /> -->
 
-        <Viewcontract v-model="viewcondialog" :id="currentId" :project="project" :template_url="template_url" />
+        <!--查看模板弹窗 -->
+      <el-dialog title="查看合同" :visible.sync="viewcondialog" width="1000px" :close-on-click-modal="false" style="margin-top:-6vh;">
+      <!-- <div class="right" style="float:right; margin-bottom:20px;">
+        <el-button type="primary">发送合同链接</el-button>
+        <el-button plain>生成二维码</el-button>
+      </div> -->
+
+       <div style="width:800px; height:650px; overflow:hidden; margin-top: 0; ">
+        <iframe :src="sign_url" ref="iframe" type="application/x-google-chrome-pdf" width="1200px" height="800px" border="0" style="margin-top:-120px;margin-left:-10px" />
+
+      </div>
+      <!-- <iframe :src="sign_url" type="application/x-google-chrome-pdf" width="1150px" height="650px" border="0" /> -->
+    </el-dialog>
+
+    <Toexamine v-model="toexadialog" @on-success="getCustomerList" :contractInfo="contractInfo" :id="currentId"/>
 
         <addCustomeDialog
           :innerVisible="innerVisible"
           @on-success="getCustomerList"
           v-on:innerDialog="getInnerStatus($event)"
         />
+
       </div>
     </div>
   </section>
@@ -268,11 +258,16 @@ import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
 import { cloneOptions } from '@/utils/index'
 import addCustomeDialog from './components/addCustomeDialog'
 import Viewcontract from './components/viewcontract'
+import Seetemplate from './components/seetemplate'
+import Toexamine from './components/toexadialog'
+
 export default {
   name: "myClients",
   components: {
     addCustomeDialog,
     Viewcontract,
+    Seetemplate,
+    Toexamine
   },
   data() {
     let validMail = (rule, value, callback) => {
@@ -288,12 +283,15 @@ export default {
       }
     };
     return {
+      contractInfo: {},
+      toexadialog:false,
       template_url: '',
       rules: {
         project: [{ required: true, message: '请输入合同id', trigger: 'blur' }],
         audit_type: [{ required: true, message: '请选择', trigger: 'blur' }],
         audit_content: [{ required: true, message: '请输入拒绝原因', trigger: 'blur' }],
       },
+      seetempdialog:false,
       dialogVisible: false,
       examdialogVisible:false,
       viewcondialog:false,
@@ -309,7 +307,6 @@ export default {
       currentId: '',
       project: '',
       id: '',
-      viewcondialog: false,
       analysis: {},
       innerVisible: false,
       searchData: {
@@ -486,7 +483,7 @@ export default {
         id: '',
         audit_type: 0,
         audit_content: '',
-        project_str: '',
+        project: '',
       },
       curstomerVisible: false,
       tabFun: [
@@ -532,63 +529,36 @@ export default {
     // },
   },
   methods: {
+    handleClose(done) {
+      this.seetempdialog = false
+    },
     seebtn(row) {
       this.order_id = row.order_id
       this.dialogVisible = true
     },
     // 查看合同
-    viewbtn(row) {
-      this.order_id = row.order_id
-      this.viewcondialog = true
-      this.template_url = row.template_url
+    seetemplate(row) {
+      console.log(row)
+      this.seetempdialog = true
+      this.sign_url = row.sign_url
     },
     Entryenter(order_id) {
       order_id, 
       this.dialogVisible = false
       this.generate()
     },
-    exambtn(row) {
-      this.order_id = row.order_id
-      this.examdialogVisible = true
+    // exambtn(row) {
+    //   this.order_id = row.order_id
+    //   this.project = row.project
+    //   this.examdialogVisible = true
+    // },
+    Approval(row) {
+      this.toexadialog = true
+      this.dialogTitle = '合同审核'
+      // this.currentId = id
+      this.contractInfo = row
     },
-     //审核合同接口
-     async contractaudit() {
-      const data = {
-        id: this.ruleForm.id,
-        audit_type: this.ruleForm.audit_type,
-        project:this.ruleForm.project
-      }
-      const res = await contractaudit(data)
-      console.log(res.data.data)
-      this.listData = res.data.data
-      if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.$refs[formName].resetFields()
-      }
-    },
-    submitForm(formName) {
-      console.log(this.ruleForm)
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          console.log(this.ruleForm)
-          if (this.ruleForm.id) {
-            //修改
-            this.contractaudit()
-            this.$refs[formName].resetFields()
-          } else {
-            //添加
-            this.contractaudit()
-            this.$refs[formName].resetFields()
-      
-          }
-        } else {
-          console.log('审核已拒绝')
-          this.hanldeCancel()
-          return false
-        }
-      })
-    },
+    
  
     // 生成合同接口
     async generate() {
@@ -778,11 +748,12 @@ export default {
       this.page = page;
       this.getCustomerList();
     },
-    // seebtn(sign_url) {
-    //   this.viewcondialog = true
-    //   // this.project = sing_url.projects
-    //   this.sign_url = sign_url
-    // },
+    
+    seeview(row) {
+      this.viewcondialog = true
+      // this.project = sing_url.projects
+      this.sign_url =row.sign_url
+    },
   },
 };
 </script>

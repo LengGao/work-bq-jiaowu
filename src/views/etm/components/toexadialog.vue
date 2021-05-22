@@ -3,26 +3,21 @@
   <section>
     <el-dialog :title="dialogTitle" :visible.sync="visible" width="550px" @open="handleOpen" :close-on-click-modal="false" @closed="resetForm('ruleForm')">
       <div class="content">
-
         <el-form label-width="80px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true" class="formmargin">
-          <el-form-item label="项目名称" prop="project_str">
-            <el-input placeholder="项目名称" v-model="ruleForm.project_str" style="width:340px"></el-input>
+          <el-form-item label="项目名称" prop="project">
+            <el-input placeholder="项目名称" v-model="ruleForm.project" style="width:340px"></el-input>
           </el-form-item>
-
           <el-form-item label="审核类型" prop="audit_type">
             <el-radio-group v-model="ruleForm.audit_type">
               <el-radio :label="1">同意</el-radio>
               <el-radio :label="2">拒绝</el-radio>
             </el-radio-group>
           </el-form-item>
-
           <el-form-item label="拒绝原因" prop="audit_content" v-if="ruleForm.audit_type == 2">
             <el-input type="textarea" v-model="ruleForm.audit_content" style="width:340px"></el-input>
           </el-form-item>
-
         </el-form>
       </div>
-
       <span slot="footer" class="dialog-footer">
         <el-button @click="hanldeCancel">取 消</el-button>
         <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
@@ -34,7 +29,6 @@
 <script>
 import { templateadd, templateedit, uploadUrl } from '@/api/system'
 import { contractaudit } from '@/api/fina'
-
 export default {
   props: {
     value: {
@@ -55,12 +49,11 @@ export default {
         return {}
       },
     },
-    project_str: {
+    project: {
       type: [String, Number],
       default: '',
     },
   },
-
   mounted() {
     // this.order_no = this.id
   },
@@ -72,10 +65,10 @@ export default {
         id: '',
         audit_type: 0,
         audit_content: '',
-        project_str: '',
+        project: '',
       },
       rules: {
-        project_str: [{ required: true, message: '请输入合同id', trigger: 'blur' }],
+        project: [{ required: true, message: '请输入合同id', trigger: 'blur' }],
         audit_type: [{ required: true, message: '请选择', trigger: 'blur' }],
         audit_content: [{ required: true, message: '请输入拒绝原因', trigger: 'blur' }],
       },
@@ -86,7 +79,6 @@ export default {
       this.visible = val
     },
   },
-
   methods: {
     resetForm(formName) {
       for (var k in this.ruleForm) {
@@ -104,14 +96,13 @@ export default {
         }
       }
     },
-
     hanldeCancel() {
       this.$emit('input', false)
     },
     //审核合同接口
     async contractaudit() {
       const data = {
-        id: this.ruleForm.id,
+        id: this.ruleForm.project,
         audit_type: this.ruleForm.audit_type,
       }
       const res = await contractaudit(data)
@@ -124,7 +115,6 @@ export default {
         this.$refs[formName].resetFields()
       }
     },
-
     submitForm(formName) {
       console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
@@ -159,7 +149,8 @@ export default {
 }
 .content {
   padding: 0 30px 30px 30px;
-  .title {
+}
+.content .title {
     display: block;
     height: 16px;
     line-height: 16px;
@@ -169,7 +160,7 @@ export default {
     margin-bottom: 20px;
     margin-top: 10px;
   }
-}
+
 [data-v-7af6cb0d] .el-form-item {
   margin-bottom: 25px;
 }
