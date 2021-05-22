@@ -188,7 +188,8 @@
                   {{ statusMap[row.contract_status] }}
                 </div>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status == null">生成合同</el-button>
-                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==1">未审核</el-button>
+                <el-button type="text" @click="viewbtn(row)" v-if="row.contract_status !== null">查看合同</el-button>
+                <el-button type="text" @click="exambtn(row)" v-if="row.contract_status==1">审核</el-button>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==2">待审核</el-button>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==3">驳回</el-button>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==4">已完成</el-button>
@@ -199,8 +200,7 @@
             <template slot-scope="scope">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="toCusDetail(scope.row)"
-                  >客户详情</el-button
-                >
+                  >客户详情</el-button>
               </div>
             </template>
           </el-table-column>
@@ -220,7 +220,34 @@
             <el-button type="primary" @click="Entryenter">确 定</el-button>
           </span>
         </el-dialog>
-        <!-- <Viewcontract v-model="viewcondialog" :id="currentId" :project="project" :sign_url="sign_url" /> -->
+
+        <el-dialog title="合同审核" :visible.sync="examdialogVisible" width="25%" :close-on-click-modal="false">
+          <div class="content">
+            <el-form label-width="80px" :model="ruleForm" :rules="rules" ref="ruleForm" :show-message="true" class="formmargin">
+              <el-form-item label="项目名称" prop="project">
+                <el-input placeholder="项目名称" v-model="ruleForm.project" style="width:340px"></el-input>
+              </el-form-item>
+    
+              <el-form-item label="审核类型" prop="audit_type">
+                <el-radio-group v-model="ruleForm.audit_type">
+                  <el-radio :label="1">同意</el-radio>
+                  <el-radio :label="2">拒绝</el-radio>
+                </el-radio-group>
+              </el-form-item>
+    
+              <el-form-item label="拒绝原因" prop="audit_content" v-if="ruleForm.audit_type == 2">
+                <el-input type="textarea" v-model="ruleForm.audit_content" style="width:340px"></el-input>
+              </el-form-item>
+    
+            </el-form>
+          </div>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="examdialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="Entryenter">确 定</el-button>
+          </span>
+        </el-dialog>
+
+        <Viewcontract v-model="viewcondialog" :id="currentId" :project="project" :template_url="template_url" />
 
         <addCustomeDialog
           :innerVisible="innerVisible"
@@ -236,6 +263,7 @@
 import { getCateList, getInstitutionSelectData } from '@/api/sou'
 import { generate } from '@/api/fina'
 import { getproject } from '@/api/eda'
+import { contractaudit } from '@/api/fina'
 import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
 import { cloneOptions } from '@/utils/index'
 import addCustomeDialog from './components/addCustomeDialog'
@@ -260,7 +288,15 @@ export default {
       }
     };
     return {
+      template_url: '',
+      rules: {
+        project: [{ required: true, message: '请输入合同id', trigger: 'blur' }],
+        audit_type: [{ required: true, message: '请选择', trigger: 'blur' }],
+        audit_content: [{ required: true, message: '请输入拒绝原因', trigger: 'blur' }],
+      },
       dialogVisible: false,
+      examdialogVisible:false,
+      viewcondialog:false,
       sign_url: '',
       statusMap: {
         null: '未生成',
@@ -446,6 +482,11 @@ export default {
         from_organization_id: "",
         sources: "",
         tips: "",
+
+        id: '',
+        audit_type: 0,
+        audit_content: '',
+        project_str: '',
       },
       curstomerVisible: false,
       tabFun: [
@@ -495,11 +536,60 @@ export default {
       this.order_id = row.order_id
       this.dialogVisible = true
     },
+    // 查看合同
+    viewbtn(row) {
+      this.order_id = row.order_id
+      this.viewcondialog = true
+      this.template_url = row.template_url
+    },
     Entryenter(order_id) {
       order_id, 
       this.dialogVisible = false
       this.generate()
     },
+    exambtn(row) {
+      this.order_id = row.order_id
+      this.examdialogVisible = true
+    },
+     //审核合同接口
+     async contractaudit() {
+      const data = {
+        id: this.ruleForm.id,
+        audit_type: this.ruleForm.audit_type,
+        project:this.ruleForm.project
+      }
+      const res = await contractaudit(data)
+      console.log(res.data.data)
+      this.listData = res.data.data
+      if (res.code == 0) {
+        console.log(res)
+        this.$message.success(res.message)
+        this.$refs[formName].resetFields()
+      }
+    },
+    submitForm(formName) {
+      console.log(this.ruleForm)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log(this.ruleForm)
+          if (this.ruleForm.id) {
+            //修改
+            this.contractaudit()
+            this.$refs[formName].resetFields()
+          } else {
+            //添加
+            this.contractaudit()
+            this.$refs[formName].resetFields()
+      
+          }
+        } else {
+          console.log('审核已拒绝')
+          this.hanldeCancel()
+          return false
+        }
+      })
+    },
+ 
     // 生成合同接口
     async generate() {
       const data = {

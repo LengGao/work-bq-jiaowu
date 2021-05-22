@@ -1,11 +1,11 @@
 <template>
   <!-- 预览合同弹窗 -->
   <section>
-    <el-dialog title="生成合同" :visible.sync="visible" width="50%" @open="handleOpen" :close-on-click-modal="false" @closed="resetForm('ruleForm')">
+    <el-dialog title="查看合同" :visible.sync="visible" width="50%" @open="handleOpen" :close-on-click-modal="false" @closed="resetForm('ruleForm')">
       <div style="display: flex;justify-content: space-between;">
         <div class="left">
           <!-- <span style="display:block;padding:0 0 20px 0;">报读项目：{{project}}</span> -->
-          <iframe ref="iframe" :src="sign_url" type="application/x-google-chrome-pdf" width="650px" height="650px" border="0" />
+          <iframe ref="iframe" :src="template_url" type="application/x-google-chrome-pdf" width="890px" height="650px" border="0" />
         </div>
         <div class="right">
           <el-button type="primary">发送合同链接</el-button>
@@ -33,6 +33,10 @@ export default {
       default: '',
     },
     sign_url: {
+      type: [String, Number],
+      default: '',
+    },
+    template_url: {
       type: [String, Number],
       default: '',
     },
