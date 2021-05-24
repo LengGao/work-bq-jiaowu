@@ -212,8 +212,29 @@
             @pageChange="handlePageChange"
           />
         </div>
+
+        <!-- 生成合同弹窗 -->
         <el-dialog title="生成合同" :visible.sync="dialogVisible" width="25%" :close-on-click-modal="false">
-          <span style="font-size: 20px">是否生成合同？</span>
+        <el-form
+        label-width="130px"
+        class="info-form"
+        :model="ruleForm"
+        ref="ruleForm">
+      <el-form-item label="合同模板" prop="template_name">
+        <el-select
+            v-model="templateId"
+            clearable
+            placeholder="请选择合同模板">
+            <el-option
+            v-for="item in dictOptions"
+            :key="item.id"
+            :label="item.template_name"
+            :value="item.id"
+            class="input-width">
+            </el-option>
+            </el-select>
+      </el-form-item>
+      </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="Entryenter">确 定</el-button>
@@ -231,25 +252,23 @@
 
        <div style="width:800px; height:650px; overflow:hidden; margin-top: 0; ">
         <iframe :src="sign_url" ref="iframe" type="application/x-google-chrome-pdf" width="1200px" height="800px" border="0" style="margin-top:-120px;margin-left:-10px" />
-
       </div>
       <!-- <iframe :src="sign_url" type="application/x-google-chrome-pdf" width="1150px" height="650px" border="0" /> -->
     </el-dialog>
 
     <Toexamine v-model="toexadialog" @on-success="getCustomerList" :contractInfo="contractInfo" :id="currentId"/>
-
         <addCustomeDialog
           :innerVisible="innerVisible"
           @on-success="getCustomerList"
           v-on:innerDialog="getInnerStatus($event)"
         />
-
       </div>
     </div>
   </section>
 </template>
 
 <script>
+import { templatelist} from '@/api/system'
 import { getCateList, getInstitutionSelectData } from '@/api/sou'
 import { generate } from '@/api/fina'
 import { getproject } from '@/api/eda'
@@ -283,6 +302,7 @@ export default {
       }
     };
     return {
+      dictOptions: [],
       contractInfo: {},
       toexadialog:false,
       template_url: '',
@@ -310,6 +330,7 @@ export default {
       analysis: {},
       innerVisible: false,
       searchData: {
+        id:'',
         category_id: "",
         date: [],
         project_id: "",
@@ -464,6 +485,7 @@ export default {
       ],
       schoolData: [],
       ruleForm: {
+        template_name:'',
         order_id: '',
         surname: '',
         mobile: '',
@@ -503,14 +525,14 @@ export default {
       projectData: [],
       field_content: [],
       date: "",
+      templateId:'',
+      orderId:'',
     };
   },
   created() {
     this.date = this.searchData.date = this.AddDays(new Date(), 7);
     this.getCateList();
     this.getfieldinfo();
-
-    // this.getInstitutionList()
     this.getInstitutionSelectData();
     this.getCustomerList();
   },
@@ -529,11 +551,14 @@ export default {
     // },
   },
   methods: {
+　
     handleClose(done) {
       this.seetempdialog = false
     },
     seebtn(row) {
-      this.order_id = row.order_id
+      this.templatelist()
+      this.templateId = ''
+      this.orderId = row.order_id
       this.dialogVisible = true
     },
     // 查看合同
@@ -542,9 +567,7 @@ export default {
       this.seetempdialog = true
       this.sign_url = row.sign_url
     },
-    Entryenter(order_id) {
-      order_id, 
-      this.dialogVisible = false
+    Entryenter() {
       this.generate()
     },
     // exambtn(row) {
@@ -558,17 +581,44 @@ export default {
       // this.currentId = id
       this.contractInfo = row
     },
-    
+ 
+    // 合同模板列表接口
+    async templatelist() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+      }
+      const res = await templatelist(data)
+      // console.log(res.data.data)
+      if (res.code == 0) {
+        this.dictOptions = res.data.data;
+        console.log(this.dictOptions)
+      }
+    },
+
+    cloneData(data, newData) {
+      data.forEach((item, index) => {
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
+        if (item.son && item.son.length) {
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
+        }
+      });
+    },
  
     // 生成合同接口
     async generate() {
       const data = {
-        order_id: this.order_id,
+        template_id: this.templateId,
+        order_id: this.orderId,
       }
       // console.log(data)
       const res = await generate(data)
       if (res.code == 0) {
         this.$message.success(res.message)
+        this.dialogVisible = false      
       }
     },
     // 复制
