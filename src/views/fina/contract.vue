@@ -18,7 +18,7 @@
           <el-table-column prop="create_time" label="上传时间" min-width="250" column-key="create_time" show-overflow-tooltip></el-table-column>
           <el-table-column label="合同状态" fixed="right" min-width="150" prop="contract_status">
             <template slot-scope="{row}">
-              <div style="display: flex; justify-content:center;" :class="row.contract_status==4?'colorgreen' :'colored' ">
+              <div style="display: flex; justify-content:center;" :class="row.contract_status== 4 ?'colorgreen' :'colored' ">
                 {{ statusMap[row.contract_status] }}
               </div>
             </template>

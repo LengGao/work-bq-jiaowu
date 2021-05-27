@@ -189,10 +189,10 @@
                 </div>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status == null">生成合同</el-button>
                 <el-button type="text" @click="seeview(row)" v-if="row.contract_status !== null">查看合同</el-button>
-                <el-button type="text" @click="Approval(row)" v-if="row.contract_status==1">审核</el-button>
+                <!-- <el-button type="text" @click="Approval(row)" v-if="row.contract_status==1">审核</el-button>
                 <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==2">待审核</el-button>
-                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==3">驳回</el-button>
-                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==4">已完成</el-button>
+                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==3">驳回</el-button>-->
+                <!-- <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==4">已完成</el-button>  -->
               </div>
             </template>
           </el-table-column>
@@ -551,7 +551,6 @@ export default {
     // },
   },
   methods: {
-　
     handleClose(done) {
       this.seetempdialog = false
     },
@@ -581,7 +580,6 @@ export default {
       // this.currentId = id
       this.contractInfo = row
     },
- 
     // 合同模板列表接口
     async templatelist() {
       const data = {
