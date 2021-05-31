@@ -211,7 +211,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="180">
+          <el-table-column label="操作" fixed="right" min-width="250">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button
@@ -225,6 +225,12 @@
                   @click="seeview(row)"
                   v-if="row.sign_url && row.contract_status"
                   >查看合同</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="handleCopy(row.sign_url)"
+                  v-if="row.sign_url"
+                  >复制签名链接</el-button
                 >
                 <el-button
                   type="text"
@@ -298,9 +304,7 @@
         <el-button plain>生成二维码</el-button>
       </div> -->
 
-          <div
-            style="width: 800px; height: 650px; overflow: hidden; margin-top: 0"
-          >
+          <div style="height: 650px; overflow: hidden; margin-top: 0">
             <iframe
               :src="sign_url"
               ref="iframe"
@@ -631,6 +635,18 @@ export default {
     // },
   },
   methods: {
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
+      }
+    },
     handleClose(done) {
       this.seetempdialog = false;
     },
