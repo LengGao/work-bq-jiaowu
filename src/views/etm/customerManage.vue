@@ -203,8 +203,11 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <el-tag size="small" :type="statusMap[row.contract_status].type">
-                {{ statusMap[row.contract_status].text }}
+              <el-tag
+                size="small"
+                :type="statusMap[row.contract_status || 0].type"
+              >
+                {{ statusMap[row.contract_status || 0].text }}
               </el-tag>
             </template>
           </el-table-column>
@@ -217,7 +220,10 @@
                   v-if="!row.contract_status"
                   >生成合同</el-button
                 >
-                <el-button type="text" @click="seeview(row)" v-if="row.sign_url"
+                <el-button
+                  type="text"
+                  @click="seeview(row)"
+                  v-if="row.sign_url && row.contract_status"
                   >查看合同</el-button
                 >
                 <el-button
@@ -376,7 +382,7 @@ export default {
       viewcondialog: false,
       sign_url: "",
       statusMap: {
-        null: {
+        0: {
           text: "未生成",
           type: "danger",
         },
@@ -651,7 +657,7 @@ export default {
     Approval(row) {
       this.toexadialog = true;
       this.dialogTitle = "合同审核";
-      // this.currentId = id
+      this.currentId = row.order_id;
       this.contractInfo = row;
     },
     // 合同模板列表接口
@@ -691,6 +697,7 @@ export default {
       if (res.code == 0) {
         this.$message.success(res.message);
         this.dialogVisible = false;
+        this.getCustomerList();
       }
     },
     // 复制
