@@ -136,7 +136,12 @@
               ></i>
             </template>
           </el-table-column>
-          <el-table-column prop="sex" label="性别" min-width="60" show-overflow-tooltip>
+          <el-table-column
+            prop="sex"
+            label="性别"
+            min-width="60"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div>
                 {{ row.sex == 1 ? "男" : row.sex == 2 ? "女" : "未知" }}
@@ -156,7 +161,12 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-          <el-table-column prop="from_organization_name" label="推荐机构" min-width="90" show-overflow-tooltip>
+          <el-table-column
+            prop="from_organization_name"
+            label="推荐机构"
+            min-width="90"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
               <div v-if="row.from_organization_name">
                 {{ row.from_organization_name }}
@@ -180,27 +190,45 @@
               <span v-else>--</span>
             </template>
           </el-table-column>
-          <el-table-column prop="create_time" label="创建时间" min-width="90" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="contract_status" label="合同状态" min-width="100" show-overflow-tooltip>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="contract_status"
+            label="合同状态"
+            min-width="100"
+            show-overflow-tooltip
+          >
             <template slot-scope="{ row }">
-              <div style="display: flex; justify-content:center;">
-                <div :class="row.contract_status==4?'colorgreen' :'colored'" style="margin:10px 5px 0 0;">
-                  {{ statusMap[row.contract_status] }}
-                </div>
-                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status == null">生成合同</el-button>
-                <el-button type="text" @click="seeview(row)" v-if="row.contract_status !== null">查看合同</el-button>
-                <el-button type="text" @click="Approval(row)" v-if="row.contract_status==1">审核</el-button>
-                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==2">待审核</el-button>
-                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==3">驳回</el-button>
-                <el-button type="text" @click="seebtn(row)" v-if="row.contract_status==4">已完成</el-button>
-              </div>
+              <el-tag size="small" :type="statusMap[row.contract_status].type">
+                {{ statusMap[row.contract_status].text }}
+              </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="100">
-            <template slot-scope="scope">
+          <el-table-column label="操作" fixed="right" min-width="180">
+            <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="toCusDetail(scope.row)"
-                  >客户详情</el-button>
+                <el-button
+                  type="text"
+                  @click="seebtn(row)"
+                  v-if="!row.contract_status"
+                  >生成合同</el-button
+                >
+                <el-button type="text" @click="seeview(row)" v-if="row.sign_url"
+                  >查看合同</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="Approval(row)"
+                  v-if="row.contract_status == 1"
+                  >审核</el-button
+                >
+                <el-button type="text" @click="toCusDetail(row)"
+                  >客户详情</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -214,27 +242,35 @@
         </div>
 
         <!-- 生成合同弹窗 -->
-        <el-dialog title="生成合同" :visible.sync="dialogVisible" width="25%" :close-on-click-modal="false">
-        <el-form
-        label-width="130px"
-        class="info-form"
-        :model="ruleForm"
-        ref="ruleForm">
-      <el-form-item label="合同模板" prop="template_name">
-        <el-select
-            v-model="templateId"
-            clearable
-            placeholder="请选择合同模板">
-            <el-option
-            v-for="item in dictOptions"
-            :key="item.id"
-            :label="item.template_name"
-            :value="item.id"
-            class="input-width">
-            </el-option>
-            </el-select>
-      </el-form-item>
-      </el-form>
+        <el-dialog
+          title="生成合同"
+          :visible.sync="dialogVisible"
+          width="25%"
+          :close-on-click-modal="false"
+        >
+          <el-form
+            label-width="130px"
+            class="info-form"
+            :model="ruleForm"
+            ref="ruleForm"
+          >
+            <el-form-item label="合同模板" prop="template_name">
+              <el-select
+                v-model="templateId"
+                clearable
+                placeholder="请选择合同模板"
+              >
+                <el-option
+                  v-for="item in dictOptions"
+                  :key="item.id"
+                  :label="item.template_name"
+                  :value="item.id"
+                  class="input-width"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="Entryenter">确 定</el-button>
@@ -244,19 +280,40 @@
         <!-- <Viewcontract v-model="viewcondialog" :id="currentId" :project="project" :template_url="template_url" /> -->
 
         <!--查看模板弹窗 -->
-      <el-dialog title="查看合同" :visible.sync="viewcondialog" width="1000px" :close-on-click-modal="false" style="margin-top:-6vh;">
-      <!-- <div class="right" style="float:right; margin-bottom:20px;">
+        <el-dialog
+          title="查看合同"
+          :visible.sync="viewcondialog"
+          width="1000px"
+          :close-on-click-modal="false"
+          style="margin-top: -6vh"
+        >
+          <!-- <div class="right" style="float:right; margin-bottom:20px;">
         <el-button type="primary">发送合同链接</el-button>
         <el-button plain>生成二维码</el-button>
       </div> -->
 
-       <div style="width:800px; height:650px; overflow:hidden; margin-top: 0; ">
-        <iframe :src="sign_url" ref="iframe" type="application/x-google-chrome-pdf" width="1200px" height="800px" border="0" style="margin-top:-120px;margin-left:-10px" />
-      </div>
-      <!-- <iframe :src="sign_url" type="application/x-google-chrome-pdf" width="1150px" height="650px" border="0" /> -->
-    </el-dialog>
+          <div
+            style="width: 800px; height: 650px; overflow: hidden; margin-top: 0"
+          >
+            <iframe
+              :src="sign_url"
+              ref="iframe"
+              type="application/x-google-chrome-pdf"
+              width="1200px"
+              height="800px"
+              border="0"
+              style="margin-top: -120px; margin-left: -10px"
+            />
+          </div>
+          <!-- <iframe :src="sign_url" type="application/x-google-chrome-pdf" width="1150px" height="650px" border="0" /> -->
+        </el-dialog>
 
-    <Toexamine v-model="toexadialog" @on-success="getCustomerList" :contractInfo="contractInfo" :id="currentId"/>
+        <Toexamine
+          v-model="toexadialog"
+          @on-success="getCustomerList"
+          :contractInfo="contractInfo"
+          :id="currentId"
+        />
         <addCustomeDialog
           :innerVisible="innerVisible"
           @on-success="getCustomerList"
@@ -268,17 +325,17 @@
 </template>
 
 <script>
-import { templatelist} from '@/api/system'
-import { getCateList, getInstitutionSelectData } from '@/api/sou'
-import { generate } from '@/api/fina'
-import { getproject } from '@/api/eda'
-import { contractaudit } from '@/api/fina'
-import { getCustomerList, getInstitutionList, getfieldinfo } from '@/api/etm'
-import { cloneOptions } from '@/utils/index'
-import addCustomeDialog from './components/addCustomeDialog'
-import Viewcontract from './components/viewcontract'
-import Seetemplate from './components/seetemplate'
-import Toexamine from './components/toexadialog'
+import { templatelist } from "@/api/system";
+import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { generate } from "@/api/fina";
+import { getproject } from "@/api/eda";
+import { contractaudit } from "@/api/fina";
+import { getCustomerList, getInstitutionList, getfieldinfo } from "@/api/etm";
+import { cloneOptions } from "@/utils/index";
+import addCustomeDialog from "./components/addCustomeDialog";
+import Viewcontract from "./components/viewcontract";
+import Seetemplate from "./components/seetemplate";
+import Toexamine from "./components/toexadialog";
 
 export default {
   name: "myClients",
@@ -286,7 +343,7 @@ export default {
     addCustomeDialog,
     Viewcontract,
     Seetemplate,
-    Toexamine
+    Toexamine,
   },
   data() {
     let validMail = (rule, value, callback) => {
@@ -304,33 +361,50 @@ export default {
     return {
       dictOptions: [],
       contractInfo: {},
-      toexadialog:false,
-      template_url: '',
+      toexadialog: false,
+      template_url: "",
       rules: {
-        project: [{ required: true, message: '请输入合同id', trigger: 'blur' }],
-        audit_type: [{ required: true, message: '请选择', trigger: 'blur' }],
-        audit_content: [{ required: true, message: '请输入拒绝原因', trigger: 'blur' }],
+        project: [{ required: true, message: "请输入合同id", trigger: "blur" }],
+        audit_type: [{ required: true, message: "请选择", trigger: "blur" }],
+        audit_content: [
+          { required: true, message: "请输入拒绝原因", trigger: "blur" },
+        ],
       },
-      seetempdialog:false,
+      seetempdialog: false,
       dialogVisible: false,
-      examdialogVisible:false,
-      viewcondialog:false,
-      sign_url: '',
+      examdialogVisible: false,
+      viewcondialog: false,
+      sign_url: "",
       statusMap: {
-        null: '未生成',
-        1: '未审核',
-        2: '已审核',
-        3: '已驳回',
-        4: '签署完成',
+        null: {
+          text: "未生成",
+          type: "danger",
+        },
+        1: {
+          text: "未审核",
+          type: "primary",
+        },
+        2: {
+          text: "已审核",
+          type: "success",
+        },
+        3: {
+          text: "已驳回",
+          type: "warning",
+        },
+        4: {
+          text: "签署完成",
+          type: "success",
+        },
       },
-      contract_status: '',
-      currentId: '',
-      project: '',
-      id: '',
+      contract_status: "",
+      currentId: "",
+      project: "",
+      id: "",
       analysis: {},
       innerVisible: false,
       searchData: {
-        id:'',
+        id: "",
         category_id: "",
         date: [],
         project_id: "",
@@ -485,11 +559,11 @@ export default {
       ],
       schoolData: [],
       ruleForm: {
-        template_name:'',
-        order_id: '',
-        surname: '',
-        mobile: '',
-        id_card_number: '',
+        template_name: "",
+        order_id: "",
+        surname: "",
+        mobile: "",
+        id_card_number: "",
         sex: 0,
         birthday: "",
         marry: 0,
@@ -502,10 +576,10 @@ export default {
         sources: "",
         tips: "",
 
-        id: '',
+        id: "",
         audit_type: 0,
-        audit_content: '',
-        project: '',
+        audit_content: "",
+        project: "",
       },
       curstomerVisible: false,
       tabFun: [
@@ -525,8 +599,8 @@ export default {
       projectData: [],
       field_content: [],
       date: "",
-      templateId:'',
-      orderId:'',
+      templateId: "",
+      orderId: "",
     };
   },
   created() {
@@ -551,24 +625,23 @@ export default {
     // },
   },
   methods: {
-　
     handleClose(done) {
-      this.seetempdialog = false
+      this.seetempdialog = false;
     },
     seebtn(row) {
-      this.templatelist()
-      this.templateId = ''
-      this.orderId = row.order_id
-      this.dialogVisible = true
+      this.templatelist();
+      this.templateId = "";
+      this.orderId = row.order_id;
+      this.dialogVisible = true;
     },
     // 查看合同
     seetemplate(row) {
-      console.log(row)
-      this.seetempdialog = true
-      this.sign_url = row.sign_url
+      console.log(row);
+      this.seetempdialog = true;
+      this.sign_url = row.sign_url;
     },
     Entryenter() {
-      this.generate()
+      this.generate();
     },
     // exambtn(row) {
     //   this.order_id = row.order_id
@@ -576,23 +649,23 @@ export default {
     //   this.examdialogVisible = true
     // },
     Approval(row) {
-      this.toexadialog = true
-      this.dialogTitle = '合同审核'
+      this.toexadialog = true;
+      this.dialogTitle = "合同审核";
       // this.currentId = id
-      this.contractInfo = row
+      this.contractInfo = row;
     },
- 
+
     // 合同模板列表接口
     async templatelist() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-      }
-      const res = await templatelist(data)
+      };
+      const res = await templatelist(data);
       // console.log(res.data.data)
       if (res.code == 0) {
         this.dictOptions = res.data.data;
-        console.log(this.dictOptions)
+        console.log(this.dictOptions);
       }
     },
 
@@ -607,18 +680,18 @@ export default {
         }
       });
     },
- 
+
     // 生成合同接口
     async generate() {
       const data = {
         template_id: this.templateId,
         order_id: this.orderId,
-      }
+      };
       // console.log(data)
-      const res = await generate(data)
+      const res = await generate(data);
       if (res.code == 0) {
-        this.$message.success(res.message)
-        this.dialogVisible = false      
+        this.$message.success(res.message);
+        this.dialogVisible = false;
       }
     },
     // 复制
@@ -798,11 +871,11 @@ export default {
       this.page = page;
       this.getCustomerList();
     },
-    
+
     seeview(row) {
-      this.viewcondialog = true
+      this.viewcondialog = true;
       // this.project = sing_url.projects
-      this.sign_url =row.sign_url
+      this.sign_url = row.sign_url;
     },
   },
 };

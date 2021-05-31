@@ -21,7 +21,15 @@ export default {
       isRouterAlive: true, //控制视图是否显示的变量
     };
   },
-  mounted() {},
+  beforeCreate() {
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    ) {
+      window.location = "http://m.edu.beiqujy.com";
+    }
+  },
   methods: {
     reload() {
       this.isRouterAlive = false;
