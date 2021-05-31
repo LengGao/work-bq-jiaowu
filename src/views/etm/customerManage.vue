@@ -698,6 +698,7 @@ export default {
       if (res.code == 0) {
         this.$message.success(res.message);
         this.dialogVisible = false;
+        this.getCustomerList();
       }
     },
     // 复制

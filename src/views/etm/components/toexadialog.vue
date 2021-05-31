@@ -93,6 +93,7 @@ export default {
         this.ruleForm[k] = "";
       }
       this.$refs[formName].resetFields();
+      this.hanldeCancel();
     },
     hanldeCancel() {
       this.$emit("input", false);
