@@ -187,6 +187,7 @@ export default {
       this.listLoading = true;
       const data = {
         all: 1,
+        op_uid: -1,
         uid: this.uid,
       };
       const res = await getOrderList(data);
