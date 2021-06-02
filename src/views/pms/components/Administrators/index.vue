@@ -495,6 +495,9 @@ export default {
       display: flex;
       justify-content: space-between;
       .chart-bar-list {
+        height: 80%;
+        padding: 0 4px;
+        overflow-y: auto;
         flex: 1;
         .list-title {
           font-size: 14px;
