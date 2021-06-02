@@ -5,31 +5,105 @@
     </div>
     <section class="mainwrap">
       <div class="client_head">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
       </div>
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
-          <el-table-column prop="order_no" label="订单编号" min-width="200" column-key="order_no" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="project_str" label="项目名称" min-width="200" column-key="project_str" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="surname" label="签署人" min-width="200" column-key="surname" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="pay_money" label="应收金额" min-width="200" column-key="pay_money" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="order_money" label="签署价格" min-width="200" column-key="order_money" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="create_time" label="上传时间" min-width="250" column-key="create_time" show-overflow-tooltip></el-table-column>
-          <el-table-column label="合同状态" fixed="right" min-width="150" prop="contract_status">
-            <template slot-scope="{row}">
-              <div style="display: flex; justify-content:center;" :class="row.contract_status== 4 ?'colorgreen' :'colored' ">
-                {{ statusMap[row.contract_status] }}
-              </div>
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          class="min_table"
+        >
+          <el-table-column
+            prop="order_no"
+            label="订单编号"
+            min-width="200"
+            column-key="order_no"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="project_str"
+            label="项目名称"
+            min-width="200"
+            column-key="project_str"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="surname"
+            label="签署人"
+            min-width="200"
+            column-key="surname"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="pay_money"
+            label="应收金额"
+            min-width="200"
+            column-key="pay_money"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="order_money"
+            label="签署价格"
+            min-width="200"
+            column-key="order_money"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="上传时间"
+            min-width="250"
+            column-key="create_time"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="contract_status"
+            label="合同状态"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-tag
+                size="small"
+                :type="statusMap[row.contract_status || 0].type"
+              >
+                {{ statusMap[row.contract_status || 0].text }}
+              </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="220">
-            <template slot-scope="{row}">
-              <div style="display: flex; justify-content:center;">
-                <el-button type="text" :class="row.contract_status == 1? 'entry2':'entry1'" @click="pcontractsee(row.sign_url)">查看</el-button>
-                <el-button type="text" @click="Approval(row)" :class="row.contract_status == 1? 'entry2':'entry1'">审核</el-button>
-                <el-button type="text" :class="row.contract_status == 1? 'entry1':'entry2'" @click="pcontract(row.sign_url)">查看合同</el-button>
-
+          <el-table-column label="操作" fixed="right" min-width="200">
+            <template slot-scope="{ row }">
+              <div style="display: flex; justify-content: center">
+                <el-button
+                  type="text"
+                  v-if="row.sign_url && row.contract_status"
+                  @click="pcontractsee(row.sign_url)"
+                  >查看</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="Approval(row)"
+                  v-if="row.contract_status == 1"
+                  >审核</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="handleCopy(row.sign_url)"
+                  v-if="
+                    row.sign_url &&
+                    (row.contract_status === 2 || row.contract_status === 4)
+                  "
+                  >复制签名链接</el-button
+                >
                 <!-- <el-button type="text" :class="row.contract_status == 1? 'entry1':'entry2'">查看收据</el-button> -->
               </div>
             </template>
@@ -38,107 +112,148 @@
           </el-pagination>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
-      <Toexamine v-model="toexadialog" @on-success="auditlist" :contractInfo="contractInfo" :id="currentId" />
+      <Toexamine
+        v-model="toexadialog"
+        @on-success="auditlist"
+        :contractInfo="contractInfo"
+        :id="currentId"
+      />
 
-      <Seetemplate v-model="seetempdialog" :id="currentId" :sign_url="sign_url" />
+      <Seetemplate
+        v-model="seetempdialog"
+        :id="currentId"
+        :sign_url="sign_url"
+      />
     </section>
   </section>
 </template>
 <script>
-import { auditlist } from '@/api/fina'
-import Toexamine from './components/toexadialog'
-import Seetemplate from './components/seetemplate'
+import { auditlist } from "@/api/fina";
+import Toexamine from "./components/toexadialog";
+import Seetemplate from "./components/seetemplate";
 
 export default {
-  name: 'contract',
+  name: "contract",
   components: {
     Toexamine,
     Seetemplate,
   },
   data() {
     return {
-      sign_url: '',
+      sign_url: "",
       seetempdialog: false,
       contractInfo: {},
-      order_no: '',
-      currentId: '',
-      dialogTitle: '',
+      order_no: "",
+      currentId: "",
+      dialogTitle: "",
       toexadialog: false,
-      contract_status: '',
-      id: '',
-      audit_type: '',
-      audit_content: '',
+      contract_status: "",
+      id: "",
+      audit_type: "",
+      audit_content: "",
       statusMap: {
-        1: '待审核',
-        2: '待签署',
-        3: '审核不通过',
-        4: '签署完成',
+        0: {
+          text: "未生成",
+          type: "danger",
+        },
+        1: {
+          text: "未审核",
+          type: "primary",
+        },
+        2: {
+          text: "已审核",
+          type: "success",
+        },
+        3: {
+          text: "已驳回",
+          type: "warning",
+        },
+        4: {
+          text: "签署完成",
+          type: "success",
+        },
       },
       searchOptions: [
         {
-          key: 'order_no',
+          key: "order_no",
           attrs: {
-            placeholder: '请输入订单编号',
+            placeholder: "请输入订单编号",
             clearable: true,
           },
         },
       ],
       options: [],
       searchData: {
-        keyword: '',
+        keyword: "",
       },
       listTotal: 0,
       pageNum: 1,
       listData: [],
-    }
+    };
   },
   created() {
-    this.auditlist()
+    this.auditlist();
   },
   methods: {
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
+      }
+    },
     //搜索功能
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.auditlist()
+      this.pageNum = 1;
+      this.searchData = data;
+      this.auditlist();
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.auditlist()
+      this.pageNum = val;
+      this.auditlist();
     },
     // 合同审核列表接口
     async auditlist() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-      }
-      const res = await auditlist(data)
-      console.log(res.data.data)
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      };
+      const res = await auditlist(data);
+      console.log(res.data.data);
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
     Approval(row) {
-      this.toexadialog = true
-      this.dialogTitle = '合同审核'
+      this.toexadialog = true;
+      this.dialogTitle = "合同审核";
       // this.currentId = id
-      this.contractInfo = row
+      this.contractInfo = row;
     },
     pcontract(sign_url) {
-      console.log(sign_url)
-      var tempwindow = window.open('_blank')
-      tempwindow.location = sign_url
-      this.auditlist()
+      console.log(sign_url);
+      var tempwindow = window.open("_blank");
+      tempwindow.location = sign_url;
+      this.auditlist();
     },
     pcontractsee(sign_url) {
-      console.log(sign_url)
-      this.sign_url = sign_url
-      this.seetempdialog = true
+      console.log(sign_url);
+      this.sign_url = sign_url;
+      this.seetempdialog = true;
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.search-lise .search-item[data-v-a11328ce] {
