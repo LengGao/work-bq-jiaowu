@@ -217,7 +217,7 @@
                 <el-button
                   type="text"
                   @click="seebtn(row)"
-                  v-if="!row.contract_status"
+                  v-if="!row.contract_status && row.project_id"
                   >生成合同</el-button
                 >
                 <el-button
@@ -229,7 +229,10 @@
                 <el-button
                   type="text"
                   @click="handleCopy(row.sign_url)"
-                  v-if="row.sign_url"
+                  v-if="
+                    row.sign_url &&
+                    (row.contract_status === 2 || row.contract_status === 4)
+                  "
                   >复制签名链接</el-button
                 >
                 <el-button
