@@ -166,7 +166,7 @@
           label="操作"
           align="center"
           fixed="right"
-          min-width="100"
+          min-width="160"
         >
           <template slot-scope="{ row }">
             <el-button
@@ -174,6 +174,15 @@
               style="padding: 0"
               @click="toClassDetail(row.classroom_id)"
               >班级详情</el-button
+            >
+            <el-button type="text" style="padding: 0" @click="linkTo(row)"
+              >转班</el-button
+            >
+            <el-button
+              type="text"
+              style="padding: 0"
+              @click="removeConfirm(row.classroom_id)"
+              >移除</el-button
             >
           </template>
         </el-table-column>
@@ -272,7 +281,12 @@
 </template>
 
 <script>
-import { getstudendclass, getuserproject, unClassCourse } from "@/api/eda";
+import {
+  getstudendclass,
+  getuserproject,
+  unClassCourse,
+  classstudentsBatchRemove,
+} from "@/api/eda";
 export default {
   name: "class",
   props: {
@@ -297,6 +311,39 @@ export default {
     this.unClassCourse();
   },
   methods: {
+    // 去转班
+    linkTo(row) {
+      const query = {
+        uid: [this.uid],
+        course_students_id: [row.course_student_id],
+        old_classroom_id: row.classroom_id,
+      };
+      this.$router.push({
+        name: "shift",
+        query: { json: JSON.stringify(query) },
+      });
+    },
+    // 移除学生
+    removeConfirm(classroom_id) {
+      this.$confirm(`确定要移除此学生吗?`, {
+        type: "warning",
+      })
+        .then(() => {
+          this.classstudentsBatchRemove(classroom_id);
+        })
+        .catch(() => {});
+    },
+    async classstudentsBatchRemove(classroom_id) {
+      const data = {
+        uid: [this.uid],
+        classroom_id,
+      };
+      const res = await classstudentsBatchRemove(data);
+      if (res.code === 0) {
+        this.$message.success("学生移除成功");
+        this.getstudendclass();
+      }
+    },
     // 未分班课程列表
     async unClassCourse() {
       const data = {
