@@ -59,8 +59,13 @@
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="欠费金额" prop="reduction">
-                  <div class="ruleWord">¥ {{ ruleForm.reduction }}</div>
+                <el-form-item label="欠费金额" prop="overdue_money">
+                  <div class="ruleWord">¥ {{ ruleForm.overdue_money }}</div>
+                </el-form-item>
+              </el-col>
+              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+                <el-form-item label="退款金额" prop="refund_money">
+                  <div class="ruleWord">¥ {{ ruleForm.refund_money }}</div>
                 </el-form-item>
               </el-col>
               <!-- <el-col :lg="8" :md="8" :sm="8" :xs="8">
@@ -116,7 +121,7 @@
         </el-table-column>
         <el-table-column
           prop="pay_money"
-          label="应收金额"
+          label="已付金额"
           show-overflow-tooltip
           min-width="90"
           >¥ {{ ruleForm.pay_money }}
@@ -251,7 +256,7 @@
 </template>
 
 <script>
-import CollectionOrder from '../components/CollectionOrder'
+import CollectionOrder from "../components/CollectionOrder";
 export default {
   components: {
     CollectionOrder,
@@ -262,37 +267,37 @@ export default {
 
       pay_log: [],
       statusMap: {
-        0: '待付款',
-        1: '已付款',
-        2: '部分入账',
-        3: '已入账',
-        4: '已作废',
-        5: '已退款',
+        0: "待付款",
+        1: "已付款",
+        2: "部分入账",
+        3: "已入账",
+        4: "已作废",
+        5: "已退款",
       },
-      dialogImageUrl: '',
+      dialogImageUrl: "",
       dialogFormVisible: false,
       refundFormVisible: false,
       voidFormVisible: false,
       dialogVisible: false,
-      order_id: '',
+      order_id: "",
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
         delivery: false,
         type: [],
-        resource: '',
-        desc: '',
+        resource: "",
+        desc: "",
       },
       ruleForm: {
-        order_no: '',
-        verify_time: '',
-        surname: '',
-        order_money: '',
-        reduction: '',
-        pay_money: '',
-        reduction: '',
+        order_no: "",
+        verify_time: "",
+        surname: "",
+        order_money: "",
+        reduction: "",
+        pay_money: "",
+        reduction: "",
         account: {},
       },
       // projectData:{
@@ -304,39 +309,39 @@ export default {
       // },
       schoolData: [
         {
-          supplement_time: '',
-          pay_type: '',
-          pay_money: '',
-          yingshou: '',
-          uid: '',
+          supplement_time: "",
+          pay_type: "",
+          pay_money: "",
+          yingshou: "",
+          uid: "",
         },
       ],
 
       rules: {
         pay_money: [
-          { type: 'date', required: true, message: '', trigger: 'change' },
+          { type: "date", required: true, message: "", trigger: "change" },
         ],
-        pay_type: [{ required: true, message: '', trigger: 'change' }],
+        pay_type: [{ required: true, message: "", trigger: "change" }],
         money: [
           {
-            type: 'date',
+            type: "date",
             required: true,
-            message: '请填写支付金额',
-            trigger: 'change',
+            message: "请填写支付金额",
+            trigger: "change",
           },
         ],
-        cate_id: [{ required: true, message: '', trigger: 'change' }],
+        cate_id: [{ required: true, message: "", trigger: "change" }],
       },
       panelData: {},
       orderActionDialog: false,
       dialogInfo: {},
       dialogType: 1,
-    }
+    };
   },
   mounted() {
     // let status = 3
-    this.order_id = this.$route.query.order_id
-    this.$api.orderdetail(this, 'schoolData')
+    this.order_id = this.$route.query.order_id;
+    this.$api.orderdetail(this, "schoolData");
   },
 
   methods: {
@@ -367,7 +372,7 @@ export default {
     //   this.dialogVisible = true;
     // },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -395,7 +400,7 @@ export default {
   margin-top: 10px;
   font-size: 14px;
   color: #909399;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
   display: flex;
@@ -415,7 +420,7 @@ export default {
 }
 h3 {
   color: #333333;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
