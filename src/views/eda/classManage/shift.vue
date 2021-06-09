@@ -155,6 +155,7 @@ export default {
     async getClassList() {
       const data = {
         page: this.pageNum,
+        course_id: this.$route.query.course_id,
         ...this.searchData,
       };
       this.listLoading = true;

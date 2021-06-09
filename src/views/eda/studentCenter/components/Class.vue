@@ -320,7 +320,7 @@ export default {
       };
       this.$router.push({
         name: "shift",
-        query: { json: JSON.stringify(query) },
+        query: { json: JSON.stringify(query), course_id: row.course_id },
       });
     },
     // 移除学生
