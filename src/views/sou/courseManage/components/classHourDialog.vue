@@ -161,12 +161,10 @@ export default {
         for (const k in this.formData) {
           this.formData[k] = res.data[k];
         }
-        const media_id = res.data.media_int_id;
-        this.formData.media_id = media_id;
         this.defaultFiles = [
           {
             name: res.data.media_name,
-            id: media_id,
+            id: res.data.media_id,
           },
         ];
       }
