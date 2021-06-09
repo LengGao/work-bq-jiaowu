@@ -42,7 +42,7 @@
         name="ClassAttendanceStatistics"
       ></el-tab-pane>
     </el-tabs>
-    <component :is="getComponent" />
+    <component :is="getComponent" :classData="detailData" />
     <PreviewImg ref="view" />
   </div>
 </template>

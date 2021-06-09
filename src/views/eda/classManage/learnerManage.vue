@@ -214,7 +214,10 @@ export default {
       };
       this.$router.push({
         name: "shift",
-        query: { json: JSON.stringify(query) },
+        query: {
+          json: JSON.stringify(query),
+          course_id: this.listData[0].course_id,
+        },
       });
     },
 
@@ -226,7 +229,7 @@ export default {
       };
       this.$router.push({
         name: "shift",
-        query: { json: JSON.stringify(query) },
+        query: { json: JSON.stringify(query), course_id: row.course_id },
       });
     },
     addStudent() {
