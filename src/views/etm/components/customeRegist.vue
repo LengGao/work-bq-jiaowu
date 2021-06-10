@@ -342,6 +342,10 @@ export default {
           value: 6,
           label: "收钱吧",
         },
+        {
+          value: 7,
+          label: "机构签约订单",
+        },
       ],
       ruleForm: {
         online_course: "",
@@ -410,9 +414,8 @@ export default {
       });
       this.ruleForm.order_money = parsePrice(order_money);
       this.ruleForm.reduction = parsePrice(reduction);
-      this.ruleForm.pay_money = this.receivableMoney = parsePrice(
-        receivableMoney
-      );
+      this.ruleForm.pay_money = this.receivableMoney =
+        parsePrice(receivableMoney);
 
       console.log(order_money, reduction, receivableMoney);
     },

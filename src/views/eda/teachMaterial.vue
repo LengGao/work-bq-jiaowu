@@ -217,6 +217,7 @@ export default {
           attrs: {
             placeholder: "所属班级",
             clearable: true,
+            filterable: true,
           },
         },
         {

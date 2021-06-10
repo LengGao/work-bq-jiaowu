@@ -20,6 +20,7 @@
           style="width: 100%"
           v-model="formData.video_chapter_id"
           clearable
+          filterable
           placeholder="请选择"
         >
           <el-option
