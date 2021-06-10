@@ -211,7 +211,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="250">
+          <el-table-column label="操作" fixed="right" min-width="300">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button
@@ -243,6 +243,12 @@
                 >
                 <el-button type="text" @click="toCusDetail(row)"
                   >客户详情</el-button
+                >
+                <el-button
+                  v-if="row.order_id"
+                  type="text"
+                  @click="orderDetail(row)"
+                  >订单详情</el-button
                 >
               </div>
             </template>
@@ -363,7 +369,8 @@ export default {
       if (value == "" || value == undefined) {
         callback(new Error("请填写邮箱"));
       } else {
-        let reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/;
+        let reg =
+          /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/;
         if (!reg.test(value)) {
           callback(new Error("邮箱格式错误"));
         } else {
@@ -638,6 +645,14 @@ export default {
     // },
   },
   methods: {
+    orderDetail(row) {
+      this.$router.push({
+        name: "orderdetail",
+        query: {
+          order_id: row.order_id,
+        },
+      });
+    },
     // 复制
     handleCopy(val) {
       const input = document.createElement("input");
