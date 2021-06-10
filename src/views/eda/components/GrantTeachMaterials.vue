@@ -19,6 +19,8 @@
     >
       <el-form-item label="仓库名称" prop="storage_id">
         <el-select
+          clearable
+          filterable
           v-model="ruleForm.storage_id"
           placeholder="请选择"
           @change="handleStorageChange"
