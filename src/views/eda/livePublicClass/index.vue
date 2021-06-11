@@ -80,6 +80,23 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="book_price"
+            label="是否启用"
+            min-width="110"
+            show-overflow-tooltip
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                @change="updatePublicLiveShowStatus(row)"
+                v-model="row.is_show"
+                :active-value="1"
+                :inactive-value="0"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="操作"
             align="center"
             fixed="right"
@@ -150,6 +167,7 @@ import {
   deleteClassLive,
   livestart,
   closelive,
+  updatePublicLiveShowStatus,
 } from "@/api/eda";
 import { cloneOptions } from "@/utils/index";
 import { getCateList } from "@/api/sou";
@@ -217,6 +235,21 @@ export default {
     this.publicLiveList();
   },
   methods: {
+    //修改直播展示状态
+    async updatePublicLiveShowStatus(row) {
+      const data = {
+        id: row.live_class_id,
+        is_show: row.is_show,
+      };
+      const res = await updatePublicLiveShowStatus(data).catch(() => {
+        row.is_show = row.is_show ? 0 : 1;
+      });
+      if (res.code === 0) {
+        this.$message.success(
+          `${row.live_class_name} 已${row.is_show === 1 ? "启" : "禁"}用`
+        );
+      }
+    },
     openLinkDetail(id) {
       this.currentId = id;
       this.liveDetailTitle = "直播链接";

@@ -183,7 +183,7 @@ export default {
         status: row.status,
       };
       const res = await editstorage(data).catch(() => {
-        row.status = row.status ? 0 : 1;
+        row.status = row.status === 1 ? 2 : 1;
       });
       if (res.code === 0) {
         this.$message.success(
