@@ -30,7 +30,7 @@
         show-overflow-tooltip
       ></el-table-column>
       <el-table-column
-        prop="play_duration"
+        prop="playDuration"
         label="观看时长"
         min-width="180"
         show-overflow-tooltip
