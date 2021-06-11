@@ -52,7 +52,10 @@
             show-overflow-tooltip
           ></el-table-column>
         </el-table>
-        <div class="table_bottom" style="display:flex;justify-content:flex-end">
+        <div
+          class="table_bottom"
+          style="display: flex; justify-content: flex-end"
+        >
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -63,9 +66,7 @@
       <div class="main-right">
         <div class="right-head">
           <div>已选课程:{{ selection.length }}</div>
-          <p @click="hadleResetUser" style="cursor:pointer">
-            清空
-          </p>
+          <p @click="hadleResetUser" style="cursor: pointer">清空</p>
         </div>
         <ul>
           <li v-for="(item, index) in selection" :key="item.course_id">
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-import { getCourseList, getCateList } from '@/api/sou'
+import { getCourseList, getCateList } from "@/api/sou";
 export default {
   data() {
     return {
@@ -96,32 +97,34 @@ export default {
       listTotal: 0,
       searchData: {
         category_id: [],
-        course_name: '',
+        course_name: "",
       },
       selection: [],
       searchOptions: [
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
           attrs: {
             clearable: true,
-            options: [{ value: 1, label: 'test' }],
+            props: { checkStrictly: true },
+            filterable: true,
+            options: [],
           },
         },
         {
-          key: 'course_name',
+          key: "course_name",
           attrs: {
-            placeholder: '课程名称',
+            placeholder: "课程名称",
           },
         },
       ],
       selectData: [],
       listData: [],
-    }
+    };
   },
   watch: {
     value(val) {
-      this.visible = val
+      this.visible = val;
     },
   },
   props: {
@@ -144,82 +147,82 @@ export default {
     toggleSelection(rows) {
       if (rows) {
         rows.forEach((row) => {
-          this.$refs.multipleTable.toggleRowSelection(row)
-        })
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
       } else {
-        this.$refs.multipleTable.clearSelection()
+        this.$refs.multipleTable.clearSelection();
       }
     },
     // 指定一个唯一标识。id或者其他唯一的
     getRowKeys(row) {
-      return row.course_id
+      return row.course_id;
     },
 
     // 右侧已选删除
     handleRemoveUser(index) {
-      this.$refs.multipleTable.selection.splice(index, 1)
-      this.selection.splice(index, 1)
+      this.$refs.multipleTable.selection.splice(index, 1);
+      this.selection.splice(index, 1);
     },
     // 右侧已选清空
     hadleResetUser() {
-      this.toggleSelection()
+      this.toggleSelection();
     },
     handleOpen() {
-      this.getCateList()
-      this.getCourseList()
+      this.getCateList();
+      this.getCourseList();
       // 把已经选择的回显上
       this.$nextTick(() => {
-        this.selection = [...this.courseTag]
+        this.selection = [...this.courseTag];
         // 替换掉this.$refs.multipleTable.selection上原有的
-        const len = this.$refs.multipleTable.selection.length
-        this.$refs.multipleTable.selection.splice(0, len, ...this.courseTag)
-      })
+        const len = this.$refs.multipleTable.selection.length;
+        this.$refs.multipleTable.selection.splice(0, len, ...this.courseTag);
+      });
     },
     handleconfirm() {
-      this.$emit('on-coursesuccess', [...this.selection])
-      this.hanldeCancel()
+      this.$emit("on-coursesuccess", [...this.selection]);
+      this.hanldeCancel();
     },
     deleteCourse(index) {
-      this.selection.splice(index, 1)
+      this.selection.splice(index, 1);
     },
     handleSelectionChange(selection) {
-      this.selection = selection ? [...selection] : []
+      this.selection = selection ? [...selection] : [];
       // this.selection = selection
     },
     hanldeCancel() {
-      this.$emit('input', false)
-      this.pageNum = 1
+      this.$emit("input", false);
+      this.pageNum = 1;
     },
     closeCourse() {
-      this.$emit('closeCourse')
+      this.$emit("closeCourse");
     },
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        this.searchOptions[0].attrs.options = this.selectData
+        this.cloneData(res.data, this.selectData);
+        this.searchOptions[0].attrs.options = this.selectData;
       }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getCourseList()
+      this.pageNum = val;
+      this.getCourseList();
     },
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.getCourseList()
+      this.pageNum = 1;
+      this.searchData = data;
+      this.getCourseList();
     },
     async getCourseList() {
       const data = {
@@ -227,16 +230,16 @@ export default {
         class_type: 1,
         ...this.searchData,
         course_category_id: this.searchData.category_id.pop(),
-      }
-      console.log(data)
-      this.listLoading = true
-      const res = await getCourseList(data)
-      this.listLoading = false
-      this.listData = res.data.list
-      this.listTotal = res.data.total
+      };
+      console.log(data);
+      this.listLoading = true;
+      const res = await getCourseList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -253,7 +256,7 @@ export default {
     border: 1px solid rgb(220, 223, 230);
     .right-head {
       display: flex;
-      font-family: 'Arial Negreta', 'Arial Normal', 'Arial', sans-serif;
+      font-family: "Arial Negreta", "Arial Normal", "Arial", sans-serif;
       font-weight: 700;
       font-style: normal;
       color: #909399;
@@ -273,7 +276,7 @@ export default {
         display: flex;
         padding: 14px 25px;
         justify-content: space-between;
-        font-family: 'Arial Normal', 'Arial', sans-serif;
+        font-family: "Arial Normal", "Arial", sans-serif;
         font-weight: 400;
         font-style: normal;
         color: #909399;

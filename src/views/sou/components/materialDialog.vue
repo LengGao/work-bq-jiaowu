@@ -100,7 +100,9 @@ export default {
           type: "cascader",
           attrs: {
             clearable: true,
-            options: [{ value: 1, label: "test" }],
+            props: { checkStrictly: true },
+            filterable: true,
+            options: [],
           },
         },
         {

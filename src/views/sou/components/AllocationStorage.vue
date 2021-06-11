@@ -118,6 +118,7 @@
       </div>
       <div class="table_bottom">
         <page
+          :pageSize="10"
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
