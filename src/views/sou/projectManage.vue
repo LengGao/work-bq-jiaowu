@@ -151,6 +151,8 @@
             <el-col :lg="12" :sm="12" :xs="12" :md="12">
               <el-form-item label="所属分类">
                 <el-cascader
+                  filterable
+                  clearable
                   class="common-width"
                   v-model="ruleForm.category_id"
                   :options="selectData"
@@ -201,6 +203,8 @@
                   v-if="ruleForm.service_type == 1"
                   v-model="ruleForm.service_period"
                   placeholder="请选择服务时长"
+                  filterable
+                  clearable
                 >
                   <el-option
                     v-for="item in timeOptions"
@@ -581,7 +585,7 @@ export default {
       // console.log(this.quesTag)
       // console.log(this.ruleForm)
       if (this.ruleForm.category_id.length) {
-        this.ruleForm.category_id = this.ruleForm.category_id.pop();
+        this.ruleForm.category_id = [...this.ruleForm.category_id].pop();
       }
       console.log(this.ruleForm.course_id);
       this.$refs[formName].validate((valid) => {
