@@ -777,6 +777,14 @@ export function publicLiveList(params) {
     params,
   })
 }
+// 公开课直播列表-修改直播展示状态
+export function updatePublicLiveShowStatus(params) {
+  return request({
+    url: '/NewLive/updatePublicLiveShowStatus',
+    method: 'get',
+    params,
+  })
+}
 // 公开课直播列表-添加
 export function createPublicLive(data) {
   return request({
