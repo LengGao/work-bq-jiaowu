@@ -22,8 +22,11 @@
 </template>
 
 <script>
-import { updatecreate, refreshuploadvideo } from "@/api/sou";
-import classigisettingVue from "../../views/sou/components/classigisetting.vue";
+import {
+  updatecreate,
+  refreshuploadvideo,
+  generatevideodatakey,
+} from "@/api/sou";
 export default {
   name: "AliyunUpload",
   props: {
@@ -111,6 +114,14 @@ export default {
     upload() {
       this.aliyunUpload.startUpload();
     },
+    // 视频转码
+    async generatevideodatakey(video_id) {
+      const data = {
+        video_id,
+      };
+      const res = await generatevideodatakey(data);
+      console.log(res);
+    },
     //获取上传凭证
     async updatecreate(uploadInfo) {
       const file = uploadInfo.file;
@@ -195,6 +206,8 @@ export default {
             name: uploadInfo.file.name,
             id: uploadInfo.videoId,
           });
+          console.log(uploadInfo);
+          this.generatevideodatakey(uploadInfo.videoId);
         },
         //文件上传失败
         onUploadFailed: (uploadInfo, code, message) => {
