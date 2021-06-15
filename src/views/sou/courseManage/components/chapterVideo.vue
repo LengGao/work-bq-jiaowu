@@ -233,8 +233,8 @@ export default {
       const videoSortMaps = {};
       const classSortMaps = {};
       const allChildren = [];
-      const lazyTreeNodeMap = this.$refs.multipleTable.store.states
-        .lazyTreeNodeMap;
+      const lazyTreeNodeMap =
+        this.$refs.multipleTable.store.states.lazyTreeNodeMap;
       // 设置章节排序参数
       this.listData.forEach((item) => {
         videoSortMaps[item.id] = item.sort;
@@ -420,6 +420,7 @@ export default {
     // 课时列表
     async getvideoclass(video_chapter_id) {
       const data = {
+        video_collection_id: this.$route.query.video_collection_id,
         video_chapter_id,
         limit: 9999,
       };
