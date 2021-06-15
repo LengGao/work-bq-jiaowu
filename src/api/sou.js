@@ -526,6 +526,15 @@ export function refreshuploadvideo(data) {
     data,
   })
 }
+// 视频转码(上传视频完成后调用)
+export function generatevideodatakey(data) {
+  return request({
+    url: '/video/generatevideodatakey',
+    method: 'post',
+    data,
+  })
+}
+
 // 获取课时
 export function getvideoclass(params) {
   return request({
