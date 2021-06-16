@@ -16,11 +16,15 @@
       <div class="userTable">
         <el-table
           ref="multipleTable"
-          :data="schoolData.data"
+          :data="schoolData"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
+          row-key="treeId"
+          lazy
+          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+          :load="loadTableChildren"
         >
           <el-table-column
             label="项目ID"
@@ -46,7 +50,12 @@
             label="价格"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.isChild">{{ row.price }}</span>
+              <span v-else>{{ row.project_price }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="lowest_price"
             label="最低价格"
@@ -66,13 +75,23 @@
             min-width="150"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
+            <template slot-scope="{ row }">
               <el-switch
+                v-if="row.isChild"
                 active-color="#13ce66"
-                v-model="scope.row.project_status"
+                v-model="row.status"
                 :active-value="1"
                 :inactive-value="2"
-                @change="changeSwitch(scope.row)"
+                @change="updateChildProjectStatus(row)"
+              >
+              </el-switch>
+              <el-switch
+                v-else
+                active-color="#13ce66"
+                v-model="row.project_status"
+                :active-value="1"
+                :inactive-value="2"
+                @change="changeSwitch(row)"
               >
               </el-switch>
             </template>
@@ -104,7 +123,18 @@
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
-              <div style="display: flex; justify-content: center">
+              <div
+                style="display: flex; justify-content: center"
+                v-if="row.isChild"
+              >
+                <el-button type="text" @click="openChildEdit(row)"
+                  >编辑</el-button
+                >
+                <el-button type="text" @click="deleteConfirm(row)"
+                  >删除</el-button
+                >
+              </div>
+              <div style="display: flex; justify-content: center" v-else>
                 <el-button type="text" @click="handleEdit(row)">编辑</el-button>
                 <el-button type="text" @click="handleDelete(row)"
                   >删除</el-button
@@ -158,7 +188,6 @@
                   v-model="ruleForm.category_id"
                   :options="selectData"
                   :props="{ checkStrictly: true }"
-                  @change="handleChange"
                 ></el-cascader>
                 <!-- <el-input
                   placeholder="请输入分类名称"
@@ -323,9 +352,8 @@
         v-model="dialogChildVisible"
         :title="dialogChildTitle"
         :id="currentChildId"
-        :project-id="currentProjectId"
-        :typeOptions="selectData"
-        @on-success="getProjectList"
+        :parentId="currentProjectId"
+        @on-success="updateTableChildren"
       />
     </section>
   </div>
@@ -333,7 +361,13 @@
 
 <script>
 import AddProjectChild from "./components/addProjectChild";
-import { getCateList } from "@/api/sou";
+import {
+  getCateList,
+  getChildSubList,
+  getProjectList,
+  deleteSubProject,
+  updateChildProjectStatus,
+} from "@/api/sou";
 import CourseDialog from "./components/courseDialog";
 import MaterialDialog from "./components/materialDialog";
 import QuestionBank from "./components/QuestionBank";
@@ -438,6 +472,8 @@ export default {
       dialogChildTitle: "添加子项目",
       currentProjectId: "",
       currentChildId: "",
+      treeId: 0,
+      treeLoadMap: new Map(),
     };
   },
   created() {
@@ -446,13 +482,98 @@ export default {
   },
 
   methods: {
-    getProjectList() {
-      this.$api.getProjectList(this, "schoolData");
+    async updateChildProjectStatus(row) {
+      const data = {
+        status: row.status,
+        project_id: row.project_id,
+      };
+      const res = await updateChildProjectStatus(data).catch(() => {
+        row.status = row.status === 2 ? 1 : 2;
+      });
+      if (res.code === 0) {
+        this.$message.success("操作成功");
+      }
     },
-    openChildEdit(id) {
+    // 删除子项目
+    deleteConfirm(row) {
+      this.$confirm("确定要删除此项目吗?", { type: "warning" })
+        .then(() => {
+          this.deleteSubProject(row);
+        })
+        .catch(() => {});
+    },
+    async deleteSubProject(row) {
+      const data = {
+        project_id: row.project_id,
+      };
+      const res = await deleteSubProject(data);
+      if (res.code === 0) {
+        this.updateTableChildren(row.parent_id);
+      }
+    },
+    setId() {
+      return (this.treeId += 1);
+    },
+    // 根据父节点更新字节点
+    async updateTableChildren(parentId) {
+      if (this.treeLoadMap.has(parentId)) {
+        const children = await this.getChildSubList(parentId);
+        const { resolve } = this.treeLoadMap.get(parentId);
+        this.$set(
+          this.$refs.multipleTable.store.states.lazyTreeNodeMap,
+          parentId,
+          []
+        );
+        if (children.length) {
+          resolve(children);
+        } else {
+          this.getProjectList();
+        }
+      }
+    },
+    // table懒加载子节点
+    async loadTableChildren(tree, treeNode, resolve) {
+      // 保留当前加载节点用的参数，更新时复用
+      this.treeLoadMap.set(tree.project_id, { tree, treeNode, resolve });
+      const children = await this.getChildSubList(tree.project_id);
+      resolve(children);
+    },
+    // 子项目列表
+    async getChildSubList(parent_id) {
+      const data = {
+        parent_id,
+        limit: 9999,
+      };
+      const res = await getChildSubList(data);
+      const children = res.data.map((item, index) => ({
+        ...item,
+        isChild: true,
+        treeId: this.setId(),
+        loading: false,
+      }));
+      return children;
+    },
+    async getProjectList() {
+      const data = {
+        page: this.pageNum,
+        ...this.searchData,
+        category_id: this.searchData.category_id.pop(),
+      };
+      const res = await getProjectList(data);
+      if (res.code === 0) {
+        this.listTotal = res.data?.total || 0;
+        this.schoolData = res.data.data.map((item, index) => ({
+          ...item,
+          treeId: this.setId(),
+          hasChildren: true,
+          children: [],
+        }));
+      }
+    },
+    openChildEdit(row) {
       this.dialogChildTitle = "编辑子项目";
-      this.currentChildId = id;
-      this.currentProjectId = "";
+      this.currentChildId = row.project_id;
+      this.currentProjectId = row.parent_id;
       this.dialogChildVisible = true;
     },
     openChildAdd(projectid) {
@@ -463,19 +584,16 @@ export default {
     },
     handleSuccess(id) {
       this.template_id = id;
-       this.getProjectList();;
+      this.getProjectList();
     },
     templatebtn(row) {
       this.assdialog = true;
       this.project_id = row.project_id;
       this.template_id = row.template_id;
-      console.log(this.template_id);
       this.contractInfo = row;
-      console.log(row);
-       this.getProjectList();;
+      this.getProjectList();
     },
     handlecourse(selection) {
-      console.log(selection);
       this.courseTag = selection;
     },
     handleMaterial(selection) {
@@ -496,11 +614,7 @@ export default {
 
       // this.courseTag  = courseTag
     },
-    handleChange() {
-      console.log(this.ruleForm.category_id);
-    },
     changeSwitch(ab) {
-      console.log(ab);
       let formData = {
         project_id: ab.project_id,
         project_name: ab.project_name,
@@ -513,12 +627,12 @@ export default {
     },
     handlePageChange(val) {
       this.pageNum = val;
-        this.getProjectList();;
+      this.getProjectList();
     },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;
-       this.getProjectList();;
+      this.getProjectList();
     },
     async getCateList() {
       const data = { list: true };
@@ -615,7 +729,6 @@ export default {
       if (this.ruleForm.category_id.length) {
         this.ruleForm.category_id = [...this.ruleForm.category_id].pop();
       }
-      console.log(this.ruleForm.course_id);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.id) {
@@ -624,7 +737,6 @@ export default {
             this.$api.createProject(this, this.ruleForm);
           }
         } else {
-          console.log("error submit!!");
           return false;
         }
       });

@@ -651,11 +651,51 @@ export function createChildSub(data) {
     data,
   })
 }
-// 添加子项目
+// 修改子项目
 export function updateChildSub(data) {
   return request({
     url: '/project/editSub',
     method: 'post',
     data,
+  })
+}
+// 删除子项目
+export function deleteSubProject(params) {
+  return request({
+    url: '/project/deleteSubProject',
+    method: 'get',
+    params,
+  })
+}
+// 修改子项目状态
+export function updateChildProjectStatus(params) {
+  return request({
+    url: '/project/status',
+    method: 'get',
+    params,
+  })
+}
+// 根据id获取子项目详情
+export function getChildSubDetail(params) {
+  return request({
+    url: '/project/editSub',
+    method: 'get',
+    params,
+  })
+}
+// 获取子项目列表
+export function getChildSubList(params) {
+  return request({
+    url: '/project/getSubPro',
+    method: 'get',
+    params,
+  })
+}
+// 获取项目列表
+export function getProjectList(params) {
+  return request({
+    url: '/project/index',
+    method: 'get',
+    params,
   })
 }

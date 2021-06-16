@@ -68,7 +68,7 @@ export function Orderentry(data) {
  * 合同审核列表
  * @param {*} params 
  */
- export function auditlist(params) {
+export function auditlist(params) {
     return request({
         url: 'contract/audit_list',
         method: 'get',
@@ -79,7 +79,7 @@ export function Orderentry(data) {
  * 合同审核
  * @param {*} data 
  */
- export function contractaudit(data) {
+export function contractaudit(data) {
     return request({
         url: 'contract/audit',
         method: 'post',
@@ -90,9 +90,17 @@ export function Orderentry(data) {
  * 生成合同
  * @param {*} data 
  */
- export function generate(data) {
+export function generate(data) {
     return request({
         url: 'contract/generate',
+        method: 'post',
+        data
+    })
+}
+// 同一订单多笔入账
+export function logEntry(data) {
+    return request({
+        url: '/order/logEntry',
         method: 'post',
         data
     })

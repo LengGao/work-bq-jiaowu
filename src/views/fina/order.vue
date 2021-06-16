@@ -130,26 +130,16 @@
                   @click="openOrderActions(scope.row, 2)"
                   >退款</el-button
                 >
+
                 <el-button
                   type="text"
-                  @click="Entry(scope.row)"
-                  :class="
-                    scope.row.pay_status == 3
-                      ? 'entry2'
-                      : scope.row.pay_status == 0
-                      ? 'entry2'
-                      : scope.row.pay_status == 1
-                      ? 'entry1'
-                      : scope.row.pay_status == 2
-                      ? 'entry1'
-                      : scope.row.pay_status == 4
-                      ? 'entry2'
-                      : scope.row.pay_status == 5
-                      ? 'entry2'
-                      : ''
-                  "
-                  style="margin-left: 20px"
+                  v-if="!scope.row.verify_uid"
+                  @click="handleEntryCofirm(scope.row)"
+                  style="margin-left: 10px"
                   >入账</el-button
+                >
+                <span v-else style="margin-left: 10px; color: #ccc"
+                  >已确认</span
                 >
               </div>
             </template>
@@ -270,6 +260,14 @@ export default {
     this.Approvalist();
   },
   methods: {
+    //入账确认框
+    handleEntryCofirm(row) {
+      this.$confirm("是否将此笔订单入账？", { type: "warning" })
+        .then(() => {
+          this.Orderentry(row);
+        })
+        .catch(() => {});
+    },
     openOrderActions(row, type) {
       this.dialogType = type;
       this.dialogInfo = row;
@@ -307,19 +305,15 @@ export default {
       this.listTotal = res.data.total;
     },
     //订单入账接口
-    async Orderentry() {
+    async Orderentry(row) {
       const data = {
-        // page: this.pageNum,
-        // ...this.searchData,
-        order_id: this.order_id,
+        order_id: row.order_id,
       };
       const res = await Orderentry(data);
       if (res.code == 0) {
+        row.verify_uid = 1;
         this.$message.success(res.message);
       }
-      // console.log( res.data.list)
-      // this.listData = res.data.list
-      // this.listTotal = res.data.total
     },
     //搜索模块
     handleSearch(data) {
@@ -370,7 +364,7 @@ export default {
     },
     Entryenter(order_id) {
       this.dialogVisible = false;
-      order_id, this.Orderentry();
+      this.Orderentry();
       this.Approvalist();
     },
   },
