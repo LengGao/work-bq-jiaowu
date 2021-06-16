@@ -253,6 +253,7 @@ let resource = {
         let data = res.data.data
         if (res.data.code == 0) {
           self[name] = data
+          self.listTotal = res.data?.data?.total || 0
         }
       },
     })
