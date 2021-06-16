@@ -643,3 +643,19 @@ export function getTopicChapterList(params) {
     params,
   })
 }
+// 添加子项目
+export function createChildSub(data) {
+  return request({
+    url: '/project/createSub',
+    method: 'post',
+    data,
+  })
+}
+// 添加子项目
+export function updateChildSub(data) {
+  return request({
+    url: '/project/editSub',
+    method: 'post',
+    data,
+  })
+}

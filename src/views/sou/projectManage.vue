@@ -103,13 +103,14 @@
           </el-table-column> -->
 
           <el-table-column label="操作" fixed="right" min-width="200">
-            <template slot-scope="scope">
+            <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="handleEdit(scope.row)"
-                  >编辑</el-button
-                >
-                <el-button type="text" @click="handleDelete(scope.row)"
+                <el-button type="text" @click="handleEdit(row)">编辑</el-button>
+                <el-button type="text" @click="handleDelete(row)"
                   >删除</el-button
+                >
+                <el-button type="text" @click="openChildAdd(row.project_id)"
+                  >添加子项目</el-button
                 >
               </div>
             </template>
@@ -312,17 +313,26 @@
 
       <Asstemplate
         v-model="assdialog"
-        :id="currentId"
         :project_id="project_id"
         :contractInfo="contractInfo"
         @on-success="handleSuccess"
         :template_id="template_id"
+      />
+      <!--添加子项目弹框-->
+      <AddProjectChild
+        v-model="dialogChildVisible"
+        :title="dialogChildTitle"
+        :id="currentChildId"
+        :project-id="currentProjectId"
+        :typeOptions="selectData"
+        @on-success="getProjectList"
       />
     </section>
   </div>
 </template>
 
 <script>
+import AddProjectChild from "./components/addProjectChild";
 import { getCateList } from "@/api/sou";
 import CourseDialog from "./components/courseDialog";
 import MaterialDialog from "./components/materialDialog";
@@ -336,13 +346,13 @@ export default {
     MaterialDialog,
     QuestionBank,
     Asstemplate,
+    AddProjectChild,
   },
   data() {
     return {
       template_id: "",
       project_id: "",
       contractInfo: {},
-      currentId: "",
       assdialog: false,
       id: "",
       dialogTitle: "添加项目",
@@ -424,17 +434,36 @@ export default {
       quesTag: [],
       showMaterial: false,
       showQues: false,
+      dialogChildVisible: false,
+      dialogChildTitle: "添加子项目",
+      currentProjectId: "",
+      currentChildId: "",
     };
   },
   created() {
     this.getCateList();
-    this.$api.getProjectList(this, "schoolData");
+    this.getProjectList();
   },
 
   methods: {
+    getProjectList() {
+      this.$api.getProjectList(this, "schoolData");
+    },
+    openChildEdit(id) {
+      this.dialogChildTitle = "编辑子项目";
+      this.currentChildId = id;
+      this.currentProjectId = "";
+      this.dialogChildVisible = true;
+    },
+    openChildAdd(projectid) {
+      this.currentProjectId = projectid;
+      this.currentChildId = "";
+      this.dialogChildTitle = "添加子项目";
+      this.dialogChildVisible = true;
+    },
     handleSuccess(id) {
       this.template_id = id;
-      this.$api.getProjectList(this, "schoolData");
+       this.getProjectList();;
     },
     templatebtn(row) {
       this.assdialog = true;
@@ -443,7 +472,7 @@ export default {
       console.log(this.template_id);
       this.contractInfo = row;
       console.log(row);
-      this.$api.getProjectList(this, "schoolData");
+       this.getProjectList();;
     },
     handlecourse(selection) {
       console.log(selection);
@@ -484,19 +513,18 @@ export default {
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.$api.getProjectList(this, "schoolData");
+        this.getProjectList();;
     },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = data;
-      this.$api.getProjectList(this, "schoolData");
+       this.getProjectList();;
     },
     async getCateList() {
       const data = { list: true };
       const res = await getCateList(data);
       if (res.code === 0) {
         this.cloneData(res.data, this.selectData);
-        console.log(this.selectData);
         this.searchOptions[0].attrs.options = this.selectData;
       }
     },
