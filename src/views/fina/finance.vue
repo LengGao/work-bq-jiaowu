@@ -204,6 +204,7 @@
 </template>
 
 <script>
+import { getShortcuts } from "@/utils/date";
 import { getOrderList } from "@/api/fina";
 import ImportOrder from "./components/ImportOrder";
 import CollectionOrder from "./components/CollectionOrder";
@@ -234,6 +235,9 @@ export default {
             "end-placeholder": "结束日期",
             format: "yyyy-MM-dd",
             "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
           },
         },
         {

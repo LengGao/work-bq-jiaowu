@@ -174,87 +174,90 @@
 </template>
 
 <script>
-import { Approvalist, Orderentry } from '@/api/fina'
-
+import { Approvalist, Orderentry } from "@/api/fina";
+import { getShortcuts } from "@/utils/date";
 export default {
-  name: 'order',
+  name: "order",
   data() {
     return {
       statusMap: {
-        0: '待付款',
-        1: '未入账',
-        2: '部分入账',
-        3: '已入账',
-        4: '已作废',
-        5: '已退款',
+        0: "待付款",
+        1: "未入账",
+        2: "部分入账",
+        3: "已入账",
+        4: "已作废",
+        5: "已退款",
       },
-      pay_status: '',
+      pay_status: "",
       listData: [],
       activeIndex: 0,
       pageNum: 1,
       listTotal: 0,
       dialogVisible: false,
-      startend: '',
+      startend: "",
       isTagactive: 1,
-      ruleForm: { category_id: '' },
+      ruleForm: { category_id: "" },
       page: 1,
-      order_id: '',
+      order_id: "",
       schoolData: [],
       course_ids: [],
       datas: {},
       selectData: [],
       tabFun: [
         {
-          name: '入账审批',
-          status: '',
+          name: "入账审批",
+          status: "",
         },
         {
-          name: '退费审批',
+          name: "退费审批",
           status: 5,
         },
         {
-          name: '作废审批',
+          name: "作废审批",
           status: 4,
         },
       ],
       //搜索框
       searchData: {
-        date: '',
-        keyword: '',
+        date: "",
+        keyword: "",
       },
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
+          key: "date",
+          type: "datePicker",
           attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd',
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
           },
         },
         {
-          key: 'keyword',
+          key: "keyword",
           attrs: {
-            placeholder: '学生姓名/手机号码',
+            placeholder: "学生姓名/手机号码",
           },
         },
       ],
-    }
+    };
   },
   created() {
-    this.Approvalist()
+    this.Approvalist();
   },
   methods: {
     // 显示项目名称
     formatProjectName(json) {
-      const projectData = JSON.parse(json)
+      const projectData = JSON.parse(json);
       const projectArr = Array.isArray(projectData)
         ? projectData
-        : [projectData]
-      return projectArr.map((item) => item.project_name).join('，')
+        : [projectData];
+      return projectArr.map((item) => item.project_name).join("，");
     },
     //订单审批列表接口
     async Approvalist() {
@@ -263,12 +266,12 @@ export default {
         ...this.searchData,
         // all: 1,
         pay_status: this.activeStatus,
-      }
-      const res = await Approvalist(data)
-      this.listLoading = false
-      console.log(res.data.list)
-      this.listData = res.data.list
-      this.listTotal = res.data.total
+      };
+      const res = await Approvalist(data);
+      this.listLoading = false;
+      console.log(res.data.list);
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
     //订单入账接口
     async Orderentry() {
@@ -276,10 +279,10 @@ export default {
         // page: this.pageNum,
         // ...this.searchData,
         order_id: this.order_id,
-      }
-      const res = await Orderentry(data)
+      };
+      const res = await Orderentry(data);
       if (res.code == 0) {
-        this.$message.success(res.message)
+        this.$message.success(res.message);
       }
       // console.log( res.data.list)
       // this.listData = res.data.list
@@ -287,58 +290,58 @@ export default {
     },
     //搜索模块
     handleSearch(data) {
-      console.log(data)
-      this.pageNum = 1
+      console.log(data);
+      this.pageNum = 1;
       this.searchData = {
         ...data,
-        date: data.date ? data.date.join(' - ') : '',
-      }
-      this.Approvalist()
+        date: data.date ? data.date.join(" - ") : "",
+      };
+      this.Approvalist();
     },
     orderDetail(ab) {
       this.$router.push({
-        name: 'orderdetail',
+        name: "orderdetail",
         query: {
           order_id: ab.order_id,
         },
-      })
+      });
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.Approvalist()
+      this.pageNum = val;
+      this.Approvalist();
     },
     handleClose(done) {
-      this.$confirm('确认关闭？')
+      this.$confirm("确认关闭？")
         .then((_) => {
-          done()
+          done();
         })
-        .catch((_) => {})
+        .catch((_) => {});
     },
     statusSwitch(index, status) {
-      this.activeIndex = index
-      this.activeStatus = status
-      this.Approvalist()
+      this.activeIndex = index;
+      this.activeStatus = status;
+      this.Approvalist();
     },
     //入账
     Entry(row) {
-      this.dialogVisible = true
-      this.order_id = row.order_id
+      this.dialogVisible = true;
+      this.order_id = row.order_id;
     },
     Entrydetail(ab) {
       this.$router.push({
-        name: 'orderdetail',
+        name: "orderdetail",
         query: {
           order_id: ab.order_id,
         },
-      })
+      });
     },
     Entryenter(order_id) {
-      this.dialogVisible = false
-      order_id, this.Orderentry()
-      this.Approvalist()
+      this.dialogVisible = false;
+      order_id, this.Orderentry();
+      this.Approvalist();
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -368,7 +371,7 @@ export default {
   width: 240px;
   display: flex;
   justify-content: space-between;
-  font-family: 'Microsoft YaHei UI', sans-serif;
+  font-family: "Microsoft YaHei UI", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 22px;
