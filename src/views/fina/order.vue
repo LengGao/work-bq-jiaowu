@@ -107,7 +107,7 @@
             <template slot-scope="{ row }">
               <div
                 :class="
-                  row.pay_status == 1
+                  row.pay_status == 4
                     ? 'wordcolor'
                     : row.pay_status == 3
                     ? 'wordcolor2'
@@ -123,6 +123,12 @@
               <div>
                 <el-button type="text" @click="Entrydetail(scope.row)"
                   >订单详情</el-button
+                >
+                <el-button
+                  type="text"
+                  v-if="excludes(scope.row, 4)"
+                  @click="openOrderActions(scope.row, 2)"
+                  >退款</el-button
                 >
                 <el-button
                   type="text"
@@ -170,21 +176,31 @@
         </span>
       </el-dialog>
     </section>
+    <CollectionOrder
+      v-model="orderActionDialog"
+      :type="dialogType"
+      :orderInfo="dialogInfo"
+      @on-success="Approvalist"
+    />
   </div>
 </template>
 
 <script>
+import CollectionOrder from "./components/CollectionOrder";
 import { Approvalist, Orderentry } from "@/api/fina";
 import { getShortcuts } from "@/utils/date";
 export default {
   name: "order",
+  components: {
+    CollectionOrder,
+  },
   data() {
     return {
       statusMap: {
-        0: "待付款",
-        1: "未入账",
-        2: "部分入账",
-        3: "已入账",
+        0: "未付款",
+        1: "新订单",
+        2: "部分付款",
+        3: "已付款",
         4: "已作废",
         5: "已退款",
       },
@@ -245,12 +261,29 @@ export default {
           },
         },
       ],
+      orderActionDialog: false,
+      dialogInfo: {},
+      dialogType: 1,
     };
   },
   created() {
     this.Approvalist();
   },
   methods: {
+    openOrderActions(row, type) {
+      this.dialogType = type;
+      this.dialogInfo = row;
+      this.orderActionDialog = true;
+    },
+    // 按钮操作
+    excludes(row, type) {
+      const auth = {
+        0: row.overdue_money > 0, // 收款
+        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
+        5: ![4, 5].includes(row.pay_status), // 作废
+      };
+      return auth[type];
+    },
     // 显示项目名称
     formatProjectName(json) {
       const projectData = JSON.parse(json);
