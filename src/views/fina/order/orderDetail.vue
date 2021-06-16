@@ -187,15 +187,19 @@
             {{ statusMap[row.pay_status] }}
           </template>
         </el-table-column>
-        <!-- <el-table-column label="操作" fixed="right" min-width="80">
-          <template slot-scope="scope">
+        <el-table-column label="操作" fixed="right" min-width="80">
+          <template slot-scope="{ row }">
             <div>
-              <el-button type="primary" plain @click="dialogVisible = true"
+              <el-button
+                type="text"
+                v-if="!row.verify_uid"
+                @click="handleEntryCofirm(row)"
                 >入账</el-button
               >
+              <span v-else style="color: #ccc">已确认</span>
             </div>
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
     </div>
     <!--经办信息-->
@@ -257,6 +261,7 @@
 
 <script>
 import CollectionOrder from "../components/CollectionOrder";
+import { logEntry } from "@/api/fina";
 export default {
   components: {
     CollectionOrder,
@@ -264,13 +269,12 @@ export default {
   data() {
     return {
       projectData: [],
-
       pay_log: [],
       statusMap: {
-        0: "待付款",
-        1: "已付款",
-        2: "部分入账",
-        3: "已入账",
+        0: "未付款",
+        1: "新订单",
+        2: "部分付款",
+        3: "已付款",
         4: "已作废",
         5: "已退款",
       },
@@ -345,6 +349,22 @@ export default {
   },
 
   methods: {
+    //入账确认框
+    handleEntryCofirm(row) {
+      this.$confirm("是否将此笔订单入账？", { type: "warning" })
+        .then(() => {
+          this.logEntry(row);
+        })
+        .catch(() => {});
+    },
+    async logEntry(row) {
+      const data = { id: row.id };
+      const res = await logEntry(data);
+      if (res.code === 0) {
+        row.verify_uid = 1;
+        this.$message.success(res.message);
+      }
+    },
     // 按钮操作
     // excludes(row, type) {
     //   const auth = {
