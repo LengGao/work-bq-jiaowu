@@ -13,6 +13,12 @@
         >
           {{ item.name }}
         </li>
+        <li
+          :class="{ active: 100 === activeIndex }"
+          @click="statusSwitch(100, 1)"
+        >
+          已入账
+        </li>
       </ul>
       <!--搜索模块-->
       <header>
@@ -168,15 +174,15 @@
                   @click="openOrderActions(row, 1)"
                   >收款</el-button
                 >
+                <!-- <el-button
+                  type="text"
+                  v-if="excludes(row, 4)"
+                  @click="openOrderActions(row, 2)"
+                  >退款</el-button
+                > -->
                 <el-button
                   type="text"
                   v-if="excludes(row, 5)"
-                  @click="openOrderActions(row, 2)"
-                  >退款</el-button
-                >
-                <el-button
-                  type="text"
-                  v-if="excludes(row, 4)"
                   @click="openOrderActions(row, 3)"
                   >作废</el-button
                 >
@@ -204,6 +210,7 @@
 </template>
 
 <script>
+import { getShortcuts } from "@/utils/date";
 import { getOrderList } from "@/api/fina";
 import ImportOrder from "./components/ImportOrder";
 import CollectionOrder from "./components/CollectionOrder";
@@ -234,6 +241,9 @@ export default {
             "end-placeholder": "结束日期",
             format: "yyyy-MM-dd",
             "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
           },
         },
         {
@@ -245,6 +255,7 @@ export default {
       ],
       activeIndex: 0,
       activeStatus: "",
+      verify: "",
       panelData: {
         total: "",
         order_money: 0,
@@ -254,10 +265,10 @@ export default {
         reduction: 0,
       },
       statusMap: {
-        0: "待付款",
-        1: "已付款",
-        2: "部分入账",
-        3: "已入账",
+        0: "未付款",
+        1: "新订单",
+        2: "部分付款",
+        3: "已付款",
         4: "已作废",
         5: "已退款",
       },
@@ -267,15 +278,19 @@ export default {
           status: "",
         },
         {
-          name: "已付款",
+          name: "未付款",
+          status: 0,
+        },
+        {
+          name: "新订单",
           status: 1,
         },
         {
-          name: "已入账",
+          name: "已付款",
           status: 3,
         },
         {
-          name: "部分入账",
+          name: "部分付款",
           status: 2,
         },
         {
@@ -316,7 +331,13 @@ export default {
     },
     statusSwitch(index, status) {
       this.activeIndex = index;
-      this.activeStatus = status;
+      if (index === 100) {
+        this.activeStatus = "";
+        this.verify = status;
+      } else {
+        this.verify = "";
+        this.activeStatus = status;
+      }
       this.getOrderList();
     },
     handleSearch(data) {
@@ -336,6 +357,7 @@ export default {
         page: this.pageNum,
         ...this.searchData,
         pay_status: this.activeStatus,
+        verify: this.verify,
       };
       this.listLoading = true;
       const res = await getOrderList(data);
