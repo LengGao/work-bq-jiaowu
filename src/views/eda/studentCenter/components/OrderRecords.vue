@@ -98,12 +98,12 @@
                 @click="openOrderActions(row, 1)"
                 >收款</el-button
               >
-              <el-button
+              <!-- <el-button
                 type="text"
                 v-if="excludes(row, 5)"
                 @click="openOrderActions(row, 2)"
                 >退款</el-button
-              >
+              > -->
               <el-button
                 type="text"
                 v-if="excludes(row, 4)"
