@@ -98,6 +98,9 @@
             min-width="80"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <span>￥{{ row.pay_money }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="pay_type"
