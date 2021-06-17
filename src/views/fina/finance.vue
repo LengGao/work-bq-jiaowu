@@ -48,9 +48,9 @@
               >￥{{
                 (
                   panelData.order_money -
-                  panelData.reduction -
-                  panelData.overdue_money -
-                  panelData.refund_money
+                    panelData.reduction -
+                    panelData.overdue_money -
+                    panelData.refund_money || 0
                 ).toFixed(2)
               }}</span
             >
@@ -119,13 +119,21 @@
             label="订单总价"
             min-width="90"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>￥{{ row.order_money }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="reduction"
             label="优惠金额"
             min-width="90"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>￥{{ row.reduction }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="order_money"
             label="应收金额"
@@ -133,7 +141,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              {{ (row.order_money - row.reduction).toFixed(2) }}
+              ￥{{ (row.order_money - row.reduction).toFixed(2) }}
             </template>
           </el-table-column>
 
@@ -142,7 +150,11 @@
             label="实收金额"
             min-width="90"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>￥{{ row.pay_money }}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column
             prop="overdue_money"
@@ -151,7 +163,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span style="color: #f76c6c">{{ row.overdue_money }}</span>
+              <span style="color: #f76c6c">￥{{ row.overdue_money }}</span>
             </template>
           </el-table-column>
           <el-table-column

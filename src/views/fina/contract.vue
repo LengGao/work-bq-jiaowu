@@ -50,14 +50,22 @@
             min-width="200"
             column-key="pay_money"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>￥{{ row.pay_money }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="order_money"
             label="签署价格"
             min-width="200"
             column-key="order_money"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span>￥{{ row.order_money }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="create_time"
             label="上传时间"

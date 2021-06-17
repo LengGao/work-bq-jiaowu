@@ -60,7 +60,9 @@
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
                 <el-form-item label="欠费金额" prop="overdue_money">
-                  <div class="ruleWord">¥ {{ ruleForm.overdue_money }}</div>
+                  <div class="ruleWord" style="color: #f76c6c">
+                    ¥ {{ ruleForm.overdue_money }}
+                  </div>
                 </el-form-item>
               </el-col>
               <el-col :lg="8" :md="8" :sm="8" :xs="8">
@@ -204,6 +206,9 @@
           show-overflow-tooltip
           min-width="90"
         >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.pay_money }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="pay_status"
