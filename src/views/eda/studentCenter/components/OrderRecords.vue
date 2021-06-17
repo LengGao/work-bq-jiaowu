@@ -29,13 +29,22 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="project_name"
+          label="项目名称"
+          show-overflow-tooltip
+          min-width="220"
+        >
+        </el-table-column>
+        <el-table-column
           prop="pay_status"
           label="订单状态"
           min-width="110"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            {{ statusMap[row.pay_status] }}
+            <el-tag size="small" :type="row.pay_status | orderTagType">{{
+              row.pay_status | orderStatus
+            }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -88,7 +97,13 @@
             <span class="overdue-money">￥{{ row.overdue_money }}</span>
           </template>
         </el-table-column>
-
+        <el-table-column
+          prop="pay_type"
+          label="支付方式"
+          min-width="90"
+          show-overflow-tooltip
+        >
+        </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="{ row }">
             <div class="operation_btn">
@@ -98,15 +113,15 @@
                 @click="openOrderActions(row, 1)"
                 >收款</el-button
               >
+              <!-- <el-button
+                type="text"
+                v-if="excludes(row, 4)"
+                @click="openOrderActions(row, 2)"
+                >退款</el-button
+              > -->
               <el-button
                 type="text"
                 v-if="excludes(row, 5)"
-                @click="openOrderActions(row, 2)"
-                >退款</el-button
-              >
-              <el-button
-                type="text"
-                v-if="excludes(row, 4)"
                 @click="openOrderActions(row, 3)"
                 >作废</el-button
               >
@@ -142,14 +157,6 @@ export default {
     return {
       listData: [],
       listLoading: false,
-      statusMap: {
-        0: "待验证/等待付款",
-        1: "新订单/待入账/已付款",
-        2: "部分入账",
-        3: "已入账",
-        4: "已作废",
-        5: "已退款",
-      },
       orderActionDialog: false,
       dialogInfo: {},
       dialogType: 1,

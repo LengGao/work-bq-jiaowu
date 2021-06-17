@@ -154,7 +154,13 @@
               <span style="color: #f76c6c">{{ row.overdue_money }}</span>
             </template>
           </el-table-column>
-
+          <el-table-column
+            prop="pay_type"
+            label="支付方式"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
           <el-table-column
             prop="pay_status"
             label="订单状态"
@@ -162,7 +168,9 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>{{ statusMap[row.pay_status] }}</span>
+              <el-tag size="small" :type="row.pay_status | orderTagType">{{
+                row.pay_status | orderStatus
+              }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="200">
@@ -263,14 +271,6 @@ export default {
         overdue_money: "",
         money: "",
         reduction: 0,
-      },
-      statusMap: {
-        0: "未付款",
-        1: "新订单",
-        2: "部分付款",
-        3: "已付款",
-        4: "已作废",
-        5: "已退款",
       },
       tabFun: [
         {

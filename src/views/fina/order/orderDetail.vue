@@ -85,6 +85,34 @@
         <el-col :lg="3" :sm="3" :xs="3" :md="3"> </el-col>
       </el-row>
     </div>
+    <div class="order-status">
+      <el-tag :type="ruleForm.pay_status | orderTagType">{{
+        ruleForm.pay_status | orderStatus
+      }}</el-tag>
+    </div>
+    <div>
+      <el-button
+        v-if="excludes(ruleForm, 0)"
+        @click="openOrderActions(ruleForm, 1)"
+        type="primary"
+        plain
+        >收款</el-button
+      >
+      <el-button
+        v-if="excludes(ruleForm, 4)"
+        @click="openOrderActions(ruleForm, 2)"
+        type="danger"
+        plain
+        >退款</el-button
+      >
+      <el-button
+        v-if="excludes(ruleForm, 5)"
+        @click="openOrderActions(ruleForm, 3)"
+        type="danger"
+        plain
+        >作废</el-button
+      >
+    </div>
     <!--订单详情-->
     <div>
       <h3 style="margin: 15px 0">订单详情</h3>
@@ -175,7 +203,7 @@
           label="支付金额"
           show-overflow-tooltip
           min-width="90"
-          >¥ {{ ruleForm.pay_money }}
+        >
         </el-table-column>
         <el-table-column
           prop="pay_status"
@@ -184,7 +212,7 @@
           min-width="90"
         >
           <template slot-scope="{ row }">
-            {{ statusMap[row.pay_status] }}
+            {{ row.pay_status | orderStatus }}
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="80">
@@ -241,21 +269,12 @@
         ></el-table-column>
       </el-table>
     </div> -->
-
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="25%"
-      :close-on-click-modal="false"
-    >
-      <span style="font-size: 20px">是否将此笔订单入账？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
+    <CollectionOrder
+      v-model="orderActionDialog"
+      :type="dialogType"
+      :orderInfo="dialogInfo"
+      @on-success="orderdetail"
+    />
   </section>
 </template>
 
@@ -270,14 +289,6 @@ export default {
     return {
       projectData: [],
       pay_log: [],
-      statusMap: {
-        0: "未付款",
-        1: "新订单",
-        2: "部分付款",
-        3: "已付款",
-        4: "已作废",
-        5: "已退款",
-      },
       dialogImageUrl: "",
       dialogFormVisible: false,
       refundFormVisible: false,
@@ -366,31 +377,24 @@ export default {
       }
     },
     // 按钮操作
-    // excludes(row, type) {
-    //   const auth = {
-    //     0: row.overdue_money > 0, // 收款
-    //     4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
-    //     5: ![4, 5].includes(row.pay_status), // 作废
-    //   };
-    //   return auth[type];
-    // },
+    excludes(row, type) {
+      const auth = {
+        0: row.overdue_money > 0, // 收款
+        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
+        5: ![4, 5].includes(row.pay_status), // 作废
+      };
+      return auth[type];
+    },
     // 收款，作废，退款弹窗
-    // openOrderActions(row, type) {
-    //   this.dialogType = type;
-    //   this.dialogInfo = row;
-    //   this.orderActionDialog = true;
-    // },
-    // orderdetail(page) {
-    //   this.page = page;
-    //   this.$api.orderdetail(this, "schoolData", this.datas);
-    // },
-    // handleRemove(file, fileList) {
-    //   console.log(file, fileList);
-    // },
-    // handlePictureCardPreview(file) {
-    //   this.dialogImageUrl = file.url;
-    //   this.dialogVisible = true;
-    // },
+    openOrderActions(row, type) {
+      this.dialogType = type;
+      this.dialogInfo = row;
+      this.orderActionDialog = true;
+    },
+    orderdetail(page) {
+      this.page = page;
+      this.$api.orderdetail(this, "schoolData", this.datas);
+    },
   },
 };
 </script>
@@ -412,6 +416,11 @@ export default {
 }
 /deep/.el-dialog__body {
   padding: 30px;
+}
+.order-status {
+  position: absolute;
+  right: 60px;
+  top: 70px;
 }
 .mainwrap {
   width: 98%;

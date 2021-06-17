@@ -175,6 +175,16 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="所属老师"
+            prop="project"
+            min-width="150"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.admin_name || "--" }}</span>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column
             label="渠道来源"
             min-width="100"
             show-overflow-tooltip
@@ -189,7 +199,7 @@
               </div>
               <span v-else>--</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="create_time"
             label="创建时间"
@@ -204,6 +214,7 @@
           >
             <template slot-scope="{ row }">
               <el-tag
+                v-if="row.order_id"
                 size="small"
                 :type="statusMap[row.contract_status || 0].type"
               >
