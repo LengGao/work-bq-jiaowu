@@ -75,3 +75,11 @@ export function getCommonUserList(params) {
     params,
   })
 }
+// 删除公海客户
+export function delUser(params) {
+  return request({
+    url: '/Enrollment/delUser',
+    method: 'get',
+    params,
+  })
+}

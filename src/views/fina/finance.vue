@@ -154,7 +154,13 @@
               <span style="color: #f76c6c">{{ row.overdue_money }}</span>
             </template>
           </el-table-column>
-
+          <el-table-column
+            prop="pay_type"
+            label="支付方式"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
           <el-table-column
             prop="pay_status"
             label="订单状态"

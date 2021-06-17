@@ -100,6 +100,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="pay_type"
+            label="支付方式"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             label="财务状态"
             min-width="80"
             show-overflow-tooltip

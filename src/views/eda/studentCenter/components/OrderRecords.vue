@@ -97,7 +97,13 @@
             <span class="overdue-money">￥{{ row.overdue_money }}</span>
           </template>
         </el-table-column>
-
+        <el-table-column
+          prop="pay_type"
+          label="支付方式"
+          min-width="90"
+          show-overflow-tooltip
+        >
+        </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="{ row }">
             <div class="operation_btn">
