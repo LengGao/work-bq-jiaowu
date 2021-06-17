@@ -88,6 +88,12 @@
               <el-button v-else type="text" @click="enroll(scope.row)"
                 >报名</el-button
               >
+              <el-button
+                v-if="!scope.row.aid"
+                type="text"
+                @click="deleteConfirm(scope.row.uid)"
+                >删除</el-button
+              >
               <!-- <el-button
                 type="text"
                 @click="toStudentDetail(scope.row)"
@@ -119,12 +125,12 @@
 </template>
 
 <script>
-import addCustomeDialog from './components/addCustomeDialog'
-import { cloneOptions } from '@/utils/index'
-import { getCateList } from '@/api/sou'
-import { getCommonUserList } from '@/api/etm'
+import addCustomeDialog from "./components/addCustomeDialog";
+import { cloneOptions } from "@/utils/index";
+import { getCateList } from "@/api/sou";
+import { getCommonUserList, delUser } from "@/api/etm";
 export default {
-  name: 'seaStudent',
+  name: "seaStudent",
   components: {
     addCustomeDialog,
   },
@@ -142,61 +148,61 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        category_id: '',
-        date: '',
-        keyword: '',
+        category_id: "",
+        date: "",
+        keyword: "",
       },
       pickerOptions: {
         shortcuts: [
           {
-            text: '最近一周',
+            text: "最近一周",
             onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', [start, end])
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
             },
           },
           {
-            text: '最近一个月',
+            text: "最近一个月",
             onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', [start, end])
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
             },
           },
           {
-            text: '最近三个月',
+            text: "最近三个月",
             onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-              picker.$emit('pick', [start, end])
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
             },
           },
         ],
       },
       searchOptions: [
         {
-          key: 'date',
-          type: 'datePicker',
+          key: "date",
+          type: "datePicker",
           attrs: {
-            type: 'daterange',
-            'range-separator': '至',
-            'start-placeholder': '开始日期',
-            'end-placeholder': '结束日期',
-            format: 'yyyy-MM-dd',
-            'value-format': 'yyyy-MM-dd',
-            'picker-options': this.pickerOptions,
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
+            "picker-options": this.pickerOptions,
           },
         },
         {
-          key: 'category_id',
-          type: 'cascader',
+          key: "category_id",
+          type: "cascader",
           width: 120,
           attrs: {
-            placeholder: '所属分类',
+            placeholder: "所属分类",
             clearable: true,
             props: { checkStrictly: true },
             filterable: true,
@@ -204,109 +210,125 @@ export default {
           },
         },
         {
-          key: 'keyword',
+          key: "keyword",
           attrs: {
-            placeholder: '客户姓名/手机号码',
+            placeholder: "客户姓名/手机号码",
           },
         },
       ],
-    }
+    };
   },
   created() {
-    this.getCateList()
-    this.getCommonUserList()
+    this.getCateList();
+    this.getCommonUserList();
   },
   mounted() {
     // let status = 3
     // this.$api.getCommonUserList(this, 'schoolData')
   },
   methods: {
+    // 删除用户
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此用户吗?", { type: "warning" })
+        .then(() => {
+          this.handleDelUser(id);
+        })
+        .catch(() => {});
+    },
+    async handleDelUser(uid) {
+      const data = { uid };
+      const res = await delUser(data);
+      if (res.code === 0) {
+        this.getCommonUserList();
+        this.$message.success(res.message);
+      }
+    },
     // 复制
     handleCopy(val) {
-      const input = document.createElement('input')
-      document.body.appendChild(input)
-      input.setAttribute('value', val)
-      input.select()
-      if (document.execCommand('copy')) {
-        document.execCommand('copy')
-        document.body.removeChild(input)
-        this.$message.success('复制成功')
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
       }
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.getCommonUserList()
+      this.pageNum = val;
+      this.getCommonUserList();
     },
     handlePageSizeChange(val) {
-      this.pageSizeNum = val
-      this.getCommonUserList()
+      this.pageSizeNum = val;
+      this.getCommonUserList();
     },
     //客户列表
     async getCommonUserList() {
-      this.checkedIds = []
-      this.intent_id = ''
-      console.log(this.searchData.date)
+      this.checkedIds = [];
+      this.intent_id = "";
+      console.log(this.searchData.date);
       const data = {
         page: this.pageNum,
         limit: this.pageSizeNum,
         ...this.searchData,
         status: 3,
-      }
-      console.log(data)
-      this.listLoading = true
-      const res = await getCommonUserList(data)
-      this.listLoading = false
-      this.listData = res.data.list
-      this.listTotal = res.data.total
+      };
+      console.log(data);
+      this.listLoading = true;
+      const res = await getCommonUserList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
     handleSearch(data) {
-      const times = data.date || ['', '']
-      console.log(times)
-      delete data.date
-      this.pageNum = 1
+      const times = data.date || ["", ""];
+      console.log(times);
+      delete data.date;
+      this.pageNum = 1;
       this.searchData = {
         ...data,
         start_time: times[0],
         end_time: times[1],
-        category_id: data.category_id ? data.category_id.pop() : '',
-      }
-      this.getCommonUserList()
+        category_id: data.category_id ? data.category_id.pop() : "",
+      };
+      this.getCommonUserList();
     },
     // 获取所属分类
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
+      const data = { list: true };
+      const res = await getCateList(data);
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
-          'category_name',
-          'category_id',
-          'son'
-        )
+          "category_name",
+          "category_id",
+          "son"
+        );
       }
     },
     enroll(ab) {
-      this.seaUserInfo = ab
-      this.innerVisible = true
+      this.seaUserInfo = ab;
+      this.innerVisible = true;
     },
     getInnerStatus(status) {
-      this.innerVisible = status
+      this.innerVisible = status;
     },
     getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+      console.log(state, val);
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.schoolData = val;
       }
     },
     receiveStudent(zx) {
-      console.log(zx)
-      this.$api.receive(this, zx.intent_id)
+      console.log(zx);
+      this.$api.receive(this, zx.intent_id);
     },
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 /deep/.el-table__header th,

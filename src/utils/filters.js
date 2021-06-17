@@ -56,6 +56,28 @@ const filters = {
             return `${g}G`
         }
         return `${b}B`
+    },
+    orderStatus(status) {
+        const statusMap = {
+            0: "未付款",
+            1: "新订单",
+            2: "部分付款",
+            3: "已付款",
+            4: "已作废",
+            5: "已退款",
+        }
+        return statusMap[status]
+    },
+    orderTagType(status) {
+        const tagTypeMap = {
+            0: "info",
+            1: "",
+            2: "warning",
+            3: "success",
+            4: "danger",
+            5: "danger",
+        }
+        return tagTypeMap[status]
     }
 }
 

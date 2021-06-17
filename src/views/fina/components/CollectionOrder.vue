@@ -13,7 +13,13 @@
       <ul class="info-list">
         <li>订单编号：{{ orderInfo.order_no }}</li>
         <li>订单时间：{{ orderInfo.create_time }}</li>
-        <li>收费学生：{{ orderInfo.surname }}</li>
+        <li>
+          收费学生：{{
+            orderInfo.surname ||
+            (orderInfo.account && orderInfo.account.surname) ||
+            ""
+          }}
+        </li>
         <li>
           应收金额：{{
             (orderInfo.order_money - orderInfo.reduction).toFixed(2)
