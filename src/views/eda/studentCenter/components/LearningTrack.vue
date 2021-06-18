@@ -14,23 +14,24 @@
         style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
           label="序号"
+          align="center"
           type="index"
-          min-width="90"
+          width="90"
         ></el-table-column>
         <el-table-column
           prop="create_time"
           label="操作时间"
-          min-width="110"
+          width="160"
+          align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="description"
           label="操作详情"
-          min-width="100"
+          min-width="300"
           show-overflow-tooltip
         ></el-table-column>
       </el-table>
