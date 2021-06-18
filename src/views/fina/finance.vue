@@ -230,7 +230,7 @@
 </template>
 
 <script>
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, toDay } from "@/utils/date";
 import { getOrderList } from "@/api/fina";
 import ImportOrder from "./components/ImportOrder";
 import CollectionOrder from "./components/CollectionOrder";
@@ -247,7 +247,7 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        date: "",
+        date: [toDay(), toDay()],
         keyword: "",
       },
       searchOptions: [
@@ -255,6 +255,7 @@ export default {
           key: "date",
           type: "datePicker",
           attrs: {
+            value: "",
             type: "daterange",
             "range-separator": "至",
             "start-placeholder": "开始日期",
@@ -356,9 +357,8 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        date: data.date ? data.date.join(" - ") : "",
       };
-      this.getOrderList();
+      this.getOrderList(data);
     },
     handlePageChange(val) {
       this.pageNum = val;
@@ -368,6 +368,7 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
+        date: this.searchData.date ? this.searchData.date.join(" - ") : "",
         pay_status: this.activeStatus,
         verify: this.verify,
       };

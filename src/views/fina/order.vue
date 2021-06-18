@@ -180,7 +180,7 @@
 <script>
 import CollectionOrder from "./components/CollectionOrder";
 import { Approvalist, Orderentry } from "@/api/fina";
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, toDay } from "@/utils/date";
 export default {
   name: "order",
   components: {
@@ -219,7 +219,7 @@ export default {
       ],
       //搜索框
       searchData: {
-        date: "",
+        date: [toDay(), toDay()],
         keyword: "",
       },
       searchOptions: [
@@ -289,6 +289,7 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
+        date: this.searchData.date ? this.searchData.date.join(" - ") : "",
         // all: 1,
         pay_status: this.activeStatus,
       };
@@ -311,11 +312,9 @@ export default {
     },
     //搜索模块
     handleSearch(data) {
-      console.log(data);
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        date: data.date ? data.date.join(" - ") : "",
       };
       this.Approvalist();
     },
