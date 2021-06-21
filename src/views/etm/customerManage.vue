@@ -324,7 +324,9 @@
         <el-button plain>生成二维码</el-button>
       </div> -->
 
-          <div style="height: 650px; overflow: hidden; margin-top: 0">
+          <div
+            style="height: 650px; width: 800px; overflow: hidden; margin-top: 0"
+          >
             <iframe
               :src="sign_url"
               ref="iframe"
@@ -332,7 +334,7 @@
               width="1200px"
               height="800px"
               border="0"
-              style="margin-top: -120px; margin-left: -10px"
+              style="margin-top: -150px; margin-left: -150px"
             />
           </div>
           <!-- <iframe :src="sign_url" type="application/x-google-chrome-pdf" width="1150px" height="650px" border="0" /> -->
