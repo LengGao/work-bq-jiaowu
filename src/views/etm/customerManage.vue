@@ -246,12 +246,12 @@
                   "
                   >复制签名链接</el-button
                 >
-                <el-button
+                <!-- <el-button
                   type="text"
                   @click="Approval(row)"
                   v-if="row.contract_status == 1"
                   >审核</el-button
-                >
+                > -->
                 <el-button type="text" @click="toCusDetail(row)"
                   >客户详情</el-button
                 >
