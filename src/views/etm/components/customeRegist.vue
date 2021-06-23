@@ -8,7 +8,7 @@
       append-to-body
       width="1000px"
       top="5vh"
-      class="add-teaching-material"
+      class="create-order"
     >
       <el-form
         label-width="90px"
@@ -249,6 +249,7 @@
         </div>
       </el-form>
     </el-dialog>
+    <AddPhoto :visible.sync="addCertificatesDialog" :uid="userInfo.uid" />
   </section>
 </template>
 
@@ -259,6 +260,7 @@ import {
   createOrder,
 } from "@/api/etm";
 import { parsePrice } from "@/utils/index";
+import AddPhoto from "@/views/eda/certificates/components/AddPhoto";
 export default {
   props: {
     value: {
@@ -270,7 +272,9 @@ export default {
       default: {},
     },
   },
-
+  components: {
+    AddPhoto,
+  },
   data() {
     return {
       parsePrice,
@@ -330,6 +334,7 @@ export default {
       projectVisible: false,
       projectData: [],
       projectOptions: [],
+      addCertificatesDialog: false,
     };
   },
   computed: {
@@ -451,6 +456,9 @@ export default {
             lower_price: item.lowest_price,
             save_price: item.save_price || 0,
             pay_price: parsePrice(item.price - item.save_price),
+            service_effective: item.service_effective,
+            service_period: item.service_period,
+            service_type: item.service_type,
           })) || []
         ),
       };
@@ -458,6 +466,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.doClose();
+        this.addCertificatesDialog = true;
       }
     },
     doClose() {
@@ -489,6 +498,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.create-order {
+  /deep/.el-dialog__body {
+    padding: 20px 30px 0 30px;
+  }
+}
 .project-table {
   margin-bottom: 16px;
 }
@@ -500,33 +514,7 @@ export default {
 .zZindex {
   z-index: 3000000000000000 !important;
 }
-.receiptUpLoad {
-  margin: 0;
-  /deep/.el-upload {
-    border: 1px dashed #d9d9d9 !important;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .upload-cover /deep/.el-upload:hover {
-    border-color: #409eff;
-  }
-  .upload-cover-icon {
-    font-size: 28px;
-    color: hsl(215, 8%, 58%);
-    width: 120px;
-    height: 100px;
-    line-height: 90px;
-    text-align: center;
-  }
-  .img {
-    padding: 5px;
-    width: 130px;
-    height: 130px;
-    display: block;
-  }
-}
+
 /deep/.el-button.is-circle {
   padding: 7px;
 }
@@ -605,9 +593,7 @@ h3 {
   flex-wrap: wrap;
   justify-content: space-between;
 }
-/deep/.el-dialog__body {
-  padding: 20px 30px 0 30px;
-}
+
 .sign-up {
   display: flex;
   margin-bottom: 8px;
