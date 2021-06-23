@@ -124,13 +124,13 @@ export default {
         if (this.title === "补齐资料") {
           setTimeout(() => {
             this.btnLoading = false;
-            this.$message.success("资料修改成功");
+            this.$message.success("资料编辑成功");
             this.handleCancel();
             this.$emit("on-success");
           }, 2000);
         } else {
           this.btnLoading = false;
-          this.$message.success("资料修改成功");
+          this.$message.success("资料编辑成功");
           this.handleCancel();
           this.$emit("on-success");
         }
