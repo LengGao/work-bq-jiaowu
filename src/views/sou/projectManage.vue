@@ -20,7 +20,6 @@
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
           row-key="treeId"
           lazy
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -31,6 +30,7 @@
             show-overflow-tooltip
             min-width="90"
             prop="project_id"
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -38,16 +38,27 @@
             label="项目名称"
             min-width="200"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.isChild" style="margin-left: 20px"
+                >|- {{ row.project_name }}</span
+              >
+              <span v-else style="font-weight: bold">{{
+                row.project_name
+              }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="category_name"
             label="所属分类"
             min-width="110"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="project_price"
             label="价格"
+            align="center"
             min-width="110"
             show-overflow-tooltip
           >
@@ -60,12 +71,14 @@
             prop="lowest_price"
             label="最低价格"
             min-width="110"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
             prop="buy_number"
             label="购买人数"
+            align="center"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
@@ -73,6 +86,7 @@
           <el-table-column
             label="是否启用"
             min-width="150"
+            align="center"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -121,7 +135,12 @@
             </template>
           </el-table-column> -->
 
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column
+            label="操作"
+            fixed="right"
+            align="center"
+            min-width="200"
+          >
             <template slot-scope="{ row }">
               <div
                 style="display: flex; justify-content: center"
