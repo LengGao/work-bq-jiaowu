@@ -120,14 +120,14 @@
             </el-table-column>
 
             <el-table-column label="操作" fixed="right" min-width="200">
-              <template slot-scope="scope">
+              <template slot-scope="{ row }">
                 <div style="display: flex; justify-content: center">
                   <el-button
                     type="danger"
                     icon="el-icon-delete"
                     circle
                     plain
-                    @click="delbtn(scope.$index)"
+                    @click="delbtn(row.id)"
                   ></el-button>
                 </div>
               </template>
@@ -314,7 +314,9 @@ export default {
         remark: "",
       },
       rules: {
-        selectProject: [{ required: true, message: "请选择", trigger: "blur" }],
+        selectProject: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
         online_course: [
           { required: true, message: "请选择", trigger: "change" },
         ],
@@ -376,7 +378,7 @@ export default {
       val && this.getCateProjectOption();
     },
     "ruleForm.selectProject"(newVal) {
-      this.getCateProjectDetail(newVal);
+      this.getCateProjectDetail(newVal || []);
     },
   },
   methods: {
@@ -466,10 +468,11 @@ export default {
       this.projectData = [];
       this.$emit("input", false);
     },
-    delbtn(index) {
-      let arr = [...this.ruleForm.selectProject];
-      arr.splice(index, 1);
-      this.ruleForm.selectProject = [...arr];
+    delbtn(id) {
+      console.log(id);
+      this.ruleForm.selectProject = this.ruleForm.selectProject.filter(
+        (item) => [...item].pop() !== id
+      );
     },
     orderDeatilShow(formName) {
       this.$refs[formName].validate((valid) => {
