@@ -32,6 +32,7 @@ export function parseTime(time, cFormat) {
 }
 //金额格式转换
 export function parsePrice(s) {
+  if (!s) return '0.00'
   var n = 2 //设置保留的小数位数
   s = parseFloat((s + '').replace(/[^\d\.-]/g, '')).toFixed(n) + ''
   var l = s
@@ -43,7 +44,6 @@ export function parsePrice(s) {
   for (var i = 0; i < l.length; i++) {
     t += l[i]
   }
-  console.log(t)
   return (
     // '￥' +
     t

@@ -43,8 +43,18 @@
           </el-radio-group>
         </el-form-item>
         <Title text="报名项目">
-          <el-button type="text" @click="choseProject">选择项目</el-button>
+          <el-form-item prop="selectProject">
+            <el-cascader
+              placeholder="请选择项目"
+              style="width: 400px"
+              v-model="ruleForm.selectProject"
+              :options="projectOptions"
+              :props="{ multiple: true }"
+              filterable
+            ></el-cascader>
+          </el-form-item>
         </Title>
+
         <!--表格-->
         <div class="project-table">
           <el-table
@@ -63,13 +73,13 @@
             >
             </el-table-column>
             <el-table-column
-              prop="project_price"
+              prop="price"
               label="项目价格"
               min-width="110"
               show-overflow-tooltip
             >
               <template slot-scope="{ row }">
-                <div>￥{{ row.project_price }}</div>
+                <div>￥{{ row.price }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -87,24 +97,13 @@
               min-width="150"
               show-overflow-tooltip
             >
-              <template slot-scope="scope">
+              <template slot-scope="{ row }">
                 <el-input
-                  v-model="scope.row.save_price"
+                  v-model="row.save_price"
                   type="number"
-                  :controls="false"
-                  :min="0"
-                  :max="
-                    parseFloat(scope.row.project_price) -
-                    parseFloat(scope.row.lowest_price)
-                  "
                   size="small"
-                  @input="
-                    changeAmount(
-                      scope.$index,
-                      scope.row.save_price,
-                      projectData
-                    )
-                  "
+                  placeholder="请输入"
+                  @input="savePriceChange($event, row)"
                 ></el-input>
               </template>
             </el-table-column>
@@ -116,7 +115,7 @@
               show-overflow-tooltip
             >
               <template slot-scope="{ row }">
-                <div>￥{{ row.pay_price }}</div>
+                <div>￥{{ parsePrice(row.price - row.save_price) }}</div>
               </template>
             </el-table-column>
 
@@ -128,12 +127,34 @@
                     icon="el-icon-delete"
                     circle
                     plain
-                    @click="delbtn(scope.$index, projectData)"
+                    @click="delbtn(scope.$index)"
                   ></el-button>
                 </div>
               </template>
             </el-table-column>
           </el-table>
+        </div>
+
+        <Title text="报名小结" />
+        <div class="sign-up">
+          <div class="sign-up-item">
+            <span class="sign-up-item-label">课程名称</span>
+            <span class="sign-up-item-content">{{
+              allOrderInfo.allCourse
+            }}</span>
+          </div>
+          <div class="sign-up-item">
+            <span class="sign-up-item-label">题库名称</span>
+            <span class="sign-up-item-content">{{
+              allOrderInfo.allQuestion
+            }}</span>
+          </div>
+          <div class="sign-up-item">
+            <span class="sign-up-item-label">教材名称</span>
+            <span class="sign-up-item-content">{{
+              allOrderInfo.allTeachingMaterial
+            }}</span>
+          </div>
         </div>
         <div class="customer_sum_up" style="padding: 10px 0 20px 0">
           <Title text="费用小结" />
@@ -141,29 +162,25 @@
             <el-row>
               <el-col :sm="4">
                 <div class="expense_summary_label">
-                  订单总价<span
-                    >￥{{
-                      ruleForm.order_money ? ruleForm.order_money : ""
-                    }}</span
-                  >
+                  订单总价<span>￥{{ allOrderInfo.totalPrice }}</span>
                 </div>
               </el-col>
               <el-col :sm="4">
                 <div class="expense_summary_label">
-                  优惠总额<span>￥{{ ruleForm.reduction }}</span>
+                  优惠总额<span>￥{{ allOrderInfo.totalDiscount }}</span>
                 </div>
               </el-col>
               <el-col :sm="4">
                 <div class="expense_summary_label">
                   应收金额<span style="color: #fd6500"
-                    >￥{{ receivableMoney ? receivableMoney : "" }}</span
+                    >￥{{ allOrderInfo.totalReceivable }}</span
                   >
                 </div>
               </el-col>
             </el-row>
           </div>
         </div>
-        <Title text="费用小结" />
+        <Title text="支付信息" />
         <el-form-item label="支付方式" prop="pay_type">
           <el-select v-model="ruleForm.pay_type" placeholder="请选择支付方式">
             <el-option
@@ -182,35 +199,21 @@
             class="input-width"
             type="number"
             v-model="ruleForm.pay_money"
+            @input="payMoneyChange"
           ></el-input>
         </el-form-item>
-
-        <!-- <el-form-item
-              label="上传收据"
-              class="receiptUpLoad"
-            >
-              <el-upload
-                name="image"
-                :headers="headers"
-                :action="uploadImageUrl"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload"
-              >
-                <img v-if="imgSrc" :src="imgSrc" class="img" />
-                <i v-else class="el-icon-plus upload-cover-icon"></i>
-              </el-upload>
-            </el-form-item> -->
         <div class="customer_sum_up">
           <Title text="备注信息" />
           <el-row class="wrap">
             <el-col :sm="8" style="display: flex; margin-top: 10px">
               <div class="expense_summary_label">
                 实缴金额
-                <span style="color: #fd6500">￥{{ ruleForm.pay_money }}</span>
+                <span style="color: #fd6500"
+                  >￥{{ parsePrice(ruleForm.pay_money) }}</span
+                >
               </div>
               <div class="expense_summary_label">
-                欠费金额<span>￥{{ calcMoney }}</span>
+                欠费金额<span>￥{{ parsePrice(arrearsMoney) }}</span>
               </div>
             </el-col>
 
@@ -223,7 +226,7 @@
                   value-format="yyyy-MM-dd "
                   class="input-width"
                   placeholder="选择日期"
-                  :disabled="!calcMoney"
+                  :disabled="!arrearsMoney"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -246,31 +249,17 @@
         </div>
       </el-form>
     </el-dialog>
-    <orderDialog
-      :orderVisible="orderVisible"
-      :orderInfo="orderInfo"
-      v-on:orderDialog="getorderStatus($event)"
-    ></orderDialog>
-    <projectDialog
-      :projectData="projectData"
-      :projectVisible="projectVisible"
-      @courseArr="getCourseArr"
-      v-on:projectDialog="getprojectStatus($event)"
-    ></projectDialog>
   </section>
 </template>
 
 <script>
-import orderDialog from "./orderDialog";
-import { uploadImageUrl } from "@/api/educational";
-import projectDialog from "./projectDialog";
+import {
+  getCateProjectOption,
+  getCateProjectDetail,
+  createOrder,
+} from "@/api/etm";
 import { parsePrice } from "@/utils/index";
-// import parsePrice from '@/utils/index'
 export default {
-  components: {
-    orderDialog,
-    projectDialog,
-  },
   props: {
     value: {
       type: Boolean,
@@ -284,13 +273,8 @@ export default {
 
   data() {
     return {
-      uploadImageUrl,
-      orderInfo: {},
-      headers: {
-        token: this.$store.state.user.token,
-      },
+      parsePrice,
       openStatus: this.value,
-      schoolData: [],
       payWays: [
         {
           value: 1,
@@ -323,23 +307,14 @@ export default {
       ],
       ruleForm: {
         online_course: "",
-        order_token: 0,
-        aid: "",
-        uid: "",
-        todo_id: "",
         pay_type: "",
         pay_money: "",
-        order_money: 0,
-        project: "",
-        reduction: 0,
-        overdue_money: 0,
-        surname: "",
-        mobile: "",
-        id_card_number: "",
-        // receipt_file: "",
         supplement_time: "",
+        selectProject: "",
+        remark: "",
       },
       rules: {
+        selectProject: [{ required: true, message: "请选择", trigger: "blur" }],
         online_course: [
           { required: true, message: "请选择", trigger: "change" },
         ],
@@ -350,20 +325,15 @@ export default {
           { required: true, message: "请选择支付金额", trigger: "change" },
         ],
       },
-      customerInfo: {},
-      receivableMoney: 0,
-      orderVisible: false,
       projectVisible: false,
       projectData: [],
-      page: 1,
-      imgSrc: "",
+      projectOptions: [],
     };
   },
   computed: {
     // 欠缴金额
-    calcMoney() {
-      const money = this.receivableMoney - this.ruleForm.pay_money;
-      console.log(money);
+    arrearsMoney() {
+      const money = this.allOrderInfo.totalReceivable - this.ruleForm.pay_money;
       const result = money > 0 ? money : 0;
       // 欠缴金额为0要清空欠缴时间
       if (!result) {
@@ -371,62 +341,122 @@ export default {
       }
       return result;
     },
+    allOrderInfo() {
+      let totalPrice = 0; // 订单总价
+      let totalDiscount = 0; // 订单优惠总价
+      let totalReceivable = 0; // 订单应收总金额
+      let allCourse = []; // 所有课程
+      let allQuestion = []; // 所有题库
+      let allTeachingMaterial = []; // 所有教材
+      this.projectData.forEach((item) => {
+        totalPrice += +item.price || 0;
+        totalDiscount += +item.save_price || 0;
+        allCourse = allCourse.concat(item.course);
+        allQuestion = allQuestion.concat(item.problem);
+        allTeachingMaterial = allTeachingMaterial.concat(item.textbooks);
+      });
+      totalReceivable = totalPrice - totalDiscount;
+      this.ruleForm.pay_money = parsePrice(totalReceivable);
+      return {
+        totalPrice: parsePrice(totalPrice),
+        totalDiscount: parsePrice(totalDiscount),
+        totalReceivable: parsePrice(totalReceivable),
+        allTeachingMaterial: allTeachingMaterial
+          .map((item) => item.book_name)
+          .join("、"),
+        allQuestion: allQuestion.map((item) => item.problem_title).join("、"),
+        allCourse: allCourse.map((item) => item.course_name).join("、"),
+      };
+    },
   },
 
   watch: {
     value(val) {
       this.openStatus = val;
+      val && this.getCateProjectOption();
     },
-    projectData(newVal, oldVal) {
-      var order_money = 0; //订单总价
-      var reduction = 0; //优惠总额
-      var receivableMoney = 0; //应收金额
-      this.projectData.forEach((i) => {
-        order_money = order_money + parseFloat(i.project_price);
-        reduction = reduction + parseFloat(i.save_price ? i.save_price : 0);
-        receivableMoney = receivableMoney + parseFloat(i.pay_price);
-      });
-      this.ruleForm.order_money = parsePrice(order_money);
-      this.ruleForm.reduction = parsePrice(reduction);
-      this.ruleForm.pay_money = this.receivableMoney =
-        parsePrice(receivableMoney);
-
-      console.log(order_money, reduction, receivableMoney);
+    "ruleForm.selectProject"(newVal) {
+      this.getCateProjectDetail(newVal);
     },
-    // },
   },
   methods: {
-    // handleAvatarSuccess(res, file) {
-    //   this.imgSrc = res.data?.data?.url || "";
-    //   this.ruleForm.receipt_file = this.imgSrc;
-    // },
-    beforeAvatarUpload(file) {
-      const isImg = file.type.indexOf("image") !== -1;
-      const isLt20M = file.size / 1024 / 1024 < 20;
-      if (!isImg) {
-        this.$message.error("请上传图片");
+    payMoneyChange(val) {
+      if (val > parseInt(this.allOrderInfo.totalReceivable)) {
+        this.ruleForm.pay_money = +this.allOrderInfo.totalReceivable;
+        this.$message.warning("支付金额不能大于应收金额！");
       }
-      if (!isLt20M) {
-        this.$message.error("上传图片大小不能超过 20MB!");
+    },
+    // 优惠金额输入时
+    savePriceChange(val, row) {
+      let maxSavePrice = (+row.price || 0) - (+row.lowest_price || 0);
+      if (val > maxSavePrice) {
+        row.save_price = maxSavePrice;
+        this.$message.warning("优惠后金额不能低于最低金额！");
       }
-      return isLt20M && isImg;
     },
-    getCourseArr(arr) {
-      console.log(arr);
-      arr.forEach((i) => {
-        i.pay_price = i.project_price;
-        i.id = i.project_id;
-        i.lower_price = i.lowest_price;
-        i.save_price = 0;
-      });
-      this.projectData = arr;
+    // 已选项目详情
+    async getCateProjectDetail(arr) {
+      const idStr = arr.map((item) => [...item].pop()).join(",");
+      if (!idStr) {
+        this.projectData = [];
+        return;
+      }
+      const data = {
+        id: idStr,
+      };
+      const res = await getCateProjectDetail(data);
+      if (res.code === 0) {
+        const oldSavePrice = {};
+        this.projectData.forEach((item) => {
+          oldSavePrice[item.id] = item.save_price;
+        });
+        this.projectData =
+          res.data.map((item) => ({
+            ...item,
+            save_price: oldSavePrice[item.id] || "",
+          })) || [];
+      }
     },
-    getorderStatus(status) {
-      this.orderVisible = status;
-      this.doClose();
+    // 获取项目选项
+    async getCateProjectOption() {
+      const res = await getCateProjectOption();
+      if (res.code === 0) {
+        this.projectOptions = res.data || [];
+      }
     },
-    getprojectStatus(status) {
-      this.projectVisible = status;
+    // 报名缴费
+    async createOrder() {
+      const data = {
+        order_token: Date.now(),
+        uid: this.userInfo.uid,
+        aid: this.userInfo.id,
+        pay_type: this.ruleForm.pay_type,
+        pay_money: this.ruleForm.pay_money,
+        order_money: this.allOrderInfo.totalPrice,
+        reduction: this.allOrderInfo.totalDiscount,
+        overdue_money: this.arrearsMoney,
+        surname: this.userInfo.surname,
+        mobile: this.userInfo.mobile,
+        id_card_number: this.userInfo.id_card_number,
+        supplement_time: this.ruleForm.supplement_time,
+        online_course: this.ruleForm.online_course,
+        tips: this.ruleForm.remark,
+        project: JSON.stringify(
+          this.projectData.map((item) => ({
+            id: item.id,
+            project_name: item.project_name,
+            project_price: item.price,
+            lower_price: item.lowest_price,
+            save_price: item.save_price || 0,
+            pay_price: parsePrice(item.price - item.save_price),
+          })) || []
+        ),
+      };
+      const res = await createOrder(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.doClose();
+      }
     },
     doClose() {
       this.$refs.ruleForm.resetFields();
@@ -436,54 +466,15 @@ export default {
       this.projectData = [];
       this.$emit("input", false);
     },
-    changeAmount(av, ab) {
-      this.projectData[av].save_price = parseFloat(ab);
-      console.log(this.projectData[av].save_price);
-      this.projectData[av].pay_price =
-        parseFloat(this.projectData[av].project_price || 0) -
-        parseFloat(this.projectData[av].save_price || 0);
-      //应收金额小于最低金额
-      if (this.projectData[av].pay_price < this.projectData[av].lowest_price) {
-        this.$message.error("该项目优惠后金额低于项目最低价格");
-        this.projectData[av].save_price =
-          this.projectData[av].project_price -
-          this.projectData[av].lowest_price;
-        this.projectData[av].pay_price = this.projectData[av].lowest_price;
-      }
-      var order_money = 0; //订单总价
-      var reduction = 0; //优惠总额
-      var receivableMoney = 0; //应收金额
-      this.projectData.forEach((i) => {
-        order_money = order_money + parseFloat(i.project_price);
-        receivableMoney = receivableMoney + parseFloat(i.pay_price);
-        reduction = reduction + parseFloat(i.save_price || 0);
-      });
-      console.log(reduction);
-      this.ruleForm.order_money = order_money;
-      this.ruleForm.reduction = reduction;
-      this.ruleForm.pay_money = this.receivableMoney = receivableMoney;
-      console.log(order_money, reduction, receivableMoney);
-      this.$forceUpdate();
-    },
-    choseProject() {
-      this.projectVisible = true;
-    },
-    //跳转到客户详情页面
-
-    delbtn(index, rows) {
-      rows.splice(index, 1);
+    delbtn(index) {
+      let arr = [...this.ruleForm.selectProject];
+      arr.splice(index, 1);
+      this.ruleForm.selectProject = [...arr];
     },
     orderDeatilShow(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.ruleForm.overdue_money =
-            this.receivableMoney - this.ruleForm.pay_money;
-          this.ruleForm.order_token =
-            Math.floor(Math.random() * 1000000 + 1) + "";
-          this.projectData.forEach((i) => {});
-          this.ruleForm.project = JSON.stringify(this.projectData);
-
-          this.$api.createOrder(this, this.ruleForm);
+          this.createOrder();
         } else {
           console.log("error submit!!");
           return false;
@@ -613,5 +604,21 @@ h3 {
 }
 /deep/.el-dialog__body {
   padding: 20px 30px 0 30px;
+}
+.sign-up {
+  display: flex;
+  margin-bottom: 8px;
+  &-item {
+    flex: 1;
+    margin-right: 16px;
+    display: flex;
+    &-label {
+      flex-shrink: 0;
+      margin-right: 8px;
+    }
+    &-content {
+      color: #199fff;
+    }
+  }
 }
 </style>
