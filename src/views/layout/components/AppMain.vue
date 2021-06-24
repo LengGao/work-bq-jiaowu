@@ -1,21 +1,24 @@
 <template>
   <section class="app-main">
+    <h1>{{ $store.getters.cacheArr }}</h1>
     <transition name="fade" mode="out-in">
       <!-- <router-view :key="key"></router-view> -->
-      <router-view></router-view>
+      <keep-alive :include="$store.getters.cacheArr">
+        <router-view></router-view>
+      </keep-alive>
     </transition>
   </section>
 </template>
 
 <script>
 export default {
-  name: 'AppMain',
+  name: "AppMain",
   computed: {
     // key() {
     //   return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
     // }
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .app-main {

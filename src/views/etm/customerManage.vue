@@ -371,7 +371,7 @@ import Seetemplate from "./components/seetemplate";
 import Toexamine from "./components/toexadialog";
 
 export default {
-  name: "myClients",
+  name: "customerManage",
   components: {
     addCustomeDialog,
     Viewcontract,

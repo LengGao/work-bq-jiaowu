@@ -8,6 +8,7 @@ const getters = {
   userInfo: state => state.user.userInfo,
   identity: state => state.user.identity,
   menus: state => state.user.menus,
-  msgCount: state => state.user.msgCount
+  msgCount: state => state.user.msgCount,
+  cacheArr: state => Array.from(state.cacheView.currentCache)
 }
 export default getters

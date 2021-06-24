@@ -138,6 +138,7 @@ import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 import AddClass from "./components/AddClass";
 export default {
+  name: "classManage",
   components: {
     AddClass,
   },
