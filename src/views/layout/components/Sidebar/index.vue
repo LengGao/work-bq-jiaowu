@@ -32,13 +32,13 @@
     <el-menu
       mode="vertical"
       :show-timeout="200"
-      :default-active="$route.path"
+      :default-active="defaultActive"
       :collapse="isCollapse"
-      background-color="#380638"
-      text-color="#bfcbd9"
+      background-color="#445b8a"
+      text-color="#fff"
       :unique-opened="true"
       :collapse-transition="true"
-      active-text-color="#409EFF"
+      active-text-color="#000"
       @select="handleMenuSelect"
       style="overflow: hidden"
       router
@@ -77,7 +77,11 @@ export default {
         { name: "班级管理", links: "/eda/classManage", icon: "MyClassMan" },
         { name: "直播管理", links: "/eda/liveManager", icon: "MyVideoMan" },
       ],
+      defaultActive: "",
     };
+  },
+  created() {
+    this.defaultActive = this.$route.path;
   },
   methods: {
     handleMenuSelect(index, indexPath) {
@@ -186,7 +190,9 @@ export default {
   line-height: 14px;
 }
 // 选中状态
-/deep/.el-menu-item.is-active {
-  background-color: #220422 !important;
+/deep/.el-menu-item {
+  &.is-active {
+    background-color: #c0cade !important;
+  }
 }
 </style>

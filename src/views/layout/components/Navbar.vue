@@ -13,6 +13,9 @@
         <span style="color: #199fff" @click="huanfu('theme1')">换肤</span>
       </div> -->
       <!-- 返回 -->
+      <div class="btn-share" title="营销管理后台" @click="handleLink">
+        <i class="iconfont iconfenxiang3"></i>
+      </div>
       <div class="btn-back" title="返回" @click="handleBack">
         <i class="iconfont iconweb-icon-"></i>
       </div>
@@ -158,6 +161,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import touxiang from "@/assets/images/touxiang.png";
 import { getAdminQueueList, baseUrl } from "@/api/login";
+import { thirdSign } from "@/api/workbench";
 import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
@@ -223,6 +227,12 @@ export default {
     clearInterval(timeId);
   },
   methods: {
+    async handleLink() {
+      const res = await thirdSign();
+      if (res.code === 0) {
+        res.data.url && window.open(res.data.url);
+      }
+    },
     handleBack() {
       this.$router.go(-1);
     },
@@ -360,6 +370,18 @@ export default {
     }
     i {
       font-size: 30px;
+    }
+  }
+  .btn-share {
+    color: #424542;
+    cursor: pointer;
+    margin-top: -3px;
+    margin-right: 20px;
+    &:hover {
+      color: #2798ee;
+    }
+    i {
+      font-size: 26px;
     }
   }
   .btn-refresh {
