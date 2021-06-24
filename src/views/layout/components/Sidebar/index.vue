@@ -32,7 +32,7 @@
     <el-menu
       mode="vertical"
       :show-timeout="200"
-      :default-active="$route.path"
+      :default-active="defaultActive"
       :collapse="isCollapse"
       background-color="#304156"
       text-color="#fff"
@@ -77,7 +77,11 @@ export default {
         { name: "班级管理", links: "/eda/classManage", icon: "MyClassMan" },
         { name: "直播管理", links: "/eda/liveManager", icon: "MyVideoMan" },
       ],
+      defaultActive: "",
     };
+  },
+  created() {
+    this.defaultActive = this.$route.path;
   },
   methods: {
     handleMenuSelect(index, indexPath) {
