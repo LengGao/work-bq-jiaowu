@@ -1,6 +1,6 @@
 <template>
   <section class="app-main">
-    <transition name="fade" mode="out-in">
+    <transition name="main" mode="out-in">
       <!-- <router-view :key="key"></router-view> -->
       <keep-alive :include="$store.getters.cacheArr">
         <router-view></router-view>
@@ -27,5 +27,20 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
+}
+// 主内容区动画
+.main-enter-active {
+  transition: all 0.2s;
+}
+.main-leave-active {
+  transition: all 0.15s;
+}
+.main-enter {
+  opacity: 0;
+  margin-left: -20px;
+}
+.main-leave-to {
+  opacity: 0;
+  margin-left: 20px;
 }
 </style>
