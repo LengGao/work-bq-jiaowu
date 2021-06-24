@@ -193,8 +193,7 @@ import { cloneOptions } from "@/utils/index";
 import { getStudentList, getproject, addstudents } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
-  name: "myClients",
-
+  name: "studentCenter",
   data() {
     return {
       importVisible: false,

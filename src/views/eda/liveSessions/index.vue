@@ -97,6 +97,7 @@
 import { liveSessionList } from "@/api/eda";
 import LiveLinkDialog from "./components/LiveLinkDialog";
 export default {
+  name: "liveSessions",
   components: {
     LiveLinkDialog,
   },
