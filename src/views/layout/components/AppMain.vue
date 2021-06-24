@@ -1,6 +1,5 @@
 <template>
   <section class="app-main">
-    <h1>{{ $store.getters.cacheArr }}</h1>
     <transition name="fade" mode="out-in">
       <!-- <router-view :key="key"></router-view> -->
       <keep-alive :include="$store.getters.cacheArr">
