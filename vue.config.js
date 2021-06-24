@@ -43,7 +43,7 @@ module.exports = {
         // target: 'http://thing.com',
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
 
-        target: 'http://v2.testadmin.beiqujy.com/apidata', //测试
+        target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://192.168.8.100', //权

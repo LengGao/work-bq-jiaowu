@@ -699,3 +699,11 @@ export function getProjectList(params) {
     params,
   })
 }
+// 移动项目
+export function moveProject(data) {
+  return request({
+    url: 'project/move',
+    method: 'post',
+    data,
+  })
+}

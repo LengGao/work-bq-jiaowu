@@ -152,6 +152,7 @@
                 <el-button type="text" @click="deleteConfirm(row)"
                   >删除</el-button
                 >
+                <el-button type="text" @click="handleMove(row)">移动</el-button>
               </div>
               <div style="display: flex; justify-content: center" v-else>
                 <el-button type="text" @click="handleEdit(row)">编辑</el-button>
@@ -161,6 +162,7 @@
                 <el-button type="text" @click="openChildAdd(row.project_id)"
                   >添加子项目</el-button
                 >
+                <el-button type="text" @click="handleMove(row)">移动</el-button>
               </div>
             </template>
           </el-table-column>
@@ -374,12 +376,18 @@
         :parentId="currentProjectId"
         @on-success="updateTableChildren"
       />
+      <MoveProjectDialog
+        v-model="moveDialogVisible"
+        :id="project_id"
+        @on-success="getProjectList"
+      />
     </section>
   </div>
 </template>
 
 <script>
 import AddProjectChild from "./components/addProjectChild";
+import MoveProjectDialog from "./components/moveProjectDialog";
 import {
   getCateList,
   getChildSubList,
@@ -400,6 +408,7 @@ export default {
     QuestionBank,
     Asstemplate,
     AddProjectChild,
+    MoveProjectDialog,
   },
   data() {
     return {
@@ -493,6 +502,7 @@ export default {
       currentChildId: "",
       treeId: 0,
       treeLoadMap: new Map(),
+      moveDialogVisible: false,
     };
   },
   created() {
@@ -501,6 +511,10 @@ export default {
   },
 
   methods: {
+    handleMove(row) {
+      this.project_id = row.project_id;
+      this.moveDialogVisible = true;
+    },
     async updateChildProjectStatus(row) {
       const data = {
         status: row.status,
