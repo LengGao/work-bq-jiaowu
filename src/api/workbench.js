@@ -126,3 +126,11 @@ export function setUnread(params) {
         params
     })
 }
+// 获取分享链接
+export function thirdSign(params) {
+    return request({
+        url: '/notify/thirdSign',
+        method: 'get',
+        params
+    })
+}
