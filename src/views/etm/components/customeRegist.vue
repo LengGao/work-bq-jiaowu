@@ -12,7 +12,7 @@
     >
       <el-form
         label-width="90px"
-        class="demo-ruleForm"
+        class="create-order-form"
         :rules="rules"
         inline
         ref="ruleForm"
@@ -241,13 +241,13 @@
             v-model="ruleForm.remark"
           ></el-input>
         </el-form-item>
-        <div class="form-footer">
-          <el-button @click="doClose">取消</el-button>
-          <el-button type="primary" @click="orderDeatilShow('ruleForm')"
-            >报名缴费</el-button
-          >
-        </div>
       </el-form>
+      <div class="form-footer">
+        <el-button @click="doClose">取消</el-button>
+        <el-button type="primary" @click="orderDeatilShow('ruleForm')"
+          >报名缴费</el-button
+        >
+      </div>
     </el-dialog>
     <AddPhoto :visible.sync="addCertificatesDialog" :uid="userInfo.uid" />
   </section>
@@ -488,8 +488,7 @@ export default {
         if (valid) {
           this.createOrder();
         } else {
-          console.log("error submit!!");
-          return false;
+          this.$message.error("资料未完善！");
         }
       });
     },
@@ -500,7 +499,13 @@ export default {
 <style lang="scss" scoped>
 .create-order {
   /deep/.el-dialog__body {
+    padding: 0;
+  }
+  .create-order-form {
     padding: 20px 30px 0 30px;
+    height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
 .project-table {
