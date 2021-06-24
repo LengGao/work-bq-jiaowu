@@ -576,7 +576,7 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        category_id: this.searchData.category_id.pop(),
+        category_id: [...this.searchData.category_id].pop(),
       };
       const res = await getProjectList(data);
       if (res.code === 0) {
