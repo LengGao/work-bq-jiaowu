@@ -36,11 +36,6 @@
 export default {
   name: "SearchList",
   props: {
-    // 是否开启搜索缓存 （开启后列表接口必须放在mounted里调用，跟组件渲染顺序有关系）
-    cache: {
-      type: Boolean,
-      default: false,
-    },
     options: {
       type: Array,
       default: () => [],
@@ -66,13 +61,6 @@ export default {
   },
   methods: {
     initData() {
-      // 把缓存的搜索参数赋值给data
-      if (this.cache && this.$store.getters.hasCache(this.$route.name)) {
-        const cacheData = this.$store.getters.getCache(this.$route.name);
-        for (const k in this.data) {
-          this.data[k] = cacheData[k];
-        }
-      }
       this.searchData = { ...this.data };
     },
     handleReset() {
@@ -98,11 +86,6 @@ export default {
     handleSearch() {
       const data = {};
       this.deepClone(this.searchData, data);
-      this.cache &&
-        this.$store.dispatch("setSearchCache", {
-          routeName: this.$route.name,
-          cacheVal: data,
-        });
       this.$emit("on-search", data);
     },
   },

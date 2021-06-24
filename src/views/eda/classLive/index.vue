@@ -156,6 +156,7 @@ import { getCateList } from "@/api/sou";
 import LiveDialog from "./components/LiveDialog";
 import LiveLinkDialog from "../liveSessions/components/LiveLinkDialog";
 export default {
+  name: "classLive",
   components: {
     LiveDialog,
     LiveLinkDialog,

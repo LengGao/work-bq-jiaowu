@@ -6,7 +6,6 @@
     <div class="mainPart">
       <!--搜索模块-->
       <SearchList
-        cache
         :options="searchOptions"
         :data="searchData"
         @on-search="handleSearch"
@@ -141,7 +140,7 @@
       <div class="table_bottom">
         <page
           :data="listTotal"
-          :curpage="searchData.pageNum"
+          :curpage="pageNum"
           @pageSizeChange="handleSizeChange"
           @pageChange="handlePageChange"
         />
@@ -194,18 +193,17 @@ import { cloneOptions } from "@/utils/index";
 import { getStudentList, getproject, addstudents } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
-  name: "myClients",
-
+  name: "studentCenter",
   data() {
     return {
       importVisible: false,
       listData: [],
       listLoading: false,
+      pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       checkedIds: [],
       searchData: {
-        pageNum: 1,
-        pageSize: 20,
         type: 0,
         date: "",
         course_category_id: [],
@@ -299,10 +297,9 @@ export default {
     this.getInstitutionSelectData();
     this.getproject();
     this.getCateList();
-  },
-  mounted() {
     this.getStudentList();
   },
+
   methods: {
     // 复制
     handleCopy(val) {
@@ -386,36 +383,34 @@ export default {
     //   }
     // },
     handleSearch(data) {
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
       this.searchData = {
-        pageNum: 1,
         ...data,
+        organization_id: data.organization_id.pop(),
+        course_category_id: data.course_category_id.pop(),
+        start_time: times[0],
+        end_time: times[1],
       };
       this.getStudentList();
     },
     handleSizeChange(size) {
-      this.searchData.pageSize = size;
+      this.pageSize = size;
       this.getStudentList();
     },
     handlePageChange(val) {
-      this.searchData.pageNum = val;
+      this.pageNum = val;
       this.getStudentList();
     },
     //学生列表
     async getStudentList() {
       this.checkedIds = [];
       this.intent_id = "";
-      const times = this.searchData.date || ["", ""];
-      delete this.searchData.date;
       const data = {
+        page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
-        organization_id: Array.isArray(this.searchData.organization_id)
-          ? [...this.searchData.organization_id].pop()
-          : this.searchData.organization_id,
-        course_category_id: Array.isArray(this.searchData.course_category_id)
-          ? [...this.searchData.course_category_id].pop()
-          : this.searchData.course_category_id,
-        start_time: times[0],
-        end_time: times[1],
       };
       this.listLoading = true;
       const res = await getStudentList(data);

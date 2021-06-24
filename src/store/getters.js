@@ -9,7 +9,6 @@ const getters = {
   identity: state => state.user.identity,
   menus: state => state.user.menus,
   msgCount: state => state.user.msgCount,
-  getCache: state => (routeName) => state.searchCache.cache.get(routeName),
-  hasCache: state => (routeName) => state.searchCache.cache.has(routeName)
+  cacheArr: state => Array.from(state.cacheView.currentCache)
 }
 export default getters
