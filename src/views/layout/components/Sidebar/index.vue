@@ -34,11 +34,11 @@
       :show-timeout="200"
       :default-active="defaultActive"
       :collapse="isCollapse"
-      background-color="#304156"
+      background-color="#445b8a"
       text-color="#fff"
       :unique-opened="true"
       :collapse-transition="true"
-      active-text-color="#199FFF"
+      active-text-color="#000"
       @select="handleMenuSelect"
       style="overflow: hidden"
       router
@@ -192,7 +192,7 @@ export default {
 // 选中状态
 /deep/.el-menu-item {
   &.is-active {
-    background-color: #1f2d3d !important;
+    background-color: #c0cade !important;
   }
 }
 </style>
