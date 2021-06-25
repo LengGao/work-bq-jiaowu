@@ -49,6 +49,7 @@ export default {
 .iconfont {
   font-size: 22px;
   margin-right: 8px;
+  color: inherit;
 }
 .p-l {
   padding-left: 10px !important;

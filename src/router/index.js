@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
+import store from '@/store'
 import Layout from '../views/layout/Layout'
 
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
@@ -862,5 +863,27 @@ export const resetRouter = () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
 }
+let netxtViewName = ''
+router.beforeEach((to, from, next) => {
+  const cacheViews = store.state.cacheView.cacheViews
+  const cacheTo = store.state.cacheView.cacheTo
+  // 如果当前页面返回不是已缓存页面就清除
+  if (netxtViewName && to.name !== netxtViewName) {
+    store.dispatch('delViewCache', netxtViewName)
+    netxtViewName = ''
+  }
+  // 添加缓存
+  if (cacheViews.includes(to.name)) {
+    store.dispatch('setViewCache', to.name)
+  }
+  // 如果已缓存的页面去的没有目标页面，就清除
+  if (cacheTo[from.name] && !cacheTo[from.name].includes(to.name)) {
+    store.dispatch('delViewCache', from.name)
+  } else {
+    // 记录来的页面
+    netxtViewName = from.name
+  }
+  next()
+})
 
 export default router

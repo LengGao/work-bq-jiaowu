@@ -79,7 +79,29 @@ export function getCommonUserList(params) {
 export function delUser(params) {
   return request({
     url: '/Enrollment/delUser',
+  })
+}
+// 报名时选择项目
+export function getCateProjectOption(params) {
+  return request({
+    url: '/project/cate_project',
     method: 'get',
     params,
+  })
+}
+// 报名时选择项目-查询已选项目的详情
+export function getCateProjectDetail(data) {
+  return request({
+    url: '/project/mult_detail',
+    method: 'post',
+    data,
+  })
+}
+// 报名
+export function createOrder(data) {
+  return request({
+    url: '/order/create',
+    method: 'post',
+    data,
   })
 }

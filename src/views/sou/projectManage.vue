@@ -20,7 +20,6 @@
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
           row-key="treeId"
           lazy
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -31,6 +30,7 @@
             show-overflow-tooltip
             min-width="90"
             prop="project_id"
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -38,16 +38,27 @@
             label="项目名称"
             min-width="200"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span v-if="row.isChild" style="margin-left: 20px"
+                >|- {{ row.project_name }}</span
+              >
+              <span v-else style="font-weight: bold">{{
+                row.project_name
+              }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="category_name"
             label="所属分类"
             min-width="110"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="project_price"
             label="价格"
+            align="center"
             min-width="110"
             show-overflow-tooltip
           >
@@ -60,12 +71,14 @@
             prop="lowest_price"
             label="最低价格"
             min-width="110"
+            align="center"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
             prop="buy_number"
             label="购买人数"
+            align="center"
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
@@ -73,6 +86,7 @@
           <el-table-column
             label="是否启用"
             min-width="150"
+            align="center"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -121,7 +135,12 @@
             </template>
           </el-table-column> -->
 
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column
+            label="操作"
+            fixed="right"
+            align="center"
+            min-width="200"
+          >
             <template slot-scope="{ row }">
               <div
                 style="display: flex; justify-content: center"
@@ -133,6 +152,7 @@
                 <el-button type="text" @click="deleteConfirm(row)"
                   >删除</el-button
                 >
+                <el-button type="text" @click="handleMove(row)">移动</el-button>
               </div>
               <div style="display: flex; justify-content: center" v-else>
                 <el-button type="text" @click="handleEdit(row)">编辑</el-button>
@@ -142,6 +162,7 @@
                 <el-button type="text" @click="openChildAdd(row.project_id)"
                   >添加子项目</el-button
                 >
+                <el-button type="text" @click="handleMove(row)">移动</el-button>
               </div>
             </template>
           </el-table-column>
@@ -355,12 +376,18 @@
         :parentId="currentProjectId"
         @on-success="updateTableChildren"
       />
+      <MoveProjectDialog
+        v-model="moveDialogVisible"
+        :id="project_id"
+        @on-success="getProjectList"
+      />
     </section>
   </div>
 </template>
 
 <script>
 import AddProjectChild from "./components/addProjectChild";
+import MoveProjectDialog from "./components/moveProjectDialog";
 import {
   getCateList,
   getChildSubList,
@@ -381,6 +408,7 @@ export default {
     QuestionBank,
     Asstemplate,
     AddProjectChild,
+    MoveProjectDialog,
   },
   data() {
     return {
@@ -474,6 +502,7 @@ export default {
       currentChildId: "",
       treeId: 0,
       treeLoadMap: new Map(),
+      moveDialogVisible: false,
     };
   },
   created() {
@@ -482,6 +511,10 @@ export default {
   },
 
   methods: {
+    handleMove(row) {
+      this.project_id = row.project_id;
+      this.moveDialogVisible = true;
+    },
     async updateChildProjectStatus(row) {
       const data = {
         status: row.status,
@@ -557,7 +590,7 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        category_id: this.searchData.category_id.pop(),
+        category_id: [...this.searchData.category_id].pop(),
       };
       const res = await getProjectList(data);
       if (res.code === 0) {
