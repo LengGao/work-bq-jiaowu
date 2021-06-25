@@ -287,6 +287,12 @@ export const asyncRouter = [
         component: () => import('@/views/etm/seaCustomer.vue'),
         meta: { title: '公海客户', icon: 'product-cate' },
       },
+      {
+        path: 'recentLogin',
+        name: 'recentLogin',
+        component: () => import('@/views/etm/recentLogin.vue'),
+        meta: { title: '最近登录', icon: 'product-cate' },
+      },
     ],
   },
   {
