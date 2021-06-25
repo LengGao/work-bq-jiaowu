@@ -105,3 +105,19 @@ export function createOrder(data) {
     data,
   })
 }
+// 清除用户登录信息
+export function clearlogininfo(data) {
+  return request({
+    url: '/Admissions/clearlogininfo',
+    method: 'post',
+    data,
+  })
+}
+// 获取最近登录用户
+export function getRecentLoginUser(params) {
+  return request({
+    url: 'userArchives/loginUser',
+    method: 'get',
+    params,
+  })
+}

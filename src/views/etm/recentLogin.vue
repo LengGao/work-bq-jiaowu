@@ -47,62 +47,76 @@
         ></el-table-column>
         <el-table-column label="学生姓名" min-width="110" show-overflow-tooltip>
           <template slot-scope="{ row }">
-            <div v-if="row.realname">
-              {{ row.realname }}
-            </div>
+            <span> {{ row.user_realname || "--" }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="性别" min-width="110" show-overflow-tooltip>
+          <template slot-scope="{ row }">
+            <span v-if="row.sex === 1"> 男</span>
+            <span v-else-if="row.sex === 2"> 女</span>
             <span v-else>--</span>
           </template>
         </el-table-column>
         <el-table-column label="手机号码" min-width="150" show-overflow-tooltip
           ><template slot-scope="{ row }">
             <span>
-              {{ row.mobile | filterPhone }}
+              {{ row.telphone | filterPhone }}
             </span>
             <i
               class="el-icon-document-copy copy-number"
-              @click="handleCopy(row.mobile)"
+              @click="handleCopy(row.telphone)"
               title="复制"
             ></i>
           </template>
         </el-table-column>
         <el-table-column
+          prop="course_name"
+          label="课程"
+          min-width="150"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="aid"
+          label="是否录入"
+          min-width="150"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span> {{ row.aid > 0 ? "是" : "否" }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="create_time"
-          label="加入时间"
+          label="最近登录时间"
           min-width="150"
           show-overflow-tooltip
         ></el-table-column>
 
         <el-table-column
-          prop="from"
+          prop="source"
           label="数据来源"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>
+              {{
+                row.source === 2 ? "小程序" : row.source === 1 ? "PC" : "--"
+              }}</span
+            >
+          </template>
+        </el-table-column>
 
         <el-table-column label="操作" fixed="right" min-width="200">
-          <template slot-scope="scope">
+          <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
-              <el-button type="text" disabled v-if="scope.row.aid">
-                已报名
-              </el-button>
-              <el-button v-else type="text" @click="enroll(scope.row)"
-                >报名</el-button
-              >
               <el-button
-                v-if="!scope.row.aid"
+                v-if="row.apple_openid"
                 type="text"
-                @click="deleteConfirm(scope.row.uid)"
-                >删除</el-button
+                @click="clearConfirm(row.uid)"
+                >清除登录信息</el-button
               >
-              <!-- <el-button
-                type="text"
-                @click="toStudentDetail(scope.row)"
-                style="padding-right:20px"
-                >详情</el-button
-              >
-              <el-button type="text" @click="receiveStudent(scope.row)"
-                >领取</el-button
-              > -->
+              <span v-else>--</span>
             </div>
           </template>
         </el-table-column>
@@ -116,40 +130,21 @@
         />
       </div>
     </div>
-    <addCustomeDialog
-      :innerVisible="innerVisible"
-      :seaUserInfo="seaUserInfo"
-      v-on:innerDialog="getInnerStatus($event)"
-    />
   </section>
 </template>
 
 <script>
 import { getShortcuts } from "@/utils/date";
-import addCustomeDialog from "./components/addCustomeDialog";
-import { cloneOptions } from "@/utils/index";
-import { getCateList } from "@/api/sou";
-import { getCommonUserList, delUser } from "@/api/etm";
+import { getRecentLoginUser, clearlogininfo } from "@/api/etm";
 export default {
   name: "seaStudent",
-  components: {
-    addCustomeDialog,
-  },
   data() {
     return {
-      schoolData: [],
-      seaUserInfo: {},
-      selectData: [],
-      innerVisible: false,
-      page: 1,
-      status: 3,
-      datas: {},
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        category_id: "",
         date: "",
         keyword: "",
       },
@@ -170,18 +165,6 @@ export default {
           },
         },
         {
-          key: "category_id",
-          type: "cascader",
-          width: 120,
-          attrs: {
-            placeholder: "所属分类",
-            clearable: true,
-            props: { checkStrictly: true },
-            filterable: true,
-            options: [],
-          },
-        },
-        {
           key: "keyword",
           attrs: {
             placeholder: "客户姓名/手机号码",
@@ -191,27 +174,27 @@ export default {
     };
   },
   created() {
-    this.getCateList();
-    this.getCommonUserList();
-  },
-  mounted() {
-    // let status = 3
-    // this.$api.getCommonUserList(this, 'schoolData')
+    this.getRecentLoginUser();
   },
   methods: {
-    // 删除用户
-    deleteConfirm(id) {
-      this.$confirm("确定要删除此用户吗?", { type: "warning" })
+    // 清除用户登录信息
+    clearConfirm(id) {
+      this.$confirm("清除后,用户需要重新授权登录,需谨慎操作！", {
+        type: "warning",
+      })
         .then(() => {
-          this.handleDelUser(id);
+          this.handleclearlogininfo(id);
         })
         .catch(() => {});
     },
-    async handleDelUser(uid) {
-      const data = { uid };
-      const res = await delUser(data);
+    async handleclearlogininfo(uid) {
+      const data = {
+        uid,
+        login_clear: 1, //1为清除，0 不作操作
+      };
+      const res = await clearlogininfo(data);
       if (res.code === 0) {
-        this.getCommonUserList();
+        this.getRecentLoginUser();
         this.$message.success(res.message);
       }
     },
@@ -229,14 +212,23 @@ export default {
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getCommonUserList();
+      this.getRecentLoginUser();
     },
     handlePageSizeChange(val) {
       this.pageSizeNum = val;
-      this.getCommonUserList();
+      this.getRecentLoginUser();
+    },
+    handleSearch(data) {
+      const times = data.date || ["", ""];
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        date: Array.isArray(data.date) ? data.date.join(" - ") : "",
+      };
+      this.getRecentLoginUser();
     },
     //客户列表
-    async getCommonUserList() {
+    async getRecentLoginUser() {
       this.checkedIds = [];
       this.intent_id = "";
       console.log(this.searchData.date);
@@ -244,60 +236,13 @@ export default {
         page: this.pageNum,
         limit: this.pageSizeNum,
         ...this.searchData,
-        status: 3,
       };
       console.log(data);
       this.listLoading = true;
-      const res = await getCommonUserList(data);
+      const res = await getRecentLoginUser(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
-    },
-    handleSearch(data) {
-      const times = data.date || ["", ""];
-      console.log(times);
-      delete data.date;
-      this.pageNum = 1;
-      this.searchData = {
-        ...data,
-        start_time: times[0],
-        end_time: times[1],
-        category_id: data.category_id ? data.category_id.pop() : "",
-      };
-      this.getCommonUserList();
-    },
-    // 获取所属分类
-    async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
-      if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
-          res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
-      }
-    },
-    enroll(ab) {
-      this.seaUserInfo = ab;
-      this.innerVisible = true;
-    },
-    getInnerStatus(status) {
-      this.innerVisible = status;
-    },
-    getTableList(state, val, datas) {
-      console.log(state, val);
-      if (state == "page") {
-        this.page = val;
-        this.datas = datas;
-      } else if (state == "data") {
-        this.schoolData = val;
-      }
-    },
-    receiveStudent(zx) {
-      console.log(zx);
-      this.$api.receive(this, zx.intent_id);
     },
   },
 };
