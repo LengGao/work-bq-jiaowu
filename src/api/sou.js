@@ -502,6 +502,14 @@ export function editvideoclass(data) {
     data,
   })
 }
+// 章节列表-修改章节视频免费状态
+export function updateVideoClassFreeStatus(params) {
+  return request({
+    url: '/video/updateVideoClassFreeStatus',
+    method: 'get',
+    params,
+  })
+}
 // 章节列表-课时详情
 export function getvideoclassDetail(params) {
   return request({

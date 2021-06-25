@@ -91,7 +91,7 @@
           <template slot-scope="{ row }">
             <el-switch
               v-if="row.free"
-              @change="editvideoclass(row)"
+              @change="updateVideoClassFreeStatus(row)"
               v-model="row.free"
               :active-value="2"
               :inactive-value="1"
@@ -160,7 +160,7 @@
 import {
   getvideochapterList,
   deletevideochapter,
-  editvideoclass,
+  updateVideoClassFreeStatus,
   getvideoclass,
   deletevideoclass,
   videoClassSort,
@@ -285,13 +285,13 @@ export default {
       this.$refs.view.show(src);
     },
     //修章节试看状态
-    async editvideoclass(row) {
+    async updateVideoClassFreeStatus(row) {
       const data = {
         video_class_name: row.name,
         video_class_id: row.id,
         video_class_free: row.free,
       };
-      const res = await editvideoclass(data).catch(() => {
+      const res = await updateVideoClassFreeStatus(data).catch(() => {
         row.free = row.free === 1 ? 2 : 1;
       });
       if (res.code === 0) {
