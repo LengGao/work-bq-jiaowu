@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, toDay } from "@/utils/date";
 import { getRecentLoginUser, clearlogininfo } from "@/api/etm";
 export default {
   name: "seaStudent",
@@ -145,7 +145,7 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        date: "",
+        date: [toDay(), toDay()],
         keyword: "",
       },
       searchOptions: [
@@ -219,11 +219,9 @@ export default {
       this.getRecentLoginUser();
     },
     handleSearch(data) {
-      const times = data.date || ["", ""];
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        date: Array.isArray(data.date) ? data.date.join(" - ") : "",
       };
       this.getRecentLoginUser();
     },
@@ -236,6 +234,7 @@ export default {
         page: this.pageNum,
         limit: this.pageSizeNum,
         ...this.searchData,
+        date: this.searchData.date ? this.searchData.date.join(" - ") : "",
       };
       console.log(data);
       this.listLoading = true;
