@@ -51,6 +51,7 @@
               :options="projectOptions"
               :props="{ multiple: true }"
               filterable
+              collapse-tags
             ></el-cascader>
           </el-form-item>
         </Title>
@@ -249,7 +250,11 @@
         >
       </div>
     </el-dialog>
-    <AddPhoto :visible.sync="addCertificatesDialog" :uid="userInfo.uid" />
+    <AddPhoto
+      title="上传用户资料"
+      :visible.sync="addCertificatesDialog"
+      :uid="userInfo.uid"
+    />
   </section>
 </template>
 
@@ -420,7 +425,7 @@ export default {
         this.projectData =
           res.data.map((item) => ({
             ...item,
-            save_price: oldSavePrice[item.id] || "",
+            save_price: oldSavePrice[item.id] || 0,
           })) || [];
       }
     },
