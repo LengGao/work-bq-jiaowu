@@ -45,11 +45,13 @@
         <Title text="报名项目">
           <el-form-item prop="selectProject">
             <el-cascader
+              popper-class="select-project"
               placeholder="请选择项目"
               style="width: 400px"
               v-model="ruleForm.selectProject"
               :options="projectOptions"
               :props="{ multiple: true }"
+              :show-all-levels="false"
               filterable
               collapse-tags
             ></el-cascader>
@@ -617,6 +619,25 @@ h3 {
     }
     &-content {
       color: #199fff;
+    }
+  }
+}
+</style>
+<style lang="scss">
+.select-project {
+  .el-cascader-panel {
+    & > .el-scrollbar:first-child {
+      .el-checkbox {
+        display: none;
+      }
+    }
+    .el-cascader-node[aria-owns] {
+      .el-checkbox {
+        width: 14px;
+        span {
+          display: none;
+        }
+      }
     }
   }
 }
