@@ -5,11 +5,19 @@
     </div>
     <div class="mainPart">
       <!--搜索模块-->
-      <SearchList
-        :options="searchOptions"
-        :data="searchData"
-        @on-search="handleSearch"
-      />
+      <div class="header">
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
+        <div class="actions">
+          <el-button type="primary" @click="openTeacherDialog"
+            >更换所属老师</el-button
+          >
+        </div>
+      </div>
+
       <div>
         <!-- <el-button style="margin-right: 20px" @click="handleBatch"
           >批量分班</el-button
@@ -85,6 +93,12 @@
             prop="institution_name"
             label="推荐机构"
             min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="staff_name"
+            label="所属老师"
+            min-width="120"
             show-overflow-tooltip
           ></el-table-column>
 
@@ -185,6 +199,11 @@
         >
       </span>
     </el-dialog> -->
+    <UpdateTeacher
+      v-model="updateTeacherDialog"
+      :ids="checkedIds"
+      @on-success="getStudentList"
+    />
   </section>
 </template>
 
@@ -192,8 +211,12 @@
 import { cloneOptions } from "@/utils/index";
 import { getStudentList, getproject, addstudents } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import UpdateTeacher from "./components/UpdateTeacher.vue";
 export default {
   name: "studentCenter",
+  components: {
+    UpdateTeacher,
+  },
   data() {
     return {
       importVisible: false,
@@ -290,6 +313,7 @@ export default {
       rules: {
         classroom_id: [{ required: true, message: "请选择", trigger: "blur" }],
       },
+      updateTeacherDialog: false,
     };
   },
 
@@ -301,6 +325,13 @@ export default {
   },
 
   methods: {
+    openTeacherDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择学生！");
+        return;
+      }
+      this.updateTeacherDialog = true;
+    },
     // 复制
     handleCopy(val) {
       const input = document.createElement("input");
@@ -326,7 +357,7 @@ export default {
     },
     handleSeletChange(selection) {
       this.intent_id = selection[0]?.intent_id || "";
-      this.checkedIds = selection.map((item) => item.uid);
+      this.checkedIds = selection.map((item) => item.id);
     },
     async addstudents() {
       const data = {
@@ -477,7 +508,7 @@ export default {
 .mainPart {
   padding: 20px;
 }
-header {
+.header {
   display: flex;
   justify-content: space-between;
 }

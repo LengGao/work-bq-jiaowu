@@ -66,6 +66,13 @@
             >
             </el-table-column>
             <el-table-column
+              label="所属学员数"
+              show-overflow-tooltip
+              min-width="150"
+              prop="user_count"
+            >
+            </el-table-column>
+            <el-table-column
               label="账号状态"
               min-width="90"
               show-overflow-tooltip
@@ -121,6 +128,12 @@
                   >
                   <el-button type="text" @click="handleDelete(scope.row)"
                     >删除</el-button
+                  >
+                  <el-button
+                    v-if="scope.row.user_count"
+                    type="text"
+                    @click="openMoveStudentDialog(scope.row.staff_id)"
+                    >迁移学员</el-button
                   >
                 </div>
               </template>
@@ -297,6 +310,11 @@
       @closeImg="closeImg"
       @clearUrl="clearUrl"
     ></imgDialog>
+    <MoveStudent
+      v-model="moveStudentDialog"
+      :id="checkedId"
+      @on-success="getStaffList"
+    />
   </section>
 </template>
 <script>
@@ -306,8 +324,12 @@ import {
   getOrganizationSelect,
   getSchoolSelect,
 } from "@/api/set";
+import MoveStudent from "./components/moveStudent.vue";
 export default {
   name: "staff",
+  components: {
+    MoveStudent,
+  },
   data() {
     return {
       classTitle: "",
@@ -456,6 +478,8 @@ export default {
         ],
         role_ids: [{ required: true, message: "请选择角色", trigger: "blur" }],
       },
+      moveStudentDialog: false,
+      checkedId: "",
     };
   },
   created() {
@@ -467,6 +491,10 @@ export default {
     // this.$api.getInstitutionSelectData(this, 'instituData') //所属角色列表
   },
   methods: {
+    openMoveStudentDialog(id) {
+      this.checkedId = id;
+      this.moveStudentDialog = true;
+    },
     handleInstitution(val) {
       console.log(val);
       this.getSchoolSelect(val);

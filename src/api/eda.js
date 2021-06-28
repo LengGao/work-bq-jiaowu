@@ -72,6 +72,33 @@ export function getStudentList(params) {
   })
 }
 /**
+ * 获取所属老师
+ * @param {*} params 
+ */
+export function getAdminSelect(params) {
+  return request({
+    url: '/classstudents/getAdminSelect',
+    method: 'get',
+    params,
+  })
+}
+// 更换所属老师
+export function changeUserAdminId(params) {
+  return request({
+    url: '/classstudents/changeUserAdminId',
+    method: 'get',
+    params,
+  })
+}
+// 将一个账号下的学生数据迁移至另一个账号下
+export function moveUserToNewStaff(params) {
+  return request({
+    url: '/staff/moveUserToNewStaff',
+    method: 'get',
+    params,
+  })
+}
+/**
  * 批量分班
  * @param {*} data
  */
