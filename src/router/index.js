@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'collegeMajor',
+        name: 'collegeMajor',
+        component: () => import('@/views/sou/collegeMajor/index.vue'),
+        meta: { title: '院校专业', icon: 'product-add' },
+      },
+      {
         path: 'classifiSetting',
         name: 'classifiSetting',
         component: () => import('@/views/sou/classifiSetting.vue'),
