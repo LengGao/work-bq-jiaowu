@@ -2,7 +2,7 @@
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    width="450px"
+    width="700px"
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
@@ -12,21 +12,90 @@
       :model="formData"
       :rules="rules"
       ref="formData"
+      inline
       v-loading="detaiLoading"
     >
       <el-form-item label="学历形式" prop="video_chapter_name">
+        <el-select v-model="value" placeholder="请选择" style="300px">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="院校名称" prop="video_chapter_sort">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="层次名称" prop="video_chapter_sort">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="专业名称" prop="video_chapter_sort">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="学制（年）" prop="video_chapter_sort">
         <el-input
+          class="w-217"
           v-model="formData.video_chapter_name"
-          placeholder="请输入学历形式"
+          placeholder="请输入"
+          maxlength="100"
+        />
+      </el-form-item>
+      <el-form-item label="关联项目" prop="video_chapter_sort">
+        <el-input
+          class="w-217"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
+          maxlength="100"
+        />
+      </el-form-item>
+      <el-form-item label="总学费" prop="video_chapter_sort">
+        <el-input
+          class="w-217"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
+        />
+      </el-form-item>
+      <el-form-item label="最低学费" prop="video_chapter_sort">
+        <el-input
+          class="w-217"
+          v-model="formData.video_chapter_name"
+          placeholder="请输入"
           maxlength="100"
         />
       </el-form-item>
       <el-form-item label="位置排序" prop="video_chapter_sort">
         <el-input
-          type="number"
-          v-model="formData.video_chapter_sort"
+          class="w-217"
+          v-model="formData.video_chapter_name"
           placeholder="请输入"
-          maxlength="10"
+          maxlength="100"
         />
       </el-form-item>
     </el-form>
@@ -49,6 +118,7 @@ import {
   getVideochapterDetail,
 } from "@/api/sou";
 export default {
+  name: "EditMajorDialog",
   props: {
     value: {
       type: Boolean,
@@ -155,4 +225,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.w-217 {
+  width: 217px;
+}
 </style>
