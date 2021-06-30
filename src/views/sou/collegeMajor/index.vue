@@ -6,9 +6,9 @@
     <div class="college-major-container">
       <el-tabs v-model="activeName">
         <el-tab-pane label="学历形式" name="EducationType"></el-tab-pane>
-        <el-tab-pane label="院校配置" name="FollowUpRecord"></el-tab-pane>
-        <el-tab-pane label="层次配置" name="Certificates"></el-tab-pane>
-        <el-tab-pane label="专业配置" name="Class"></el-tab-pane>
+        <el-tab-pane label="院校配置" name="UniversityConfigure"></el-tab-pane>
+        <el-tab-pane label="层次配置" name="UniversityLevel"></el-tab-pane>
+        <el-tab-pane label="专业配置" name="UniversityMajor"></el-tab-pane>
         <el-tab-pane label="院校专业管理" name="MajorList"></el-tab-pane>
       </el-tabs>
       <component :is="getComponent" />

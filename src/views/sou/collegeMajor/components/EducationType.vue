@@ -26,19 +26,19 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          prop="uid"
+          prop="id"
           label="ID"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="uid"
+          prop="title"
           label="学历形式"
           show-overflow-tooltip
           min-width="90"
         ></el-table-column>
         <el-table-column
-          prop="uid"
+          prop="sort"
           label="排序"
           show-overflow-tooltip
           min-width="90"
@@ -49,6 +49,9 @@
               v-model="row.sort"
               placeholder="请输入"
               maxlength="10"
+              size="small"
+              style="width: 100px"
+              @blur="updateEducationTypeSort(row)"
             />
           </template>
         </el-table-column>
@@ -61,20 +64,21 @@
         >
           <template slot-scope="{ row }">
             <el-switch
-              v-if="row.free"
-              v-model="row.free"
-              :active-value="2"
-              :inactive-value="1"
+              @change="updateEducationTypeStatus(row)"
+              v-model="row.status"
+              :active-value="1"
+              :inactive-value="0"
             >
             </el-switch>
-            <span v-else>--</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="140">
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
               <el-button type="text" @click="openEdit(row.id)">编辑</el-button>
-              <el-button type="text">删除</el-button>
+              <el-button type="text" @click="delConfirm(row.id)"
+                >删除</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -88,20 +92,27 @@
         @pageChange="handlePageChange"
       />
     </div>
-    <ListEditDialog
+    <EducationTypeDialog
       v-model="dialogVisible"
       :title="dialogTitle"
       :id="currentId"
+      @on-success="getEducationTypeList"
     />
   </div>
 </template>
 
 <script>
-import ListEditDialog from "./listEditDialog.vue";
+import EducationTypeDialog from "./EducationTypeDialog.vue";
+import {
+  getEducationTypeList,
+  delEducationType,
+  updateEducationTypeStatus,
+  updateEducationTypeSort,
+} from "@/api/sou";
 export default {
   name: "EducationType",
   components: {
-    ListEditDialog,
+    EducationTypeDialog,
   },
   data() {
     return {
@@ -116,7 +127,7 @@ export default {
       searchData: {
         keyword: "",
       },
-      listData: [{ id: 1 }],
+      listData: [],
       listLoading: false,
       pageNum: 1,
       pageSize: 20,
@@ -127,7 +138,53 @@ export default {
       dialogVisible: false,
     };
   },
+  created() {
+    this.getEducationTypeList();
+  },
   methods: {
+    //删除
+    delConfirm(id) {
+      this.$confirm("确定要删除此学历形式吗?", "提示", {
+        type: "warning",
+      })
+        .then(() => {
+          this.delEducationType(id);
+        })
+        .catch(() => {});
+    },
+    async delEducationType(id) {
+      const data = { id };
+      const res = await delEducationType(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getEducationTypeList();
+      }
+    },
+    // 修改排序
+    async updateEducationTypeSort(row) {
+      const data = {
+        id: row.id,
+        sort: row.sort,
+      };
+      const res = await updateEducationTypeSort(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getEducationTypeList();
+      }
+    },
+    // 修改状态
+    async updateEducationTypeStatus(row) {
+      const data = {
+        id: row.id,
+        status: row.status,
+      };
+      const res = await updateEducationTypeStatus(data).catch(() => {
+        row.status = row.status ? 0 : 1;
+      });
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
     openEdit(id) {
       this.dialogTitle = "编辑学历形式";
       this.currentId = id;
@@ -138,14 +195,33 @@ export default {
       this.dialogTitle = "添加学历形式";
       this.dialogVisible = true;
     },
-    handleSearch() {
+    handleSearch(data) {
       this.pageNum = 1;
+      this.searchData = { ...data };
+      this.getEducationTypeList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
+      this.getEducationTypeList();
     },
     handlePageChange(val) {
       this.pageNum = val;
+      this.getEducationTypeList();
+    },
+    // 获取列表
+    async getEducationTypeList() {
+      const data = {
+        page: this.pageNum,
+        limit: this.pageSize,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await getEducationTypeList(data);
+      this.listLoading = false;
+      if (res.code === 0) {
+        this.listData = res.data.list;
+        this.listTotal = res.data.total;
+      }
     },
   },
 };
