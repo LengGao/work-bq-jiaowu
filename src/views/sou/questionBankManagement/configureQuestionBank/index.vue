@@ -1,7 +1,7 @@
 <template>
   <div class="configure-question">
     <section class="mainwrap">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="handleChapterTypeChange">
         <el-tab-pane label="章节练习" name="1"></el-tab-pane>
         <el-tab-pane label="历年真题" name="2"></el-tab-pane>
         <el-tab-pane label="自主出题" name="3"></el-tab-pane>
@@ -68,14 +68,14 @@
               </el-table-column>
               <el-table-column
                 align="left"
-                prop="title"
+                prop="topic_description"
                 label="题干内容"
                 min-width="400"
                 show-overflow-tooltip
               ></el-table-column>
               <el-table-column
                 align="center"
-                prop="category_name"
+                prop="topic_type_name"
                 label="题目类型"
                 min-width="110"
                 show-overflow-tooltip
@@ -90,8 +90,10 @@
                   <div style="display: flex; justify-content: center">
                     <el-button type="text">编辑</el-button>
                     <el-button type="text">移动</el-button>
-                    <!-- @click="deleteConfirm(row.id)" -->
-                    <el-button type="text">删除</el-button>
+
+                    <el-button type="text" @click="deleteConfirm(row.id)"
+                      >删除</el-button
+                    >
                   </div>
                 </template>
               </el-table-column>
@@ -112,11 +114,7 @@
 
 <script>
 import ChapterMenu from "./components/ChapterMenu";
-import {
-  getQuestionBankList,
-  updateQuestionBankStatus,
-  deleteQuestionBank,
-} from "@/api/sou";
+import { getQuestionList, delQuestion } from "@/api/sou";
 
 export default {
   name: "questionBank",
@@ -132,11 +130,11 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        title: "",
+        topic_description: "",
       },
       searchOptions: [
         {
-          key: "title",
+          key: "topic_description",
           attrs: {
             placeholder: "题干内容",
           },
@@ -172,39 +170,48 @@ export default {
   },
 
   created() {
-    this.getQuestionBankList();
+    this.getQuestionList();
   },
 
   methods: {
     // 添加题目
     handleQuestionChange(type) {
-      this.$router.push({ name: "questionConfigure", query: { type } });
+      this.$router.push({
+        name: "questionConfigure",
+        query: {
+          type,
+          chapterType: this.activeName,
+          qid: this.$route.query.id,
+        },
+      });
     },
     linkTo(name, id) {
       this.$router.push({ name, query: { id } });
     },
+    // 章节类型变化
+    handleChapterTypeChange() {
+      this.pageNum = 1;
+      this.getQuestionList();
+    },
+    // 章节变化
     handleChapterChange(id) {
-      console.log(id);
+      this.pageNum = 1;
+      this.getQuestionList(id);
     },
-    async deleteQuestionBank(id) {
+    // 删除题目
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此题目吗?", { type: "warning" })
+        .then(() => {
+          this.delQuestion(id);
+        })
+        .catch(() => {});
+    },
+    async delQuestion(id) {
       const data = { id };
-      const res = await deleteQuestionBank(data);
+      const res = await delQuestion(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getQuestionBankList();
-      }
-    },
-    // 修改题库状态
-    async updateQuestionBankStatus(row) {
-      const data = {
-        id: row.id,
-        status: row.status,
-      };
-      const res = await updateQuestionBankStatus(data).catch(() => {
-        row.status = row.status ? 0 : 1;
-      });
-      if (res.code === 0) {
-        this.$message.success(res.message);
+        this.getQuestionList();
       }
     },
 
@@ -217,19 +224,22 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.getQuestionBankList();
+      this.getQuestionList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getQuestionBankList();
+      this.getQuestionList();
     },
-    async getQuestionBankList() {
+    async getQuestionList(topic_chapter_id) {
       const data = {
+        topic_chapter_id: topic_chapter_id || "",
+        question_bank_id: this.$route.query.id,
+        chapter_type: this.activeName,
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getQuestionBankList(data);
+      const res = await getQuestionList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

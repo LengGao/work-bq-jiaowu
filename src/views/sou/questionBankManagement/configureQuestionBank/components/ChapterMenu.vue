@@ -61,7 +61,7 @@ export default {
       dialogVisible: false,
       chapterList: [],
       chapterLoading: false,
-      chapterActiveId: 999999,
+      chapterActiveId: 0,
     };
   },
   watch: {
@@ -118,7 +118,7 @@ export default {
         const allItem = {
           chapter_name: "全部",
           topic_total: res.data?.total_topic || 0,
-          id: 999999,
+          id: 0,
           disabled: true,
         };
         this.chapterList = res.data.list;

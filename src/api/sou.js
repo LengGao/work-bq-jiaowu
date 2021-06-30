@@ -702,7 +702,39 @@ export function getProjectList(params) {
 // 移动项目
 export function moveProject(data) {
   return request({
-    url: 'project/move',
+    url: '/project/move',
+    method: 'post',
+    data,
+  })
+}
+// 章节选项
+export function getChapterOptions(params) {
+  return request({
+    url: '/topicChapter/list',
+    method: 'get',
+    params,
+  })
+}
+// 题目列表
+export function getQuestionList(params) {
+  return request({
+    url: '/topic/list',
+    method: 'get',
+    params,
+  })
+}
+// 删除题目
+export function delQuestion(data) {
+  return request({
+    url: '/topic/delete',
+    method: 'post',
+    data,
+  })
+}
+// 添加题目
+export function addQuestion(data) {
+  return request({
+    url: '/topic/insert',
     method: 'post',
     data,
   })

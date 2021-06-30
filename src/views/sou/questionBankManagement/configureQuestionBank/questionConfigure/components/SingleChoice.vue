@@ -7,20 +7,20 @@
       ref="editorRules"
       label-width="100px"
     >
-      <el-form-item label="题干内容" prop="text">
-        <Editor v-model="editorForm.text" />
+      <el-form-item label="题干内容" prop="topic_description">
+        <Editor v-model="editorForm.topic_description" />
       </el-form-item>
       <el-form-item
-        :label="`选项（${idMaps[index + 1]}）`"
+        :label="`选项（${letterMap[index + 1]}）`"
         v-for="(id, index) in editorOptions"
         :key="id"
-        :prop="`text${id}`"
+        :prop="`option${id}`"
         :rules="[{ required: true, message: `请输入`, trigger: 'blur' }]"
       >
         <div class="form-item-editor">
-          <Editor v-model="editorForm['text' + id]" />
+          <Editor v-model="editorForm['option' + id]" />
           <el-button
-            @click="handleDeleteEditor(index)"
+            @click="handleDeleteEditor(index, id)"
             class="editor-delete"
             type="text"
             icon="el-icon-delete"
@@ -36,11 +36,11 @@
           v-for="(item, index) in editorOptions"
           :key="item"
           @click="handleAnswerChange(index)"
-          >{{ idMaps[index + 1] }}</el-button
+          >{{ letterMap[index + 1] }}</el-button
         >
       </el-form-item>
-      <el-form-item label="答案解析" prop="remark">
-        <Editor v-model="editorForm.remark" height="200" />
+      <el-form-item label="答案解析" prop="topic_analysis">
+        <Editor v-model="editorForm.topic_analysis" height="200" />
       </el-form-item>
     </el-form>
   </div>
@@ -59,29 +59,21 @@ export default {
   data() {
     return {
       editorForm: {
-        text: "",
+        topic_description: "",
+        topic_analysis: "",
         correct: "",
-        remark: "",
       },
       editorRules: {
-        remark: [{ required: true, message: "请输入", trigger: "blur" }],
-        text: [{ required: true, message: "请输入", trigger: "change" }],
+        topic_analysis: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
+        topic_description: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
         correct: [{ required: true, message: "请选择", trigger: "change" }],
       },
       eId: 4,
       editorOptions: [1, 2, 3, 4],
-      idMaps: {
-        1: "A",
-        2: "B",
-        3: "C",
-        4: "D",
-        5: "E",
-        6: "F",
-        7: "G",
-        8: "H",
-        9: "I",
-        10: "J",
-      },
     };
   },
   methods: {
@@ -90,12 +82,13 @@ export default {
       this.editorForm.correct = index;
     },
     // 删除题目编辑器
-    handleDeleteEditor(index) {
+    handleDeleteEditor(index, id) {
       // 选中的被删除，需要清空
       if (this.editorForm.correct === index) {
         this.editorForm.correct = "";
       }
       this.editorOptions.splice(index, 1);
+      delete this.editorForm[`option${id}`];
     },
     // 添加题目编辑器
     handleAddEditor() {
@@ -105,12 +98,16 @@ export default {
         this.$message.warning("不能在加了！");
         return;
       }
-      this.$set(this.editorForm, `text${id}`, "");
+      this.$set(this.editorForm, `option${id}`, "");
       this.editorOptions.push(id);
     },
     validate(cb) {
       this.$refs.editorRules.validate((valid) => {
-        cb(valid, { ...this.editorForm, type: 1 });
+        cb(valid, {
+          ...this.editorForm,
+          topic_answer: this.letterMap[this.editorForm.correct + 1],
+          type: 1,
+        });
       });
     },
     resetFields() {
