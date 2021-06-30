@@ -6,7 +6,7 @@
       @close="doClose"
       :close-on-click-modal="false"
       append-to-body
-      width="1000px"
+      width="1200px"
       top="5vh"
       class="create-order"
     >
@@ -14,34 +14,54 @@
         label-width="90px"
         class="create-order-form"
         :rules="rules"
+        label-position="right"
         inline
         ref="ruleForm"
         :model="ruleForm"
         :show-message="true"
-        label-position="left"
       >
         <Title text="客户信息" />
-        <el-form-item label="客户姓名">
-          <el-input
-            class="input-width"
-            disabled
-            v-model="userInfo.surname"
-          ></el-input>
-        </el-form-item>
+        <div class="user-info">
+          <el-form-item label="客户姓名">
+            <el-input
+              class="input-width"
+              disabled
+              v-model="userInfo.surname"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="手机号码">
+            <el-input
+              disabled
+              class="input-width"
+              v-model="userInfo.mobile"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="开通网课" prop="online_course">
+            <el-radio-group
+              v-model="ruleForm.online_course"
+              class="input-width"
+            >
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="报名类型" prop="type">
+            <el-select
+              v-model="ruleForm.type"
+              placeholder="请选择"
+              class="input-width"
+            >
+              <el-option
+                v-for="item in typeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
 
-        <el-form-item label="手机号码">
-          <el-input
-            disabled
-            class="input-width"
-            v-model="userInfo.mobile"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="开通网课" prop="online_course">
-          <el-radio-group v-model="ruleForm.online_course" style="width: 240px">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
-          </el-radio-group>
-        </el-form-item>
         <Title text="报名项目">
           <el-form-item prop="selectProject">
             <el-cascader
@@ -96,29 +116,20 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="优惠金额"
-              min-width="150"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <el-input
-                  v-model="row.save_price"
-                  type="number"
-                  size="small"
-                  placeholder="请输入"
-                  @input="savePriceChange($event, row)"
-                ></el-input>
-              </template>
-            </el-table-column>
-
-            <el-table-column
               prop="pay_price"
               label="应收金额"
               min-width="150"
               show-overflow-tooltip
             >
               <template slot-scope="{ row }">
-                <div>￥{{ parsePrice(row.price - row.save_price) }}</div>
+                <el-input
+                  v-model="row.pay_price"
+                  type="number"
+                  size="small"
+                  placeholder="请输入"
+                  @input="payPriceChange($event, row)"
+                  @blur="payPriceBlur($event, row)"
+                ></el-input>
               </template>
             </el-table-column>
 
@@ -159,83 +170,118 @@
             }}</span>
           </div>
         </div>
-        <div class="customer_sum_up" style="padding: 10px 0 20px 0">
-          <Title text="费用小结" />
-          <div>
-            <el-row>
-              <el-col :sm="4">
-                <div class="expense_summary_label">
-                  订单总价<span>￥{{ allOrderInfo.totalPrice }}</span>
-                </div>
-              </el-col>
-              <el-col :sm="4">
-                <div class="expense_summary_label">
-                  优惠总额<span>￥{{ allOrderInfo.totalDiscount }}</span>
-                </div>
-              </el-col>
-              <el-col :sm="4">
-                <div class="expense_summary_label">
-                  应收金额<span style="color: #fd6500"
-                    >￥{{ allOrderInfo.totalReceivable }}</span
-                  >
-                </div>
-              </el-col>
-            </el-row>
-          </div>
-        </div>
         <Title text="支付信息" />
-        <el-form-item label="支付方式" prop="pay_type">
-          <el-select v-model="ruleForm.pay_type" placeholder="请选择支付方式">
-            <el-option
-              v-for="item in payWays"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
+        <div class="pay-info">
+          <el-form-item label="应收总额">
+            <span style="color: #fd6500"
+              >￥{{ allOrderInfo.totalReceivable }}</span
             >
-            </el-option>
-          </el-select>
-        </el-form-item>
+          </el-form-item>
+          <el-form-item label="支付方式" prop="pay_type">
+            <el-select
+              v-model="ruleForm.pay_type"
+              placeholder="请选择支付方式"
+              class="input-width"
+            >
+              <el-option
+                v-for="item in payWays"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-        <el-form-item label="支付金额" prop="pay_money">
-          <el-input
-            placeholder="请输入支付金额"
-            class="input-width"
-            type="number"
-            v-model="ruleForm.pay_money"
-            @input="payMoneyChange"
-          ></el-input>
-        </el-form-item>
-        <div class="customer_sum_up">
-          <Title text="备注信息" />
-          <el-row class="wrap">
-            <el-col :sm="8" style="display: flex; margin-top: 10px">
-              <div class="expense_summary_label">
-                实缴金额
-                <span style="color: #fd6500"
-                  >￥{{ parsePrice(ruleForm.pay_money) }}</span
-                >
-              </div>
-              <div class="expense_summary_label">
-                欠费金额<span>￥{{ parsePrice(arrearsMoney) }}</span>
-              </div>
-            </el-col>
-
-            <el-col :sm="8">
-              <el-form-item label="补缴时间">
-                <el-date-picker
-                  v-model="ruleForm.supplement_time"
-                  type="date"
-                  format="yyyy-MM-dd "
-                  value-format="yyyy-MM-dd "
-                  class="input-width"
-                  placeholder="选择日期"
-                  :disabled="!arrearsMoney"
-                >
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <el-form-item label="支付金额" prop="pay_money">
+            <el-input
+              placeholder="请输入支付金额"
+              class="input-width"
+              type="number"
+              v-model="ruleForm.pay_money"
+              @input="payMoneyChange"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="欠费金额">
+            <span style="color: #fd6500">￥{{ parsePrice(arrearsMoney) }}</span>
+          </el-form-item>
+          <el-form-item label="补缴时间">
+            <el-date-picker
+              v-model="ruleForm.supplement_time"
+              type="date"
+              format="yyyy-MM-dd "
+              value-format="yyyy-MM-dd "
+              class="input-width"
+              placeholder="选择日期"
+              :disabled="!arrearsMoney"
+            >
+            </el-date-picker>
+          </el-form-item>
         </div>
+        <Title text="学费信息" v-if="ruleForm.type === 2" />
+        <div class="tuition-info" v-if="ruleForm.type === 2">
+          <el-form-item label="第一学年学费">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="第二学年学费">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="第三学年学费">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="报考费">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            >
+              <template slot="append">元/科</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="教材费">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            >
+              <template slot="append">元/年</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="毕设指导费">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="论文答辩费">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="其他费用">
+            <el-input
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.remark"
+            ></el-input>
+          </el-form-item>
+        </div>
+        <Title text="备注信息" />
         <el-form-item label="备注信息">
           <el-input
             style="width: 700px"
@@ -323,6 +369,7 @@ export default {
         supplement_time: "",
         selectProject: "",
         remark: "",
+        type: 1,
       },
       rules: {
         selectProject: [
@@ -342,6 +389,16 @@ export default {
       projectData: [],
       projectOptions: [],
       addCertificatesDialog: false,
+      typeOptions: [
+        {
+          value: 1,
+          label: "软考安监",
+        },
+        {
+          value: 2,
+          label: "学历教育",
+        },
+      ],
     };
   },
   computed: {
@@ -357,23 +414,20 @@ export default {
     },
     allOrderInfo() {
       let totalPrice = 0; // 订单总价
-      let totalDiscount = 0; // 订单优惠总价
       let totalReceivable = 0; // 订单应收总金额
       let allCourse = []; // 所有课程
       let allQuestion = []; // 所有题库
       let allTeachingMaterial = []; // 所有教材
       this.projectData.forEach((item) => {
+        totalReceivable += +item.pay_price || 0;
         totalPrice += +item.price || 0;
-        totalDiscount += +item.save_price || 0;
         allCourse = allCourse.concat(item.course);
         allQuestion = allQuestion.concat(item.problem);
         allTeachingMaterial = allTeachingMaterial.concat(item.textbooks);
       });
-      totalReceivable = totalPrice - totalDiscount;
-      this.ruleForm.pay_money = parsePrice(totalReceivable);
+      this.ruleForm.pay_money = totalReceivable;
       return {
         totalPrice: parsePrice(totalPrice),
-        totalDiscount: parsePrice(totalDiscount),
         totalReceivable: parsePrice(totalReceivable),
         allTeachingMaterial: allTeachingMaterial
           .map((item) => item.book_name)
@@ -400,12 +454,20 @@ export default {
         this.$message.warning("支付金额不能大于应收金额！");
       }
     },
-    // 优惠金额输入时
-    savePriceChange(val, row) {
-      let maxSavePrice = (+row.price || 0) - (+row.lowest_price || 0);
-      if (val > maxSavePrice) {
-        row.save_price = maxSavePrice;
-        this.$message.warning("优惠后金额不能低于最低金额！");
+    // 应收金额输入时
+    payPriceChange(val, row) {
+      let price = +row.price || 0;
+      if (val > price) {
+        row.pay_price = price;
+        this.$message.warning("应收金额不能大于项目价格！");
+      }
+    },
+    payPriceBlur(e, row) {
+      let lowest_price = +row.lowest_price || 0;
+      let val = e.target.value;
+      if (val < lowest_price) {
+        row.pay_price = lowest_price;
+        this.$message.warning("应收金额不能小于最低价格！");
       }
     },
     // 已选项目详情
@@ -420,14 +482,14 @@ export default {
       };
       const res = await getCateProjectDetail(data);
       if (res.code === 0) {
-        const oldSavePrice = {};
+        const oldPayPrice = {};
         this.projectData.forEach((item) => {
-          oldSavePrice[item.id] = item.save_price;
+          oldPayPrice[item.id] = item.pay_price;
         });
         this.projectData =
           res.data.map((item) => ({
             ...item,
-            save_price: oldSavePrice[item.id] || 0,
+            pay_price: oldPayPrice[item.id] || +item.price || 0,
           })) || [];
       }
     },
@@ -446,8 +508,8 @@ export default {
         aid: this.userInfo.id,
         pay_type: this.ruleForm.pay_type,
         pay_money: this.ruleForm.pay_money,
-        order_money: this.allOrderInfo.totalPrice,
-        reduction: this.allOrderInfo.totalDiscount,
+        // order_money: this.allOrderInfo.totalPrice,
+        // reduction: this.allOrderInfo.totalDiscount,
         overdue_money: this.arrearsMoney,
         surname: this.userInfo.surname,
         mobile: this.userInfo.mobile,
@@ -462,7 +524,7 @@ export default {
             project_price: item.price,
             lower_price: item.lowest_price,
             save_price: item.save_price || 0,
-            pay_price: parsePrice(item.price - item.save_price),
+            pay_price: item.pay_price,
             service_effective: item.service_effective,
             service_period: item.service_period,
             service_type: item.service_type,
@@ -513,114 +575,79 @@ export default {
     height: 600px;
     overflow-y: auto;
     overflow-x: hidden;
+    .user-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .project-table {
+      margin-bottom: 16px;
+    }
+    .pay-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      & > div {
+        width: calc(100% / 3.1);
+        &:nth-of-type(3n - 2) {
+          width: 200px;
+        }
+        &:last-child {
+          margin-right: auto;
+          margin-left: 86px;
+        }
+      }
+    }
+    .sign-up {
+      margin-bottom: 8px;
+      &-item {
+        margin-bottom: 16px;
+        display: flex;
+        &-label {
+          flex-shrink: 0;
+          margin-right: 8px;
+        }
+        &-content {
+          color: #199fff;
+        }
+      }
+    }
+    .tuition-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      /deep/.el-form-item__label {
+        width: 100px !important;
+      }
+      & > div {
+        &:last-child {
+          margin-right: auto;
+          margin-left: 42px;
+        }
+        /deep/.el-input-group__append {
+          padding: 0 6px;
+        }
+      }
+    }
+  }
+  .form-footer {
+    width: 100%;
+    padding: 20px;
+    text-align: right;
   }
 }
-.project-table {
-  margin-bottom: 16px;
-}
-.form-footer {
-  width: 100%;
-  padding: 20px;
-  text-align: right;
-}
-.zZindex {
-  z-index: 3000000000000000 !important;
-}
 
-/deep/.el-button.is-circle {
-  padding: 7px;
-}
-/deep/.el-input__inner {
-  // width: 240px;
-}
 /deep/.el-table__header th,
 .el-table__header tr {
   background-color: #f8f8f8;
   color: #909399;
 }
-.wrap {
-  min-width: 1100px;
-}
-.main {
-  padding: 20px;
-}
+
 .input-width {
   width: 240px;
-}
-h3 {
-  color: #333333;
-  font-size: 16px;
-  padding-left: 4px;
-  border-left: 4px solid #199fff;
-  font-family: "Arial Normal", "Arial", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.customer_sum_up {
-  margin: 0 0 0 0;
-  h3 {
-    padding-left: 6px;
-    font-family: "Arial Normal", "Arial", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    margin-bottom: 20px;
-    border-left: 4px solid #199fff;
-  }
-}
-.expense_summary {
-  margin: 30px 0 30px 20px;
-  display: flex;
-  font-size: 14px;
-  color: #606266;
-}
-.expense_summary_label {
-  width: 172px;
-  font-size: 14px;
-  color: #606266;
-  span {
-    padding-left: 5px;
-  }
-  // span:last-child {
-  //   color: #fd6500;
-  // }
-}
-.customer_colse {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-.project-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: "Arial Normal", "Arial", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 16px;
-  color: #199fff;
-  cursor: pointer;
-}
-.coustomer_Detail {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.sign-up {
-  display: flex;
-  margin-bottom: 8px;
-  &-item {
-    flex: 1;
-    margin-right: 16px;
-    display: flex;
-    &-label {
-      flex-shrink: 0;
-      margin-right: 8px;
-    }
-    &-content {
-      color: #199fff;
-    }
-  }
 }
 </style>
 <style lang="scss">
