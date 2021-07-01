@@ -29,7 +29,6 @@
                 <el-button type="text" :class="row.contract_status == 1? 'entry2':'entry1'" @click="pcontractsee(row.sign_url)">查看</el-button>
                 <el-button type="text" @click="Approval(row)" :class="row.contract_status == 1? 'entry2':'entry1'">审核</el-button>
                 <el-button type="text" :class="row.contract_status == 1? 'entry1':'entry2'" @click="pcontract(row.sign_url)">查看合同</el-button>
-
                 <!-- <el-button type="text" :class="row.contract_status == 1? 'entry1':'entry2'">查看收据</el-button> -->
               </div>
             </template>
