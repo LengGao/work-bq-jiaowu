@@ -66,13 +66,21 @@
           label="总学费"
           show-overflow-tooltip
           min-width="90"
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.price }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="lowest_price"
           label="最低学费"
           show-overflow-tooltip
           min-width="90"
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.lowest_price }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="project_name"
           label="关联项目"
