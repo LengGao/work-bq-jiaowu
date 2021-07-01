@@ -101,25 +101,30 @@ export default {
           value: 3,
         },
         {
-          name: "填空题",
+          name: "不定项题",
           value: 4,
         },
         {
-          name: "简答题",
+          name: "填空题",
           value: 5,
         },
         {
-          name: "案例题",
+          name: "简答题",
           value: 6,
+        },
+        {
+          name: "案例题",
+          value: 7,
         },
       ],
       componentMaps: {
         1: "SingleChoice",
         2: "MultipleChoice",
         3: "Judge",
-        4: "Completion",
-        5: "ShortAnswer",
-        6: "Case",
+        4: "IndefiniteChoice",
+        5: "Completion",
+        6: "ShortAnswer",
+        7: "Case",
       },
       rightActiveType: 0,
       rightQuestionOptions: [
@@ -136,12 +141,16 @@ export default {
           value: 3,
         },
         {
-          name: "填空题",
+          name: "不定项题",
           value: 4,
         },
         {
-          name: "简答题",
+          name: "填空题",
           value: 5,
+        },
+        {
+          name: "简答题",
+          value: 6,
         },
       ],
       letterMap: {

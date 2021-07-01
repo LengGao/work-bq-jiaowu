@@ -1,7 +1,7 @@
 
 <template>
-  <!-- 多选题 -->
-  <div class="multiple-choice">
+  <!-- 不定项选题 -->
+  <div class="indefinite-choice">
     <el-form
       :model="editorForm"
       :rules="editorRules"
@@ -52,7 +52,7 @@
 import Editor from "./Editor";
 import mixins from "../mixins/index";
 export default {
-  name: "MultipleChoice",
+  name: "IndefiniteChoice",
   mixins: [mixins],
   components: {
     Editor,
@@ -115,7 +115,7 @@ export default {
           topic_answer: this.editorForm.correct
             .map((item) => this.letterMap[item + 1])
             .join(","),
-          type: 2,
+          type: 4,
         });
       });
     },
@@ -130,7 +130,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.multiple-choice {
+.indefinite-choice {
   .form-item-editor {
     position: relative;
     .editor-delete {

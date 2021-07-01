@@ -124,7 +124,7 @@ export default {
   data() {
     return {
       // 1：章节 2：历年真题 3：自主出题
-      activeName: "1",
+      activeName: sessionStorage.getItem("activeName") || "1",
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -154,16 +154,20 @@ export default {
           value: 3,
         },
         {
-          name: "填空题",
+          name: "不定项题",
           value: 4,
         },
         {
-          name: "简答题",
+          name: "填空题",
           value: 5,
         },
         {
-          name: "案例题",
+          name: "简答题",
           value: 6,
+        },
+        {
+          name: "案例题",
+          value: 7,
         },
       ],
     };
@@ -184,9 +188,7 @@ export default {
           qid: this.$route.query.id,
         },
       });
-    },
-    linkTo(name, id) {
-      this.$router.push({ name, query: { id } });
+      sessionStorage.setItem("activeName", this.activeName);
     },
     // 章节类型变化
     handleChapterTypeChange() {
@@ -214,11 +216,6 @@ export default {
         this.getQuestionList();
       }
     },
-
-    link(id) {
-      this.$router.push({ name: "inventoryDetails", query: { id } });
-    },
-
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
@@ -270,7 +267,7 @@ export default {
   }
   .container {
     display: flex;
-    justify-content: space-between;
+    width: 100%;
     &-left {
       width: 300px;
       border: 1px solid #e4e7ed;
@@ -278,7 +275,7 @@ export default {
       height: 800px;
     }
     &-right {
-      flex: 1;
+      width: calc(100% - 320px);
       margin-left: 20px;
     }
   }
