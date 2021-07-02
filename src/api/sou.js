@@ -707,3 +707,315 @@ export function moveProject(data) {
     data,
   })
 }
+// 学历形式列表
+export function getEducationTypeList(params) {
+  return request({
+    url: '/UniversityType/page',
+    method: 'get',
+    params,
+  })
+}
+// 添加学历形式
+export function addEducationType(data) {
+  return request({
+    url: '/UniversityType/add',
+    method: 'post',
+    data,
+  })
+}
+// 编辑学历形式
+export function editEducationType(data) {
+  return request({
+    url: '/UniversityType/edit',
+    method: 'post',
+    data,
+  })
+}
+// 编辑学历形式
+export function getEducationTypeInfo(params) {
+  return request({
+    url: '/UniversityType/info',
+    method: 'get',
+    params,
+  })
+}
+// 删除学历形式
+export function delEducationType(data) {
+  return request({
+    url: '/UniversityType/delete',
+    method: 'post',
+    data,
+  })
+}
+// 更新学历形式状态
+export function updateEducationTypeStatus(data) {
+  return request({
+    url: '/UniversityType/status',
+    method: 'post',
+    data,
+  })
+}
+// 更新学历形式排序
+export function updateEducationTypeSort(data) {
+  return request({
+    url: '/UniversityType/sort',
+    method: 'post',
+    data,
+  })
+}
+// 院校列表
+export function getUniversityList(params) {
+  return request({
+    url: '/University/page',
+    method: 'get',
+    params,
+  })
+}
+// 添加院校
+export function addUniversity(data) {
+  return request({
+    url: '/University/add',
+    method: 'post',
+    data,
+  })
+}
+// 编辑院校
+export function editUniversity(data) {
+  return request({
+    url: '/University/edit',
+    method: 'post',
+    data,
+  })
+}
+// 编辑院校
+export function getUniversityInfo(params) {
+  return request({
+    url: '/University/info',
+    method: 'get',
+    params,
+  })
+}
+// 删除院校
+export function delUniversity(data) {
+  return request({
+    url: '/University/delete',
+    method: 'post',
+    data,
+  })
+}
+// 更新院校状态
+export function updateUniversityStatus(data) {
+  return request({
+    url: '/University/status',
+    method: 'post',
+    data,
+  })
+}
+// 更新院校排序
+export function updateUniversitySort(data) {
+  return request({
+    url: '/University/sort',
+    method: 'post',
+    data,
+  })
+}
+// 层次列表
+export function getUniversityLevelList(params) {
+  return request({
+    url: '/UniversityLevel/page',
+    method: 'get',
+    params,
+  })
+}
+// 添加层次
+export function addUniversityLevel(data) {
+  return request({
+    url: '/UniversityLevel/add',
+    method: 'post',
+    data,
+  })
+}
+// 编辑层次
+export function editUniversityLevel(data) {
+  return request({
+    url: '/UniversityLevel/edit',
+    method: 'post',
+    data,
+  })
+}
+// 编辑层次
+export function getUniversityLevelInfo(params) {
+  return request({
+    url: '/UniversityLevel/info',
+    method: 'get',
+    params,
+  })
+}
+// 删除层次
+export function delUniversityLevel(data) {
+  return request({
+    url: '/UniversityLevel/delete',
+    method: 'post',
+    data,
+  })
+}
+// 更新层次状态
+export function updateUniversityLevelStatus(data) {
+  return request({
+    url: '/UniversityLevel/status',
+    method: 'post',
+    data,
+  })
+}
+// 更新层次排序
+export function updateUniversityLevelSort(data) {
+  return request({
+    url: '/UniversityLevel/sort',
+    method: 'post',
+    data,
+  })
+}
+// 专业列表
+export function getUniversityMajorList(params) {
+  return request({
+    url: '/UniversityMajor/page',
+    method: 'get',
+    params,
+  })
+}
+// 添加专业
+export function addUniversityMajor(data) {
+  return request({
+    url: '/UniversityMajor/add',
+    method: 'post',
+    data,
+  })
+}
+// 编辑专业
+export function editUniversityMajor(data) {
+  return request({
+    url: '/UniversityMajor/edit',
+    method: 'post',
+    data,
+  })
+}
+// 编辑专业
+export function getUniversityMajorInfo(params) {
+  return request({
+    url: '/UniversityMajor/info',
+    method: 'get',
+    params,
+  })
+}
+// 删除专业
+export function delUniversityMajor(data) {
+  return request({
+    url: '/UniversityMajor/delete',
+    method: 'post',
+    data,
+  })
+}
+// 更新专业状态
+export function updateUniversityMajorStatus(data) {
+  return request({
+    url: '/UniversityMajor/status',
+    method: 'post',
+    data,
+  })
+}
+// 更新专业排序
+export function updateUniversityMajorSort(data) {
+  return request({
+    url: '/UniversityMajor/sort',
+    method: 'post',
+    data,
+  })
+}
+// 院校专业列表
+export function getUniversityMajorDetailList(params) {
+  return request({
+    url: '/UniversityMajorDetail/page',
+    method: 'get',
+    params,
+  })
+}
+// 添加院校专业
+export function addUniversityMajorDetail(data) {
+  return request({
+    url: '/UniversityMajorDetail/add',
+    method: 'post',
+    data,
+  })
+}
+// 编辑院校专业
+export function editUniversityMajorDetail(data) {
+  return request({
+    url: '/UniversityMajorDetail/edit',
+    method: 'post',
+    data,
+  })
+}
+// 编辑院校专业
+export function getUniversityMajorDetailInfo(params) {
+  return request({
+    url: '/UniversityMajorDetail/info',
+    method: 'get',
+    params,
+  })
+}
+// 删除院校专业
+export function delUniversityMajorDetail(data) {
+  return request({
+    url: '/UniversityMajorDetail/delete',
+    method: 'post',
+    data,
+  })
+}
+// 更新院校专业状态
+export function updateUniversityMajorDetailStatus(data) {
+  return request({
+    url: '/UniversityMajorDetail/status',
+    method: 'post',
+    data,
+  })
+}
+// 更新院校专业排序
+export function updateUniversityMajorDetailSort(data) {
+  return request({
+    url: '/UniversityMajorDetail/sort',
+    method: 'post',
+    data,
+  })
+}
+// 学历形式选项
+export function getUniversityTypeOptions(params) {
+  return request({
+    url: '/UniversityType/list',
+    method: 'get',
+    params,
+  })
+}
+// 院校选项
+export function getUniversityOptions(params) {
+  return request({
+    url: '/University/list',
+    method: 'get',
+    params,
+  })
+}
+// 层次选项
+export function getUniversityLevelOptions(params) {
+  return request({
+    url: '/UniversityLevel/list',
+    method: 'get',
+    params,
+  })
+}
+// 专业选项
+export function getUniversityMajorOptions(params) {
+  return request({
+    url: '/UniversityMajor/list',
+    method: 'get',
+    params,
+  })
+}

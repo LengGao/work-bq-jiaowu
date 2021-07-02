@@ -45,7 +45,6 @@ module.exports = {
 
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
-        // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://192.168.8.100', //权
         // target: 'http://dpadmin.beiqujy.com/apidata', //生产
         // target: 'http://a.cc',
