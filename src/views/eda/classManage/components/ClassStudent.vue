@@ -47,7 +47,7 @@
           prop="telphone"
         >
           <template slot-scope="{ row }">
-            <span>{{ row.telphone | filterPhone }}</span>
+            <span>{{row.telphone}}</span>
           </template>
         </el-table-column>
         <el-table-column
