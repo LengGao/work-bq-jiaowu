@@ -53,64 +53,64 @@
         <el-table-column
           prop="institution_name"
           label="所属机构"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           prop="add_time"
           label="加入时间"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="ExamLogAvg"
           label="模拟考试平均分"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="RealTopicLogAvg"
           label="历年真题平均分"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="ProblemSelfDeterminationMax"
           label="自主出题最高分"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="attendance_num"
           label="出勤次数"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="absence_num"
           label="缺勤次数"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="attendance_rate"
           label="出勤率"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           label="操作"
           align="center"
           fixed="right"
-          min-width="160"
+          min-width="140"
         >
           <template slot-scope="{ row }">
             <div>
+              <el-button type="text" @click="learningDetails(row)">学习详情</el-button>
               <el-button type="text" @click="linkTo(row)">转班</el-button>
               <el-button type="text" @click="removeConfirm([row.uid])"
-                >移除</el-button
-              >
+                >移除</el-button>
             </div>
           </template>
         </el-table-column>
@@ -181,6 +181,14 @@ export default {
     this.getClassstudentList();
   },
   methods: {
+    learningDetails(row) {
+      this.$router.push({
+        name: "learningDetails",
+        query: {
+         uid: row.uid,
+        },
+      });
+    },
     handleTabelSelectChange(selection) {
       if (selection) {
         this.selectionIds = selection.map((item) => item.uid);

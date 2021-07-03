@@ -1,38 +1,23 @@
 <template>
   <section>
-    <el-row style="min-width:1100px;border-top: 8px solid #f2f6fc;padding:10px 20px 0 20px;">
-      <el-col :lg="18" :md="18" :sm="18" :xs="18">
-        <el-row>
-          <el-col :lg="5" :md="5" :sm="5" :xs="5">
-            <div class="detail-name">
-              <div class="detail-info">
-                <div class="detail-label">学生姓名</div>
-                <div class="detail-con">张小北</div>
-              </div>
-            </div>
-          </el-col>
-          <el-col :lg="6" :md="6" :sm="6" :xs="6">
-            <div class="detail-info">
-              <div class="detail-label">手机号码</div>
-              <div class="detail-con">13535019471</div>
-            </div>
-          </el-col>
-          <el-col :lg="6" :md="6" :sm="6" :xs="6">
-            <div class="detail-info">
-              <div class="detail-label">身份证号</div>
-              <div class="detail-con">445454654565456545</div>
-            </div>
-          </el-col>
-          <el-col :lg="6" :md="6" :sm="6" :xs="6">
-            <div class="detail-info">
-              <div class="detail-label">课程名称</div>
-              <div class="detail-con">低压电工作业（初训）</div>
-            </div>
-          </el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-
+    <div class="detail-content">
+      <div class="detail-info">
+        <div class="detail-label">学生姓名</div>
+        <div class="detail-con">{{ruleForm.surname}}</div>
+      </div>
+      <div class="detail-info">
+        <div class="detail-label">手机号码</div>
+        <div class="detail-con">{{ruleForm.mobile}}</div>
+      </div>
+      <div class="detail-infocon">
+        <div class="detail-label">身份证号</div>
+        <div class="detail-con">{{ruleForm.id_card_number}}</div>
+      </div>
+      <div class="detail-infocon">
+        <div class="detail-label">课程名称</div>
+        <div class="detail-con">{{$route.query.course_name}}</div>
+      </div>
+    </div>
     <section class="main-contain">
       <el-row style="min-width:1100px;padding: 0 20px;">
         <el-col :lg="24" :md="24" :sm="24" :xs="24">
@@ -53,49 +38,47 @@
                 <li>
                   <p>累计打卡天数</p>
                   <div>
-                    <strong>35</strong>
+                    <strong>{{punchDetail.collection_count}}</strong>
                     <span>天</span>
                   </div>
                 </li>
                 <li>
                   <p>平均打卡用时</p>
-                  <strong>35:20</strong>
+                  <strong>{{punchDetail.total_problem}}</strong>
                 </li>
                 <li>
                   <p>答题总数</p>
-                  <strong>828</strong>
+                  <strong>{{punchDetail.total_problem}}</strong>
                 </li>
                 <li>
                   <p>打卡正确率</p>
-                  <strong>35%</strong>
+                  <strong>{{punchDetail.right_progress}}</strong>
                 </li>
               </ul>
             </div>
             <!--表格-->
             <div class="userTable">
-              <el-table ref="multipleTable" :data="schoolData" tooltip-effect="light" stripe style="width: 100%;"
+              <el-table ref="multipleTable" :data="punchData" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
                 <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
-                <el-table-column prop="course_id" label="打卡时间" show-overflow-tooltip min-width="100">2020-06-04 16:30
+                <el-table-column prop="collection_count" label="打卡时间" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="course_name" label="题目总数" min-width="100" column-key="course_id"
-                  show-overflow-tooltip>200</el-table-column>
-                <el-table-column prop="category_name" label="正确题数" min-width="100" show-overflow-tooltip>100
+                <el-table-column prop="total_problem" label="题目总数" min-width="100" column-key="course_id"
+                  show-overflow-tooltip></el-table-column>
+                <el-table-column prop="right_problem" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="class_type_name" label="正确率" min-width="100" show-overflow-tooltip>50%
+                <el-table-column prop="make_problem_progress" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="course_price" label="打卡用时" min-width="100" show-overflow-tooltip>6:30
+                <el-table-column prop="create_time" label="打卡用时" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="course_price" label="打卡排行" min-width="100" show-overflow-tooltip>10
+                <el-table-column prop="ranking" label="打卡排行" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-
 
             </div>
             <div class="tablebottom">
               <button class="exportData">导出数据</button>
-
             </div>
           </div>
 
@@ -111,7 +94,7 @@
                 </li>
                 <li>
                   <p>做题进度</p>
-                  <strong>80%</strong>
+                  <strong>{{punchDetail.make_problem_progress}}</strong>
                 </li>
                 <li>
                   <p>正确率</p>
@@ -151,7 +134,6 @@
             </div>
             <div class="tablebottom">
               <button class="exportData">导出数据</button>
-
             </div>
           </div>
 
@@ -576,20 +558,31 @@
 </template>
 
 <script>
+  import { getStudentBasicDetail, personalpunch } from "@/api/eda";
   export default {
     data() {
       return {
         isTagactive: 1,
+        punchDetail: {},
+        punchData: [
+          {
+            create_time: "",
+            total_problem: "",
+            right_problem: "",
+            accuracy: "",
+            create_time: "",
+            ranking: ""
+          },
+        ],
         schoolData: [
-          { course_id: "2020-06-04  16:30" },
-          { course_id: "2020-06-04  16:30" },
-          { course_id: "2020-06-04  16:30" },
-          { course_id: "2020-06-04  16:30" },
-          { course_id: "2020-06-04  16:30" },
-          { course_id: "2020-06-04  16:30" },
-          { course_id: "2020-06-04  16:30" },
-          { course_id: "2020-06-04  16:30" },
-
+          {
+            create_time: "",
+            total_problem: "",
+            right_problem: "",
+            accuracy: "",
+            create_time: "",
+            ranking: ""
+          },
         ],
         ruleForm: {},
         tabFun: [
@@ -637,10 +630,39 @@
       }
     },
     created() {
+      this.getStudentBasicDetail();
+      console.log(this.$route.query.uid)
+      console.log(this.$route.query.course_id)
+      this.personalpunch()
     },
     methods: {
-      statusSwitch(ab) {
-        this.isTagactive = ab.id
+      statusSwitch(row) {
+        this.isTagactive = row.id
+      },
+
+      //学生基本信息
+      async getStudentBasicDetail() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id
+        };
+        console.log(data)
+        const res = await getStudentBasicDetail(data);
+        if (res.code === 0) {
+          this.ruleForm = res.data;
+        }
+      },
+      //每日打卡
+      async personalpunch() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id
+        };
+        const res = await personalpunch(data);
+        if (res.code === 0) {
+          this.punchDetail = res.data.data;
+          this.punchData = res.data.data[0];
+        }
       },
     },
   };
@@ -652,7 +674,6 @@
     background-color: #f8f8f8;
     color: #909399;
   }
-
   /deep/.el-button {
     padding: 9px 0;
     width: 80px;
@@ -662,6 +683,7 @@
     justify-content: space-between;
     margin-top: 15px;
   }
+
   .punchclock li {
     border: 1px solid #d7d7d7;
     width: 24%;
@@ -708,21 +730,32 @@
     background: #199fff;
     border: none;
   }
-  .detail-info {
-    height: 100%;
-    margin-top: 18px;
+  .detail-content {
+    border-top: 8px solid #f2f6fc;
+    padding: 10px 20px 0 20px;
     display: flex;
+    justify-content: start;
+    margin-top: 18px;
     align-items: center;
     font-size: 16px;
     color: #666;
-
-    .detail-label {}
-
-    .detail-con {
-      font-size: 16px;
-      padding-left: 30px;
-    }
   }
+  .detail-info {
+    width: 15%;
+    display: flex;
+    margin-top: 18px;
+  }
+  .detail-con {
+    font-size: 16px;
+    padding-left: 30px;
+    margin-top: 2px;
+  }
+  .detail-infocon {
+    width: 20%;
+    display: flex;
+    margin-top: 18px;
+  }
+
   .navigationBox {
     height: 45px;
     margin-top: 10px;
@@ -739,7 +772,6 @@
       font-size: 16px;
       letter-spacing: normal;
       color: #333333;
-
       li {
         height: 30px;
         font-size: 14px;

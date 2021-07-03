@@ -147,9 +147,11 @@ export default {
     learningDetails(row) {
       this.$router.push({
         name: "learningDetails",
-        // query: {
-        //  id: row.id,
-        // },
+        query: {
+         uid: row.uid,
+         course_id:row.course_id,
+         course_name:row.course_name,
+        },
       });
     },
   },
