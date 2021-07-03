@@ -75,10 +75,11 @@
                 <el-table-column prop="ranking" label="打卡排行" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-
             </div>
             <div class="tablebottom">
               <button class="exportData">导出数据</button>
+              <div class="table_bottom">
+              </div>
             </div>
           </div>
 
@@ -89,7 +90,7 @@
                 <li>
                   <p>做题总数</p>
                   <div>
-                    <strong>358</strong>
+                    <strong>{{punchDetail.total_problem}}</strong>
                   </div>
                 </li>
                 <li>
@@ -98,15 +99,15 @@
                 </li>
                 <li>
                   <p>正确率</p>
-                  <strong>80%</strong>
+                  <strong>{{punchDetail.right_progress}}</strong>
                 </li>
                 <li>
                   <p>收藏夹</p>
-                  <strong>25</strong>
+                  <strong>{{punchDetail.collection_count}}</strong>
                 </li>
                 <li>
                   <p>错题集</p>
-                  <strong>550</strong>
+                  <strong>{{punchDetail.error_count}}</strong>
                 </li>
               </ul>
             </div>
@@ -116,19 +117,19 @@
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
                 <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
-                <el-table-column prop="course_id" label="章节名称" show-overflow-tooltip min-width="100">
+                <el-table-column prop="chapter_name" label="章节名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="course_name" label="最后做题时间" min-width="100" column-key="course_id"
+                <el-table-column prop="create_time" label="最后做题时间" min-width="100" column-key="course_id"
                   show-overflow-tooltip></el-table-column>
-                <el-table-column prop="category_name" label="题目总数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="total_problem" label="题目总数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="class_type_name" label="做题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="do_problem" label="做题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="course_price" label="做题进度" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="progress" label="做题进度" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="course_price" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="course_price" label="正确率" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
             </div>
@@ -186,8 +187,6 @@
                 <el-table-column prop="course_price" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-
-
             </div>
             <div class="tablebottom">
               <button class="exportData">导出数据</button>
@@ -566,7 +565,7 @@
         punchDetail: {},
         punchData: [
           {
-            create_time: "",
+            create_time: "11",
             total_problem: "",
             right_problem: "",
             accuracy: "",
@@ -576,6 +575,7 @@
         ],
         schoolData: [
           {
+            chapter_name:"系统集成",
             create_time: "",
             total_problem: "",
             right_problem: "",
@@ -652,7 +652,7 @@
           this.ruleForm = res.data;
         }
       },
-      //每日打卡
+      //学习详情-每日打卡
       async personalpunch() {
         const data = {
           uid: this.$route.query.uid,
@@ -661,7 +661,7 @@
         const res = await personalpunch(data);
         if (res.code === 0) {
           this.punchDetail = res.data.data;
-          this.punchData = res.data.data[0];
+          this.punchData = res.data.data.list;   
         }
       },
     },
@@ -683,7 +683,6 @@
     justify-content: space-between;
     margin-top: 15px;
   }
-
   .punchclock li {
     border: 1px solid #d7d7d7;
     width: 24%;
@@ -812,4 +811,5 @@
   .tablebottom {
     margin-top: 30px;
   }
+
 </style>
