@@ -922,12 +922,12 @@ export default {
           tips: this.ruleForm.remark,
           type: this.ruleForm.type,
           payment_type: this.ruleForm.payment_type,
-          pre_tutor: this.ruleForm.pre_tutor,
-          textbook: this.ruleForm.textbook,
-          graduation_guidance: this.ruleForm.graduation_guidance,
-          thesis_defense: this.ruleForm.thesis_defense,
-          others: this.ruleForm.others,
-          examination: this.ruleForm.examination,
+          pre_tutor: this.ruleForm.pre_tutor || 0,
+          textbook: this.ruleForm.textbook || 0,
+          graduation_guidance: this.ruleForm.graduation_guidance || 0,
+          thesis_defense: this.ruleForm.thesis_defense || 0,
+          others: this.ruleForm.others || 0,
+          examination: this.ruleForm.examination || 0,
           project: JSON.stringify(
             this.majorData.map((item) => ({
               id: item.id,
