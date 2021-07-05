@@ -17,6 +17,15 @@ const mixin = {
                 },
             });
         },
+        // 跳转到订单详情
+        toOrderDetail(order_id) {
+            this.$router.push({
+                name: "orderdetail",
+                query: {
+                    order_id,
+                },
+            });
+        },
     }
 }
 Vue.mixin(mixin)
