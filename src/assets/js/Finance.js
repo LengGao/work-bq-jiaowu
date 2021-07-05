@@ -29,7 +29,7 @@ let Finance = {
   },
 
   //订单详情
-  orderdetail(self, name) {
+  orderdetail(self, name, callback) {
     let config = {
       // search_box: ruleForm.search_box,
       page: self.page,
@@ -53,6 +53,7 @@ let Finance = {
           // console.log( self.projectData )
           self.pay_log = data.pay_log
           self.ruleForm = res.data.data
+          callback()
         }
       },
     })

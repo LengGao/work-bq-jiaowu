@@ -175,6 +175,51 @@
         </div>
       </div>
     </div>
+
+    <div style="margin-top: 20px" v-if="ruleForm.type === 1">
+      <h3 style="margin-bottom: 15px">学历信息</h3>
+      <el-table
+        ref="multipleTable"
+        :data="eduData"
+        tooltip-effect="light"
+        stripe
+        style="width: 100%"
+        class="min_table"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+      >
+        <el-table-column
+          prop="type_title"
+          label="学历形式"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="university_title"
+          label="院校名称"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="level_title"
+          label="层次名称"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="major_title"
+          label="专业名称"
+          show-overflow-tooltip
+          min-width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="project_name"
+          label="项目名称"
+          show-overflow-tooltip
+          min-width="160"
+        ></el-table-column>
+      </el-table>
+    </div>
     <!--缴费记录-->
     <div style="margin-top: 20px">
       <h3 style="margin-bottom: 15px">缴费记录</h3>
@@ -235,45 +280,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <!--经办信息-->
-    <!-- <div style="margin-top: 20px">
-      <h3 style="margin-bottom: 15px">经办信息</h3>
-      <el-table
-        ref="multipleTable"
-        :data="schoolData"
-        tooltip-effect="light"
-        stripe
-        style="width: 100%"
-        class="min_table"
-        :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
-      >
-        <el-table-column
-          prop="uid"
-          label="操作人"
-          show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
-        <el-table-column
-          prop="uid"
-          label="操作类型"
-          show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
-        <el-table-column
-          prop="uid"
-          label=" 操作时间"
-          show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
-        <el-table-column
-          prop="uid"
-          label="备注信息"
-          show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
-      </el-table>
-    </div> -->
+
     <CollectionOrder
       v-model="orderActionDialog"
       :type="dialogType"
@@ -286,6 +293,7 @@
 <script>
 import CollectionOrder from "../components/CollectionOrder";
 import { logEntry } from "@/api/fina";
+import { getEduList } from "@/api/eda";
 export default {
   components: {
     CollectionOrder,
@@ -356,15 +364,26 @@ export default {
       orderActionDialog: false,
       dialogInfo: {},
       dialogType: 1,
+      eduData: [],
     };
   },
   mounted() {
-    // let status = 3
     this.order_id = this.$route.query.order_id;
-    this.$api.orderdetail(this, "schoolData");
+    this.$api.orderdetail(this, "schoolData", () => {
+      this.ruleForm.type === 1 && this.getEduList(this.ruleForm.uid);
+    });
   },
 
   methods: {
+    async getEduList(uid) {
+      const data = {
+        uid,
+      };
+      const res = await getEduList(data);
+      if (res.code === 0) {
+        this.eduData = res.data.list;
+      }
+    },
     //入账确认框
     handleEntryCofirm(row) {
       this.$confirm("是否将此笔订单入账？", { type: "warning" })

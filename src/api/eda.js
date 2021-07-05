@@ -828,3 +828,11 @@ export function updatePublicLive(data) {
     data,
   })
 }
+// 学历订单列表
+export function getEduList(params) {
+  return request({
+    url: '/order/edu',
+    method: 'get',
+    params,
+  })
+}
