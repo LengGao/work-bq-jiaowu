@@ -58,18 +58,31 @@
         </transition>
         <div class="right-submit" v-if="rightActiveType">
           <el-button @click="handleRightCancel">取消</el-button>
-          <el-button type="primary" @click="handleRightSubmit">保存</el-button>
+          <el-button
+            type="primary"
+            :loading="addLoading"
+            @click="handleRightSubmit"
+            >保存</el-button
+          >
         </div>
         <span v-else class="no-component">请选择案例题目类型</span>
       </div>
     </el-form>
     <div class="question-form-submit question-form-submit--fixed" v-if="pid">
       <el-button @click="$router.back()">取消</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('ruleForm')"
+        >保存</el-button
+      >
     </div>
     <div class="question-form-submit question-form-submit--fixed" v-else>
       <el-button @click="resetForm('ruleForm')">重置</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')"
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('ruleForm')"
         >立即创建</el-button
       >
     </div>
@@ -183,6 +196,7 @@ export default {
       chapterType: this.$route.query?.chapterType || "",
       detailData: {},
       caseChildData: {},
+      addLoading: false,
     };
   },
   computed: {
@@ -287,7 +301,11 @@ export default {
         data.id = qData.id;
         api = updateQuestion;
       }
-      const res = await api(data);
+      this.addLoading = true;
+      const res = await api(data).catch(() => {
+        this.addLoading = false;
+      });
+      this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
         // 案例题添加
