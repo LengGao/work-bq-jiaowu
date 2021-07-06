@@ -723,14 +723,7 @@ export function getQuestionList(params) {
     params,
   })
 }
-// 删除题目
-export function delQuestion(data) {
-  return request({
-    url: '/topic/delete',
-    method: 'post',
-    data,
-  })
-}
+
 // 添加题目
 export function addQuestion(data) {
   return request({
@@ -745,5 +738,21 @@ export function getQuestionDetail(params) {
     url: '/topic/info',
     method: 'get',
     params,
+  })
+}
+// 删除题目
+export function deleteQuestion(data) {
+  return request({
+    url: '/topic/delete',
+    method: 'post',
+    data,
+  })
+}
+// 修改题目
+export function updateQuestion(data) {
+  return request({
+    url: '/topic/update',
+    method: 'post',
+    data,
   })
 }

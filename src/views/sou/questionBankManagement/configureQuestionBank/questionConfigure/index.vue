@@ -43,17 +43,22 @@
             @on-change="handleCaseChange"
             :questionOptions="rightQuestionOptions"
             :data="detailData"
+            @on-case-delete="deleteConfirm"
           />
         </transition>
       </div>
       <!-- 案例题时显示右侧 -->
       <div class="question-form-right" v-if="this.ruleForm.topic_type === 7">
-        <transition name="el-zoom-in-top">
-          <component ref="editorRightForm" :is="getRightComponent" />
+        <transition name="fade">
+          <component
+            ref="editorRightForm"
+            :data="caseChildData"
+            :is="getRightComponent"
+          />
         </transition>
         <div class="right-submit" v-if="rightActiveType">
           <el-button @click="handleRightCancel">取消</el-button>
-          <el-button type="primary" @click="handleRightSubmit">添加</el-button>
+          <el-button type="primary" @click="handleRightSubmit">保存</el-button>
         </div>
         <span v-else class="no-component">请选择案例题目类型</span>
       </div>
@@ -72,7 +77,13 @@
 </template>
 
 <script>
-import { addQuestion, getChapterOptions, getQuestionDetail } from "@/api/sou";
+import {
+  addQuestion,
+  getChapterOptions,
+  getQuestionDetail,
+  deleteQuestion,
+  updateQuestion,
+} from "@/api/sou";
 export default {
   name: "questionConfiguer",
   data() {
@@ -171,6 +182,7 @@ export default {
       pid: this.$route.query?.pid || "",
       chapterType: this.$route.query?.chapterType || "",
       detailData: {},
+      caseChildData: {},
     };
   },
   computed: {
@@ -191,11 +203,36 @@ export default {
       }
     },
   },
+  watch: {
+    $route() {
+      this.pid = this.$route.query.pid;
+      this.getQuestionDetail();
+    },
+  },
   created() {
     this.getChapterOptions();
     this.pid && this.getQuestionDetail();
   },
   methods: {
+    deleteConfirm(id) {
+      this.$confirm("确定删除该子题目吗?", "提示", {
+        type: "warning",
+      }).then(() => {
+        this.deleteQuestion(id);
+      });
+    },
+    // 删除题目
+    async deleteQuestion(id) {
+      const data = {
+        id,
+      };
+      const res = await deleteQuestion(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getQuestionDetail();
+      }
+    },
+    // 题目详情
     async getQuestionDetail() {
       const data = {
         id: this.pid,
@@ -244,21 +281,32 @@ export default {
         ignore_order: qData.ignore_order || 0,
         option_arr,
       };
-      const res = await addQuestion(data);
+      // 有id就是修改
+      let api = addQuestion;
+      if (qData.id) {
+        data.id = qData.id;
+        api = updateQuestion;
+      }
+      const res = await api(data);
       if (res.code === 0) {
         this.$message.success(res.message);
+        // 案例题添加
         if (this.ruleForm.topic_type === 7) {
           if (this.pid) {
             this.rightActiveType = 0;
             this.getQuestionDetail();
           } else {
-            this.$router.push({
+            this.$router.replace({
               name: "questionConfigure",
               query: {
                 ...this.$route.query,
                 pid: res.data.id,
               },
             });
+          }
+          // 案例题修改
+          if (this.ruleForm.topic_type === qData.type && qData.id) {
+            this.$router.back();
           }
           return;
         }
@@ -270,8 +318,17 @@ export default {
       this.rightActiveType = 0;
     },
     // 已添加的案例题，点击时改变右侧
-    handleCaseChange(type) {
+    async handleCaseChange({ type, id }) {
       this.rightActiveType = type;
+      if (id) {
+        const data = {
+          id,
+        };
+        const res = await getQuestionDetail(data);
+        if (res.code === 0) {
+          this.caseChildData = res.data;
+        }
+      }
     },
     // 立即创建
     submitForm(formName) {

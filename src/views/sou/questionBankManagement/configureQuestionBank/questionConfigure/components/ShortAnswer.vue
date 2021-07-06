@@ -24,8 +24,10 @@
 <script>
 //  <!-- 简答题 -->
 import Editor from "./Editor";
+import mixins from "../mixins/index";
 export default {
   name: "ShortAnswer",
+  mixins: [mixins],
   components: {
     Editor,
   },
@@ -45,17 +47,6 @@ export default {
         ],
         correct: [{ required: true, message: "请输入", trigger: "change" }],
       },
-      eId: 4,
-      editorOptions: [
-        {
-          name: "正确",
-          value: 1,
-        },
-        {
-          name: "错误",
-          value: 2,
-        },
-      ],
     };
   },
   methods: {

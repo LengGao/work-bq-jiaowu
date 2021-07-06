@@ -14,7 +14,7 @@
       <el-form-item label="正确答案" prop="correct">
         <el-button
           :type="editorForm.correct === item.value ? 'primary' : ''"
-          v-for="item in editorOptions"
+          v-for="item in answerOptions"
           :key="item.value"
           @click="handleAnswerChange(item.value)"
           >{{ item.name }}</el-button
@@ -53,8 +53,7 @@ export default {
         ],
         correct: [{ required: true, message: "请选择", trigger: "change" }],
       },
-      eId: 4,
-      editorOptions: [
+      answerOptions: [
         {
           name: "正确",
           value: 1,

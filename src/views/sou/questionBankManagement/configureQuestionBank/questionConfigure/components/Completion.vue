@@ -19,7 +19,7 @@
           </p>
         </div>
         <el-form-item
-          v-for="(id, index) in inputOptins"
+          v-for="(id, index) in editorOptions"
           :key="id"
           :rules="[{ required: true, message: `请输入`, trigger: 'blur' }]"
           :prop="`option${id}`"
@@ -57,8 +57,10 @@
 <script>
 //  <!-- 填空题 -->
 import Editor from "./Editor";
+import mixins from "../mixins/index";
 export default {
   name: "Completion",
+  mixins: [mixins],
   components: {
     Editor,
   },
@@ -80,24 +82,24 @@ export default {
         correct: [{ required: true, message: "请选择", trigger: "change" }],
       },
       eId: 1,
-      inputOptins: [1],
+      editorOptions: [1],
     };
   },
   methods: {
     // 删除答案输入框
     handleDeleteInput(index, id) {
-      this.inputOptins.splice(index, 1);
+      this.editorOptions.splice(index, 1);
       delete this.editorForm[`option${id}`];
     },
     // 添加答案输入框
     handleAddInput() {
-      if (this.inputOptins.length >= 10) {
+      if (this.editorOptions.length >= 10) {
         this.$message.warning("不能在加了！");
         return;
       }
       const item = ++this.eId;
       this.$set(this.editorForm, "option" + item, "");
-      this.inputOptins.push(item);
+      this.editorOptions.push(item);
     },
     validate(cb) {
       this.$refs.editorRules.validate((valid) => {

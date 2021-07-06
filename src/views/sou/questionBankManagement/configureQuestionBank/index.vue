@@ -118,7 +118,7 @@
 
 <script>
 import ChapterMenu from "./components/ChapterMenu";
-import { getQuestionList, delQuestion } from "@/api/sou";
+import { getQuestionList, deleteQuestion } from "@/api/sou";
 
 export default {
   name: "questionBank",
@@ -209,13 +209,13 @@ export default {
     deleteConfirm(id) {
       this.$confirm("确定要删除此题目吗?", { type: "warning" })
         .then(() => {
-          this.delQuestion(id);
+          this.deleteQuestion(id);
         })
         .catch(() => {});
     },
-    async delQuestion(id) {
+    async deleteQuestion(id) {
       const data = { id };
-      const res = await delQuestion(data);
+      const res = await deleteQuestion(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getQuestionList();

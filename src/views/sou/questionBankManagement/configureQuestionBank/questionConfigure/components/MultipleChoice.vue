@@ -89,11 +89,7 @@ export default {
     },
     // 删除题目编辑器
     handleDeleteEditor(index, id) {
-      // 选中的被删除，需要清空
-      const aIndex = this.editorForm.correct.indexOf(index);
-      if (~aIndex) {
-        this.editorForm.correct.splice(aIndex, 1);
-      }
+      this.editorForm.correct = [];
       this.editorOptions.splice(index, 1);
       delete this.editorForm[`option${id}`];
     },
