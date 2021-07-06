@@ -23,6 +23,7 @@
           </el-form-item>
           <el-form-item label="题目类型" prop="topic_type">
             <el-select
+              disabled
               v-model="ruleForm.topic_type"
               placeholder="请选择题目类型"
             >
@@ -41,12 +42,12 @@
             :is="getComponent"
             @on-change="handleCaseChange"
             :questionOptions="rightQuestionOptions"
-            :data="ruleForm.data"
+            :data="detailData"
           />
         </transition>
       </div>
       <!-- 案例题时显示右侧 -->
-      <div class="question-form-right" v-if="this.ruleForm.type === 6">
+      <div class="question-form-right" v-if="this.ruleForm.topic_type === 7">
         <transition name="el-zoom-in-top">
           <component ref="editorRightForm" :is="getRightComponent" />
         </transition>
@@ -57,17 +58,21 @@
         <span v-else class="no-component">请选择案例题目类型</span>
       </div>
     </el-form>
-    <div class="question-form-submit question-form-submit--fixed">
+    <div class="question-form-submit question-form-submit--fixed" v-if="pid">
+      <el-button @click="$router.back()">取消</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+    </div>
+    <div class="question-form-submit question-form-submit--fixed" v-else>
+      <el-button @click="resetForm('ruleForm')">重置</el-button>
       <el-button type="primary" @click="submitForm('ruleForm')"
         >立即创建</el-button
       >
-      <el-button @click="resetForm('ruleForm')">重置</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { addQuestion, getChapterOptions } from "@/api/sou";
+import { addQuestion, getChapterOptions, getQuestionDetail } from "@/api/sou";
 export default {
   name: "questionConfiguer",
   data() {
@@ -75,13 +80,8 @@ export default {
       ruleForm: {
         topic_type: +this.$route.query?.type || 1,
         topic_chapter_id: "",
-        desc: "",
-        data: {
-          text: "",
-        },
       },
       rules: {
-        desc: [{ required: true, message: "请输入", trigger: "change" }],
         topic_type: [{ required: true, message: "请选择", trigger: "change" }],
         topic_chapter_id: [
           { required: true, message: "请选择", trigger: "change" },
@@ -168,7 +168,9 @@ export default {
       caseQusetionList: [],
       chapterOptions: [],
       qid: this.$route.query?.qid || "",
+      pid: this.$route.query?.pid || "",
       chapterType: this.$route.query?.chapterType || "",
+      detailData: {},
     };
   },
   computed: {
@@ -191,8 +193,19 @@ export default {
   },
   created() {
     this.getChapterOptions();
+    this.pid && this.getQuestionDetail();
   },
   methods: {
+    async getQuestionDetail() {
+      const data = {
+        id: this.pid,
+      };
+      const res = await getQuestionDetail(data);
+      if (res.code === 0) {
+        this.detailData = res.data;
+        this.ruleForm.topic_chapter_id = res.data.topic_chapter_id;
+      }
+    },
     // 章节选项
     async getChapterOptions() {
       const data = {
@@ -219,11 +232,12 @@ export default {
         }
       }
       const data = {
+        parent_id: qData.parent_id || "",
         question_bank_id: this.qid,
         chapter_type: this.chapterType,
         topic_chapter_id: this.ruleForm.topic_chapter_id,
         topic_type: this.ruleForm.topic_type,
-        topic_child_type: this.ruleForm.topic_type,
+        topic_child_type: qData.type,
         topic_description: qData.topic_description,
         topic_analysis: qData.topic_analysis,
         topic_answer: qData.topic_answer,
@@ -233,6 +247,21 @@ export default {
       const res = await addQuestion(data);
       if (res.code === 0) {
         this.$message.success(res.message);
+        if (this.ruleForm.topic_type === 7) {
+          if (this.pid) {
+            this.rightActiveType = 0;
+            this.getQuestionDetail();
+          } else {
+            this.$router.push({
+              name: "questionConfigure",
+              query: {
+                ...this.$route.query,
+                pid: res.data.id,
+              },
+            });
+          }
+          return;
+        }
         this.$router.back();
       }
     },
@@ -268,13 +297,17 @@ export default {
       this.$refs.editorRightForm.validate((valid, data) => {
         console.log(data);
         console.log(valid);
-        this.caseQusetionList.push(data);
+        if (valid) {
+          this.addQuestion({
+            ...data,
+            parent_id: this.pid || "",
+          });
+        }
       });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.$refs.editorForm.resetFields();
-      console.log(this.ruleForm);
     },
   },
 };

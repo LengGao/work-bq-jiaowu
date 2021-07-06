@@ -739,3 +739,11 @@ export function addQuestion(data) {
     data,
   })
 }
+// 题目详情
+export function getQuestionDetail(params) {
+  return request({
+    url: '/topic/info',
+    method: 'get',
+    params,
+  })
+}

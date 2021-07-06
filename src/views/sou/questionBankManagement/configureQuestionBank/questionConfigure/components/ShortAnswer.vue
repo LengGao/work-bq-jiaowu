@@ -7,15 +7,15 @@
       ref="editorRules"
       label-width="100px"
     >
-      <el-form-item label="题干内容" prop="text">
-        <Editor v-model="editorForm.text" />
+      <el-form-item label="题干内容" prop="topic_description">
+        <Editor v-model="editorForm.topic_description" />
       </el-form-item>
 
       <el-form-item label="正确答案" prop="correct">
         <Editor v-model="editorForm.correct" />
       </el-form-item>
-      <el-form-item label="答案解析" prop="remark">
-        <Editor v-model="editorForm.remark" height="200" />
+      <el-form-item label="答案解析" prop="topic_analysis">
+        <Editor v-model="editorForm.topic_analysis" height="200" />
       </el-form-item>
     </el-form>
   </div>
@@ -32,13 +32,17 @@ export default {
   data() {
     return {
       editorForm: {
-        text: "",
+        topic_description: "",
         correct: "",
-        remark: "",
+        topic_analysis: "",
       },
       editorRules: {
-        remark: [{ required: true, message: "请输入", trigger: "blur" }],
-        text: [{ required: true, message: "请输入", trigger: "change" }],
+        topic_analysis: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
+        topic_description: [
+          { required: true, message: "请输入", trigger: "change" },
+        ],
         correct: [{ required: true, message: "请输入", trigger: "change" }],
       },
       eId: 4,
@@ -61,7 +65,12 @@ export default {
     },
     validate(cb) {
       this.$refs.editorRules.validate((valid) => {
-        cb(valid, { ...this.editorForm, type: 5 });
+        cb(valid, {
+          ...this.editorForm,
+          topic_answer: this.editorForm.correct,
+          option1: this.editorForm.correct,
+          type: 6,
+        });
       });
     },
     resetFields() {

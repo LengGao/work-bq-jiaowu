@@ -7,11 +7,12 @@
       ref="editorRules"
       label-width="100px"
     >
-      <el-form-item label="题干内容" prop="text">
-        <Editor v-model="editorForm.text" />
+      <el-form-item label="题干内容" prop="topic_description">
+        <Editor v-model="editorForm.topic_description" />
       </el-form-item>
 
       <el-form-item label="案例题目">
+        <p class="warning">创建案例题后方可添加子题目</p>
         <div
           class="item-input"
           v-for="(item, index) in caseQusetionList"
@@ -32,7 +33,10 @@
           width="100"
           trigger="hover"
         >
-          <el-button slot="reference" style="margin-right: 10px"
+          <el-button
+            :disabled="!isAddChild"
+            slot="reference"
+            style="margin-right: 10px"
             >添加题目</el-button
           >
           <ul class="question-type-list">
@@ -53,8 +57,10 @@
 <script>
 //  <!-- 案例题 -->
 import Editor from "./Editor";
+import mixins from "../mixins/index";
 export default {
   name: "Case",
+  mixins: [mixins],
   components: {
     Editor,
   },
@@ -68,17 +74,20 @@ export default {
       default: () => [],
     },
   },
+  computed: {
+    isAddChild() {
+      return !!this.$route.query.pid;
+    },
+  },
   data() {
     return {
       editorForm: {
-        text: "",
-        correct: "",
-        remark: "",
+        topic_description: "",
       },
       editorRules: {
-        remark: [{ required: true, message: "请输入", trigger: "blur" }],
-        text: [{ required: true, message: "请输入", trigger: "change" }],
-        correct: [{ required: true, message: "请选择", trigger: "change" }],
+        topic_description: [
+          { required: true, message: "请输入", trigger: "change" },
+        ],
       },
       eId: 2,
     };
@@ -94,7 +103,12 @@ export default {
     // 添加答案输入框
     handleAddInput() {},
     validate(cb) {
-      this.$refs.editorRules.validate(cb);
+      this.$refs.editorRules.validate((valid) => {
+        cb(valid, {
+          ...this.editorForm,
+          type: 7,
+        });
+      });
     },
     resetFields() {
       for (const k in this.editorForm) {
@@ -114,6 +128,9 @@ export default {
     .btn-text-content {
       width: 100%;
     }
+  }
+  .warning {
+    color: firebrick;
   }
 }
 .question-type-popover {

@@ -21,9 +21,11 @@ export default {
             },
         }
     },
-    created() {
-        console.log('mixins')
-        this.initData(this.data, this.editorForm)
+    watch: {
+        data(val) {
+            console.log(val)
+            this.initData(this.data, this.editorForm)
+        }
     },
     methods: {
         // 对传进来的值进行复制 

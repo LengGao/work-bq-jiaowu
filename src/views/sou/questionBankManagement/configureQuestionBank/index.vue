@@ -33,7 +33,7 @@
                   <li
                     v-for="item in questionOptions"
                     :key="item.value"
-                    @click="handleQuestionChange(item.value)"
+                    @click="toQuestionEdit(item.value)"
                   >
                     {{ item.name }}
                   </li>
@@ -88,7 +88,11 @@
               >
                 <template slot-scope="{ row }">
                   <div style="display: flex; justify-content: center">
-                    <el-button type="text">编辑</el-button>
+                    <el-button
+                      type="text"
+                      @click="toQuestionEdit(row.topic_type, row.id)"
+                      >编辑</el-button
+                    >
                     <el-button type="text">移动</el-button>
 
                     <el-button type="text" @click="deleteConfirm(row.id)"
@@ -179,13 +183,14 @@ export default {
 
   methods: {
     // 添加题目
-    handleQuestionChange(type) {
+    toQuestionEdit(type, pid) {
       this.$router.push({
         name: "questionConfigure",
         query: {
           type,
           chapterType: this.activeName,
           qid: this.$route.query.id,
+          pid,
         },
       });
       sessionStorage.setItem("activeName", this.activeName);
