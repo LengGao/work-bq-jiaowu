@@ -119,7 +119,8 @@ export default {
           type: "select",
           options: [
             { label: "入库", value: 0 },
-            { label: "调拨", value: 1 },
+            { label: "调拨出库", value: 1 },
+            { label: "调拨入库", value: 2 },
           ],
           attrs: {
             clearable: true,
@@ -135,7 +136,8 @@ export default {
       ],
       actionType: {
         0: "入库",
-        1: "调拨",
+        1: "调拨出库",
+        2: "调拨入库",
       },
       addDialog: false,
       currentUid: "",
@@ -182,4 +184,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  /deep/.el-table th{
+    background: #f8f8f8;
+  }
 </style>

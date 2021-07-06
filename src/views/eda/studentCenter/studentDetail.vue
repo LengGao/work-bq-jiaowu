@@ -371,7 +371,6 @@
                 :cell-style="{ 'text-align': 'center' }"
                 class="min_table"
               >
-                <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
                 <el-table-column
                   prop="course_id"
                   label="编号"
@@ -432,8 +431,7 @@
                 style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }"
-                class="min_table"
-              >
+                class="min_table">
                 <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
                 <el-table-column
                   prop="course_id"

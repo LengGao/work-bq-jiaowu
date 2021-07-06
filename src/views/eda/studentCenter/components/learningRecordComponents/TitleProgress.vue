@@ -90,6 +90,20 @@
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
+
+        <el-table-column
+          prop="live_time"
+          label="操作"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        <template slot-scope="scope">
+          <div style="display: flex; justify-content:center;">
+            <el-button type="text" @click="learningDetails(scope.row)"
+              >学习详情</el-button>
+          </div>
+        </template>
+      </el-table-column>
       </el-table>
     </div>
   </div>
@@ -128,6 +142,17 @@ export default {
       const res = await getstudentcourse(data);
       this.listLoading = false;
       this.listData = res.data;
+    },
+
+    learningDetails(row) {
+      this.$router.push({
+        name: "learningDetails",
+        query: {
+         uid: row.uid,
+         course_id:row.course_id,
+         course_name:row.course_name,
+        },
+      });
     },
   },
 };

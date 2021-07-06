@@ -68,6 +68,7 @@ export default {
   },
   created() {
     this.getStudentBasicDetail();
+ 
   },
   methods: {
     openSingUpDialog() {
@@ -77,6 +78,7 @@ export default {
     async getStudentBasicDetail() {
       const data = {
         uid: this.$route.query?.id || "",
+      
       };
       this.detailLoading = true;
       const res = await getStudentBasicDetail(data);

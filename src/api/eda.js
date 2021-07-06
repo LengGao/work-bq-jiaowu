@@ -479,6 +479,25 @@ export function getstudentcourse(params) {
     params,
   })
 }
+// 学习详情-title
+export function learningDetails(params) {
+  return request({
+    url: '/personalLog/study',
+    method: 'get',
+    params,
+  })
+}
+// 学习详情-每日打卡
+export function personalpunch(params) {
+  return request({
+    url: '/personalLog/punch',
+    method: 'get',
+    params,
+  })
+}
+
+
+
 // 移除班级学生
 export function classstudentsBatchRemove(data) {
   return request({

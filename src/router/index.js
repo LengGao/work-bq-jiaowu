@@ -328,6 +328,7 @@ export const asyncRouter = [
         meta: { title: '学生详情', icon: 'product-cate' },
         hidden: true,
       },
+      
       {
         path: 'orderManage',
         name: 'orderManage',
@@ -552,6 +553,13 @@ export const asyncRouter = [
         name: 'faceTeachStudent',
         component: () => import('@/views/eda/faceTeach/studentDetail.vue'),
         meta: { title: '学生详情', icon: 'product-list' },
+        hidden: true,
+      },
+      {
+        path: 'learningDetails',
+        name: 'learningDetails',
+        component: () => import('@/views/eda/faceTeach/learningDetails.vue'),
+        meta: { title: '学习详情', icon: 'product-list' },
         hidden: true,
       },
       {
