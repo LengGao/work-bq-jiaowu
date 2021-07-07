@@ -280,6 +280,8 @@ export default {
       page: 1,
       dialogVisible: false,
       iconList: [
+        "iconxueyuan",
+        "iconyuanxiao",
         "iconzuijin1",
         "icon21zhangjielianxi",
         "icon20meiridaka",

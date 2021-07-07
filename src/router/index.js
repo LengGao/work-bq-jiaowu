@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'collegeMajor',
+        name: 'collegeMajor',
+        component: () => import('@/views/sou/collegeMajor/index.vue'),
+        meta: { title: '院校专业', icon: 'product-add' },
+      },
+      {
         path: 'classifiSetting',
         name: 'classifiSetting',
         component: () => import('@/views/sou/classifiSetting.vue'),
@@ -307,6 +313,12 @@ export const asyncRouter = [
         name: 'studentCenter',
         component: () => import('@/views/eda/studentCenter.vue'),
         meta: { title: '学生中心', icon: 'product-cate' },
+      },
+      {
+        path: 'collegeStudentList',
+        name: 'collegeStudentList',
+        component: () => import('@/views/eda/collegeStudentList.vue'),
+        meta: { title: '学历列表', icon: 'product-cate' },
       },
       //学生中心组件开始
       {
