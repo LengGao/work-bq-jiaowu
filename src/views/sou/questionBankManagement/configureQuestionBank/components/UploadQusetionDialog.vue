@@ -1,7 +1,6 @@
 <template>
-  <!--移动题目-->
   <el-dialog
-    title="移动题目"
+    title="批量录入"
     :visible.sync="visible"
     width="450px"
     @open="handleOpen"
@@ -15,6 +14,17 @@
       ref="formData"
       v-loading="detaiLoading"
     >
+      <Title text="下载模板" />
+      <div>
+        <el-button type="primary" size="small">下载模板</el-button>
+        <p class="desc">点击按钮下载模版， 并按照规定格式填写数据</p>
+      </div>
+      <Title text="上传文件" />
+      <div>
+        <el-button type="primary" size="small">上传文件</el-button>
+        <p class="desc">上传文件格式仅支持doc， 且文件大小不得超过5M。</p>
+      </div>
+      <Title text="数据配置" />
       <el-form-item label="章节名称" prop="topic_chapter_id">
         <el-select v-model="formData.topic_chapter_id" placeholder="请选择">
           <el-option
@@ -25,6 +35,12 @@
           >
           </el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="清除样式" prop="topic_chapter_id">
+        <el-radio-group v-model="formData.radio">
+          <el-radio :label="3">是</el-radio>
+          <el-radio :label="9">否</el-radio>
+        </el-radio-group>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -48,14 +64,6 @@ export default {
       default: false,
     },
     chapterType: {
-      type: [String, Number],
-      default: "",
-    },
-    id: {
-      type: [String, Number],
-      default: "",
-    },
-    currentChapterId: {
       type: [String, Number],
       default: "",
     },
@@ -97,9 +105,7 @@ export default {
       });
       this.detaiLoading = false;
       if (res.code === 0) {
-        this.chapterOptions = res.data.list.filter(
-          (item) => item.id !== this.currentChapterId
-        );
+        this.chapterOptions = res.data.list;
       }
     },
     async submit() {

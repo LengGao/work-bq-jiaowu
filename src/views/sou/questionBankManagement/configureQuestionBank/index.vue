@@ -41,7 +41,9 @@
                   </li>
                 </ul>
               </el-popover>
-              <el-button type="primary">批量录入</el-button>
+              <el-button type="primary" @click="openUploadDialog"
+                >批量录入</el-button
+              >
             </div>
           </div>
           <!--表格-->
@@ -126,6 +128,11 @@
       :chapter-type="activeName"
       @on-success="moveSuccess"
     />
+    <UploadQusetionDialog
+      v-model="uploadDialog"
+      :chapter-type="activeName"
+      @on-success="moveSuccess"
+    />
   </div>
 </template>
 
@@ -133,11 +140,13 @@
 import ChapterMenu from "./components/ChapterMenu";
 import { getQuestionList, deleteQuestion } from "@/api/sou";
 import MoveQusetionDialog from "./components/MoveQusetionDialog.vue";
+import UploadQusetionDialog from "./components/UploadQusetionDialog.vue";
 export default {
   name: "questionBank",
   components: {
     ChapterMenu,
     MoveQusetionDialog,
+    UploadQusetionDialog,
   },
   data() {
     return {
@@ -191,6 +200,7 @@ export default {
       currentChapterId: "",
       currentId: "",
       dialogVisible: false,
+      uploadDialog: false,
     };
   },
 
@@ -199,6 +209,9 @@ export default {
   },
 
   methods: {
+    openUploadDialog() {
+      this.uploadDialog = true;
+    },
     moveSuccess() {
       this.getQuestionList();
       this.$refs.chapterMenu.getTopicChapterList();
