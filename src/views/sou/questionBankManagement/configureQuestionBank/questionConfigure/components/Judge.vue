@@ -7,21 +7,21 @@
       ref="editorRules"
       label-width="100px"
     >
-      <el-form-item label="题干内容" prop="text">
-        <Editor v-model="editorForm.text" />
+      <el-form-item label="题干内容" prop="topic_description">
+        <Editor v-model="editorForm.topic_description" :height="editorHeight" />
       </el-form-item>
 
       <el-form-item label="正确答案" prop="correct">
         <el-button
           :type="editorForm.correct === item.value ? 'primary' : ''"
-          v-for="item in editorOptions"
+          v-for="item in answerOptions"
           :key="item.value"
           @click="handleAnswerChange(item.value)"
           >{{ item.name }}</el-button
         >
       </el-form-item>
-      <el-form-item label="答案解析" prop="remark">
-        <Editor v-model="editorForm.remark" height="200" />
+      <el-form-item label="答案解析" prop="topic_analysis">
+        <Editor v-model="editorForm.topic_analysis" :height="editorHeight" />
       </el-form-item>
     </el-form>
   </div>
@@ -30,25 +30,30 @@
 <script>
 //  <!-- 判断题 -->
 import Editor from "./Editor";
+import mixins from "../mixins";
 export default {
   name: "Judge",
   components: {
     Editor,
   },
+  mixins: [mixins],
   data() {
     return {
       editorForm: {
-        text: "",
+        topic_description: "",
         correct: "",
-        remark: "",
+        topic_analysis: "",
       },
       editorRules: {
-        remark: [{ required: true, message: "请输入", trigger: "blur" }],
-        text: [{ required: true, message: "请输入", trigger: "change" }],
+        topic_analysis: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
+        topic_description: [
+          { required: true, message: "请输入", trigger: "change" },
+        ],
         correct: [{ required: true, message: "请选择", trigger: "change" }],
       },
-      eId: 4,
-      editorOptions: [
+      answerOptions: [
         {
           name: "正确",
           value: 1,
@@ -67,7 +72,13 @@ export default {
     },
     validate(cb) {
       this.$refs.editorRules.validate((valid) => {
-        cb(valid, { ...this.editorForm, type: 3 });
+        cb(valid, {
+          ...this.editorForm,
+          topic_answer: this.letterMap[this.editorForm.correct + 1],
+          option1: "正确",
+          option2: "错误",
+          type: 3,
+        });
       });
     },
     resetFields() {

@@ -8,14 +8,26 @@
     >
       <div class="question-form-left">
         <div class="flex">
-          <el-form-item label="章节名称" prop="region">
-            <el-select v-model="ruleForm.region" placeholder="请选择章节名称">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+          <el-form-item label="章节名称" prop="topic_chapter_id">
+            <el-select
+              :disabled="!!pid"
+              v-model="ruleForm.topic_chapter_id"
+              placeholder="请选择章节名称"
+            >
+              <el-option
+                v-for="item in chapterOptions"
+                :key="item.id"
+                :label="item.chapter_name"
+                :value="item.id"
+              ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="题目类型" prop="type">
-            <el-select v-model="ruleForm.type" placeholder="请选择题目类型">
+          <el-form-item label="题目类型" prop="topic_type">
+            <el-select
+              disabled
+              v-model="ruleForm.topic_type"
+              placeholder="请选择题目类型"
+            >
               <el-option
                 v-for="item in questionOptions"
                 :label="item.name"
@@ -31,47 +43,74 @@
             :is="getComponent"
             @on-change="handleCaseChange"
             :questionOptions="rightQuestionOptions"
-            :data="ruleForm.data"
+            :data="detailData"
+            @on-case-delete="deleteConfirm"
           />
         </transition>
       </div>
       <!-- 案例题时显示右侧 -->
-      <div class="question-form-right" v-if="this.ruleForm.type === 6">
-        <transition name="el-zoom-in-top">
-          <component ref="editorRightForm" :is="getRightComponent" />
+      <div class="question-form-right" v-if="this.ruleForm.topic_type === 7">
+        <transition name="fade">
+          <component
+            ref="editorRightForm"
+            :data="caseChildData"
+            :is="getRightComponent"
+          />
         </transition>
         <div class="right-submit" v-if="rightActiveType">
           <el-button @click="handleRightCancel">取消</el-button>
-          <el-button type="primary" @click="handleRightSubmit">添加</el-button>
+          <el-button
+            type="primary"
+            :loading="addLoading"
+            @click="handleRightSubmit"
+            >保存</el-button
+          >
         </div>
         <span v-else class="no-component">请选择案例题目类型</span>
       </div>
     </el-form>
-    <div class="question-form-submit question-form-submit--fixed">
-      <el-button type="primary" @click="submitForm('ruleForm')"
+    <div class="question-form-submit question-form-submit--fixed" v-if="pid">
+      <el-button @click="$router.back()">取消</el-button>
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('ruleForm')"
+        >保存</el-button
+      >
+    </div>
+    <div class="question-form-submit question-form-submit--fixed" v-else>
+      <el-button @click="resetForm('ruleForm')">重置</el-button>
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('ruleForm')"
         >立即创建</el-button
       >
-      <el-button @click="resetForm('ruleForm')">重置</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import {
+  addQuestion,
+  getChapterOptions,
+  getQuestionDetail,
+  deleteQuestion,
+  updateQuestion,
+} from "@/api/sou";
 export default {
   name: "questionConfiguer",
   data() {
     return {
       ruleForm: {
-        type: 1,
-        region: "",
-        desc: "",
-        data: {
-          text: "",
-        },
+        topic_type: +this.$route.query?.type || 1,
+        topic_chapter_id: "",
       },
       rules: {
-        desc: [{ required: true, message: "请输入", trigger: "change" }],
-        type: [{ required: true, message: "请选择", trigger: "change" }],
+        topic_type: [{ required: true, message: "请选择", trigger: "change" }],
+        topic_chapter_id: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
       },
       questionOptions: [
         {
@@ -87,25 +126,30 @@ export default {
           value: 3,
         },
         {
-          name: "填空题",
+          name: "不定项题",
           value: 4,
         },
         {
-          name: "简答题",
+          name: "填空题",
           value: 5,
         },
         {
-          name: "案例题",
+          name: "简答题",
           value: 6,
+        },
+        {
+          name: "案例题",
+          value: 7,
         },
       ],
       componentMaps: {
         1: "SingleChoice",
         2: "MultipleChoice",
         3: "Judge",
-        4: "Completion",
-        5: "ShortAnswer",
-        6: "Case",
+        4: "IndefiniteChoice",
+        5: "Completion",
+        6: "ShortAnswer",
+        7: "Case",
       },
       rightActiveType: 0,
       rightQuestionOptions: [
@@ -122,15 +166,38 @@ export default {
           value: 3,
         },
         {
-          name: "填空题",
+          name: "不定项题",
           value: 4,
         },
         {
-          name: "简答题",
+          name: "填空题",
           value: 5,
         },
+        {
+          name: "简答题",
+          value: 6,
+        },
       ],
+      letterMap: {
+        1: "A",
+        2: "B",
+        3: "C",
+        4: "D",
+        5: "E",
+        6: "F",
+        7: "G",
+        8: "H",
+        9: "I",
+        10: "J",
+      },
       caseQusetionList: [],
+      chapterOptions: [],
+      qid: this.$route.query?.qid || "",
+      pid: this.$route.query?.pid || "",
+      chapterType: this.$route.query?.chapterType || "",
+      detailData: {},
+      caseChildData: {},
+      addLoading: false,
     };
   },
   computed: {
@@ -143,42 +210,188 @@ export default {
       }
     },
     getComponent() {
-      if (this.ruleForm.type) {
+      if (this.ruleForm.topic_type) {
         return () =>
-          import(`./components/${this.componentMaps[this.ruleForm.type]}.vue`);
+          import(
+            `./components/${this.componentMaps[this.ruleForm.topic_type]}.vue`
+          );
       }
     },
   },
+  watch: {
+    $route() {
+      this.pid = this.$route.query.pid;
+      this.getQuestionDetail();
+    },
+  },
+  created() {
+    this.getChapterOptions();
+    this.pid && this.getQuestionDetail();
+  },
   methods: {
+    deleteConfirm(id) {
+      this.$confirm("确定删除该子题目吗?", "提示", {
+        type: "warning",
+      }).then(() => {
+        this.deleteQuestion(id);
+      });
+    },
+    // 删除题目
+    async deleteQuestion(id) {
+      const data = {
+        id,
+      };
+      const res = await deleteQuestion(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getQuestionDetail();
+      }
+    },
+    // 题目详情
+    async getQuestionDetail() {
+      const data = {
+        id: this.pid,
+      };
+      const res = await getQuestionDetail(data);
+      if (res.code === 0) {
+        this.detailData = res.data;
+        this.ruleForm.topic_chapter_id = res.data.topic_chapter_id;
+      }
+    },
+    // 章节选项
+    async getChapterOptions() {
+      const data = {
+        question_bank_id: this.qid,
+        chapter_type: this.chapterType,
+      };
+      const res = await getChapterOptions(data);
+      if (res.code === 0) {
+        this.chapterOptions = res.data?.list || [];
+      }
+    },
+    // 添加题目
+    async addQuestion(qData) {
+      const option_arr = [];
+      const reg = /^option/;
+      let count = 1;
+      for (const k in qData) {
+        if (reg.test(k)) {
+          option_arr.push({
+            topic_option: this.letterMap[count],
+            topic_option_description: qData[k],
+          });
+          count++;
+        }
+      }
+      const data = {
+        parent_id: qData.parent_id || "",
+        question_bank_id: this.qid,
+        chapter_type: this.chapterType,
+        topic_chapter_id: this.ruleForm.topic_chapter_id,
+        topic_type: this.ruleForm.topic_type,
+        topic_child_type: qData.type,
+        topic_description: qData.topic_description,
+        topic_analysis: qData.topic_analysis,
+        topic_answer: qData.topic_answer,
+        ignore_order: qData.ignore_order || 0,
+        option_arr,
+      };
+      // 有id就是修改
+      let api = addQuestion;
+      if (qData.id) {
+        data.id = qData.id;
+        api = updateQuestion;
+      }
+      this.addLoading = true;
+      const res = await api(data).catch(() => {
+        this.addLoading = false;
+      });
+      this.addLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        // 案例题添加
+        if (this.ruleForm.topic_type === 7) {
+          if (this.pid) {
+            this.rightActiveType = 0;
+            this.getQuestionDetail();
+          } else {
+            this.$router.replace({
+              name: "questionConfigure",
+              query: {
+                ...this.$route.query,
+                pid: res.data.id,
+              },
+            });
+          }
+          // 案例题修改
+          if (this.ruleForm.topic_type === qData.type && qData.id) {
+            this.$router.back();
+          }
+          return;
+        }
+        this.$router.back();
+      }
+    },
     // 右侧取消
     handleRightCancel() {
       this.rightActiveType = 0;
     },
     // 已添加的案例题，点击时改变右侧
-    handleCaseChange(type) {
-      this.rightActiveType = type;
+    async handleCaseChange({ type, id }) {
+      if (type === this.rightActiveType) {
+        this.rightActiveType = 0;
+        this.$nextTick(() => {
+          this.rightActiveType = type;
+        });
+      } else {
+        this.rightActiveType = type;
+      }
+
+      if (id) {
+        const data = {
+          id,
+        };
+        const res = await getQuestionDetail(data);
+        if (res.code === 0) {
+          this.caseChildData = res.data;
+        }
+      }
     },
     // 立即创建
     submitForm(formName) {
+      let data = null;
+      let outValid = false;
+      // 外层校验
       this.$refs[formName].validate((valid) => {
-        console.log(valid);
+        outValid = valid;
       });
-      this.$refs.editorForm.validate((valid) => {
-        console.log(valid);
+
+      // 内层题目校验
+      this.$refs.editorForm.validate((valid, formData) => {
+        if (valid) {
+          data = formData;
+        }
       });
+      if (outValid && data) {
+        this.addQuestion(data);
+      }
     },
     // 案例题的添加
     handleRightSubmit() {
       this.$refs.editorRightForm.validate((valid, data) => {
         console.log(data);
         console.log(valid);
-        this.caseQusetionList.push(data);
+        if (valid) {
+          this.addQuestion({
+            ...data,
+            parent_id: this.pid || "",
+          });
+        }
       });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.$refs.editorForm.resetFields();
-      console.log(this.ruleForm);
     },
   },
 };

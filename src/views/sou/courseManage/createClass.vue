@@ -536,7 +536,7 @@ export default {
       const data = {
         ...this.formData,
         course_category_id: Array.isArray(this.formData.course_category_id)
-          ? this.formData.course_category_id.pop()
+          ?[...this.formData.course_category_id].pop()
           : this.formData.course_category_id,
       }
       if (this.course_id) {

@@ -174,6 +174,7 @@ export default {
     async getvideochapterList() {
       const data = {
         video_collection_id: this.$route.query?.video_collection_id || "",
+        limit: 9999,
       };
       const res = await getvideochapterList(data);
       this.chapterOptions = res.data.data;

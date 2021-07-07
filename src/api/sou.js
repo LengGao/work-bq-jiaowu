@@ -502,6 +502,14 @@ export function editvideoclass(data) {
     data,
   })
 }
+// 章节列表-修改章节视频免费状态
+export function updateVideoClassFreeStatus(params) {
+  return request({
+    url: '/video/updateVideoClassFreeStatus',
+    method: 'get',
+    params,
+  })
+}
 // 章节列表-课时详情
 export function getvideoclassDetail(params) {
   return request({
@@ -702,7 +710,64 @@ export function getProjectList(params) {
 // 移动项目
 export function moveProject(data) {
   return request({
-    url: 'project/move',
+    url: '/project/move',
+    method: 'post',
+    data,
+  })
+}
+// 章节选项
+export function getChapterOptions(params) {
+  return request({
+    url: '/topicChapter/list',
+    method: 'get',
+    params,
+  })
+}
+// 题目列表
+export function getQuestionList(params) {
+  return request({
+    url: '/topic/list',
+    method: 'get',
+    params,
+  })
+}
+
+// 添加题目
+export function addQuestion(data) {
+  return request({
+    url: '/topic/insert',
+    method: 'post',
+    data,
+  })
+}
+// 题目详情
+export function getQuestionDetail(params) {
+  return request({
+    url: '/topic/info',
+    method: 'get',
+    params,
+  })
+}
+// 删除题目
+export function deleteQuestion(data) {
+  return request({
+    url: '/topic/delete',
+    method: 'post',
+    data,
+  })
+}
+// 修改题目
+export function updateQuestion(data) {
+  return request({
+    url: '/topic/update',
+    method: 'post',
+    data,
+  })
+}
+// 移动题目
+export function moveQuestion(data) {
+  return request({
+    url: '/topic/move',
     method: 'post',
     data,
   })

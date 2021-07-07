@@ -1,7 +1,7 @@
 <template>
   <div class="configure-question">
     <section class="mainwrap">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="handleChapterTypeChange">
         <el-tab-pane label="章节练习" name="1"></el-tab-pane>
         <el-tab-pane label="历年真题" name="2"></el-tab-pane>
         <el-tab-pane label="自主出题" name="3"></el-tab-pane>
@@ -11,12 +11,14 @@
           @on-change="handleChapterChange"
           :chapterType="activeName"
           class="container-left"
+          ref="chapterMenu"
         />
         <div class="container-right">
           <div class="client_head">
             <SearchList
               :options="searchOptions"
               :data="searchData"
+              ref="search"
               @on-search="handleSearch"
             />
             <div>
@@ -33,13 +35,15 @@
                   <li
                     v-for="item in questionOptions"
                     :key="item.value"
-                    @click="handleQuestionChange(item.value)"
+                    @click="toQuestionEdit(item.value)"
                   >
                     {{ item.name }}
                   </li>
                 </ul>
               </el-popover>
-              <el-button type="primary">批量录入</el-button>
+              <el-button type="primary" @click="openUploadDialog"
+                >批量录入</el-button
+              >
             </div>
           </div>
           <!--表格-->
@@ -56,8 +60,8 @@
               :header-cell-style="{ 'text-align': 'center' }"
               height="660"
             >
-              <el-table-column align="center" type="selection" width="70">
-              </el-table-column>
+              <!-- <el-table-column align="center" type="selection" width="70">
+              </el-table-column> -->
               <el-table-column
                 align="center"
                 label="题目ID"
@@ -68,14 +72,14 @@
               </el-table-column>
               <el-table-column
                 align="left"
-                prop="title"
+                prop="topic_description"
                 label="题干内容"
                 min-width="400"
                 show-overflow-tooltip
               ></el-table-column>
               <el-table-column
                 align="center"
-                prop="category_name"
+                prop="topic_type_name"
                 label="题目类型"
                 min-width="110"
                 show-overflow-tooltip
@@ -88,10 +92,20 @@
               >
                 <template slot-scope="{ row }">
                   <div style="display: flex; justify-content: center">
-                    <el-button type="text">编辑</el-button>
-                    <el-button type="text">移动</el-button>
-                    <!-- @click="deleteConfirm(row.id)" -->
-                    <el-button type="text">删除</el-button>
+                    <el-button
+                      type="text"
+                      @click="toQuestionEdit(row.topic_type, row.id)"
+                      >编辑</el-button
+                    >
+                    <el-button
+                      type="text"
+                      @click="handleMove(row.id, row.topic_chapter_id)"
+                      >移动</el-button
+                    >
+
+                    <el-button type="text" @click="deleteConfirm(row.id)"
+                      >删除</el-button
+                    >
                   </div>
                 </template>
               </el-table-column>
@@ -107,36 +121,47 @@
         </div>
       </div>
     </section>
+    <MoveQusetionDialog
+      v-model="dialogVisible"
+      :id="currentId"
+      :currentChapterId="currentChapterId"
+      :chapter-type="activeName"
+      @on-success="moveSuccess"
+    />
+    <UploadQusetionDialog
+      v-model="uploadDialog"
+      :chapter-type="activeName"
+      @on-success="moveSuccess"
+    />
   </div>
 </template>
 
 <script>
 import ChapterMenu from "./components/ChapterMenu";
-import {
-  getQuestionBankList,
-  updateQuestionBankStatus,
-  deleteQuestionBank,
-} from "@/api/sou";
-
+import { getQuestionList, deleteQuestion } from "@/api/sou";
+import MoveQusetionDialog from "./components/MoveQusetionDialog.vue";
+import UploadQusetionDialog from "./components/UploadQusetionDialog.vue";
 export default {
   name: "questionBank",
   components: {
     ChapterMenu,
+    MoveQusetionDialog,
+    UploadQusetionDialog,
   },
   data() {
     return {
       // 1：章节 2：历年真题 3：自主出题
-      activeName: "1",
+      activeName: sessionStorage.getItem("activeName") || "1",
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        title: "",
+        topic_description: "",
       },
       searchOptions: [
         {
-          key: "title",
+          key: "topic_description",
           attrs: {
             placeholder: "题干内容",
           },
@@ -156,80 +181,106 @@ export default {
           value: 3,
         },
         {
-          name: "填空题",
+          name: "不定项题",
           value: 4,
         },
         {
-          name: "简答题",
+          name: "填空题",
           value: 5,
         },
         {
-          name: "案例题",
+          name: "简答题",
           value: 6,
         },
+        {
+          name: "案例题",
+          value: 7,
+        },
       ],
+      currentChapterId: "",
+      currentId: "",
+      dialogVisible: false,
+      uploadDialog: false,
     };
   },
 
   created() {
-    this.getQuestionBankList();
+    this.getQuestionList();
   },
 
   methods: {
+    openUploadDialog() {
+      this.uploadDialog = true;
+    },
+    moveSuccess() {
+      this.getQuestionList();
+      this.$refs.chapterMenu.getTopicChapterList();
+    },
+    handleMove(id, chapterId) {
+      this.currentId = id;
+      this.currentChapterId = chapterId;
+      this.dialogVisible = true;
+    },
     // 添加题目
-    handleQuestionChange(type) {
-      this.$router.push({ name: "questionConfigure", query: { type } });
-    },
-    linkTo(name, id) {
-      this.$router.push({ name, query: { id } });
-    },
-    handleChapterChange(id) {
-      console.log(id);
-    },
-    async deleteQuestionBank(id) {
-      const data = { id };
-      const res = await deleteQuestionBank(data);
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.getQuestionBankList();
-      }
-    },
-    // 修改题库状态
-    async updateQuestionBankStatus(row) {
-      const data = {
-        id: row.id,
-        status: row.status,
-      };
-      const res = await updateQuestionBankStatus(data).catch(() => {
-        row.status = row.status ? 0 : 1;
+    toQuestionEdit(type, pid) {
+      this.$router.push({
+        name: "questionConfigure",
+        query: {
+          type,
+          chapterType: this.activeName,
+          qid: this.$route.query.id,
+          pid,
+        },
       });
+      sessionStorage.setItem("activeName", this.activeName);
+    },
+    // 章节类型变化
+    handleChapterTypeChange() {
+      this.pageNum = 1;
+      this.$refs.search.handleReset();
+    },
+    // 章节变化
+    handleChapterChange(id) {
+      this.pageNum = 1;
+      this.getQuestionList(id);
+    },
+    // 删除题目
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此题目吗?", { type: "warning" })
+        .then(() => {
+          this.deleteQuestion(id);
+        })
+        .catch(() => {});
+    },
+    async deleteQuestion(id) {
+      const data = { id };
+      const res = await deleteQuestion(data);
       if (res.code === 0) {
         this.$message.success(res.message);
+        this.getQuestionList();
       }
     },
-
-    link(id) {
-      this.$router.push({ name: "inventoryDetails", query: { id } });
-    },
-
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
       };
-      this.getQuestionBankList();
+      this.getQuestionList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getQuestionBankList();
+      this.getQuestionList();
     },
-    async getQuestionBankList() {
+    async getQuestionList(topic_chapter_id) {
       const data = {
+        topic_chapter_id: topic_chapter_id || "",
+        question_bank_id: this.$route.query.id,
+        chapter_type: this.activeName,
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getQuestionBankList(data);
+      const res = await getQuestionList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -260,7 +311,7 @@ export default {
   }
   .container {
     display: flex;
-    justify-content: space-between;
+    width: 100%;
     &-left {
       width: 300px;
       border: 1px solid #e4e7ed;
@@ -268,7 +319,7 @@ export default {
       height: 800px;
     }
     &-right {
-      flex: 1;
+      width: calc(100% - 320px);
       margin-left: 20px;
     }
   }
