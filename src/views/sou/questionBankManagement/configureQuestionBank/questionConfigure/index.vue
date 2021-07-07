@@ -10,6 +10,7 @@
         <div class="flex">
           <el-form-item label="章节名称" prop="topic_chapter_id">
             <el-select
+              :disabled="!!pid"
               v-model="ruleForm.topic_chapter_id"
               placeholder="请选择章节名称"
             >
@@ -337,7 +338,15 @@ export default {
     },
     // 已添加的案例题，点击时改变右侧
     async handleCaseChange({ type, id }) {
-      this.rightActiveType = type;
+      if (type === this.rightActiveType) {
+        this.rightActiveType = 0;
+        this.$nextTick(() => {
+          this.rightActiveType = type;
+        });
+      } else {
+        this.rightActiveType = type;
+      }
+
       if (id) {
         const data = {
           id,

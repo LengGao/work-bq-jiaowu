@@ -7,6 +7,7 @@ export default {
     },
     data() {
         return {
+            editorHeight: 300,
             letterMap: {
                 1: "A",
                 2: "B",

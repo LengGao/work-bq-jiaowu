@@ -11,12 +11,14 @@
           @on-change="handleChapterChange"
           :chapterType="activeName"
           class="container-left"
+          ref="chapterMenu"
         />
         <div class="container-right">
           <div class="client_head">
             <SearchList
               :options="searchOptions"
               :data="searchData"
+              ref="search"
               @on-search="handleSearch"
             />
             <div>
@@ -56,8 +58,8 @@
               :header-cell-style="{ 'text-align': 'center' }"
               height="660"
             >
-              <el-table-column align="center" type="selection" width="70">
-              </el-table-column>
+              <!-- <el-table-column align="center" type="selection" width="70">
+              </el-table-column> -->
               <el-table-column
                 align="center"
                 label="题目ID"
@@ -93,7 +95,11 @@
                       @click="toQuestionEdit(row.topic_type, row.id)"
                       >编辑</el-button
                     >
-                    <el-button type="text">移动</el-button>
+                    <el-button
+                      type="text"
+                      @click="handleMove(row.id, row.topic_chapter_id)"
+                      >移动</el-button
+                    >
 
                     <el-button type="text" @click="deleteConfirm(row.id)"
                       >删除</el-button
@@ -113,17 +119,25 @@
         </div>
       </div>
     </section>
+    <MoveQusetionDialog
+      v-model="dialogVisible"
+      :id="currentId"
+      :currentChapterId="currentChapterId"
+      :chapter-type="activeName"
+      @on-success="moveSuccess"
+    />
   </div>
 </template>
 
 <script>
 import ChapterMenu from "./components/ChapterMenu";
 import { getQuestionList, deleteQuestion } from "@/api/sou";
-
+import MoveQusetionDialog from "./components/MoveQusetionDialog.vue";
 export default {
   name: "questionBank",
   components: {
     ChapterMenu,
+    MoveQusetionDialog,
   },
   data() {
     return {
@@ -174,6 +188,9 @@ export default {
           value: 7,
         },
       ],
+      currentChapterId: "",
+      currentId: "",
+      dialogVisible: false,
     };
   },
 
@@ -182,6 +199,15 @@ export default {
   },
 
   methods: {
+    moveSuccess() {
+      this.getQuestionList();
+      this.$refs.chapterMenu.getTopicChapterList();
+    },
+    handleMove(id, chapterId) {
+      this.currentId = id;
+      this.currentChapterId = chapterId;
+      this.dialogVisible = true;
+    },
     // 添加题目
     toQuestionEdit(type, pid) {
       this.$router.push({
@@ -198,7 +224,7 @@ export default {
     // 章节类型变化
     handleChapterTypeChange() {
       this.pageNum = 1;
-      this.getQuestionList();
+      this.$refs.search.handleReset();
     },
     // 章节变化
     handleChapterChange(id) {

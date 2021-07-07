@@ -9,7 +9,7 @@
       label-width="100px"
     >
       <el-form-item label="题干内容" prop="topic_description">
-        <Editor v-model="editorForm.topic_description" />
+        <Editor v-model="editorForm.topic_description" :height="editorHeight" />
       </el-form-item>
       <el-form-item
         :label="`选项（${letterMap[index + 1]}）`"
@@ -41,7 +41,7 @@
         >
       </el-form-item>
       <el-form-item label="答案解析" prop="topic_analysis">
-        <Editor v-model="editorForm.topic_analysis" height="200" />
+        <Editor v-model="editorForm.topic_analysis" :height="editorHeight" />
       </el-form-item>
     </el-form>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="chapter-menu">
     <div class="chapter-menu-header">
-      <h4>章节名称</h4>
+      <h4>{{ chapterType == 1 ? "章节名称" : "试卷名称" }}</h4>
       <el-button
         type="primary"
         plain

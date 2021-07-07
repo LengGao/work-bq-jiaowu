@@ -8,7 +8,7 @@
       label-width="100px"
     >
       <el-form-item label="题干内容" prop="topic_description">
-        <Editor v-model="editorForm.topic_description" />
+        <Editor v-model="editorForm.topic_description" :height="editorHeight" />
       </el-form-item>
 
       <el-form-item label="案例题目">

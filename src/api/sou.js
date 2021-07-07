@@ -756,3 +756,11 @@ export function updateQuestion(data) {
     data,
   })
 }
+// 移动题目
+export function moveQuestion(data) {
+  return request({
+    url: '/topic/move',
+    method: 'post',
+    data,
+  })
+}
