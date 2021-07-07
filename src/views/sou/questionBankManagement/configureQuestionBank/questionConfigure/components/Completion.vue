@@ -7,38 +7,48 @@
       ref="editorRules"
       label-width="100px"
     >
-      <el-form-item label="题干内容" prop="text">
-        <Editor v-model="editorForm.text" />
+      <el-form-item label="题干内容" prop="topic_description">
+        <Editor v-model="editorForm.topic_description" :height="editorHeight"/>
       </el-form-item>
 
-      <el-form-item label="正确答案">
-        <p style="color: #c0c4cc; font-size: 12px">
-          如果一个空有多个正确答案，可以用分号分隔，答案匹配任意一个都算正确
-        </p>
-        <div
-          class="item-input"
-          v-for="(item, index) in inputOptins"
-          :key="item"
-        >
-          <el-input
-            v-model="editorForm['text' + item]"
-            :placeholder="`请输入第${index + 1}空答案`"
-            ><template slot="prepend">{{ index + 1 }}</template></el-input
-          >
-          <el-button @click="handleDeleteInput(index)"
-            ><i class="el-icon-delete"></i
-          ></el-button>
+      <div class="options">
+        <div class="options-title">
+          <span>正确答案</span>
+          <p style="color: #c0c4cc; font-size: 12px">
+            如果一个空有多个正确答案，可以用分号分隔，答案匹配任意一个都算正确
+          </p>
         </div>
-        <el-button @click="handleAddInput">添加填空题答案</el-button>
-        <el-checkbox class="checkbox" v-model="editorForm.checked"
-          >乱序匹配答案
-          <span class="desc"
-            >（只需匹配答案的对错，而对答案的顺序不做要求）</span
-          ></el-checkbox
+        <el-form-item
+          v-for="(id, index) in editorOptions"
+          :key="id"
+          :rules="[{ required: true, message: `请输入`, trigger: 'blur' }]"
+          :prop="`option${id}`"
         >
-      </el-form-item>
-      <el-form-item label="答案解析" prop="remark">
-        <Editor v-model="editorForm.remark" height="200" />
+          <div class="item-input">
+            <el-input
+              v-model="editorForm['option' + id]"
+              :placeholder="`请输入第${index + 1}空答案`"
+              ><template slot="prepend">{{ index + 1 }}</template></el-input
+            >
+            <el-button @click="handleDeleteInput(index, id)"
+              ><i class="el-icon-delete"></i
+            ></el-button>
+          </div>
+        </el-form-item>
+        <div class="options-footer">
+          <el-button @click="handleAddInput" class="add-btn"
+            >添加填空题答案</el-button
+          >
+          <el-checkbox class="checkbox" v-model="editorForm.checked"
+            >乱序匹配答案
+            <span class="desc"
+              >（只需匹配答案的对错，而对答案的顺序不做要求）</span
+            ></el-checkbox
+          >
+        </div>
+      </div>
+      <el-form-item label="答案解析" prop="topic_analysis">
+        <Editor v-model="editorForm.topic_analysis" :height="editorHeight" />
       </el-form-item>
     </el-form>
   </div>
@@ -47,45 +57,64 @@
 <script>
 //  <!-- 填空题 -->
 import Editor from "./Editor";
+import mixins from "../mixins/index";
 export default {
   name: "Completion",
+  mixins: [mixins],
   components: {
     Editor,
   },
   data() {
     return {
       editorForm: {
-        text: "",
+        topic_description: "",
         correct: "",
-        remark: "",
+        topic_analysis: "",
+        checked: false,
       },
       editorRules: {
-        remark: [{ required: true, message: "请输入", trigger: "blur" }],
-        text: [{ required: true, message: "请输入", trigger: "change" }],
+        topic_analysis: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
+        topic_description: [
+          { required: true, message: "请输入", trigger: "change" },
+        ],
         correct: [{ required: true, message: "请选择", trigger: "change" }],
       },
-      eId: 2,
-      inputOptins: [1, 2],
+      eId: 1,
+      editorOptions: [1],
     };
   },
   methods: {
     // 删除答案输入框
-    handleDeleteInput(index) {
-      this.inputOptins.splice(index, 1);
+    handleDeleteInput(index, id) {
+      this.editorOptions.splice(index, 1);
+      delete this.editorForm[`option${id}`];
     },
     // 添加答案输入框
     handleAddInput() {
-      if (this.inputOptins.length >= 10) {
+      if (this.editorOptions.length >= 10) {
         this.$message.warning("不能在加了！");
         return;
       }
       const item = ++this.eId;
-      this.$set(this.editorForm, "text" + item, "");
-      this.inputOptins.push(item);
+      this.$set(this.editorForm, "option" + item, "");
+      this.editorOptions.push(item);
     },
     validate(cb) {
       this.$refs.editorRules.validate((valid) => {
-        cb(valid, { ...this.editorForm, type: 4 });
+        const answerArr = [];
+        for (const k in this.editorForm) {
+          if (~k.indexOf("option")) {
+            answerArr.push(this.editorForm[k]);
+          }
+        }
+        cb(valid, {
+          ...this.editorForm,
+          topic_answer: answerArr.join(","),
+          ignore_order: +this.editorForm.checked,
+          type: 5,
+        });
       });
     },
     resetFields() {
@@ -100,6 +129,26 @@ export default {
 
 <style lang="scss" scoped>
 .completion {
+  .options {
+    &-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      span {
+        width: 100px;
+        text-align: right;
+        padding-right: 12px;
+        color: #606266;
+      }
+    }
+    &-footer {
+      padding-left: 100px;
+      margin-bottom: 16px;
+      .add-btn {
+        margin-bottom: 16px;
+      }
+    }
+  }
   .item-input {
     display: flex;
     margin-bottom: 10px;

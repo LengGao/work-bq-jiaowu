@@ -23,7 +23,8 @@ const toolOptions = [
 const questionToolOptions = [
     ['bold', 'italic', 'underline', 'strike'],
     ['clean'],
-    ['link', 'image']
+    ['link', 'image'],
+    [{ 'color': [] }, { 'background': [] }],
 ];
 const handlers = {
     image: function image() {

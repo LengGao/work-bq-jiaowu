@@ -1,6 +1,7 @@
+
 <template>
-  <!-- 单选题 -->
-  <div class="single-choice">
+  <!-- 不定项选题 -->
+  <div class="indefinite-choice">
     <el-form
       :model="editorForm"
       :rules="editorRules"
@@ -32,7 +33,7 @@
       </el-form-item>
       <el-form-item label="正确答案" prop="correct">
         <el-button
-          :type="editorForm.correct === index ? 'primary' : ''"
+          :type="editorForm.correct.includes(index) ? 'primary' : ''"
           v-for="(item, index) in editorOptions"
           :key="item"
           @click="handleAnswerChange(index)"
@@ -47,28 +48,28 @@
 </template>
 
 <script>
-//  <!-- 单选题 -->
+//  <!-- 多选题 -->
 import Editor from "./Editor";
 import mixins from "../mixins/index";
 export default {
-  name: "SingleChoice",
+  name: "IndefiniteChoice",
+  mixins: [mixins],
   components: {
     Editor,
   },
-  mixins: [mixins],
   data() {
     return {
       editorForm: {
         topic_description: "",
+        correct: [],
         topic_analysis: "",
-        correct: "",
       },
       editorRules: {
         topic_analysis: [
           { required: true, message: "请输入", trigger: "blur" },
         ],
         topic_description: [
-          { required: true, message: "请输入", trigger: "blur" },
+          { required: true, message: "请输入", trigger: "change" },
         ],
         correct: [{ required: true, message: "请选择", trigger: "change" }],
       },
@@ -77,13 +78,19 @@ export default {
     };
   },
   methods: {
-    // 单选
-    handleAnswerChange(index) {
-      this.editorForm.correct = index;
+    // 多选
+    handleAnswerChange(value) {
+      const index = this.editorForm.correct.indexOf(value);
+      if (~index) {
+        this.editorForm.correct.splice(index, 1);
+      } else {
+        this.editorForm.correct.push(value);
+      }
     },
     // 删除题目编辑器
     handleDeleteEditor(index, id) {
-      this.editorForm.correct = "";
+      // 选中的被删除，需要清空
+      this.editorForm.correct = [];
       this.editorOptions.splice(index, 1);
       delete this.editorForm[`option${id}`];
     },
@@ -102,23 +109,25 @@ export default {
       this.$refs.editorRules.validate((valid) => {
         cb(valid, {
           ...this.editorForm,
-          topic_answer: this.letterMap[this.editorForm.correct + 1],
-          type: 1,
+          topic_answer: this.editorForm.correct
+            .map((item) => this.letterMap[item + 1])
+            .join(","),
+          type: 4,
         });
       });
     },
     resetFields() {
-      this.$refs.editorRules.resetFields();
       for (const k in this.editorForm) {
         this.editorForm[k] = "";
       }
+      this.$refs.editorRules.resetFields();
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.single-choice {
+.indefinite-choice {
   .form-item-editor {
     position: relative;
     .editor-delete {
