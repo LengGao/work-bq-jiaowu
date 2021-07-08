@@ -56,11 +56,11 @@ export default {
       answerOptions: [
         {
           name: "正确",
-          value: 1,
+          value: 0,
         },
         {
           name: "错误",
-          value: 2,
+          value: 1,
         },
       ],
     };
@@ -68,6 +68,7 @@ export default {
   methods: {
     // 单选
     handleAnswerChange(value) {
+      console.log(value);
       this.editorForm.correct = value;
     },
     validate(cb) {

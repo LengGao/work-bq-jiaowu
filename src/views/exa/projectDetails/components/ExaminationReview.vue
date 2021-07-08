@@ -138,21 +138,34 @@
         >审核通过</el-button
       >
     </span>
-    <div
-      class="review-footer"
-      v-if="listData.audit_res === 1 || listData.audit_res === 2"
-    >
-      <el-button type="primary" @click="handleReset" :loading="btnLoading"
-        >重置审核</el-button
+
+    <div class="review-footer">
+      <div>
+        <el-button :disabled="!activeIndex" @click="handlePrev"
+          >上一个</el-button
+        >
+        <el-button
+          :disabled="activeIndex === getCheckedNum - 1"
+          @click="handleNext"
+          >下一个</el-button
+        >
+      </div>
+      <div
+        class="review-footer-right"
+        v-if="listData.audit_res === 1 || listData.audit_res === 2"
       >
-      <div class="footer-info">
-        <div>
-          <span class="info-title">审核人</span>
-          <span>{{ listData.auditor }}</span>
-        </div>
-        <div>
-          <span class="info-title">审核时间</span>
-          <span>{{ listData.auditTime }}</span>
+        <el-button type="primary" @click="handleReset" :loading="btnLoading"
+          >重置审核</el-button
+        >
+        <div class="footer-info">
+          <div>
+            <span class="info-title">审核人</span>
+            <span>{{ listData.auditor }}</span>
+          </div>
+          <div>
+            <span class="info-title">审核时间</span>
+            <span>{{ listData.auditTime }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -221,6 +234,16 @@ export default {
     },
   },
   methods: {
+    handlePrev() {
+      let index = (this.activeIndex || 1) - 1;
+      this.handleListChange(index);
+    },
+    handleNext() {
+      let index = this.activeIndex + 1;
+      this.handleListChange(
+        index >= this.getCheckedNum ? this.getCheckedNum - 1 : index
+      );
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },
@@ -355,7 +378,7 @@ export default {
       }
       .list-content {
         overflow-y: auto;
-        height: 499px;
+        height: 520px;
         .list-item {
           padding: 14px;
           display: flex;
@@ -445,7 +468,13 @@ export default {
   .review-footer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    &-right {
+      margin-left: 16px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .footer-info {
       width: 50%;
       display: flex;

@@ -8,7 +8,12 @@
       <el-tab-pane label="自主出题配置" name="AutonomyConfig"></el-tab-pane>
     </el-tabs>
 
-    <component :is="getComponent" class="configure-components" />
+    <component
+      :is="getComponent"
+      :configId="configId"
+      @on-conifg-id="getConfigId"
+      class="configure-components"
+    />
   </div>
 </template>
 
@@ -18,6 +23,7 @@ export default {
   data() {
     return {
       activeName: "BasicConfig",
+      configId: "",
     };
   },
   computed: {
@@ -28,7 +34,11 @@ export default {
     },
   },
   created() {},
-  methods: {},
+  methods: {
+    getConfigId(id) {
+      this.configId = id;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
