@@ -796,3 +796,13 @@ export function setDetailConfig(data) {
     data,
   })
 }
+// 导入题目
+export function ReadDoc(data) {
+  return request({
+    url: '/topic/ReadDoc',
+    method: 'post',
+    data,
+  })
+}
+// 上传题目文件
+export const importQuestionUrl = `${process.env.VUE_APP_LOACTION}/topic/uploadDoc`
