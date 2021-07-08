@@ -45,18 +45,8 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="institution_name"
-          label="所属机构"
-          min-width="80"
-          show-overflow-tooltip
-        ></el-table-column>
-
-        <!-- <el-table-column label="所属校区" min-width="100" show-overflow-tooltip>
-        </el-table-column> -->
-
-        <el-table-column
           label="项目名称"
-          min-width="150"
+          min-width="300"
           prop="project"
           show-overflow-tooltip
         >

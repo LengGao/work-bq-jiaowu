@@ -246,7 +246,7 @@ export default {
     async getClassRoomSelect() {
       const res = await getClassRoomSelect();
       if (res.code === 0) {
-        this.searchOptions[2].options = res.data;
+        this.searchOptions[1].options = res.data;
       }
     },
     // 获取项目下拉
