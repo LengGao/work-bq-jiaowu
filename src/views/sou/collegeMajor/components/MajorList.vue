@@ -29,7 +29,7 @@
           prop="id"
           label="ID"
           show-overflow-tooltip
-          min-width="90"
+          width="90"
         ></el-table-column>
         <el-table-column
           prop="type_name"
@@ -41,7 +41,7 @@
           prop="school_name"
           label="院校名称"
           show-overflow-tooltip
-          min-width="90"
+          min-width="160"
         ></el-table-column>
         <el-table-column
           prop="level_name"
@@ -53,13 +53,13 @@
           prop="major_name"
           label="专业名称"
           show-overflow-tooltip
-          min-width="90"
+          min-width="140"
         ></el-table-column>
         <el-table-column
           prop="school_system"
           label="学制"
           show-overflow-tooltip
-          min-width="90"
+          width="70"
         ></el-table-column>
         <el-table-column
           prop="price"
@@ -85,13 +85,17 @@
           prop="project_name"
           label="关联项目"
           show-overflow-tooltip
-          min-width="90"
-        ></el-table-column>
+          min-width="240"
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.project_name || "--" }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="sort"
           label="排序"
           show-overflow-tooltip
-          min-width="90"
+          width="90"
         >
           <template slot-scope="{ row }">
             <el-input
@@ -100,7 +104,7 @@
               placeholder="请输入"
               maxlength="10"
               size="small"
-              style="width: 100px"
+              style="width: 80px"
               @blur="updateUniversityMajorDetailSort(row)"
             />
           </template>
