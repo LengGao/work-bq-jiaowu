@@ -39,10 +39,16 @@
             width="50"
           ></el-table-column>
           <el-table-column
+            prop="uid"
+            label="学生ID"
+            min-width="90"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
             prop="user_realname"
             label="学生姓名"
-            min-width="90"
             column-key="course_id"
+            min-width="90"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -55,6 +61,12 @@
               <span>{{ row.telphone | filterPhone }}</span>
             </template>
           </el-table-column>
+          <el-table-column
+            prop="user_nicename"
+            label="微信昵称"
+            min-width="90"
+            show-overflow-tooltip
+          ></el-table-column>
         </el-table>
         <div class="table_bottom">
           <page
@@ -88,10 +100,11 @@
 </template>
 
 <script>
-import { cloneOptions } from "@/utils/index";
-import { getproject } from "@/api/eda";
-import { getInstitutionSelectData } from "@/api/sou";
-import { getStudentUserSelect, getClassRoomSelect } from "@/api/exa";
+import {
+  getStudentUserSelect,
+  getClassRoomSelect,
+  getProjectSelect,
+} from "@/api/exa";
 export default {
   props: {
     value: {
@@ -111,17 +124,16 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        pid: "",
-        iid: [],
-        cid: "",
+        project_id: "",
+        classroom_id: "",
         search_box: "",
       },
       searchOptions: [
         {
-          key: "pid",
+          key: "project_id",
           type: "select",
           options: [],
-          optionValue: "project_id",
+          optionValue: "id",
           optionLabel: "project_name",
           attrs: {
             placeholder: "所属项目",
@@ -130,17 +142,7 @@ export default {
           },
         },
         {
-          key: "iid",
-          type: "cascader",
-          attrs: {
-            placeholder: "推荐机构",
-            filterable: true,
-            clearable: true,
-            options: [],
-          },
-        },
-        {
-          key: "cid",
+          key: "classroom_id",
           type: "select",
           options: [],
           optionValue: "classroom_id",
@@ -175,8 +177,7 @@ export default {
   methods: {
     handleOpen() {
       this.getStudentUserSelect();
-      this.getproject();
-      this.getInstitutionSelectData();
+      this.getProjectSelect();
       this.getClassRoomSelect();
       // 把已经选择的回显上
       this.$nextTick(() => {
@@ -219,7 +220,6 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        iid: data.iid.pop(),
       };
       this.getStudentUserSelect();
     },
@@ -244,35 +244,16 @@ export default {
 
     // 获取班级下拉
     async getClassRoomSelect() {
-      const data = {
-        cate_id: this.$route.query?.cate_id,
-      };
-      const res = await getClassRoomSelect(data);
+      const res = await getClassRoomSelect();
       if (res.code === 0) {
         this.searchOptions[2].options = res.data;
       }
     },
     // 获取项目下拉
-    async getproject() {
-      const data = {
-        category_id: this.$route.query?.cate_id,
-      };
-      const res = await getproject(data);
+    async getProjectSelect() {
+      const res = await getProjectSelect();
       if (res.code === 0) {
         this.searchOptions[0].options = res.data;
-      }
-    },
-    // 获取机构
-    async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
-      if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
-          res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
       }
     },
     handleOk() {

@@ -317,6 +317,14 @@ export function getClassRoomSelect(params) {
     params,
   })
 }
+// 报考-选择学生列表-项目选项
+export function getProjectSelect(params) {
+  return request({
+    url: '/Examination/getProjectSelect',
+    method: 'get',
+    params,
+  })
+}
 // 报考详情
 export function enrollInfo(params) {
   return request({
