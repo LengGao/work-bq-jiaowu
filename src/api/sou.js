@@ -764,3 +764,35 @@ export function moveQuestion(data) {
     data,
   })
 }
+// 基本配置
+export function getConfig(params) {
+  return request({
+    url: '/test/getConfig',
+    method: 'get',
+    params,
+  })
+}
+// 设置基本配置
+export function setConfig(data) {
+  return request({
+    url: '/test/setConfig',
+    method: 'post',
+    data,
+  })
+}
+// 获取详细配置
+export function getDetailConfig(params) {
+  return request({
+    url: '/test/getDetail',
+    method: 'get',
+    params,
+  })
+}
+// 修改详细配置
+export function setDetailConfig(data) {
+  return request({
+    url: '/test/setDetail',
+    method: 'post',
+    data,
+  })
+}

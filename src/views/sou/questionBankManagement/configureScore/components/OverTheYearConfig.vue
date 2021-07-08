@@ -8,81 +8,91 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="单选题" prop="video_chapter_name">
+      <el-form-item label="单选题" prop="score1">
         <span>每题</span>
         <el-input
-          class="input-scores"
+          class="input-score"
           type="number"
-          v-model="formData.video_chapter_name"
+          v-model="formData.score1"
           placeholder="请输入"
           maxlength="10"
         />
         <span>分</span>
       </el-form-item>
-      <el-form-item label="多选题" prop="video_chapter_name">
+      <el-form-item label="多选题" prop="score2">
         <span>每题</span>
         <el-input
-          class="input-scores"
+          class="input-score"
           type="number"
-          v-model="formData.video_chapter_name"
+          v-model="formData.score2"
           placeholder="请输入"
           maxlength="10"
         />
         <span>分</span>
       </el-form-item>
-      <el-form-item label="判断题" prop="video_chapter_name">
+      <el-form-item label="判断题" prop="score3">
         <span>每题</span>
         <el-input
-          class="input-scores"
+          class="input-score"
           type="number"
-          v-model="formData.video_chapter_name"
+          v-model="formData.score3"
           placeholder="请输入"
           maxlength="10"
         />
         <span>分</span>
       </el-form-item>
-      <el-form-item label="填空题" prop="video_chapter_name">
+      <el-form-item label="不定项题" prop="score4">
         <span>每题</span>
         <el-input
-          class="input-scores"
+          class="input-score"
           type="number"
-          v-model="formData.video_chapter_name"
+          v-model="formData.score4"
           placeholder="请输入"
           maxlength="10"
         />
         <span>分</span>
       </el-form-item>
-      <el-form-item label="简答题" prop="video_chapter_name">
+      <el-form-item label="填空题" prop="score5">
         <span>每题</span>
         <el-input
-          class="input-scores"
+          class="input-score"
           type="number"
-          v-model="formData.video_chapter_name"
+          v-model="formData.score5"
           placeholder="请输入"
           maxlength="10"
         />
         <span>分</span>
       </el-form-item>
-      <el-form-item label="案例题" prop="video_chapter_name">
+      <el-form-item label="简答题" prop="score6">
         <span>每题</span>
         <el-input
-          class="input-scores"
+          class="input-score"
           type="number"
-          v-model="formData.video_chapter_name"
+          v-model="formData.score6"
           placeholder="请输入"
           maxlength="10"
         />
         <span>分</span>
       </el-form-item>
-      <el-form-item label="多选题场景" prop="video_chapter_name">
-        {{ formData.resource }}
-        <el-radio-group v-model="formData.resource">
-          <el-radio label="1">少选不得分</el-radio>
-          <el-radio label="2"
+      <el-form-item label="案例题" prop="score7">
+        <span>每题</span>
+        <el-input
+          class="input-score"
+          type="number"
+          v-model="formData.score7"
+          placeholder="请输入"
+          maxlength="10"
+        />
+        <span>分</span>
+      </el-form-item>
+      <el-form-item label="多选题场景" prop="option_score_status">
+        <el-radio-group v-model="formData.option_score_status">
+          <el-radio :label="0">少选不得分</el-radio>
+          <el-radio :label="1"
             >少选每个选项<el-input
-              class="input-scores"
+              class="input-score"
               type="number"
-              v-model="formData.video_chapter_name"
+              v-model="formData.option_score"
               placeholder="请输入"
               maxlength="10"
             />
@@ -104,15 +114,11 @@
 </template>
 
 <script>
-import {
-  editvideochapter,
-  addvideochapter,
-  getVideochapterDetail,
-} from "@/api/sou";
+import { setDetailConfig, getDetailConfig } from "@/api/sou";
 export default {
   name: "OverTheYearConfig",
   props: {
-    id: {
+    configId: {
       type: [String, Number],
       default: "",
     },
@@ -120,58 +126,73 @@ export default {
   data() {
     return {
       formData: {
-        video_chapter_name: "",
-        video_chapter_profile: "",
-        video_chapter_sort: "",
+        score1: 0,
+        score2: 0,
+        score3: 0,
+        score4: 0,
+        score5: 0,
+        score6: 0,
+        score7: 0,
+        option_score_status: 0,
+        option_score: 0,
       },
       rules: {
-        video_chapter_name: [
-          { required: true, message: "请输入", trigger: "blur" },
-        ],
-        video_chapter_sort: [
-          { required: true, message: "请输入", trigger: "blur" },
+        score1: [{ required: true, message: "请输入", trigger: "blur" }],
+        score2: [{ required: true, message: "请输入", trigger: "blur" }],
+        score3: [{ required: true, message: "请输入", trigger: "blur" }],
+        score4: [{ required: true, message: "请输入", trigger: "blur" }],
+        score5: [{ required: true, message: "请输入", trigger: "blur" }],
+        score6: [{ required: true, message: "请输入", trigger: "blur" }],
+        score7: [{ required: true, message: "请输入", trigger: "blur" }],
+        option_score_status: [
+          { required: true, message: "请选择", trigger: "change" },
         ],
       },
       addLoading: false,
       detaiLoading: false,
+      detailData: {},
     };
   },
-
+  created() {
+    this.getDetailConfig();
+  },
   methods: {
-    async getVideochapterDetail() {
+    async getDetailConfig() {
       const data = {
-        video_chapter_id: this.id,
+        test_config_id: this.configId,
+        type: 2,
       };
       this.detaiLoading = true;
-      const res = await getVideochapterDetail(data).catch(() => {
+      const res = await getDetailConfig(data).catch(() => {
         this.detaiLoading = false;
       });
       this.detaiLoading = false;
       if (res.code === 0) {
-        for (const k in this.formData) {
-          this.formData[k] = res.data[k];
-        }
+        this.detailData = res.data;
+        const detail = res.data.detail;
+        detail.config.forEach((item, index) => {
+          this.formData[`score${index + 1}`] = item.score;
+        });
+        this.formData.option_score_status =
+          detail.multiple_special.option_score_status;
+        this.formData.option_score = detail.multiple_special.option_score;
       }
     },
     async submit() {
-      const data = {
-        ...this.formData,
-      };
-      if (this.id) {
-        data.video_chapter_id = this.id;
-      } else {
-        data.video_collection_id = this.$route.query?.video_collection_id || "";
-      }
-      const api = this.id ? editvideochapter : addvideochapter;
+      this.detailData.detail.config.forEach((item, index) => {
+        item.score = this.formData[`score${index + 1}`];
+      });
+      this.detailData.detail.multiple_special.option_score_status =
+        this.formData.option_score_status;
+      this.detailData.detail.multiple_special.option_score =
+        this.formData.option_score;
       this.addLoading = true;
-      const res = await api(data).catch(() => {
+      const res = await setDetailConfig(this.detailData).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.resetForm("formData");
-        this.$emit("on-success");
       }
     },
     submitForm(formName) {
@@ -181,15 +202,8 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      for (const k in this.formData) {
-        this.formData[k] = "";
-      }
-      this.$refs[formName].resetFields();
-      this.hanldeCancel();
-    },
     hanldeCancel() {
-      this.$emit("input", false);
+      this.$router.back();
     },
   },
 };
@@ -203,7 +217,7 @@ export default {
     /deep/.el-form-item__label {
       padding-right: 20px;
     }
-    .input-scores {
+    .input-score {
       margin: 0 10px;
       width: 90px;
     }

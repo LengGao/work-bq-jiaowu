@@ -20,10 +20,20 @@
         <p class="desc">点击按钮下载模版， 并按照规定格式填写数据</p>
       </div>
       <Title text="上传文件" />
-      <div>
-        <el-button type="primary" size="small">上传文件</el-button>
-        <p class="desc">上传文件格式仅支持doc， 且文件大小不得超过5M。</p>
-      </div>
+      <el-upload
+        :accept="suffix.join(',')"
+        :headers="headers"
+        :action="uploadUrl"
+        :on-error="handleUploadError"
+        :on-success="handleUploadSuccess"
+        :before-upload="beforeUpload"
+        :limit="1"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="desc">
+          上传文件格式仅支持{{ suffix.join("、") }}，且文件大小不得超过5M
+        </div>
+      </el-upload>
       <Title text="数据配置" />
       <el-form-item label="章节名称" prop="topic_chapter_id">
         <el-select v-model="formData.topic_chapter_id" placeholder="请选择">
@@ -82,6 +92,11 @@ export default {
       addLoading: false,
       detaiLoading: false,
       chapterOptions: [],
+      uploadUrl: "/",
+      headers: {
+        token: this.$store.state.user.token,
+      },
+      suffix: [".doc", ".docx"],
     };
   },
   watch: {
@@ -106,6 +121,26 @@ export default {
       this.detaiLoading = false;
       if (res.code === 0) {
         this.chapterOptions = res.data.list;
+      }
+    },
+    handleUploadError() {
+      this.$message.error("上传失败");
+    },
+    handleUploadSuccess(res) {
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.hanldeCancel();
+        this.$emit("on-success");
+      } else {
+        this.$message.error(res.message);
+      }
+      this.$refs.upload.clearFiles();
+    },
+    beforeUpload(file) {
+      const fileSuffix = "." + file.name.split(".")[1];
+      if (this.suffix.indexOf(fileSuffix) === -1) {
+        this.$message.error(`请选择${this.suffix.join("，")}类型的文件！`);
+        return false;
       }
     },
     async submit() {
@@ -148,4 +183,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.desc {
+  font-size: 12px;
+  color: #aaa;
+  padding: 6px 0 16px 0;
+}
 </style>

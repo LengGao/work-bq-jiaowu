@@ -83,9 +83,9 @@
                   "
                   >配置题库</el-button
                 >
-                <!-- <el-button type="text" @click="linkTo('configureScore', row.id)"
+                <el-button type="text" @click="linkTo('configureScore', row.id)"
                   >配置分数</el-button
-                > -->
+                >
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
                 >
