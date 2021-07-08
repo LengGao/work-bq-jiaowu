@@ -346,7 +346,7 @@ export default {
       } else {
         this.rightActiveType = type;
       }
-
+      // 有id 查详情来展示
       if (id) {
         const data = {
           id,
@@ -379,8 +379,6 @@ export default {
     // 案例题的添加
     handleRightSubmit() {
       this.$refs.editorRightForm.validate((valid, data) => {
-        console.log(data);
-        console.log(valid);
         if (valid) {
           this.addQuestion({
             ...data,
