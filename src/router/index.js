@@ -328,7 +328,7 @@ export const asyncRouter = [
         meta: { title: '学生详情', icon: 'product-cate' },
         hidden: true,
       },
-      
+
       {
         path: 'orderManage',
         name: 'orderManage',
@@ -653,6 +653,12 @@ export const asyncRouter = [
         name: 'projectDetails',
         component: () => import('@/views/exa/projectDetails/index.vue'),
         meta: { title: '报考详情', icon: 'product-add' },
+      },
+      {
+        path: 'examinationSMS',
+        name: 'examinationSMS',
+        component: () => import('@/views/exa/examinationSMS/index.vue'),
+        meta: { title: '考务群发短信', icon: 'product-add' },
       },
       {
         path: 'achievement',

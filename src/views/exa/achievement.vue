@@ -16,38 +16,38 @@
 
 <script>
 export default {
-  name: 'courseManage',
+  name: "achievement",
 
   data() {
     return {
-      activeName: 'plannedResult',
+      activeName: "plannedResult",
       ruleForm: {
-        category_id: '',
+        category_id: "",
       },
       isTagactive: 1,
       tabFun: [
         {
           id: 1,
-          name: '学历教育',
+          name: "学历教育",
         },
         {
           id: 2,
-          name: '职称考证',
+          name: "职称考证",
         },
       ],
-    }
+    };
   },
   created() {},
   mounted() {},
   computed: {
     getComponent() {
       if (this.activeName) {
-        return () => import(`./achievement/components/${this.activeName}.vue`)
+        return () => import(`./achievement/components/${this.activeName}.vue`);
       }
     },
   },
   methods: {},
-}
+};
 </script>
 
 <style lang="scss" scoped>
