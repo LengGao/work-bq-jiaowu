@@ -36,7 +36,6 @@
       </el-form-item>
       <el-form-item label="备注" prop="remarks">
         <el-input
-          type="number"
           v-model="formData.remarks"
           placeholder="请输入备注"
           maxlength="10"
