@@ -109,10 +109,17 @@
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="160">
+          <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="linkTo(row.id, row.cate_id)"
+                <el-button
+                  type="text"
+                  @click="
+                    linkTo('projectDetails', {
+                      id: row.id,
+                      cate_id: row.cate_id,
+                    })
+                  "
                   >报考详情</el-button
                 >
                 <el-button type="text" @click="openEdit(row.id)"
@@ -120,6 +127,16 @@
                 >
                 <el-button type="text" @click="deleteConfirm(row.id)"
                   >删除</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="
+                    linkTo('examinationSMS', {
+                      id: row.id,
+                      cate_id: row.cate_id,
+                    })
+                  "
+                  >群发短信</el-button
                 >
               </div>
             </template>
@@ -205,8 +222,8 @@ export default {
     this.getCateList();
   },
   methods: {
-    linkTo(id, cate_id) {
-      this.$router.push({ name: "projectDetails", query: { id, cate_id } });
+    linkTo(name, query) {
+      this.$router.push({ name, query });
     },
     // 删除计划
     deleteConfirm(id) {
