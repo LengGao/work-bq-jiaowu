@@ -7,39 +7,19 @@
       ref="ruleForm"
     >
       <el-form-item label="标题" prop="title">
-        <el-input
-          v-model="formData.title"
-          placeholder="请输入标题"
-          maxlength="30"
-        />
+        <el-input v-model="formData.title" placeholder="请输入标题" />
       </el-form-item>
       <el-form-item label="时间" prop="time">
-        <el-input
-          v-model="formData.time"
-          placeholder="请输入时间"
-          maxlength="10"
-        />
+        <el-input v-model="formData.time" placeholder="请输入时间" />
       </el-form-item>
       <el-form-item label="内容" prop="content">
-        <el-input
-          v-model="formData.content"
-          placeholder="请输入内容"
-          maxlength="10"
-        />
+        <el-input v-model="formData.content" placeholder="请输入内容" />
       </el-form-item>
       <el-form-item label="地点" prop="address">
-        <el-input
-          v-model="formData.address"
-          placeholder="请输入地点"
-          maxlength="10"
-        />
+        <el-input v-model="formData.address" placeholder="请输入地点" />
       </el-form-item>
       <el-form-item label="备注" prop="remarks">
-        <el-input
-          v-model="formData.remarks"
-          placeholder="请输入备注"
-          maxlength="10"
-        />
+        <el-input v-model="formData.remarks" placeholder="请输入备注" />
       </el-form-item>
       <el-form-item>
         <el-button @click="resetForm">取消</el-button>
