@@ -18,7 +18,6 @@ const cdn = {
     'https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js',
     'https://cdn.jsdelivr.net/npm/vuex@3.4/dist/vuex.min.js',
     'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/index.js',
-    'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
   ],
 }
 // cdn预加载使用
@@ -28,7 +27,6 @@ const externals = {
   vuex: 'Vuex',
   axios: 'axios',
   'element-ui': 'ELEMENT',
-  jquery: 'jQuery',
 }
 module.exports = {
   publicPath: isProduction ? './' : '/',
@@ -124,14 +122,6 @@ module.exports = {
       // externals
       config.externals = externals
     }
-    // 启动gzip压缩
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        'windows.jQuery': 'jquery',
-      })
-    )
     // 开发环境不需要gzip
     if (process.env.NODE_ENV !== 'production') return
     config.plugins.push(
@@ -167,4 +157,5 @@ module.exports = {
       })
     )
   },
+
 }
