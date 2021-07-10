@@ -479,7 +479,7 @@ export function getstudentcourse(params) {
     params,
   })
 }
-// 学习详情-title
+// 学习详情列表
 export function learningDetails(params) {
   return request({
     url: '/personalLog/study',
@@ -495,8 +495,6 @@ export function personalpunch(params) {
     params,
   })
 }
-
-
 
 // 移除班级学生
 export function classstudentsBatchRemove(data) {
