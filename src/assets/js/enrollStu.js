@@ -1,6 +1,4 @@
 import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
-import Vue from 'vue'
-import { type } from 'jquery'
 let enrollStu = {
   //获取客户列表
   getCustomerList(self, name) {

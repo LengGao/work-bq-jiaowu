@@ -1,7 +1,14 @@
 <template>
   <section class="header" id="header">
-    <div style="margin:12.5px 0 12.5px 65px;width:139px;height:40px;float:left">
-      <a href="javascript:void(0);" style="margin-top:12.5px">
+    <div
+      style="
+        margin: 12.5px 0 12.5px 65px;
+        width: 139px;
+        height: 40px;
+        float: left;
+      "
+    >
+      <a href="javascript:void(0);" style="margin-top: 12.5px">
         <img
           src="../assets/images/logo_head.png"
           alt
@@ -76,66 +83,63 @@
 
 <script>
 export default {
-  name: 'Header',
+  name: "Header",
   data() {
     return {
       dialog: false,
       form: {
-        oldPassword: '',
-        newPassword: '',
-        confirmPassword: '',
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
       },
       ru: {
         oldPassword: [
-          { required: true, message: '请填写原密码', trigger: 'blur' },
-          { min: 6, message: '密码最少6位数', trigger: 'blur' },
+          { required: true, message: "请填写原密码", trigger: "blur" },
+          { min: 6, message: "密码最少6位数", trigger: "blur" },
         ],
         newPassword: [
-          { required: true, message: '请填写新密码', trigger: 'blur' },
-          { min: 6, message: '密码最少6位数', trigger: 'blur' },
+          { required: true, message: "请填写新密码", trigger: "blur" },
+          { min: 6, message: "密码最少6位数", trigger: "blur" },
         ],
         confirmPassword: [
-          { required: true, message: '请填写确认密码', trigger: 'blur' },
-          { min: 6, message: '密码最少6位数', trigger: 'blur' },
+          { required: true, message: "请填写确认密码", trigger: "blur" },
+          { min: 6, message: "密码最少6位数", trigger: "blur" },
         ],
       },
-    }
+    };
   },
   props: {
     msg: String,
   },
   methods: {
-    toggleNav() {
-      $('#app').toggleClass('hideNav')
-    },
     clickCommand(index) {
       if (index == 4) {
-        this.$api.loginOut()
+        this.$api.loginOut();
       } else if (index == 2) {
         // 修改密码
-        this.dialog = true
+        this.dialog = true;
       }
     },
     // 清除缓存
     clearCache() {
-      this.$api.clearCache()
+      this.$api.clearCache();
     }, // 修改密码
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.$cookies.get('organization_id')) {
-            this.$api.resetOrgPassword(this)
+          if (this.$cookies.get("organization_id")) {
+            this.$api.resetOrgPassword(this);
           } else {
-            this.$api.resetAdminPassword(this)
+            this.$api.resetAdminPassword(this);
           }
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style scoped lang="scss">

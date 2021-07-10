@@ -186,6 +186,8 @@ export default {
         name: "learningDetails",
         query: {
          uid: row.uid,
+         course_id:row.course_id,
+         course_name:row.course_name,
         },
       });
     },
