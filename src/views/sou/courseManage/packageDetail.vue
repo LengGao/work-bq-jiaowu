@@ -343,12 +343,6 @@
               prop="introduction"
             >
               <div id="caseAnalyse"></div>
-              <!--<kindeditor
-                @kindeditorChange="changeParentTitle"
-                :content="ruleForm.introduction"
-                height="200px"
-                id="caseAnalyse"
-              />-->
               <!-- <el-input
                 type="textarea"
                 placeholder="请输入内容"
