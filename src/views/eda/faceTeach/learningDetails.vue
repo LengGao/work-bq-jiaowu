@@ -77,9 +77,9 @@
                 </el-table-column>
               </el-table>
             </div>
-            <div class="table_bottom">
+            <!-- <div class="table_bottom">
               <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
-            </div>
+            </div> -->
           </div>
           <!--章节练习-->
           <div v-if="isTagactive == 2">
@@ -130,9 +130,9 @@
                 <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-              <div class="table_bottom">
+              <!-- <div class="table_bottom">
                 <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
-              </div>
+              </div> -->
             </div>
           </div>
           <!--历年真题-->
@@ -532,8 +532,8 @@
     data() {
       return {
         state: 0,
-        pageNum: 1,
-        listTotal: 0,
+        // pageNum: 1,
+        // listTotal: 0,
         isTagactive: 1,
         dataTitle: {},
         dataList: [{ create_time: "" }],
@@ -597,10 +597,10 @@
       this.learningDetails(this.state);
     },
     methods: {
-      handlePageChange(val) {
-        this.pageNum = val;
-        this.learningDetails(this.state);
-      },
+      // handlePageChange(val) {
+      //   this.pageNum = val;
+      //   this.learningDetails(this.state);
+      // },
       statusSwitch(row) {
         this.isTagactive = row.id
         this.pageNum = 1
@@ -624,10 +624,10 @@
           uid: this.$route.query.uid,
           course_id: this.$route.query.course_id,
           state,
-          page: this.pageNum,
+          // page: this.pageNum,
         };
         const res = await learningDetails(data);
-        this.listTotal = res.data.total;
+        // this.listTotal = res.data.total;
         if (res.code === 0) {
           this.dataTitle = res.data.data;
           this.dataList = res.data.list;
