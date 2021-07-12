@@ -11,7 +11,6 @@ import moment from 'moment' //导入moment模块,时间戳处理相关
 import url from './assets/js/url'
 import { Base64 } from 'js-base64' //Base64编码
 import api from './assets/js/api' //注册api，全局挂载
-import _ from 'lodash' //引入lodash
 import '@/icons' // icon
 import '@/permission' // permission control
 import '@/utils/filters'
@@ -25,7 +24,6 @@ Vue.prototype.$moment = moment //moment处理时间http://momentjs.cn/docs/
 Vue.config.productionTip = false
 Vue.prototype.$url = url //axios相关
 Vue.prototype.$api = api //axios相关
-Vue.prototype._ = _ //lodash相关https://www.lodashjs.com/
 Vue.prototype.rootDir = process.env.VUE_APP_LOACTION //上传地址
 Vue.prototype.downLoad = process.env.VUE_APP_DOWNLOAD //下载图片地址
 Vue.prototype.Base64 = Base64
