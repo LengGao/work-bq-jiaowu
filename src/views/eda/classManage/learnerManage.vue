@@ -115,10 +115,13 @@
           <el-table-column label="操作" fixed="right" min-width="150">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="learningDetails(row)">学习详情</el-button>
+                <el-button type="text" @click="learningDetails(row)"
+                  >学习详情</el-button
+                >
                 <el-button type="text" @click="linkTo(row)">转班</el-button>
                 <el-button type="text" @click="removeConfirm([row.uid])"
-                  >移除</el-button>
+                  >移除</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -188,7 +191,9 @@ export default {
       this.$router.push({
         name: "learningDetails",
         query: {
-         uid: row.uid,
+          uid: row.uid,
+          course_id: row.course_id,
+          course_name: row.course_name,
         },
       });
     },
@@ -301,6 +306,7 @@ export default {
       this.courseStudentIds = [];
       const data = {
         class_id: this.$route.query.classId,
+        course_id: this.$route.query.course_id,
         page: this.pageNum,
         ...this.searchData,
       };

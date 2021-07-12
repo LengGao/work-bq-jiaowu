@@ -47,7 +47,7 @@
           prop="telphone"
         >
           <template slot-scope="{ row }">
-            <span>{{row.telphone}}</span>
+            <span>{{ row.telphone }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -107,10 +107,13 @@
         >
           <template slot-scope="{ row }">
             <div>
-              <el-button type="text" @click="learningDetails(row)">学习详情</el-button>
+              <el-button type="text" @click="learningDetails(row)"
+                >学习详情</el-button
+              >
               <el-button type="text" @click="linkTo(row)">转班</el-button>
               <el-button type="text" @click="removeConfirm([row.uid])"
-                >移除</el-button>
+                >移除</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -185,7 +188,9 @@ export default {
       this.$router.push({
         name: "learningDetails",
         query: {
-         uid: row.uid,
+          uid: row.uid,
+          course_id: row.course_id,
+          course_name: row.course_name,
         },
       });
     },
@@ -219,7 +224,10 @@ export default {
       };
       this.$router.push({
         name: "shift",
-        query: { json: JSON.stringify(query) },
+        query: {
+          json: JSON.stringify(query),
+          course_id: this.classData.course_id,
+        },
       });
     },
     // 获取教材分类
@@ -299,6 +307,7 @@ export default {
       this.courseStudentIds = [];
       const data = {
         class_id: this.$route.query?.id,
+        course_id: this.classData.course_id,
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
