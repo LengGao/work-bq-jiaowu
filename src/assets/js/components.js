@@ -15,7 +15,6 @@ import FileUpload from '@/components/Upload/fileUpload'
 import SingleUpload from '@/components/Upload/singleUpload'
 // import MultiUpload from '@/components/Upload/multiUpload'
 import imgSpace from '@/components/imgSpace.vue'
-import kindeditor from '@/components/kindeditor.vue'
 import videoUpload from '@/components/Upload/videoUpload.vue'
 import smallEachert from '@/components/smallEachert.vue'
 import smallbar from '@/components/smallbar.vue' //dynamicLine
@@ -35,7 +34,6 @@ Vue.component('FileUpload', FileUpload)
 Vue.component('SingleUpload', SingleUpload)
 // Vue.component('MultiUpload', MultiUpload)
 Vue.component('imgSpace', imgSpace)
-Vue.component('kindeditor', kindeditor)
 Vue.component('videoUpload', videoUpload)
 Vue.component('smallEachert', smallEachert)
 Vue.component('smallbar', smallbar)

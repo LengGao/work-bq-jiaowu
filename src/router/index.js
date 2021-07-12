@@ -124,13 +124,6 @@ export const asyncRouter = [
         hidden: true,
       },
       {
-        path: 'packageDetail',
-        name: 'packageDetail',
-        component: () => import('@/views/sou/courseManage/packageDetail.vue'),
-        meta: { title: '套餐详情', icon: 'product-cate' },
-        hidden: true,
-      },
-      {
         path: 'configureCourses',
         name: 'configureCourses',
         component: () => import('@/views/sou/courseManage/index.vue'),
@@ -599,22 +592,6 @@ export const asyncRouter = [
       },
     ],
   },
-  {
-    path: '/sys',
-    component: Layout,
-    redirect: '/sys/notice',
-    meta: { title: '系统配置', icon: 'xitongpeizhi' },
-    name: 'sys',
-    children: [
-      {
-        path: 'notice',
-        name: 'notice',
-        component: () => import('@/views/sys/notice.vue'),
-        meta: { title: '通知公告', icon: 'imgSpace' },
-      },
-    ],
-  },
-
   {
     path: '/exa',
     component: Layout,
