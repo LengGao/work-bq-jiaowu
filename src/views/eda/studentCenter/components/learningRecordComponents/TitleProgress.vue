@@ -6,8 +6,7 @@
       <el-steps
         :active="graduate"
         finish-status="success"
-        process-status="success"
-      >
+        process-status="success">
         <el-step title="报名"></el-step>
         <el-step title="培训"></el-step>
         <el-step title="考试"></el-step>
@@ -163,4 +162,5 @@ export default {
   padding: 0 110px;
   margin: 16px 0;
 }
+
 </style>
