@@ -123,13 +123,6 @@
                   @click="toConfigureCourses(scope.row)"
                   >配置</el-button
                 >
-                <el-button
-                  type="text"
-                  v-if="scope.row.class_type == 0 || scope.row.class_type == 2"
-                  @click="toPackageDetail(scope.row)"
-                >
-                  详情
-                </el-button>
                 <el-button type="text" @click="handleDelete(scope.row)"
                   >删除</el-button
                 >
@@ -213,15 +206,6 @@ export default {
   mounted() {},
 
   methods: {
-    toPackageDetail(row) {
-      this.$router.push({
-        name: "packageDetail",
-        query: {
-          setMeal: row.class_type,
-          course_id: row.course_id,
-        },
-      });
-    },
     handleDelete(row) {
       this.$confirm("你正在删除该课程,,请谨慎操作?", "提示", {
         confirmButtonText: "删除",

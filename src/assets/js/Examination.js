@@ -1,6 +1,4 @@
 import { axiosHttp, v, url, common } from '@/assets/js/apiCommon'
-import Vue from 'vue'
-import { type } from 'jquery'
 
 let Examination = {
   //考试科目列表
