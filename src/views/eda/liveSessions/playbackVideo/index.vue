@@ -8,7 +8,6 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary" @click="openAdd">添加视频</el-button>
       </div>
       <!--表格-->
       <div class="userTable">
@@ -89,12 +88,6 @@
                   :loading="row.loading"
                   @click="getVideoUrl(row)"
                   >下载</el-button
-                >
-                <el-button type="text" @click="openEdit(row.live_video_id)"
-                  >编辑</el-button
-                >
-                <el-button type="text" @click="deleteConfirm(row.live_video_id)"
-                  >删除</el-button
                 >
               </div>
             </template>

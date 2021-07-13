@@ -131,7 +131,6 @@ export default {
     },
 
     handleUploadSuccess(res) {
-      console.log(res);
       this.formData.video_id = res.videoId;
       this.formData.file_name = res.file.name;
     },
@@ -154,8 +153,11 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.visible = false;
-        this.$emit("on-success");
+        this.$emit("on-success", {
+          id: res.data.video_repository_id,
+          title: this.formData.title,
+        });
+        this.resetForm("formData");
       }
     },
     submitForm(formName) {
@@ -166,10 +168,10 @@ export default {
       });
     },
     resetForm(formName) {
+      this.$refs[formName].resetFields();
       for (const k in this.formData) {
         this.formData[k] = "";
       }
-      this.$refs[formName].resetFields();
       this.defaultFiles = [];
       this.hanldeCancel();
     },

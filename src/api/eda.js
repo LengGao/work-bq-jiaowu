@@ -853,3 +853,83 @@ export function getEduList(params) {
     params,
   })
 }
+// 班级视频-章节列表
+export function getChapterList(data) {
+  return request({
+    url: '/ClassroomVideo/getChapterList',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-添加章节
+export function createChapter(data) {
+  return request({
+    url: '/ClassroomVideo/createChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-修改章节
+export function updateChapter(data) {
+  return request({
+    url: '/ClassroomVideo/updateChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-删除章节
+export function deleteChapter(data) {
+  return request({
+    url: '/ClassroomVideo/deleteChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-添加课时
+export function createLesson(data) {
+  return request({
+    url: '/ClassroomVideo/createLesson',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-修改课时
+export function updateLesson(data) {
+  return request({
+    url: '/ClassroomVideo/updateLesson',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-课时列表
+export function getLessonList(data) {
+  return request({
+    url: '/ClassroomVideo/getLessonList',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-删除课时
+export function deleteLesson(data) {
+  return request({
+    url: '/ClassroomVideo/deleteLesson',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-批量排序
+export function batchSortChapter(data) {
+  return request({
+    url: '/ClassroomVideo/batchSortChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-课时视频批量排序
+export function batchSortLesson(data) {
+  return request({
+    url: '/ClassroomVideo/batchSortLesson',
+    method: 'post',
+    data,
+  })
+}

@@ -4,7 +4,6 @@
     <div class="container">
       <VideoMenu
         @on-change="handleChapterChange"
-        :chapterType="activeName"
         class="container-left"
         ref="VideoMenu"
       />
@@ -126,7 +125,6 @@
 
     <UploadVideoDialog
       v-model="uploadDialog"
-      :chapter-type="activeName"
       :videoData="videoData"
       :title="dialogTitle"
       @on-success="getVideoList"

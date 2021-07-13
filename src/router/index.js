@@ -342,6 +342,12 @@ export const asyncRouter = [
         hidden: true,
       },
       {
+        path: 'classVideo',
+        name: 'classVideo',
+        component: () => import('@/views/eda/classVideo/index.vue'),
+        meta: { title: '班级视频', icon: 'product-cate' },
+      },
+      {
         path: 'classManage',
         name: 'classManage',
         component: () => import('@/views/eda/classManage.vue'),
