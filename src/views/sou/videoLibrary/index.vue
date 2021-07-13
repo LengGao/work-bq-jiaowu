@@ -90,15 +90,22 @@
               min-width="90"
               show-overflow-tooltip
             ></el-table-column>
-            <el-table-column label="操作" fixed="right" min-width="120">
+            <el-table-column label="操作" fixed="right" min-width="200">
               <template slot-scope="{ row }">
                 <div style="display: flex; justify-content: center">
                   <el-button
                     type="text"
-                    @click="openEdit(row.topic_type, row.id)"
+                    :loading="row.loading"
+                    @click="download(row)"
                     >下载</el-button
                   >
                   <el-button type="text" @click="openEdit(row)">编辑</el-button>
+                  <el-button
+                    type="text"
+                    :loading="row.updateLoading"
+                    @click="completeVideoInfo(row)"
+                    >完善视频</el-button
+                  >
                   <el-button type="text" @click="deleteConfirm(row.id)"
                     >删除</el-button
                   >
@@ -130,18 +137,21 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import VideoMenu from "./components/VideoMenu";
-import { getVideoList, deleteVideo, getAdminSelect } from "@/api/sou";
+import {
+  getVideoList,
+  deleteVideo,
+  getAdminSelect,
+  completeVideoInfo,
+} from "@/api/sou";
 import UploadVideoDialog from "./components/UploadVideoDialog.vue";
 export default {
-  name: "questionBank",
+  name: "videoLibrary",
   components: {
     VideoMenu,
     UploadVideoDialog,
   },
   data() {
     return {
-      // 1：视频分组 2：历年真题 3：自主出题
-      activeName: sessionStorage.getItem("activeName") || "1",
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -186,39 +196,10 @@ export default {
           },
         },
       ],
-      questionOptions: [
-        {
-          name: "单选题",
-          value: 1,
-        },
-        {
-          name: "多选题",
-          value: 2,
-        },
-        {
-          name: "判断题",
-          value: 3,
-        },
-        {
-          name: "不定项题",
-          value: 4,
-        },
-        {
-          name: "填空题",
-          value: 5,
-        },
-        {
-          name: "简答题",
-          value: 6,
-        },
-        {
-          name: "案例题",
-          value: 7,
-        },
-      ],
       videoData: {},
       dialogTitle: "",
       uploadDialog: false,
+      videoGroupId: -1,
     };
   },
 
@@ -228,6 +209,30 @@ export default {
   },
 
   methods: {
+    // 完善视频信息
+    async completeVideoInfo(row) {
+      row.updateLoading = true;
+      const data = { id: row.id };
+      const res = await completeVideoInfo(data);
+      row.updateLoading = false;
+      if (res.code === 0) {
+        this.getVideoList();
+      }
+    },
+    // 下载
+    download(row) {
+      row.loading = true;
+      const a = document.createElement("a");
+      a.href = row.file_url;
+      a.download = row.title;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => {
+        row.loading = false;
+      }, 1000);
+    },
     // 操作员列表
     async getAdminSelect() {
       const res = await getAdminSelect();
@@ -249,7 +254,8 @@ export default {
     // 视频分组变化
     handleChapterChange(id) {
       this.pageNum = 1;
-      this.getVideoList(id);
+      this.videoGroupId = id;
+      this.getVideoList();
     },
     // 删除视频
     deleteConfirm(id) {
@@ -282,16 +288,20 @@ export default {
       this.pageNum = val;
       this.getVideoList();
     },
-    async getVideoList(group_id) {
+    async getVideoList() {
       const data = {
         page: this.pageNum,
-        group_id,
+        group_id: this.videoGroupId,
         ...this.searchData,
       };
       this.listLoading = true;
       const res = await getVideoList(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        loading: false,
+        updateLoading: false,
+      }));
       this.listTotal = res.data.total;
     },
   },

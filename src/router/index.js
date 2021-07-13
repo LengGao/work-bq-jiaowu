@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'aliVideo',
+        name: 'aliVideo',
+        component: () => import('@/views/sou/aliVideo/index.vue'),
+        meta: { title: '阿里源视频', icon: 'product-add' },
+      },
+      {
         path: 'videoLibrary',
         name: 'videoLibrary',
         component: () => import('@/views/sou/videoLibrary/index.vue'),

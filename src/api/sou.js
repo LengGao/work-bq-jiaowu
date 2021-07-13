@@ -1207,3 +1207,35 @@ export function updateVideo(data) {
     data,
   })
 }
+// 视频库列表-完善视频信息
+export function completeVideoInfo(data) {
+  return request({
+    url: '/VideoRepository/completeVideoInfo',
+    method: 'post',
+    data,
+  })
+}
+// 阿里源视频列表
+export function getSourceVideoList(data) {
+  return request({
+    url: '/VideoRepository/getSourceVideoList',
+    method: 'post',
+    data,
+  })
+}
+// 阿里源视频列表-删除
+export function deleteSourceVideo(data) {
+  return request({
+    url: '/VideoRepository/deleteSourceVideo',
+    method: 'post',
+    data,
+  })
+}
+// 阿里源视频列表-下载
+export function downloadSourceVideo(data) {
+  return request({
+    url: '/VideoRepository/downloadSourceVideo',
+    method: 'post',
+    data,
+  })
+}

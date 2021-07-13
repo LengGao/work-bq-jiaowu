@@ -1,5 +1,5 @@
 <template>
-  <!--添加编辑章节弹窗-->
+  <!--添加编辑视频分组弹窗-->
   <el-dialog
     :title="title"
     :visible.sync="visible"
