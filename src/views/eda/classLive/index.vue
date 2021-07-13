@@ -322,7 +322,10 @@ export default {
       this.listTotal = res.data.total;
     },
     linkTo(live_class_id) {
-      this.$router.push({ name: "liveSessions", query: { live_class_id } });
+      this.$router.push({
+        name: "liveSessions",
+        query: { live_class_id, isclass: 1 },
+      });
     },
   },
 };

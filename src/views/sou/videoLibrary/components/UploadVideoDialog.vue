@@ -6,6 +6,7 @@
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
+    append-to-body
   >
     <el-form
       label-width="100px"
