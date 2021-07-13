@@ -140,7 +140,7 @@
     </span>
 
     <div class="review-footer">
-      <div>
+      <div v-if="isBatch">
         <el-button :disabled="!activeIndex" @click="handlePrev"
           >上一个</el-button
         >
