@@ -99,7 +99,7 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
-        type: "",
+        type: -1,
         date: [],
       },
       searchOptions: [
@@ -118,6 +118,7 @@ export default {
           key: "type",
           type: "select",
           options: [
+            { label: "全部", value: -1 },
             { label: "入库", value: 0 },
             { label: "调拨出库", value: 1 },
             { label: "调拨入库", value: 2 },
