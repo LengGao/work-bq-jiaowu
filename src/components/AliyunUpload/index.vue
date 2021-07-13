@@ -63,8 +63,11 @@ export default {
     value(val) {
       this.requestId = val;
     },
-    defaultFiles(data) {
-      this.fileList = [...data];
+    defaultFiles: {
+      handler(data) {
+        this.fileList = [...data];
+      },
+      immediate: true,
     },
   },
   created() {

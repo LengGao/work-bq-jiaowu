@@ -1126,3 +1126,84 @@ export function getUniversityMajorOptions(params) {
 }
 // 上传题目文件
 export const importQuestionUrl = `${process.env.VUE_APP_LOACTION}/topic/uploadDoc`
+
+// 视频分组列表
+export function getVideoGroupList(data) {
+  return request({
+    url: '/VideoRepository/getVideoGroupList',
+    method: 'post',
+    data,
+  })
+}
+// 视频分组-删除
+export function deleteGroup(data) {
+  return request({
+    url: '/VideoRepository/deleteGroup',
+    method: 'post',
+    data,
+  })
+}
+// 视频分组-添加
+export function createGroup(data) {
+  return request({
+    url: '/VideoRepository/createGroup',
+    method: 'post',
+    data,
+  })
+}
+// 视频分组-修改
+export function updateGroup(data) {
+  return request({
+    url: '/VideoRepository/updateGroup',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表
+export function getVideoList(data) {
+  return request({
+    url: '/VideoRepository/getVideoList',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-操作员列表
+export function getAdminSelect(data) {
+  return request({
+    url: '/VideoRepository/getAdminSelect',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-删除视频
+export function deleteVideo(data) {
+  return request({
+    url: '/VideoRepository/deleteVideo',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-视频分组下拉列表
+export function getVideoGroupSelect(data) {
+  return request({
+    url: '/VideoRepository/getVideoGroupSelect',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-添加视频
+export function createVideo(data) {
+  return request({
+    url: '/VideoRepository/createVideo',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-修改视频
+export function updateVideo(data) {
+  return request({
+    url: '/VideoRepository/updateVideo',
+    method: 'post',
+    data,
+  })
+}
