@@ -127,6 +127,7 @@ import {
 } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
+  name: "warehouseManage",
   components: {
     SearchList,
     AddWarehouse,

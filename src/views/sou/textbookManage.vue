@@ -127,6 +127,7 @@ import AddTeachingMaterial from "./components/AddTeachingMaterial";
 import { getBookList, getCateList } from "@/api/sou";
 
 export default {
+  name: "textbookManage",
   components: {
     SearchList,
     AddTeachingMaterial,

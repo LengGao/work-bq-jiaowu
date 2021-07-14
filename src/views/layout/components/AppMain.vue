@@ -1,5 +1,6 @@
 <template>
   <section class="app-main">
+    {{ $store.getters.cacheArr }}
     <transition name="main" mode="out-in">
       <!-- <router-view :key="key"></router-view> -->
       <keep-alive :include="$store.getters.cacheArr">

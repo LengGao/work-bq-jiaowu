@@ -142,7 +142,7 @@ import { getQuestionList, deleteQuestion } from "@/api/sou";
 import MoveQusetionDialog from "./components/MoveQusetionDialog.vue";
 import UploadQusetionDialog from "./components/UploadQusetionDialog.vue";
 export default {
-  name: "questionBank",
+  name: "configureQuestionBank",
   components: {
     ChapterMenu,
     MoveQusetionDialog,

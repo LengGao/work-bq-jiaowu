@@ -872,26 +872,22 @@ export const resetRouter = () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
 }
-let netxtViewName = ''
+let currentCacheName = ''
 router.beforeEach((to, from, next) => {
   const cacheViews = store.state.cacheView.cacheViews
   const cacheTo = store.state.cacheView.cacheTo
-  // 如果当前页面返回不是已缓存页面就清除
-  if (netxtViewName && to.name !== netxtViewName) {
-    store.dispatch('delViewCache', netxtViewName)
-    netxtViewName = ''
+
+  //  如果去的页面不是缓存条件页面就清除 currentCacheName页面的缓存
+  if (currentCacheName && to.name !== currentCacheName && cacheTo[currentCacheName] && !cacheTo[currentCacheName].includes(to.name)) {
+    store.dispatch('delViewCache', from.name)
   }
+
   // 添加缓存
   if (cacheViews.includes(to.name)) {
+    currentCacheName = to.name
     store.dispatch('setViewCache', to.name)
   }
-  // 如果已缓存的页面去的没有目标页面，就清除
-  if (cacheTo[from.name] && !cacheTo[from.name].includes(to.name)) {
-    store.dispatch('delViewCache', from.name)
-  } else {
-    // 记录来的页面
-    netxtViewName = from.name
-  }
+
   next()
 })
 

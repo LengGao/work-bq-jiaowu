@@ -20,6 +20,7 @@
         v-for="item in chapterList"
         :key="item.id"
         @click="handleChapterChange(item.id)"
+        :title="item.chapter_name"
       >
         <span class="list-item-title"
           >{{ item.chapter_name }}（{{ item.topic_total }}）</span
@@ -149,8 +150,14 @@ export default {
       height: 44px;
       border-bottom: 1px solid #e4e7ed;
       cursor: pointer;
+      &-title {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
       &-actions {
         display: none;
+        flex-shrink: 0;
         i {
           font-size: 18px;
           padding: 0 10px;
