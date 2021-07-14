@@ -84,6 +84,11 @@
           min-width="90"
           show-overflow-tooltip
         ></el-table-column>
+        <el-table-column label="操作" fixed="right" min-width="100">
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="previewVideo(row)">预览</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
@@ -165,6 +170,15 @@ export default {
   },
 
   methods: {
+    // 预览
+    previewVideo(row) {
+      const a = document.createElement("a");
+      a.href = row.file_url;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    },
     handleOpen() {
       this.getVideoList();
       this.getVideoGroupSelect();
@@ -236,6 +250,7 @@ export default {
     align-items: center;
     height: 50px;
     img {
+      margin-right: 10px;
       width: 80px;
     }
   }

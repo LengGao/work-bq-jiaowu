@@ -102,6 +102,12 @@
                 >添加视频</el-button
               >
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
+              <el-button
+                type="text"
+                v-if="row.parentId"
+                @click="previewVideo(row)"
+                >预览</el-button
+              >
               <el-button type="text" @click="deleteConfirm(row)"
                 >删除</el-button
               >
@@ -191,6 +197,15 @@ export default {
   },
 
   methods: {
+    // 预览
+    previewVideo(row) {
+      const a = document.createElement("a");
+      a.href = row.file_url;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    },
     handleBatchSort() {
       const videoSortMaps = {};
       const classSortMaps = {};
@@ -371,12 +386,11 @@ export default {
       };
       const res = await getLessonList(data);
       const children = res.data.list.map((item, index) => ({
+        ...item,
         name: item.title,
         sort: item.sort,
         id: item.id,
         parentId: item.chapter_id,
-        video_repository_id: item.video_repository_id,
-        duration: item.duration,
         coverurl: item.cover_url,
         treeId: this.setId(),
       }));

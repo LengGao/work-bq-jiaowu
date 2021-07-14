@@ -72,6 +72,12 @@
               show-overflow-tooltip
             ></el-table-column>
             <el-table-column
+              prop="use_count"
+              label="引用次数"
+              min-width="90"
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column
               prop="create_time"
               label="上传时间"
               min-width="140"

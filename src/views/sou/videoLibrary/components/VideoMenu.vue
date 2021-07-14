@@ -20,6 +20,7 @@
         v-for="item in videoGroupList"
         :key="item.id"
         @click="handlevideoGroupChange(item.id)"
+        :title="item.group_name"
       >
         <span class="list-item-title"
           >{{ item.group_name }}（{{ item.video_count }}）</span
@@ -131,8 +132,14 @@ export default {
       height: 44px;
       border-bottom: 1px solid #e4e7ed;
       cursor: pointer;
+      &-title {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
       &-actions {
         display: none;
+        flex-shrink: 0;
         i {
           font-size: 18px;
           padding: 0 10px;
