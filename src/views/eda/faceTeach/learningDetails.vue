@@ -637,7 +637,6 @@
   };
 </script>
 
-
 <style lang="scss" scoped>
   /deep/.el-table__header th,
   .el-table__header tr {
