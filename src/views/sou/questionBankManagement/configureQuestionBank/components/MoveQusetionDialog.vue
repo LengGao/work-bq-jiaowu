@@ -40,7 +40,11 @@
 </template>
 
 <script>
-import { getTopicChapterList, moveQuestion } from "@/api/sou";
+import {
+  getTopicChapterList,
+  moveQuestion,
+  batchMoveQuestion,
+} from "@/api/sou";
 export default {
   props: {
     value: {
@@ -52,7 +56,7 @@ export default {
       default: "",
     },
     id: {
-      type: [String, Number],
+      type: [String, Number, Array],
       default: "",
     },
     currentChapterId: {
@@ -104,12 +108,19 @@ export default {
     },
     async submit() {
       const data = {
-        id: this.id,
         question_bank_id: this.$route.query.id,
         ...this.formData,
       };
+      let api = moveQuestion;
+      // 批量
+      if (Array.isArray(this.id)) {
+        api = batchMoveQuestion;
+        data.arr_id = this.id;
+      } else {
+        data.id = this.id;
+      }
       this.addLoading = true;
-      const res = await moveQuestion(data).catch(() => {
+      const res = await api(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;

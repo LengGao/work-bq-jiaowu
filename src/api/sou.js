@@ -764,10 +764,26 @@ export function deleteQuestion(data) {
     data,
   })
 }
+//批量 删除题目
+export function batchDeleteQuestion(data) {
+  return request({
+    url: '/topic/batchDeleteData',
+    method: 'post',
+    data,
+  })
+}
 // 修改题目
 export function updateQuestion(data) {
   return request({
     url: '/topic/update',
+    method: 'post',
+    data,
+  })
+}
+//批量 移动题目
+export function batchMoveQuestion(data) {
+  return request({
+    url: '/topic/batchMoveData',
     method: 'post',
     data,
   })

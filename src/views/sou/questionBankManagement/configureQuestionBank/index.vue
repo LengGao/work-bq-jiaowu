@@ -62,9 +62,10 @@
               class="min_table"
               :header-cell-style="{ 'text-align': 'center' }"
               height="660"
+              @selection-change="handleTableSelect"
             >
-              <!-- <el-table-column align="center" type="selection" width="70">
-              </el-table-column> -->
+              <el-table-column align="center" type="selection" width="70">
+              </el-table-column>
               <el-table-column
                 align="center"
                 label="题目ID"
@@ -114,6 +115,10 @@
               </el-table-column>
             </el-table>
             <div class="table_bottom">
+              <div>
+                <el-button @click="handleBatchMove">批量移动</el-button>
+                <el-button @click="handleBatchDel">批量删除</el-button>
+              </div>
               <page
                 :data="listTotal"
                 :curpage="pageNum"
@@ -141,7 +146,11 @@
 
 <script>
 import ChapterMenu from "./components/ChapterMenu";
-import { getQuestionList, deleteQuestion } from "@/api/sou";
+import {
+  getQuestionList,
+  deleteQuestion,
+  batchDeleteQuestion,
+} from "@/api/sou";
 import MoveQusetionDialog from "./components/MoveQusetionDialog.vue";
 import UploadQusetionDialog from "./components/UploadQusetionDialog.vue";
 export default {
@@ -204,6 +213,8 @@ export default {
       currentId: "",
       dialogVisible: false,
       uploadDialog: false,
+      selectionIds: [],
+      topic_chapter_id: "",
     };
   },
   activated() {
@@ -215,6 +226,42 @@ export default {
   },
 
   methods: {
+    handleTableSelect(selection) {
+      this.selectionIds = selection.map((item) => item.id);
+    },
+    handleBatchMove() {
+      if (!this.selectionIds.length) {
+        this.$message.warning("请选择题目");
+        return;
+      }
+      this.currentId = this.selectionIds;
+      this.currentChapterId = "";
+      this.dialogVisible = true;
+    },
+    // 批量删除
+    handleBatchDel() {
+      if (!this.selectionIds.length) {
+        this.$message.warning("请选择题目");
+        return;
+      }
+      this.$confirm("确定要删除选中题目吗?", { type: "warning" })
+        .then(() => {
+          this.batchDeleteQuestion();
+        })
+        .catch(() => {});
+    },
+    async batchDeleteQuestion() {
+      const data = {
+        arr_id: this.selectionIds,
+        question_bank_id: this.$route.query.id,
+      };
+      const res = await batchDeleteQuestion(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getQuestionList();
+        this.$refs.chapterMenu.getTopicChapterList();
+      }
+    },
     openUploadDialog() {
       this.uploadDialog = true;
     },
@@ -247,7 +294,8 @@ export default {
     // 章节变化
     handleChapterChange(id) {
       this.pageNum = 1;
-      this.getQuestionList(id);
+      this.topic_chapter_id = id;
+      this.getQuestionList();
     },
     // 删除题目
     deleteConfirm(id) {
@@ -263,6 +311,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getQuestionList();
+        this.$refs.chapterMenu.getTopicChapterList();
       }
     },
     handleSearch(data) {
@@ -276,9 +325,9 @@ export default {
       this.pageNum = val;
       this.getQuestionList();
     },
-    async getQuestionList(topic_chapter_id) {
+    async getQuestionList() {
       const data = {
-        topic_chapter_id: topic_chapter_id || "",
+        topic_chapter_id: this.topic_chapter_id,
         question_bank_id: this.$route.query.id,
         chapter_type: this.activeName,
         page: this.pageNum,
@@ -307,6 +356,11 @@ export default {
     span {
       font-weight: bold;
     }
+  }
+  .table_bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .main {
     padding: 20px;
