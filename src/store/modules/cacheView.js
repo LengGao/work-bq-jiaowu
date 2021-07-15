@@ -26,7 +26,7 @@ const searchCache = {
             apply: ['examinationSMS', 'projectDetails'],
             questionBank: ['configureQuestionBank', 'configureScore', 'questionConfigure'],
             configureQuestionBank: ['questionConfigure'],
-            allQuestionList: ['questionConfigure'],
+            allQuestionList: ['questionConfigure', 'configureQuestionBank'],
             achievement: ['achieveDetails', 'allResult'],
             teachingManage: ['addTeacher'],
             textbookManage: ['inventoryDetails'],

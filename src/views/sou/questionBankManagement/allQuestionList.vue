@@ -41,7 +41,13 @@
           label="题库名称"
           min-width="180"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toQusetionBank(row)">{{
+              row.question_bank_name
+            }}</el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           prop="chapter_type_name"
@@ -133,7 +139,17 @@ export default {
     this.searchData.keyword && this.getAllQuestionList();
   },
   methods: {
-    // 添加题目
+    toQusetionBank(row) {
+      this.$router.push({
+        name: "configureQuestionBank",
+        query: {
+          id: row.question_bank_id,
+          title: row.question_bank_name,
+          topic_course_id: row.question_bank_id,
+        },
+      });
+    },
+    // 编辑题目
     toQuestionEdit(row) {
       this.$router.push({
         name: "questionConfigure",

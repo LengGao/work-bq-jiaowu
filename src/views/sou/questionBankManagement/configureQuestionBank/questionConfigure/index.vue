@@ -50,7 +50,7 @@
       </div>
       <!-- 案例题时显示右侧 -->
       <div class="question-form-right" v-if="this.ruleForm.topic_type === 7">
-        <div class="question-type">
+        <div class="question-type" v-if="rightActiveType">
           <span>题目类型</span>
           <span class="name">{{ questionMap[rightActiveType] }}</span>
         </div>
@@ -62,16 +62,9 @@
             :is="getRightComponent"
           />
         </transition>
-        <div class="right-submit" v-if="rightActiveType">
-          <el-button @click="handleRightCancel">取消</el-button>
-          <el-button
-            type="primary"
-            :loading="addLoading"
-            @click="handleRightSubmit"
-            >保存</el-button
-          >
-        </div>
-        <span v-else class="no-component">请选择案例题目类型</span>
+        <span v-if="!rightActiveType" class="no-component"
+          >请选择案例题目类型</span
+        >
       </div>
     </el-form>
     <div class="question-form-submit question-form-submit--fixed" v-if="pid">
@@ -81,6 +74,13 @@
         :loading="addLoading"
         @click="submitForm('ruleForm')"
         >保存</el-button
+      >
+      <el-button
+        v-if="rightActiveType"
+        type="warning"
+        :loading="addLoading"
+        @click="handleRightSubmit"
+        >保存子题目</el-button
       >
     </div>
     <div class="question-form-submit question-form-submit--fixed" v-else>
@@ -422,7 +422,8 @@ export default {
     padding: 20px;
     display: flex;
     justify-content: space-between;
-    min-height: 750px;
+    height: 810px;
+    overflow-y: auto;
     .question-form-left {
       width: 49%;
       flex-shrink: 0;
@@ -432,6 +433,8 @@ export default {
       flex-shrink: 0;
       border-left: 1px solid #e4e7ed;
       position: relative;
+      height: 770px;
+      overflow-y: auto;
       & > div {
         width: 90%;
       }
@@ -456,7 +459,12 @@ export default {
 }
 .question-type {
   text-align: center;
-  margin-bottom: 16px;
+  padding-bottom: 16px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  width: 100% !important;
+  z-index: 10;
   span {
     margin-left: 16px;
     &.name {
