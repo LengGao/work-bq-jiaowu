@@ -533,6 +533,7 @@ export default {
 <style lang="scss" scoped>
 .mocks-config {
   color: #606266;
+  padding-bottom: 50px;
   font-size: 14px;
   .mocks-header {
     font-size: 14px;
@@ -609,6 +610,16 @@ export default {
         }
       }
     }
+  }
+  .form-item-submit {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    text-align: center;
+    background-color: #fff;
+    margin: 0;
+    padding: 20px 0;
   }
 }
 </style>
