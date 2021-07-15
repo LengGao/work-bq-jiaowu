@@ -123,6 +123,7 @@ export default {
           key: "keyword",
           attrs: {
             placeholder: "请输入",
+            maxLength: 100,
           },
         },
       ],
