@@ -15,14 +15,20 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="章节名称" prop="name">
+      <el-form-item
+        :label="`${chapterType == 1 ? '章节' : '试卷'}名称`"
+        prop="name"
+      >
         <el-input
           v-model="formData.name"
-          placeholder="请输入章节名称"
+          :placeholder="`请输入${chapterType == 1 ? '章节' : '试卷'}名称`"
           maxlength="100"
         />
       </el-form-item>
-      <el-form-item label="章节排序" prop="sort">
+      <el-form-item
+        :label="`${chapterType == 1 ? '章节' : '试卷'}排序`"
+        prop="sort"
+      >
         <el-input
           type="number"
           v-model="formData.sort"

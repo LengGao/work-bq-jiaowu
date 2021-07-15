@@ -1,6 +1,9 @@
    <!--分数配置 -->
 <template>
   <div class="configure-score">
+    <p class="question-bank-name">
+      当前题库：<span>{{ $route.query.title || "--" }}</span>
+    </p>
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本配置" name="BasicConfig"></el-tab-pane>
       <el-tab-pane label="历年真题配置" name="OverTheYearConfig"></el-tab-pane>
@@ -45,8 +48,25 @@ export default {
 .configure-score {
   border-top: 15px solid #f2f6fc;
   padding: 30px;
+  .question-bank-name {
+    text-align: right;
+    color: #606266;
+    span {
+      font-weight: bold;
+    }
+  }
   .configure-components {
     padding-top: 16px;
   }
+}
+</style>
+<style >
+/* 去掉number样式 */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>

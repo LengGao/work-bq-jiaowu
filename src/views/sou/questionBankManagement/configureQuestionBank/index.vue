@@ -1,6 +1,9 @@
 <template>
   <div class="configure-question">
     <section class="mainwrap">
+      <p class="question-bank-name">
+        当前题库：<span>{{ $route.query.title || "--" }}</span>
+      </p>
       <el-tabs v-model="activeName" @tab-click="handleChapterTypeChange">
         <el-tab-pane label="章节练习" name="1"></el-tab-pane>
         <el-tab-pane label="历年真题" name="2"></el-tab-pane>
@@ -151,7 +154,7 @@ export default {
   data() {
     return {
       // 1：章节 2：历年真题 3：自主出题
-      activeName: sessionStorage.getItem("activeName") || "1",
+      activeName: "1",
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -203,7 +206,10 @@ export default {
       uploadDialog: false,
     };
   },
-
+  activated() {
+    this.getQuestionList();
+    this.$refs.chapterMenu.getTopicChapterList();
+  },
   created() {
     this.getQuestionList();
   },
@@ -232,7 +238,6 @@ export default {
           pid,
         },
       });
-      sessionStorage.setItem("activeName", this.activeName);
     },
     // 章节类型变化
     handleChapterTypeChange() {
@@ -296,6 +301,12 @@ export default {
   .el-table__header tr {
     background-color: #f8f8f8;
     color: #909399;
+  }
+  .question-bank-name {
+    text-align: right;
+    span {
+      font-weight: bold;
+    }
   }
   .main {
     padding: 20px;

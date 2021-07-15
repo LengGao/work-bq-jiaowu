@@ -3,7 +3,7 @@
     <div v-for="(item, index) in options" :key="index">
       <component
         :style="item.width ? { width: item.width + 'px' } : ''"
-        v-model.trim="searchData[item.key]"
+        v-model="searchData[item.key]"
         :is="allComponents[item.type || 'input']"
         v-bind="item.attrs"
         v-on="item.events"

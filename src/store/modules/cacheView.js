@@ -5,7 +5,8 @@ const searchCache = {
             'teachMaterial', 'certificates', 'teachSchedule',
             'attendanceManage', 'classLive', 'liveSessions', 'livePublicClass',
             'finance', 'order', 'courseManage', 'apply', 'questionBank', 'achievement',
-            'teachingManage', 'textbookManage', 'warehouseManage', 'agency'
+            'teachingManage', 'textbookManage', 'warehouseManage', 'agency', 'configureQuestionBank',
+            'allQuestionList'
         ],
         // 缓存的触发条件
         cacheTo: {
@@ -24,6 +25,8 @@ const searchCache = {
             courseManage: ['configureCourses', 'cusdetail', 'createClass'],
             apply: ['examinationSMS', 'projectDetails'],
             questionBank: ['configureQuestionBank', 'configureScore', 'questionConfigure'],
+            configureQuestionBank: ['questionConfigure'],
+            allQuestionList: ['questionConfigure'],
             achievement: ['achieveDetails', 'allResult'],
             teachingManage: ['addTeacher'],
             textbookManage: ['inventoryDetails'],

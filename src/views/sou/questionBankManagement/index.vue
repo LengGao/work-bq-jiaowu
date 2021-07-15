@@ -11,6 +11,7 @@
           @on-search="handleSearch"
         />
         <div>
+          <el-button @click="toQuestionList">搜索题目</el-button>
           <el-button type="primary" @click="openAdd">添加题库</el-button>
         </div>
       </div>
@@ -79,11 +80,18 @@
                 <el-button
                   type="text"
                   @click="
-                    linkTo('configureQuestionBank', row.id, row.topic_course_id)
+                    linkTo(
+                      'configureQuestionBank',
+                      row.id,
+                      row.title,
+                      row.topic_course_id
+                    )
                   "
                   >配置题库</el-button
                 >
-                <el-button type="text" @click="linkTo('configureScore', row.id)"
+                <el-button
+                  type="text"
+                  @click="linkTo('configureScore', row.id, row.title)"
                   >配置分数</el-button
                 >
                 <el-button type="text" @click="openEdit(row.id)"
@@ -164,15 +172,17 @@ export default {
       typeOptions: [],
     };
   },
-
   created() {
     this.getQuestionBankList();
     this.getCateList();
   },
 
   methods: {
-    linkTo(name, id, topic_course_id) {
-      this.$router.push({ name, query: { id, topic_course_id } });
+    toQuestionList() {
+      this.$router.push({ name: "allQuestionList" });
+    },
+    linkTo(name, id, title, topic_course_id) {
+      this.$router.push({ name, query: { id, title, topic_course_id } });
     },
     // 删除题库
     deleteConfirm(id) {

@@ -50,8 +50,13 @@
       </div>
       <!-- 案例题时显示右侧 -->
       <div class="question-form-right" v-if="this.ruleForm.topic_type === 7">
+        <div class="question-type">
+          <span>题目类型</span>
+          <span class="name">{{ questionMap[rightActiveType] }}</span>
+        </div>
         <transition name="fade">
           <component
+            class="components"
             ref="editorRightForm"
             :data="caseChildData"
             :is="getRightComponent"
@@ -111,6 +116,14 @@ export default {
         topic_chapter_id: [
           { required: true, message: "请选择", trigger: "change" },
         ],
+      },
+      questionMap: {
+        1: "单选题",
+        2: "多选题",
+        3: "判断题",
+        4: "不定项题",
+        5: "填空题",
+        6: "简答题",
       },
       questionOptions: [
         {
@@ -409,6 +422,7 @@ export default {
     padding: 20px;
     display: flex;
     justify-content: space-between;
+    min-height: 750px;
     .question-form-left {
       width: 49%;
       flex-shrink: 0;
@@ -417,8 +431,6 @@ export default {
       width: 49%;
       flex-shrink: 0;
       border-left: 1px solid #e4e7ed;
-      height: 750px;
-      overflow-y: auto;
       position: relative;
       & > div {
         width: 90%;
@@ -441,5 +453,16 @@ export default {
   background-color: #fff;
   text-align: center;
   border-top: 10px solid #f2f6fc;
+}
+.question-type {
+  text-align: center;
+  margin-bottom: 16px;
+  span {
+    margin-left: 16px;
+    &.name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+  }
 }
 </style>

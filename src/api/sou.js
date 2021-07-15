@@ -723,6 +723,14 @@ export function getChapterOptions(params) {
     params,
   })
 }
+// 所有题目列表
+export function getAllQuestionList(params) {
+  return request({
+    url: '/topic/search',
+    method: 'get',
+    params,
+  })
+}
 // 题目列表
 export function getQuestionList(params) {
   return request({

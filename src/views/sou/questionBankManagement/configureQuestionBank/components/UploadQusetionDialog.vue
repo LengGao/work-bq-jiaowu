@@ -110,8 +110,7 @@ export default {
         token: this.$store.state.user.token,
       },
       suffix: [".doc", ".docx"],
-      downloadUrl:
-        "http://edu.com/storage/live_data/20210708/23d7e5efffea593af978fa46f60cafb2.docx",
+      downloadUrl: "https://oss-file.beiqujy.com/doc/template.docx",
     };
   },
   watch: {

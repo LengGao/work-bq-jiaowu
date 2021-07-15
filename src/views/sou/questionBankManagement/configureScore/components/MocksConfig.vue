@@ -173,7 +173,7 @@
         </el-form-item>
       </div>
       <div class="type-2 chapter-list" v-else>
-        <div class="list-item">
+        <el-card class="list-item list-item-score">
           <el-form-item label="单选题" prop="c_score1">
             <span>每题</span>
             <el-input
@@ -270,19 +270,15 @@
               >
             </el-radio-group>
           </el-form-item>
-        </div>
-        <div
+        </el-card>
+        <el-card
           class="list-item"
           v-for="(item, index) in chpaterList"
           :key="index"
         >
           <div class="list-item-top">
-            <span class="title">章节名称</span>
-            <el-input
-              class="input"
-              readonly
-              :value="item.chapter_name"
-            ></el-input>
+            <span>章节名称</span>
+            <span class="title">{{ item.chapter_name }}</span>
             <span class="desc">（{{ item.description }}）</span>
           </div>
           <div class="list-item-bottom">
@@ -360,7 +356,7 @@
               </el-form-item>
             </div>
           </div>
-        </div>
+        </el-card>
       </div>
 
       <el-form-item class="form-item-submit">
@@ -564,8 +560,13 @@ export default {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      padding-top: 16px;
-      border-bottom: 1px solid #dcdfe6;
+      margin-bottom: 10px;
+      &-score {
+        /deep/.el-card__body {
+          display: flex;
+          flex-wrap: wrap;
+        }
+      }
       /deep/.el-form-item {
         width: 260px;
         .input-number {
@@ -579,13 +580,14 @@ export default {
       .list-item-top {
         margin-bottom: 30px;
         .title {
-          margin-right: 20px;
+          margin: 0 20px;
+          font-weight: bold;
         }
         .input {
           width: 200px;
         }
         .desc {
-          margin-left: 10px;
+          color: #999;
         }
       }
       .list-item-bottom {

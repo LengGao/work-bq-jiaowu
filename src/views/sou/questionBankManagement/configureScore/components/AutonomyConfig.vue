@@ -9,13 +9,14 @@
       v-loading="detaiLoading"
     >
       <el-form-item label="单选题" prop="score1">
-        <span>每题</span>
+        <span>每1题</span>
         <el-input
           class="input-score"
           type="number"
           v-model="formData.score1"
           placeholder="请输入"
           maxlength="10"
+          min="0"
         />
         <span>分</span>
       </el-form-item>
@@ -210,6 +211,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .autonomy-config {
   .el-form-item {
     width: 500px;
