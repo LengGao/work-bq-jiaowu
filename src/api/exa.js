@@ -317,6 +317,14 @@ export function getClassRoomSelect(params) {
     params,
   })
 }
+// 报考-选择学生列表-项目选项
+export function getProjectSelect(params) {
+  return request({
+    url: '/Examination/getProjectSelect',
+    method: 'get',
+    params,
+  })
+}
 // 报考详情
 export function enrollInfo(params) {
   return request({
@@ -385,6 +393,38 @@ export function getPlanSelect(params) {
 export function exportUserGrade(params) {
   return request({
     url: '/Graduation/exportUserGrade',
+    method: 'get',
+    params,
+  })
+}
+//考务群发信息
+export function sendMessage(data) {
+  return request({
+    url: '/Examination/sendMessage',
+    method: 'post',
+    data,
+  })
+}
+// 群发记录
+export function getExaminationMessageList(params) {
+  return request({
+    url: '/Examination/getExaminationMessageList',
+    method: 'get',
+    params,
+  })
+}
+// 群发记录详情
+export function getExaminationMessageRecordList(params) {
+  return request({
+    url: '/Examination/getExaminationMessageRecordList',
+    method: 'get',
+    params,
+  })
+}
+// 重发
+export function resendMessage(params) {
+  return request({
+    url: '/Examination/resendMessage',
     method: 'get',
     params,
   })

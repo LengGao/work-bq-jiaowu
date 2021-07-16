@@ -112,14 +112,14 @@
           <el-table-column label="操作" fixed="right" min-width="270">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="openEdit(row.id)"
-                  >编辑</el-button
+                <el-button type="text" @click="openReview(row.id)"
+                  >资料审核</el-button
                 >
                 <el-button type="text" @click="openPhoto(row.uid)"
                   >补齐资料</el-button
                 >
-                <el-button type="text" @click="openReview(row.id)"
-                  >资料审核</el-button
+                <el-button type="text" @click="openEdit(row.id)"
+                  >编辑</el-button
                 >
                 <el-button type="text" @click="deleteConfirm(row.id)"
                   >移除学生</el-button

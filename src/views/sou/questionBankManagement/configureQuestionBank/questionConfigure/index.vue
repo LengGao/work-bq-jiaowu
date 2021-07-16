@@ -50,23 +50,21 @@
       </div>
       <!-- 案例题时显示右侧 -->
       <div class="question-form-right" v-if="this.ruleForm.topic_type === 7">
+        <div class="question-type" v-if="rightActiveType">
+          <span>题目类型</span>
+          <span class="name">{{ questionMap[rightActiveType] }}</span>
+        </div>
         <transition name="fade">
           <component
+            class="components"
             ref="editorRightForm"
             :data="caseChildData"
             :is="getRightComponent"
           />
         </transition>
-        <div class="right-submit" v-if="rightActiveType">
-          <el-button @click="handleRightCancel">取消</el-button>
-          <el-button
-            type="primary"
-            :loading="addLoading"
-            @click="handleRightSubmit"
-            >保存</el-button
-          >
-        </div>
-        <span v-else class="no-component">请选择案例题目类型</span>
+        <span v-if="!rightActiveType" class="no-component"
+          >请选择案例题目类型</span
+        >
       </div>
     </el-form>
     <div class="question-form-submit question-form-submit--fixed" v-if="pid">
@@ -76,6 +74,13 @@
         :loading="addLoading"
         @click="submitForm('ruleForm')"
         >保存</el-button
+      >
+      <el-button
+        v-if="rightActiveType"
+        type="warning"
+        :loading="addLoading"
+        @click="handleRightSubmit"
+        >保存子题目</el-button
       >
     </div>
     <div class="question-form-submit question-form-submit--fixed" v-else>
@@ -111,6 +116,14 @@ export default {
         topic_chapter_id: [
           { required: true, message: "请选择", trigger: "change" },
         ],
+      },
+      questionMap: {
+        1: "单选题",
+        2: "多选题",
+        3: "判断题",
+        4: "不定项题",
+        5: "填空题",
+        6: "简答题",
       },
       questionOptions: [
         {
@@ -346,7 +359,7 @@ export default {
       } else {
         this.rightActiveType = type;
       }
-
+      // 有id 查详情来展示
       if (id) {
         const data = {
           id,
@@ -379,8 +392,6 @@ export default {
     // 案例题的添加
     handleRightSubmit() {
       this.$refs.editorRightForm.validate((valid, data) => {
-        console.log(data);
-        console.log(valid);
         if (valid) {
           this.addQuestion({
             ...data,
@@ -411,6 +422,8 @@ export default {
     padding: 20px;
     display: flex;
     justify-content: space-between;
+    height: 810px;
+    overflow-y: auto;
     .question-form-left {
       width: 49%;
       flex-shrink: 0;
@@ -419,9 +432,9 @@ export default {
       width: 49%;
       flex-shrink: 0;
       border-left: 1px solid #e4e7ed;
-      height: 750px;
-      overflow-y: auto;
       position: relative;
+      height: 770px;
+      overflow-y: auto;
       & > div {
         width: 90%;
       }
@@ -443,5 +456,21 @@ export default {
   background-color: #fff;
   text-align: center;
   border-top: 10px solid #f2f6fc;
+}
+.question-type {
+  text-align: center;
+  padding-bottom: 16px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  width: 100% !important;
+  z-index: 10;
+  span {
+    margin-left: 16px;
+    &.name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+  }
 }
 </style>

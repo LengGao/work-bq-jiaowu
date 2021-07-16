@@ -18,7 +18,6 @@ const cdn = {
     'https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js',
     'https://cdn.jsdelivr.net/npm/vuex@3.4/dist/vuex.min.js',
     'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/index.js',
-    'https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
   ],
 }
 // cdn预加载使用
@@ -28,7 +27,6 @@ const externals = {
   vuex: 'Vuex',
   axios: 'axios',
   'element-ui': 'ELEMENT',
-  jquery: 'jQuery',
 }
 module.exports = {
   publicPath: isProduction ? './' : '/',
@@ -42,12 +40,10 @@ module.exports = {
         // target: 'http://admin.bqjy.com', //李博文
         // target: 'http://thing.com',
         target: 'http://testadmin.beiqujy.com/apidata', //测试
-
-        // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
         // target: 'http://192.168.8.100', //权
         // target: 'http://dpadmin.beiqujy.com/apidata', //生产
-        target: 'http://edu.com',
+        // target: 'http://edu.com',
         //target: 'http://www.beiqujy.com/apidata',
         // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
         changeOrigin: true,
@@ -126,14 +122,6 @@ module.exports = {
       // externals
       config.externals = externals
     }
-    // 启动gzip压缩
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        'windows.jQuery': 'jquery',
-      })
-    )
     // 开发环境不需要gzip
     if (process.env.NODE_ENV !== 'production') return
     config.plugins.push(
@@ -169,4 +157,5 @@ module.exports = {
       })
     )
   },
+
 }

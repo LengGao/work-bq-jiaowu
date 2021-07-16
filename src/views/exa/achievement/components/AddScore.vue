@@ -3,7 +3,7 @@
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    width="700px"
+    width="900px"
     class="add-class"
     @open="handleOpen"
     :close-on-click-modal="false"
@@ -41,7 +41,7 @@
             <p class="subject_name">{{ item.subject_name }}:</p>
             <el-input
               type="number"
-              style="width:97px"
+              style="width: 97px"
               placeholder="请输入分数"
               :max="item.total_score"
               v-model="item.score"
@@ -65,7 +65,7 @@
                 item.score >= item.pass_score ? 'qualified' : 'unqualified'
               "
             >
-              {{ item.score >= item.pass_score ? '合格' : '不合格' }}
+              {{ item.score >= item.pass_score ? "合格" : "不合格" }}
             </span>
           </div>
         </el-col>
@@ -86,7 +86,7 @@
 
               <el-input
                 type="number"
-                style="width:97px"
+                style="width: 97px"
                 placeholder="请输入分数"
                 v-model="v.score"
                 @input="subjectChildInput(item)"
@@ -98,7 +98,7 @@
       <el-row>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
           <el-form-item label="合计总分">
-            {{ totalScore + '/' + userOptions.total_score }}</el-form-item
+            {{ totalScore + "/" + userOptions.total_score }}</el-form-item
           >
         </el-col>
         <el-col :lg="12" :xs="12" :sm="12" :xl="12">
@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { getPlanGradeDetail, saveGrade } from '@/api/exa'
+import { getPlanGradeDetail, saveGrade } from "@/api/exa";
 export default {
   props: {
     value: {
@@ -140,11 +140,11 @@ export default {
     },
     title: {
       type: String,
-      default: '',
+      default: "",
     },
     id: {
       type: [String, Number],
-      default: '',
+      default: "",
     },
 
     typeOptions: {
@@ -155,7 +155,7 @@ export default {
   data() {
     return {
       addLoading: false,
-      grade_status: '',
+      grade_status: "",
       totalScore: 0,
       subject_item: [],
       userOptions: {},
@@ -163,39 +163,39 @@ export default {
       visible: this.value,
       rules: {
         classroom_name: [
-          { required: true, message: '请输入班级名称', trigger: 'blur' },
+          { required: true, message: "请输入班级名称", trigger: "blur" },
         ],
-        category_id: [{ required: true, message: '请选择', trigger: 'change' }],
+        category_id: [{ required: true, message: "请选择", trigger: "change" }],
         master_teacher_id: [
-          { required: true, message: '请选择', trigger: 'change' },
+          { required: true, message: "请选择", trigger: "change" },
         ],
       },
-    }
+    };
   },
   watch: {
     value(val) {
-      this.visible = val
+      this.visible = val;
     },
     subject_item(newVal, oldVal) {
-      console.log(newVal)
+      console.log(newVal);
     },
   },
   methods: {
     handleConfirm(formName) {
-      console.log(this.subject_item)
+      console.log(this.subject_item);
       //对题型格式进行处理
-      var formData = {}
+      var formData = {};
       this.subject_item.forEach((i) => {
-        formData[i.parameter_name] = i.score
+        formData[i.parameter_name] = i.score;
         if (i.children && i.children.length) {
           i.children.forEach((vi) => {
-            formData[vi.parameter_name] = vi.score
-          })
+            formData[vi.parameter_name] = vi.score;
+          });
         }
-      })
-      this.formData = formData
-      console.log(formData)
-      this.saveGrade()
+      });
+      this.formData = formData;
+      console.log(formData);
+      this.saveGrade();
       // this.$refs[formName].validate((valid) => {
       //   if (valid) {
       //     // alert('submit!');
@@ -210,81 +210,81 @@ export default {
         ...this.formData,
         id: this.userOptions.id,
         grade_status: this.userOptions.grade_status,
-      }
+      };
 
-      this.addLoading = true
+      this.addLoading = true;
       const res = await saveGrade(data).catch(() => {
-        this.addLoading = false
-      })
-      this.addLoading = false
+        this.addLoading = false;
+      });
+      this.addLoading = false;
       if (res.code === 0) {
-        this.$message.success(res.message)
-        this.hanldeCancel()
-        this.$emit('on-success')
+        this.$message.success(res.message);
+        this.hanldeCancel();
+        this.$emit("on-success");
       }
     },
     subjectChildInput(data) {
-      console.log(data)
-      var totalScore = 0
+      console.log(data);
+      var totalScore = 0;
       data.children.forEach((i) => {
-        console.log(i)
-        totalScore += parseFloat(i.score)
-      })
+        console.log(i);
+        totalScore += parseFloat(i.score);
+      });
       if (data.score < totalScore) {
         this.$message.warning(
-          '当前所有题型总分不能大于' +
+          "当前所有题型总分不能大于" +
             data.subject_name +
-            '' +
+            "" +
             data.score +
-            '总分'
-        )
+            "总分"
+        );
       }
-      console.log(totalScore)
+      console.log(totalScore);
     },
     subjectInput(data) {
-      console.log(data)
-      var totalScore = 0
+      console.log(data);
+      var totalScore = 0;
       data.forEach((i) => {
-        console.log(i)
-        totalScore += parseFloat(i.score)
-      })
-      this.totalScore = totalScore
-      console.log(totalScore)
+        console.log(i);
+        totalScore += parseFloat(i.score);
+      });
+      this.totalScore = totalScore;
+      console.log(totalScore);
     },
     async getPlanGradeDetail() {
       const data = {
         id: this.id,
-      }
-      const res = await getPlanGradeDetail(data)
+      };
+      const res = await getPlanGradeDetail(data);
       if (res.code === 0) {
-        this.userOptions = res.data
-        this.subject_item = res.data.subject_item
-        console.log(res.data)
-        var totalScore = 0
+        this.userOptions = res.data;
+        this.subject_item = res.data.subject_item;
+        console.log(res.data);
+        var totalScore = 0;
         res.data.subject_item.forEach((i) => {
-          totalScore += parseFloat(i.score - 0)
-        })
-        this.totalScore = totalScore
+          totalScore += parseFloat(i.score - 0);
+        });
+        this.totalScore = totalScore;
       }
     },
     handleOpen() {
-      this.getPlanGradeDetail()
+      this.getPlanGradeDetail();
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
       // for (const k in this.formData) {
       //   this.formData[k] = ''
       // }
-      this.userOptions = {}
-      this.subject_item = []
-      this.grade_status = ''
-      this.hanldeCancel()
+      this.userOptions = {};
+      this.subject_item = [];
+      this.grade_status = "";
+      this.hanldeCancel();
     },
     hanldeCancel() {
-      this.$emit('input', false)
+      this.$emit("input", false);
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -308,8 +308,8 @@ export default {
   }
 }
 .subject_name {
-  font-family: 'Microsoft YaHei UI Bold', 'Microsoft YaHei UI Regular',
-    'Microsoft YaHei UI', sans-serif;
+  font-family: "Microsoft YaHei UI Bold", "Microsoft YaHei UI Regular",
+    "Microsoft YaHei UI", sans-serif;
   font-weight: 700;
   font-style: normal;
   color: #606266;

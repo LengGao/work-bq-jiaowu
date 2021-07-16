@@ -98,6 +98,12 @@ export const asyncRouter = [
         meta: { title: '题库管理', icon: 'product-add' },
       },
       {
+        path: 'allQuestionList',
+        name: 'allQuestionList',
+        component: () => import('@/views/sou/questionBankManagement/allQuestionList.vue'),
+        meta: { title: '所有题目', icon: 'product-add' },
+      },
+      {
         path: 'configureQuestionBank',
         name: 'configureQuestionBank',
         component: () => import('@/views/sou/questionBankManagement/configureQuestionBank/index.vue'),
@@ -121,13 +127,6 @@ export const asyncRouter = [
         name: 'createClass',
         component: () => import('@/views/sou/courseManage/createClass.vue'),
         meta: { title: '添加课程', icon: 'product-cate' },
-        hidden: true,
-      },
-      {
-        path: 'packageDetail',
-        name: 'packageDetail',
-        component: () => import('@/views/sou/courseManage/packageDetail.vue'),
-        meta: { title: '套餐详情', icon: 'product-cate' },
         hidden: true,
       },
       {
@@ -328,7 +327,7 @@ export const asyncRouter = [
         meta: { title: '学生详情', icon: 'product-cate' },
         hidden: true,
       },
-      
+
       {
         path: 'orderManage',
         name: 'orderManage',
@@ -600,22 +599,6 @@ export const asyncRouter = [
     ],
   },
   {
-    path: '/sys',
-    component: Layout,
-    redirect: '/sys/notice',
-    meta: { title: '系统配置', icon: 'xitongpeizhi' },
-    name: 'sys',
-    children: [
-      {
-        path: 'notice',
-        name: 'notice',
-        component: () => import('@/views/sys/notice.vue'),
-        meta: { title: '通知公告', icon: 'imgSpace' },
-      },
-    ],
-  },
-
-  {
     path: '/exa',
     component: Layout,
     redirect: '/exa/examination',
@@ -653,6 +636,12 @@ export const asyncRouter = [
         name: 'projectDetails',
         component: () => import('@/views/exa/projectDetails/index.vue'),
         meta: { title: '报考详情', icon: 'product-add' },
+      },
+      {
+        path: 'examinationSMS',
+        name: 'examinationSMS',
+        component: () => import('@/views/exa/examinationSMS/index.vue'),
+        meta: { title: '考务群发短信', icon: 'product-add' },
       },
       {
         path: 'achievement',
@@ -889,26 +878,22 @@ export const resetRouter = () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
 }
-let netxtViewName = ''
+let currentCacheName = ''
 router.beforeEach((to, from, next) => {
   const cacheViews = store.state.cacheView.cacheViews
   const cacheTo = store.state.cacheView.cacheTo
-  // 如果当前页面返回不是已缓存页面就清除
-  if (netxtViewName && to.name !== netxtViewName) {
-    store.dispatch('delViewCache', netxtViewName)
-    netxtViewName = ''
+
+  //  如果去的页面不是缓存条件页面就清除 currentCacheName页面的缓存
+  if (currentCacheName && to.name !== currentCacheName && cacheTo[currentCacheName] && !cacheTo[currentCacheName].includes(to.name)) {
+    store.dispatch('delViewCache', from.name)
   }
+
   // 添加缓存
   if (cacheViews.includes(to.name)) {
+    currentCacheName = to.name
     store.dispatch('setViewCache', to.name)
   }
-  // 如果已缓存的页面去的没有目标页面，就清除
-  if (cacheTo[from.name] && !cacheTo[from.name].includes(to.name)) {
-    store.dispatch('delViewCache', from.name)
-  } else {
-    // 记录来的页面
-    netxtViewName = from.name
-  }
+
   next()
 })
 

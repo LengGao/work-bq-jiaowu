@@ -225,6 +225,7 @@ export default {
           attrs: {
             placeholder: "所属班级",
             clearable: true,
+            filterable: true,
           },
         },
         {
@@ -236,6 +237,7 @@ export default {
           attrs: {
             placeholder: "上课老师",
             clearable: true,
+            filterable: true,
           },
         },
         {
@@ -250,6 +252,7 @@ export default {
           attrs: {
             placeholder: "授课方式",
             clearable: true,
+            filterable: true,
           },
         },
         // {

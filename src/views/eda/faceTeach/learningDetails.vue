@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="detail-content">
-      <div class="detail-info">
+      <div class="detail-infoname">
         <div class="detail-label">学生姓名</div>
         <div class="detail-con">{{ruleForm.surname}}</div>
       </div>
@@ -9,7 +9,7 @@
         <div class="detail-label">手机号码</div>
         <div class="detail-con">{{ruleForm.mobile}}</div>
       </div>
-      <div class="detail-infocon">
+      <div class="detail-infonum">
         <div class="detail-label">身份证号</div>
         <div class="detail-con">{{ruleForm.id_card_number}}</div>
       </div>
@@ -77,9 +77,9 @@
                 </el-table-column>
               </el-table>
             </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
-            </div>
+            <!-- <div class="table_bottom">
+              <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+            </div> -->
           </div>
           <!--章节练习-->
           <div v-if="isTagactive == 2">
@@ -130,9 +130,9 @@
                 <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-              <div class="table_bottom">
-                <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
-              </div>
+              <!-- <div class="table_bottom">
+                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+              </div> -->
             </div>
           </div>
           <!--历年真题-->
@@ -174,7 +174,7 @@
                 </el-table-column>
                 <el-table-column prop="right_problem" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="total_problem" label="错误题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="error_problem" label="错误题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="unanswered" label="未回答题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
@@ -184,9 +184,6 @@
                 <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-            </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
             </div>
 
           </div>
@@ -219,7 +216,7 @@
               <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <el-table-column prop="course_id" label="试卷名称" show-overflow-tooltip min-width="100">
+                <el-table-column prop="create_time" label="试卷名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
                 <el-table-column prop="create_time" label="考试时间" min-width="100" column-key="course_id"
                   show-overflow-tooltip>200</el-table-column>
@@ -238,9 +235,7 @@
                 </el-table-column>
               </el-table>
             </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
-            </div>
+
 
           </div>
           <!--刷题挑战-->
@@ -284,12 +279,9 @@
                 </el-table-column>
                 <el-table-column prop="use_time" label="做题用时" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <!-- <el-table-column prop="course_price" label="挑战排名" min-width="100" show-overflow-tooltip>
-                </el-table-column> -->
+                <el-table-column prop="rank" label="挑战排名" min-width="100" show-overflow-tooltip>
+                </el-table-column>
               </el-table>
-            </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
             </div>
           </div>
           <!--录播视频-->
@@ -331,7 +323,7 @@
                 </el-table-column> -->
                 <el-table-column prop="watch_time" label="观看时长" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="highest_time" label="观看进度" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="progress" label="观看进度" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <!-- <el-table-column prop="course_price" label="操作" min-width="100" show-overflow-tooltip>
                   <template slot-scope="scope">
@@ -341,9 +333,6 @@
                   </template>
                 </el-table-column> -->
               </el-table>
-            </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
             </div>
 
           </div>
@@ -359,7 +348,7 @@
                 </li>
                 <li>
                   <p>观看场数</p>
-                  <strong>{{dataTitle.progress}}</strong>
+                  <strong>{{dataTitle.watch_count}}</strong>
                 </li>
                 <li>
                   <p>观看总时长</p>
@@ -367,7 +356,7 @@
                 </li>
                 <li>
                   <p>到课率</p>
-                  <strong>{{dataTitle.watch_count}}%</strong>
+                  <strong>{{dataTitle.progress}}%</strong>
                 </li>
               </ul>
             </div>
@@ -376,22 +365,19 @@
               <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <el-table-column prop="course_id" label="直播场数" show-overflow-tooltip min-width="100">2020-06-04 16:30
+                <el-table-column prop="stream_name" label="直播场数" show-overflow-tooltip min-width="100">2020-06-04 16:30
                 </el-table-column>
-                <el-table-column prop="course_name" label="直播名称" min-width="100" column-key="course_id"
+                <el-table-column prop="live_name" label="直播名称" min-width="100" column-key="course_id"
                   show-overflow-tooltip></el-table-column>
                 <el-table-column prop="start_time" label="开始加入时间" min-width="100" show-overflow-tooltip>100
                 </el-table-column>
-                <el-table-column prop="finished_time" label="最后离开时间" min-width="100" show-overflow-tooltip>50%
+                <el-table-column prop="leave_time" label="最后离开时间" min-width="100" show-overflow-tooltip>50%
                 </el-table-column>
                 <el-table-column prop="watch_time" label="观看时长" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="highest_time" label="观看进度" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="progress" label="观看进度" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-            </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
             </div>
           </div>
           <!--回播视频-->
@@ -406,7 +392,7 @@
                 </li>
                 <li>
                   <p>观看场数</p>
-                  <strong>{{dataTitle.progress}}</strong>
+                  <strong>{{dataTitle.total_watch_num}}</strong>
                 </li>
                 <li>
                   <p>观看总时长</p>
@@ -414,7 +400,7 @@
                 </li>
                 <li>
                   <p>观看总进度</p>
-                  <strong>{{dataTitle.total_watch_num}}%</strong>
+                  <strong>{{dataTitle.progress}}%</strong>
                 </li>
               </ul>
             </div>
@@ -423,23 +409,20 @@
               <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <el-table-column prop="course_id" label="回播场数" show-overflow-tooltip min-width="100">2020-06-04 16:30
+                <el-table-column prop="live_video_name" label="回播场数" show-overflow-tooltip min-width="100">2020-06-04
+                  16:30
                 </el-table-column>
-                <el-table-column prop="course_name" label="回播名称" min-width="100" column-key="course_id"
+                <el-table-column prop="media_name" label="回播名称" min-width="100" column-key="course_id"
                   show-overflow-tooltip>200</el-table-column>
-                <el-table-column prop="category_name" label="开始加入时间" min-width="100" show-overflow-tooltip>100
+                <el-table-column prop="start_time" label="开始加入时间" min-width="100" show-overflow-tooltip>100
                 </el-table-column>
-                <el-table-column prop="class_type_name" label="最后离开时间" min-width="100" show-overflow-tooltip>50%
+                <el-table-column prop="leave_time" label="最后离开时间" min-width="100" show-overflow-tooltip>50%
                 </el-table-column>
-                <el-table-column prop="course_price" label="观看时长" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="watch_time" label="观看时长" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="course_price" label="观看进度" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="progress" label="观看进度" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-
               </el-table>
-            </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
             </div>
           </div>
           <!--面授约课-->
@@ -449,20 +432,20 @@
                 <li>
                   <p>面授课次数</p>
                   <div>
-                    <strong>{{dataTitle.achieve}}</strong>
+                    <strong>{{dataTitle.total}}</strong>
                   </div>
                 </li>
                 <li>
                   <p>完成次数</p>
-                  <strong>{{dataTitle.total}}</strong>
+                  <strong>{{dataTitle.achieve}}</strong>
                 </li>
                 <li>
                   <p>失约次数</p>
-                  <strong>{{dataTitle.progress}}</strong>
+                  <strong>{{dataTitle.miss}}</strong>
                 </li>
                 <li>
                   <p>到课率</p>
-                  <strong>{{dataTitle.miss}}%</strong>
+                  <strong>{{dataTitle.progress}}%</strong>
                 </li>
               </ul>
             </div>
@@ -471,23 +454,20 @@
               <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <el-table-column prop="subscribe_classroom_name" label="面授课名称" show-overflow-tooltip min-width="100">
+                <el-table-column prop="chapter_name" label="面授课名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="chapter_name" label="课程内容" min-width="100" column-key="course_id"
+                <el-table-column prop="subscribe_classroom_name" label="课程内容" min-width="100" column-key="course_id"
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="teacher_name" label="任课老师" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="specific_time_range" label="上课时间" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="missed" label="上课地点" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="address" label="上课地点" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="status" label="完成状态" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="status_name" label="完成状态" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-            </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
             </div>
           </div>
           <!--自主出题-->
@@ -532,16 +512,12 @@
                 </el-table-column>
                 <el-table-column prop="unanswered" label="未回答题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="create_time" label="做题用时" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="use_time" label="做题用时" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="mark" label="得分" min-width="100" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-
               </el-table>
-            </div>
-            <div class="table_bottom">
-              <page :data="listTotal" :curpage="page" @pageChange="handlePageChange" />
             </div>
           </div>
         </el-col>
@@ -556,29 +532,11 @@
     data() {
       return {
         state: 0,
-        page: 1,
-        listTotal: 0,
+        // pageNum: 1,
+        // listTotal: 0,
         isTagactive: 1,
         dataTitle: {},
-        practicedata: {},
-        punchDetail: {},
-        chapterTitle: {},
-        dataList: [
-          { create_time: "11", },
-        ],
-        practiceDatalist: [],
-        chapterDatalist: [],
-        schoolData: [
-          {
-            chapter_name: "",
-            create_time: "",
-            total_problem: "",
-            right_problem: "",
-            accuracy: "",
-            create_time: "",
-            ranking: ""
-          },
-        ],
+        dataList: [{ create_time: "" }],
         ruleForm: {},
         tabFun: [
           {
@@ -637,16 +595,15 @@
     created() {
       this.getStudentBasicDetail();
       this.learningDetails(this.state);
-
     },
     methods: {
-      handlePageChange(val) {
-        this.page = val;
-        this.learningDetails(this.state);
-      },
+      // handlePageChange(val) {
+      //   this.pageNum = val;
+      //   this.learningDetails(this.state);
+      // },
       statusSwitch(row) {
         this.isTagactive = row.id
-        this.page = 1
+        this.pageNum = 1
         this.learningDetails(row.state)
       },
       //学生基本信息
@@ -667,10 +624,10 @@
           uid: this.$route.query.uid,
           course_id: this.$route.query.course_id,
           state,
-          page: this.page,
+          // page: this.pageNum,
         };
         const res = await learningDetails(data);
-        this.listTotal = res.data.total;
+        // this.listTotal = res.data.total;
         if (res.code === 0) {
           this.dataTitle = res.data.data;
           this.dataList = res.data.list;
@@ -686,15 +643,18 @@
     background-color: #f8f8f8;
     color: #909399;
   }
+
   /deep/.el-button {
     padding: 9px 0;
     width: 80px;
   }
+
   .punchclock ul {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
   }
+
   .punchclock li {
     border: 1px solid #d7d7d7;
     width: 24%;
@@ -702,19 +662,23 @@
     padding: 12px 15px;
     color: #606266;
   }
+
   .punchclock p {
     font-size: 14px;
   }
+
   .punchclock strong {
     font-size: 36px;
     font-weight: 400;
     line-height: 50px;
   }
+
   .chapter ul {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
   }
+
   .chapter li {
     border: 1px solid #d7d7d7;
     width: 19%;
@@ -722,56 +686,78 @@
     padding: 12px 15px;
     color: #606266;
   }
+
   .chapter p {
     font-size: 14px;
   }
+
   .chapter strong {
     font-size: 36px;
     font-weight: 400;
     line-height: 50px;
   }
+
   .detail-name {
     display: flex;
     font-size: 16px;
     color: #909399;
     align-items: center;
   }
+
   .tabg {
     color: #fff !important;
     background: #199fff;
     border: none;
   }
+
   .detail-content {
     border-top: 8px solid #f2f6fc;
     padding: 10px 20px 0 20px;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     margin-top: 18px;
     align-items: center;
     font-size: 16px;
     color: #666;
   }
+
   .detail-info {
-    width: 18%;
+    width: 16%;
     display: flex;
     margin-top: 18px;
   }
+
   .detail-con {
     font-size: 16px;
     padding-left: 30px;
     margin-top: 2px;
   }
+
   .detail-infocon {
-    width: 30%;
+    width: 28%;
     display: flex;
     margin-top: 18px;
   }
+
+  .detail-infoname {
+    width: 13%;
+    display: flex;
+    margin-top: 18px;
+  }
+
+  .detail-infonum {
+    width: 20%;
+    display: flex;
+    margin-top: 18px;
+  }
+
   .navigationBox {
     height: 45px;
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+
     .navigation {
       width: 820px;
       display: flex;
@@ -782,6 +768,7 @@
       font-size: 16px;
       letter-spacing: normal;
       color: #333333;
+
       li {
         height: 30px;
         font-size: 14px;
@@ -795,18 +782,22 @@
         border-radius: 3px;
         padding: 4px 6px;
       }
+
       li:last-child {
         margin-right: 0px !important;
       }
+
       li:hover {
         color: #fff;
         background: #199fff;
       }
     }
   }
+
   .userTable {
     margin-top: 20px;
   }
+
   .table_bottom {
     text-align: right;
     margin-top: 30px;

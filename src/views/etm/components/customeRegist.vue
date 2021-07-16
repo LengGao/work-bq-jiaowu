@@ -896,7 +896,10 @@ export default {
     },
     // 获取项目选项
     async getCateProjectOption() {
-      const res = await getCateProjectOption();
+      const data = {
+        no_edu: 1,
+      };
+      const res = await getCateProjectOption(data);
       if (res.code === 0) {
         this.projectOptions = res.data || [];
       }

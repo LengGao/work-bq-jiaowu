@@ -20,6 +20,7 @@
         v-for="item in chapterList"
         :key="item.id"
         @click="handleChapterChange(item.id)"
+        :title="item.chapter_name"
       >
         <span class="list-item-title"
           >{{ item.chapter_name }}（{{ item.topic_total }}）</span
@@ -74,13 +75,13 @@ export default {
   },
   methods: {
     openEdit(id) {
-      this.dialogTitle = "编辑章节";
+      this.dialogTitle = `编辑${this.chapterType == 1 ? "章节" : "试卷"}`;
       this.currentId = id;
       this.dialogVisible = true;
     },
     openAdd() {
       this.currentId = "";
-      this.dialogTitle = "添加章节";
+      this.dialogTitle = `添加${this.chapterType == 1 ? "章节" : "试卷"}`;
       this.dialogVisible = true;
     },
     handleChapterChange(id) {
@@ -89,7 +90,12 @@ export default {
     },
     // 删除章节
     deleteConfirm(id) {
-      this.$confirm("确定要删除此章节吗?", { type: "warning" })
+      this.$confirm(
+        `确定要删除此${this.chapterType == 1 ? "章节" : "试卷"}吗?`,
+        {
+          type: "warning",
+        }
+      )
         .then(() => {
           this.deletedTopicChapter(id);
         })
@@ -149,8 +155,14 @@ export default {
       height: 44px;
       border-bottom: 1px solid #e4e7ed;
       cursor: pointer;
+      &-title {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
       &-actions {
         display: none;
+        flex-shrink: 0;
         i {
           font-size: 18px;
           padding: 0 10px;

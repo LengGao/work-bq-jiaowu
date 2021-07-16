@@ -723,6 +723,14 @@ export function getChapterOptions(params) {
     params,
   })
 }
+// 所有题目列表
+export function getAllQuestionList(params) {
+  return request({
+    url: '/topic/search',
+    method: 'get',
+    params,
+  })
+}
 // 题目列表
 export function getQuestionList(params) {
   return request({
@@ -756,10 +764,26 @@ export function deleteQuestion(data) {
     data,
   })
 }
+//批量 删除题目
+export function batchDeleteQuestion(data) {
+  return request({
+    url: '/topic/batchDeleteData',
+    method: 'post',
+    data,
+  })
+}
 // 修改题目
 export function updateQuestion(data) {
   return request({
     url: '/topic/update',
+    method: 'post',
+    data,
+  })
+}
+//批量 移动题目
+export function batchMoveQuestion(data) {
+  return request({
+    url: '/topic/batchMoveData',
     method: 'post',
     data,
   })
@@ -780,10 +804,26 @@ export function getEducationTypeList(params) {
     params,
   })
 }
+// 基本配置
+export function getConfig(params) {
+  return request({
+    url: '/test/getConfig',
+    method: 'get',
+    params,
+  })
+}
 // 添加学历形式
 export function addEducationType(data) {
   return request({
     url: '/UniversityType/add',
+    method: 'post',
+    data,
+  })
+}
+// 设置基本配置
+export function setConfig(data) {
+  return request({
+    url: '/test/setConfig',
     method: 'post',
     data,
   })
@@ -948,6 +988,14 @@ export function getUniversityMajorList(params) {
     params,
   })
 }
+// 获取详细配置
+export function getDetailConfig(params) {
+  return request({
+    url: '/test/getDetail',
+    method: 'get',
+    params,
+  })
+}
 // 添加专业
 export function addUniversityMajor(data) {
   return request({
@@ -964,6 +1012,14 @@ export function editUniversityMajor(data) {
     data,
   })
 }
+// 修改详细配置
+export function setDetailConfig(data) {
+  return request({
+    url: '/test/setDetail',
+    method: 'post',
+    data,
+  })
+}
 // 编辑专业
 export function getUniversityMajorInfo(params) {
   return request({
@@ -976,6 +1032,14 @@ export function getUniversityMajorInfo(params) {
 export function delUniversityMajor(data) {
   return request({
     url: '/UniversityMajor/delete',
+    method: 'post',
+    data,
+  })
+}
+// 导入题目
+export function ReadDoc(data) {
+  return request({
+    url: '/topic/ReadDoc',
     method: 'post',
     data,
   })
@@ -1084,3 +1148,5 @@ export function getUniversityMajorOptions(params) {
     params,
   })
 }
+// 上传题目文件
+export const importQuestionUrl = `${process.env.VUE_APP_LOACTION}/topic/uploadDoc`

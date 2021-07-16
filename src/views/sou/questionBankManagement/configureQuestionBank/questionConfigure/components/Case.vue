@@ -70,16 +70,8 @@ export default {
       type: Array,
       default: () => [],
     },
-    caseQusetionList: {
-      type: Array,
-      default: () => [],
-    },
   },
-  computed: {
-    isAddChild() {
-      return !!this.$route.query.pid;
-    },
-  },
+
   data() {
     return {
       editorForm: {
@@ -100,6 +92,16 @@ export default {
       },
       activeId: "",
     };
+  },
+  computed: {
+    isAddChild() {
+      return !!this.$route.query.pid;
+    },
+  },
+  watch: {
+    "data.child_list"() {
+      this.activeId = "";
+    },
   },
   methods: {
     handleQuestionChange(type, id) {

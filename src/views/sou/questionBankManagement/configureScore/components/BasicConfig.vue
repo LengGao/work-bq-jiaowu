@@ -7,34 +7,34 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="题目总数" class="w-300" prop="video_chapter_name">
+      <el-form-item label="题目总数" class="w-300" prop="topic_num">
         <el-input
           type="number"
-          v-model="formData.video_chapter_name"
+          v-model="formData.topic_num"
           placeholder="请输入题目总数"
           maxlength="10"
         />
       </el-form-item>
-      <el-form-item label="考试总分" class="w-300" prop="video_chapter_sort">
+      <el-form-item label="考试总分" class="w-300" prop="score">
         <el-input
           type="number"
-          v-model="formData.video_chapter_sort"
+          v-model="formData.score"
           placeholder="请输入考试总分"
           maxlength="10"
         />
       </el-form-item>
-      <el-form-item label="合格分数" class="w-300" prop="video_chapter_sort">
+      <el-form-item label="合格分数" class="w-300" prop="pass_score">
         <el-input
           type="number"
-          v-model="formData.video_chapter_sort"
+          v-model="formData.pass_score"
           placeholder="请输入合格分数"
           maxlength="10"
         />
       </el-form-item>
-      <el-form-item label="考试时长" class="w-300" prop="video_chapter_sort">
+      <el-form-item label="考试时长" class="w-300" prop="test_time">
         <el-input
           type="number"
-          v-model="formData.video_chapter_sort"
+          v-model="formData.test_time"
           placeholder="请输入考试时长"
           maxlength="10"
           class="input-time"
@@ -55,74 +55,60 @@
 </template>
 
 <script>
-import {
-  editvideochapter,
-  addvideochapter,
-  getVideochapterDetail,
-} from "@/api/sou";
+import { setConfig, getConfig } from "@/api/sou";
 export default {
   name: "BasicConfig",
-  props: {
-    id: {
-      type: [String, Number],
-      default: "",
-    },
-  },
   data() {
     return {
       formData: {
-        video_chapter_name: "",
-        video_chapter_profile: "",
-        video_chapter_sort: "",
+        id: "",
+        topic_num: "",
+        pass_score: "",
+        score: "",
+        test_time: "",
       },
       rules: {
-        video_chapter_name: [
-          { required: true, message: "请输入", trigger: "blur" },
-        ],
-        video_chapter_sort: [
-          { required: true, message: "请输入", trigger: "blur" },
-        ],
+        topic_num: [{ required: true, message: "请输入", trigger: "blur" }],
+        pass_score: [{ required: true, message: "请输入", trigger: "blur" }],
+        score: [{ required: true, message: "请输入", trigger: "blur" }],
+        test_time: [{ required: true, message: "请输入", trigger: "blur" }],
       },
       addLoading: false,
       detaiLoading: false,
     };
   },
-
+  created() {
+    this.getConfig();
+  },
   methods: {
-    async getVideochapterDetail() {
+    async getConfig() {
       const data = {
-        video_chapter_id: this.id,
+        question_bank_id: this.$route.query.id,
       };
       this.detaiLoading = true;
-      const res = await getVideochapterDetail(data).catch(() => {
+      const res = await getConfig(data).catch(() => {
         this.detaiLoading = false;
       });
       this.detaiLoading = false;
       if (res.code === 0) {
         for (const k in this.formData) {
-          this.formData[k] = res.data[k];
+          this.formData[k] = +res.data[k];
         }
+        this.$emit('on-conifg-id',res.data.id)
       }
     },
     async submit() {
       const data = {
         ...this.formData,
       };
-      if (this.id) {
-        data.video_chapter_id = this.id;
-      } else {
-        data.video_collection_id = this.$route.query?.video_collection_id || "";
-      }
-      const api = this.id ? editvideochapter : addvideochapter;
+
       this.addLoading = true;
-      const res = await api(data).catch(() => {
+      const res = await setConfig(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.resetForm("formData");
-        this.$emit("on-success");
       }
     },
     submitForm(formName) {
@@ -132,15 +118,8 @@ export default {
         }
       });
     },
-    resetForm(formName) {
-      for (const k in this.formData) {
-        this.formData[k] = "";
-      }
-      this.$refs[formName].resetFields();
-      this.hanldeCancel();
-    },
     hanldeCancel() {
-      this.$emit("input", false);
+      this.$router.back();
     },
   },
 };
