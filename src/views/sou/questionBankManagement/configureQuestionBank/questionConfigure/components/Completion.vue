@@ -8,7 +8,7 @@
       label-width="100px"
     >
       <el-form-item label="题干内容" prop="topic_description">
-        <Editor v-model="editorForm.topic_description" :height="editorHeight"/>
+        <Editor v-model="editorForm.topic_description" :height="editorHeight" />
       </el-form-item>
 
       <div class="options">
@@ -70,7 +70,7 @@ export default {
         topic_description: "",
         correct: "",
         topic_analysis: "",
-        checked: false,
+        checked: true,
       },
       editorRules: {
         topic_analysis: [
@@ -112,7 +112,7 @@ export default {
         cb(valid, {
           ...this.editorForm,
           topic_answer: answerArr.join(","),
-          ignore_order: +this.editorForm.checked,
+          ignore_order: +!this.editorForm.checked,
           type: 5,
         });
       });

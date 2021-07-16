@@ -61,7 +61,7 @@ export default {
                     this.editorForm.correct = this.data.topic_answer.split(',').map(item => this.indexMap[item])
                     break;
                 case 5:
-                    this.editorForm.checked = !!this.data.ignore_order
+                    this.editorForm.checked = !this.data.ignore_order
                 case 6:
                     this.editorForm.correct = this.data.topic_answer
                     break;
