@@ -713,12 +713,7 @@ export default {
     },
     // 合同模板列表接口
     async templatelist() {
-      const data = {
-        page: this.pageNum,
-        ...this.searchData,
-      };
-      const res = await templatelist(data);
-      // console.log(res.data.data)
+      const res = await templatelist();
       if (res.code == 0) {
         this.dictOptions = res.data.data;
         console.log(this.dictOptions);
