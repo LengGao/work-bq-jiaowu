@@ -57,14 +57,14 @@
           min-width="200"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column label="操作">
+        <!-- <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="rollBack(scope.row)">回滚</el-button>
-            <!-- <el-button type="text" @click="toLogDetails(scope.row)"
+            <el-button type="text" @click="toLogDetails(scope.row)"
               >详情</el-button
-            > -->
+            >
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
     <h3>详细代码详情</h3>
@@ -84,38 +84,38 @@
 
 <script>
 export default {
-  name: 'logDetails',
+  name: "logDetails",
   data() {
     return {
       schoolData: [],
       origin_data: {},
       new_data: {},
-    }
+    };
   },
   created() {
     // this.$api.getadminLogList(this, 'schoolData')
-    this.$api.getAdminOperationDetail(this, 'schoolData')
+    this.$api.getAdminOperationDetail(this, "schoolData");
   },
   methods: {
     rollBack(ab) {
-      console.log(ab)
-      this.$confirm('此操作将会数据回滚,请谨慎操作?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      console.log(ab);
+      this.$confirm("此操作将会数据回滚,请谨慎操作?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.rollBackOperation(this, ab.id)
+          this.$api.rollBackOperation(this, ab.id);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消回滚',
-          })
-        })
+            type: "info",
+            message: "已取消回滚",
+          });
+        });
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -126,7 +126,7 @@ export default {
 }
 .logDetailTop {
   display: flex;
-  font-family: 'Arial Normal', 'Arial', sans-serif;
+  font-family: "Arial Normal", "Arial", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 14px;
@@ -139,7 +139,7 @@ export default {
   }
 }
 h3 {
-  font-family: 'Microsoft YaHei UI', sans-serif;
+  font-family: "Microsoft YaHei UI", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
@@ -158,7 +158,7 @@ h3 {
     height: 50px;
     background-color: #f8f8f8;
     color: #909399;
-    font-family: '微软雅黑', sans-serif;
+    font-family: "微软雅黑", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
@@ -166,7 +166,7 @@ h3 {
     padding-left: 20px;
   }
   .oldData {
-    font-family: '微软雅黑', sans-serif;
+    font-family: "微软雅黑", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 16px;
