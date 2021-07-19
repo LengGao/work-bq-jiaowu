@@ -74,7 +74,7 @@
                 @click="downloadSourceVideo(row)"
                 >下载</el-button
               >
-              <el-button type="text" @click="deleteConfirm(row.id)"
+              <el-button type="text" @click="deleteConfirm(row.VideoId)"
                 >删除</el-button
               >
             </div>
@@ -158,8 +158,8 @@ export default {
         this.deleteSourceVideo(id, value);
       });
     },
-    async deleteSourceVideo(id, pwd) {
-      const data = { id, pwd };
+    async deleteSourceVideo(video_id, pwd) {
+      const data = { video_id, pwd };
       const res = await deleteSourceVideo(data);
       if (res.code === 0) {
         this.$message.success(res.message);
