@@ -519,9 +519,9 @@ export function getvideoclassDetail(params) {
   })
 }
 // 阿里云上传凭证
-export function updatecreate(data) {
+export function createUploadVideo(data) {
   return request({
-    url: 'live/updatecreate',
+    url: '/VideoRepository/createUploadVideo',
     method: 'post',
     data,
   })
@@ -529,7 +529,7 @@ export function updatecreate(data) {
 // 阿里云上传凭证刷新
 export function refreshuploadvideo(data) {
   return request({
-    url: 'live/refreshuploadvideo',
+    url: '/VideoRepository/refreshUploadVideo',
     method: 'post',
     data,
   })

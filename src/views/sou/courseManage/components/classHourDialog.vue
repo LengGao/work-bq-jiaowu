@@ -51,6 +51,8 @@
         <!-- 用来更新验证用 不显示 -->
         <el-input v-show="false" v-model="formData.media_id"></el-input>
         <AliyunUpload
+          :disabled="!formData.video_class_name"
+          :video-name="formData.video_class_name"
           :defaultFiles="defaultFiles"
           :on-success="handleUploadSuccess"
           @on-remove="handleVideoRemove"
