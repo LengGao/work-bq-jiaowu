@@ -68,6 +68,18 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'aliVideo',
+        name: 'aliVideo',
+        component: () => import('@/views/sou/aliVideo/index.vue'),
+        meta: { title: '阿里源视频', icon: 'product-add' },
+      },
+      {
+        path: 'videoLibrary',
+        name: 'videoLibrary',
+        component: () => import('@/views/sou/videoLibrary/index.vue'),
+        meta: { title: '视频库', icon: 'product-add' },
+      },
+      {
         path: 'collegeMajor',
         name: 'collegeMajor',
         component: () => import('@/views/sou/collegeMajor/index.vue'),
@@ -334,6 +346,12 @@ export const asyncRouter = [
         component: () => import('@/views/eda/studentCenter/orderManage.vue'),
         meta: { title: '订单管理', icon: 'product-cate' },
         hidden: true,
+      },
+      {
+        path: 'classVideo',
+        name: 'classVideo',
+        component: () => import('@/views/eda/classVideo/index.vue'),
+        meta: { title: '班级视频', icon: 'product-cate' },
       },
       {
         path: 'classManage',

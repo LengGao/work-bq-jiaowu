@@ -8,7 +8,9 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <el-button type="primary" @click="openAdd">添加视频</el-button>
+        <el-button v-if="isShow" type="primary" @click="openAdd"
+          >添加视频</el-button
+        >
       </div>
       <!--表格-->
       <div class="userTable">
@@ -90,10 +92,16 @@
                   @click="getVideoUrl(row)"
                   >下载</el-button
                 >
-                <el-button type="text" @click="openEdit(row.live_video_id)"
+                <el-button
+                  v-if="isShow"
+                  type="text"
+                  @click="openEdit(row.live_video_id)"
                   >编辑</el-button
                 >
-                <el-button type="text" @click="deleteConfirm(row.live_video_id)"
+                <el-button
+                  v-if="isShow"
+                  type="text"
+                  @click="deleteConfirm(row.live_video_id)"
                   >删除</el-button
                 >
               </div>
@@ -151,7 +159,12 @@ export default {
       typeOptions: [],
     };
   },
-
+  computed: {
+    // 班级直播进来的不能操作
+    isShow() {
+      return !this.$route.query?.isclass;
+    },
+  },
   created() {
     this.livevideolist();
   },
