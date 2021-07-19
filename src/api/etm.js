@@ -79,6 +79,8 @@ export function getCommonUserList(params) {
 export function delUser(params) {
   return request({
     url: '/Enrollment/delUser',
+    method: 'get',
+    params,
   })
 }
 // 报名时选择项目
