@@ -3,7 +3,7 @@
   <el-dialog
     title="选择视频"
     :visible.sync="visible"
-    width="1100px"
+    width="1200px"
     @open="handleOpen"
     :close-on-click-modal="false"
     append-to-body
@@ -39,6 +39,8 @@
         }"
         :cell-style="{ 'text-align': 'center' }"
         height="550"
+        highlight-current-row
+        @current-change="onTableChange"
       >
         <el-table-column label="选择" width="55">
           <template slot-scope="{ row }">
@@ -72,6 +74,20 @@
           min-width="90"
           show-overflow-tooltip
         ></el-table-column>
+        <el-table-column
+          prop="video_status_name"
+          label="视频状态"
+          min-width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-tag
+              size="small"
+              :type="row.video_status ? 'danger' : 'success'"
+              >{{ row.video_status_name }}</el-tag
+            >
+          </template>
+        </el-table-column>
         <el-table-column
           prop="size"
           label="文件大小"
@@ -111,8 +127,9 @@
 </template>
 
 <script>
+import { getShortcuts } from "@/utils/date";
 import UploadVideoDialog from "@/views/sou/videoLibrary/components/UploadVideoDialog.vue";
-import { getVideoList, getVideoGroupSelect } from "@/api/sou";
+import { getVideoList, getVideoGroupSelect, getAdminSelect } from "@/api/sou";
 export default {
   name: "videoListDialog",
   components: {
@@ -134,8 +151,38 @@ export default {
       searchData: {
         title: "",
         group_id: "",
+        admin_id: "",
+        video_status: "",
       },
       searchOptions: [
+        {
+          key: "date",
+          type: "datePicker",
+          attrs: {
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
+          },
+        },
+        {
+          key: "admin_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "操作人员",
+            clearable: true,
+            filterable: true,
+          },
+        },
         {
           key: "group_id",
           type: "select",
@@ -145,6 +192,22 @@ export default {
           optionLabel: "group_name",
           attrs: {
             placeholder: "视频分组",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "video_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "损坏视频",
+            },
+          ],
+          attrs: {
+            placeholder: "视频状态",
             clearable: true,
             filterable: true,
           },
@@ -170,6 +233,16 @@ export default {
   },
 
   methods: {
+    onTableChange(row) {
+      row && (this.checkedStr = `${row.id},${row.title}`);
+    },
+    // 操作员列表
+    async getAdminSelect() {
+      const res = await getAdminSelect();
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data || [];
+      }
+    },
     // 预览
     previewVideo(row) {
       const a = document.createElement("a");
@@ -181,12 +254,13 @@ export default {
     },
     handleOpen() {
       this.getVideoList();
+      this.getAdminSelect();
       this.getVideoGroupSelect();
     },
     async getVideoGroupSelect() {
       const res = await getVideoGroupSelect();
       if (res.code === 0) {
-        this.searchOptions[0].options = res.data;
+        this.searchOptions[2].options = res.data;
       }
     },
 
@@ -210,9 +284,13 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
+      const date = data.date || ["", ""];
+      delete data.date;
       this.searchData = {
         ...data,
         group_id: data.group_id || -1,
+        start_time: date[0],
+        end_time: date[1],
       };
       this.getVideoList();
     },

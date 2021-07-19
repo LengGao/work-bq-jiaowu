@@ -1,6 +1,6 @@
 <template>
-  <!-- 章节视频 -->
-  <div class="chapter-video">
+  <!-- 班级视频 -->
+  <div class="class-video">
     <div class="client_head">
       <!--搜索模块-->
       <SearchList
@@ -154,7 +154,7 @@ import {
 import ChapterDIalog from "./components/chapterDIalog";
 import VideoDialog from "./components/videoDialog";
 export default {
-  name: "chapterVideo",
+  name: "classVideo",
   components: {
     VideoDialog,
     ChapterDIalog,
@@ -166,7 +166,7 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        chapter_name: "",
+        chapter_name: this.$route.query.chapterName || "",
       },
       searchOptions: [
         {
@@ -401,7 +401,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.chapter-video {
+.class-video {
   padding: 20px;
   .client_head {
     display: flex;

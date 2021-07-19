@@ -1239,3 +1239,11 @@ export function downloadSourceVideo(data) {
     data,
   })
 }
+// 视频引用详情
+export function getVideoUsingDetail(data) {
+  return request({
+    url: '/VideoRepository/getVideoUsingDetail',
+    method: 'post',
+    data,
+  })
+}

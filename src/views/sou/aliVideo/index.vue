@@ -54,7 +54,17 @@
           label="备注信息"
           min-width="200"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <el-button
+              v-if="row.id"
+              type="text"
+              @click="openUsageTimesDialog(row.id)"
+              >{{ row.message }}</el-button
+            >
+            <span v-else>{{ row.message }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="120">
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
@@ -79,10 +89,12 @@
         />
       </div>
     </div>
+    <UsageTimesDialog v-model="usageTimesDialog" :id="currentId" />
   </div>
 </template>
 
 <script>
+import UsageTimesDialog from "@/views/sou/videoLibrary/components/UsageTimesDialog.vue";
 import {
   getSourceVideoList,
   deleteSourceVideo,
@@ -90,12 +102,17 @@ import {
 } from "@/api/sou";
 export default {
   name: "aliVideo",
+  components: {
+    UsageTimesDialog,
+  },
   data() {
     return {
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      usageTimesDialog: false,
+      currentId: "",
     };
   },
 
@@ -104,6 +121,10 @@ export default {
   },
 
   methods: {
+    openUsageTimesDialog(id) {
+      this.currentId = id;
+      this.usageTimesDialog = true;
+    },
     // 下载
     async downloadSourceVideo(row) {
       row.loading = true;

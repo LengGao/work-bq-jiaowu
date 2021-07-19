@@ -4,7 +4,8 @@ const searchCache = {
         cacheViews: ['studentCenter', 'classManage', 'customerManage',
             'teachMaterial', 'certificates', 'teachSchedule',
             'attendanceManage', 'classLive', 'liveSessions', 'livePublicClass',
-            'finance', 'order', 'courseManage', 'apply', 'questionBank', 'achievement'
+            'finance', 'order', 'courseManage', 'apply', 'questionBank', 'achievement',
+            'videoLibrary', 'aliVideo'
         ],
         // 缓存的触发条件
         cacheTo: {
@@ -24,6 +25,8 @@ const searchCache = {
             apply: ['examinationSMS', 'projectDetails'],
             questionBank: ['configureQuestionBank', 'configureScore'],
             achievement: ['achieveDetails', 'allResult'],
+            videoLibrary: ['classVideo'],
+            aliVideo: ['classVideo']
         },
         // 当前缓存的页面
         currentCache: []

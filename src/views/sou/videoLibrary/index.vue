@@ -42,7 +42,7 @@
             <el-table-column
               label="ID"
               show-overflow-tooltip
-              min-width="70"
+              width="70"
               prop="id"
             >
             </el-table-column>
@@ -72,20 +72,34 @@
               show-overflow-tooltip
             ></el-table-column>
             <el-table-column
-              prop="use_count"
-              label="引用次数"
+              prop="video_status_name"
+              label="视频状态"
               min-width="90"
               show-overflow-tooltip
-            ></el-table-column>
+            >
+              <template slot-scope="{ row }">
+                <el-tag
+                  size="small"
+                  :type="row.video_status ? 'danger' : 'success'"
+                  >{{ row.video_status_name }}</el-tag
+                >
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="use_count"
+              label="引用次数"
+              width="90"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <el-button type="text" @click="openUsageTimesDialog(row)">{{
+                  row.use_count
+                }}</el-button>
+              </template>
+            </el-table-column>
             <el-table-column
               prop="create_time"
               label="上传时间"
-              min-width="140"
-              show-overflow-tooltip
-            ></el-table-column>
-            <el-table-column
-              prop="update_time"
-              label="修改时间"
               min-width="140"
               show-overflow-tooltip
             ></el-table-column>
@@ -135,6 +149,7 @@
       :title="dialogTitle"
       @on-success="getVideoList"
     />
+    <UsageTimesDialog v-model="usageTimesDialog" :id="videoData.id" />
   </div>
 </template>
 
@@ -148,11 +163,13 @@ import {
   completeVideoInfo,
 } from "@/api/sou";
 import UploadVideoDialog from "./components/UploadVideoDialog.vue";
+import UsageTimesDialog from "./components/UsageTimesDialog.vue";
 export default {
   name: "videoLibrary",
   components: {
     VideoMenu,
     UploadVideoDialog,
+    UsageTimesDialog,
   },
   data() {
     return {
@@ -163,6 +180,7 @@ export default {
       searchData: {
         title: "",
         admin_id: "",
+        video_status: "",
       },
       searchOptions: [
         {
@@ -194,6 +212,22 @@ export default {
           },
         },
         {
+          key: "video_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "损坏视频",
+            },
+          ],
+          attrs: {
+            placeholder: "视频状态",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "title",
           attrs: {
             placeholder: "视频名称",
@@ -204,6 +238,7 @@ export default {
       dialogTitle: "",
       uploadDialog: false,
       videoGroupId: -1,
+      usageTimesDialog: false,
     };
   },
 
@@ -213,6 +248,19 @@ export default {
   },
 
   methods: {
+    openUsageTimesDialog(row) {
+      this.videoData = row;
+      this.usageTimesDialog = true;
+    },
+    // 预览
+    previewVideo(row) {
+      const a = document.createElement("a");
+      a.href = row.file_url;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    },
     // 完善视频信息
     async completeVideoInfo(row) {
       row.updateLoading = true;
