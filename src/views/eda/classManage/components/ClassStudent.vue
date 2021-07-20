@@ -136,7 +136,7 @@
 
 <script>
 import { cloneOptions } from "@/utils/index";
-import { getCateList } from "@/api/sou";
+import { getInstitutionSelectData } from "@/api/sou";
 import { getClassstudentList, classstudentsBatchRemove } from "@/api/eda";
 export default {
   name: "ClassStudent",
@@ -155,16 +155,16 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
+        organization_id: [],
       },
       searchOptions: [
         {
-          key: "category_id",
+          key: "organization_id",
           type: "cascader",
           attrs: {
-            placeholder: "所属分类",
-            clearable: true,
-            props: { checkStrictly: true },
+            placeholder: "推荐机构",
             filterable: true,
+            clearable: true,
             options: [],
           },
         },
@@ -180,7 +180,7 @@ export default {
     };
   },
   created() {
-    this.getCateList();
+    this.getInstitutionSelectData();
     this.getClassstudentList();
   },
   methods: {
@@ -230,16 +230,16 @@ export default {
         },
       });
     },
-    // 获取教材分类
-    async getCateList() {
+    // 获取机构
+    async getInstitutionSelectData() {
       const data = { list: true };
-      const res = await getCateList(data);
+      const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[0].attrs.options = this.typeOptions = cloneOptions(
+        this.searchOptions[0].attrs.options = cloneOptions(
           res.data,
-          "category_name",
-          "category_id",
-          "son"
+          "institution_name",
+          "institution_id",
+          "children"
         );
       }
     },
@@ -289,7 +289,7 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: data.category_id.pop(),
+        organization_id: data.organization_id.pop(),
       };
       this.getClassstudentList();
     },

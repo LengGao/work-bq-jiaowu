@@ -280,6 +280,7 @@ export default {
       page: 1,
       dialogVisible: false,
       iconList: [
+        "iconentrypage_icon_notice",
         "iconxueyuan",
         "iconyuanxiao",
         "iconzuijin1",
