@@ -108,7 +108,7 @@
                   >学习回访</el-button
                 >
                 <el-button type="text" @click="toClassVideo(row.classroom_id)"
-                  >班级视频</el-button
+                  >直播回顾</el-button
                 >
               </div>
             </template>
