@@ -290,15 +290,16 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
-      this.searchData = data;
+      this.searchData = {
+        ...data,
+        course_category_id: data.course_category_id.pop(),
+      };
       this.getCourseList();
     },
     async getCourseList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        // category_id: data.category_id ? data.category_id.pop() : '',
-        course_category_id: this.searchData.course_category_id.pop(),
       };
       this.listLoading = true;
       const res = await getCourseList(data);
