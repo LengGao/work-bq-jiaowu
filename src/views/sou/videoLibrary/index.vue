@@ -123,7 +123,7 @@
                     type="text"
                     :loading="row.updateLoading"
                     @click="completeVideoInfo(row)"
-                    >完善视频</el-button
+                    >刷新</el-button
                   >
                   <el-button type="text" @click="deleteConfirm(row.id)"
                     >删除</el-button

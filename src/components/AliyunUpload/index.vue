@@ -160,9 +160,9 @@ export default {
       }
     },
     // 刷新上传凭证
-    async refreshuploadvideo(video_id) {
+    async refreshuploadvideo(uploadInfo) {
       const data = {
-        video_id,
+        video_id: uploadInfo.videoId,
       };
       const res = await refreshuploadvideo(data).catch(() => {
         // 重置
@@ -206,7 +206,7 @@ export default {
             this.createUploadVideo(uploadInfo);
           } else {
             // 有就刷新凭证后上传
-            this.refreshuploadvideo(uploadInfo.videoId);
+            this.refreshuploadvideo(uploadInfo);
           }
         },
         //文件上传成功

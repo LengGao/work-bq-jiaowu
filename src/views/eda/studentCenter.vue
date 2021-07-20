@@ -208,6 +208,7 @@
 </template>
 
 <script>
+import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
 import { getStudentList, getproject, addstudents } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
@@ -246,6 +247,9 @@ export default {
             "start-placeholder": "开始日期",
             "end-placeholder": "结束日期",
             "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
           },
         },
         {

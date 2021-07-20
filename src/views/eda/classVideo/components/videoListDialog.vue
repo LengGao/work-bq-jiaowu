@@ -288,7 +288,6 @@ export default {
       delete data.date;
       this.searchData = {
         ...data,
-        group_id: data.group_id || -1,
         start_time: date[0],
         end_time: date[1],
       };
@@ -302,6 +301,7 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
+        group_id: this.searchData.group_id || -1,
       };
       this.listLoading = true;
       const res = await getVideoList(data);
