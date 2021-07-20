@@ -45,6 +45,7 @@ export default {
             this.editorForm.id = this.data.id
             this.editorForm.topic_analysis = this.data.topic_analysis
             this.editorForm.topic_description = this.data.topic_description
+            this.editorForm.remove_html = this.data.remove_html || 1
             this.editorOptions = []
             this.eId = this.data.option.length
             this.data.option.forEach((item, index) => {

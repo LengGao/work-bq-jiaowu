@@ -308,6 +308,12 @@ export const asyncRouter = [
     name: 'eda',
     children: [
       {
+        path: 'abnormalData',
+        name: 'abnormalData',
+        component: () => import('@/views/eda/abnormalData/index.vue'),
+        meta: { title: '异常数据', icon: 'product-cate' },
+      },
+      {
         path: 'studentCenter',
         name: 'studentCenter',
         component: () => import('@/views/eda/studentCenter.vue'),
