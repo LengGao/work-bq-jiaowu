@@ -1271,3 +1271,11 @@ export function getVideoUsingDetail(data) {
     data,
   })
 }
+// 题目批量排序
+export function batchTopicSort(data) {
+  return request({
+    url: '/topic/batchTopicSort',
+    method: 'post',
+    data,
+  })
+}

@@ -901,6 +901,22 @@ export function updateLesson(data) {
     data,
   })
 }
+// 班级异常数据
+export function getFailDataClass(params) {
+  return request({
+    url: '/FailData/classroom',
+    method: 'get',
+    params,
+  })
+}
+// 班级异常数据-保留
+export function classRemoveStudent(data) {
+  return request({
+    url: '/FailData/classRemoveStudent',
+    method: 'post',
+    data,
+  })
+}
 // 班级视频-章节列表-课时列表
 export function getLessonList(data) {
   return request({
@@ -945,6 +961,22 @@ export function classroomVideoStatisticsList(data) {
 export function exportClassroomVideoStatistics(data) {
   return request({
     url: '/ClassroomVideo/exportClassroomVideoStatistics',
+    method: 'post',
+    data,
+  })
+}
+// 意向异常数据
+export function getFailDataIntent(params) {
+  return request({
+    url: '/FailData/intent',
+    method: 'get',
+    params,
+  })
+}
+// 意向异常数据-移除
+export function intentRemoveData(data) {
+  return request({
+    url: '/FailData/intentRemoveData',
     method: 'post',
     data,
   })

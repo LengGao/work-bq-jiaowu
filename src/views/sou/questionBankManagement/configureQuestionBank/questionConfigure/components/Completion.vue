@@ -47,6 +47,16 @@
           >
         </div>
       </div>
+      <el-form-item label="清除格式">
+        <el-checkbox
+          class="checkbox"
+          :true-label="1"
+          :false-label="0"
+          v-model="editorForm.remove_html"
+        >
+          <span class="desc">（ 只保留文字 ）</span></el-checkbox
+        >
+      </el-form-item>
       <el-form-item label="答案解析" prop="topic_analysis">
         <Editor v-model="editorForm.topic_analysis" :height="editorHeight" />
       </el-form-item>
@@ -71,6 +81,7 @@ export default {
         correct: "",
         topic_analysis: "",
         checked: true,
+        remove_html: 1,
       },
       editorRules: {
         topic_analysis: [

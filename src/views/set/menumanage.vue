@@ -282,6 +282,7 @@ export default {
       iconList: [
         "iconVideoClip",
         "iconvideo-file",
+        "iconentrypage_icon_notice",
         "iconxueyuan",
         "iconyuanxiao",
         "iconzuijin1",
