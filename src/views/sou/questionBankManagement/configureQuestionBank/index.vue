@@ -89,6 +89,18 @@
                 show-overflow-tooltip
               ></el-table-column>
               <el-table-column
+                prop="sort"
+                align="center"
+                label="排序"
+                min-width="70"
+                show-overflow-tooltip
+              >
+                <template slot-scope="{ row }">
+                  <el-input type="number" v-if="isSort" v-model="row.sort" />
+                  <span v-else>{{ row.sort }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
                 label="操作"
                 align="center"
                 fixed="right"
@@ -118,6 +130,13 @@
               <div>
                 <el-button @click="handleBatchMove">批量移动</el-button>
                 <el-button @click="handleBatchDel">批量删除</el-button>
+                <el-button v-if="isSort" @click="handleSortCancel"
+                  >取消</el-button
+                >
+                <el-button v-if="isSort" type="primary" @click="handleBatchSort"
+                  >保存</el-button
+                >
+                <el-button v-if="!isSort" @click="showSort">批量排序</el-button>
               </div>
               <page
                 :data="listTotal"
@@ -150,6 +169,7 @@ import {
   getQuestionList,
   deleteQuestion,
   batchDeleteQuestion,
+  batchTopicSort,
 } from "@/api/sou";
 import MoveQusetionDialog from "./components/MoveQusetionDialog.vue";
 import UploadQusetionDialog from "./components/UploadQusetionDialog.vue";
@@ -215,6 +235,7 @@ export default {
       uploadDialog: false,
       selectionIds: [],
       topic_chapter_id: "",
+      isSort: false,
     };
   },
   activated() {
@@ -226,6 +247,25 @@ export default {
   },
 
   methods: {
+    async handleBatchSort() {
+      const data = {
+        arr: this.listData.map((item) => ({
+          id: item.id,
+          sort: item.sort,
+        })),
+      };
+      const res = await batchTopicSort(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getQuestionList();
+      }
+    },
+    handleSortCancel() {
+      this.getQuestionList();
+    },
+    showSort() {
+      this.isSort = true;
+    },
     handleTableSelect(selection) {
       this.selectionIds = selection.map((item) => item.id);
     },
@@ -326,6 +366,7 @@ export default {
       this.getQuestionList();
     },
     async getQuestionList() {
+      this.isSort = false;
       const data = {
         topic_chapter_id: this.topic_chapter_id,
         question_bank_id: this.$route.query.id,

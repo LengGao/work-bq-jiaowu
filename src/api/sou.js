@@ -1150,3 +1150,11 @@ export function getUniversityMajorOptions(params) {
 }
 // 上传题目文件
 export const importQuestionUrl = `${process.env.VUE_APP_LOACTION}/topic/uploadDoc`
+// 题目批量排序
+export function batchTopicSort(data) {
+  return request({
+    url: '/topic/batchTopicSort',
+    method: 'post',
+    data,
+  })
+}
