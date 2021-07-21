@@ -99,7 +99,7 @@ import {
   exportClassroomVideoStatistics,
 } from "@/api/eda";
 export default {
-  name: "classLive",
+  name: "videoPlaybackStatistics",
   data() {
     return {
       listData: [],
