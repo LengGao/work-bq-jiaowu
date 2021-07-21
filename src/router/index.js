@@ -354,6 +354,12 @@ export const asyncRouter = [
         meta: { title: '班级视频', icon: 'product-cate' },
       },
       {
+        path: 'videoPlaybackStatistics',
+        name: 'videoPlaybackStatistics',
+        component: () => import('@/views/eda/classVideo/videoPlaybackStatistics.vue'),
+        meta: { title: '视频统计', icon: 'product-cate' },
+      },
+      {
         path: 'classManage',
         name: 'classManage',
         component: () => import('@/views/eda/classManage.vue'),

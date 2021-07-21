@@ -933,3 +933,19 @@ export function batchSortLesson(data) {
     data,
   })
 }
+// 班级视频-视频统计列表
+export function classroomVideoStatisticsList(data) {
+  return request({
+    url: '/ClassroomVideo/classroomVideoStatisticsList',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-视频统计列表-导出
+export function exportClassroomVideoStatistics(data) {
+  return request({
+    url: '/ClassroomVideo/exportClassroomVideoStatistics',
+    method: 'post',
+    data,
+  })
+}

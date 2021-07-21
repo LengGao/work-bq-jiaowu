@@ -105,6 +105,12 @@
               <el-button
                 type="text"
                 v-if="row.parentId"
+                @click="toStatistics(row.id)"
+                >统计</el-button
+              >
+              <el-button
+                type="text"
+                v-if="row.parentId"
                 @click="previewVideo(row)"
                 >预览</el-button
               >
@@ -197,6 +203,9 @@ export default {
   },
 
   methods: {
+    toStatistics(id) {
+      this.$router.push({ name: "videoPlaybackStatistics", query: { id } });
+    },
     // 预览
     previewVideo(row) {
       const a = document.createElement("a");
