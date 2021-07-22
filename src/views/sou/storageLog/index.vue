@@ -52,12 +52,12 @@
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
-          <!-- <el-table-column
+          <el-table-column
             prop="update_number"
-            label="更新库存数量"
+            label="目标仓库"
             min-width="110"
             show-overflow-tooltip
-          ></el-table-column> -->
+          ></el-table-column>
           <el-table-column
             prop="staff_name"
             label="操作人"
@@ -185,7 +185,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  /deep/.el-table th{
-    background: #f8f8f8;
-  }
+/deep/.el-table th {
+  background: #f8f8f8;
+}
 </style>

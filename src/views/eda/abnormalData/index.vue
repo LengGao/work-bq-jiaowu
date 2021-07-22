@@ -1,6 +1,8 @@
 <template>
   <div class="abnormal-data">
-    <div class="head_remind">*本模块可查询意向，班级异常数据。</div>
+    <div class="head_remind">
+      *本模块可查询意向，班级异常数据，只能删除在一个意向下面同一课程不同的班级数据。
+    </div>
     <div class="abnormal-data-container">
       <el-tabs v-model="activeName">
         <el-tab-pane label="班级异常" name="AbnormalClass"></el-tab-pane>
