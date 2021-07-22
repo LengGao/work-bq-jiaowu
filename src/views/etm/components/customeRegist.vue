@@ -646,7 +646,7 @@ export default {
         },
         {
           value: 1,
-          label: "学历报名教育",
+          label: "学历教育",
         },
       ],
       // 学历报名相关

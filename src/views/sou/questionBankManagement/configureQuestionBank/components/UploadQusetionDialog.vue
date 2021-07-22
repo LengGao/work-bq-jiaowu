@@ -174,7 +174,25 @@ export default {
       });
       this.addLoading = false;
       if (res.code === 0) {
-        this.$message.success(res.message);
+        if (res.data.url) {
+          this.$confirm(res.message, "提示", {
+            confirmButtonText: "查看",
+            cancelButtonText: "关闭",
+            type: "warning",
+          })
+            .then(() => {
+              const a = document.createElement("a");
+              a.href = res.data.url;
+              a.download = "失败模板";
+              a.target = "_blank";
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            })
+            .catch(() => {});
+        } else {
+          this.$message.success(res.message);
+        }
         this.resetForm("formData");
         this.$emit("on-success");
       }

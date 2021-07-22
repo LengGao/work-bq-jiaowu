@@ -27,7 +27,7 @@
         style="width: 100%"
         class="min_table"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'left' }"
+        :cell-style="{ 'text-align': 'center' }"
         @selection-change="handleAllSelect"
       >
         <el-table-column type="selection" width="55"> </el-table-column>

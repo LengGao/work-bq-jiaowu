@@ -485,6 +485,10 @@ export default {
         },
         {
           id: 4,
+          value: "4年",
+        },
+        {
+          id: 99,
           value: "永久",
         },
       ],
