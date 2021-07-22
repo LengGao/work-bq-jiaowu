@@ -12,20 +12,12 @@
           @on-search="handleSearch"
         />
         <div class="actions">
-          <el-button type="primary" @click="openTeacherDialog"
-            >更换所属老师</el-button
+          <el-checkbox v-model="checked" @change="handleChecked"
+            >未分班学生</el-checkbox
           >
         </div>
       </div>
 
-      <div>
-        <!-- <el-button style="margin-right: 20px" @click="handleBatch"
-          >批量分班</el-button
-        > -->
-        <el-checkbox v-model="checked" @change="handleChecked"
-          >未分班学生</el-checkbox
-        >
-      </div>
       <!--列表-->
       <div class="userTable">
         <el-table
@@ -152,6 +144,9 @@
         </el-table>
       </div>
       <div class="table_bottom">
+        <div>
+          <el-button @click="openTeacherDialog">更换所属老师</el-button>
+        </div>
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -516,6 +511,9 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+.actions {
+  padding-top: 10px;
+}
 .head_remind {
   padding: 20px;
   font-weight: 400;
@@ -635,6 +633,8 @@ export default {
   margin-left: 8px;
 }
 .table_bottom {
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 </style>
