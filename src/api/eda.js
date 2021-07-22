@@ -337,7 +337,7 @@ export function classAttendanceStatistics(params) {
   })
 }
 /**
- * 班级排课列表
+ * 班级排课列表 
  * @param {*} params
  */
 export function getClassArrangeList(params) {
@@ -480,14 +480,15 @@ export function getstudentcourse(params) {
   })
 }
 
-// // 学习详情列表
+// 学习详情列表
 // export function learningDetails(params) {
 //   return request({
 //     url: '/personalLog/study',
 //     method: 'get',
 //     params,
-//   })
-// }
+//   }) 
+// } 
+
 
 // 学习详情-每日打卡
 export function dailyClockIn(params) {
@@ -547,6 +548,13 @@ export function selfProposed(params) {
     params,
   })
 }
+
+
+
+
+
+
+
 
 
 // 移除班级学生
