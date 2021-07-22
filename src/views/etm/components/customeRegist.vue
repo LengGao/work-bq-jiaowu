@@ -646,7 +646,7 @@ export default {
         },
         {
           value: 1,
-          label: "学历报名教育",
+          label: "学历教育",
         },
       ],
       // 学历报名相关
@@ -843,14 +843,14 @@ export default {
     },
     // 学历报名支付金额判断
     majorPayMoneyChange(val) {
-      if (val > this.ruleForm.total_money) {
+      if (+val > +this.ruleForm.total_money) {
         this.ruleForm.major_pay_money = this.ruleForm.total_money;
         this.$message.warning("支付金额不能大于应收金额！");
       }
     },
     // 安监报名支付金额判断
     payMoneyChange(val) {
-      if (val > this.allOrderInfo.totalReceivable) {
+      if (+val > +this.allOrderInfo.totalReceivable) {
         this.ruleForm.pay_money = this.allOrderInfo.totalReceivable;
         this.$message.warning("支付金额不能大于应收金额！");
       }
@@ -952,6 +952,9 @@ export default {
               },
               total_money: item.price,
               lower_price: item.lowest_price,
+              service_period: item.service_period,
+              service_type: item.service_type,
+              service_effective: item.service_effective,
               project: {
                 id: item.project_id,
                 value: item.project_name,
