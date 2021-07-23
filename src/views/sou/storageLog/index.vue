@@ -53,7 +53,7 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="update_number"
+            prop="to_storage_name"
             label="目标仓库"
             min-width="110"
             show-overflow-tooltip
