@@ -493,6 +493,14 @@
               v-model="ruleForm.thesis_defense"
             ></el-input>
           </el-form-item>
+          <el-form-item label="平台费">
+            <el-input
+              type="number"
+              class="input-width"
+              placeholder="请输入"
+              v-model="ruleForm.platform_fee"
+            ></el-input>
+          </el-form-item>
           <el-form-item label="其他费用">
             <el-input
               type="number"
@@ -604,6 +612,7 @@ export default {
         textbook: "",
         graduation_guidance: "",
         thesis_defense: "",
+        platform_fee: "",
         others: "",
         examination: "",
       },
@@ -929,6 +938,7 @@ export default {
           textbook: this.ruleForm.textbook || 0,
           graduation_guidance: this.ruleForm.graduation_guidance || 0,
           thesis_defense: this.ruleForm.thesis_defense || 0,
+          platform_fee: this.ruleForm.platform_fee || 0,
           others: this.ruleForm.others || 0,
           examination: this.ruleForm.examination || 0,
           project: JSON.stringify(
