@@ -39,7 +39,7 @@
                 <li>
                   <p>累计打卡天数</p>
                   <div>
-                    <strong>{{dataTitle.day}}</strong>
+                    <strong>{{dataTitle.accumulated_days}}</strong>
                     <span>天</span>
                   </div>
                 </li>
@@ -49,11 +49,11 @@
                 </li>
                 <li>
                   <p>答题总数</p>
-                  <strong>{{dataTitle.total_problem}}</strong>
+                  <strong>{{dataTitle.answers_total_num}}</strong>
                 </li>
                 <li>
                   <p>打卡正确率</p>
-                  <strong>{{dataTitle.accuracy}}%</strong>
+                  <strong>{{dataTitle.correct_rate}}%</strong>
                 </li>
               </ul>
             </div>
@@ -65,15 +65,15 @@
                 <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
                 <el-table-column prop="date_time" label="打卡时间" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="total_problem" label="题目总数" min-width="100" column-key="course_id"
+                <el-table-column prop="total_num" label="题目总数" min-width="100" column-key="course_id"
                   show-overflow-tooltip></el-table-column>
-                <el-table-column prop="right_problem" label="正确题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_right_num" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="use_time" label="打卡用时" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="ranking" label="打卡排行" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="rank" label="打卡排行" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
             </div>
@@ -88,46 +88,45 @@
                 <li>
                   <p>做题总数</p>
                   <div>
-                    <strong>{{dataTitle.total_problem}}</strong>
+                    <strong>{{chapterTitle.answers_total_num}}</strong>
                   </div>
                 </li>
                 <li>
                   <p>做题进度</p>
-                  <strong>{{dataTitle.make_problem_progress}}</strong>
+                  <strong>{{chapterTitle.question_progress}}</strong>
                 </li>
                 <li>
                   <p>正确率</p>
-                  <strong>{{dataTitle.right_progress}}</strong>
+                  <strong>{{chapterTitle.correct_rate}}%</strong>
                 </li>
                 <li>
                   <p>收藏夹</p>
-                  <strong>{{dataTitle.collection_count}}</strong>
+                  <strong>{{chapterTitle.favorites}}</strong>
                 </li>
                 <li>
                   <p>错题集</p>
-                  <strong>{{dataTitle.error_count}}</strong>
+                  <strong>{{chapterTitle.wrong_question_num}}</strong>
                 </li>
               </ul>
             </div>
             <!--表格-->
             <div class="userTable">
-              <el-table :data="dataList" tooltip-effect="light" stripe style="width: 100%;"
+              <el-table :data="chapterList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
                 <el-table-column prop="chapter_name" label="章节名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="create_time" label="做题时间" min-width="100" column-key="course_id"
+                <el-table-column prop="last_time" label="做题时间" min-width="100" column-key="course_id"
                   show-overflow-tooltip></el-table-column>
-                <el-table-column prop="total_problem" label="题目总数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="total_num" label="题目总数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="do_problem" label="做题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_total_num" label="做题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="progress" label="做题进度" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="question_progress" label="做题进度" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="right_problem" label="正确题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_right_num" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
               <!-- <div class="table_bottom">
@@ -142,26 +141,26 @@
                 <li>
                   <p>做题总数</p>
                   <div>
-                    <strong>{{dataTitle.total_problem}}</strong>
+                    <strong>{{pastTitle.question_progress}}</strong>
                   </div>
                 </li>
                 <li>
                   <p>做题进度</p>
-                  <strong>{{dataTitle.progress}}%</strong>
+                  <strong>{{pastTitle.question_progress}}%</strong>
                 </li>
                 <li>
                   <p>正确率</p>
-                  <strong>{{dataTitle.accuracy}}%</strong>
+                  <strong>{{pastTitle.correct_rate}}%</strong>
                 </li>
                 <li>
                   <p>平均做题用时</p>
-                  <strong>{{dataTitle.use_time}}</strong>
+                  <strong>{{pastTitle.use_time}}</strong>
                 </li>
               </ul>
             </div>
             <!--表格-->
             <div class="userTable">
-              <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe style="width: 100%;"
+              <el-table ref="multipleTable" :data="pastList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
                 <el-table-column prop="chapter_name" label="试卷名称" show-overflow-tooltip min-width="100">
@@ -194,44 +193,44 @@
                 <li>
                   <p>模拟考试次数</p>
                   <div>
-                    <strong>{{dataTitle.num}}</strong>
+                    <strong>{{mockTitle.total_num}}</strong>
                   </div>
                 </li>
                 <li>
                   <p>做题总数</p>
-                  <strong>{{dataTitle.total_problem}}</strong>
+                  <strong>{{mockTitle.answers_total_num}}</strong>
                 </li>
                 <li>
-                  <p>正确率</p>
-                  <strong>{{dataTitle.accuracy}}%</strong>
+                  <p>模拟考试最高分</p>
+                  <strong>{{mockTitle.max_mark}}</strong>
                 </li>
                 <li>
                   <p>平均做题用时</p>
-                  <strong>{{dataTitle.use_time}}</strong>
+                  <strong>{{mockTitle.use_time}}</strong>
                 </li>
               </ul>
             </div>
             <!--表格-->
             <div class="userTable">
-              <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe style="width: 100%;"
+              <el-table ref="multipleTable" :data="mockList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
                 <el-table-column prop="create_time" label="试卷名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
                 <el-table-column prop="create_time" label="考试时间" min-width="100" column-key="course_id"
                   show-overflow-tooltip>200</el-table-column>
-                <el-table-column prop="total_problem" label="题目总数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="total_question" label="题目总数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="right_problem" label="正确题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_right_num" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="error_problem" label="错误题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answer_error_num" label="错误题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="unanswered" label="未回答题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_unanswered_num" label="未回答题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="use_time" label="做题用时" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="mark" label="得分" min-width="100" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
             </div>
@@ -245,37 +244,37 @@
                 <li>
                   <p>刷题挑战次数</p>
                   <div>
-                    <strong>{{dataTitle.num}}</strong>
+                    <strong>{{challeTitle.total_num}}</strong>
                   </div>
                 </li>
                 <li>
                   <p>做题总数</p>
-                  <strong>{{dataTitle.total_problem}}</strong>
+                  <strong>{{challeTitle.total_question}}</strong>
                 </li>
                 <li>
                   <p>正确率</p>
-                  <strong>{{dataTitle.accuracy}}%</strong>
+                  <strong>{{challeTitle.correct_rate}}%</strong>
                 </li>
                 <li>
                   <p>平均做题用时</p>
-                  <strong>{{dataTitle.use_time}}</strong>
+                  <strong>{{challeTitle.use_time}}</strong>
                 </li>
               </ul>
             </div>
             <!--表格-->
             <div class="userTable">
-              <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe style="width: 100%;"
+              <el-table ref="multipleTable" :data="challeList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <el-table-column prop="create_time" label="挑战时间" show-overflow-tooltip min-width="100">2020-06-04 16:30
+                <el-table-column prop="create_time" label="挑战时间" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="total_problem" label="题目总数" min-width="100" column-key="course_id"
-                  show-overflow-tooltip>200</el-table-column>
-                <el-table-column prop="right_problem" label="正确题数" min-width="100" show-overflow-tooltip>100
+                <el-table-column prop="total_question" label="题目总数" min-width="100" column-key="course_id"
+                  show-overflow-tooltip></el-table-column>
+                <el-table-column prop="answers_right_num" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="mark" label="得分" min-width="100" show-overflow-tooltip>50%
+                <el-table-column prop="mark" label="得分" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="use_time" label="做题用时" min-width="100" show-overflow-tooltip>
                 </el-table-column>
@@ -299,12 +298,14 @@
                   <strong>{{dataTitle.watch_total}}</strong>
                 </li>
                 <li>
-                  <p>正确率</p>
-                  <strong>{{dataTitle.watch_time}}%</strong>
+                  <p>
+                    观看总时长</p>
+                  <strong>{{dataTitle.stay_time}}</strong>
                 </li>
                 <li>
-                  <p>平均做题用时</p>
-                  <strong>{{dataTitle.progress}}</strong>
+                  <p>
+                    观看总进度</p>
+                  <strong>{{dataTitle.progress}}%</strong>
                 </li>
               </ul>
             </div>
@@ -432,31 +433,31 @@
                 <li>
                   <p>面授课次数</p>
                   <div>
-                    <strong>{{dataTitle.total}}</strong>
+                    <strong>{{faceTitle.total_num}}</strong>
                   </div>
                 </li>
                 <li>
                   <p>完成次数</p>
-                  <strong>{{dataTitle.achieve}}</strong>
+                  <strong>{{faceTitle.completions_num}}</strong>
                 </li>
                 <li>
                   <p>失约次数</p>
-                  <strong>{{dataTitle.miss}}</strong>
+                  <strong>{{faceTitle.missed_num}}</strong>
                 </li>
                 <li>
                   <p>到课率</p>
-                  <strong>{{dataTitle.progress}}%</strong>
+                  <strong>{{faceTitle.attendance_rate}}%</strong>
                 </li>
               </ul>
             </div>
             <!--表格-->
             <div class="userTable">
-              <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe
+              <el-table ref="multipleTable" :data="faceList" tooltip-effect="light" stripe
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <el-table-column prop="chapter_name" label="面授课名称" show-overflow-tooltip min-width="100">
+                <el-table-column prop="subscribe_classroom_name" label="面授课名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="subscribe_classroom_name" label="课程内容" min-width="100" column-key="course_id"
+                <el-table-column prop="chapter_name" label="课程内容" min-width="100" column-key="course_id"
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="teacher_name" label="任课老师" min-width="100" show-overflow-tooltip>
@@ -477,46 +478,46 @@
                 <li>
                   <p>做题总数</p>
                   <div>
-                    <strong>{{dataTitle.total_problem}}</strong>
+                    <strong>{{selfTitle.answers_total_num}}</strong>
                   </div>
                 </li>
                 <li>
                   <p>做题进度</p>
-                  <strong>{{dataTitle.progress}}%</strong>
+                  <strong>{{selfTitle.question_progress}}%</strong>
                 </li>
                 <li>
                   <p>正确率</p>
-                  <strong>{{dataTitle.accuracy}}%</strong>
+                  <strong>{{selfTitle.correct_rate}}%</strong>
                 </li>
                 <li>
                   <p>平均做题用时</p>
-                  <strong>{{dataTitle.use_time}}</strong>
+                  <strong>{{selfTitle.use_time}}</strong>
                 </li>
               </ul>
             </div>
             <!--表格-->
             <div class="userTable">
-              <el-table ref="multipleTable" :data="dataList" tooltip-effect="light" stripe
+              <el-table ref="multipleTable" :data="selfList" tooltip-effect="light" stripe
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
                 <el-table-column prop="chapter_name" label="试卷名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
-                <el-table-column prop="create_time" label="做题时间" min-width="100" column-key="course_id"
+                <el-table-column prop="use_time" label="做题时间" min-width="100" column-key="course_id"
                   show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="total_problem" label="题目总数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="total_question" label="题目总数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="right_problem" label="正确题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_right_num" label="正确题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="error_problem" label="错误题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_error_num" label="错误题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="unanswered" label="未回答题数" min-width="100" show-overflow-tooltip>
+                <el-table-column prop="answers_unanswered_num" label="未回答题数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="use_time" label="做题用时" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="mark" label="得分" min-width="100" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
-                </el-table-column>
+                <!-- <el-table-column prop="accuracy" label="正确率" min-width="100" show-overflow-tooltip>
+                </el-table-column> -->
               </el-table>
             </div>
           </div>
@@ -527,90 +528,116 @@
 </template>
 
 <script>
-  import { getStudentBasicDetail, learningDetails } from "@/api/eda";
+  import { getStudentBasicDetail, dailyClockIn, chapterExercises, pastRealQuestions, mockExam, challenge, FaceToFaceLesson, selfProposed } from "@/api/eda";
   export default {
     data() {
       return {
         state: 0,
-        // pageNum: 1,
-        // listTotal: 0,
         isTagactive: 1,
         dataTitle: {},
         dataList: [{ create_time: "" }],
+        chapterTitle: {},
+        chapterList: [],
+        pastTitle: {},
+        pastList: [],
+        mockTitle: {},
+        mockList: [],
+        challeTitle: {},
+        challeList: [],
+        faceTitle: {},
+        faceList: [],
+        selfTitle: {},
+        selfList: [],
         ruleForm: {},
         tabFun: [
           {
             id: 1,
             name: '每日打卡',
-            state: 0,
+
           },
           {
             id: 2,
             name: '章节练习',
-            state: 1,
+
           },
           {
             id: 3,
             name: '历年真题',
-            state: 2,
+
           },
           {
             id: 4,
             name: '模拟考试',
-            state: 3,
+
           },
           {
             id: 5,
             name: '刷题挑战',
-            state: 4,
+
           },
           {
             id: 6,
             name: '录播视频',
-            state: 5,
+
           },
           {
             id: 7,
             name: '直播视频',
-            state: 6,
+
           },
           {
             id: 8,
             name: '回播视频',
-            state: 7,
+
           },
           {
             id: 9,
             name: '面授约课',
-            state: 8,
+
           },
           {
             id: 10,
             name: '自主出题',
-            state: 9,
+
           },
         ],
       }
     },
     created() {
       this.getStudentBasicDetail();
-      this.learningDetails(this.state);
+      this.dailyClockIn();
     },
     methods: {
-      // handlePageChange(val) {
-      //   this.pageNum = val;
-      //   this.learningDetails(this.state);
-      // },
       statusSwitch(row) {
         this.isTagactive = row.id
-        this.pageNum = 1
-        this.learningDetails(row.state)
+        if (row.id === 1) {
+          this.dailyClockIn()
+        }
+        else if (row.id === 2) {
+          this.chapterExercises()
+        }
+        else if (row.id === 3) {
+          this.pastRealQuestions()
+        }
+        else if (row.id === 4) {
+          this.mockExam()
+        }
+        else if (row.id === 5) {
+          this.challenge()
+        }
+        else if (row.id === 9) {
+          this.FaceToFaceLesson()
+        }
+        else if (row.id === 10) {
+          this.selfProposed()
+        }
       },
+
       //学生基本信息
       async getStudentBasicDetail() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id
+          course_id: this.$route.query.course_id,
         };
         console.log(data)
         const res = await getStudentBasicDetail(data);
@@ -618,19 +645,88 @@
           this.ruleForm = res.data;
         }
       },
-      // 学习详情
-      async learningDetails(state) {
+      // 每日打卡
+      async dailyClockIn() {
         const data = {
           uid: this.$route.query.uid,
           course_id: this.$route.query.course_id,
-          state,
-          // page: this.pageNum,
         };
-        const res = await learningDetails(data);
-        // this.listTotal = res.data.total;
+        const res = await dailyClockIn(data);
         if (res.code === 0) {
           this.dataTitle = res.data.data;
           this.dataList = res.data.list;
+        }
+      },
+      // 章节练习
+      async chapterExercises() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id,
+        };
+        const res = await chapterExercises(data);
+        if (res.code === 0) {
+          this.chapterTitle = res.data.data;
+          this.chapterList = res.data.list;
+        }
+      },
+      // 历年真题
+      async pastRealQuestions() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id,
+        };
+        const res = await pastRealQuestions(data);
+        if (res.code === 0) {
+          this.pastTitle = res.data.data;
+          this.pastList = res.data.list;
+        }
+      },
+      // 模拟考试
+      async mockExam() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id,
+        };
+        const res = await mockExam(data);
+        if (res.code === 0) {
+          this.mockTitle = res.data.data;
+          this.mockList = res.data.list;
+        }
+      },
+      // 刷题挑战
+      async challenge() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id,
+        };
+        const res = await challenge(data);
+        if (res.code === 0) {
+          this.challeTitle = res.data.data;
+          this.challeList = res.data.list;
+        }
+      },
+      // 面授约课
+      async FaceToFaceLesson() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id,
+        };
+        const res = await FaceToFaceLesson(data);
+        if (res.code === 0) {
+          this.faceTitle = res.data.data;
+          this.faceList = res.data.list;
+        }
+      },
+      // 自主出题
+      async selfProposed() {
+        const data = {
+          uid: this.$route.query.uid,
+          course_id: this.$route.query.course_id,
+        };
+        const res = await selfProposed(data);
+        if (res.code === 0) {
+          this.selfTitle = res.data.data;
+          this.selfList = res.data.list;
         }
       },
     },

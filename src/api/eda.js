@@ -479,22 +479,75 @@ export function getstudentcourse(params) {
     params,
   })
 }
-// 学习详情列表
-export function learningDetails(params) {
-  return request({
-    url: '/personalLog/study',
-    method: 'get',
-    params,
-  })
-}
+
+// // 学习详情列表
+// export function learningDetails(params) {
+//   return request({
+//     url: '/personalLog/study',
+//     method: 'get',
+//     params,
+//   })
+// }
+
 // 学习详情-每日打卡
-export function personalpunch(params) {
+export function dailyClockIn(params) {
   return request({
-    url: '/personalLog/punch',
+    url: '/TopicStatistics/dailyClockIn',
     method: 'get',
     params,
   })
 }
+// 学习详情-章节练习
+export function chapterExercises(params) {
+  return request({
+    url: '/TopicStatistics/chapterExercises',
+    method: 'get',
+    params,
+  })
+}
+// 学习详情-历年真题
+export function pastRealQuestions(params) {
+  return request({
+    url: '/TopicStatistics/pastRealQuestions',
+    method: 'get',
+    params,
+  })
+}
+// 学习详情-模拟考试
+export function mockExam(params) {
+  return request({
+    url: '/TopicStatistics/mockExam',
+    method: 'get',
+    params,
+  })
+}
+// 学习详情-刷题挑战
+export function challenge(params) {
+  return request({
+    url: '/TopicStatistics/challenge',
+    method: 'get',
+    params,
+  })
+}
+
+// 学习详情-面授约课
+export function FaceToFaceLesson(params) {
+  return request({
+    url: '/ScheduledCourseStatistics/FaceToFaceLesson',
+    method: 'get',
+    params,
+  })
+}
+
+// 学习详情-自主出题
+export function selfProposed(params) {
+  return request({
+    url: '/TopicStatistics/selfProposed',
+    method: 'get',
+    params,
+  })
+}
+
 
 // 移除班级学生
 export function classstudentsBatchRemove(data) {
