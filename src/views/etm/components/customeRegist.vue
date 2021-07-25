@@ -210,6 +210,7 @@
                 v-model="ruleForm.pay_type"
                 placeholder="请选择支付方式"
                 class="input-width"
+                filterable
               >
                 <el-option
                   v-for="item in payWays"
@@ -369,6 +370,7 @@
                 v-model="ruleForm.pay_type"
                 placeholder="请选择支付方式"
                 class="input-width"
+                filterable
               >
                 <el-option
                   v-for="item in payWays"
@@ -591,6 +593,10 @@ export default {
         {
           value: 7,
           label: "机构签约订单",
+        },
+        {
+          value: 8,
+          label: "pos机",
         },
       ],
       ruleForm: {

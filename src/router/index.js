@@ -731,7 +731,7 @@ export const asyncRouter = [
         meta: { title: '订单审批', icon: 'product-add' },
       },
       {
-        path: 'contract ',
+        path: 'contract',
         name: 'contract',
         component: () => import('@/views/fina/contract.vue'),
         meta: { title: '合同审核', icon: 'product-add' },

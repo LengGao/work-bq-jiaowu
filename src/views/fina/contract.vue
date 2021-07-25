@@ -33,21 +33,28 @@
           <el-table-column
             prop="project_str"
             label="项目名称"
-            min-width="200"
+            min-width="300"
             column-key="project_str"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="staff_name"
+            label="申请人"
+            min-width="100"
+            column-key="surname"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="surname"
             label="签署人"
-            min-width="200"
+            min-width="100"
             column-key="surname"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
             prop="pay_money"
             label="应收金额"
-            min-width="200"
+            min-width="120"
             column-key="pay_money"
             show-overflow-tooltip
           >
@@ -58,7 +65,7 @@
           <el-table-column
             prop="order_money"
             label="签署价格"
-            min-width="200"
+            min-width="120"
             column-key="order_money"
             show-overflow-tooltip
           >
@@ -69,7 +76,7 @@
           <el-table-column
             prop="create_time"
             label="上传时间"
-            min-width="250"
+            min-width="160"
             column-key="create_time"
             show-overflow-tooltip
           ></el-table-column>
@@ -88,7 +95,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button
