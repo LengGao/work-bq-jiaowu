@@ -12,7 +12,7 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div>
+        <div class="btns">
           <el-button
             type="primary"
             style="height: 40px"
@@ -277,7 +277,7 @@
         <el-dialog
           title="生成合同"
           :visible.sync="dialogVisible"
-          width="25%"
+          width="600px"
           :close-on-click-modal="false"
         >
           <el-form
@@ -288,6 +288,7 @@
           >
             <el-form-item label="合同模板" prop="template_name">
               <el-select
+                style="width: 300px"
                 v-model="templateId"
                 clearable
                 placeholder="请选择合同模板"
@@ -305,11 +306,14 @@
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="Entryenter">确 定</el-button>
+            <el-button type="success" @click="generateContract(1)"
+              >预 览</el-button
+            >
+            <el-button type="primary" @click="generateContract(0)"
+              >确 定</el-button
+            >
           </span>
         </el-dialog>
-
-        <!-- <Viewcontract v-model="viewcondialog" :id="currentId" :project="project" :template_url="template_url" /> -->
 
         <!--查看模板弹窗 -->
         <el-dialog
@@ -318,12 +322,8 @@
           width="1000px"
           :close-on-click-modal="false"
           style="margin-top: -6vh"
+          append-to-body
         >
-          <!-- <div class="right" style="float:right; margin-bottom:20px;">
-        <el-button type="primary">发送合同链接</el-button>
-        <el-button plain>生成二维码</el-button>
-      </div> -->
-
           <div
             style="height: 650px; width: 800px; overflow: hidden; margin-top: 0"
           >
@@ -337,7 +337,6 @@
               style="margin-top: -150px; margin-left: -150px"
             />
           </div>
-          <!-- <iframe :src="sign_url" type="application/x-google-chrome-pdf" width="1150px" height="650px" border="0" /> -->
         </el-dialog>
 
         <Toexamine
@@ -362,20 +361,15 @@ import { templatelist } from "@/api/system";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { generate } from "@/api/fina";
 import { getproject } from "@/api/eda";
-import { contractaudit } from "@/api/fina";
-import { getCustomerList, getInstitutionList, getfieldinfo } from "@/api/etm";
+import { getCustomerList, getfieldinfo } from "@/api/etm";
 import { cloneOptions } from "@/utils/index";
 import addCustomeDialog from "./components/addCustomeDialog";
-import Viewcontract from "./components/viewcontract";
-import Seetemplate from "./components/seetemplate";
 import Toexamine from "./components/toexadialog";
 
 export default {
   name: "customerManage",
   components: {
     addCustomeDialog,
-    Viewcontract,
-    Seetemplate,
     Toexamine,
   },
   data() {
@@ -650,17 +644,6 @@ export default {
   mounted() {
     console.log(this.date);
   },
-  filters: {
-    // dealType(is_verify) {
-    //   if (is_verify == '1') {
-    //     return '已成交'
-    //   } else if (is_verify == '2') {
-    //     return '已退费'
-    //   } else {
-    //     return '未成交'
-    //   }
-    // },
-  },
   methods: {
     orderDetail(row) {
       this.$router.push({
@@ -682,29 +665,12 @@ export default {
         this.$message.success("复制成功");
       }
     },
-    handleClose(done) {
-      this.seetempdialog = false;
-    },
     seebtn(row) {
       this.templatelist();
       this.templateId = "";
       this.orderId = row.order_id;
       this.dialogVisible = true;
     },
-    // 查看合同
-    seetemplate(row) {
-      console.log(row);
-      this.seetempdialog = true;
-      this.sign_url = row.sign_url;
-    },
-    Entryenter() {
-      this.generate();
-    },
-    // exambtn(row) {
-    //   this.order_id = row.order_id
-    //   this.project = row.project
-    //   this.examdialogVisible = true
-    // },
     Approval(row) {
       this.toexadialog = true;
       this.dialogTitle = "合同审核";
@@ -733,17 +699,23 @@ export default {
     },
 
     // 生成合同接口
-    async generate() {
+    async generateContract(preview) {
       const data = {
         template_id: this.templateId,
         order_id: this.orderId,
+        preview,
       };
       // console.log(data)
       const res = await generate(data);
       if (res.code == 0) {
-        this.$message.success(res.message);
-        this.dialogVisible = false;
-        this.getCustomerList();
+        console.log(res);
+        if (preview) {
+          this.seeview(res.data);
+        } else {
+          this.$message.success(res.message);
+          this.dialogVisible = false;
+          this.getCustomerList();
+        }
       }
     },
     // 复制
@@ -926,7 +898,6 @@ export default {
 
     seeview(row) {
       this.viewcondialog = true;
-      // this.project = sing_url.projects
       this.sign_url = row.sign_url;
     },
   },
@@ -961,6 +932,9 @@ export default {
 header {
   display: flex;
   justify-content: space-between;
+  .btns {
+    flex-shrink: 0;
+  }
 }
 .head_remind {
   padding: 20px;
