@@ -28,7 +28,7 @@
         <el-table-column
           prop="uid"
           label="学生编号"
-          min-width="110"
+          width="80"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -58,19 +58,19 @@
         <el-table-column
           prop="category_name"
           label="课程类型"
-          min-width="100"
+          min-width="90"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="course_name"
           label="课程名称"
-          min-width="100"
+          min-width="200"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="classroom_name"
           label="所属班级"
-          min-width="100"
+          min-width="160"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -100,21 +100,14 @@
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="200"
-          max-width="200"
-        >
-          <template slot-scope="scope">
+        <el-table-column label="操作" fixed="right" min-width="100">
+          <template slot-scope="{ row }">
             <div class="operation_btn">
-              <span v-if="scope.row.aid > 0">已归档</span>
-              <el-button type="text" @click="handleAdd(scope.row)" v-else
+              <span v-if="row.aid > 0">已归档</span>
+              <el-button type="text" @click="handleAdd(row)" v-else
                 >添加</el-button
               >
-              <!-- <el-button type="text" @click="handleAdd(scope.row)"
-                >添加</el-button
-              > -->
+              <el-button type="text" @click="toVoid(row)">作废/退款</el-button>
             </div>
           </template>
         </el-table-column>
@@ -135,6 +128,12 @@
       @on-success="onlineUserList"
       v-on:innerDialog="getInnerStatus($event)"
     />
+    <ToVoidDIalog
+      v-model="toVoidVisible"
+      :id="toVoidId"
+      :intentId="toVoidIntentId"
+      @on-success="onlineUserList"
+    />
   </section>
 </template>
 
@@ -144,10 +143,13 @@ import { cloneOptions } from "@/utils/index";
 import { getcourseallclass } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import AddLearner from "./components/AddLearner";
+import ToVoidDIalog from "./components/ToVoidDIalog.vue";
+
 export default {
   name: "seaStudent",
   components: {
     AddLearner,
+    ToVoidDIalog,
   },
   data() {
     return {
@@ -327,6 +329,9 @@ export default {
       listData: [],
       field_content: [],
       checked: "",
+      toVoidVisible: false,
+      toVoidId: "",
+      toVoidIntentId: "",
     };
   },
   created() {
@@ -335,6 +340,11 @@ export default {
     this.getCateList();
   },
   methods: {
+    toVoid(row) {
+      this.toVoidIntentId = row.intent_id;
+      this.toVoidId = row.uid;
+      this.toVoidVisible = true;
+    },
     getInnerStatus(val) {
       console.log(val);
       this.learnVisible = val;
@@ -368,12 +378,13 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[4].attrs.options = this.institutionOption = cloneOptions(
-          res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
+        this.searchOptions[4].attrs.options = this.institutionOption =
+          cloneOptions(
+            res.data,
+            "institution_name",
+            "institution_id",
+            "children"
+          );
       }
     },
     // 当分类选择时
@@ -397,7 +408,6 @@ export default {
       const data = { category_id };
       const res = await getCourseSelect(data);
       if (res.code === 0) {
-        // this.classOptions = res.data.list
         this.searchOptions[2].options = res.data.list;
       }
     },
@@ -426,11 +436,6 @@ export default {
       this.listLoading = true;
       const res = await onlineUserList(data);
       this.listLoading = false;
-      // res.data.data = res.data.data.forEach((i) => {
-      //   i.create_time = this.$moment
-      //     .unix(i.create_time)
-      //     .format('YYYY-MM-DD HH:mm:ss')
-      // })
       this.listData = res.data.data;
       this.listTotal = res.data.total;
     },
