@@ -123,3 +123,11 @@ export function getRecentLoginUser(params) {
     params,
   })
 }
+// 网课学员-退款，作废
+export function cancelIntent(data) {
+  return request({
+    url: '/order/cancelIntent',
+    method: 'post',
+    data,
+  })
+}
