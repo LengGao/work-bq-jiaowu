@@ -174,6 +174,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="admin_name"
+            label="申请人"
+            min-width="100"
+            column-key="surname"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
             prop="pay_status"
             label="订单状态"
             min-width="100"
