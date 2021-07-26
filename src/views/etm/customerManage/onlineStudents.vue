@@ -107,7 +107,12 @@
               <el-button type="text" @click="handleAdd(row)" v-else
                 >添加</el-button
               >
-              <el-button type="text" @click="toVoid(row)">作废/退款</el-button>
+              <el-button
+                style="margin-left: 10px"
+                type="text"
+                @click="toVoid(row)"
+                >作废/退款</el-button
+              >
             </div>
           </template>
         </el-table-column>

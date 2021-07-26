@@ -169,7 +169,7 @@ export function getShortcuts(types) {
       }
     },
     9: {
-      text: "本年",
+      text: "今年",
       onClick(picker) {
         const end = new Date();
         const start = new Date(end.getFullYear(), 0, 1);
