@@ -28,24 +28,24 @@
             prop="uid"
             label="ID"
             show-overflow-tooltip
-            min-width="90"
+            width="70"
           ></el-table-column>
           <el-table-column
-            prop="order_id"
+            prop="order_no"
             label="订单编号"
             min-width="140"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toOrderDetail(row.order_id)">
-                {{ row.order_id }}
+                {{ row.order_no }}
               </el-button>
             </template>
           </el-table-column>
           <el-table-column
             prop="surname"
             label="学生姓名"
-            min-width="100"
+            min-width="90"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -57,7 +57,7 @@
           <el-table-column
             prop="sex"
             label="性别"
-            min-width="100"
+            width="70"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -91,25 +91,31 @@
             prop="university_title"
             label="院校名称"
             show-overflow-tooltip
-            min-width="90"
+            min-width="140"
           ></el-table-column>
           <el-table-column
             prop="level_title"
             label="层次名称"
             show-overflow-tooltip
             min-width="90"
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <el-tag :type="row.level_id === 10 ? 'success' : 'warning'">{{
+                row.level_title
+              }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="major_title"
             label="专业名称"
             show-overflow-tooltip
-            min-width="90"
+            min-width="180"
           ></el-table-column>
           <el-table-column
             prop="project_name"
             label="项目名称"
             show-overflow-tooltip
-            min-width="160"
+            min-width="220"
           ></el-table-column>
 
           <el-table-column
