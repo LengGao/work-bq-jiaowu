@@ -86,7 +86,11 @@ export default {
       this.visible = false;
       this.$router.push({
         name: "classVideo",
-        query: { id: row.classroom_id, chapterName: row.chapter_name },
+        query: {
+          id: row.classroom_id,
+          chapterName: row.chapter_name,
+          classRoomName: row.classroom_name,
+        },
       });
     },
     handleOpen() {

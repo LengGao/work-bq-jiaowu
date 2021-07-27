@@ -107,7 +107,9 @@
                 <el-button type="text" @click="toReturnVisit(row.classroom_id)"
                   >学习回访</el-button
                 >
-                <el-button type="text" @click="toClassVideo(row.classroom_id)"
+                <el-button
+                  type="text"
+                  @click="toClassVideo(row.classroom_id, row.classroom_name)"
                   >直播回顾</el-button
                 >
               </div>
@@ -206,10 +208,10 @@ export default {
   },
 
   methods: {
-    toClassVideo(id) {
+    toClassVideo(id, classRoomName) {
       this.$router.push({
         name: "classVideo",
-        query: { id },
+        query: { id, classRoomName },
       });
     },
     openEdit(id) {

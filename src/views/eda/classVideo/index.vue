@@ -9,6 +9,12 @@
         @on-search="handleSearch"
       />
       <div>
+        <span>当前班级：</span>
+        <el-button type="text" @click="toClassDetail($route.query.id)"
+          ><span style="font-size: 16px">{{
+            $route.query.classRoomName
+          }}</span></el-button
+        >
         <el-button type="primary" @click="openAdd">添加章节</el-button>
       </div>
     </div>
