@@ -29,7 +29,10 @@
         lazy
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         :load="loadTableChildren"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column :selectable="selectable" type="selection" width="55">
+        </el-table-column>
         <el-table-column
           prop="name"
           label="章节名称"
@@ -177,6 +180,8 @@
           <div v-else>
             <el-button @click="showDetect">批量扫脸次数</el-button>
           </div>
+          <el-button @click="handleBatchDrag(1)">批量拖拽（开）</el-button>
+          <el-button @click="handleBatchDrag(0)">批量拖拽（关）</el-button>
         </div>
 
         <page
@@ -255,6 +260,7 @@ export default {
       isEdit: false,
       //扫脸次数
       isDetect: false,
+      checkedIds: [],
     };
   },
 
@@ -264,6 +270,27 @@ export default {
   },
 
   methods: {
+    handleSelectionChange(selection) {
+      this.checkedIds = selection.map((item) => item.id);
+    },
+    async handleBatchDrag(status) {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择！");
+        return;
+      }
+      const data = {
+        video_class_id_arr: this.checkedIds,
+        status,
+      };
+      const res = await updateVideoClassProgressStatus(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+      this.getvideochapterList();
+    },
+    selectable(row) {
+      return !!row.parentId;
+    },
     handleDetectCancel() {
       this.$message("已取消");
       this.getvideochapterList();
