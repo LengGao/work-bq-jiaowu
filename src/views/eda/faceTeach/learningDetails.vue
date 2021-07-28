@@ -853,7 +853,7 @@
     align-items: flex-end;
 
     .navigation {
-      width: 620px;
+      width: 600px;
       display: flex;
       justify-content: space-between;
       font-family: 'Microsoft YaHei UI', sans-serif;
