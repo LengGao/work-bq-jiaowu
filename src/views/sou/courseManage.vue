@@ -83,7 +83,13 @@
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
-
+          <el-table-column
+            prop="detect_info"
+            label="视频信息"
+            align="center"
+            min-width="200"
+            show-overflow-tooltip
+          ></el-table-column>
           <el-table-column
             label="是否上架"
             align="center"

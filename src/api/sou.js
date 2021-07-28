@@ -1287,7 +1287,7 @@ export function updateVideoClassDetectTime(data) {
     data,
   })
 }
-// 课程视频-进度拖拽
+// 课程视频-控制快进
 export function updateVideoClassProgressStatus(data) {
   return request({
     url: '/course/updateVideoClassProgressStatus',

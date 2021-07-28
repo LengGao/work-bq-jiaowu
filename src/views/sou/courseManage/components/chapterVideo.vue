@@ -106,7 +106,7 @@
         <el-table-column
           align="center"
           prop="student_number"
-          label="进度拖拽"
+          label="是否快进"
           min-width="110"
           show-overflow-tooltip
         >
@@ -154,6 +154,12 @@
                 :loading="row.loading"
                 >下载</el-button
               >
+              <el-button
+                v-if="row.parentId"
+                type="text"
+                @click="toFaceRecord(row)"
+                >核验记录</el-button
+              >
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
               <el-button type="text" @click="deleteConfirm(row)"
                 >删除</el-button
@@ -180,8 +186,8 @@
           <div v-else>
             <el-button @click="showDetect">批量扫脸次数</el-button>
           </div>
-          <el-button @click="handleBatchDrag(1)">批量拖拽（开）</el-button>
-          <el-button @click="handleBatchDrag(0)">批量拖拽（关）</el-button>
+          <el-button @click="handleBatchDrag(1)">批量快进（开）</el-button>
+          <el-button @click="handleBatchDrag(0)">批量快进（关）</el-button>
         </div>
 
         <page
@@ -266,13 +272,16 @@ export default {
 
   created() {
     this.getvideochapterList();
-    //
   },
 
   methods: {
+    toFaceRecord(row) {
+      console.log(row);
+    },
     handleSelectionChange(selection) {
       this.checkedIds = selection.map((item) => item.id);
     },
+    // 批量快进控制
     async handleBatchDrag(status) {
       if (!this.checkedIds.length) {
         this.$message.warning("请先选择！");
@@ -295,6 +304,7 @@ export default {
       this.$message("已取消");
       this.getvideochapterList();
     },
+    // 批量设置扫脸次数
     handleBatchDetect() {
       const data = {};
       const allChildren = [];
@@ -323,6 +333,7 @@ export default {
         this.$message.success(res.message);
       }
     },
+    // 快进控制
     async updateProgressStatus(row) {
       const data = {
         video_class_id_arr: [row.video_class_id],
