@@ -129,7 +129,15 @@ export default {
   },
   methods: {
     linkTo(name, { live_class_id, live_id, course_id }) {
-      this.$router.push({ name, query: { live_class_id, live_id, course_id } });
+      this.$router.push({
+        name,
+        query: {
+          live_class_id,
+          live_id,
+          course_id,
+          isclass: this.$route.query.isclass || "",
+        },
+      });
     },
     openLiveLink(id) {
       this.currentId = id;

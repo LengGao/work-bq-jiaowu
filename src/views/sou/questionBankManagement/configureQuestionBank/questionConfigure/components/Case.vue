@@ -10,7 +10,16 @@
       <el-form-item label="题干内容" prop="topic_description">
         <Editor v-model="editorForm.topic_description" :height="editorHeight" />
       </el-form-item>
-
+      <el-form-item label="清除格式">
+        <el-checkbox
+          class="checkbox"
+          :true-label="1"
+          :false-label="0"
+          v-model="editorForm.remove_html"
+        >
+          <span class="desc">（ 只保留文字 ）</span></el-checkbox
+        >
+      </el-form-item>
       <el-form-item label="案例题目">
         <p class="warning" v-if="!isAddChild">创建案例题后方可添加子题目</p>
         <div class="item-input" v-for="item in data.child_list" :key="item.id">
@@ -76,6 +85,7 @@ export default {
     return {
       editorForm: {
         topic_description: "",
+        remove_html: 1,
       },
       editorRules: {
         topic_description: [

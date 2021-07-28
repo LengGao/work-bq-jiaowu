@@ -81,7 +81,7 @@
             show-overflow-tooltip
           ></el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="320">
+          <el-table-column label="操作" fixed="right" min-width="380">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="openEdit(row.classroom_id)"
@@ -106,6 +106,11 @@
                 >
                 <el-button type="text" @click="toReturnVisit(row.classroom_id)"
                   >学习回访</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="toClassVideo(row.classroom_id, row.classroom_name)"
+                  >直播回顾</el-button
                 >
               </div>
             </template>
@@ -203,6 +208,12 @@ export default {
   },
 
   methods: {
+    toClassVideo(id, classRoomName) {
+      this.$router.push({
+        name: "classVideo",
+        query: { id, classRoomName },
+      });
+    },
     openEdit(id) {
       this.dialogTitle = "编辑班级";
       this.currentId = id;

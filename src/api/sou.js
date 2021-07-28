@@ -519,9 +519,9 @@ export function getvideoclassDetail(params) {
   })
 }
 // 阿里云上传凭证
-export function updatecreate(data) {
+export function createUploadVideo(data) {
   return request({
-    url: 'live/updatecreate',
+    url: '/VideoRepository/createUploadVideo',
     method: 'post',
     data,
   })
@@ -529,7 +529,7 @@ export function updatecreate(data) {
 // 阿里云上传凭证刷新
 export function refreshuploadvideo(data) {
   return request({
-    url: 'live/refreshuploadvideo',
+    url: '/VideoRepository/refreshUploadVideo',
     method: 'post',
     data,
   })
@@ -1150,3 +1150,132 @@ export function getUniversityMajorOptions(params) {
 }
 // 上传题目文件
 export const importQuestionUrl = `${process.env.VUE_APP_LOACTION}/topic/uploadDoc`
+
+// 视频分组列表
+export function getVideoGroupList(data) {
+  return request({
+    url: '/VideoRepository/getVideoGroupList',
+    method: 'post',
+    data,
+  })
+}
+// 视频分组-删除
+export function deleteGroup(data) {
+  return request({
+    url: '/VideoRepository/deleteGroup',
+    method: 'post',
+    data,
+  })
+}
+// 视频分组-添加
+export function createGroup(data) {
+  return request({
+    url: '/VideoRepository/createGroup',
+    method: 'post',
+    data,
+  })
+}
+// 视频分组-修改
+export function updateGroup(data) {
+  return request({
+    url: '/VideoRepository/updateGroup',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表
+export function getVideoList(data) {
+  return request({
+    url: '/VideoRepository/getVideoList',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-操作员列表
+export function getAdminSelect(data) {
+  return request({
+    url: '/VideoRepository/getAdminSelect',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-删除视频
+export function deleteVideo(data) {
+  return request({
+    url: '/VideoRepository/deleteVideo',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-视频分组下拉列表
+export function getVideoGroupSelect(data) {
+  return request({
+    url: '/VideoRepository/getVideoGroupSelect',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-添加视频
+export function createVideo(data) {
+  return request({
+    url: '/VideoRepository/createVideo',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-修改视频
+export function updateVideo(data) {
+  return request({
+    url: '/VideoRepository/updateVideo',
+    method: 'post',
+    data,
+  })
+}
+// 视频库列表-完善视频信息
+export function completeVideoInfo(data) {
+  return request({
+    url: '/VideoRepository/completeVideoInfo',
+    method: 'post',
+    data,
+  })
+}
+// 阿里源视频列表
+export function getSourceVideoList(data) {
+  return request({
+    url: '/VideoRepository/getSourceVideoList',
+    method: 'post',
+    data,
+  })
+}
+// 阿里源视频列表-删除
+export function deleteSourceVideo(data) {
+  return request({
+    url: '/VideoRepository/deleteSourceVideo',
+    method: 'post',
+    data,
+  })
+}
+// 阿里源视频列表-下载
+export function downloadSourceVideo(data) {
+  return request({
+    url: '/VideoRepository/downloadSourceVideo',
+    method: 'post',
+    data,
+  })
+}
+// 视频引用详情
+export function getVideoUsingDetail(data) {
+  return request({
+    url: '/VideoRepository/getVideoUsingDetail',
+    method: 'post',
+    data,
+  })
+}
+// 题目批量排序
+export function batchTopicSort(data) {
+  return request({
+    url: '/topic/batchTopicSort',
+    method: 'post',
+    data,
+  })
+}

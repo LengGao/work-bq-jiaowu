@@ -307,6 +307,7 @@ export default {
         topic_analysis: qData.topic_analysis,
         topic_answer: qData.topic_answer,
         ignore_order: qData.ignore_order || 0,
+        remove_html: qData.remove_html,
         option_arr,
       };
       // 有id就是修改

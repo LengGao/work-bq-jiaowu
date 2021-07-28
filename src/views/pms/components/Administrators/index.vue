@@ -31,7 +31,7 @@
           <li class="data-item" v-for="(item, index) in dataList" :key="index">
             <p class="number" :class="item.type">
               <span v-if="item.name.includes('额')" class="unit">￥</span>
-              {{ item.value }}
+              <span>{{ item.value }}</span>
             </p>
             <p class="desc">{{ item.name }}</p>
           </li>
@@ -140,37 +140,37 @@ export default {
           name: "①设置角色权限",
           desc: "设置好角色人员权限 轻松分配工作",
           routeName: "role",
-          status: false,
+          status: true,
         },
         {
           name: "②设置分类名称",
           desc: "将相关对象进行归纳整理，方便后期筛选区分",
           routeName: "classifiSetting",
-          status: false,
+          status: true,
         },
         {
           name: "③设置课程题库",
           desc: "设置后台的课程题库方便学生在线学习",
           routeName: "courseManage",
-          status: false,
+          status: true,
         },
         {
           name: "④设置仓库教材",
           desc: "设置机构仓库存储方便教务分发教材",
           routeName: "warehouseManage",
-          status: false,
+          status: true,
         },
         {
           name: "⑤设置收费项目",
           desc: "项目作为售卖的对象，包含课程、教材等配置信息",
           routeName: "projectManage",
-          status: false,
+          status: true,
         },
         {
           name: "⑥开始招生录入",
           desc: "跟进管理招生数据，包括客户缴费报名等操作",
           routeName: "customerManage",
-          status: false,
+          status: true,
         },
       ],
       dataList: [

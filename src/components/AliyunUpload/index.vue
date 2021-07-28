@@ -1,6 +1,10 @@
 <template>
   <div class="ali-yun-upload">
-    <el-button size="small" @click="handleFileSelect" :loading="uploadLoading"
+    <el-button
+      v-bind="$attrs"
+      size="small"
+      @click="handleFileSelect"
+      :loading="uploadLoading"
       >选择文件</el-button
     >
     <transition name="el-fade-in-linear">
@@ -23,7 +27,7 @@
 
 <script>
 import {
-  updatecreate,
+  createUploadVideo,
   refreshuploadvideo,
   generatevideodatakey,
 } from "@/api/sou";
@@ -46,6 +50,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    videoName: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -63,8 +71,11 @@ export default {
     value(val) {
       this.requestId = val;
     },
-    defaultFiles(data) {
-      this.fileList = [...data];
+    defaultFiles: {
+      handler(data) {
+        this.fileList = [...data];
+      },
+      immediate: true,
     },
   },
   created() {
@@ -123,15 +134,16 @@ export default {
       console.log(res);
     },
     //获取上传凭证
-    async updatecreate(uploadInfo) {
+    async createUploadVideo(uploadInfo) {
       const file = uploadInfo.file;
       const file_name = file.name;
-      const title = file.name.split(".")[0];
+      const title = this.videoName || file.name.split(".")[0];
+      console.log(title);
       const data = {
         title,
         file_name,
       };
-      const res = await updatecreate(data).catch(() => {
+      const res = await createUploadVideo(data).catch(() => {
         // 重置
         this.uploadLoading = false;
         this.initAliYun();
@@ -148,9 +160,9 @@ export default {
       }
     },
     // 刷新上传凭证
-    async refreshuploadvideo(videoId) {
+    async refreshuploadvideo(uploadInfo) {
       const data = {
-        videoId,
+        video_id: uploadInfo.videoId,
       };
       const res = await refreshuploadvideo(data).catch(() => {
         // 重置
@@ -191,10 +203,10 @@ export default {
         onUploadstarted: async (uploadInfo) => {
           // 没有videoId就获取凭证后上传
           if (!uploadInfo.videoId) {
-            this.updatecreate(uploadInfo);
+            this.createUploadVideo(uploadInfo);
           } else {
             // 有就刷新凭证后上传
-            this.refreshuploadvideo(uploadInfo.videoId);
+            this.refreshuploadvideo(uploadInfo);
           }
         },
         //文件上传成功
@@ -224,7 +236,7 @@ export default {
         //上传凭证或STS token超时
         onUploadTokenExpired: (uploadInfo) => {
           this.uploadLoading = false;
-          const uploadAuth = this.updatecreate();
+          const uploadAuth = this.createUploadVideo(uploadInfo);
           this.aliyunUpload.resumeUploadWithAuth(uploadAuth);
         },
         //全部文件上传结束

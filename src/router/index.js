@@ -68,6 +68,18 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'aliVideo',
+        name: 'aliVideo',
+        component: () => import('@/views/sou/aliVideo/index.vue'),
+        meta: { title: '阿里源视频', icon: 'product-add' },
+      },
+      {
+        path: 'videoLibrary',
+        name: 'videoLibrary',
+        component: () => import('@/views/sou/videoLibrary/index.vue'),
+        meta: { title: '视频库', icon: 'product-add' },
+      },
+      {
         path: 'collegeMajor',
         name: 'collegeMajor',
         component: () => import('@/views/sou/collegeMajor/index.vue'),
@@ -308,6 +320,12 @@ export const asyncRouter = [
     name: 'eda',
     children: [
       {
+        path: 'abnormalData',
+        name: 'abnormalData',
+        component: () => import('@/views/eda/abnormalData/index.vue'),
+        meta: { title: '异常数据', icon: 'product-cate' },
+      },
+      {
         path: 'studentCenter',
         name: 'studentCenter',
         component: () => import('@/views/eda/studentCenter.vue'),
@@ -334,6 +352,18 @@ export const asyncRouter = [
         component: () => import('@/views/eda/studentCenter/orderManage.vue'),
         meta: { title: '订单管理', icon: 'product-cate' },
         hidden: true,
+      },
+      {
+        path: 'classVideo',
+        name: 'classVideo',
+        component: () => import('@/views/eda/classVideo/index.vue'),
+        meta: { title: '班级视频', icon: 'product-cate' },
+      },
+      {
+        path: 'videoPlaybackStatistics',
+        name: 'videoPlaybackStatistics',
+        component: () => import('@/views/eda/classVideo/videoPlaybackStatistics.vue'),
+        meta: { title: '视频统计', icon: 'product-cate' },
       },
       {
         path: 'classManage',

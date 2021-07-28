@@ -290,17 +290,17 @@
                   type="number"
                   v-model="item.chapter_config[0].topic_num"
                   placeholder="请输入"
-                  maxlength="10"
+                  @input="onMax($event, item.chapter_config[0])"
                 />
                 <span>题</span>
               </el-form-item>
-              <el-form-item label="多选">
+              <el-form-item label="多选" prop="">
                 <el-input
                   class="input-number"
                   type="number"
                   v-model="item.chapter_config[1].topic_num"
                   placeholder="请输入"
-                  maxlength="10"
+                  @input="onMax($event, item.chapter_config[1])"
                 />
                 <span>题</span>
               </el-form-item>
@@ -310,7 +310,7 @@
                   type="number"
                   v-model="item.chapter_config[2].topic_num"
                   placeholder="请输入"
-                  maxlength="10"
+                  @input="onMax($event, item.chapter_config[2])"
                 />
                 <span>题</span>
               </el-form-item>
@@ -320,7 +320,7 @@
                   type="number"
                   v-model="item.chapter_config[3].topic_num"
                   placeholder="请输入"
-                  maxlength="10"
+                  @input="onMax($event, item.chapter_config[3])"
                 />
                 <span>题</span>
               </el-form-item>
@@ -330,7 +330,7 @@
                   type="number"
                   v-model="item.chapter_config[4].topic_num"
                   placeholder="请输入"
-                  maxlength="10"
+                  @input="onMax($event, item.chapter_config[4])"
                 />
                 <span>题</span>
               </el-form-item>
@@ -340,7 +340,7 @@
                   type="number"
                   v-model="item.chapter_config[5].topic_num"
                   placeholder="请输入"
-                  maxlength="10"
+                  @input="onMax($event, item.chapter_config[5])"
                 />
                 <span>题</span>
               </el-form-item>
@@ -350,7 +350,7 @@
                   type="number"
                   v-model="item.chapter_config[6].topic_num"
                   placeholder="请输入"
-                  maxlength="10"
+                  @input="onMax($event, item.chapter_config[6])"
                 />
                 <span>题</span>
               </el-form-item>
@@ -447,6 +447,12 @@ export default {
     this.getDetailConfig();
   },
   methods: {
+    // 输入值，不能超过最大值
+    onMax(val, data) {
+      if (val > data.max_num) {
+        data.topic_num = data.max_num;
+      }
+    },
     async getDetailConfig() {
       const data = {
         test_config_id: this.configId,

@@ -479,22 +479,75 @@ export function getstudentcourse(params) {
     params,
   })
 }
-// 学习详情列表
-export function learningDetails(params) {
-  return request({
-    url: '/personalLog/study',
-    method: 'get',
-    params,
-  })
-}
+
+// // 学习详情列表
+// export function learningDetails(params) {
+//   return request({
+//     url: '/personalLog/study',
+//     method: 'get',
+//     params,
+//   })
+// }
+
 // 学习详情-每日打卡
-export function personalpunch(params) {
+export function dailyClockIn(params) {
   return request({
-    url: '/personalLog/punch',
+    url: '/TopicStatistics/dailyClockIn',
     method: 'get',
     params,
   })
 }
+// 学习详情-章节练习
+export function chapterExercises(params) {
+  return request({
+    url: '/TopicStatistics/chapterExercises',
+    method: 'get',
+    params,
+  })
+}
+// 学习详情-历年真题
+export function pastRealQuestions(params) {
+  return request({
+    url: '/TopicStatistics/pastRealQuestions',
+    method: 'get',
+    params,
+  })
+}
+// 学习详情-模拟考试
+export function mockExam(params) {
+  return request({
+    url: '/TopicStatistics/mockExam',
+    method: 'get',
+    params,
+  })
+}
+// 学习详情-刷题挑战
+export function challenge(params) {
+  return request({
+    url: '/TopicStatistics/challenge',
+    method: 'get',
+    params,
+  })
+}
+
+// 学习详情-面授约课
+export function FaceToFaceLesson(params) {
+  return request({
+    url: '/ScheduledCourseStatistics/FaceToFaceLesson',
+    method: 'get',
+    params,
+  })
+}
+
+// 学习详情-自主出题
+export function selfProposed(params) {
+  return request({
+    url: '/TopicStatistics/selfProposed',
+    method: 'get',
+    params,
+  })
+}
+
 
 // 移除班级学生
 export function classstudentsBatchRemove(data) {
@@ -851,5 +904,133 @@ export function getEduList(params) {
     url: '/order/edu',
     method: 'get',
     params,
+  })
+}
+// 班级视频-章节列表
+export function getChapterList(data) {
+  return request({
+    url: '/ClassroomVideo/getChapterList',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-添加章节
+export function createChapter(data) {
+  return request({
+    url: '/ClassroomVideo/createChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-修改章节
+export function updateChapter(data) {
+  return request({
+    url: '/ClassroomVideo/updateChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-删除章节
+export function deleteChapter(data) {
+  return request({
+    url: '/ClassroomVideo/deleteChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-添加课时
+export function createLesson(data) {
+  return request({
+    url: '/ClassroomVideo/createLesson',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-修改课时
+export function updateLesson(data) {
+  return request({
+    url: '/ClassroomVideo/updateLesson',
+    method: 'post',
+    data,
+  })
+}
+// 班级异常数据
+export function getFailDataClass(params) {
+  return request({
+    url: '/FailData/classroom',
+    method: 'get',
+    params,
+  })
+}
+// 班级异常数据-保留
+export function classRemoveStudent(data) {
+  return request({
+    url: '/FailData/classRemoveStudent',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-课时列表
+export function getLessonList(data) {
+  return request({
+    url: '/ClassroomVideo/getLessonList',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-删除课时
+export function deleteLesson(data) {
+  return request({
+    url: '/ClassroomVideo/deleteLesson',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-批量排序
+export function batchSortChapter(data) {
+  return request({
+    url: '/ClassroomVideo/batchSortChapter',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-章节列表-课时视频批量排序
+export function batchSortLesson(data) {
+  return request({
+    url: '/ClassroomVideo/batchSortLesson',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-视频统计列表
+export function classroomVideoStatisticsList(data) {
+  return request({
+    url: '/ClassroomVideo/classroomVideoStatisticsList',
+    method: 'post',
+    data,
+  })
+}
+// 班级视频-视频统计列表-导出
+export function exportClassroomVideoStatistics(data) {
+  return request({
+    url: '/ClassroomVideo/exportClassroomVideoStatistics',
+    method: 'post',
+    data,
+  })
+}
+// 意向异常数据
+export function getFailDataIntent(params) {
+  return request({
+    url: '/FailData/intent',
+    method: 'get',
+    params,
+  })
+}
+// 意向异常数据-移除
+export function intentRemoveData(data) {
+  return request({
+    url: '/FailData/intentRemoveData',
+    method: 'post',
+    data,
   })
 }
