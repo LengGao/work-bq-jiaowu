@@ -148,9 +148,9 @@ export default {
         name: "learningDetails",
         query: {
          uid: row.uid,
-         course_id:row.course_id,
+        //  course_id:row.course_id,
          course_name:row.course_name,
-         project_id:row.project_id,
+         question_bank_id:row.question_bank_id,
         },
       });
     },
