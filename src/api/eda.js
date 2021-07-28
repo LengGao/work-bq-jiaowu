@@ -489,6 +489,14 @@ export function getstudentcourse(params) {
 //   }) 
 // } 
 
+// 学习详情-根据项目获取题库
+// export function projectObtainQuestionBank(params) {
+//   return request({
+//     url: '/topicStatistics/projectObtainQuestionBank',
+//     method: 'get',
+//     params,
+//   })
+// }
 
 // 学习详情-每日打卡
 export function dailyClockIn(params) {

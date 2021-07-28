@@ -574,20 +574,20 @@
             name: '刷题挑战',
 
           },
-          {
-            id: 6,
-            name: '录播视频',
-          },
-          {
-            id: 7,
-            name: '直播视频',
+          // {
+          //   id: 6,
+          //   name: '录播视频',
+          // },
+          // {
+          //   id: 7,
+          //   name: '直播视频',
 
-          },
-          {
-            id: 8,
-            name: '回播视频',
+          // },
+          // {
+          //   id: 8,
+          //   name: '回播视频',
 
-          },
+          // },
           {
             id: 9,
             name: '面授约课',
@@ -602,8 +602,8 @@
       }
     },
     created() {
-      this.getStudentBasicDetail();
-      this.dailyClockIn();
+      this.getStudentBasicDetail(),
+      this.dailyClockIn()
     },
     methods: {
       statusSwitch(row) {
@@ -635,7 +635,7 @@
       async getStudentBasicDetail() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          // question_bank_id: this.$route.query.question_bank_id,
         };
         console.log(data)
         const res = await getStudentBasicDetail(data);
@@ -647,7 +647,7 @@
       async dailyClockIn() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.question_bank_id,
         };
         const res = await dailyClockIn(data);
         if (res.code === 0) {
@@ -659,7 +659,7 @@
       async chapterExercises() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.question_bank_id,
         };
         const res = await chapterExercises(data);
         if (res.code === 0) {
@@ -671,7 +671,7 @@
       async pastRealQuestions() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.question_bank_id,
         };
         const res = await pastRealQuestions(data);
         if (res.code === 0) {
@@ -683,7 +683,7 @@
       async mockExam() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.question_bank_id,
         };
         const res = await mockExam(data);
         if (res.code === 0) {
@@ -695,7 +695,7 @@
       async challenge() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.question_bank_id,
         };
         const res = await challenge(data);
         if (res.code === 0) {
@@ -707,7 +707,7 @@
       async FaceToFaceLesson() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.question_bank_id,
         };
         const res = await FaceToFaceLesson(data);
         if (res.code === 0) {
@@ -719,7 +719,7 @@
       async selfProposed() {
         const data = {
           uid: this.$route.query.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.question_bank_id,
         };
         const res = await selfProposed(data);
         if (res.code === 0) {
@@ -853,7 +853,7 @@
     align-items: flex-end;
 
     .navigation {
-      width: 820px;
+      width: 620px;
       display: flex;
       justify-content: space-between;
       font-family: 'Microsoft YaHei UI', sans-serif;
