@@ -1034,3 +1034,27 @@ export function intentRemoveData(data) {
     data,
   })
 }
+// 扫脸记录-课程下拉选项
+export function getFaceCourseSelect(params) {
+  return request({
+    url: '/FaceDetect/getCourseSelect',
+    method: 'get',
+    params,
+  })
+}
+// 扫脸记录列表
+export function getFaceDetectList(params) {
+  return request({
+    url: '/FaceDetect/getFaceDetectList',
+    method: 'get',
+    params,
+  })
+}
+// 学生中心扫脸记录列表
+export function getFaceDetectListForUser(params) {
+  return request({
+    url: '/FaceDetect/getFaceDetectListForUser',
+    method: 'get',
+    params,
+  })
+}

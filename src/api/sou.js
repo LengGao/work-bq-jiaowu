@@ -1295,3 +1295,12 @@ export function updateVideoClassProgressStatus(data) {
     data,
   })
 }
+// 课程视频-核验记录列表
+export function getFaceDetectListForVideo(params) {
+  return request({
+    url: '/FaceDetect/getFaceDetectListForVideo',
+    method: 'get',
+    params,
+  })
+}
+

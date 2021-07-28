@@ -148,6 +148,13 @@ export const asyncRouter = [
         meta: { title: '配置课程 ', icon: 'product-cate' },
         hidden: true,
       },
+      {
+        path: 'videoFaceRecord',
+        name: 'videoFaceRecord',
+        component: () => import('@/views/sou/courseManage/videoFaceRecord/index.vue'),
+        meta: { title: '核验记录', icon: 'product-cate' },
+        hidden: true,
+      },
       //课程管理组件结束
 
       //教材管理组件开始
@@ -319,6 +326,12 @@ export const asyncRouter = [
     meta: { title: '教务管理', icon: 'zhaoshengguanli' },
     name: 'eda',
     children: [
+      {
+        path: 'faceScanningRecord',
+        name: 'faceScanningRecord',
+        component: () => import('@/views/eda/faceScanningRecord/index.vue'),
+        meta: { title: '人脸识别记录', icon: 'product-cate' },
+      },
       {
         path: 'abnormalData',
         name: 'abnormalData',

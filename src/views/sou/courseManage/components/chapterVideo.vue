@@ -276,7 +276,15 @@ export default {
 
   methods: {
     toFaceRecord(row) {
-      console.log(row);
+      this.$router.push({
+        name: "videoFaceRecord",
+        query: {
+          course_name: this.$route.query.course_name,
+          video_class_name: row.video_class_name,
+          video_class_duration: row.video_class_duration,
+          video_class_id: row.video_class_id,
+        },
+      });
     },
     handleSelectionChange(selection) {
       this.checkedIds = selection.map((item) => item.id);
