@@ -488,6 +488,10 @@ export default {
           value: "4年",
         },
         {
+          id: 8,
+          value: "考过为止",
+        },
+        {
           id: 99,
           value: "永久",
         },
