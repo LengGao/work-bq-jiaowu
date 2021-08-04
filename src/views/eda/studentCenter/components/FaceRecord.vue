@@ -48,21 +48,21 @@
         <el-table-column
           prop="video_class_duration"
           label="课时时长"
-          min-width="100"
+          min-width="90"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           prop="time_point"
           label="视频关键秒"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           prop="best_frame"
           label="抓拍图片"
-          min-width="100"
+          min-width="80"
           align="center"
         >
           <template slot-scope="{ row }">
@@ -98,7 +98,7 @@
         <el-table-column
           prop="err_msg"
           label="核验信息2"
-          min-width="120"
+          min-width="220"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -246,10 +246,10 @@ export default {
     margin-top: 20px;
     .best-frame {
       width: 100%;
-      height: 50px;
+      height: 70px;
       text-align: center;
       img {
-        width: 80px;
+        width: 60px;
         cursor: pointer;
       }
     }

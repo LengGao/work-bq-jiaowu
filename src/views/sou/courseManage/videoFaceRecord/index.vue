@@ -39,7 +39,7 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
       >
-        <el-table-column label="ID" min-width="90" prop="id"> </el-table-column>
+        <el-table-column label="ID" width="70" prop="id"> </el-table-column>
         <el-table-column
           label="识别时间"
           show-overflow-tooltip
@@ -68,14 +68,14 @@
         <el-table-column
           prop="time_point"
           label="视频关键秒"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           prop="best_frame"
           label="抓拍图片"
-          min-width="110"
+          min-width="80"
           align="center"
         >
           <template slot-scope="{ row }">
@@ -92,7 +92,7 @@
         <el-table-column
           prop="status_name"
           label="核验结果"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -111,7 +111,7 @@
         <el-table-column
           prop="err_msg"
           label="核验信息2"
-          min-width="120"
+          min-width="200"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -249,10 +249,10 @@ export default {
 }
 .best-frame {
   width: 100%;
-  height: 50px;
+  height: 70px;
   text-align: center;
   img {
-    width: 80px;
+    width: 60px;
     cursor: pointer;
   }
 }
