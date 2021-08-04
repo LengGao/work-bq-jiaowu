@@ -40,13 +40,18 @@
         <el-table-column
           prop="mobile"
           label="手机号码"
-          min-width="100"
+          min-width="120"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <div>
+            <span>
               {{ row.mobile | filterPhone }}
-            </div>
+            </span>
+            <i
+              class="el-icon-document-copy copy-number"
+              @click="handleCopy(row.mobile)"
+              title="复制"
+            ></i>
           </template>
         </el-table-column>
         <el-table-column
@@ -100,12 +105,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="操作"
-          fixed="right"
-          min-width="200"
-          max-width="200"
-        >
+        <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="scope">
             <div class="operation_btn">
               <span v-if="scope.row.aid > 0">已归档</span>
@@ -335,6 +335,18 @@ export default {
     this.getCateList();
   },
   methods: {
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
+      }
+    },
     getInnerStatus(val) {
       console.log(val);
       this.learnVisible = val;
@@ -368,12 +380,13 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[4].attrs.options = this.institutionOption = cloneOptions(
-          res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
+        this.searchOptions[4].attrs.options = this.institutionOption =
+          cloneOptions(
+            res.data,
+            "institution_name",
+            "institution_id",
+            "children"
+          );
       }
     },
     // 当分类选择时
@@ -461,5 +474,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.copy-number {
+  color: #199fff;
+  cursor: pointer;
+  margin-left: 8px;
 }
 </style>
