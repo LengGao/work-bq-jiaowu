@@ -1279,3 +1279,28 @@ export function batchTopicSort(data) {
     data,
   })
 }
+// 课程视频-扫脸次数修改
+export function updateVideoClassDetectTime(data) {
+  return request({
+    url: '/course/updateVideoClassDetectTime',
+    method: 'post',
+    data,
+  })
+}
+// 课程视频-控制快进
+export function updateVideoClassProgressStatus(data) {
+  return request({
+    url: '/course/updateVideoClassProgressStatus',
+    method: 'post',
+    data,
+  })
+}
+// 课程视频-核验记录列表
+export function getFaceDetectListForVideo(params) {
+  return request({
+    url: '/FaceDetect/getFaceDetectListForVideo',
+    method: 'get',
+    params,
+  })
+}
+

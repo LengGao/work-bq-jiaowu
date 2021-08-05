@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name: "configureCourses",
   data() {
     return {
       activeName: "chapterVideo",

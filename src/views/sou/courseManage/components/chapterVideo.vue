@@ -29,7 +29,10 @@
         lazy
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         :load="loadTableChildren"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column :selectable="selectable" type="selection" width="55">
+        </el-table-column>
         <el-table-column
           prop="name"
           label="章节名称"
@@ -100,7 +103,42 @@
             <span v-else>--</span>
           </template>
         </el-table-column>
-
+        <el-table-column
+          align="center"
+          prop="student_number"
+          label="是否快进"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-switch
+              v-if="row.parentId"
+              @change="updateProgressStatus(row)"
+              v-model="row.progress_status"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="detect_time"
+          label="扫脸次数"
+          width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-input
+              v-if="row.parentId && isDetect"
+              type="number"
+              v-model="row.detect_time"
+            ></el-input>
+            <span v-else-if="row.parentId">{{ row.detect_time }}</span>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           fixed="right"
@@ -116,6 +154,12 @@
                 :loading="row.loading"
                 >下载</el-button
               >
+              <el-button
+                v-if="row.parentId"
+                type="text"
+                @click="toFaceRecord(row)"
+                >核验记录</el-button
+              >
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
               <el-button type="text" @click="deleteConfirm(row)"
                 >删除</el-button
@@ -125,12 +169,25 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <div v-if="isEdit">
-          <el-button @click="handleEditCancel">取消</el-button>
-          <el-button type="primary" @click="handleBatchSort">保存</el-button>
-        </div>
-        <div v-else>
-          <el-button @click="showEdit">批量排序</el-button>
+        <div class="actions">
+          <div v-if="isEdit">
+            <el-button @click="handleEditCancel">取消</el-button>
+            <el-button type="primary" @click="handleBatchSort">保存</el-button>
+          </div>
+          <div v-else>
+            <el-button @click="showEdit">批量排序</el-button>
+          </div>
+          <div v-if="isDetect">
+            <el-button @click="handleDetectCancel">取消</el-button>
+            <el-button type="primary" @click="handleBatchDetect"
+              >保存</el-button
+            >
+          </div>
+          <div v-else>
+            <el-button @click="showDetect">批量扫脸次数</el-button>
+          </div>
+          <el-button @click="handleBatchDrag(1)">批量快进（开）</el-button>
+          <el-button @click="handleBatchDrag(0)">批量快进（关）</el-button>
         </div>
 
         <page
@@ -166,6 +223,8 @@ import {
   videoClassSort,
   videoChapterSort,
   getVideoUrlByid,
+  updateVideoClassDetectTime,
+  updateVideoClassProgressStatus,
 } from "@/api/sou";
 import ChapterDIalog from "./chapterDIalog";
 import ClassHourDialog from "./classHourDialog";
@@ -205,15 +264,96 @@ export default {
       treeLoadMap: new Map(),
       //排序
       isEdit: false,
+      //扫脸次数
+      isDetect: false,
+      checkedIds: [],
     };
   },
 
   created() {
     this.getvideochapterList();
-    //
   },
 
   methods: {
+    toFaceRecord(row) {
+      this.$router.push({
+        name: "videoFaceRecord",
+        query: {
+          course_name: this.$route.query.course_name,
+          video_class_name: row.video_class_name,
+          video_class_duration: row.video_class_duration,
+          video_class_id: row.video_class_id,
+        },
+      });
+    },
+    handleSelectionChange(selection) {
+      this.checkedIds = selection.map((item) => item.id);
+    },
+    // 批量快进控制
+    async handleBatchDrag(status) {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择！");
+        return;
+      }
+      const data = {
+        video_class_id_arr: this.checkedIds,
+        status,
+      };
+      const res = await updateVideoClassProgressStatus(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+      this.getvideochapterList();
+    },
+    selectable(row) {
+      return !!row.parentId;
+    },
+    handleDetectCancel() {
+      this.$message("已取消");
+      this.getvideochapterList();
+    },
+    // 批量设置扫脸次数
+    handleBatchDetect() {
+      const data = {};
+      const allChildren = [];
+      const lazyTreeNodeMap =
+        this.$refs.multipleTable.store.states.lazyTreeNodeMap;
+
+      for (let k in lazyTreeNodeMap) {
+        allChildren.push(...lazyTreeNodeMap[k]);
+      }
+      // 设置课时扫脸参数
+      allChildren.forEach((item) => {
+        data[item.id] = item.detect_time;
+      });
+      allChildren.length && this.updateVideoClassDetectTime(data);
+    },
+    showDetect() {
+      this.isDetect = true;
+    },
+    async updateVideoClassDetectTime(video_class_id_arr) {
+      const data = {
+        video_class_id_arr,
+      };
+      const res = await updateVideoClassDetectTime(data);
+      if (res.code === 0) {
+        this.getvideochapterList();
+        this.$message.success(res.message);
+      }
+    },
+    // 快进控制
+    async updateProgressStatus(row) {
+      const data = {
+        video_class_id_arr: [row.video_class_id],
+        status: row.progress_status,
+      };
+      const res = await updateVideoClassProgressStatus(data).catch(() => {
+        row.progress_status = row.progress_status ? 0 : 1;
+      });
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
     // 下载
     async getVideoUrlByid(row) {
       const data = {
@@ -231,7 +371,7 @@ export default {
     },
     handleBatchSort() {
       const videoSortMaps = {};
-      const classSortMaps = {};
+      const data = {};
       const allChildren = [];
       const lazyTreeNodeMap =
         this.$refs.multipleTable.store.states.lazyTreeNodeMap;
@@ -244,12 +384,13 @@ export default {
       }
       // 设置课时排序参数
       allChildren.forEach((item) => {
-        classSortMaps[item.id] = item.sort;
+        data[item.id] = item.sort;
       });
-      allChildren.length && this.videoClassSort(classSortMaps);
+      allChildren.length && this.videoClassSort(data);
       this.videoChapterSort(videoSortMaps);
     },
     handleEditCancel() {
+      this.$message("已取消");
       this.getvideochapterList();
     },
     showEdit() {
@@ -379,6 +520,7 @@ export default {
     // 章节列表
     async getvideochapterList() {
       this.isEdit = false;
+      this.isDetect = false;
       const data = {
         video_collection_id: this.$route.query?.video_collection_id || "",
         page: this.pageNum,
@@ -426,6 +568,7 @@ export default {
       };
       const res = await getvideoclass(data);
       const children = res.data.data.map((item, index) => ({
+        ...item,
         name: item.video_class_name,
         sort: item.video_class_sort,
         id: item.video_class_id,
@@ -469,6 +612,13 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .actions {
+      display: flex;
+      align-items: center;
+      > div {
+        margin-right: 16px;
+      }
+    }
   }
 }
 </style>

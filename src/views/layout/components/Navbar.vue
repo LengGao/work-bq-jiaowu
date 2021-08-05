@@ -156,7 +156,6 @@
 </template>
 
 <script>
-let timeId = null;
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import touxiang from "@/assets/images/touxiang.png";
@@ -220,11 +219,6 @@ export default {
   },
   created() {
     this.getUnreadCount();
-    const time = 1000 * 60 * 3;
-    timeId = setInterval(this.getUnreadCount, time);
-  },
-  beforeDestroy() {
-    clearInterval(timeId);
   },
   methods: {
     async handleLink() {
