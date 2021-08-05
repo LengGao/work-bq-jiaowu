@@ -100,7 +100,7 @@
               :inactive-value="1"
             >
             </el-switch>
-            <span v-else>--</span>
+            <i class="iconfont iconmianfei1" v-else></i>
           </template>
         </el-table-column>
         <el-table-column
@@ -119,7 +119,7 @@
               :inactive-value="0"
             >
             </el-switch>
-            <span v-else>--</span>
+            <i class="iconfont iconkuaijin" v-else></i>
           </template>
         </el-table-column>
         <el-table-column
@@ -131,12 +131,21 @@
         >
           <template slot-scope="{ row }">
             <el-input
-              v-if="row.parentId && isDetect"
+              v-focus
               type="number"
+              v-if="(row.parentId && isDetect) || row.edit"
               v-model="row.detect_time"
+              @blur="handleEditFaceCount(row)"
             ></el-input>
-            <span v-else-if="row.parentId">{{ row.detect_time }}</span>
-            <span v-else>--</span>
+            <el-button
+              type="text"
+              @click="row.edit = true"
+              v-else-if="row.parentId"
+              >{{
+                row.detect_time == 0 ? "无需扫脸" : row.detect_time
+              }}</el-button
+            >
+            <i class="iconfont iconrenlianshibie1" v-else></i>
           </template>
         </el-table-column>
         <el-table-column
@@ -184,7 +193,7 @@
             >
           </div>
           <div v-else>
-            <el-button @click="showDetect">批量扫脸次数</el-button>
+            <el-button @click="showDetect">修改扫脸次数</el-button>
           </div>
           <el-button @click="handleBatchDrag(1)">批量快进（开）</el-button>
           <el-button @click="handleBatchDrag(0)">批量快进（关）</el-button>
@@ -235,6 +244,16 @@ export default {
     ClassHourDialog,
     ChapterDIalog,
   },
+  directives: {
+    // 注册一个局部的自定义指令 v-focus
+    focus: {
+      // 指令的定义
+      inserted: function (el) {
+        // 聚焦元素
+        el.querySelector("input").focus();
+      },
+    },
+  },
   data() {
     return {
       listData: [],
@@ -275,6 +294,23 @@ export default {
   },
 
   methods: {
+    // 单个修改扫脸测试
+    async handleEditFaceCount(row) {
+      if (this.isDetect) return;
+      row.edit = false;
+      const data = {
+        video_class_id_arr: {
+          [row.id]: row.detect_time,
+        },
+      };
+      const res = await updateVideoClassDetectTime(data);
+      if (res.code === 0) {
+        if (row.detect_time > 0) {
+          row.progress_status = 0;
+        }
+        this.$message.success(res.message);
+      }
+    },
     toFaceRecord(row) {
       this.$router.push({
         name: "videoFaceRecord",
@@ -578,6 +614,7 @@ export default {
         coverurl: item.video_class_coverurl,
         treeId: this.setId(),
         loading: false,
+        edit: false,
       }));
       return children;
     },
