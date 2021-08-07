@@ -13,27 +13,26 @@
       :model="formData"
       :rules="rules"
       ref="formData"
-      v-loading="detaiLoading"
     >
-      <el-form-item label="章节名称" prop="video_chapter_name">
+      <el-form-item label="章节名称" prop="chapter_name">
         <el-input
-          v-model="formData.video_chapter_name"
+          v-model="formData.chapter_name"
           placeholder="请输入章节名称"
           maxlength="100"
         />
       </el-form-item>
-      <el-form-item label="章节简介" prop="video_chapter_profile">
+      <el-form-item label="章节简介" prop="chapter_intro">
         <el-input
           type="textarea"
-          v-model="formData.video_chapter_profile"
+          v-model="formData.chapter_intro"
           placeholder="请输入章节简介"
           maxlength="1000"
         />
       </el-form-item>
-      <el-form-item label="章节排序" prop="video_chapter_sort">
+      <el-form-item label="章节排序" prop="sort">
         <el-input
           type="number"
-          v-model="formData.video_chapter_sort"
+          v-model="formData.sort"
           placeholder="请输入"
           maxlength="10"
         />
@@ -52,16 +51,16 @@
 </template>
 
 <script>
-import {
-  editvideochapter,
-  addvideochapter,
-  getVideochapterDetail,
-} from "@/api/sou";
+import { updateChapter, createChapter } from "@/api/sou";
 export default {
   props: {
     value: {
       type: Boolean,
       default: false,
+    },
+    data: {
+      type: Object,
+      default: () => ({}),
     },
     title: {
       type: String,
@@ -76,20 +75,15 @@ export default {
     return {
       visible: this.value,
       formData: {
-        video_chapter_name: "",
-        video_chapter_profile: "",
-        video_chapter_sort: "",
+        chapter_name: "",
+        chapter_intro: "",
+        sort: "",
       },
       rules: {
-        video_chapter_name: [
-          { required: true, message: "请输入", trigger: "blur" },
-        ],
-        video_chapter_sort: [
-          { required: true, message: "请输入", trigger: "blur" },
-        ],
+        chapter_name: [{ required: true, message: "请输入", trigger: "blur" }],
+        sort: [{ required: true, message: "请输入", trigger: "blur" }],
       },
       addLoading: false,
-      detaiLoading: false,
     };
   },
   watch: {
@@ -101,35 +95,22 @@ export default {
   methods: {
     handleOpen() {
       if (this.id) {
-        this.getVideochapterDetail();
+        this.formData.chapter_name = this.data.name;
+        this.formData.sort = this.data.sort;
+        this.formData.chapter_intro = this.data.chapter_intro;
       }
     },
 
-    async getVideochapterDetail() {
-      const data = {
-        video_chapter_id: this.id,
-      };
-      this.detaiLoading = true;
-      const res = await getVideochapterDetail(data).catch(() => {
-        this.detaiLoading = false;
-      });
-      this.detaiLoading = false;
-      if (res.code === 0) {
-        for (const k in this.formData) {
-          this.formData[k] = res.data[k];
-        }
-      }
-    },
     async submit() {
       const data = {
         ...this.formData,
       };
       if (this.id) {
-        data.video_chapter_id = this.id;
+        data.id = this.id;
       } else {
-        data.video_collection_id = this.$route.query?.video_collection_id || "";
+        data.course_id = this.$route.query?.course_id || "";
       }
-      const api = this.id ? editvideochapter : addvideochapter;
+      const api = this.id ? updateChapter : createChapter;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
@@ -153,7 +134,6 @@ export default {
         this.formData[k] = "";
       }
       this.$refs[formName].resetFields();
-      this.selection = [];
       this.hanldeCancel();
     },
     hanldeCancel() {

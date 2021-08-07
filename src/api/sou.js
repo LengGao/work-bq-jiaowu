@@ -446,58 +446,51 @@ export function questionBankDetail(params) {
   })
 }
 // 章节列表
-export function getvideochapterList(params) {
+export function getChapterList(params) {
   return request({
-    url: 'video/getvideochapter',
+    url: '/CourseVideo/getChapterList',
     method: 'get',
     params,
   })
 }
 // 章节删除
-export function deletevideochapter(data) {
+export function deleteChapter(data) {
   return request({
-    url: 'video/deletevideochapter',
+    url: '/CourseVideo/deleteChapter',
     method: 'post',
     data,
   })
 }
 
 // 添加视频章节
-export function addvideochapter(data) {
+export function createChapter(data) {
   return request({
-    url: 'video/addvideochapter',
+    url: '/CourseVideo/createChapter',
     method: 'post',
     data,
   })
 }
 // 编辑视频章节
-export function editvideochapter(data) {
+export function updateChapter(data) {
   return request({
-    url: 'video/editvideochapter',
+    url: '/CourseVideo/updateChapter',
     method: 'post',
     data,
   })
 }
-// 根据id获取视频章节
-export function getVideochapterDetail(params) {
-  return request({
-    url: 'video/editvideochapter',
-    method: 'get',
-    params,
-  })
-}
+
 // 章节列表-添加课时
-export function addvideoclass(data) {
+export function createLesson(data) {
   return request({
-    url: 'video/addvideoclass',
+    url: '/CourseVideo/createLesson',
     method: 'post',
     data,
   })
 }
 // 章节列表-编辑课时
-export function editvideoclass(data) {
+export function updateLesson(data) {
   return request({
-    url: 'video/editvideoclass',
+    url: '/CourseVideo/updateLesson',
     method: 'post',
     data,
   })
@@ -544,17 +537,17 @@ export function generatevideodatakey(data) {
 }
 
 // 获取课时
-export function getvideoclass(params) {
+export function getLessonList(params) {
   return request({
-    url: 'video/getvideoclass',
+    url: '/CourseVideo/getLessonList',
     method: 'get',
     params,
   })
 }
 // 删除课时
-export function deletevideoclass(data) {
+export function deleteLesson(data) {
   return request({
-    url: 'video/deletevideoclass',
+    url: '/CourseVideo/deleteLesson',
     method: 'post',
     data,
   })
