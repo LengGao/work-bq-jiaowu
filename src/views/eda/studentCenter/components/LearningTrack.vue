@@ -36,6 +36,14 @@
         ></el-table-column>
       </el-table>
     </div>
+    <div class="table_bottom">
+      <page
+        :data="listTotal"
+        :curpage="pageNum"
+        :pageSize="10"
+        @pageChange="handlePageChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -53,24 +61,29 @@ export default {
     return {
       listData: [],
       listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
     };
   },
   created() {
     this.studentBehaviorRecord();
   },
   methods: {
-    linkTo(id) {
-      console.log(id);
+    // 分页
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.studentBehaviorRecord();
     },
-    //教材发放列表
     async studentBehaviorRecord() {
       const data = {
         uid: this.uid,
+        page: this.pageNum,
       };
       this.listLoading = true;
       const res = await studentBehaviorRecord(data);
       this.listLoading = false;
       this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
 };
