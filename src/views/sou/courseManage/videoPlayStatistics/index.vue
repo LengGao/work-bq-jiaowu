@@ -99,7 +99,7 @@ import {
   exportCourseVideoStatistics,
 } from "@/api/sou";
 export default {
-  name: "videoPlaybackStatistics",
+  name: "videoPlayStatistics",
   data() {
     return {
       listData: [],

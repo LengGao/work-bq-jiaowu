@@ -415,7 +415,7 @@ export default {
     // 下载
     async downloadVideo(row) {
       if (!row.file_url) {
-        this.$message.success("未找到资源，无法下载！");
+        this.$message.error("未找到资源，无法下载！");
         return;
       }
       row.loading = true;

@@ -37,7 +37,7 @@ const searchCache = {
             aliVideo: ['classVideo'],
             classVideo: ['videoPlaybackStatistics'],
             collegeStudentList: ['studentDetail', 'orderdetail'],
-            configureCourses: ['videoFaceRecord', 'studentDetail'],
+            configureCourses: ['videoFaceRecord', 'studentDetail', 'videoPlayStatistics'],
             videoFaceRecord: ['studentDetail'],
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
