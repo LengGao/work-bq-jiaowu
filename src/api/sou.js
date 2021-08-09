@@ -496,9 +496,9 @@ export function updateLesson(data) {
   })
 }
 // 章节列表-修改章节视频免费状态
-export function updateVideoClassFreeStatus(params) {
+export function batchFreeLesson(params) {
   return request({
-    url: '/video/updateVideoClassFreeStatus',
+    url: '/CourseVideo/batchFreeLesson',
     method: 'get',
     params,
   })
@@ -553,17 +553,17 @@ export function deleteLesson(data) {
   })
 }
 // 章节排序
-export function videoChapterSort(data) {
+export function batchSortChapter(data) {
   return request({
-    url: 'batchSort/VideoChapter',
+    url: '/CourseVideo/batchSortChapter',
     method: 'post',
     data,
   })
 }
 // 课时排序
-export function videoClassSort(data) {
+export function batchSortLesson(data) {
   return request({
-    url: 'batchSort/VideoClass',
+    url: '/CourseVideo/batchSortLesson',
     method: 'post',
     data,
   })
@@ -1273,17 +1273,17 @@ export function batchTopicSort(data) {
   })
 }
 // 课程视频-扫脸次数修改
-export function updateVideoClassDetectTime(data) {
+export function batchDetectLesson(data) {
   return request({
-    url: '/course/updateVideoClassDetectTime',
+    url: '/CourseVideo/batchDetectLesson',
     method: 'post',
     data,
   })
 }
 // 课程视频-控制快进
-export function updateVideoClassProgressStatus(data) {
+export function batchFastLesson(data) {
   return request({
-    url: '/course/updateVideoClassProgressStatus',
+    url: '/CourseVideo/batchFastLesson',
     method: 'post',
     data,
   })
@@ -1292,6 +1292,22 @@ export function updateVideoClassProgressStatus(data) {
 export function getFaceDetectListForVideo(params) {
   return request({
     url: '/FaceDetect/getFaceDetectListForVideo',
+    method: 'get',
+    params,
+  })
+}
+// 课程视频-播放统计列表
+export function courseVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 课程视频-播放统计列表-导出
+export function exportCourseVideoStatistics(params) {
+  return request({
+    url: '/CourseVideo/exportCourseVideoStatistics',
     method: 'get',
     params,
   })

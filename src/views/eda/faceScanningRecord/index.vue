@@ -59,7 +59,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="video_class_name"
+            prop="title"
             label="课时名称"
             min-width="140"
             show-overflow-tooltip

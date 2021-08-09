@@ -93,8 +93,8 @@
           <template slot-scope="{ row }">
             <el-switch
               v-if="row.parentId"
-              @change="updateVideoClassFreeStatus(row)"
-              v-model="row.free"
+              @change="batchFreeLesson(row)"
+              v-model="row.is_free"
               :active-value="1"
               :inactive-value="0"
             >
@@ -113,7 +113,7 @@
             <el-switch
               v-if="row.parentId"
               @change="updateProgressStatus(row)"
-              v-model="row.progress_status"
+              v-model="row.is_fast"
               :active-value="1"
               :inactive-value="0"
             >
@@ -151,7 +151,7 @@
           label="操作"
           fixed="right"
           align="center"
-          min-width="140"
+          min-width="200"
         >
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
@@ -174,6 +174,12 @@
                 type="text"
                 @click="toFaceRecord(row)"
                 >核验记录</el-button
+              >
+              <el-button
+                v-if="row.parentId"
+                type="text"
+                @click="toStatistics(row)"
+                >统计</el-button
               >
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
               <el-button type="text" @click="deleteConfirm(row)"
@@ -234,13 +240,13 @@
 import {
   getChapterList,
   deleteChapter,
-  updateVideoClassFreeStatus,
+  batchFreeLesson,
   getLessonList,
   deleteLesson,
-  videoClassSort,
-  videoChapterSort,
-  updateVideoClassDetectTime,
-  updateVideoClassProgressStatus,
+  batchSortLesson,
+  batchSortChapter,
+  batchDetectLesson,
+  batchFastLesson,
 } from "@/api/sou";
 import ChapterDIalog from "./chapterDIalog";
 import ClassHourDialog from "./classHourDialog";
@@ -302,19 +308,27 @@ export default {
   },
 
   methods: {
+    toStatistics(row) {
+      this.$router.push({
+        name: "videoPlayStatistics",
+        query: {
+          id: row.id,
+        },
+      });
+    },
     // 单个修改扫脸测试
     async handleEditFaceCount(row) {
       if (this.isDetect) return;
       row.edit = false;
       const data = {
-        video_class_id_arr: {
+        course_video_lesson_id_arr: {
           [row.id]: row.detect_time,
         },
       };
-      const res = await updateVideoClassDetectTime(data);
+      const res = await batchDetectLesson(data);
       if (res.code === 0) {
         if (row.detect_time > 0) {
-          row.progress_status = 0;
+          row.is_fast = 0;
         }
         this.$message.success(res.message);
       }
@@ -324,9 +338,9 @@ export default {
         name: "videoFaceRecord",
         query: {
           course_name: this.$route.query.course_name,
-          video_class_name: row.video_class_name,
-          video_class_duration: row.video_class_duration,
-          video_class_id: row.video_class_id,
+          title: row.title,
+          duration: row.duration,
+          id: row.id,
         },
       });
     },
@@ -334,16 +348,16 @@ export default {
       this.checkedIds = selection.map((item) => item.id);
     },
     // 批量快进控制
-    async handleBatchDrag(status) {
+    async handleBatchDrag(is_fast) {
       if (!this.checkedIds.length) {
         this.$message.warning("请先选择！");
         return;
       }
       const data = {
-        video_class_id_arr: this.checkedIds,
-        status,
+        course_video_lesson_id_arr: this.checkedIds,
+        is_fast,
       };
-      const res = await updateVideoClassProgressStatus(data);
+      const res = await batchFastLesson(data);
       if (res.code === 0) {
         this.$message.success(res.message);
       }
@@ -370,16 +384,16 @@ export default {
       allChildren.forEach((item) => {
         data[item.id] = item.detect_time;
       });
-      allChildren.length && this.updateVideoClassDetectTime(data);
+      allChildren.length && this.batchDetectLesson(data);
     },
     showDetect() {
       this.isDetect = true;
     },
-    async updateVideoClassDetectTime(video_class_id_arr) {
+    async batchDetectLesson(course_video_lesson_id_arr) {
       const data = {
-        video_class_id_arr,
+        course_video_lesson_id_arr,
       };
-      const res = await updateVideoClassDetectTime(data);
+      const res = await batchDetectLesson(data);
       if (res.code === 0) {
         this.getChapterList();
         this.$message.success(res.message);
@@ -388,11 +402,11 @@ export default {
     // 快进控制
     async updateProgressStatus(row) {
       const data = {
-        video_class_id_arr: [row.video_class_id],
-        status: row.progress_status,
+        course_video_lesson_id_arr: [row.id],
+        is_fast: row.is_fast,
       };
-      const res = await updateVideoClassProgressStatus(data).catch(() => {
-        row.progress_status = row.progress_status ? 0 : 1;
+      const res = await batchFastLesson(data).catch(() => {
+        row.is_fast = row.is_fast ? 0 : 1;
       });
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -427,8 +441,8 @@ export default {
       allChildren.forEach((item) => {
         data[item.id] = item.sort;
       });
-      allChildren.length && this.videoClassSort(data);
-      this.videoChapterSort(videoSortMaps);
+      allChildren.length && this.batchSortLesson(data);
+      this.batchSortChapter(videoSortMaps);
     },
     handleEditCancel() {
       this.$message("已取消");
@@ -437,26 +451,19 @@ export default {
     showEdit() {
       this.isEdit = true;
     },
-    handleSort(row) {
-      if (row.parentId) {
-        this.videoClassSort(row);
-      } else {
-        this.videoChapterSort(row);
-      }
-    },
     // 课时排序
-    async videoClassSort(sortAry) {
+    async batchSortLesson(sort_arr) {
       const data = {
-        sortAry,
+        sort_arr,
       };
-      await videoClassSort(data);
+      await batchSortLesson(data);
     },
     // 章节排序
-    async videoChapterSort(sortAry) {
+    async batchSortChapter(sort_arr) {
       const data = {
-        sortAry,
+        sort_arr,
       };
-      const res = await videoChapterSort(data);
+      const res = await batchSortChapter(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getChapterList();
@@ -467,14 +474,13 @@ export default {
       this.$refs.view.show(src);
     },
     //修章节试看状态
-    async updateVideoClassFreeStatus(row) {
+    async batchFreeLesson(row) {
       const data = {
-        video_class_name: row.name,
-        video_class_id: row.id,
-        video_class_free: row.free,
+        course_video_lesson_id_arr: [row.id],
+        is_free: row.is_free,
       };
-      const res = await updateVideoClassFreeStatus(data).catch(() => {
-        row.free = row.free === 1 ? 2 : 1;
+      const res = await batchFreeLesson(data).catch(() => {
+        row.is_free = row.is_free === 1 ? 0 : 1;
       });
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -624,7 +630,6 @@ export default {
         sort: item.sort,
         id: item.id,
         parentId: item.chapter_id,
-        free: item.is_free,
         duration: item.duration,
         coverurl: item.cover_url,
         treeId: this.setId(),
