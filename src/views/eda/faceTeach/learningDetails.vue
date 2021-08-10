@@ -657,6 +657,7 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+
         };
         const res = await dailyClockIn(data);
         if (res.code === 0) {
