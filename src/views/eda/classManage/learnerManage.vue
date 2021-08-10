@@ -115,9 +115,9 @@
           <el-table-column label="操作" fixed="right" min-width="150">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button type="text" @click="learningDetails(row)"
+                <!-- <el-button type="text" @click="learningDetails(row)"
                   >学习详情</el-button
-                >
+                > -->
                 <el-button type="text" @click="linkTo(row)">转班</el-button>
                 <el-button type="text" @click="removeConfirm([row.uid])"
                   >移除</el-button

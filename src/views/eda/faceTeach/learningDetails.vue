@@ -215,10 +215,10 @@
               <el-table ref="multipleTable" :data="mockList" tooltip-effect="light" stripe style="width: 100%;"
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }"
                 class="min_table">
-                <el-table-column prop="create_time" label="试卷名称" show-overflow-tooltip min-width="100">
+                <el-table-column prop="chapter_name" label="试卷名称" show-overflow-tooltip min-width="100">
                 </el-table-column>
                 <el-table-column prop="create_time" label="考试时间" min-width="100" column-key="course_id"
-                  show-overflow-tooltip>200</el-table-column>
+                  show-overflow-tooltip></el-table-column>
                 <el-table-column prop="total_question" label="题目总数" min-width="100" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column prop="answers_right_num" label="正确题数" min-width="100" show-overflow-tooltip>
