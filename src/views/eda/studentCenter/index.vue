@@ -30,6 +30,7 @@
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
         <el-tab-pane label="学员历史" name="CustomerHistory"></el-tab-pane>
+        <el-tab-pane label="人脸识别记录" name="FaceRecord"></el-tab-pane>
       </el-tabs>
       <component
         :is="getComponent"
@@ -68,7 +69,6 @@ export default {
   },
   created() {
     this.getStudentBasicDetail();
- 
   },
   methods: {
     openSingUpDialog() {
@@ -78,7 +78,6 @@ export default {
     async getStudentBasicDetail() {
       const data = {
         uid: this.$route.query?.id || "",
-      
       };
       this.detailLoading = true;
       const res = await getStudentBasicDetail(data);

@@ -83,7 +83,13 @@
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
-
+          <el-table-column
+            prop="detect_info"
+            label="视频信息"
+            align="center"
+            min-width="200"
+            show-overflow-tooltip
+          ></el-table-column>
           <el-table-column
             label="是否上架"
             align="center"
@@ -222,12 +228,13 @@ export default {
           });
         });
     },
-    toConfigureCourses(ab) {
+    toConfigureCourses(row) {
       this.$router.push({
         path: "/sou/configureCourses",
         query: {
-          course_id: ab.course_id,
-          video_collection_id: ab.video_collection_id,
+          course_name: row.course_name,
+          course_id: row.course_id,
+          video_collection_id: row.video_collection_id,
         },
       });
     },

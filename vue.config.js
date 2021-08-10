@@ -39,6 +39,10 @@ module.exports = {
         // target: 'http://sc.dp.com', //超
         // target: 'http://thing.com',
         // target: 'http://testadmin.beiqujy.com/apidata', //测试
+<<<<<<< HEAD
+=======
+        target: 'http://formal.api.beiqujy.com/', //测试
+>>>>>>> f2044a8a162fdd899b7a77536c04ab3e346e22f7
         // target: 'http://thing.com',
         // target: 'http://192.168.8.100', //权
         // target: 'http://dpadmin.beiqujy.com/apidata', //生产
