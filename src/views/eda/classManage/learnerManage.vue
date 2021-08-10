@@ -307,7 +307,7 @@ export default {
       const data = {
         class_id: this.$route.query.classId,
         course_id: this.$route.query.course_id,
-        // question_bank_id:row.question_bank_id,
+        // project_id:row.project_id,
         page: this.pageNum,
         ...this.searchData,
       };
