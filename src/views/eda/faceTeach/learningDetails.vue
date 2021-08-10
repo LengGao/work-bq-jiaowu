@@ -77,9 +77,9 @@
                 </el-table-column>
               </el-table>
             </div>
-            <!-- <div class="table_bottom">
-              <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
-            </div> -->
+            <div class="table_bottom">
+              <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChangepunch" />
+            </div>
           </div>
           <!--章节练习-->
           <div v-if="isTagactive == 2">
@@ -129,21 +129,15 @@
                 <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
-              <!-- <div class="table_bottom">
-                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
-              </div> -->
+              <div class="table_bottom">
+                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChangechap" />
+              </div>
             </div>
           </div>
           <!--历年真题-->
           <div v-if="isTagactive == 3">
             <div class="punchclock">
               <ul>
-                <!-- <li>
-                  <p>最高分数</p>
-                  <div>
-                    <strong>{{pastTitle.max_mark}}</strong>
-                  </div>
-                </li> -->
                 <li>
                   <p>平均分数</p>
                   <strong>{{pastTitle.mark}}</strong>
@@ -187,6 +181,9 @@
                 <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
+              <div class="table_bottom">
+                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChangesubject" />
+              </div>
             </div>
 
           </div>
@@ -200,7 +197,7 @@
                     <strong>{{mockTitle.num}}</strong>
                   </div>
                 </li>
-               
+
                 <li>
                   <p>模拟考试平均分数</p>
                   <strong>{{mockTitle.mark}}</strong>
@@ -213,7 +210,7 @@
                   <p>平均做题用时</p>
                   <strong>{{mockTitle.use_time}}</strong>
                 </li>
-                
+
               </ul>
             </div>
             <!--表格-->
@@ -239,6 +236,9 @@
                 <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
+              <div class="table_bottom">
+                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChangemock" />
+              </div>
             </div>
 
 
@@ -286,10 +286,13 @@
                 </el-table-column>
                 <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
-               
+
                 <el-table-column prop="rank" label="挑战排名" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
+              <div class="table_bottom">
+                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChangebrush" />
+              </div>
             </div>
           </div>
           <!--录播视频-->
@@ -478,6 +481,9 @@
                 <el-table-column prop="status_name" label="完成状态" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
+              <div class="table_bottom">
+                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChangeface" />
+              </div>
             </div>
           </div>
           <!--自主出题-->
@@ -528,6 +534,9 @@
                 <el-table-column prop="correct_rate" label="正确率" min-width="100" show-overflow-tooltip>
                 </el-table-column>
               </el-table>
+              <div class="table_bottom">
+                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChangeself" />
+              </div>
             </div>
           </div>
         </el-col>
@@ -541,6 +550,9 @@
   export default {
     data() {
       return {
+        pageNum: 1,
+        listTotal: 0,
+
         state: 0,
         isTagactive: 1,
         dataTitle: {},
@@ -640,6 +652,43 @@
         }
       },
 
+      //每日打卡分页
+      handlePageChangepunch(val) {
+        this.pageNum = val;
+        this.dailyClockIn();
+      },
+      //章节练习
+      handlePageChangechap(val) {
+        this.pageNum = val;
+        this.chapterExercises();
+      },
+      //历年真题
+      handlePageChangesubject(val) {
+        this.pageNum = val;
+        this.pastRealQuestions();
+      },
+      //模拟考试
+      handlePageChangemock(val) {
+        this.pageNum = val;
+        this.mockExam();
+      },
+      //刷题挑战
+      handlePageChangebrush(val) {
+        this.pageNum = val;
+        this.challenge();
+      },
+
+      //面授约课
+      handlePageChangeface(val) {
+        this.pageNum = val;
+        this.FaceToFaceLesson();
+      },
+      //自主出题
+      handlePageChangeself(val) {
+        this.pageNum = val;
+        this.selfProposed();
+      },
+
       //学生基本信息
       async getStudentBasicDetail() {
         const data = {
@@ -657,11 +706,13 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+          page: this.pageNum,
         };
         const res = await dailyClockIn(data);
         if (res.code === 0) {
           this.dataTitle = res.data;
           this.dataList = res.data.list;
+          this.listTotal = res.data.total;
         }
       },
       // 章节练习
@@ -669,11 +720,13 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+          page: this.pageNum,
         };
         const res = await chapterExercises(data);
         if (res.code === 0) {
           this.chapterTitle = res.data;
           this.chapterList = res.data.list;
+          this.listTotal = res.data.total;
         }
       },
       // 历年真题
@@ -681,11 +734,13 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+          page: this.pageNum,
         };
         const res = await pastRealQuestions(data);
         if (res.code === 0) {
           this.pastTitle = res.data;
           this.pastList = res.data.list;
+          this.listTotal = res.data.total;
         }
       },
       // 模拟考试
@@ -693,11 +748,13 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+          page: this.pageNum,
         };
         const res = await mockExam(data);
         if (res.code === 0) {
           this.mockTitle = res.data;
           this.mockList = res.data.list;
+          this.listTotal = res.data.total;
         }
       },
       // 刷题挑战
@@ -705,11 +762,13 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+          page: this.pageNum,
         };
         const res = await challenge(data);
         if (res.code === 0) {
           this.challeTitle = res.data;
           this.challeList = res.data.list;
+          this.listTotal = res.data.total;
         }
       },
       // 面授约课
@@ -717,11 +776,13 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+          page: this.pageNum,
         };
         const res = await FaceToFaceLesson(data);
         if (res.code === 0) {
           this.faceTitle = res.data.data;
           this.faceList = res.data.list;
+          this.listTotal = res.data.total;
         }
       },
       // 自主出题
@@ -729,11 +790,13 @@
         const data = {
           uid: this.$route.query.uid,
           question_bank_id: this.$route.query.question_bank_id,
+          page: this.pageNum,
         };
         const res = await selfProposed(data);
         if (res.code === 0) {
           this.selfTitle = res.data;
           this.selfList = res.data.list;
+          this.listTotal = res.data.total;
         }
       },
     },
