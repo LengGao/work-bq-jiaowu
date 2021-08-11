@@ -274,7 +274,7 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        chapter_name: "",
+        chapter_name: this.$route.query.chapter_name || "",
       },
       searchOptions: [
         {

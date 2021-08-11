@@ -276,7 +276,6 @@ export default {
         query: {
           course_name: row.course_name,
           course_id: row.course_id,
-          video_collection_id: row.video_collection_id,
         },
       });
     },

@@ -80,12 +80,14 @@
         ></el-table-column>
         <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="{ row }">
-            <el-button type="text" @click="toClassVideo(row)">查看</el-button>
+            <el-button type="text" @click="toConfigureCourses(row)"
+              >查看</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <h4 class="table-title">公开课引用：</h4>
+    <!-- <h4 class="table-title">公开课引用：</h4>
     <div class="table">
       <el-table
         ref="multipleTable"
@@ -115,7 +117,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    </div> -->
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">关 闭</el-button>
     </span>
@@ -152,6 +154,17 @@ export default {
   },
 
   methods: {
+    toConfigureCourses(row) {
+      this.visible = false;
+      this.$router.push({
+        path: "/sou/configureCourses",
+        query: {
+          chapter_name: row.chapter_name,
+          course_name: row.course_name,
+          course_id: row.course_id,
+        },
+      });
+    },
     toClassVideo(row) {
       this.visible = false;
       this.$router.push({

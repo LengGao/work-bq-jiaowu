@@ -33,7 +33,7 @@ const searchCache = {
             textbookManage: ['inventoryDetails'],
             warehouseManage: ['textbookDetails', 'storageLog'],
             agency: ['editOrgan'],
-            videoLibrary: ['classVideo'],
+            videoLibrary: ['classVideo', 'configureCourses'],
             aliVideo: ['classVideo'],
             classVideo: ['videoPlaybackStatistics'],
             collegeStudentList: ['studentDetail', 'orderdetail'],

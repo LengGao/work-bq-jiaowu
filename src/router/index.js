@@ -333,6 +333,12 @@ export const asyncRouter = [
     name: 'eda',
     children: [
       {
+        path: 'courseNotes',
+        name: 'courseNotes',
+        component: () => import('@/views/eda/courseNotes/index.vue'),
+        meta: { title: '课程笔记', icon: 'product-cate' },
+      },
+      {
         path: 'faceScanningRecord',
         name: 'faceScanningRecord',
         component: () => import('@/views/eda/faceScanningRecord/index.vue'),
