@@ -1646,29 +1646,6 @@ let resource = {
       },
     })
   },
-  /**
-   * 视频加密
-   * @param {*} self
-   * @param {*} name
-   */
-  generateDataKey(self) {
-    let config = {
-      video_id: self.courseTimeForm.mediaId,
-    }
-    axiosHttp({
-      url: url.generateDataKey,
-      data: config,
-      then(res) {
-        if (self.zCourseTime) {
-          // 修改
-          // self.$api.saveCourseLesson(self);
-        } else {
-          // 新增
-          // self.$api.addCourseLesson(self);
-        }
-      },
-    })
-  },
   addvideochapterfree(self, data) {
     let config = {
       video_class_free: data.video_class_free,

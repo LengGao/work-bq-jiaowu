@@ -8,13 +8,11 @@
       </div>
       <div class="course-info-item">
         <span class="name">课时名称</span>
-        <span class="value">{{ $route.query.video_class_name }}</span>
+        <span class="value">{{ $route.query.title }}</span>
       </div>
       <div class="course-info-item">
         <span class="name">课时时长</span>
-        <span class="value">{{
-          $route.query.video_class_duration | filterDuration
-        }}</span>
+        <span class="value">{{ $route.query.duration }}</span>
       </div>
     </div>
     <div class="client_head">
@@ -198,7 +196,7 @@ export default {
     // 课程资料列表
     async getFaceDetectListForVideo() {
       const data = {
-        video_class_id: this.$route.query?.video_class_id || "",
+        course_video_lesson_id: this.$route.query?.id || "",
         page: this.pageNum,
         ...this.searchData,
       };

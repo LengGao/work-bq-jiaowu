@@ -100,11 +100,11 @@
 
 <script>
 import {
-  classroomVideoStatisticsList,
-  exportClassroomVideoStatistics,
-} from "@/api/eda";
+  courseVideoStatisticsList,
+  exportCourseVideoStatistics,
+} from "@/api/sou";
 export default {
-  name: "videoPlaybackStatistics",
+  name: "videoPlayStatistics",
   data() {
     return {
       listData: [],
@@ -127,7 +127,7 @@ export default {
   },
 
   created() {
-    this.classroomVideoStatisticsList();
+    this.courseVideoStatisticsList();
   },
   methods: {
     async exportData() {
@@ -135,7 +135,7 @@ export default {
       const data = {
         id: this.$route.query.id,
       };
-      const res = await exportClassroomVideoStatistics(data).catch(() => {
+      const res = await exportCourseVideoStatistics(data).catch(() => {
         this.exportLoading = false;
       });
       if (res.code === 0) {
@@ -148,21 +148,21 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.classroomVideoStatisticsList();
+      this.courseVideoStatisticsList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.classroomVideoStatisticsList();
+      this.courseVideoStatisticsList();
     },
 
-    async classroomVideoStatisticsList() {
+    async courseVideoStatisticsList() {
       const data = {
         page: this.pageNum,
         id: this.$route.query.id,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await classroomVideoStatisticsList(data);
+      const res = await courseVideoStatisticsList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

@@ -57,11 +57,22 @@
           <el-table-column
             prop="course_name"
             label="课程名称"
-            min-width="200"
+            min-width="320"
             column-key="course_id"
             align="left"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                >{{ row.course_name
+                }}<span
+                  :title="'课时总数：' + row.videoCount"
+                  class="circle-value info"
+                  >{{ row.videoCount }}</span
+                ></span
+              >
+            </template>
+          </el-table-column>
           <el-table-column
             prop="category_name"
             label="课程分类"
@@ -87,9 +98,40 @@
             prop="detect_info"
             label="视频信息"
             align="center"
-            min-width="200"
+            min-width="180"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                >免费<span class="circle-value">{{ row.freeCount }}</span></span
+              >
+              <span class="circle"
+                >禁快进<span class="circle-value">{{
+                  row.progressOffCount
+                }}</span></span
+              >
+              <span class="circle"
+                >扫脸<span class="circle-value">{{
+                  row.detectCount
+                }}</span></span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="detect_info"
+            label="总时长"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                ><span class="circle-value primary">{{
+                  row.duration
+                }}</span></span
+              >
+            </template>
+          </el-table-column>
           <el-table-column
             label="是否上架"
             align="center"
@@ -234,7 +276,6 @@ export default {
         query: {
           course_name: row.course_name,
           course_id: row.course_id,
-          video_collection_id: row.video_collection_id,
         },
       });
     },
@@ -413,5 +454,26 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.circle {
+  margin-right: 8px;
+  &-value {
+    display: inline-block;
+    margin-left: 3px;
+    background-color: #bd363b;
+    color: #fff;
+    border-radius: 14px;
+    padding: 2px 6px;
+    line-height: 1;
+    font-size: 12px;
+    text-align: center;
+    min-width: 24px;
+    &.primary {
+      background-color: #2798ee;
+    }
+    &.info {
+      background-color: #909399;
+    }
+  }
 }
 </style>

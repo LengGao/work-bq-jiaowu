@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'videoPlayStatistics',
+        name: 'videoPlayStatistics',
+        component: () => import('@/views/sou/courseManage/videoPlayStatistics/index.vue'),
+        meta: { title: '课程视频统计', icon: 'product-add' },
+      },
+      {
         path: 'aliVideo',
         name: 'aliVideo',
         component: () => import('@/views/sou/aliVideo/index.vue'),
@@ -326,6 +332,12 @@ export const asyncRouter = [
     meta: { title: '教务管理', icon: 'zhaoshengguanli' },
     name: 'eda',
     children: [
+      {
+        path: 'courseNotes',
+        name: 'courseNotes',
+        component: () => import('@/views/eda/courseNotes/index.vue'),
+        meta: { title: '课程笔记', icon: 'product-cate' },
+      },
       {
         path: 'faceScanningRecord',
         name: 'faceScanningRecord',

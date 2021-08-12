@@ -15,48 +15,22 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="章节名称" prop="video_chapter_id">
-        <el-select
-          style="width: 100%"
-          v-model="formData.video_chapter_id"
-          clearable
-          filterable
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in chapterOptions"
-            :key="item.video_chapter_id"
-            :label="item.video_chapter_name"
-            :value="item.video_chapter_id"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="课时名称" prop="video_class_name">
-        <el-input
-          v-model="formData.video_class_name"
-          placeholder="请输入课时名称"
-          maxlength="100"
-        />
-      </el-form-item>
-      <el-form-item label="课时排序" prop="video_class_sort">
+      <el-form-item label="视频排序" prop="sort">
         <el-input
           type="number"
-          v-model="formData.video_class_sort"
+          v-model="formData.sort"
           placeholder="请输入"
           maxlength="10"
         />
       </el-form-item>
-      <el-form-item label="上传视频" prop="media_id">
+      <el-form-item label="选择视频" prop="video_repository_id">
         <!-- 用来更新验证用 不显示 -->
-        <el-input v-show="false" v-model="formData.media_id"></el-input>
-        <AliyunUpload
-          :disabled="!formData.video_class_name"
-          :video-name="formData.video_class_name"
-          :defaultFiles="defaultFiles"
-          :on-success="handleUploadSuccess"
-          @on-remove="handleVideoRemove"
-        />
+        <el-input
+          v-show="false"
+          v-model="formData.video_repository_id"
+        ></el-input>
+        <el-button @click="openVideoListDialog">选择文件</el-button>
+        <p>{{ videoTitle }}</p>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -68,17 +42,16 @@
         >确 定</el-button
       >
     </span>
+    <VideoListDialog
+      v-model="videoListDialogVisible"
+      @on-checked="handleVideoListChecked"
+    />
   </el-dialog>
 </template>
 
 <script>
-import {
-  editvideoclass,
-  addvideoclass,
-  getvideoclassDetail,
-  getvideochapterList,
-} from "@/api/sou";
-import AliyunUpload from "@/components/AliyunUpload/index";
+import { updateLesson, createLesson } from "@/api/sou";
+import VideoListDialog from "@/views/eda/classVideo/components/videoListDialog";
 export default {
   props: {
     value: {
@@ -89,42 +62,36 @@ export default {
       type: String,
       default: "",
     },
-    id: {
+    chapterId: {
       type: [String, Number],
       default: "",
     },
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   components: {
-    AliyunUpload,
+    VideoListDialog,
   },
   data() {
     return {
       visible: this.value,
       formData: {
-        video_chapter_id: "",
-        video_class_name: "",
-        video_chapter_profile: "",
-        video_class_sort: "",
-        media_id: "",
-        media_name: "",
-        video_class_duration: "",
+        sort: "",
+        video_repository_id: "",
       },
       defaultFiles: [],
       rules: {
-        video_class_name: [
-          { required: true, message: "请输入", trigger: "blur" },
-        ],
-        video_class_sort: [
-          { required: true, message: "请输入", trigger: "blur" },
-        ],
-        video_chapter_id: [
+        sort: [{ required: true, message: "请输入", trigger: "blur" }],
+        video_repository_id: [
           { required: true, message: "请选择", trigger: "change" },
         ],
-        media_id: [{ required: true, message: "请上传", trigger: "change" }],
       },
-      chapterOptions: [],
       addLoading: false,
       detaiLoading: false,
+      videoListDialogVisible: false,
+      videoTitle: "",
     };
   },
   watch: {
@@ -134,72 +101,38 @@ export default {
   },
 
   methods: {
-    handleVideoRemove() {
-      this.formData.media_name = "";
-      this.formData.media_id = "";
+    openVideoListDialog() {
+      this.videoListDialogVisible = true;
+    },
+    handleVideoListChecked({ id, title }) {
+      this.formData.video_repository_id = id;
+      this.videoTitle = title;
     },
     handleOpen() {
-      this.getvideochapterList();
-      if (this.id) {
-        this.getvideoclassDetail();
+      if (this.data.id) {
+        this.formData.video_repository_id = this.data.video_repository_id;
+        this.formData.sort = this.data.sort;
+        this.videoTitle = this.data.name;
       }
-    },
-    handleUploadSuccess(data) {
-      const filename = data.file.name;
-      this.formData.media_id = data.videoId;
-      this.formData.media_name = filename;
-      this.formData.video_class_duration = data.duration;
-    },
-    //获取详情
-    async getvideoclassDetail() {
-      const data = {
-        video_class_id: this.id,
-      };
-      this.detaiLoading = true;
-      const res = await getvideoclassDetail(data).catch(() => {
-        this.detaiLoading = false;
-      });
-      this.detaiLoading = false;
-      if (res.code === 0) {
-        for (const k in this.formData) {
-          this.formData[k] = res.data[k];
-        }
-        this.defaultFiles = [
-          {
-            name: res.data.media_name,
-            id: res.data.media_id,
-          },
-        ];
-      }
-    },
-    // 章节选项
-    async getvideochapterList() {
-      const data = {
-        video_collection_id: this.$route.query?.video_collection_id || "",
-        limit: 9999,
-      };
-      const res = await getvideochapterList(data);
-      this.chapterOptions = res.data.data;
     },
     async submit() {
       const data = {
+        chapter_id: this.chapterId,
         ...this.formData,
       };
-      if (this.id) {
-        data.video_class_id = this.id;
-      } else {
-        data.video_collection_id = this.$route.query?.video_collection_id || "";
+      if (this.data.id) {
+        data.id = this.data.id;
       }
-      const api = this.id ? editvideoclass : addvideoclass;
+      const api = this.data.id ? updateLesson : createLesson;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
-        this.$emit("on-success", this.formData.video_chapter_id);
+        this.$emit("on-success", this.chapterId);
         this.$message.success(res.message);
-        this.resetForm("formData");
+        this.hanldeCancel();
       }
     },
     submitForm(formName) {
@@ -210,15 +143,15 @@ export default {
       });
     },
     resetForm(formName) {
+      this.$refs[formName].resetFields();
       for (const k in this.formData) {
         this.formData[k] = "";
       }
-      this.$refs[formName].resetFields();
-      this.defaultFiles = [];
-      this.hanldeCancel();
+      this.videoTitle = "";
+      this.$emit("input", false);
     },
     hanldeCancel() {
-      this.$emit("input", false);
+      this.visible = false;
     },
   },
 };

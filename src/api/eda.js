@@ -1074,3 +1074,27 @@ export function getFaceDetectListForUser(params) {
     params,
   })
 }
+// 课程笔记列表
+export function getCourseNoteList(params) {
+  return request({
+    url: '/NewsInteraction/getCourseNoteList',
+    method: 'get',
+    params,
+  })
+}
+// 课程笔记列表-修改状态
+export function updateCourseNoteStatus(data) {
+  return request({
+    url: '/NewsInteraction/updateCourseNoteStatus',
+    method: 'post',
+    data,
+  })
+}
+// 课程笔记列表-删除
+export function deleteCourseNote(data) {
+  return request({
+    url: '/NewsInteraction/deleteCourseNote',
+    method: 'post',
+    data,
+  })
+}

@@ -1,7 +1,7 @@
 <template>
-  <!-- 人脸扫描记录列表 -->
+  <!-- 课程笔记列表 -->
   <div class="face-scanning-record">
-    <div class="head_remind">*本模块展示所有的人脸识别数据，方便管理查询。</div>
+    <div class="head_remind">*本模块展示所有的课程笔记数据，方便管理查询。</div>
     <div class="container">
       <div class="client_head">
         <!--搜索模块-->
@@ -23,39 +23,60 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
         >
-          <el-table-column label="ID" width="70" prop="id"> </el-table-column>
+          <el-table-column label="ID" align="center" width="70" prop="id">
+          </el-table-column>
           <el-table-column
-            label="识别时间"
+            label="创建时间"
             show-overflow-tooltip
             min-width="140"
             prop="create_time"
+            align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="surname"
+            prop="content"
+            label="笔记内容"
+            min-width="230"
+            align="left"
+          >
+            <template slot-scope="{ row }">
+              <el-popover placement="top-start" width="400" trigger="hover">
+                <div v-html="row.content"></div>
+                <div
+                  class="note-content"
+                  slot="reference"
+                  v-html="row.content"
+                ></div>
+              </el-popover>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="user_realname"
             label="学员姓名"
             min-width="80"
             show-overflow-tooltip
+            align="center"
           >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toStudentDetail(row.uid)">
-                {{ row.surname }}
+                {{ row.user_realname }}
               </el-button>
             </template>
           </el-table-column>
           <el-table-column
-            prop="mobile"
+            prop="telphone"
             label="手机号码"
             min-width="100"
             show-overflow-tooltip
+            align="center"
           ></el-table-column>
           <el-table-column
             prop="course_name"
             label="课程名称"
             min-width="200"
             show-overflow-tooltip
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -63,57 +84,40 @@
             label="课时名称"
             min-width="140"
             show-overflow-tooltip
+            align="center"
           >
           </el-table-column>
           <el-table-column
-            prop="time_point"
-            label="视频关键秒"
+            prop="like"
+            label="点赞数"
+            min-width="80"
+            show-overflow-tooltip
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
+            align="center"
+            prop="student_number"
+            label="是否发布"
             min-width="110"
             show-overflow-tooltip
           >
-          </el-table-column>
-          <el-table-column
-            prop="best_frame"
-            label="抓拍图片"
-            min-width="80"
-            align="center"
-          >
             <template slot-scope="{ row }">
-              <div class="best-frame" v-if="row.best_frame">
-                <img
-                  @click="handlePreview(row.best_frame)"
-                  :src="row.best_frame"
-                  alt=""
-                />
-              </div>
-              <span v-else>--</span>
+              <el-switch
+                @change="updateCourseNoteStatus(row)"
+                v-model="row.status"
+                :active-value="1"
+                :inactive-value="0"
+              >
+              </el-switch>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="status_name"
-            label="核验结果"
-            min-width="100"
-            show-overflow-tooltip
-          >
+          <el-table-column label="操作" min-width="90" align="center">
             <template slot-scope="{ row }">
-              <el-tag size="small" :type="statusMap[row.status]">{{
-                row.status_name
-              }}</el-tag>
+              <el-button type="text" @click="deleteConfirm(row.id)">
+                删除
+              </el-button>
             </template>
-          </el-table-column>
-          <el-table-column
-            prop="live_msg"
-            label="核验信息1"
-            min-width="120"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="err_msg"
-            label="核验信息2"
-            min-width="230"
-            show-overflow-tooltip
-          >
           </el-table-column>
         </el-table>
         <div class="table_bottom">
@@ -125,13 +129,15 @@
         </div>
       </div>
     </div>
-    <PreviewImg ref="view" />
   </div>
 </template>
 
 <script>
-import { getShortcuts } from "@/utils/date";
-import { getFaceDetectList, getFaceCourseSelect } from "@/api/eda";
+import {
+  getCourseNoteList,
+  updateCourseNoteStatus,
+  deleteCourseNote,
+} from "@/api/eda";
 export default {
   name: "faceScanningRecord",
   data() {
@@ -141,38 +147,9 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        date: [],
-        course_id: "",
         search_box: "",
       },
       searchOptions: [
-        {
-          key: "date",
-          type: "datePicker",
-          attrs: {
-            type: "daterange",
-            "range-separator": "至",
-            "start-placeholder": "开始日期",
-            "end-placeholder": "结束日期",
-            format: "yyyy-MM-dd",
-            "value-format": "yyyy-MM-dd",
-            pickerOptions: {
-              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-            },
-          },
-        },
-        {
-          key: "course_id",
-          type: "select",
-          options: [],
-          optionValue: "course_id",
-          optionLabel: "course_name",
-          attrs: {
-            placeholder: "课程名称",
-            clearable: true,
-            filterable: true,
-          },
-        },
         {
           key: "search_box",
           attrs: {
@@ -180,27 +157,44 @@ export default {
           },
         },
       ],
-      statusMap: {
-        1: "info",
-        2: "success",
-        3: "danger",
-      },
     };
   },
 
   created() {
-    this.getFaceDetectList();
-    this.getFaceCourseSelect();
+    this.getCourseNoteList();
   },
 
   methods: {
-    async getFaceCourseSelect() {
-      const data = {};
-      const res = await getFaceCourseSelect(data);
-      this.searchOptions[1].options = res.data;
+    deleteConfirm(id) {
+      this.$confirm(`确定要删除该笔记吗?`, {
+        type: "warning",
+      })
+        .then(() => {
+          this.deleteCourseNote(id);
+        })
+        .catch(() => {});
     },
-    handlePreview(src) {
-      this.$refs.view.show(src);
+    async deleteCourseNote(id) {
+      const data = {
+        id,
+      };
+      const res = await deleteCourseNote(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getCourseNoteList();
+      }
+    },
+    async updateCourseNoteStatus(row) {
+      const data = {
+        id: row.id,
+        status: row.status,
+      };
+      const res = await updateCourseNoteStatus(data).catch(() => {
+        row.status = row.status === 1 ? 0 : 1;
+      });
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
     },
     // 搜索
     handleSearch(data) {
@@ -212,21 +206,21 @@ export default {
         start_time: date[0],
         end_time: date[1],
       };
-      this.getFaceDetectList();
+      this.getCourseNoteList();
     },
     // 分页
     handlePageChange(val) {
       this.pageNum = val;
-      this.getFaceDetectList();
+      this.getCourseNoteList();
     },
     // 列表
-    async getFaceDetectList() {
+    async getCourseNoteList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getFaceDetectList(data);
+      const res = await getCourseNoteList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -244,23 +238,24 @@ export default {
   }
   .container {
     padding: 20px;
-    .client_head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+
     .userTable {
       margin-top: 20px;
-      .best-frame {
-        width: 100%;
-        height: 70px;
-        text-align: center;
-        img {
-          width: 60px;
-          cursor: pointer;
+      .note-content {
+        overflow: hidden;
+        height: 40px;
+        cursor: pointer;
+        /deep/p {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
       }
     }
   }
+}
+/deep/a {
+  color: initial;
+  text-decoration: underline;
 }
 </style>

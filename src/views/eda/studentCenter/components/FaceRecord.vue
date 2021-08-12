@@ -39,14 +39,14 @@
         >
         </el-table-column>
         <el-table-column
-          prop="video_class_name"
+          prop="title"
           label="课时名称"
           min-width="140"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="video_class_duration"
+          prop="duration"
           label="课时时长"
           min-width="90"
           show-overflow-tooltip
