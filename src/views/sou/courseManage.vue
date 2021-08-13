@@ -103,17 +103,25 @@
           >
             <template slot-scope="{ row }">
               <span class="circle"
-                >免费<span class="circle-value">{{ row.freeCount }}</span></span
+                >免费<span
+                  class="circle-value"
+                  :class="{ info: !row.freeCount }"
+                  >{{ row.freeCount }}</span
+                ></span
               >
               <span class="circle"
-                >禁快进<span class="circle-value">{{
-                  row.progressOffCount
-                }}</span></span
+                >禁快进<span
+                  class="circle-value"
+                  :class="{ info: !row.progressOffCount }"
+                  >{{ row.progressOffCount }}</span
+                ></span
               >
               <span class="circle"
-                >扫脸<span class="circle-value">{{
-                  row.detectCount
-                }}</span></span
+                >扫脸<span
+                  class="circle-value"
+                  :class="{ info: !row.detectCount }"
+                  >{{ row.detectCount }}</span
+                ></span
               >
             </template>
           </el-table-column>
@@ -126,9 +134,11 @@
           >
             <template slot-scope="{ row }">
               <span class="circle"
-                ><span class="circle-value primary">{{
-                  row.duration
-                }}</span></span
+                ><span
+                  class="circle-value primary"
+                  :class="{ info: !row.duration }"
+                  >{{ row.duration }}</span
+                ></span
               >
             </template>
           </el-table-column>
