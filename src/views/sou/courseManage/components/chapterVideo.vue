@@ -79,7 +79,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <el-input type="number" v-if="isEdit" v-model="row.sort" />
+            <el-input type="number" v-if="isSort" v-model="row.sort" />
             <span v-else>{{ row.sort }}</span>
           </template>
         </el-table-column>
@@ -191,12 +191,12 @@
       </el-table>
       <div class="table_bottom">
         <div class="actions">
-          <div v-if="isEdit">
-            <el-button @click="handleEditCancel">取消</el-button>
+          <div v-if="isSort">
+            <el-button @click="handleSortCancel">取消</el-button>
             <el-button type="primary" @click="handleBatchSort">保存</el-button>
           </div>
           <div v-else>
-            <el-button @click="showEdit">批量排序</el-button>
+            <el-button @click="showSort">批量排序</el-button>
           </div>
           <div v-if="isDetect">
             <el-button @click="handleDetectCancel">取消</el-button>
@@ -296,7 +296,7 @@ export default {
       treeId: 0,
       treeLoadMap: new Map(),
       //排序
-      isEdit: false,
+      isSort: false,
       //扫脸次数
       isDetect: false,
       checkedIds: [],
@@ -367,8 +367,12 @@ export default {
       return !!row.parentId;
     },
     handleDetectCancel() {
-      this.$message("已取消");
-      this.getChapterList();
+      this.isDetect = false;
+      this.reloadAllChildren();
+    },
+    reloadAllChildren() {
+      const parentIds = Array.from(this.treeLoadMap.keys());
+      parentIds.forEach((id) => this.updateTableChildren(id));
     },
     // 批量设置扫脸次数
     handleBatchDetect() {
@@ -395,7 +399,7 @@ export default {
       };
       const res = await batchDetectLesson(data);
       if (res.code === 0) {
-        this.getChapterList();
+        this.handleDetectCancel();
         this.$message.success(res.message);
       }
     },
@@ -444,12 +448,13 @@ export default {
       allChildren.length && this.batchSortLesson(data);
       this.batchSortChapter(videoSortMaps);
     },
-    handleEditCancel() {
-      this.$message("已取消");
-      this.getChapterList();
+    handleSortCancel() {
+      this.listData.forEach((item) => (item.sort = item.backupSort));
+      this.isSort = false;
+      this.reloadAllChildren();
     },
-    showEdit() {
-      this.isEdit = true;
+    showSort() {
+      this.isSort = true;
     },
     // 课时排序
     async batchSortLesson(sort_arr) {
@@ -466,7 +471,9 @@ export default {
       const res = await batchSortChapter(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getChapterList();
+        this.listData.forEach((item) => (item.backupSort = item.sort));
+        this.isSort = false;
+        this.reloadAllChildren();
       }
     },
 
@@ -570,7 +577,7 @@ export default {
     },
     // 章节列表
     async getChapterList() {
-      this.isEdit = false;
+      this.isSort = false;
       this.isDetect = false;
       const data = {
         course_id: this.$route.query?.course_id || "",
@@ -580,9 +587,11 @@ export default {
       this.listLoading = true;
       const res = await getChapterList(data);
       this.listLoading = false;
+      this.treeLoadMap.clear();
       this.listData = res.data.list.map((item, index) => ({
         name: item.chapter_name,
         sort: item.sort,
+        backupSort: item.sort,
         id: item.id,
         chapter_intro: item.chapter_intro,
         treeId: this.setId(),
