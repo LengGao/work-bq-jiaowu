@@ -340,7 +340,7 @@ export default {
       };
       const res = await classstudentsBatchRemove(data);
       if (res.code === 0) {
-        this.$message.success("学生移除成功");
+        this.$message.success(res.message);
         this.getstudendclass();
       }
     },
