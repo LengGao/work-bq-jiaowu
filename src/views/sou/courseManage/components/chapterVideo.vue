@@ -312,6 +312,9 @@ export default {
       this.$router.push({
         name: "videoPlayStatistics",
         query: {
+          course_name: this.$route.query.course_name,
+          title: row.title,
+          duration: row.duration,
           id: row.id,
         },
       });
@@ -668,7 +671,7 @@ export default {
   }
   .video-cover {
     width: 100%;
-    height: 80px;
+    height: 40px;
     text-align: center;
     img {
       cursor: pointer;

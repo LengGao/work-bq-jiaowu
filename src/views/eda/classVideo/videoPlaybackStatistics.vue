@@ -47,8 +47,11 @@
           label="手机号码"
           min-width="140"
           align="center"
-          show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <PartiallyHidden :value="row.telphone" />
+          </template>
+        </el-table-column>
         <el-table-column
           prop="create_time"
           label="最早加入时间"
@@ -103,8 +106,12 @@ import {
   classroomVideoStatisticsList,
   exportClassroomVideoStatistics,
 } from "@/api/eda";
+import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "videoPlaybackStatistics",
+  components: {
+    PartiallyHidden,
+  },
   data() {
     return {
       listData: [],

@@ -1,5 +1,19 @@
 <template>
   <div class="playback-statistics">
+    <div class="course-info">
+      <div class="course-info-item">
+        <span class="name">课程名称</span>
+        <span class="value">{{ $route.query.course_name }}</span>
+      </div>
+      <div class="course-info-item">
+        <span class="name">课时名称</span>
+        <span class="value">{{ $route.query.title }}</span>
+      </div>
+      <div class="course-info-item">
+        <span class="name">课时时长</span>
+        <span class="value">{{ $route.query.duration }}</span>
+      </div>
+    </div>
     <div class="client_head">
       <!--搜索模块-->
       <SearchList
@@ -22,11 +36,11 @@
         :header-cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          label="ID"
+          label="uid"
           show-overflow-tooltip
           min-width="70"
           align="center"
-          prop="id"
+          prop="uid"
         >
         </el-table-column>
         <el-table-column
@@ -47,8 +61,11 @@
           label="手机号码"
           min-width="140"
           align="center"
-          show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <PartiallyHidden :value="row.telphone" />
+          </template>
+        </el-table-column>
         <el-table-column
           prop="create_time"
           label="最早加入时间"
@@ -61,6 +78,13 @@
           label="最后离开时间"
           align="center"
           min-width="140"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="period"
+          label="观看周期"
+          align="center"
+          min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -103,8 +127,12 @@ import {
   courseVideoStatisticsList,
   exportCourseVideoStatistics,
 } from "@/api/sou";
+import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "videoPlayStatistics",
+  components: {
+    PartiallyHidden,
+  },
   data() {
     return {
       listData: [],
@@ -113,8 +141,21 @@ export default {
       listTotal: 0,
       searchData: {
         search_box: "",
+        progress_status: "",
       },
       searchOptions: [
+        {
+          key: "progress_status",
+          type: "select",
+          options: [
+            { label: "已完成", value: 1 },
+            { label: "未完成", value: 2 },
+          ],
+          attrs: {
+            placeholder: "观看状态",
+            clearable: true,
+          },
+        },
         {
           key: "search_box",
           attrs: {
@@ -184,5 +225,20 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.course-info {
+  display: flex;
+  align-items: center;
+  &-item {
+    margin-right: 30px;
+    padding: 16px 0;
+    .name {
+      color: #909399;
+      margin-right: 8px;
+    }
+    .value {
+      color: #333;
+    }
+  }
 }
 </style>

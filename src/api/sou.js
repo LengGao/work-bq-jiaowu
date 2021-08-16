@@ -1304,4 +1304,12 @@ export function exportCourseVideoStatistics(params) {
     params,
   })
 }
+// 扫脸记录删除
+export function deleteFaceRecord(data) {
+  return request({
+    url: '/FaceDetect/deleteRecord',
+    method: 'post',
+    data,
+  })
+}
 
