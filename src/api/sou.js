@@ -1312,4 +1312,36 @@ export function deleteFaceRecord(data) {
     data,
   })
 }
+// 课程学生列表课程数据
+export function courseUserVideoStatisticsData(params) {
+  return request({
+    url: 'CourseVideo/courseUserVideoStatisticsData',
+    method: 'get',
+    params,
+  })
+}
+// 课程学生列表
+export function courseUserVideoStatisticsList(params) {
+  return request({
+    url: 'CourseVideo/courseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 课程学生章节列表
+export function courseChapterVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseChapterVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 课程学生课时列表
+export function courseLessonVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseLessonVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
 

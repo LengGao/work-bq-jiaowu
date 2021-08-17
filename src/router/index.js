@@ -68,6 +68,24 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'studentList',
+        name: 'studentList',
+        component: () => import('@/views/sou/courseManage/studentList/index.vue'),
+        meta: { title: '课程学生', icon: 'product-add' },
+      },
+      {
+        path: 'studentChapter',
+        name: 'studentChapter',
+        component: () => import('@/views/sou/courseManage/studentChapter/index.vue'),
+        meta: { title: '章节详情', icon: 'product-add' },
+      },
+      {
+        path: 'studentClasshour',
+        name: 'studentClasshour',
+        component: () => import('@/views/sou/courseManage/studentClasshour/index.vue'),
+        meta: { title: '课时详情', icon: 'product-add' },
+      },
+      {
         path: 'videoPlayStatistics',
         name: 'videoPlayStatistics',
         component: () => import('@/views/sou/courseManage/videoPlayStatistics/index.vue'),
