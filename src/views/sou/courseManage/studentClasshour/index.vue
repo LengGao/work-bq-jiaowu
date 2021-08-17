@@ -114,7 +114,7 @@
 <script>
 import { courseLessonVideoStatisticsList } from "@/api/sou";
 export default {
-  name: "studentChapter",
+  name: "studentClassHour",
   data() {
     return {
       listData: [],

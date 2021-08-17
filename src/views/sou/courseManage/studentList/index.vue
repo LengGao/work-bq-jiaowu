@@ -147,7 +147,7 @@ import {
 } from "@/api/sou";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
-  name: "courseStudent",
+  name: "studentList",
   components: {
     PartiallyHidden,
   },
