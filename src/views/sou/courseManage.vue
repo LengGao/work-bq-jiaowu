@@ -84,7 +84,7 @@
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
-           <el-table-column
+          <el-table-column
             prop="detect_info"
             label="总时长"
             align="center"
@@ -131,7 +131,7 @@
                 ></span
               >
               <span class="circle"
-                >扫脸<span
+                >实名<span
                   class="circle-value"
                   :class="{ info: !row.detectCount }"
                   >({{ row.detectCount }})</span
