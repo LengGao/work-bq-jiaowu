@@ -96,6 +96,14 @@
           >
           </el-table-column>
           <el-table-column
+            prop="public_name"
+            label="是否公开"
+            min-width="80"
+            show-overflow-tooltip
+            align="center"
+          >
+          </el-table-column>
+          <el-table-column
             align="center"
             prop="student_number"
             label="是否发布"
@@ -104,12 +112,14 @@
           >
             <template slot-scope="{ row }">
               <el-switch
+                v-if="row.is_public"
                 @change="updateCourseNoteStatus(row)"
                 v-model="row.status"
                 :active-value="1"
                 :inactive-value="0"
               >
               </el-switch>
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" min-width="90" align="center">
