@@ -36,7 +36,7 @@ module.exports = {
     proxy: {
       '/ai': {
         // target: 'http://dongpei.kaifa',
-        // target: 'http://sc.dp.com', //超
+        target: 'http://sc.dp.com', //超
         // target: 'http://thing.com',
         target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',

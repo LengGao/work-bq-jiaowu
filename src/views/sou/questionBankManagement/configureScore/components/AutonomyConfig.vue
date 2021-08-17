@@ -9,7 +9,7 @@
       v-loading="detaiLoading"
     >
       <el-form-item label="单选题" prop="score1">
-        <span>每1题</span>
+        <span>每题</span>
         <el-input
           class="input-score"
           type="number"
@@ -211,7 +211,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .autonomy-config {
   .el-form-item {
     width: 500px;

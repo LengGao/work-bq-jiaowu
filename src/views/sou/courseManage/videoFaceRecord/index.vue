@@ -62,7 +62,11 @@
           label="手机号码"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <PartiallyHidden :value="row.mobile" />
+          </template>
+        </el-table-column>
         <el-table-column
           prop="time_point"
           label="视频关键秒"
@@ -113,6 +117,13 @@
           show-overflow-tooltip
         >
         </el-table-column>
+        <el-table-column fixed="right" label="操作" width="80">
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="deleteConfirm(row.id)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
@@ -127,9 +138,13 @@
 </template>
 
 <script>
-import { getFaceDetectListForVideo } from "@/api/sou";
+import PartiallyHidden from "@/components/PartiallyHidden/index";
+import { getFaceDetectListForVideo, deleteFaceRecord } from "@/api/sou";
 export default {
   name: "videoFaceRecord",
+  components: {
+    PartiallyHidden,
+  },
   data() {
     return {
       listData: [],
@@ -139,6 +154,7 @@ export default {
       searchData: {
         date: [],
         search_box: "",
+        status: "",
       },
       searchOptions: [
         {
@@ -151,6 +167,19 @@ export default {
             "end-placeholder": "结束日期",
             format: "yyyy-MM-dd",
             "value-format": "yyyy-MM-dd",
+          },
+        },
+        {
+          key: "status",
+          type: "select",
+          options: [
+            { label: "等待验证", value: 1 },
+            { label: "验证成功", value: 2 },
+            { label: "验证失败", value: 3 },
+          ],
+          attrs: {
+            placeholder: "核验状态",
+            clearable: true,
           },
         },
         {
@@ -173,6 +202,23 @@ export default {
   },
 
   methods: {
+    deleteConfirm(id) {
+      this.$confirm(`确定要删除此记录吗?`, {
+        type: "warning",
+      })
+        .then(() => {
+          this.deleteFaceRecord(id);
+        })
+        .catch(() => {});
+    },
+    async deleteFaceRecord(id) {
+      const data = { id };
+      const res = await deleteFaceRecord(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getFaceDetectListForVideo();
+      }
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },

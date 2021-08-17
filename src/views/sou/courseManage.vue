@@ -57,21 +57,11 @@
           <el-table-column
             prop="course_name"
             label="课程名称"
-            min-width="320"
-            column-key="course_id"
+            min-width="240"
+            column-key="course_name"
             align="left"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span class="circle"
-                >{{ row.course_name
-                }}<span
-                  :title="'课时总数：' + row.videoCount"
-                  class="circle-value info"
-                  >{{ row.videoCount }}</span
-                ></span
-              >
-            </template>
           </el-table-column>
           <el-table-column
             prop="category_name"
@@ -94,38 +84,7 @@
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
-            prop="detect_info"
-            label="视频信息"
-            align="center"
-            min-width="180"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span class="circle"
-                >免费<span
-                  class="circle-value"
-                  :class="{ info: !row.freeCount }"
-                  >{{ row.freeCount }}</span
-                ></span
-              >
-              <span class="circle"
-                >禁快进<span
-                  class="circle-value"
-                  :class="{ info: !row.progressOffCount }"
-                  >{{ row.progressOffCount }}</span
-                ></span
-              >
-              <span class="circle"
-                >扫脸<span
-                  class="circle-value"
-                  :class="{ info: !row.detectCount }"
-                  >{{ row.detectCount }}</span
-                ></span
-              >
-            </template>
-          </el-table-column>
-          <el-table-column
+           <el-table-column
             prop="detect_info"
             label="总时长"
             align="center"
@@ -141,6 +100,52 @@
                 ></span
               >
             </template>
+          </el-table-column>
+          <el-table-column
+            prop="detect_info"
+            label="视频信息"
+            align="center"
+            min-width="220"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                >视频<span
+                  class="circle-value"
+                  :class="{ info: !row.videoCount }"
+                  >({{ row.videoCount }})</span
+                ></span
+              >
+              <span class="circle"
+                >免费<span
+                  class="circle-value"
+                  :class="{ info: !row.freeCount }"
+                  >({{ row.freeCount }})</span
+                ></span
+              >
+              <span class="circle"
+                >禁快进<span
+                  class="circle-value"
+                  :class="{ info: !row.progressOffCount }"
+                  >({{ row.progressOffCount }})</span
+                ></span
+              >
+              <span class="circle"
+                >扫脸<span
+                  class="circle-value"
+                  :class="{ info: !row.detectCount }"
+                  >({{ row.detectCount }})</span
+                ></span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="user_count"
+            label="购买人数"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
           </el-table-column>
           <el-table-column
             label="是否上架"
@@ -169,6 +174,9 @@
           >
             <template slot-scope="scope">
               <div style="display: flex; justify-content: center">
+                <el-button type="text" @click="toCourseStudent(scope.row)"
+                  >学生管理</el-button
+                >
                 <el-button
                   type="text"
                   v-if="scope.row.class_type == 1"
@@ -264,6 +272,14 @@ export default {
   mounted() {},
 
   methods: {
+    toCourseStudent(row) {
+      this.$router.push({
+        name: "studentList",
+        query: {
+          course_id: row.course_id,
+        },
+      });
+    },
     handleDelete(row) {
       this.$confirm("你正在删除该课程,,请谨慎操作?", "提示", {
         confirmButtonText: "删除",
@@ -470,19 +486,10 @@ export default {
   &-value {
     display: inline-block;
     margin-left: 3px;
-    background-color: #bd363b;
-    color: #fff;
-    border-radius: 14px;
-    padding: 2px 6px;
-    line-height: 1;
-    font-size: 12px;
     text-align: center;
-    min-width: 24px;
-    &.primary {
-      background-color: #2798ee;
-    }
+    color: #6dd152;
     &.info {
-      background-color: #909399;
+      color: #bbb;
     }
   }
 }

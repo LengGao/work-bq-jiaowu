@@ -1,17 +1,21 @@
 <template>
-  <div class="playback-statistics">
+  <div class="course-student-list">
     <div class="course-info">
       <div class="course-info-item">
         <span class="name">课程名称</span>
-        <span class="value">{{ $route.query.course_name }}</span>
+        <span class="value">{{ courseData.course_name }}</span>
       </div>
       <div class="course-info-item">
-        <span class="name">课时名称</span>
-        <span class="value">{{ $route.query.title }}</span>
+        <span class="name">所属分类</span>
+        <span class="value">{{ courseData.cate_name }}</span>
       </div>
       <div class="course-info-item">
-        <span class="name">课时时长</span>
-        <span class="value">{{ $route.query.duration }}</span>
+        <span class="name">总时长</span>
+        <span class="value">{{ courseData.total_duration }}</span>
+      </div>
+      <div class="course-info-item">
+        <span class="name">购买人数</span>
+        <span class="value">{{ courseData.user_count }}</span>
       </div>
     </div>
     <div class="client_head">
@@ -36,11 +40,11 @@
         :header-cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          label="uid"
+          label="id"
           show-overflow-tooltip
           min-width="70"
           align="center"
-          prop="uid"
+          prop="id"
         >
         </el-table-column>
         <el-table-column
@@ -67,36 +71,29 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="create_time"
-          label="最早加入时间"
+          prop="first_time"
+          label="首次学习时间"
           min-width="140"
           align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="update_time"
-          label="最后离开时间"
+          prop="last_time"
+          label="最后学习时间"
           align="center"
           min-width="140"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="period"
-          label="观看周期"
-          align="center"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="total_second"
-          label="观看时长"
+          prop="duration"
+          label="学习时长"
           align="center"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="progress"
-          label="观看进度"
+          label="学习进度"
           align="center"
           min-width="110"
           show-overflow-tooltip
@@ -105,13 +102,34 @@
             <span>{{ row.progress }}%</span>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="progress"
+          label="完成状态"
+          align="center"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-tag size="small" v-if="row.progress === 100" type="success"
+              >已完成</el-tag
+            >
+            <el-tag size="small" v-else type="danger">未完成</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          fixed="right"
+          align="center"
+          min-width="100"
+        >
+          <template slot-scope="scope">
+            <el-button type="text" @click="toChapter(scope.row)"
+              >章节详情</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <div>
-          <el-button :loading="exportLoading" @click="exportData"
-            >导出数据</el-button
-          >
-        </div>
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -124,12 +142,12 @@
 
 <script>
 import {
-  courseVideoStatisticsList,
-  exportCourseVideoStatistics,
+  courseUserVideoStatisticsList,
+  courseUserVideoStatisticsData,
 } from "@/api/sou";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
-  name: "videoPlayStatistics",
+  name: "courseStudent",
   components: {
     PartiallyHidden,
   },
@@ -141,21 +159,8 @@ export default {
       listTotal: 0,
       searchData: {
         search_box: "",
-        progress_status: "",
       },
       searchOptions: [
-        {
-          key: "progress_status",
-          type: "select",
-          options: [
-            { label: "已完成", value: 1 },
-            { label: "未完成", value: 2 },
-          ],
-          attrs: {
-            placeholder: "观看状态",
-            clearable: true,
-          },
-        },
         {
           key: "search_box",
           attrs: {
@@ -163,25 +168,31 @@ export default {
           },
         },
       ],
-      exportLoading: false,
+      courseData: {},
     };
   },
 
   created() {
-    this.courseVideoStatisticsList();
+    this.courseUserVideoStatisticsList();
+    this.courseUserVideoStatisticsData();
   },
   methods: {
-    async exportData() {
-      this.exportLoading = true;
-      const data = {
-        id: this.$route.query.id,
-      };
-      const res = await exportCourseVideoStatistics(data).catch(() => {
-        this.exportLoading = false;
+    toChapter(row) {
+      this.$router.push({
+        name: "studentChapter",
+        query: {
+          uid: row.uid,
+          course_id: this.$route.query.course_id,
+        },
       });
+    },
+    async courseUserVideoStatisticsData() {
+      const data = {
+        course_id: this.$route.query.course_id,
+      };
+      const res = await courseUserVideoStatisticsData(data);
       if (res.code === 0) {
-        this.exportLoading = false;
-        this.$message.success(res.message);
+        this.courseData = res.data;
       }
     },
     handleSearch(data) {
@@ -189,21 +200,21 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.courseVideoStatisticsList();
+      this.courseUserVideoStatisticsList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.courseVideoStatisticsList();
+      this.courseUserVideoStatisticsList();
     },
 
-    async courseVideoStatisticsList() {
+    async courseUserVideoStatisticsList() {
       const data = {
         page: this.pageNum,
-        id: this.$route.query.id,
+        course_id: this.$route.query.course_id,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await courseVideoStatisticsList(data);
+      const res = await courseUserVideoStatisticsList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -218,14 +229,10 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
-.playback-statistics {
+.course-student-list {
   padding: 20px;
 }
-.table_bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+
 .course-info {
   display: flex;
   align-items: center;
@@ -237,7 +244,7 @@ export default {
       margin-right: 8px;
     }
     .value {
-      color: #333;
+      color: #666;
     }
   }
 }

@@ -102,6 +102,13 @@
           show-overflow-tooltip
         >
         </el-table-column>
+        <el-table-column fixed="right" label="操作" width="80">
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="deleteConfirm(row.id)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
@@ -118,6 +125,7 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import { getFaceDetectListForUser, getFaceCourseSelect } from "@/api/eda";
+import { deleteFaceRecord } from "@/api/sou";
 export default {
   name: "faceScanningRecord",
   props: {
@@ -136,6 +144,7 @@ export default {
         date: [],
         course_id: "",
         search_box: "",
+        status: "",
       },
       searchOptions: [
         {
@@ -166,6 +175,19 @@ export default {
           },
         },
         {
+          key: "status",
+          type: "select",
+          options: [
+            { label: "等待验证", value: 1 },
+            { label: "验证成功", value: 2 },
+            { label: "验证失败", value: 3 },
+          ],
+          attrs: {
+            placeholder: "核验状态",
+            clearable: true,
+          },
+        },
+        {
           key: "search_box",
           attrs: {
             placeholder: "课时名称",
@@ -186,6 +208,23 @@ export default {
   },
 
   methods: {
+    deleteConfirm(id) {
+      this.$confirm(`确定要删除此记录吗?`, {
+        type: "warning",
+      })
+        .then(() => {
+          this.deleteFaceRecord(id);
+        })
+        .catch(() => {});
+    },
+    async deleteFaceRecord(id) {
+      const data = { id };
+      const res = await deleteFaceRecord(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getFaceDetectList();
+      }
+    },
     async getFaceCourseSelect() {
       const data = {
         uid: this.uid,
