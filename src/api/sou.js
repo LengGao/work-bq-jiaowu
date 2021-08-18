@@ -1344,4 +1344,12 @@ export function courseLessonVideoStatisticsList(params) {
     params,
   })
 }
+// 课程学生列表导出
+export function exportCourseUserVideoStatisticsList(params) {
+  return request({
+    url: 'CourseVideo/exportCourseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
 
