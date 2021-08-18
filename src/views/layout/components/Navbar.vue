@@ -473,6 +473,8 @@ export default {
         .item-content {
           flex: 1;
           margin-left: 10px;
+          padding-top: 2px;
+          overflow: hidden;
           .content-top {
             display: flex;
             justify-content: space-between;

@@ -130,6 +130,11 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
+        <div>
+          <el-button :loading="exportLoading" @click="exportData"
+            >导出数据</el-button
+          >
+        </div>
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -144,6 +149,7 @@
 import {
   courseUserVideoStatisticsList,
   courseUserVideoStatisticsData,
+  exportCourseUserVideoStatisticsList,
 } from "@/api/sou";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
@@ -169,6 +175,7 @@ export default {
         },
       ],
       courseData: {},
+      exportLoading: false,
     };
   },
 
@@ -177,6 +184,19 @@ export default {
     this.courseUserVideoStatisticsData();
   },
   methods: {
+    async exportData() {
+      this.exportLoading = true;
+      const data = {
+        course_id: this.$route.query.course_id,
+      };
+      const res = await exportCourseUserVideoStatisticsList(data).catch(() => {
+        this.exportLoading = false;
+      });
+      if (res.code === 0) {
+        this.exportLoading = false;
+        this.$message.success(res.message);
+      }
+    },
     toChapter(row) {
       this.$router.push({
         name: "studentChapter",
@@ -247,5 +267,10 @@ export default {
       color: #666;
     }
   }
+}
+.table_bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
