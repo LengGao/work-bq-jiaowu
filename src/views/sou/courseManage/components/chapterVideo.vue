@@ -124,7 +124,7 @@
         <el-table-column
           align="center"
           prop="detect_time"
-          label="扫脸次数"
+          label="认证次数"
           width="90"
           show-overflow-tooltip
         >
@@ -141,7 +141,7 @@
               @click="row.edit = true"
               v-else-if="row.parentId"
               >{{
-                row.detect_time == 0 ? "无需扫脸" : row.detect_time
+                row.detect_time == 0 ? "无需认证" : row.detect_time
               }}</el-button
             >
             <i class="iconfont iconrenlianshibie1" v-else></i>
@@ -205,7 +205,7 @@
             >
           </div>
           <div v-else>
-            <el-button @click="showDetect">修改扫脸次数</el-button>
+            <el-button @click="showDetect">修改认证次数</el-button>
           </div>
           <el-button @click="handleBatchDrag(1)">批量快进（开）</el-button>
           <el-button @click="handleBatchDrag(0)">批量快进（关）</el-button>
@@ -297,7 +297,7 @@ export default {
       treeLoadMap: new Map(),
       //排序
       isSort: false,
-      //扫脸次数
+      //认证次数
       isDetect: false,
       checkedIds: [],
     };
@@ -319,7 +319,7 @@ export default {
         },
       });
     },
-    // 单个修改扫脸测试
+    // 单个修改认证测试
     async handleEditFaceCount(row) {
       if (this.isDetect) return;
       row.edit = false;
@@ -377,7 +377,7 @@ export default {
       const parentIds = Array.from(this.treeLoadMap.keys());
       parentIds.forEach((id) => this.updateTableChildren(id));
     },
-    // 批量设置扫脸次数
+    // 批量设置认证次数
     handleBatchDetect() {
       const data = {};
       const allChildren = [];
@@ -387,7 +387,7 @@ export default {
       for (let k in lazyTreeNodeMap) {
         allChildren.push(...lazyTreeNodeMap[k]);
       }
-      // 设置课时扫脸参数
+      // 设置课时认证参数
       allChildren.forEach((item) => {
         data[item.id] = item.detect_time;
       });
