@@ -119,9 +119,13 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="80">
           <template slot-scope="{ row }">
-            <el-button type="text" @click="deleteConfirm(row.id)"
+            <el-button
+              v-if="row.status === 1"
+              type="text"
+              @click="deleteConfirm(row.id)"
               >删除</el-button
             >
+            <span v-else>--</span>
           </template>
         </el-table-column>
       </el-table>
