@@ -1,5 +1,5 @@
 <template>
-  <!-- 课时扫脸记录列表 -->
+  <!-- 课时认证记录列表 -->
   <div class="video-face-record">
     <div class="course-info">
       <div class="course-info-item">
