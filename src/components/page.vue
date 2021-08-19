@@ -27,7 +27,7 @@
       :current-page="curpage"
       :page-sizes="[10, 20, 30, 40]"
       :page-size="pageSize"
-      layout="total, prev, pager, next, jumper"
+      :layout="`total,${isShowSize ? 'sizes,' : ''} prev, pager, next, jumper`"
       :total="data"
       class="hidden-xs-only"
     >
@@ -52,13 +52,17 @@ export default {
       default: 20,
     },
   },
-
+  computed: {
+    // 没加 pageSizeChange 时间监听的就不展示分页数量切换
+    isShowSize() {
+      return !!this.$listeners.pageSizeChange;
+    },
+  },
   mounted() {
+    console.log(this);
     document.getElementsByClassName(
       "el-pagination__jump"
     )[0].childNodes[0].nodeValue = "跳至";
-
-    console.log(this.curpage);
   },
   methods: {
     doPageChange(page) {
