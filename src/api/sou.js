@@ -1264,7 +1264,7 @@ export function batchTopicSort(data) {
     data,
   })
 }
-// 课程视频-扫脸次数修改
+// 课程视频-认证次数修改
 export function batchDetectLesson(data) {
   return request({
     url: '/CourseVideo/batchDetectLesson',
@@ -1304,7 +1304,7 @@ export function exportCourseVideoStatistics(params) {
     params,
   })
 }
-// 扫脸记录删除
+// 认证记录删除
 export function deleteFaceRecord(data) {
   return request({
     url: '/FaceDetect/deleteRecord',

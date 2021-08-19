@@ -1050,7 +1050,7 @@ export function intentRemoveData(data) {
     data,
   })
 }
-// 扫脸记录-课程下拉选项
+// 认证记录-课程下拉选项
 export function getFaceCourseSelect(params) {
   return request({
     url: '/FaceDetect/getCourseSelect',
@@ -1058,7 +1058,7 @@ export function getFaceCourseSelect(params) {
     params,
   })
 }
-// 扫脸记录列表
+// 认证记录列表
 export function getFaceDetectList(params) {
   return request({
     url: '/FaceDetect/getFaceDetectList',
@@ -1066,7 +1066,7 @@ export function getFaceDetectList(params) {
     params,
   })
 }
-// 学生中心扫脸记录列表
+// 学生中心认证记录列表
 export function getFaceDetectListForUser(params) {
   return request({
     url: '/FaceDetect/getFaceDetectListForUser',
