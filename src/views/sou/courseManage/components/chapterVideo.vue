@@ -10,7 +10,6 @@
       />
       <div>
         <el-button type="primary" @click="openAdd">添加章节</el-button>
-        <el-button type="primary" @click="openAddClassHour">添加课时</el-button>
       </div>
     </div>
     <!--表格-->
@@ -29,7 +28,10 @@
         lazy
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         :load="loadTableChildren"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column :selectable="selectable" type="selection" width="55">
+        </el-table-column>
         <el-table-column
           prop="name"
           label="章节名称"
@@ -64,7 +66,7 @@
         >
           <template slot-scope="{ row }">
             <span v-if="row.duration">
-              {{ row.duration | filterDuration }}
+              {{ row.duration }}
             </span>
             <span v-else>--</span>
           </template>
@@ -77,7 +79,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <el-input type="number" v-if="isEdit" v-model="row.sort" />
+            <el-input type="number" v-if="isSort" v-model="row.sort" />
             <span v-else>{{ row.sort }}</span>
           </template>
         </el-table-column>
@@ -90,31 +92,94 @@
         >
           <template slot-scope="{ row }">
             <el-switch
-              v-if="row.free"
-              @change="updateVideoClassFreeStatus(row)"
-              v-model="row.free"
-              :active-value="2"
-              :inactive-value="1"
+              v-if="row.parentId"
+              @change="batchFreeLesson(row)"
+              v-model="row.is_free"
+              :active-value="1"
+              :inactive-value="0"
             >
             </el-switch>
-            <span v-else>--</span>
+            <i class="iconfont iconmianfei1" v-else></i>
           </template>
         </el-table-column>
-
+        <el-table-column
+          align="center"
+          prop="student_number"
+          label="是否快进"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-switch
+              v-if="row.parentId"
+              @change="updateProgressStatus(row)"
+              v-model="row.is_fast"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+            <i class="iconfont iconkuaijin" v-else></i>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="detect_time"
+          label="扫脸次数"
+          width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-input
+              v-focus
+              type="number"
+              v-if="(row.parentId && isDetect) || row.edit"
+              v-model="row.detect_time"
+              @blur="handleEditFaceCount(row)"
+            ></el-input>
+            <el-button
+              type="text"
+              @click="row.edit = true"
+              v-else-if="row.parentId"
+              >{{
+                row.detect_time == 0 ? "无需扫脸" : row.detect_time
+              }}</el-button
+            >
+            <i class="iconfont iconrenlianshibie1" v-else></i>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           fixed="right"
           align="center"
-          min-width="140"
+          min-width="200"
         >
           <template slot-scope="{ row }">
             <div style="display: flex; justify-content: center">
               <el-button
                 type="text"
                 v-if="row.parentId"
-                @click="getVideoUrlByid(row)"
+                @click="downloadVideo(row)"
                 :loading="row.loading"
                 >下载</el-button
+              >
+              <el-button
+                v-if="!row.parentId"
+                type="text"
+                @click="openAddClassHour(row.id)"
+                >添加课时</el-button
+              >
+
+              <el-button
+                v-if="row.parentId"
+                type="text"
+                @click="toFaceRecord(row)"
+                >核验记录</el-button
+              >
+              <el-button
+                v-if="row.parentId"
+                type="text"
+                @click="toStatistics(row)"
+                >统计</el-button
               >
               <el-button type="text" @click="handleEdit(row)">编辑</el-button>
               <el-button type="text" @click="deleteConfirm(row)"
@@ -125,12 +190,25 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
-        <div v-if="isEdit">
-          <el-button @click="handleEditCancel">取消</el-button>
-          <el-button type="primary" @click="handleBatchSort">保存</el-button>
-        </div>
-        <div v-else>
-          <el-button @click="showEdit">批量排序</el-button>
+        <div class="actions">
+          <div v-if="isSort">
+            <el-button @click="handleSortCancel">取消</el-button>
+            <el-button type="primary" @click="handleBatchSort">保存</el-button>
+          </div>
+          <div v-else>
+            <el-button @click="showSort">批量排序</el-button>
+          </div>
+          <div v-if="isDetect">
+            <el-button @click="handleDetectCancel">取消</el-button>
+            <el-button type="primary" @click="handleBatchDetect"
+              >保存</el-button
+            >
+          </div>
+          <div v-else>
+            <el-button @click="showDetect">修改扫脸次数</el-button>
+          </div>
+          <el-button @click="handleBatchDrag(1)">批量快进（开）</el-button>
+          <el-button @click="handleBatchDrag(0)">批量快进（关）</el-button>
         </div>
 
         <page
@@ -144,12 +222,14 @@
       v-model="dialogVisible"
       :title="dialogTitle"
       :id="currentId"
-      @on-success="getvideochapterList"
+      :data="currentChapter"
+      @on-success="getChapterList"
     />
     <ClassHourDialog
       v-model="classHourDialogVisible"
       :title="classHourDialogTitle"
-      :id="classHourId"
+      :data="classHourData"
+      :chapterId="currentId"
       @on-success="updateTableChildren"
     />
     <PreviewImg ref="view" />
@@ -158,14 +238,15 @@
 
 <script>
 import {
-  getvideochapterList,
-  deletevideochapter,
-  updateVideoClassFreeStatus,
-  getvideoclass,
-  deletevideoclass,
-  videoClassSort,
-  videoChapterSort,
-  getVideoUrlByid,
+  getChapterList,
+  deleteChapter,
+  batchFreeLesson,
+  getLessonList,
+  deleteLesson,
+  batchSortLesson,
+  batchSortChapter,
+  batchDetectLesson,
+  batchFastLesson,
 } from "@/api/sou";
 import ChapterDIalog from "./chapterDIalog";
 import ClassHourDialog from "./classHourDialog";
@@ -176,6 +257,16 @@ export default {
     ClassHourDialog,
     ChapterDIalog,
   },
+  directives: {
+    // 注册一个局部的自定义指令 v-focus
+    focus: {
+      // 指令的定义
+      inserted: function (el) {
+        // 聚焦元素
+        el.querySelector("input").focus();
+      },
+    },
+  },
   data() {
     return {
       listData: [],
@@ -183,11 +274,11 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        video_chapter_name: "",
+        chapter_name: this.$route.query.chapter_name || "",
       },
       searchOptions: [
         {
-          key: "video_chapter_name",
+          key: "chapter_name",
           attrs: {
             placeholder: "章节名称",
           },
@@ -195,43 +286,154 @@ export default {
       ],
       //章节
       currentId: "",
+      currentChapter: {},
       dialogTitle: "添加章节",
       dialogVisible: false,
       // 课时
-      classHourId: "",
+      classHourData: {},
       classHourDialogTitle: "添加课时",
       classHourDialogVisible: false,
       treeId: 0,
       treeLoadMap: new Map(),
       //排序
-      isEdit: false,
+      isSort: false,
+      //扫脸次数
+      isDetect: false,
+      checkedIds: [],
     };
   },
 
   created() {
-    this.getvideochapterList();
-    //
+    this.getChapterList();
   },
 
   methods: {
-    // 下载
-    async getVideoUrlByid(row) {
+    toStatistics(row) {
+      this.$router.push({
+        name: "videoPlayStatistics",
+        query: {
+          course_name: this.$route.query.course_name,
+          title: row.title,
+          duration: row.duration,
+          id: row.id,
+        },
+      });
+    },
+    // 单个修改扫脸测试
+    async handleEditFaceCount(row) {
+      if (this.isDetect) return;
+      row.edit = false;
       const data = {
-        video_class_id: row.id,
+        course_video_lesson_id_arr: {
+          [row.id]: row.detect_time,
+        },
       };
-      row.loading = true;
-      const res = await getVideoUrlByid(data).catch(() => {
-        row.loading = false;
+      const res = await batchDetectLesson(data);
+      if (res.code === 0) {
+        if (row.detect_time > 0) {
+          row.is_fast = 0;
+        }
+        this.$message.success(res.message);
+      }
+    },
+    toFaceRecord(row) {
+      this.$router.push({
+        name: "videoFaceRecord",
+        query: {
+          course_name: this.$route.query.course_name,
+          title: row.title,
+          duration: row.duration,
+          id: row.id,
+        },
+      });
+    },
+    handleSelectionChange(selection) {
+      this.checkedIds = selection.map((item) => item.id);
+    },
+    // 批量快进控制
+    async handleBatchDrag(is_fast) {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择！");
+        return;
+      }
+      const data = {
+        course_video_lesson_id_arr: this.checkedIds,
+        is_fast,
+      };
+      const res = await batchFastLesson(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+      this.getChapterList();
+    },
+    selectable(row) {
+      return !!row.parentId;
+    },
+    handleDetectCancel() {
+      this.isDetect = false;
+      this.reloadAllChildren();
+    },
+    reloadAllChildren() {
+      const parentIds = Array.from(this.treeLoadMap.keys());
+      parentIds.forEach((id) => this.updateTableChildren(id));
+    },
+    // 批量设置扫脸次数
+    handleBatchDetect() {
+      const data = {};
+      const allChildren = [];
+      const lazyTreeNodeMap =
+        this.$refs.multipleTable.store.states.lazyTreeNodeMap;
+
+      for (let k in lazyTreeNodeMap) {
+        allChildren.push(...lazyTreeNodeMap[k]);
+      }
+      // 设置课时扫脸参数
+      allChildren.forEach((item) => {
+        data[item.id] = item.detect_time;
+      });
+      allChildren.length && this.batchDetectLesson(data);
+    },
+    showDetect() {
+      this.isDetect = true;
+    },
+    async batchDetectLesson(course_video_lesson_id_arr) {
+      const data = {
+        course_video_lesson_id_arr,
+      };
+      const res = await batchDetectLesson(data);
+      if (res.code === 0) {
+        this.handleDetectCancel();
+        this.$message.success(res.message);
+      }
+    },
+    // 快进控制
+    async updateProgressStatus(row) {
+      const data = {
+        course_video_lesson_id_arr: [row.id],
+        is_fast: row.is_fast,
+      };
+      const res = await batchFastLesson(data).catch(() => {
+        row.is_fast = row.is_fast ? 0 : 1;
       });
       if (res.code === 0) {
-        row.loading = false;
-        const fileObj = res.data.Mezzanine || {};
-        download(fileObj.FileURL, fileObj.FileName);
+        this.$message.success(res.message);
       }
+    },
+    // 下载
+    async downloadVideo(row) {
+      if (!row.file_url) {
+        this.$message.error("未找到资源，无法下载！");
+        return;
+      }
+      row.loading = true;
+      download(row.file_url, row.title);
+      setTimeout(() => {
+        row.loading = false;
+      }, 1000);
     },
     handleBatchSort() {
       const videoSortMaps = {};
-      const classSortMaps = {};
+      const data = {};
       const allChildren = [];
       const lazyTreeNodeMap =
         this.$refs.multipleTable.store.states.lazyTreeNodeMap;
@@ -244,40 +446,37 @@ export default {
       }
       // 设置课时排序参数
       allChildren.forEach((item) => {
-        classSortMaps[item.id] = item.sort;
+        data[item.id] = item.sort;
       });
-      allChildren.length && this.videoClassSort(classSortMaps);
-      this.videoChapterSort(videoSortMaps);
+      allChildren.length && this.batchSortLesson(data);
+      this.batchSortChapter(videoSortMaps);
     },
-    handleEditCancel() {
-      this.getvideochapterList();
+    handleSortCancel() {
+      this.listData.forEach((item) => (item.sort = item.backupSort));
+      this.isSort = false;
+      this.reloadAllChildren();
     },
-    showEdit() {
-      this.isEdit = true;
-    },
-    handleSort(row) {
-      if (row.parentId) {
-        this.videoClassSort(row);
-      } else {
-        this.videoChapterSort(row);
-      }
+    showSort() {
+      this.isSort = true;
     },
     // 课时排序
-    async videoClassSort(sortAry) {
+    async batchSortLesson(sort_arr) {
       const data = {
-        sortAry,
+        sort_arr,
       };
-      await videoClassSort(data);
+      await batchSortLesson(data);
     },
     // 章节排序
-    async videoChapterSort(sortAry) {
+    async batchSortChapter(sort_arr) {
       const data = {
-        sortAry,
+        sort_arr,
       };
-      const res = await videoChapterSort(data);
+      const res = await batchSortChapter(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getvideochapterList();
+        this.listData.forEach((item) => (item.backupSort = item.sort));
+        this.isSort = false;
+        this.reloadAllChildren();
       }
     },
 
@@ -285,14 +484,13 @@ export default {
       this.$refs.view.show(src);
     },
     //修章节试看状态
-    async updateVideoClassFreeStatus(row) {
+    async batchFreeLesson(row) {
       const data = {
-        video_class_name: row.name,
-        video_class_id: row.id,
-        video_class_free: row.free,
+        course_video_lesson_id_arr: [row.id],
+        is_free: row.is_free,
       };
-      const res = await updateVideoClassFreeStatus(data).catch(() => {
-        row.free = row.free === 1 ? 2 : 1;
+      const res = await batchFreeLesson(data).catch(() => {
+        row.is_free = row.is_free === 1 ? 0 : 1;
       });
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -300,9 +498,9 @@ export default {
     },
     handleEdit(row) {
       if (row.parentId) {
-        this.openEditClassHour(row.id);
+        this.openEditClassHour(row);
       } else {
-        this.openEdit(row.id);
+        this.openEdit(row);
       }
     },
     deleteConfirm(row) {
@@ -311,52 +509,56 @@ export default {
       })
         .then(() => {
           if (row.parentId) {
-            this.deletevideoclass(row);
+            this.deleteLesson(row);
           } else {
-            this.deletevideochapter(row.id);
+            this.deleteChapter(row.id);
           }
         })
         .catch(() => {});
     },
     // 删除课时
-    async deletevideoclass(row) {
+    async deleteLesson(row) {
       const data = {
-        video_class_id: row.id,
+        id: row.id,
       };
-      const res = await deletevideoclass(data);
+      const res = await deleteLesson(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.updateTableChildren(row.parentId);
       }
     },
     // 删除章节
-    async deletevideochapter(id) {
+    async deleteChapter(id) {
       const data = {
-        video_chapter_id: id,
+        id,
       };
-      const res = await deletevideochapter(data);
+      const res = await deleteChapter(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getvideochapterList();
+        this.getChapterList();
       }
     },
-    openEdit(id) {
+    openEdit(row) {
       this.dialogTitle = "编辑章节";
-      this.currentId = id;
+      this.currentId = row.id;
+      this.currentChapter = row;
       this.dialogVisible = true;
     },
     openAdd() {
       this.currentId = "";
+      this.currentChapter = {};
       this.dialogTitle = "添加章节";
       this.dialogVisible = true;
     },
-    openEditClassHour(id) {
+    openEditClassHour(row) {
+      this.currentId = row.parentId;
       this.classHourDialogTitle = "编辑课时";
-      this.classHourId = id;
+      this.classHourData = row;
       this.classHourDialogVisible = true;
     },
-    openAddClassHour() {
-      this.classHourId = "";
+    openAddClassHour(id) {
+      this.currentId = id;
+      this.classHourData = {};
       this.classHourDialogTitle = "添加课时";
       this.classHourDialogVisible = true;
     },
@@ -366,33 +568,37 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.getvideochapterList();
+      this.getChapterList();
     },
     // 分页
     handlePageChange(val) {
       this.pageNum = val;
-      this.getvideochapterList();
+      this.getChapterList();
     },
     setId() {
       return (this.treeId += 1);
     },
     // 章节列表
-    async getvideochapterList() {
-      this.isEdit = false;
+    async getChapterList() {
+      this.isSort = false;
+      this.isDetect = false;
       const data = {
-        video_collection_id: this.$route.query?.video_collection_id || "",
+        course_id: this.$route.query?.course_id || "",
         page: this.pageNum,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getvideochapterList(data);
+      const res = await getChapterList(data);
       this.listLoading = false;
-      this.listData = res.data.data.map((item, index) => ({
-        name: item.video_chapter_name,
-        sort: item.video_chapter_sort,
-        id: item.video_chapter_id,
+      this.treeLoadMap.clear();
+      this.listData = res.data.list.map((item, index) => ({
+        name: item.chapter_name,
+        sort: item.sort,
+        backupSort: item.sort,
+        id: item.id,
+        chapter_intro: item.chapter_intro,
         treeId: this.setId(),
-        hasChildren: true,
+        hasChildren: item.lesson_cont > 0,
         children: [],
       }));
       this.listTotal = res.data.total;
@@ -400,41 +606,47 @@ export default {
     // 根据父节点更新字节点
     async updateTableChildren(parentId) {
       if (this.treeLoadMap.has(parentId)) {
-        const children = await this.getvideoclass(parentId);
+        const children = await this.getLessonList(parentId);
         const { resolve } = this.treeLoadMap.get(parentId);
         this.$set(
           this.$refs.multipleTable.store.states.lazyTreeNodeMap,
           parentId,
           []
         );
-        resolve(children);
+        if (children.length) {
+          resolve(children);
+        } else {
+          this.getChapterList();
+        }
+      } else {
+        this.getChapterList();
       }
     },
     // table懒加载子节点
     async loadTableChildren(tree, treeNode, resolve) {
       // 保留当前加载节点用的参数，更新时复用
       this.treeLoadMap.set(tree.id, { tree, treeNode, resolve });
-      const children = await this.getvideoclass(tree.id);
+      const children = await this.getLessonList(tree.id);
       resolve(children);
     },
     // 课时列表
-    async getvideoclass(video_chapter_id) {
+    async getLessonList(chapter_id) {
       const data = {
-        video_collection_id: this.$route.query.video_collection_id,
-        video_chapter_id,
+        chapter_id,
         limit: 9999,
       };
-      const res = await getvideoclass(data);
-      const children = res.data.data.map((item, index) => ({
-        name: item.video_class_name,
-        sort: item.video_class_sort,
-        id: item.video_class_id,
-        parentId: item.video_chapter_id,
-        free: item.video_class_free,
-        duration: item.video_class_duration,
-        coverurl: item.video_class_coverurl,
+      const res = await getLessonList(data);
+      const children = res.data.list.map((item, index) => ({
+        ...item,
+        name: item.title,
+        sort: item.sort,
+        id: item.id,
+        parentId: item.chapter_id,
+        duration: item.duration,
+        coverurl: item.cover_url,
         treeId: this.setId(),
         loading: false,
+        edit: false,
       }));
       return children;
     },
@@ -459,7 +671,7 @@ export default {
   }
   .video-cover {
     width: 100%;
-    height: 80px;
+    height: 40px;
     text-align: center;
     img {
       cursor: pointer;
@@ -469,6 +681,13 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .actions {
+      display: flex;
+      align-items: center;
+      > div {
+        margin-right: 16px;
+      }
+    }
   }
 }
 </style>

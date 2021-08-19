@@ -57,11 +57,12 @@
           <el-table-column
             prop="course_name"
             label="课程名称"
-            min-width="200"
-            column-key="course_id"
+            min-width="240"
+            column-key="course_name"
             align="left"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+          </el-table-column>
           <el-table-column
             prop="category_name"
             label="课程分类"
@@ -83,7 +84,69 @@
             min-width="80"
             show-overflow-tooltip
           ></el-table-column>
-
+          <el-table-column
+            prop="detect_info"
+            label="总时长"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                ><span
+                  class="circle-value primary"
+                  :class="{ info: !row.duration }"
+                  >{{ row.duration }}</span
+                ></span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="detect_info"
+            label="视频信息"
+            align="center"
+            min-width="220"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                >视频<span
+                  class="circle-value"
+                  :class="{ info: !row.videoCount }"
+                  >({{ row.videoCount }})</span
+                ></span
+              >
+              <span class="circle"
+                >免费<span
+                  class="circle-value"
+                  :class="{ info: !row.freeCount }"
+                  >({{ row.freeCount }})</span
+                ></span
+              >
+              <span class="circle"
+                >禁快进<span
+                  class="circle-value"
+                  :class="{ info: !row.progressOffCount }"
+                  >({{ row.progressOffCount }})</span
+                ></span
+              >
+              <span class="circle"
+                >实名<span
+                  class="circle-value"
+                  :class="{ info: !row.detectCount }"
+                  >({{ row.detectCount }})</span
+                ></span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="user_count"
+            label="购买人数"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+          </el-table-column>
           <el-table-column
             label="是否上架"
             align="center"
@@ -111,6 +174,9 @@
           >
             <template slot-scope="scope">
               <div style="display: flex; justify-content: center">
+                <el-button type="text" @click="toCourseStudent(scope.row)"
+                  >学生管理</el-button
+                >
                 <el-button
                   type="text"
                   v-if="scope.row.class_type == 1"
@@ -206,6 +272,14 @@ export default {
   mounted() {},
 
   methods: {
+    toCourseStudent(row) {
+      this.$router.push({
+        name: "studentList",
+        query: {
+          course_id: row.course_id,
+        },
+      });
+    },
     handleDelete(row) {
       this.$confirm("你正在删除该课程,,请谨慎操作?", "提示", {
         confirmButtonText: "删除",
@@ -222,12 +296,12 @@ export default {
           });
         });
     },
-    toConfigureCourses(ab) {
+    toConfigureCourses(row) {
       this.$router.push({
         path: "/sou/configureCourses",
         query: {
-          course_id: ab.course_id,
-          video_collection_id: ab.video_collection_id,
+          course_name: row.course_name,
+          course_id: row.course_id,
         },
       });
     },
@@ -406,5 +480,17 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.circle {
+  margin-right: 8px;
+  &-value {
+    display: inline-block;
+    margin-left: 3px;
+    text-align: center;
+    color: #6dd152;
+    &.info {
+      color: #bbb;
+    }
+  }
 }
 </style>

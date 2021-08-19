@@ -40,13 +40,18 @@
         <el-table-column
           prop="mobile"
           label="手机号码"
-          min-width="100"
+          min-width="120"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <div>
+            <span>
               {{ row.mobile | filterPhone }}
-            </div>
+            </span>
+            <i
+              class="el-icon-document-copy copy-number"
+              @click="handleCopy(row.mobile)"
+              title="复制"
+            ></i>
           </template>
         </el-table-column>
         <el-table-column
@@ -350,6 +355,18 @@ export default {
       this.toVoidId = row.uid;
       this.toVoidVisible = true;
     },
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
+      }
+    },
     getInnerStatus(val) {
       console.log(val);
       this.learnVisible = val;
@@ -471,5 +488,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.copy-number {
+  color: #199fff;
+  cursor: pointer;
+  margin-left: 8px;
 }
 </style>

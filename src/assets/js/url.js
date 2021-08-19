@@ -65,7 +65,6 @@ export default {
   getCoursesDetail: '/course/info',
 
   //视频上传凭据
-  generateDataKey: '/video/generatevideodatakey', //视频加密
   refreshUploadVideo: '/live/refreshuploadvideo', //刷新视频上传凭据
   updatecreate: '/live/updatecreate', //获取视频上传凭据
 

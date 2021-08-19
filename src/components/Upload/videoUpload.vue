@@ -252,8 +252,6 @@ export default {
             self.$parent.$parent.$parent.$parent.ruleForm.video_chapter_id
           )
           // self.$api.addvideo(self);
-          self.$api.generateDataKey(self)
-          console.log(self.editor)
           if (self.editor == 'ediotr') {
             // 修改
             self.$api[self.api](self)

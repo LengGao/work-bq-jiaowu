@@ -446,66 +446,59 @@ export function questionBankDetail(params) {
   })
 }
 // 章节列表
-export function getvideochapterList(params) {
+export function getChapterList(params) {
   return request({
-    url: 'video/getvideochapter',
+    url: '/CourseVideo/getChapterList',
     method: 'get',
     params,
   })
 }
 // 章节删除
-export function deletevideochapter(data) {
+export function deleteChapter(data) {
   return request({
-    url: 'video/deletevideochapter',
+    url: '/CourseVideo/deleteChapter',
     method: 'post',
     data,
   })
 }
 
 // 添加视频章节
-export function addvideochapter(data) {
+export function createChapter(data) {
   return request({
-    url: 'video/addvideochapter',
+    url: '/CourseVideo/createChapter',
     method: 'post',
     data,
   })
 }
 // 编辑视频章节
-export function editvideochapter(data) {
+export function updateChapter(data) {
   return request({
-    url: 'video/editvideochapter',
+    url: '/CourseVideo/updateChapter',
     method: 'post',
     data,
   })
 }
-// 根据id获取视频章节
-export function getVideochapterDetail(params) {
-  return request({
-    url: 'video/editvideochapter',
-    method: 'get',
-    params,
-  })
-}
+
 // 章节列表-添加课时
-export function addvideoclass(data) {
+export function createLesson(data) {
   return request({
-    url: 'video/addvideoclass',
+    url: '/CourseVideo/createLesson',
     method: 'post',
     data,
   })
 }
 // 章节列表-编辑课时
-export function editvideoclass(data) {
+export function updateLesson(data) {
   return request({
-    url: 'video/editvideoclass',
+    url: '/CourseVideo/updateLesson',
     method: 'post',
     data,
   })
 }
 // 章节列表-修改章节视频免费状态
-export function updateVideoClassFreeStatus(params) {
+export function batchFreeLesson(params) {
   return request({
-    url: '/video/updateVideoClassFreeStatus',
+    url: '/CourseVideo/batchFreeLesson',
     method: 'get',
     params,
   })
@@ -534,43 +527,35 @@ export function refreshuploadvideo(data) {
     data,
   })
 }
-// 视频转码(上传视频完成后调用)
-export function generatevideodatakey(data) {
-  return request({
-    url: '/video/generatevideodatakey',
-    method: 'post',
-    data,
-  })
-}
 
 // 获取课时
-export function getvideoclass(params) {
+export function getLessonList(params) {
   return request({
-    url: 'video/getvideoclass',
+    url: '/CourseVideo/getLessonList',
     method: 'get',
     params,
   })
 }
 // 删除课时
-export function deletevideoclass(data) {
+export function deleteLesson(data) {
   return request({
-    url: 'video/deletevideoclass',
+    url: '/CourseVideo/deleteLesson',
     method: 'post',
     data,
   })
 }
 // 章节排序
-export function videoChapterSort(data) {
+export function batchSortChapter(data) {
   return request({
-    url: 'batchSort/VideoChapter',
+    url: '/CourseVideo/batchSortChapter',
     method: 'post',
     data,
   })
 }
 // 课时排序
-export function videoClassSort(data) {
+export function batchSortLesson(data) {
   return request({
-    url: 'batchSort/VideoClass',
+    url: '/CourseVideo/batchSortLesson',
     method: 'post',
     data,
   })
@@ -1279,3 +1264,92 @@ export function batchTopicSort(data) {
     data,
   })
 }
+// 课程视频-扫脸次数修改
+export function batchDetectLesson(data) {
+  return request({
+    url: '/CourseVideo/batchDetectLesson',
+    method: 'post',
+    data,
+  })
+}
+// 课程视频-控制快进
+export function batchFastLesson(data) {
+  return request({
+    url: '/CourseVideo/batchFastLesson',
+    method: 'post',
+    data,
+  })
+}
+// 课程视频-核验记录列表
+export function getFaceDetectListForVideo(params) {
+  return request({
+    url: '/FaceDetect/getFaceDetectListForVideo',
+    method: 'get',
+    params,
+  })
+}
+// 课程视频-播放统计列表
+export function courseVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 课程视频-播放统计列表-导出
+export function exportCourseVideoStatistics(params) {
+  return request({
+    url: '/CourseVideo/exportCourseVideoStatistics',
+    method: 'get',
+    params,
+  })
+}
+// 扫脸记录删除
+export function deleteFaceRecord(data) {
+  return request({
+    url: '/FaceDetect/deleteRecord',
+    method: 'post',
+    data,
+  })
+}
+// 课程学生列表课程数据
+export function courseUserVideoStatisticsData(params) {
+  return request({
+    url: 'CourseVideo/courseUserVideoStatisticsData',
+    method: 'get',
+    params,
+  })
+}
+// 课程学生列表
+export function courseUserVideoStatisticsList(params) {
+  return request({
+    url: 'CourseVideo/courseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 课程学生章节列表
+export function courseChapterVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseChapterVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 课程学生课时列表
+export function courseLessonVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseLessonVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 课程学生列表导出
+export function exportCourseUserVideoStatisticsList(params) {
+  return request({
+    url: 'CourseVideo/exportCourseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+

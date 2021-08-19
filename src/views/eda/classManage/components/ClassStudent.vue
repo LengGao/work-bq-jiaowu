@@ -191,6 +191,7 @@ export default {
           uid: row.uid,
           course_id: row.course_id,
           course_name: row.course_name,
+          project_id: row.project_id,
         },
       });
     },
@@ -270,7 +271,7 @@ export default {
       };
       const res = await classstudentsBatchRemove(data);
       if (res.code === 0) {
-        this.$message.success("学生移除成功");
+        this.$message.success(res.message);
         this.getClassstudentList();
       }
     },

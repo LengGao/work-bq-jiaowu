@@ -68,6 +68,30 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'studentList',
+        name: 'studentList',
+        component: () => import('@/views/sou/courseManage/studentList/index.vue'),
+        meta: { title: '课程学生', icon: 'product-add' },
+      },
+      {
+        path: 'studentChapter',
+        name: 'studentChapter',
+        component: () => import('@/views/sou/courseManage/studentChapter/index.vue'),
+        meta: { title: '章节详情', icon: 'product-add' },
+      },
+      {
+        path: 'studentClasshour',
+        name: 'studentClasshour',
+        component: () => import('@/views/sou/courseManage/studentClasshour/index.vue'),
+        meta: { title: '课时详情', icon: 'product-add' },
+      },
+      {
+        path: 'videoPlayStatistics',
+        name: 'videoPlayStatistics',
+        component: () => import('@/views/sou/courseManage/videoPlayStatistics/index.vue'),
+        meta: { title: '课程视频统计', icon: 'product-add' },
+      },
+      {
         path: 'aliVideo',
         name: 'aliVideo',
         component: () => import('@/views/sou/aliVideo/index.vue'),
@@ -146,6 +170,13 @@ export const asyncRouter = [
         name: 'configureCourses',
         component: () => import('@/views/sou/courseManage/index.vue'),
         meta: { title: '配置课程 ', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
+        path: 'videoFaceRecord',
+        name: 'videoFaceRecord',
+        component: () => import('@/views/sou/courseManage/videoFaceRecord/index.vue'),
+        meta: { title: '核验记录', icon: 'product-cate' },
         hidden: true,
       },
       //课程管理组件结束
@@ -319,6 +350,18 @@ export const asyncRouter = [
     meta: { title: '教务管理', icon: 'zhaoshengguanli' },
     name: 'eda',
     children: [
+      {
+        path: 'courseNotes',
+        name: 'courseNotes',
+        component: () => import('@/views/eda/courseNotes/index.vue'),
+        meta: { title: '课程笔记', icon: 'product-cate' },
+      },
+      {
+        path: 'faceScanningRecord',
+        name: 'faceScanningRecord',
+        component: () => import('@/views/eda/faceScanningRecord/index.vue'),
+        meta: { title: '人脸识别记录', icon: 'product-cate' },
+      },
       {
         path: 'abnormalData',
         name: 'abnormalData',

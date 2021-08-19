@@ -1050,3 +1050,51 @@ export function intentRemoveData(data) {
     data,
   })
 }
+// 扫脸记录-课程下拉选项
+export function getFaceCourseSelect(params) {
+  return request({
+    url: '/FaceDetect/getCourseSelect',
+    method: 'get',
+    params,
+  })
+}
+// 扫脸记录列表
+export function getFaceDetectList(params) {
+  return request({
+    url: '/FaceDetect/getFaceDetectList',
+    method: 'get',
+    params,
+  })
+}
+// 学生中心扫脸记录列表
+export function getFaceDetectListForUser(params) {
+  return request({
+    url: '/FaceDetect/getFaceDetectListForUser',
+    method: 'get',
+    params,
+  })
+}
+// 课程笔记列表
+export function getCourseNoteList(params) {
+  return request({
+    url: '/NewsInteraction/getCourseNoteList',
+    method: 'get',
+    params,
+  })
+}
+// 课程笔记列表-修改状态
+export function updateCourseNoteStatus(data) {
+  return request({
+    url: '/NewsInteraction/updateCourseNoteStatus',
+    method: 'post',
+    data,
+  })
+}
+// 课程笔记列表-删除
+export function deleteCourseNote(data) {
+  return request({
+    url: '/NewsInteraction/deleteCourseNote',
+    method: 'post',
+    data,
+  })
+}
