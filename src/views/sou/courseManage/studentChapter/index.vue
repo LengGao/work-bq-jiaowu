@@ -38,25 +38,21 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
+        row-key="treeId"
+        lazy
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        :load="loadTableChildren"
       >
         <el-table-column
-          label="id"
-          show-overflow-tooltip
-          min-width="70"
-          align="center"
-          prop="id"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="chapter_name"
+          prop="name"
           label="章节名称"
-          min-width="160"
+          min-width="220"
           align="left"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="chapter_duration"
+          prop="viedeoDuration"
           label="章节时长"
           min-width="140"
           align="center"
@@ -77,7 +73,7 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="duration"
+          prop="learn_duration"
           label="学习时长"
           align="center"
           min-width="110"
@@ -95,24 +91,35 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
-          fixed="right"
+          prop="images"
+          label="抓拍图片"
+          min-width="160"
           align="center"
-          min-width="100"
         >
-          <template slot-scope="scope">
-            <el-button type="text" @click="toClassHour(scope.row)"
-              >课时详情</el-button
-            >
+          <template slot-scope="{ row }">
+            <div class="images" v-if="row.images.length">
+              <img
+                v-for="(src, index) in row.images"
+                :key="index"
+                @click="handlePreview(src)"
+                :src="src"
+                alt=""
+              />
+            </div>
+            <span v-else>--</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <PreviewImg ref="view" />
   </div>
 </template>
 
 <script>
-import { courseChapterVideoStatisticsList } from "@/api/sou";
+import {
+  courseChapterVideoStatisticsList,
+  courseLessonVideoStatisticsList,
+} from "@/api/sou";
 export default {
   name: "studentChapter",
   data() {
@@ -120,6 +127,7 @@ export default {
       listData: [],
       listLoading: false,
       studentData: {},
+      treeId: 0,
     };
   },
 
@@ -127,14 +135,31 @@ export default {
     this.courseChapterVideoStatisticsList();
   },
   methods: {
-    toClassHour(row) {
-      this.$router.push({
-        name: "studentClasshour",
-        query: {
-          uid: this.$route.query.uid,
-          chapter_id: row.id,
-        },
-      });
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
+    setId() {
+      return (this.treeId += 1);
+    },
+    // table懒加载子节点
+    async loadTableChildren(tree, treeNode, resolve) {
+      const children = await this.getChildrenData(tree.id);
+      resolve(children);
+    },
+    async getChildrenData(chapter_id) {
+      const data = {
+        uid: this.$route.query.uid,
+        chapter_id,
+      };
+      const res = await courseLessonVideoStatisticsList(data);
+      console.log(res);
+      return res.data.list.map((item) => ({
+        ...item,
+        parentId: chapter_id,
+        name: item.title,
+        viedeoDuration: item.duration,
+        treeId: this.setId(),
+      }));
     },
     async courseChapterVideoStatisticsList() {
       const data = {
@@ -146,7 +171,15 @@ export default {
         this.listLoading = false;
       });
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        hasChildren: item.lesson_count > 0,
+        name: item.chapter_name,
+        viedeoDuration: item.chapter_duration,
+        learn_duration: item.duration,
+        treeId: this.setId(),
+        images: [],
+      }));
       this.studentData = res.data;
     },
   },
@@ -176,6 +209,17 @@ export default {
     }
     .value {
       color: #666;
+    }
+  }
+}
+.images {
+  height: 40px;
+  display: flex;
+  img {
+    margin-left: 10px;
+    cursor: pointer;
+    &:first-child {
+      margin-left: 0;
     }
   }
 }

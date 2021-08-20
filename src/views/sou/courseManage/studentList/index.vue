@@ -10,6 +10,10 @@
         <span class="value">{{ courseData.cate_name }}</span>
       </div>
       <div class="course-info-item">
+        <span class="name">总课时</span>
+        <span class="value">{{ courseData.lesson_count }}</span>
+      </div>
+      <div class="course-info-item">
         <span class="name">总时长</span>
         <span class="value">{{ courseData.total_duration }}</span>
       </div>
@@ -71,6 +75,13 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="classroom_name"
+          label="所属班级"
+          min-width="140"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
           prop="first_time"
           label="首次学习时间"
           min-width="140"
@@ -87,6 +98,13 @@
         <el-table-column
           prop="duration"
           label="学习时长"
+          align="center"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="finish_lesson_count"
+          label="完成课时"
           align="center"
           min-width="110"
           show-overflow-tooltip
@@ -124,7 +142,7 @@
         >
           <template slot-scope="scope">
             <el-button type="text" @click="toChapter(scope.row)"
-              >章节详情</el-button
+              >学习详情</el-button
             >
           </template>
         </el-table-column>
@@ -170,7 +188,7 @@ export default {
         {
           key: "search_box",
           attrs: {
-            placeholder: "学员姓名/手机号码",
+            placeholder: "学员姓名/手机号码/班级名称",
           },
         },
       ],

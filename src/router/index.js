@@ -80,12 +80,6 @@ export const asyncRouter = [
         meta: { title: '章节详情', icon: 'product-add' },
       },
       {
-        path: 'studentClasshour',
-        name: 'studentClasshour',
-        component: () => import('@/views/sou/courseManage/studentClasshour/index.vue'),
-        meta: { title: '课时详情', icon: 'product-add' },
-      },
-      {
         path: 'videoPlayStatistics',
         name: 'videoPlayStatistics',
         component: () => import('@/views/sou/courseManage/videoPlayStatistics/index.vue'),
