@@ -14,12 +14,12 @@
         <span class="value">{{ studentData.course_name }}</span>
       </div>
       <div class="course-info-item">
-        <span class="name">课程章节</span>
-        <span class="value">{{ studentData.chapter_count }}个</span>
+        <span class="name">总课时</span>
+        <span class="value">{{ studentData.lesson_count }}个</span>
       </div>
       <div class="course-info-item">
-        <span class="name">完成章节数</span>
-        <span class="value">{{ studentData.finish_chapter_count }}个</span>
+        <span class="name">完成课时</span>
+        <span class="value">{{ studentData.finish_lesson_count }}个</span>
       </div>
       <div class="course-info-item">
         <span class="name">累计学习时长</span>

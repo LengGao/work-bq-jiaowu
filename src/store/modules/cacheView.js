@@ -12,7 +12,7 @@ const searchCache = {
         // 缓存的触发条件
         cacheTo: {
             studentCenter: ['studentDetail'], //示例： 学生中心，只有进入学生详情才能缓存
-            classManage: ['classDetail', 'learnerManage', 'massMessage', 'returnVisit'],
+            classManage: ['classDetail', 'learnerManage', 'massMessage', 'returnVisit', 'classVideo'],
             customerManage: ['cusdetail', 'orderdetail'],
             teachMaterial: ['materialJournal'],
             certificates: ['certificatesLog'],
@@ -23,7 +23,7 @@ const searchCache = {
             liveSessions: ['playbackVideo', 'learningMaterials', 'liveDetails'],
             finance: ['orderdetail', 'cusdetail'],
             order: ['orderdetail', 'cusdetail'],
-            courseManage: ['configureCourses', 'cusdetail', 'createClass', 'studentList', 'studentChapter', 'studentClasshour'],
+            courseManage: ['configureCourses', 'cusdetail', 'createClass', 'studentList', 'studentChapter', 'videoFaceRecord', 'videoPlayStatistics'],
             apply: ['examinationSMS', 'projectDetails'],
             questionBank: ['configureQuestionBank', 'configureScore', 'questionConfigure'],
             configureQuestionBank: ['questionConfigure'],
@@ -41,7 +41,7 @@ const searchCache = {
             videoFaceRecord: ['studentDetail'],
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
-            studentList: ['studentChapter', 'studentClasshour'],
+            studentList: ['studentChapter'],
         },
         // 当前缓存的页面
         currentCache: []
