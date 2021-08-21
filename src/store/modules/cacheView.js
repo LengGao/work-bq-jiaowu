@@ -8,6 +8,7 @@ const searchCache = {
             'teachingManage', 'textbookManage', 'warehouseManage', 'agency', 'configureQuestionBank',
             'allQuestionList', 'videoLibrary', 'aliVideo', 'classVideo', 'collegeStudentList',
             'configureCourses', 'videoFaceRecord', 'faceScanningRecord', 'operationLog', 'studentList',
+            'studentDetail'
         ],
         // 缓存的触发条件
         cacheTo: {
@@ -42,6 +43,7 @@ const searchCache = {
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
             studentList: ['studentChapter'],
+            studentDetail: ['studentChapter']
         },
         // 当前缓存的页面
         currentCache: []
