@@ -26,7 +26,7 @@ const searchCache = {
             order: ['orderdetail', 'cusdetail'],
             courseManage: ['configureCourses', 'cusdetail', 'createClass', 'studentList', 'studentChapter', 'videoFaceRecord', 'videoPlayStatistics'],
             apply: ['examinationSMS', 'projectDetails'],
-            questionBank: ['configureQuestionBank', 'configureScore', 'questionConfigure'],
+            questionBank: ['configureQuestionBank', 'configureScore', 'questionConfigure', 'questionStatistics'],
             configureQuestionBank: ['questionConfigure'],
             allQuestionList: ['questionConfigure', 'configureQuestionBank'],
             achievement: ['achieveDetails', 'allResult'],

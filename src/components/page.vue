@@ -59,7 +59,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this);
     document.getElementsByClassName(
       "el-pagination__jump"
     )[0].childNodes[0].nodeValue = "跳至";

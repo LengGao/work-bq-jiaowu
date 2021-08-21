@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'questionStatistics',
+        name: 'questionStatistics',
+        component: () => import('@/views/sou/questionBankManagement/questionStatistics/index.vue'),
+        meta: { title: '题库统计', icon: 'product-add' },
+      },
+      {
         path: 'studentList',
         name: 'studentList',
         component: () => import('@/views/sou/courseManage/studentList/index.vue'),

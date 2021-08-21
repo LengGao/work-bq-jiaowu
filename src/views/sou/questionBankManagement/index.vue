@@ -74,7 +74,7 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="110">
+          <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button
@@ -93,6 +93,9 @@
                   type="text"
                   @click="linkTo('configureScore', row.id, row.title)"
                   >配置分数</el-button
+                >
+                <el-button type="text" @click="toStatistics(row.id)"
+                  >统计</el-button
                 >
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
@@ -178,6 +181,12 @@ export default {
   },
 
   methods: {
+    toStatistics(id) {
+      this.$router.push({
+        name: "questionStatistics",
+        query: { id },
+      });
+    },
     toQuestionList() {
       this.$router.push({ name: "allQuestionList" });
     },
