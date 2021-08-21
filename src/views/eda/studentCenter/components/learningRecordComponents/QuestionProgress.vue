@@ -13,18 +13,19 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
+        height="550"
       >
         <el-table-column
-          prop="course_id"
-          label="课程ID"
+          prop="question_bank_id"
+          label="题库ID"
           width="100"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="course_name"
-          label="课程名称"
+          prop="question_bank_name"
+          label="题库名称"
           min-width="220"
           align="left"
           show-overflow-tooltip
@@ -39,75 +40,74 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="total_lesson_count"
-          label="总课时"
+          prop="punch_in_days"
+          label="打卡天数"
           min-width="100"
           show-overflow-tooltip
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="first_time"
-          label="首次学习时间"
+          prop="practice_progress"
+          label="章节练习进度"
           min-width="140"
           show-overflow-tooltip
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="last_time"
-          label="最后学习时间"
+          prop="height_test_exam_mark"
+          label="模拟考试最高分"
           min-width="140"
           show-overflow-tooltip
           align="center"
         ></el-table-column>
 
         <el-table-column
-          prop="duration"
-          label="学习时长"
+          prop="challenge_num"
+          label="刷题挑战次数"
           min-width="100"
           show-overflow-tooltip
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="finish_lesson_count"
-          label="完成课时"
+          prop="collection_num"
+          label="收藏夹"
           min-width="100"
           show-overflow-tooltip
           align="center"
         ></el-table-column>
         <el-table-column
-          prop="progress"
-          label="课程进度"
+          prop="fail_num"
+          label="错题集"
           min-width="100"
           show-overflow-tooltip
           align="center"
         >
-          <template slot-scope="{ row }">
-            <span>{{ row.progress }}%</span>
-          </template>
         </el-table-column>
-        <el-table-column
-          prop="live_time"
-          label="操作"
-          min-width="100"
-          show-overflow-tooltip
-        >
+        <el-table-column label="操作" min-width="100" show-overflow-tooltip>
           <template slot-scope="scope">
             <div style="display: flex; justify-content: center">
-              <el-button type="text" @click="toChapter(scope.row)"
-                >学习详情</el-button
+              <el-button type="text" @click="toLearningDetails(scope.row)"
+                >做题详情</el-button
               >
             </div>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <div class="table_bottom">
+      <page
+        :data="listTotal"
+        :curpage="pageNum"
+        @pageChange="handlePageChange"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import { userCourseVideoStatisticsList } from "@/api/eda";
+import { getBuyQuestionBank } from "@/api/eda";
 export default {
-  name: "CourseProgress",
+  name: "QuestionProgress",
   props: {
     uid: {
       type: [String, Number],
@@ -119,29 +119,38 @@ export default {
       active: 1,
       listData: [],
       listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
     };
   },
   created() {
-    this.userCourseVideoStatisticsList();
+    this.getBuyQuestionBank();
   },
   methods: {
-    toChapter(row) {
+    toLearningDetails(row) {
       this.$router.push({
-        name: "studentChapter",
+        name: "learningDetails",
         query: {
           uid: this.uid,
-          course_id: row.course_id,
+          question_bank_id: row.question_bank_id,
+          question_bank_name: row.question_bank_name,
         },
       });
     },
-    async userCourseVideoStatisticsList() {
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.getBuyQuestionBank();
+    },
+    async getBuyQuestionBank() {
       this.listLoading = true;
       const data = {
         uid: this.uid,
+        page: this.pageNum,
       };
-      const res = await userCourseVideoStatisticsList(data);
+      const res = await getBuyQuestionBank(data);
       this.listLoading = false;
-      this.listData = res.data;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
 };

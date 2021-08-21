@@ -588,6 +588,14 @@ export function favoritesTopic(params) {
     params,
   })
 }
+// 学生详情-学习记录-题库进度
+export function getBuyQuestionBank(params) {
+  return request({
+    url: '/questionBank/getBuyQuestionBank',
+    method: 'get',
+    params,
+  })
+}
 
 
 

@@ -1,23 +1,15 @@
 <template>
   <!-- 学习记录 -->
   <div class="learning-record">
-    <div class="learning-record-header">
-      <el-select v-model="typeChecked" @change="handleTypeChange">
-        <el-option value="1" label="全部项目"></el-option>
-        <el-option value="2" label="系统集成项目"></el-option>
-        <el-option value="3" label="中级经济师项目"></el-option>
-        <el-option value="4" label="低压电工项目"></el-option>
-      </el-select>
-    </div>
     <div class="learning-record-container">
       <ul class="container-menu">
         <li
-          v-for="(item, index) in typeMap[typeChecked]"
+          v-for="(item, index) in allComponent"
           :key="index"
           class="menu-item"
           :class="{
             'menu-item': true,
-            'menu-item__active': activeIndex === index,
+            'menu-item--active': activeIndex === index,
           }"
           @click="hanldeMenuChange(index)"
         >
@@ -46,64 +38,32 @@ export default {
   },
   data() {
     return {
-      typeChecked: "1",
-      typeMap: {
-        1: [
-          { menuName: "课程进度", component: "CourseProgress" },
-          { menuName: "直播统计", component: "LiveBroadcastStatistics" },
-          { menuName: "回顾统计", component: "ReviewStatistics" },
-          { menuName: "课表信息", component: "Timetable" },
-          { menuName: "考勤统计", component: "AttendanceStatistics" },
-          { menuName: "成绩统计", component: "AchievementStatistics" },
-          { menuName: "教材资料", component: "TeachingMaterials" },
-        ],
-        2: [
-          { menuName: "课程进度", component: "CourseProgress" },
-          { menuName: "直播统计", component: "LiveBroadcastStatistics" },
-           { menuName: "回顾统计", component: "ReviewStatistics" },
-          { menuName: "课表信息", component: "Timetable" },
-          { menuName: "考勤统计", component: "AttendanceStatistics" },
-          { menuName: "成绩统计", component: "AchievementStatistics" },
-          { menuName: "教材资料", component: "TeachingMaterials" },
-        ],
-        3: [
-          { menuName: "课程进度", component: "CourseProgress" },
-          { menuName: "直播统计", component: "LiveBroadcastStatistics" },
-           { menuName: "回顾统计", component: "ReviewStatistics" },
-          { menuName: "课表信息", component: "Timetable" },
-          { menuName: "考勤统计", component: "AttendanceStatistics" },
-          { menuName: "成绩统计", component: "AchievementStatistics" },
-          { menuName: "教材资料", component: "TeachingMaterials" },
-        ],
-        4: [
-          { menuName: "课程进度", component: "CourseProgress" },
-          { menuName: "直播统计", component: "LiveBroadcastStatistics" },
-           { menuName: "回顾统计", component: "ReviewStatistics" },
-          { menuName: "课表信息", component: "Timetable" },
-          { menuName: "考勤统计", component: "AttendanceStatistics" },
-          { menuName: "成绩统计", component: "AchievementStatistics" },
-          { menuName: "教材资料", component: "TeachingMaterials" },
-        ],
-      },
+      allComponent: [
+        { menuName: "课程进度", component: "CourseProgress" },
+        { menuName: "题库进度", component: "QuestionProgress" },
+        { menuName: "直播统计", component: "LiveBroadcastStatistics" },
+        { menuName: "回顾统计", component: "ReviewStatistics" },
+        { menuName: "课表信息", component: "Timetable" },
+        { menuName: "考勤统计", component: "AttendanceStatistics" },
+        { menuName: "成绩统计", component: "AchievementStatistics" },
+        { menuName: "教材资料", component: "TeachingMaterials" },
+      ],
       activeIndex: 0,
     };
   },
   computed: {
     getComponent() {
-      if (this.activeIndex !== undefined && this.typeChecked) {
+      if (this.activeIndex !== undefined) {
         return () =>
           import(
             `./learningRecordComponents/${
-              this.typeMap[this.typeChecked][this.activeIndex].component
+              this.allComponent[this.activeIndex].component
             }.vue`
           );
       }
     },
   },
   methods: {
-    handleTypeChange() {
-      this.activeIndex = 0;
-    },
     hanldeMenuChange(index) {
       this.activeIndex = index;
     },
@@ -134,8 +94,7 @@ export default {
       color: #606266;
       border-bottom: 1px solid #dcdfe6;
       cursor: pointer;
-
-      &.menu-item__active {
+      &--active {
         color: #199fff;
         background-color: #fff;
         position: relative;

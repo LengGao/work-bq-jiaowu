@@ -43,7 +43,7 @@ const searchCache = {
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
             studentList: ['studentChapter'],
-            studentDetail: ['studentChapter'],
+            studentDetail: ['studentChapter', 'learningDetails'],
             questionStatistics: ['learningDetails', 'studentDetail']
         },
         // 当前缓存的页面
