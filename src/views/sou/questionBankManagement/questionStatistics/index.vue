@@ -124,7 +124,7 @@
           min-width="100"
         >
           <template slot-scope="scope">
-            <el-button type="text" @click="toChapter(scope.row)"
+            <el-button type="text" @click="toLearningDetails(scope.row)"
               >做题详情</el-button
             >
           </template>
@@ -194,12 +194,13 @@ export default {
     this.questionStatisticsData();
   },
   methods: {
-    toChapter(row) {
+    toLearningDetails(row) {
       this.$router.push({
-        name: "studentChapter",
+        name: "learningDetails",
         query: {
           uid: row.uid,
-          id: this.$route.query.id,
+          question_bank_id: this.$route.query.id,
+          question_bank_name: this.questionData.question_bank_name,
         },
       });
     },
