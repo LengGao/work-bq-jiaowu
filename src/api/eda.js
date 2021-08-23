@@ -471,34 +471,50 @@ export function getHistoryGradeList(params) {
     params,
   })
 }
-// 学生详情-学习进度列表
-export function getstudentcourse(params) {
+// 学生详情-课程进度列表
+export function userCourseVideoStatisticsList(params) {
   return request({
-    url: '/classstudents/getstudentcourse',
+    url: '/CourseVideo/userCourseVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 学生详情-直播统计列表
+export function userCenterLiveList(params) {
+  return request({
+    url: '/LiveStatistic/userCenterLiveList',
+    method: 'get',
+    params,
+  })
+}
+// 学生详情-直播统计列表-数据
+export function userCenterLiveData(params) {
+  return request({
+    url: '/LiveStatistic/userCenterLiveData',
+    method: 'get',
+    params,
+  })
+}
+// 学生详情-回顾统计列表-数据
+export function userCenterClassroomVideoData(params) {
+  return request({
+    url: '/ClassroomVideo/userCenterClassroomVideoData',
+    method: 'get',
+    params,
+  })
+}
+// 学生详情-回顾统计列表
+export function userCenterClassroomVideoList(params) {
+  return request({
+    url: '/ClassroomVideo/userCenterClassroomVideoList',
     method: 'get',
     params,
   })
 }
 
-// 学习详情列表
-// export function learningDetails(params) {
-//   return request({
-//     url: '/personalLog/study',
-//     method: 'get',
-//     params,
-//   }) 
-// } 
 
-// 学习详情-根据项目获取题库
-// export function projectObtainQuestionBank(params) {
-//   return request({
-//     url: '/topicStatistics/projectObtainQuestionBank',
-//     method: 'get',
-//     params,
-//   })
-// }
 
-// 学习详情-每日打卡
+// 做题详情-每日打卡
 export function dailyClockIn(params) {
   return request({
     url: '/TopicStatistics/dailyClockIn',
@@ -506,7 +522,7 @@ export function dailyClockIn(params) {
     params,
   })
 }
-// 学习详情-章节练习
+// 做题详情-章节练习
 export function chapterExercises(params) {
   return request({
     url: '/TopicStatistics/chapterExercises',
@@ -514,7 +530,7 @@ export function chapterExercises(params) {
     params,
   })
 }
-// 学习详情-历年真题
+// 做题详情-历年真题
 export function pastRealQuestions(params) {
   return request({
     url: '/TopicStatistics/pastRealQuestions',
@@ -522,7 +538,7 @@ export function pastRealQuestions(params) {
     params,
   })
 }
-// 学习详情-模拟考试
+// 做题详情-模拟考试
 export function mockExam(params) {
   return request({
     url: '/TopicStatistics/mockExam',
@@ -530,7 +546,7 @@ export function mockExam(params) {
     params,
   })
 }
-// 学习详情-刷题挑战
+// 做题详情-刷题挑战
 export function challenge(params) {
   return request({
     url: '/TopicStatistics/challenge',
@@ -539,7 +555,7 @@ export function challenge(params) {
   })
 }
 
-// 学习详情-面授约课
+// 做题详情-面授约课
 export function FaceToFaceLesson(params) {
   return request({
     url: '/ScheduledCourseStatistics/FaceToFaceLesson',
@@ -548,10 +564,34 @@ export function FaceToFaceLesson(params) {
   })
 }
 
-// 学习详情-自主出题
+// 做题详情-自主出题
 export function selfProposed(params) {
   return request({
     url: '/TopicStatistics/selfProposed',
+    method: 'get',
+    params,
+  })
+}
+// 做题详情-收藏夹+做题集的章节列表
+export function favoritesChapter(params) {
+  return request({
+    url: '/topicStatistics/favoritesChapter',
+    method: 'get',
+    params,
+  })
+}
+// 做题详情-收藏夹+做题集的题目列表
+export function favoritesTopic(params) {
+  return request({
+    url: '/topicStatistics/favoritesTopic',
+    method: 'get',
+    params,
+  })
+}
+// 学生详情-学习记录-题库进度
+export function getBuyQuestionBank(params) {
+  return request({
+    url: '/questionBank/getBuyQuestionBank',
     method: 'get',
     params,
   })

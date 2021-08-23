@@ -30,7 +30,11 @@ router.beforeEach((to, from, next) => {
             })
           })
       } else {
-        next()
+        if (!to.matched.length) {
+          next({ path: '404' })
+        } else {
+          next()
+        }
       }
     }
   } else {

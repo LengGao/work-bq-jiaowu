@@ -1352,4 +1352,20 @@ export function exportCourseUserVideoStatisticsList(params) {
     params,
   })
 }
+// 题库统计列表
+export function questionStatisticsList(params) {
+  return request({
+    url: '/questionBank/statistics',
+    method: 'get',
+    params,
+  })
+}
+// 题库统计列表-数据
+export function questionStatisticsData(params) {
+  return request({
+    url: '/questionBank/getStatisticsNeeded',
+    method: 'get',
+    params,
+  })
+}
 

@@ -8,12 +8,12 @@ const searchCache = {
             'teachingManage', 'textbookManage', 'warehouseManage', 'agency', 'configureQuestionBank',
             'allQuestionList', 'videoLibrary', 'aliVideo', 'classVideo', 'collegeStudentList',
             'configureCourses', 'videoFaceRecord', 'faceScanningRecord', 'operationLog', 'studentList',
-            'studentChapter'
+            'studentDetail', 'questionStatistics'
         ],
         // 缓存的触发条件
         cacheTo: {
             studentCenter: ['studentDetail'], //示例： 学生中心，只有进入学生详情才能缓存
-            classManage: ['classDetail', 'learnerManage', 'massMessage', 'returnVisit'],
+            classManage: ['classDetail', 'learnerManage', 'massMessage', 'returnVisit', 'classVideo'],
             customerManage: ['cusdetail', 'orderdetail'],
             teachMaterial: ['materialJournal'],
             certificates: ['certificatesLog'],
@@ -24,9 +24,9 @@ const searchCache = {
             liveSessions: ['playbackVideo', 'learningMaterials', 'liveDetails'],
             finance: ['orderdetail', 'cusdetail'],
             order: ['orderdetail', 'cusdetail'],
-            courseManage: ['configureCourses', 'cusdetail', 'createClass', 'studentList', 'studentChapter', 'studentClasshour'],
+            courseManage: ['configureCourses', 'cusdetail', 'createClass', 'studentList', 'studentChapter', 'videoFaceRecord', 'videoPlayStatistics'],
             apply: ['examinationSMS', 'projectDetails'],
-            questionBank: ['configureQuestionBank', 'configureScore', 'questionConfigure'],
+            questionBank: ['configureQuestionBank', 'configureScore', 'questionConfigure', 'questionStatistics', 'studentDetail', 'learningDetails'],
             configureQuestionBank: ['questionConfigure'],
             allQuestionList: ['questionConfigure', 'configureQuestionBank'],
             achievement: ['achieveDetails', 'allResult'],
@@ -42,8 +42,9 @@ const searchCache = {
             videoFaceRecord: ['studentDetail'],
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
-            studentList: ['studentChapter', 'studentClasshour'],
-            studentChapter: ['studentClasshour'],
+            studentList: ['studentChapter'],
+            studentDetail: ['studentChapter', 'learningDetails'],
+            questionStatistics: ['learningDetails', 'studentDetail']
         },
         // 当前缓存的页面
         currentCache: []

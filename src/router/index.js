@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'questionStatistics',
+        name: 'questionStatistics',
+        component: () => import('@/views/sou/questionBankManagement/questionStatistics/index.vue'),
+        meta: { title: '题库统计', icon: 'product-add' },
+      },
+      {
         path: 'studentList',
         name: 'studentList',
         component: () => import('@/views/sou/courseManage/studentList/index.vue'),
@@ -78,12 +84,6 @@ export const asyncRouter = [
         name: 'studentChapter',
         component: () => import('@/views/sou/courseManage/studentChapter/index.vue'),
         meta: { title: '章节详情', icon: 'product-add' },
-      },
-      {
-        path: 'studentClasshour',
-        name: 'studentClasshour',
-        component: () => import('@/views/sou/courseManage/studentClasshour/index.vue'),
-        meta: { title: '课时详情', icon: 'product-add' },
       },
       {
         path: 'videoPlayStatistics',
@@ -951,21 +951,24 @@ export const resetRouter = () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
 }
-let currentCacheName = ''
+let currentCacheNames = []
 router.beforeEach((to, from, next) => {
   const cacheViews = store.state.cacheView.cacheViews
   const cacheTo = store.state.cacheView.cacheTo
 
-  //  如果去的页面不是缓存条件页面就清除 currentCacheName页面的缓存
-  if (currentCacheName && to.name !== currentCacheName && cacheTo[currentCacheName] && !cacheTo[currentCacheName].includes(to.name)) {
-    store.dispatch('delViewCache', from.name)
-  }
-
   // 添加缓存
   if (cacheViews.includes(to.name)) {
-    currentCacheName = to.name
+    !currentCacheNames.includes(to.name) && currentCacheNames.push(to.name)
     store.dispatch('setViewCache', to.name)
   }
+  //  如果去的页面不是缓存条件页面就清除 currentCacheNames页面的缓存
+  currentCacheNames = currentCacheNames.filter((name) => {
+    if (to.name !== name && !cacheTo[name].includes(to.name)) {
+      store.dispatch('delViewCache', name)
+      return false
+    }
+    return true
+  })
 
   next()
 })
