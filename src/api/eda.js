@@ -1138,3 +1138,27 @@ export function deleteCourseNote(data) {
     data,
   })
 }
+// 班级详情-课程进度
+export function courseUserVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-课程进度-导出
+export function exportCourseUserVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/exportCourseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-更换所属机构
+export function updateUserFromOrgId(data) {
+  return request({
+    url: '/classroom/updateUserFromOrgId',
+    method: 'post',
+    data,
+  })
+}

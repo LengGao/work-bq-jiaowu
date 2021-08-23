@@ -9,7 +9,7 @@
           <span>所属分类</span>{{ detailData.category_name }}
         </p>
         <p class="col-item">
-          <span>学生人数</span>{{ detailData.total_student }}
+          <span>课程名称</span>{{ detailData.course_name }}
         </p>
       </div>
       <div class="header-col">
@@ -18,7 +18,7 @@
           <span>所属项目</span>{{ detailData.project_name }}
         </p>
         <p class="col-item">
-          <span>排课总数</span>{{ detailData.total_arrange }}
+          <span>学生人数</span>{{ detailData.total_student }}
         </p>
       </div>
       <div class="header-col">
@@ -36,6 +36,7 @@
     </div>
     <el-tabs v-model="activeName">
       <el-tab-pane label="班级学生" name="ClassStudent"></el-tab-pane>
+      <el-tab-pane label="课程进度" name="CourseProgress"></el-tab-pane>
       <el-tab-pane label="班级课表" name="ClassTimetable"></el-tab-pane>
       <el-tab-pane
         label="考勤统计"

@@ -100,6 +100,7 @@
         <div>
           <el-button @click="batchShift"> 批量转班 </el-button>
           <el-button @click="batchRemove"> 批量移除 </el-button>
+          <el-button @click="batchFromOrgId"> 更换所属机构 </el-button>
         </div>
         <page
           :data="listTotal"
@@ -109,10 +110,17 @@
         />
       </div>
     </div>
+    <UpdateInstitution
+      v-model="updateInstitutionDialog"
+      :ids="selectionIds"
+      :institutionData="institutionData"
+      @on-success="getClassstudentList"
+    />
   </div>
 </template>
 
 <script>
+import UpdateInstitution from "../../components/UpdateInstitution.vue";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { cloneOptions } from "@/utils/index";
 import { getInstitutionSelectData } from "@/api/sou";
@@ -127,6 +135,7 @@ export default {
   },
   components: {
     PartiallyHidden,
+    UpdateInstitution,
   },
   data() {
     return {
@@ -159,6 +168,8 @@ export default {
       ],
       selectionIds: [],
       courseStudentIds: [],
+      updateInstitutionDialog: false,
+      institutionData: [],
     };
   },
   created() {
@@ -166,6 +177,15 @@ export default {
     this.getClassstudentList();
   },
   methods: {
+    //批量更换所属机构
+    batchFromOrgId() {
+      if (!this.selectionIds.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      this.updateInstitutionDialog = true;
+    },
+
     learningDetails(row) {
       this.$router.push({
         name: "learningDetails",
@@ -218,12 +238,14 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[0].attrs.options = cloneOptions(
+        const selectData = cloneOptions(
           res.data,
           "institution_name",
           "institution_id",
           "children"
         );
+        this.institutionData = selectData;
+        this.searchOptions[0].attrs.options = selectData;
       }
     },
     addStudent() {

@@ -13,7 +13,6 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
-        height="550"
       >
         <el-table-column
           prop="question_bank_id"

@@ -165,6 +165,7 @@ export default {
           attrs: {
             placeholder: "上课老师",
             clearable: true,
+            filterable: true,
           },
         },
         {
