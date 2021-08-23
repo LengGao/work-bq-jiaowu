@@ -57,7 +57,6 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="直播概况" name="LiveEchart"></el-tab-pane>
       <el-tab-pane label="直播统计" name="LiveStatistics"></el-tab-pane>
-      <el-tab-pane label="回播统计" name="PlaybackStatistics"></el-tab-pane>
     </el-tabs>
     <component
       :is="getComponent"
