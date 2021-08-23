@@ -73,12 +73,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>{{ row.mobile | filterPhone }}</span>
-              <i
-                class="el-icon-document-copy copy-number"
-                @click="handleCopy(row.mobile)"
-                title="复制"
-              ></i>
+              <PartiallyHidden :value="row.mobile" />
             </template>
           </el-table-column>
           <el-table-column
@@ -139,12 +134,99 @@
 </template>
 
 <script>
-import { getEduList } from "@/api/eda";
+import PartiallyHidden from "@/components/PartiallyHidden/index";
+import { getEduList, getAdminSelect } from "@/api/eda";
+import {
+  getInstitutionSelectData,
+  getUniversityTypeOptions,
+  getUniversityOptions,
+  getUniversityLevelOptions,
+  getUniversityMajorOptions,
+} from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
 export default {
   name: "collegeStudentList",
+  components: {
+    PartiallyHidden,
+  },
   data() {
     return {
+      searchData: {
+        keyword: "",
+        organization_id: "",
+        staff_id: "",
+      },
       searchOptions: [
+        {
+          key: "organization_id",
+          type: "cascader",
+          attrs: {
+            placeholder: "推荐机构",
+            filterable: true,
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: "staff_id",
+          type: "select",
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "type_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "学历形式",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "school_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "院校名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "level_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "层次名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "major_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "专业名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
         {
           key: "keyword",
           attrs: {
@@ -152,9 +234,7 @@ export default {
           },
         },
       ],
-      searchData: {
-        keyword: "",
-      },
+
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -164,24 +244,60 @@ export default {
   },
   created() {
     this.getEduList();
+    this.getInstitutionSelectData();
+    this.getAdminSelect();
+    this.getOptions();
   },
   methods: {
-    // 复制
-    handleCopy(val) {
-      const input = document.createElement("input");
-      document.body.appendChild(input);
-      input.setAttribute("value", val);
-      input.select();
-      if (document.execCommand("copy")) {
-        document.execCommand("copy");
-        document.body.removeChild(input);
-        this.$message.success("复制成功");
+    // 获取学历相关搜索选项
+    async getOptions() {
+      const apis = [
+        getUniversityTypeOptions,
+        getUniversityOptions,
+        getUniversityLevelOptions,
+        getUniversityMajorOptions,
+      ];
+      const resArr = await Promise.all(
+        apis.map((item) => item().catch(() => ({ code: 1 })))
+      );
+      resArr.forEach((item, index) => {
+        if (item.code === 0) {
+          this.searchOptions[index + 2].options = item.data;
+        }
+      });
+    },
+    // 获取所属老师
+    async getAdminSelect() {
+      this.detaiLoading = true;
+      const res = await getAdminSelect().catch(() => {
+        this.detaiLoading = false;
+      });
+      this.detaiLoading = false;
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
       }
     },
-
+    // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
+      if (res.code === 0) {
+        this.searchOptions[0].attrs.options = cloneOptions(
+          res.data,
+          "institution_name",
+          "institution_id",
+          "children"
+        );
+      }
+    },
     handleSearch(data) {
       this.pageNum = 1;
-      this.searchData = { ...data };
+      this.searchData = {
+        ...data,
+        organization_id: Array.isArray(data.organization_id)
+          ? data.organization_id.pop()
+          : data.organization_id,
+      };
       this.getEduList();
     },
     handleSizeChange(size) {
