@@ -47,55 +47,33 @@
           prop="telphone"
         >
           <template slot-scope="{ row }">
-            <span>{{ row.telphone }}</span>
+            <PartiallyHidden :value="row.telphone" />
           </template>
         </el-table-column>
         <el-table-column
           prop="institution_name"
-          label="所属机构"
+          label="推荐机构"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="institution_name"
+          label="所属老师"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="institution_name"
+          label="报读项目"
           min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           prop="add_time"
-          label="加入时间"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="ExamLogAvg"
-          label="模拟考试平均分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="RealTopicLogAvg"
-          label="历年真题平均分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="ProblemSelfDeterminationMax"
-          label="自主出题最高分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="attendance_num"
-          label="出勤次数"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="absence_num"
-          label="缺勤次数"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="attendance_rate"
-          label="出勤率"
+          label="创建时间"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
@@ -107,8 +85,8 @@
         >
           <template slot-scope="{ row }">
             <div>
-              <el-button type="text" @click="learningDetails(row)"
-                >学习详情</el-button
+              <el-button type="text" @click="toStudentDetail(row.uid)"
+                >学生详情</el-button
               >
               <el-button type="text" @click="linkTo(row)">转班</el-button>
               <el-button type="text" @click="removeConfirm([row.uid])"
@@ -135,6 +113,7 @@
 </template>
 
 <script>
+import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { cloneOptions } from "@/utils/index";
 import { getInstitutionSelectData } from "@/api/sou";
 import { getClassstudentList, classstudentsBatchRemove } from "@/api/eda";
@@ -145,6 +124,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+  },
+  components: {
+    PartiallyHidden,
   },
   data() {
     return {
