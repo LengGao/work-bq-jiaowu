@@ -552,7 +552,6 @@
       return {
         pageNum: 1,
         listTotal: 0,
-
         state: 0,
         isTagactive: 1,
         dataTitle: {},
