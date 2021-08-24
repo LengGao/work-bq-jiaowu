@@ -39,24 +39,6 @@
             :cell-style="{ 'text-align': 'center' }"
           >
             <el-table-column
-              prop="uid"
-              label="ID"
-              show-overflow-tooltip
-              width="70"
-            ></el-table-column>
-            <el-table-column
-              prop="order_no"
-              label="订单编号"
-              min-width="140"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <el-button type="text" @click="toOrderDetail(row.order_id)">
-                  {{ row.order_no }}
-                </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column
               prop="surname"
               label="学生姓名"
               min-width="90"
@@ -66,18 +48,6 @@
                 <el-button type="text" @click="toStudentDetail(row.uid)">
                   {{ row.surname }}
                 </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="sex"
-              label="性别"
-              width="70"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <span v-if="row.sex === 1">男</span>
-                <span v-else-if="row.sex === 2">女</span>
-                <span v-else>未知</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -91,47 +61,58 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="type_title"
-              label="学历形式"
-              show-overflow-tooltip
-              min-width="90"
-            ></el-table-column>
-            <el-table-column
-              prop="university_title"
-              label="院校名称"
-              show-overflow-tooltip
+              prop="order_no"
+              label="订单编号"
               min-width="140"
-            ></el-table-column>
-            <el-table-column
-              prop="level_title"
-              label="层次名称"
               show-overflow-tooltip
-              min-width="90"
             >
               <template slot-scope="{ row }">
-                <el-tag :type="row.level_id === 10 ? 'success' : 'warning'">{{
-                  row.level_title
-                }}</el-tag>
+                <el-button type="text" @click="toOrderDetail(row.order_id)">
+                  {{ row.order_no }}
+                </el-button>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="major_title"
-              label="专业名称"
-              show-overflow-tooltip
-              min-width="180"
-            ></el-table-column>
             <el-table-column
               prop="project_name"
               label="项目名称"
               show-overflow-tooltip
               min-width="220"
             ></el-table-column>
-
             <el-table-column
-              prop="create_time"
-              label="创建时间"
-              min-width="140"
+              prop="from_institution_name"
+              label="推荐机构"
               show-overflow-tooltip
+              min-width="130"
+            ></el-table-column>
+            <el-table-column
+              prop="institution_name"
+              label="所属校区"
+              show-overflow-tooltip
+              min-width="130"
+            ></el-table-column>
+            <el-table-column
+              prop="staff_name"
+              label="所属老师"
+              show-overflow-tooltip
+              min-width="100"
+            ></el-table-column>
+            <el-table-column
+              prop="pay_type"
+              label="支付方式"
+              show-overflow-tooltip
+              min-width="100"
+            ></el-table-column>
+            <el-table-column
+              prop="order_money"
+              label="订单金额"
+              show-overflow-tooltip
+              min-width="100"
+            ></el-table-column>
+            <el-table-column
+              prop="pay_money"
+              label="支付金额"
+              show-overflow-tooltip
+              min-width="100"
             ></el-table-column>
           </el-table>
         </div>
@@ -162,9 +143,9 @@ export default {
   data() {
     return {
       searchData: {
-        keyword: "",
-        organization_id: "",
-        staff_id: "",
+        // keyword: "",
+        // organization_id: "",
+        // staff_id: "",
         date: "",
       },
       searchOptions: [
@@ -182,34 +163,34 @@ export default {
             },
           },
         },
-        {
-          key: "organization_id",
-          type: "cascader",
-          attrs: {
-            placeholder: "推荐机构",
-            filterable: true,
-            clearable: true,
-            options: [],
-          },
-        },
-        {
-          key: "staff_id",
-          type: "select",
-          options: [],
-          optionValue: "staff_id",
-          optionLabel: "staff_name",
-          attrs: {
-            placeholder: "所属老师",
-            clearable: true,
-            filterable: true,
-          },
-        },
-        {
-          key: "keyword",
-          attrs: {
-            placeholder: "学生姓名",
-          },
-        },
+        // {
+        //   key: "organization_id",
+        //   type: "cascader",
+        //   attrs: {
+        //     placeholder: "推荐机构",
+        //     filterable: true,
+        //     clearable: true,
+        //     options: [],
+        //   },
+        // },
+        // {
+        //   key: "staff_id",
+        //   type: "select",
+        //   options: [],
+        //   optionValue: "staff_id",
+        //   optionLabel: "staff_name",
+        //   attrs: {
+        //     placeholder: "所属老师",
+        //     clearable: true,
+        //     filterable: true,
+        //   },
+        // },
+        // {
+        //   key: "keyword",
+        //   attrs: {
+        //     placeholder: "学生姓名",
+        //   },
+        // },
       ],
 
       listData: [],
@@ -220,26 +201,41 @@ export default {
       defaultProps: {
         children: "child",
         label: (data) => {
-          return `${data.title} (${data.count})`;
+          return data.title === "全部"
+            ? data.title
+            : `${data.title} (${data.count})`;
         },
       },
       treeData: [],
+      treeParams: {},
     };
   },
   created() {
     this.getTreeCategory();
     this.getEduList();
-    this.getInstitutionSelectData();
-    this.getAdminSelect();
+    // this.getInstitutionSelectData();
+    // this.getAdminSelect();
   },
   methods: {
     onNodeClick(data) {
       console.log(data);
+      const {
+        type_id = "",
+        university_id = "",
+        level_id = "",
+        major_id = "",
+      } = data;
+      this.treeParams = { type_id, university_id, level_id, major_id };
+      this.getEduList();
     },
     async getTreeCategory() {
       const res = await getTreeCategory();
       if (res.code === 0) {
-        this.treeData = res.data;
+        this.treeData = [
+          {
+            title: "全部",
+          },
+        ].concat(res.data);
       }
     },
     // 获取所属老师
@@ -273,6 +269,7 @@ export default {
         organization_id: Array.isArray(data.organization_id)
           ? data.organization_id.pop()
           : data.organization_id,
+        date: data.date.length ? data.date.join(" - ") : "",
       };
       this.getEduList();
     },
@@ -290,6 +287,7 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
+        ...this.treeParams,
       };
       this.listLoading = true;
       const res = await getEduList(data);
@@ -309,10 +307,15 @@ export default {
     padding: 20px;
     display: flex;
     .tree-list {
-      width: 250px;
+      width: 300px;
       flex-shrink: 0;
       border-right: 1px solid #eee;
       margin-right: 20px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .table-list {
+      flex: 1;
     }
   }
   .copy-number {

@@ -957,7 +957,7 @@ export function updatePublicLive(data) {
 // 学历订单列表
 export function getEduList(params) {
   return request({
-    url: '/order/edu',
+    url: '/EduOrder/order',
     method: 'get',
     params,
   })
