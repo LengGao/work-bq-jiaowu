@@ -2,132 +2,147 @@
   <div class="college-student">
     <div class="head_remind">*本模块主要展示最近学历报名的学生。</div>
     <div class="college-student-container">
-      <!--搜索模块-->
-      <div class="college-student-search">
-        <SearchList
-          :options="searchOptions"
-          :data="searchData"
-          @on-search="handleSearch"
-        />
-      </div>
-
-      <!--列表-->
-      <div class="userTable">
-        <el-table
-          :data="listData"
-          v-loading="listLoading"
-          element-loading-text="loading"
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="#fff"
-          tooltip-effect="light"
-          stripe
-          :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
-          :cell-style="{ 'text-align': 'center' }"
+      <div class="tree-list">
+        <el-tree
+          :data="treeData"
+          :props="defaultProps"
+          default-expand-all
+          ref="tree"
+          @node-click="onNodeClick"
         >
-          <el-table-column
-            prop="uid"
-            label="ID"
-            show-overflow-tooltip
-            width="70"
-          ></el-table-column>
-          <el-table-column
-            prop="order_no"
-            label="订单编号"
-            min-width="140"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <el-button type="text" @click="toOrderDetail(row.order_id)">
-                {{ row.order_no }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="surname"
-            label="学生姓名"
-            min-width="90"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <el-button type="text" @click="toStudentDetail(row.uid)">
-                {{ row.surname }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="sex"
-            label="性别"
-            width="70"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span v-if="row.sex === 1">男</span>
-              <span v-else-if="row.sex === 2">女</span>
-              <span v-else>未知</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="mobile"
-            label="手机号码"
-            min-width="130"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <PartiallyHidden :value="row.mobile" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="type_title"
-            label="学历形式"
-            show-overflow-tooltip
-            min-width="90"
-          ></el-table-column>
-          <el-table-column
-            prop="university_title"
-            label="院校名称"
-            show-overflow-tooltip
-            min-width="140"
-          ></el-table-column>
-          <el-table-column
-            prop="level_title"
-            label="层次名称"
-            show-overflow-tooltip
-            min-width="90"
-          >
-            <template slot-scope="{ row }">
-              <el-tag :type="row.level_id === 10 ? 'success' : 'warning'">{{
-                row.level_title
-              }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="major_title"
-            label="专业名称"
-            show-overflow-tooltip
-            min-width="180"
-          ></el-table-column>
-          <el-table-column
-            prop="project_name"
-            label="项目名称"
-            show-overflow-tooltip
-            min-width="220"
-          ></el-table-column>
-
-          <el-table-column
-            prop="create_time"
-            label="创建时间"
-            min-width="140"
-            show-overflow-tooltip
-          ></el-table-column>
-        </el-table>
+        </el-tree>
       </div>
-      <div class="table_bottom">
-        <page
-          :data="listTotal"
-          :curpage="pageNum"
-          @pageSizeChange="handleSizeChange"
-          @pageChange="handlePageChange"
-        />
+      <div class="table-list">
+        <!--搜索模块-->
+        <div class="college-student-search">
+          <SearchList
+            :options="searchOptions"
+            :data="searchData"
+            @on-search="handleSearch"
+          />
+        </div>
+
+        <!--列表-->
+        <div class="userTable">
+          <el-table
+            :data="listData"
+            v-loading="listLoading"
+            element-loading-text="loading"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="#fff"
+            tooltip-effect="light"
+            stripe
+            :header-cell-style="{
+              'text-align': 'center',
+              background: '#f8f8f8',
+            }"
+            :cell-style="{ 'text-align': 'center' }"
+          >
+            <el-table-column
+              prop="uid"
+              label="ID"
+              show-overflow-tooltip
+              width="70"
+            ></el-table-column>
+            <el-table-column
+              prop="order_no"
+              label="订单编号"
+              min-width="140"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <el-button type="text" @click="toOrderDetail(row.order_id)">
+                  {{ row.order_no }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="surname"
+              label="学生姓名"
+              min-width="90"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <el-button type="text" @click="toStudentDetail(row.uid)">
+                  {{ row.surname }}
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="sex"
+              label="性别"
+              width="70"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <span v-if="row.sex === 1">男</span>
+                <span v-else-if="row.sex === 2">女</span>
+                <span v-else>未知</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="mobile"
+              label="手机号码"
+              min-width="130"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <PartiallyHidden :value="row.mobile" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="type_title"
+              label="学历形式"
+              show-overflow-tooltip
+              min-width="90"
+            ></el-table-column>
+            <el-table-column
+              prop="university_title"
+              label="院校名称"
+              show-overflow-tooltip
+              min-width="140"
+            ></el-table-column>
+            <el-table-column
+              prop="level_title"
+              label="层次名称"
+              show-overflow-tooltip
+              min-width="90"
+            >
+              <template slot-scope="{ row }">
+                <el-tag :type="row.level_id === 10 ? 'success' : 'warning'">{{
+                  row.level_title
+                }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="major_title"
+              label="专业名称"
+              show-overflow-tooltip
+              min-width="180"
+            ></el-table-column>
+            <el-table-column
+              prop="project_name"
+              label="项目名称"
+              show-overflow-tooltip
+              min-width="220"
+            ></el-table-column>
+
+            <el-table-column
+              prop="create_time"
+              label="创建时间"
+              min-width="140"
+              show-overflow-tooltip
+            ></el-table-column>
+          </el-table>
+        </div>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageSizeChange="handleSizeChange"
+            @pageChange="handlePageChange"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -135,15 +150,10 @@
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import { getEduList, getAdminSelect } from "@/api/eda";
-import {
-  getInstitutionSelectData,
-  getUniversityTypeOptions,
-  getUniversityOptions,
-  getUniversityLevelOptions,
-  getUniversityMajorOptions,
-} from "@/api/sou";
+import { getEduList, getAdminSelect, getTreeCategory } from "@/api/eda";
+import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
+import { getShortcuts } from "@/utils/date";
 export default {
   name: "collegeStudentList",
   components: {
@@ -155,8 +165,23 @@ export default {
         keyword: "",
         organization_id: "",
         staff_id: "",
+        date: "",
       },
       searchOptions: [
+        {
+          key: "date",
+          type: "datePicker",
+          attrs: {
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
+          },
+        },
         {
           key: "organization_id",
           type: "cascader",
@@ -180,54 +205,6 @@ export default {
           },
         },
         {
-          key: "type_id",
-          type: "select",
-          options: [],
-          optionValue: "id",
-          optionLabel: "title",
-          attrs: {
-            placeholder: "学历形式",
-            clearable: true,
-            filterable: true,
-          },
-        },
-        {
-          key: "school_id",
-          type: "select",
-          options: [],
-          optionValue: "id",
-          optionLabel: "title",
-          attrs: {
-            placeholder: "院校名称",
-            clearable: true,
-            filterable: true,
-          },
-        },
-        {
-          key: "level_id",
-          type: "select",
-          options: [],
-          optionValue: "id",
-          optionLabel: "title",
-          attrs: {
-            placeholder: "层次名称",
-            clearable: true,
-            filterable: true,
-          },
-        },
-        {
-          key: "major_id",
-          type: "select",
-          options: [],
-          optionValue: "id",
-          optionLabel: "title",
-          attrs: {
-            placeholder: "专业名称",
-            clearable: true,
-            filterable: true,
-          },
-        },
-        {
           key: "keyword",
           attrs: {
             placeholder: "学生姓名",
@@ -240,31 +217,30 @@ export default {
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
+      defaultProps: {
+        children: "child",
+        label: (data) => {
+          return `${data.title} (${data.count})`;
+        },
+      },
+      treeData: [],
     };
   },
   created() {
+    this.getTreeCategory();
     this.getEduList();
     this.getInstitutionSelectData();
     this.getAdminSelect();
-    this.getOptions();
   },
   methods: {
-    // 获取学历相关搜索选项
-    async getOptions() {
-      const apis = [
-        getUniversityTypeOptions,
-        getUniversityOptions,
-        getUniversityLevelOptions,
-        getUniversityMajorOptions,
-      ];
-      const resArr = await Promise.all(
-        apis.map((item) => item().catch(() => ({ code: 1 })))
-      );
-      resArr.forEach((item, index) => {
-        if (item.code === 0) {
-          this.searchOptions[index + 2].options = item.data;
-        }
-      });
+    onNodeClick(data) {
+      console.log(data);
+    },
+    async getTreeCategory() {
+      const res = await getTreeCategory();
+      if (res.code === 0) {
+        this.treeData = res.data;
+      }
     },
     // 获取所属老师
     async getAdminSelect() {
@@ -331,6 +307,13 @@ export default {
 .college-student {
   &-container {
     padding: 20px;
+    display: flex;
+    .tree-list {
+      width: 300px;
+      flex-shrink: 0;
+      border-right: 1px solid #eee;
+      margin-right: 20px;
+    }
   }
   .copy-number {
     color: #199fff;

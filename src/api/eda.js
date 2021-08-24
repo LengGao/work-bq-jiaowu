@@ -1162,3 +1162,11 @@ export function updateUserFromOrgId(data) {
     data,
   })
 }
+// 学历列表-树形数据
+export function getTreeCategory(params) {
+  return request({
+    url: '/EduOrder/category',
+    method: 'get',
+    params,
+  })
+}
