@@ -711,7 +711,7 @@ export function getChapterOptions(params) {
 // 所有题目列表
 export function getAllQuestionList(params) {
   return request({
-    url: '/topic/search',
+    url: '/topic/getAllPageList',
     method: 'get',
     params,
   })
@@ -1364,6 +1364,14 @@ export function questionStatisticsList(params) {
 export function questionStatisticsData(params) {
   return request({
     url: '/questionBank/getStatisticsNeeded',
+    method: 'get',
+    params,
+  })
+}
+// 题库下拉列表
+export function getSelectList(params) {
+  return request({
+    url: '/questionBank/getSelectList',
     method: 'get',
     params,
   })

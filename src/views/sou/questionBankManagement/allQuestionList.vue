@@ -37,9 +37,16 @@
         ></el-table-column>
         <el-table-column
           align="center"
+          prop="topic_type_name"
+          label="题目类型"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
           prop="question_bank_name"
           label="题库名称"
-          min-width="180"
+          min-width="220"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -51,22 +58,39 @@
         <el-table-column
           align="center"
           prop="chapter_type_name"
-          label="章节类型"
-          min-width="110"
+          label="题库类型"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           align="center"
           prop="chapter_name"
-          label="章节名称"
-          min-width="180"
+          label="章节试卷名称"
+          min-width="130"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           align="center"
-          prop="topic_type_name"
-          label="题目类型"
-          min-width="100"
+          prop="answer_num"
+          label="做题人数"
+          min-width="90"
+          sortable
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="collection_num"
+          label="收藏人数"
+          sortable
+          min-width="90"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="fail_num"
+          label="错题人数"
+          min-width="90"
+          sortable
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -100,7 +124,7 @@
 </template>
 
 <script>
-import { getAllQuestionList, deleteQuestion } from "@/api/sou";
+import { getAllQuestionList, deleteQuestion, getSelectList } from "@/api/sou";
 export default {
   name: "allQuestionList",
   data() {
@@ -111,24 +135,25 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
-        state: 1,
+        question_bank_id: "",
       },
       searchOptions: [
         {
-          key: "state",
+          key: "question_bank_id",
           type: "select",
-          options: [
-            { label: "根据题干搜索", value: 1 },
-            { label: "根据选项内容搜索", value: 2 },
-          ],
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
           attrs: {
-            placeholder: "搜索类型",
+            placeholder: "题库名称",
+            clearable: true,
+            filterable: true,
           },
         },
         {
           key: "keyword",
           attrs: {
-            placeholder: "请输入",
+            placeholder: "请输入内容",
             maxLength: 100,
           },
         },
@@ -138,7 +163,17 @@ export default {
   activated() {
     this.searchData.keyword && this.getAllQuestionList();
   },
+  created() {
+    this.getSelectList();
+    this.getAllQuestionList();
+  },
   methods: {
+    async getSelectList() {
+      const res = await getSelectList();
+      if (res.code === 0) {
+        this.searchOptions[0].options = res.data;
+      }
+    },
     toQusetionBank(row) {
       this.$router.push({
         name: "configureQuestionBank",
