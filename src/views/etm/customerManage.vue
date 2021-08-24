@@ -31,9 +31,9 @@
             <div class="timeCard">
               <div>
                 <h3>
-                  客户总数
+                  报名项目
                   <sup
-                    title="已通过教务平台录入学员资料的用户总数"
+                    title="已通过教务平台录入的用户项目总数"
                     class="el-icon-question"
                   ></sup>
                 </h3>
@@ -55,7 +55,7 @@
                   ></sup>
                 </h3>
                 <div class="time_num">
-                  {{ analysis.total_sign ? analysis.total_sign : 0 }}
+                  {{ analysis.total_online_course || 0 }}
                 </div>
               </div>
             </div>
@@ -71,14 +71,12 @@
                   ></sup>
                 </h3>
                 <div class="time_num">
-                  {{
-                    analysis.total_repurchase ? analysis.total_repurchase : 0
-                  }}
+                  {{ analysis.total_repurchase || 0 }}
                 </div>
               </div>
             </div>
           </el-col>
-          <el-col :lg="{ span: '4-8' }">
+          <!-- <el-col :lg="{ span: '4-8' }">
             <div class="timeCard">
               <div>
                 <h3>订单金额</h3>
@@ -101,7 +99,7 @@
                 </div>
               </div>
             </div>
-          </el-col>
+          </el-col> -->
         </template>
       </el-row>
       <!--列表-->
@@ -169,39 +167,24 @@
           </el-table-column>
           <el-table-column
             label="报读项目"
-            prop="project"
+            prop="project_name"
             min-width="150"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <div v-if="row.project">
-                {{ row.project }}
-              </div>
-              <span v-else>--</span>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="from_organization_name"
+            prop="from_institution_name"
             label="推荐机构"
-            min-width="90"
+            min-width="160"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <div v-if="row.from_organization_name">
-                {{ row.from_organization_name }}
-              </div>
-              <span v-else>--</span>
-            </template>
           </el-table-column>
           <el-table-column
             label="所属老师"
-            prop="project"
+            prop="staff_name"
             min-width="150"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>{{ row.admin_name || "--" }}</span>
-            </template>
           </el-table-column>
           <el-table-column
             prop="create_time"
@@ -209,7 +192,7 @@
             min-width="150"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="contract_status"
             label="合同状态"
             min-width="100"
@@ -224,11 +207,11 @@
                 {{ statusMap[row.contract_status || 0].text }}
               </el-tag>
             </template>
-          </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="300">
+          </el-table-column> -->
+          <el-table-column label="操作" fixed="right" min-width="140">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button
+                <!-- <el-button
                   type="text"
                   @click="seebtn(row)"
                   v-if="!row.contract_status && row.project_id"
@@ -248,7 +231,7 @@
                     (row.contract_status === 2 || row.contract_status === 4)
                   "
                   >复制签名链接</el-button
-                >
+                > -->
                 <!-- <el-button
                   type="text"
                   @click="Approval(row)"
@@ -344,13 +327,13 @@
 
         <Toexamine
           v-model="toexadialog"
-          @on-success="getCustomerList"
+          @on-success="getProjectUserList"
           :contractInfo="contractInfo"
           :id="currentId"
         />
         <addCustomeDialog
           :innerVisible="innerVisible"
-          @on-success="getCustomerList"
+          @on-success="getProjectUserList"
           v-on:innerDialog="getInnerStatus($event)"
         />
       </div>
@@ -364,7 +347,7 @@ import { templatelist } from "@/api/system";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { generate } from "@/api/fina";
 import { getproject } from "@/api/eda";
-import { getCustomerList } from "@/api/etm";
+import { getProjectUserList } from "@/api/etm";
 import { getAdminSelect } from "@/api/eda";
 import { cloneOptions } from "@/utils/index";
 import addCustomeDialog from "./components/addCustomeDialog";
@@ -424,9 +407,9 @@ export default {
       innerVisible: false,
       searchData: {
         id: "",
-        category_id: "",
+        category_id: [],
         date: [],
-        project_id: "",
+        project_id: [],
         from_org: "",
         keyword: "",
         sources: "",
@@ -484,9 +467,6 @@ export default {
           key: "category_id",
           type: "cascader",
           width: 240,
-          events: {
-            change: this.handleTypeChange,
-          },
           attrs: {
             placeholder: "所属分类（多选）",
             clearable: true,
@@ -514,72 +494,72 @@ export default {
             "collapse-tags": true,
           },
         },
-        {
-          key: "pay_status",
-          type: "select",
-          width: 120,
-          options: [
-            {
-              value: "0",
-              label: "待验证/等待付款 ",
-            },
-            {
-              value: "1",
-              label: "新订单/待入账/已付款",
-            },
-            {
-              value: "2",
-              label: "部分入账",
-            },
-            {
-              value: "3",
-              label: "已入账",
-            },
-            {
-              value: "4",
-              label: "已作废",
-            },
-            {
-              value: "5",
-              label: "已退款",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "成交状态",
-          },
-        },
-        {
-          key: "contract_status",
-          type: "select",
-          width: 120,
-          options: [
-            {
-              value: "0",
-              label: "未生成",
-            },
-            {
-              value: "1",
-              label: "未审核",
-            },
-            {
-              value: "2",
-              label: "已审核",
-            },
-            {
-              value: "3",
-              label: "已驳回",
-            },
-            {
-              value: "4",
-              label: "签署完成",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "合同状态",
-          },
-        },
+        // {
+        //   key: "pay_status",
+        //   type: "select",
+        //   width: 120,
+        //   options: [
+        //     {
+        //       value: "0",
+        //       label: "待验证/等待付款 ",
+        //     },
+        //     {
+        //       value: "1",
+        //       label: "新订单/待入账/已付款",
+        //     },
+        //     {
+        //       value: "2",
+        //       label: "部分入账",
+        //     },
+        //     {
+        //       value: "3",
+        //       label: "已入账",
+        //     },
+        //     {
+        //       value: "4",
+        //       label: "已作废",
+        //     },
+        //     {
+        //       value: "5",
+        //       label: "已退款",
+        //     },
+        //   ],
+        //   attrs: {
+        //     clearable: true,
+        //     placeholder: "成交状态",
+        //   },
+        // },
+        // {
+        //   key: "contract_status",
+        //   type: "select",
+        //   width: 120,
+        //   options: [
+        //     {
+        //       value: "0",
+        //       label: "未生成",
+        //     },
+        //     {
+        //       value: "1",
+        //       label: "未审核",
+        //     },
+        //     {
+        //       value: "2",
+        //       label: "已审核",
+        //     },
+        //     {
+        //       value: "3",
+        //       label: "已驳回",
+        //     },
+        //     {
+        //       value: "4",
+        //       label: "签署完成",
+        //     },
+        //   ],
+        //   attrs: {
+        //     clearable: true,
+        //     placeholder: "合同状态",
+        //   },
+        // },
         {
           key: "online_user",
           type: "select",
@@ -648,21 +628,18 @@ export default {
       selectData: [],
       projectData: [],
       field_content: [],
-      date: "",
       templateId: "",
       orderId: "",
     };
   },
   created() {
-    this.date = this.searchData.date = this.AddDays(new Date(), 7);
     this.getCateList();
     this.getInstitutionSelectData();
-    this.getCustomerList();
+    this.getProjectUserList();
     this.getAdminSelect();
+    this.getproject();
   },
-  mounted() {
-    console.log(this.date);
-  },
+
   methods: {
     orderDetail(row) {
       this.$router.push({
@@ -733,7 +710,7 @@ export default {
         } else {
           this.$message.success(res.message);
           this.dialogVisible = false;
-          this.getCustomerList();
+          this.getProjectUserList();
         }
       }
     },
@@ -749,51 +726,26 @@ export default {
         this.$message.success("复制成功");
       }
     },
-    AddDays(date, days) {
-      var nd = new Date(date);
-      var Y = nd.getFullYear();
-      var M = nd.getMonth() + 1;
-      var D = nd.getDate();
-      if (M <= 9) M = "0" + M;
-      if (D <= 9) D = "0" + D;
-      var nowcdate = Y + "-" + M + "-" + D;
-
-      nd = nd.valueOf();
-      nd = nd - days * 24 * 60 * 60 * 1000;
-      nd = new Date(nd);
-      var y = nd.getFullYear();
-      var m = nd.getMonth() + 1;
-      var d = nd.getDate();
-      if (m <= 9) m = "0" + m;
-      if (d <= 9) d = "0" + d;
-      var cdate = y + "-" + m + "-" + d;
-      // date = cdate + ' - ' + nowcdate
-      var dateArr = [];
-      dateArr.push(cdate);
-      dateArr.push(nowcdate);
-
-      return dateArr;
-      // return cdate
-    },
-
     handlePageChange(val) {
       this.pageNum = val;
-      this.getCustomerList();
+      this.getProjectUserList();
     },
     //客户列表
-    async getCustomerList() {
+    async getProjectUserList() {
       this.checkedIds = [];
       this.intent_id = "";
       console.log(this.searchData.date);
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        date: this.searchData.date[0] + " - " + this.searchData.date[1],
-        // all: 1,
+        date: this.searchData.date[0]
+          ? this.searchData.date[0] + " - " + this.searchData.date[1]
+          : "",
+        category_id: this.searchData.category_id.join(","),
+        project_id: this.searchData.project_id.join(","),
       };
-      console.log(data);
       this.listLoading = true;
-      const res = await getCustomerList(data);
+      const res = await getProjectUserList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.analysis = res.data.analysis[0];
@@ -806,12 +758,6 @@ export default {
           uid: ab.uid,
         },
       });
-    },
-    // 当分类选择时
-    handleTypeChange(ids) {
-      const id = ids ? [...ids].pop() : "";
-      // this.getcourseallclass(id);
-      this.getproject(id);
     },
     // 获取所属分类
     async getCateList() {
@@ -849,11 +795,8 @@ export default {
     },
 
     // 获取项目下拉
-    async getproject(category_id = "") {
-      const data = {
-        category_id,
-      };
-      const res = await getproject(data);
+    async getproject() {
+      const res = await getproject();
       if (res.code === 0) {
         this.searchOptions[4].options = res.data;
       }
@@ -865,14 +808,12 @@ export default {
       this.pageNum = 1;
 
       this.searchData = {
-        // category_id: data.category_id?.pop() || 0,
         ...data,
         from_org: data.from_org ? data.from_org.pop() : "",
-        category_id: data.category_id ? data.category_id.pop() : "",
+
         date: times,
-        // date: times[0] + ' - ' + times[1],
       };
-      this.getCustomerList();
+      this.getProjectUserList();
     },
     toOnlineStudents() {
       this.$router.push({
@@ -905,7 +846,7 @@ export default {
     },
     doPageChange(page) {
       this.page = page;
-      this.getCustomerList();
+      this.getProjectUserList();
     },
 
     seeview(row) {
