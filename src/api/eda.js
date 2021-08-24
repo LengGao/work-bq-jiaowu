@@ -1170,3 +1170,27 @@ export function getTreeCategory(params) {
     params,
   })
 }
+// 学历列表-追加教材列表
+export function getAdditionalTextbook(params) {
+  return request({
+    url: '/books/getAdditionalTextbook',
+    method: 'get',
+    params,
+  })
+}
+// 学历列表-追加教材列表
+export function issueAdditionalTextbook(data) {
+  return request({
+    url: '/books/issueAdditionalTextbook',
+    method: 'post',
+    data,
+  })
+}
+// 学历列表-追加教材-日志
+export function getAdditionalTextbookLog(params) {
+  return request({
+    url: '/books/getAdditionalTextbookLog',
+    method: 'get',
+    params,
+  })
+}

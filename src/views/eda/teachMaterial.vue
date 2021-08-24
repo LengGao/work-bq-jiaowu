@@ -111,9 +111,7 @@
           <el-table-column label="操作" fixed="right" min-width="130">
             <template slot-scope="{ row }">
               <div class="operation_btn">
-                <el-button
-                  type="text"
-                  @click="handleAdd(row.id, row.project_id)"
+                <el-button type="text" @click="handleAdd(row.id, row)"
                   >教材发放</el-button
                 >
                 <el-button type="text" @click="toMaterialJournal(row.id)"
@@ -136,7 +134,7 @@
       <GrantTeachMaterials
         v-model="dialogVisible"
         :ids="checkedIds"
-        :projectId="projectId"
+        :projectInfo="projectInfo"
         @on-success="dispenseList"
       />
     </section>
@@ -239,6 +237,7 @@ export default {
       ],
       datas: {},
       checked: "",
+      projectInfo: {},
     };
   },
   created() {
@@ -262,7 +261,7 @@ export default {
       this.dispenseList();
     },
     handleSeletChange(selection) {
-      this.projectId = selection[0]?.project_id || "";
+      this.projectInfo = selection[0] || {};
       this.checkedIds = selection.map((item) => item.id);
     },
     handleChecked() {
@@ -283,7 +282,7 @@ export default {
       });
     },
     handleBatchAdd() {
-      if (!this.projectId) {
+      if (!Object.keys(this.projectInfo).length) {
         this.$message.warning("请先选择项目！");
         return;
       }
@@ -293,8 +292,8 @@ export default {
       }
       this.dialogVisible = true;
     },
-    handleAdd(id, projectId) {
-      this.projectId = projectId;
+    handleAdd(id, projectInfo) {
+      this.projectInfo = projectInfo;
       this.checkedIds = [id];
       this.dialogVisible = true;
     },
@@ -351,8 +350,7 @@ export default {
     //教材发放列表
     async dispenseList() {
       this.checkedIds = [];
-      this.projectId = "";
-      console.log(this.searchData);
+      this.projectInfo = {};
       const data = {
         limit: this.pageSize,
         page: this.pageNum,
