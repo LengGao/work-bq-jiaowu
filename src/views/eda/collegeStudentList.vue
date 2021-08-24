@@ -61,18 +61,6 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="order_no"
-              label="订单编号"
-              min-width="140"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <el-button type="text" @click="toOrderDetail(row.order_id)">
-                  {{ row.order_no }}
-                </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column
               prop="project_name"
               label="项目名称"
               show-overflow-tooltip
@@ -114,6 +102,13 @@
               show-overflow-tooltip
               min-width="100"
             ></el-table-column>
+            <el-table-column label="操作" fixed="right" min-width="100">
+              <template slot-scope="{ row }">
+                <el-button type="text" @click="toOrderDetail(row.order_id)">
+                  订单详情
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <div class="table_bottom">
