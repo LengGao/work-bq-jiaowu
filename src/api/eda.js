@@ -277,9 +277,9 @@ export function personalAttendanceSummary(params) {
   })
 }
 // 个人教材发放列表
-export function getMaterial(params) {
+export function dispenseBooksLog(params) {
   return request({
-    url: 'UserArchives/getMaterial',
+    url: '/books/dispenseBooksLog',
     method: 'get',
     params,
   })
