@@ -309,7 +309,7 @@ export default {
     padding: 20px;
     display: flex;
     .tree-list {
-      width: 300px;
+      width: 250px;
       flex-shrink: 0;
       border-right: 1px solid #eee;
       margin-right: 20px;
