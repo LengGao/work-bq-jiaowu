@@ -4,22 +4,6 @@
       *学生报名缴费后会自动产生缴费记录、欠费记录（如有欠费）等。
     </div>
     <div class="mainPart">
-      <ul class="customer_navigation">
-        <li
-          v-for="(item, index) in tabFun"
-          :key="index"
-          :class="{ active: index === activeIndex }"
-          @click="statusSwitch(index, item.status)"
-        >
-          {{ item.name }}
-        </li>
-        <li
-          :class="{ active: 100 === activeIndex }"
-          @click="statusSwitch(100, 1)"
-        >
-          已入账
-        </li>
-      </ul>
       <!--搜索模块-->
       <header>
         <SearchList
@@ -115,24 +99,35 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="order_money"
-            label="订单总价"
-            min-width="90"
+            prop="mobile"
+            label="手机号码"
+            min-width="130"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>￥{{ row.order_money }}</span>
+              <PartiallyHidden :value="row.mobile" />
             </template>
           </el-table-column>
           <el-table-column
-            prop="reduction"
-            label="优惠金额"
-            min-width="90"
+            prop="from_institution_name"
+            label="推荐机构"
+            min-width="130"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>￥{{ row.reduction }}</span>
-            </template>
+          </el-table-column>
+          <el-table-column
+            prop="staff_name"
+            label="所属老师"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="project_name"
+            label="项目名称"
+            min-width="180"
+            show-overflow-tooltip
+          >
           </el-table-column>
           <el-table-column
             prop="order_money"
@@ -169,17 +164,10 @@
           <el-table-column
             prop="pay_type"
             label="支付方式"
-            min-width="90"
+            min-width="120"
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column
-            prop="admin_name"
-            label="申请人"
-            min-width="100"
-            column-key="surname"
-            show-overflow-tooltip
-          ></el-table-column>
           <el-table-column
             prop="pay_status"
             label="订单状态"
@@ -192,7 +180,7 @@
               }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="140">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button
@@ -237,8 +225,12 @@
 </template>
 
 <script>
+import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts, toDay } from "@/utils/date";
+import { getAdminSelect, getproject } from "@/api/eda";
+import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getOrderList } from "@/api/fina";
+import { cloneOptions } from "@/utils/index";
 import ImportOrder from "./components/ImportOrder";
 import CollectionOrder from "./components/CollectionOrder";
 export default {
@@ -246,6 +238,7 @@ export default {
   components: {
     ImportOrder,
     CollectionOrder,
+    PartiallyHidden,
   },
   data() {
     return {
@@ -256,6 +249,12 @@ export default {
       searchData: {
         date: [toDay(), toDay()],
         keyword: "",
+        from_org: [],
+        project_id: [],
+        category_id: [],
+        staff_id: "",
+        pay_type: "",
+        pay_status: "",
       },
       searchOptions: [
         {
@@ -275,6 +274,139 @@ export default {
           },
         },
         {
+          key: "from_org",
+          type: "cascader",
+          width: 120,
+          attrs: {
+            placeholder: "推荐机构",
+            clearable: true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
+          key: "staff_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "category_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "所属分类（多选）",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
+          width: 280,
+          attrs: {
+            placeholder: "所属项目（多选）",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
+          key: "pay_type",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: "现金",
+              label: "现金",
+            },
+            {
+              value: "微信",
+              label: "微信",
+            },
+            {
+              value: "支付宝",
+              label: "支付宝",
+            },
+            {
+              value: "聚合收单",
+              label: "聚合收单",
+            },
+            {
+              value: "银行转账",
+              label: "银行转账",
+            },
+            {
+              value: "收钱吧",
+              label: "收钱吧",
+            },
+            {
+              value: "机构签约订单",
+              label: "机构签约订单",
+            },
+            {
+              value: "pos机",
+              label: "pos机",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "支付方式",
+          },
+        },
+        {
+          key: "pay_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "未付款",
+            },
+            {
+              value: 1,
+              label: "新订单",
+            },
+            {
+              value: 2,
+              label: "部分付款",
+            },
+            {
+              value: 3,
+              label: "已付款",
+            },
+            {
+              value: 4,
+              label: "已作废",
+            },
+            {
+              value: 5,
+              label: "已退款",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "订单状态",
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "学生姓名/手机号码",
@@ -282,8 +414,6 @@ export default {
         },
       ],
       activeIndex: 0,
-      activeStatus: "",
-      verify: "",
       panelData: {
         total: "",
         order_money: 0,
@@ -330,8 +460,54 @@ export default {
   },
   created() {
     this.getOrderList();
+    this.getCateList();
+    this.getInstitutionSelectData();
+    this.getAdminSelect();
+    this.getproject();
   },
   methods: {
+    // 获取所属分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[3].attrs.options = cloneOptions(
+          res.data,
+          "category_name",
+          "category_id",
+          "son"
+        );
+      }
+    },
+    // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
+      if (res.code === 0) {
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          "institution_name",
+          "institution_id",
+          "children"
+        );
+      }
+    },
+    // 获取所属老师
+    async getAdminSelect() {
+      const data = { list: true };
+      const res = await getAdminSelect(data);
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data;
+      }
+    },
+
+    // 获取项目下拉
+    async getproject() {
+      const res = await getproject();
+      if (res.code === 0) {
+        this.searchOptions[4].options = res.data;
+      }
+    },
     // 按钮操作
     excludes(row, type) {
       const auth = {
@@ -349,21 +525,14 @@ export default {
     openImport() {
       this.importDialog = true;
     },
-    statusSwitch(index, status) {
-      this.activeIndex = index;
-      if (index === 100) {
-        this.activeStatus = "";
-        this.verify = status;
-      } else {
-        this.verify = "";
-        this.activeStatus = status;
-      }
-      this.getOrderList();
-    },
+
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
+        category_id: data.category_id?.join(",") || "",
+        project_id: data.project_id?.join(",") || "",
+        from_org: data.from_org?.join(",") || "",
       };
       this.getOrderList(data);
     },
@@ -375,16 +544,16 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        date: this.searchData.date ? this.searchData.date.join(" - ") : "",
-        pay_status: this.activeStatus,
-        verify: this.verify,
+        date: Array.isArray(this.searchData.date)
+          ? this.searchData.date.join(" - ")
+          : "",
       };
       this.listLoading = true;
       const res = await getOrderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
-      this.panelData = res.data.count[0] || {};
+      this.panelData = res.data.count || {};
     },
     coursDetail(uid) {
       this.$router.push({
