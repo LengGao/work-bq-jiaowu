@@ -21,65 +21,120 @@
             label-position="left"
           >
             <el-row class="detailLine">
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="订单编号" prop="order_no">
                   <div class="ruleWord">{{ ruleForm.order_no }}</div>
                 </el-form-item>
               </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="订单时间" prop="verify_time">
                   <div class="ruleWord">{{ ruleForm.create_time }}</div>
                 </el-form-item>
               </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="收费学生" prop="surname">
                   <div class="ruleWord">{{ ruleForm.account.surname }}</div>
                 </el-form-item>
               </el-col>
 
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="订单总价" prop="order_money">
                   <div class="ruleWord">¥ {{ ruleForm.order_money }}</div>
                 </el-form-item>
               </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="优惠 小计" prop="reduction">
                   <div class="ruleWord">¥ {{ ruleForm.reduction }}</div>
                 </el-form-item>
               </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="应收金额" prop="order_money">
                   <div class="ruleWord">¥ {{ ruleForm.order_money }}</div>
                 </el-form-item>
               </el-col>
 
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="已付金额" prop="pay_money">
                   <div class="ruleWord">¥ {{ ruleForm.pay_money }}</div>
                 </el-form-item>
               </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="欠费金额" prop="overdue_money">
                   <div class="ruleWord" style="color: #f76c6c">
                     ¥ {{ ruleForm.overdue_money }}
                   </div>
                 </el-form-item>
               </el-col>
-              <el-col :lg="8" :md="8" :sm="8" :xs="8">
+              <el-col :lg="6" :md="6" :sm="6" :xs="6">
                 <el-form-item label="退款金额" prop="refund_money">
                   <div class="ruleWord">¥ {{ ruleForm.refund_money }}</div>
                 </el-form-item>
               </el-col>
-              <!-- <el-col :lg="8" :md="8" :sm="8" :xs="8">
-                <el-form-item label="订单状态" prop="pay_status">
-                  <div class="ruleWord">
-                    {{ ruleForm.pay_status == 3 ? "已入账" : "未入账" }}
-                  </div>
-                </el-form-item>
-              </el-col> -->
+              <template v-if="ruleForm.type === 1">
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="第一学年">
+                    <div class="ruleWord">¥ {{ ruleForm.fees.tuition_1 }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="第二学年">
+                    <div class="ruleWord">¥ {{ ruleForm.fees.tuition_2 }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="第三学年">
+                    <div class="ruleWord">¥ {{ ruleForm.fees.tuition_3 }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="考前辅导费">
+                    <div class="ruleWord">¥ {{ ruleForm.fees.pre_tutor }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="报考费">
+                    <div class="ruleWord">
+                      ¥ {{ ruleForm.fees.examination }}
+                    </div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="教材费">
+                    <div class="ruleWord">¥ {{ ruleForm.fees.textbook }}</div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="毕设指导费">
+                    <div class="ruleWord">
+                      ¥ {{ ruleForm.fees.graduation_guidance }}
+                    </div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="论文答辩费">
+                    <div class="ruleWord">
+                      ¥ {{ ruleForm.fees.thesis_defense }}
+                    </div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="平台费">
+                    <div class="ruleWord">
+                      ¥ {{ ruleForm.fees.platform_fee }}
+                    </div>
+                  </el-form-item>
+                </el-col>
+                <el-col :lg="6" :md="6" :sm="6" :xs="6">
+                  <el-form-item label="其他费用">
+                    <div class="ruleWord">¥ {{ ruleForm.fees.others }}</div>
+                  </el-form-item>
+                </el-col>
+              </template>
             </el-row>
             <el-row>
-              <el-form-item label="订单备注" prop="tips"> </el-form-item>
+              <el-form-item label="订单备注" prop="tips">
+                <div>{{ ruleForm.tips }}</div>
+              </el-form-item>
             </el-row>
             <el-row> </el-row>
           </el-form>
@@ -116,7 +171,7 @@
       >
     </div>
     <!--订单详情-->
-    <div>
+    <div v-if="ruleForm.type !== 1">
       <h3 style="margin: 15px 0">订单详情</h3>
       <el-table
         ref="multipleTable"
@@ -136,38 +191,46 @@
         >
         </el-table-column>
         <el-table-column
-          prop="order_money"
+          prop="project_price"
           label="价格"
           show-overflow-tooltip
           min-width="90"
-          >¥ {{ ruleForm.order_money }}</el-table-column
         >
+          <template slot-scope="{ row }">
+            <span>¥ {{ row.project_price }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="reduction"
           label="优惠金额"
           show-overflow-tooltip
           min-width="90"
-          >¥ {{ ruleForm.reduction }}
+        >
+          <template slot-scope="{ row }">
+            <span
+              >¥ {{ (row.project_price || 0) - (row.must_price || 0) }}</span
+            >
+          </template>
         </el-table-column>
         <el-table-column
           prop="pay_money"
           label="已付金额"
           show-overflow-tooltip
           min-width="90"
-          >¥ {{ ruleForm.pay_money }}
+        >
+          <template slot-scope="{ row }">
+            <span>¥ {{ row.must_price }}</span>
+          </template>
         </el-table-column>
       </el-table>
 
       <div class="orderDetail_bottm">
         <div class="orderDetail_content">
           <div>
-            订单总价: <span>¥ {{ ruleForm.order_money }}</span>
+            应收金额: <span>¥ {{ ruleForm.order_money }}</span>
           </div>
           <div>
-            优惠总额: <span>¥ {{ ruleForm.reduction }}</span>
-          </div>
-          <div>
-            订单应收:
+            实收金额:
             <span style="color: #199fff"
               >¥ {{ ruleForm.order_money - ruleForm.reduction }}</span
             >
@@ -293,7 +356,6 @@
 <script>
 import CollectionOrder from "../components/CollectionOrder";
 import { logEntry } from "@/api/fina";
-import { getEduList } from "@/api/eda";
 export default {
   components: {
     CollectionOrder,
@@ -370,20 +432,11 @@ export default {
   mounted() {
     this.order_id = this.$route.query.order_id;
     this.$api.orderdetail(this, "schoolData", () => {
-      this.ruleForm.type === 1 && this.getEduList(this.ruleForm.uid);
+      this.ruleForm.type === 1 && (this.eduData = this.ruleForm.edu);
     });
   },
 
   methods: {
-    async getEduList(uid) {
-      const data = {
-        uid,
-      };
-      const res = await getEduList(data);
-      if (res.code === 0) {
-        this.eduData = res.data.list;
-      }
-    },
     //入账确认框
     handleEntryCofirm(row) {
       this.$confirm("是否将此笔订单入账？", { type: "warning" })

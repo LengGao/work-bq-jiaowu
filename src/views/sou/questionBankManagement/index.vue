@@ -11,7 +11,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button @click="toQuestionList">搜索题目</el-button>
+          <el-button @click="toQuestionList">全部题目</el-button>
           <el-button type="primary" @click="openAdd">添加题库</el-button>
         </div>
       </div>
@@ -56,6 +56,45 @@
           >
             <template slot-scope="{ row }">
               <span>￥{{ row.price }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="detect_info"
+            label="题库信息"
+            align="center"
+            min-width="220"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                >章节练习<span
+                  class="circle-value"
+                  :class="{ info: !row.practice }"
+                  >({{ row.practice }})</span
+                ></span
+              >
+              <span class="circle"
+                >历年真题<span class="circle-value" :class="{ info: !row.real }"
+                  >({{ row.real }})</span
+                ></span
+              >
+              <span class="circle"
+                >自主出题<span
+                  class="circle-value"
+                  :class="{ info: !row.selfs }"
+                  >({{ row.selfs }})</span
+                ></span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="buy_num"
+            label="购买人数"
+            min-width="110"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span style="color: #2798ee">{{ row.buy_num }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -306,5 +345,17 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.circle {
+  margin-right: 8px;
+  &-value {
+    display: inline-block;
+    margin-left: 3px;
+    text-align: center;
+    color: #6dd152;
+    &.info {
+      color: #bbb;
+    }
+  }
 }
 </style>

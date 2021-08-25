@@ -139,7 +139,7 @@
             label="操作"
             fixed="right"
             align="center"
-            min-width="200"
+            min-width="220"
           >
             <template slot-scope="{ row }">
               <div
@@ -155,14 +155,17 @@
                 <el-button type="text" @click="handleMove(row)">移动</el-button>
               </div>
               <div style="display: flex; justify-content: center" v-else>
-                <el-button type="text" @click="handleEdit(row)">编辑</el-button>
-                <el-button type="text" @click="handleDelete(row)"
-                  >删除</el-button
-                >
                 <el-button type="text" @click="openChildAdd(row.project_id)"
                   >添加子项目</el-button
                 >
+                <el-button type="text" @click="toStatistics(row.project_id)"
+                  >统计</el-button
+                >
+                <el-button type="text" @click="handleEdit(row)">编辑</el-button>
                 <el-button type="text" @click="handleMove(row)">移动</el-button>
+                <el-button type="text" @click="handleDelete(row)"
+                  >删除</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -519,6 +522,9 @@ export default {
   },
 
   methods: {
+    toStatistics(project_id) {
+      this.$router.push({ name: "projectStatistics", query: { project_id } });
+    },
     handleMove(row) {
       this.project_id = row.project_id;
       this.moveDialogVisible = true;

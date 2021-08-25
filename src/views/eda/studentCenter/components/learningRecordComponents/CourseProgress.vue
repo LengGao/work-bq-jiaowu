@@ -1,5 +1,5 @@
 <template>
-  <!-- 职称-课程进度 -->
+  <!-- 课程进度 -->
   <div class="course-progress">
     <Title text="课程进度" />
     <div class="table">

@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'projectStatistics',
+        name: 'projectStatistics',
+        component: () => import('@/views/sou/projectStatistics.vue'),
+        meta: { title: '项目统计', icon: 'product-add' },
+      },
+      {
         path: 'questionStatistics',
         name: 'questionStatistics',
         component: () => import('@/views/sou/questionBankManagement/questionStatistics/index.vue'),
@@ -307,6 +313,12 @@ export const asyncRouter = [
     name: 'etm',
     children: [
       {
+        path: 'eduOrder',
+        name: 'eduOrder',
+        component: () => import('@/views/etm/eduOrder.vue'),
+        meta: { title: '订单列表', icon: 'product-cate' },
+      },
+      {
         path: 'customerManage',
         name: 'customerManage',
         component: () => import('@/views/etm/customerManage.vue'),
@@ -350,6 +362,7 @@ export const asyncRouter = [
     meta: { title: '教务管理', icon: 'zhaoshengguanli' },
     name: 'eda',
     children: [
+
       {
         path: 'courseNotes',
         name: 'courseNotes',

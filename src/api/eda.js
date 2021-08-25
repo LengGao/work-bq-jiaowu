@@ -277,9 +277,9 @@ export function personalAttendanceSummary(params) {
   })
 }
 // 个人教材发放列表
-export function getMaterial(params) {
+export function dispenseBooksLog(params) {
   return request({
-    url: 'UserArchives/getMaterial',
+    url: '/books/dispenseBooksLog',
     method: 'get',
     params,
   })
@@ -957,7 +957,7 @@ export function updatePublicLive(data) {
 // 学历订单列表
 export function getEduList(params) {
   return request({
-    url: '/order/edu',
+    url: '/EduOrder/order',
     method: 'get',
     params,
   })
@@ -1136,5 +1136,93 @@ export function deleteCourseNote(data) {
     url: '/NewsInteraction/deleteCourseNote',
     method: 'post',
     data,
+  })
+}
+// 班级详情-课程进度
+export function courseUserVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/courseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-课程进度-导出
+export function exportCourseUserVideoStatisticsList(params) {
+  return request({
+    url: '/CourseVideo/exportCourseUserVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-更换所属机构
+export function updateUserFromOrgId(data) {
+  return request({
+    url: '/classroom/updateUserFromOrgId',
+    method: 'post',
+    data,
+  })
+}
+// 学历列表-树形数据
+export function getTreeCategory(params) {
+  return request({
+    url: '/EduOrder/category',
+    method: 'get',
+    params,
+  })
+}
+// 学历列表-追加教材列表
+export function getAdditionalTextbook(params) {
+  return request({
+    url: '/books/getAdditionalTextbook',
+    method: 'get',
+    params,
+  })
+}
+// 学历列表-追加教材列表
+export function issueAdditionalTextbook(data) {
+  return request({
+    url: '/books/issueAdditionalTextbook',
+    method: 'post',
+    data,
+  })
+}
+// 学历列表-追加教材-日志
+export function getAdditionalTextbookLog(params) {
+  return request({
+    url: '/books/getAdditionalTextbookLog',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-题库进度
+export function getClassQuestionStatistics(params) {
+  return request({
+    url: '/questionBank/getClassStatistics',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-班级学生
+export function classroomUserList(params) {
+  return request({
+    url: '/classroom/classroomUserList',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-班级学生-导出
+export function exportClassroomUserList(params) {
+  return request({
+    url: '/classroom/exportClassroomUserList',
+    method: 'get',
+    params,
+  })
+}
+// 学历列表-导出
+export function exportEduList(params) {
+  return request({
+    url: '/EduOrder/export',
+    method: 'get',
+    params,
   })
 }

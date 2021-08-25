@@ -69,6 +69,9 @@
           </el-card>
         </li>
       </ul>
+      <p class="no-data" v-if="!listData.length && !listLoading">
+        暂无跟进记录
+      </p>
       <div class="table_bottom">
         <page
           :data="listTotal"
@@ -177,6 +180,7 @@ export default {
     }
   }
   .record-list {
+    position: relative;
     font-size: 14px;
     ul {
       height: 520px;
@@ -199,6 +203,13 @@ export default {
           color: #909399;
         }
       }
+    }
+    .no-data {
+      position: absolute;
+      left: 50%;
+      top: 35%;
+      transform: translate(-50%, -35%);
+      color: #909399;
     }
   }
 }

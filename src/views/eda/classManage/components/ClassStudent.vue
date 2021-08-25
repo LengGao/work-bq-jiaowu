@@ -47,55 +47,33 @@
           prop="telphone"
         >
           <template slot-scope="{ row }">
-            <span>{{ row.telphone }}</span>
+            <PartiallyHidden :value="row.telphone" />
           </template>
         </el-table-column>
         <el-table-column
           prop="institution_name"
-          label="所属机构"
+          label="推荐机构"
           min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
+          prop="staff_name"
+          label="所属老师"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="project_str"
+          label="报读项目"
+          min-width="200"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="add_time"
-          label="加入时间"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="ExamLogAvg"
-          label="模拟考试平均分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="RealTopicLogAvg"
-          label="历年真题平均分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="ProblemSelfDeterminationMax"
-          label="自主出题最高分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="attendance_num"
-          label="出勤次数"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="absence_num"
-          label="缺勤次数"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="attendance_rate"
-          label="出勤率"
+          label="创建时间"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
@@ -107,8 +85,8 @@
         >
           <template slot-scope="{ row }">
             <div>
-              <el-button type="text" @click="learningDetails(row)"
-                >学习详情</el-button
+              <el-button type="text" @click="toStudentDetail(row.uid)"
+                >学生详情</el-button
               >
               <el-button type="text" @click="linkTo(row)">转班</el-button>
               <el-button type="text" @click="removeConfirm([row.uid])"
@@ -122,6 +100,10 @@
         <div>
           <el-button @click="batchShift"> 批量转班 </el-button>
           <el-button @click="batchRemove"> 批量移除 </el-button>
+          <el-button @click="batchFromOrgId"> 更换所属机构 </el-button>
+          <el-button @click="exportClassroomUserList" :loading="exportLoading">
+            导出数据
+          </el-button>
         </div>
         <page
           :data="listTotal"
@@ -131,13 +113,25 @@
         />
       </div>
     </div>
+    <UpdateInstitution
+      v-model="updateInstitutionDialog"
+      :ids="selectionIds"
+      :institutionData="institutionData"
+      @on-success="classroomUserList"
+    />
   </div>
 </template>
 
 <script>
+import UpdateInstitution from "../../components/UpdateInstitution.vue";
+import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { cloneOptions } from "@/utils/index";
 import { getInstitutionSelectData } from "@/api/sou";
-import { getClassstudentList, classstudentsBatchRemove } from "@/api/eda";
+import {
+  classroomUserList,
+  classstudentsBatchRemove,
+  exportClassroomUserList,
+} from "@/api/eda";
 export default {
   name: "ClassStudent",
   props: {
@@ -145,6 +139,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+  },
+  components: {
+    PartiallyHidden,
+    UpdateInstitution,
   },
   data() {
     return {
@@ -155,11 +153,11 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
-        organization_id: [],
+        from_organization_id: [],
       },
       searchOptions: [
         {
-          key: "organization_id",
+          key: "from_organization_id",
           type: "cascader",
           attrs: {
             placeholder: "推荐机构",
@@ -177,28 +175,39 @@ export default {
       ],
       selectionIds: [],
       courseStudentIds: [],
+      updateInstitutionDialog: false,
+      institutionData: [],
+      exportLoading: false,
     };
   },
   created() {
     this.getInstitutionSelectData();
-    this.getClassstudentList();
+    this.classroomUserList();
   },
   methods: {
-    learningDetails(row) {
-      this.$router.push({
-        name: "learningDetails",
-        query: {
-          uid: row.uid,
-          course_id: row.course_id,
-          course_name: row.course_name,
-          project_id: row.project_id,
-        },
-      });
+    async exportClassroomUserList() {
+      const data = {
+        class_id: this.$route.query.id,
+      };
+      this.exportLoading = true;
+      const res = await exportClassroomUserList(data).catch();
+      this.exportLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
+    //批量更换所属机构
+    batchFromOrgId() {
+      if (!this.selectionIds.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      this.updateInstitutionDialog = true;
     },
     handleTabelSelectChange(selection) {
       if (selection) {
         this.selectionIds = selection.map((item) => item.uid);
-        this.courseStudentIds = selection.map((item) => item.course_student_id);
+        this.courseStudentIds = selection.map((item) => item.student_id);
       } else {
         this.selectionIds = [];
         this.courseStudentIds = [];
@@ -236,12 +245,14 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[0].attrs.options = cloneOptions(
+        const selectData = cloneOptions(
           res.data,
           "institution_name",
           "institution_id",
           "children"
         );
+        this.institutionData = selectData;
+        this.searchOptions[0].attrs.options = selectData;
       }
     },
     addStudent() {
@@ -272,13 +283,13 @@ export default {
       const res = await classstudentsBatchRemove(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getClassstudentList();
+        this.classroomUserList();
       }
     },
     linkTo(row) {
       const query = {
         uid: [row.uid],
-        course_students_id: [row.course_student_id],
+        course_students_id: [row.student_id],
         old_classroom_id: row.class_id,
       };
       this.$router.push({
@@ -290,33 +301,32 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        organization_id: data.organization_id.pop(),
+        from_organization_id: data.from_organization_id.pop(),
       };
-      this.getClassstudentList();
+      this.classroomUserList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
-      this.getClassstudentList();
+      this.classroomUserList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassstudentList();
+      this.classroomUserList();
     },
     //班级学生列表
-    async getClassstudentList() {
+    async classroomUserList() {
       this.selectionIds = [];
       this.courseStudentIds = [];
       const data = {
         class_id: this.$route.query?.id,
-        course_id: this.classData.course_id,
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassstudentList(data);
+      const res = await classroomUserList(data);
       this.listLoading = false;
-      this.listData = res.data.data;
+      this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
   },
