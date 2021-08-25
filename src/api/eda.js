@@ -1194,3 +1194,27 @@ export function getAdditionalTextbookLog(params) {
     params,
   })
 }
+// 班级详情-题库进度
+export function getClassQuestionStatistics(params) {
+  return request({
+    url: '/questionBank/getClassStatistics',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-班级学生
+export function classroomUserList(params) {
+  return request({
+    url: '/classroom/classroomUserList',
+    method: 'get',
+    params,
+  })
+}
+// 班级详情-班级学生-导出
+export function exportClassroomUserList(params) {
+  return request({
+    url: '/classroom/exportClassroomUserList',
+    method: 'get',
+    params,
+  })
+}

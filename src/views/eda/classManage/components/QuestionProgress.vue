@@ -1,7 +1,6 @@
 <template>
   <!-- 题库进度 -->
   <div class="question-progress">
-    <Title text="题库进度" />
     <div class="table">
       <el-table
         ref="multipleTable"
@@ -13,31 +12,36 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
-      >
-        <el-table-column
-          prop="question_bank_id"
-          label="题库ID"
-          width="100"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="question_bank_name"
-          label="题库名称"
-          min-width="220"
-          align="left"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-
-        <el-table-column
-          prop="category_name"
-          label="所属分类"
-          width="100"
-          show-overflow-tooltip
+        ><el-table-column
+          prop="uid"
+          label="UID"
+          width="70"
           align="center"
         ></el-table-column>
+        <el-table-column
+          label="学员姓名"
+          show-overflow-tooltip
+          min-width="90"
+          prop="nickname"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toStudentDetail(row.uid)">{{
+              row.nickname
+            }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="手机号码"
+          show-overflow-tooltip
+          min-width="110"
+          prop="mobile"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <PartiallyHidden :value="row.mobile" />
+          </template>
+        </el-table-column>
         <el-table-column
           prop="punch_in_days"
           label="打卡天数"
@@ -104,15 +108,10 @@
 </template>
 
 <script>
-import { getBuyQuestionBank } from "@/api/eda";
+import PartiallyHidden from "@/components/PartiallyHidden/index";
+import { getClassQuestionStatistics } from "@/api/eda";
 export default {
   name: "QuestionProgress",
-  props: {
-    uid: {
-      type: [String, Number],
-      default: "",
-    },
-  },
   data() {
     return {
       active: 1,
@@ -122,15 +121,18 @@ export default {
       listTotal: 0,
     };
   },
+  components: {
+    PartiallyHidden,
+  },
   created() {
-    this.getBuyQuestionBank();
+    this.getClassQuestionStatistics();
   },
   methods: {
     toLearningDetails(row) {
       this.$router.push({
         name: "learningDetails",
         query: {
-          uid: this.uid,
+          uid: row.uid,
           question_bank_id: row.question_bank_id,
           question_bank_name: row.question_bank_name,
         },
@@ -138,15 +140,15 @@ export default {
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getBuyQuestionBank();
+      this.getClassQuestionStatistics();
     },
-    async getBuyQuestionBank() {
+    async getClassQuestionStatistics() {
       this.listLoading = true;
       const data = {
-        uid: this.uid,
+        class_id: this.$route.query.id,
         page: this.pageNum,
       };
-      const res = await getBuyQuestionBank(data);
+      const res = await getClassQuestionStatistics(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

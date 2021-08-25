@@ -37,6 +37,7 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="班级学生" name="ClassStudent"></el-tab-pane>
       <el-tab-pane label="课程进度" name="CourseProgress"></el-tab-pane>
+      <el-tab-pane label="题库进度" name="QuestionProgress"></el-tab-pane>
       <el-tab-pane label="班级课表" name="ClassTimetable"></el-tab-pane>
       <el-tab-pane
         label="考勤统计"
