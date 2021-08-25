@@ -714,18 +714,7 @@ export default {
         }
       }
     },
-    // 复制
-    handleCopy(val) {
-      const input = document.createElement("input");
-      document.body.appendChild(input);
-      input.setAttribute("value", val);
-      input.select();
-      if (document.execCommand("copy")) {
-        document.execCommand("copy");
-        document.body.removeChild(input);
-        this.$message.success("复制成功");
-      }
-    },
+
     handlePageChange(val) {
       this.pageNum = val;
       this.getProjectUserList();
