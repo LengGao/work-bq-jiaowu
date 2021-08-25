@@ -354,9 +354,9 @@ export default {
       searchData: {
         date: [toDay(), toDay()],
         keyword: "",
-        from_org: [],
-        project_id: [],
-        category_id: [],
+        from_org: "",
+        project_id: "",
+        category_id: "",
         staff_id: "",
         pay_type: "",
         pay_status: "",
@@ -691,9 +691,13 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: data.category_id?.join(",") || "",
-        project_id: data.project_id?.join(",") || "",
-        from_org: data.from_org?.join(",") || "",
+        category_id: Array.isArray(data.category_id)
+          ? data.category_id.join(",")
+          : "",
+        project_id: Array.isArray(data.project_id)
+          ? data.project_id.join(",")
+          : "",
+        from_org: Array.isArray(data.from_org) ? data.from_org.pop() : "",
       };
       this.getOrderList(data);
     },
