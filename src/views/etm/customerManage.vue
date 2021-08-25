@@ -25,9 +25,14 @@
           >
         </div>
       </header>
-      <el-row class="dataPanel">
+      <el-row
+        class="dataPanel"
+        :gutter="20"
+        type="flex"
+        justify="space-between"
+      >
         <template>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :span="8">
             <div class="timeCard">
               <div>
                 <h3>
@@ -44,7 +49,7 @@
               </div>
             </div>
           </el-col>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :span="8">
             <div class="timeCard">
               <div>
                 <h3>
@@ -60,7 +65,7 @@
               </div>
             </div>
           </el-col>
-          <el-col :lg="{ span: '4-8' }">
+          <el-col :span="8">
             <div class="timeCard">
               <div>
                 <h3>
@@ -442,7 +447,6 @@ export default {
         {
           key: "from_org",
           type: "cascader",
-          width: 120,
           attrs: {
             placeholder: "推荐机构",
             clearable: true,
@@ -453,7 +457,6 @@ export default {
         {
           key: "staff_id",
           type: "select",
-          width: 120,
           options: [],
           optionValue: "staff_id",
           optionLabel: "staff_name",
@@ -563,7 +566,6 @@ export default {
         {
           key: "online_user",
           type: "select",
-          width: 120,
           options: [
             {
               value: "1",
@@ -932,7 +934,7 @@ header {
   margin-top: 20px;
 }
 .timeCard {
-  width: 90%;
+  width: 100%;
   height: 90px;
   border: 1px solid #ccc;
   float: left;
