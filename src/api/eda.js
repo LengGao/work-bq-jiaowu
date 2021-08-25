@@ -1218,3 +1218,11 @@ export function exportClassroomUserList(params) {
     params,
   })
 }
+// 学历列表-导出
+export function exportEduList(params) {
+  return request({
+    url: '/EduOrder/export',
+    method: 'get',
+    params,
+  })
+}

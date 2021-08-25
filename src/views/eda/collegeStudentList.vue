@@ -112,6 +112,11 @@
           </el-table>
         </div>
         <div class="table_bottom">
+          <div>
+            <el-button @click="exportEduList" :loading="exportLoading">
+              导出数据
+            </el-button>
+          </div>
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -126,9 +131,14 @@
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import { getEduList, getAdminSelect, getTreeCategory } from "@/api/eda";
+import {
+  getEduList,
+  getAdminSelect,
+  getTreeCategory,
+  exportEduList,
+} from "@/api/eda";
 import { getInstitutionSelectData } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
+import { cloneOptions, download } from "@/utils/index";
 import { getShortcuts } from "@/utils/date";
 export default {
   name: "collegeStudentList",
@@ -138,9 +148,9 @@ export default {
   data() {
     return {
       searchData: {
-        // keyword: "",
-        // organization_id: "",
-        // staff_id: "",
+        keyword: "",
+        from_organization_id: "",
+        admin_id: "",
         date: "",
       },
       searchOptions: [
@@ -158,34 +168,34 @@ export default {
             },
           },
         },
-        // {
-        //   key: "organization_id",
-        //   type: "cascader",
-        //   attrs: {
-        //     placeholder: "推荐机构",
-        //     filterable: true,
-        //     clearable: true,
-        //     options: [],
-        //   },
-        // },
-        // {
-        //   key: "staff_id",
-        //   type: "select",
-        //   options: [],
-        //   optionValue: "staff_id",
-        //   optionLabel: "staff_name",
-        //   attrs: {
-        //     placeholder: "所属老师",
-        //     clearable: true,
-        //     filterable: true,
-        //   },
-        // },
-        // {
-        //   key: "keyword",
-        //   attrs: {
-        //     placeholder: "学生姓名",
-        //   },
-        // },
+        {
+          key: "from_organization_id",
+          type: "cascader",
+          attrs: {
+            placeholder: "推荐机构",
+            filterable: true,
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: "admin_id",
+          type: "select",
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "keyword",
+          attrs: {
+            placeholder: "学生姓名",
+          },
+        },
       ],
 
       listData: [],
@@ -203,15 +213,30 @@ export default {
       },
       treeData: [],
       treeParams: {},
+      exportLoading: false,
     };
   },
   created() {
     this.getTreeCategory();
     this.getEduList();
-    // this.getInstitutionSelectData();
-    // this.getAdminSelect();
+    this.getInstitutionSelectData();
+    this.getAdminSelect();
   },
   methods: {
+    async exportEduList() {
+      const data = {
+        ...this.searchData,
+        ...this.treeParams,
+      };
+      this.exportLoading = true;
+      const res = await exportEduList(data).catch();
+      this.exportLoading = false;
+      if (res.code === 0) {
+        console.log(res);
+        download(res.data.url, "学历列表");
+        this.$message.success(res.message);
+      }
+    },
     onNodeClick(data) {
       console.log(data);
       const {
@@ -241,7 +266,7 @@ export default {
       });
       this.detaiLoading = false;
       if (res.code === 0) {
-        this.searchOptions[1].options = res.data;
+        this.searchOptions[2].options = res.data;
       }
     },
     // 获取机构
@@ -249,7 +274,7 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[0].attrs.options = cloneOptions(
+        this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
           "institution_name",
           "institution_id",
@@ -261,9 +286,9 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        organization_id: Array.isArray(data.organization_id)
-          ? data.organization_id.pop()
-          : data.organization_id,
+        from_organization_id: Array.isArray(data.from_organization_id)
+          ? data.from_organization_id.pop()
+          : data.from_organization_id,
         date: data.date.length ? data.date.join(" - ") : "",
       };
       this.getEduList();
@@ -306,7 +331,7 @@ export default {
       flex-shrink: 0;
       border-right: 1px solid #eee;
       margin-right: 20px;
-      max-height: 80vh;
+      height: 80vh;
       overflow-y: auto;
     }
     .table-list {
@@ -317,6 +342,10 @@ export default {
     color: #199fff;
     cursor: pointer;
     margin-left: 8px;
+  }
+  .table_bottom {
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>
