@@ -1376,4 +1376,11 @@ export function getSelectList(params) {
     params,
   })
 }
-
+// 项目统计列表
+export function getProjectStatisticsList(params) {
+  return request({
+    url: '/project/users',
+    method: 'get',
+    params,
+  })
+}
