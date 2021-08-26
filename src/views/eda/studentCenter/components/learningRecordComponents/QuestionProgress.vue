@@ -115,7 +115,6 @@ export default {
   },
   data() {
     return {
-      active: 1,
       listData: [],
       listLoading: false,
       pageNum: 1,

@@ -37,8 +37,8 @@ module.exports = {
       '/ai': {
         // target: 'http://dongpei.kaifa',
         // target: 'http://sc.dp.com', //超
-        target: 'http://thing.com',
-        // target: 'http://testadmin.beiqujy.com/apidata', //测试
+        // target: 'http://thing.com',
+        target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://formal.api.beiqujy.com/', //测试
         // target: 'http://thing.com',
         // target: 'http://192.168.8.100', //权

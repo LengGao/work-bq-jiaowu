@@ -152,7 +152,7 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        keyword: "",
+        search_box: "",
         from_organization_id: [],
       },
       searchOptions: [
@@ -167,7 +167,7 @@ export default {
           },
         },
         {
-          key: "keyword",
+          key: "search_box",
           attrs: {
             placeholder: "姓名/手机号码",
           },

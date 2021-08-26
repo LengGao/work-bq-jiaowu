@@ -43,6 +43,7 @@ export default {
         { menuName: "题库进度", component: "QuestionProgress" },
         { menuName: "直播统计", component: "LiveBroadcastStatistics" },
         { menuName: "回顾统计", component: "ReviewStatistics" },
+        { menuName: "面授约课", component: "FaceToFaceAppointment" },
         { menuName: "课表信息", component: "Timetable" },
         { menuName: "考勤统计", component: "AttendanceStatistics" },
         { menuName: "成绩统计", component: "AchievementStatistics" },

@@ -16,7 +16,10 @@
       </div>
       <div class="card-item">
         <p>到课率</p>
-        <p class="number">{{ statisticsData.live_progress || 0 }}</p>
+        <p class="number">
+          {{ statisticsData.live_progress || 0
+          }}<span style="font-size: 18px">%</span>
+        </p>
       </div>
     </div>
     <!--表格-->

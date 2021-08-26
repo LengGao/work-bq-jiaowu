@@ -37,6 +37,7 @@
               background: '#f8f8f8',
             }"
             :cell-style="{ 'text-align': 'center' }"
+            height="666"
           >
             <el-table-column
               prop="surname"

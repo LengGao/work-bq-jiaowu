@@ -1,23 +1,23 @@
 <template>
-  <div class="review-statistics">
-    <Title text="回顾统计" />
+  <div class="face-to-face-appointment">
+    <Title text="面授约课" />
     <div class="card-list">
       <div class="card-item">
-        <p>视频总数</p>
-        <p class="number">{{ statisticsData.total_video_count || 0 }}</p>
+        <p>面授课次数</p>
+        <p class="number">{{ statisticsData.total_num || 0 }}</p>
       </div>
       <div class="card-item">
-        <p>观看个数</p>
-        <p class="number">{{ statisticsData.user_video_count || 0 }}</p>
+        <p>完成次数</p>
+        <p class="number">{{ statisticsData.completions_num || 0 }}</p>
       </div>
       <div class="card-item">
-        <p>观看总时长</p>
-        <p class="number">{{ statisticsData.total_duration || 0 }}</p>
+        <p>失约次数</p>
+        <p class="number">{{ statisticsData.missed_num || 0 }}</p>
       </div>
       <div class="card-item">
-        <p>观看总进度</p>
+        <p>到课率</p>
         <p class="number">
-          {{ statisticsData.progress || 0
+          {{ statisticsData.attendance_rate || 0
           }}<span style="font-size: 18px">%</span>
         </p>
       </div>
@@ -37,60 +37,51 @@
         :cell-style="{ 'text-align': 'center' }"
         height="450"
       >
+        <!-- <el-table-column label="ID" show-overflow-tooltip width="90" prop="id">
+        </el-table-column> -->
         <el-table-column
-          label="序号"
-          show-overflow-tooltip
-          width="90"
-          prop="id"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="classroom_name"
-          label="班级名称"
+          prop="subscribe_classroom_name"
+          label="面授课名称"
           min-width="180"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           prop="chapter_name"
-          label="回顾章节名称"
-          min-width="180"
+          label="课程内容"
+          min-width="260"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="title"
-          label="视频名称"
+          prop="teacher_name"
+          label="任课老师"
           min-width="140"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="create_time"
-          label="开始加入时间"
+          prop="specific_time_range"
+          label="上课时间"
           min-width="140"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="update_time"
-          label="最后离开时间"
-          min-width="140"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="total_second"
-          label="观看时长"
+          prop="address"
+          label="上课地点"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="progress"
-          label="观看进度"
+          prop="status_name"
+          label="完成状态"
           min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>{{ row.progress || 0 }}%</span>
+            <el-tag size="small" :type="statusMap[row.status_name]">{{
+              row.status_name
+            }}</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -107,12 +98,9 @@
 </template>
 
 <script>
-import {
-  userCenterClassroomVideoList,
-  userCenterClassroomVideoData,
-} from "@/api/eda";
+import { FaceToFaceLesson } from "@/api/eda";
 export default {
-  name: "ReviewStatistics",
+  name: "FaceToFaceAppointment",
   props: {
     uid: {
       type: [String, Number],
@@ -127,48 +115,44 @@ export default {
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
+      statusMap: {
+        已签到: "success",
+        已取消: "info",
+        已失约: "danger",
+      },
     };
   },
   created() {
-    this.userCenterClassroomVideoList();
-    this.userCenterClassroomVideoData();
+    this.FaceToFaceLesson();
   },
   methods: {
     handleSizeChange(size) {
       this.pageSize = size;
-      this.userCenterClassroomVideoList();
+      this.FaceToFaceLesson();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.userCenterClassroomVideoList();
+      this.FaceToFaceLesson();
     },
-    async userCenterClassroomVideoData() {
-      const data = {
-        uid: this.uid,
-      };
-      const res = await userCenterClassroomVideoData(data);
-      if (res.code === 0) {
-        this.statisticsData = res.data;
-      }
-    },
-    async userCenterClassroomVideoList() {
+    async FaceToFaceLesson() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
         uid: this.uid,
       };
       this.listLoading = true;
-      const res = await userCenterClassroomVideoList(data);
+      const res = await FaceToFaceLesson(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
+      this.statisticsData = res.data.data;
     },
   },
 };
 </script>
 
 <style lang='scss' scoped>
-.review-statistics {
+.face-to-face-appointment {
   .card-list {
     display: flex;
     align-items: center;
