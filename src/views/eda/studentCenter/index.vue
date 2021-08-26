@@ -19,6 +19,9 @@
         <div class="header-item">
           <el-button type="primary" @click="openSingUpDialog">报名</el-button>
           <el-button type="primary" disabled v-if="false">已报名</el-button>
+          <el-button type="primary" @click="dialogVisible = true"
+            >教材发放</el-button
+          >
         </div>
       </div>
       <el-tabs v-model="activeName">
@@ -40,16 +43,24 @@
     </section>
     <!-- 报名 -->
     <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
+    <!-- 发放教材 -->
+    <GrantTeachMaterials
+      v-model="dialogVisible"
+      :ids="[detailData.uid]"
+      :projectInfo="projectInfo"
+    />
   </div>
 </template>
 
 <script>
+import GrantTeachMaterials from "@/views/eda/components/GrantTeachMaterials";
 import { getStudentBasicDetail } from "@/api/eda";
 import CustomeRegist from "@/views/etm/components/customeRegist";
 export default {
   name: "studentDetail",
   components: {
     CustomeRegist,
+    GrantTeachMaterials,
   },
   data() {
     return {
@@ -57,6 +68,8 @@ export default {
       detailData: {},
       detailLoading: false,
       signUpDialog: false,
+      dialogVisible: false,
+      projectInfo: {},
     };
   },
   computed: {
@@ -83,6 +96,10 @@ export default {
       this.detailLoading = false;
       if (res.code === 0) {
         this.detailData = res.data;
+        this.projectInfo = {
+          uid: res.data.uid,
+          project_id: res.data.project_id,
+        };
       }
     },
   },
