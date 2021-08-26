@@ -547,96 +547,8 @@
               </div>
             </div>
           </div>
-          <!--面授约课-->
-          <div v-if="isTagactive == 6">
-            <div class="punchclock">
-              <ul>
-                <li>
-                  <p>面授课次数</p>
-                  <div>
-                    <strong>{{ faceTitle.total_num }}</strong>
-                  </div>
-                </li>
-                <li>
-                  <p>完成次数</p>
-                  <strong>{{ faceTitle.completions_num }}</strong>
-                </li>
-                <li>
-                  <p>失约次数</p>
-                  <strong>{{ faceTitle.missed_num }}</strong>
-                </li>
-                <li>
-                  <p>到课率</p>
-                  <strong>{{ faceTitle.attendance_rate }}%</strong>
-                </li>
-              </ul>
-            </div>
-            <!--表格-->
-            <div class="userTable">
-              <el-table
-                ref="multipleTable"
-                :data="faceList"
-                tooltip-effect="light"
-                stripe
-                :header-cell-style="{ 'text-align': 'center' }"
-                :cell-style="{ 'text-align': 'center' }"
-                class="min_table"
-              >
-                <el-table-column
-                  prop="subscribe_classroom_name"
-                  label="面授课名称"
-                  show-overflow-tooltip
-                  min-width="100"
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="chapter_name"
-                  label="课程内容"
-                  min-width="100"
-                  column-key="course_id"
-                  show-overflow-tooltip
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="teacher_name"
-                  label="任课老师"
-                  min-width="100"
-                  show-overflow-tooltip
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="specific_time_range"
-                  label="上课时间"
-                  min-width="100"
-                  show-overflow-tooltip
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="address"
-                  label="上课地点"
-                  min-width="100"
-                  show-overflow-tooltip
-                >
-                </el-table-column>
-                <el-table-column
-                  prop="status_name"
-                  label="完成状态"
-                  min-width="100"
-                  show-overflow-tooltip
-                >
-                </el-table-column>
-              </el-table>
-              <div class="table_bottom">
-                <page
-                  :data="listTotal"
-                  :curpage="pageNum"
-                  @pageChange="handlePageChangeface"
-                />
-              </div>
-            </div>
-          </div>
           <!--自主出题-->
-          <div v-if="isTagactive == 7">
+          <div v-if="isTagactive == 6">
             <div class="punchclock">
               <ul>
                 <li>
@@ -739,11 +651,11 @@
             </div>
           </div>
           <!--收藏夹-->
-          <div v-if="isTagactive == 8">
+          <div v-if="isTagactive == 7">
             <ChapterAndQuestion type="0" />
           </div>
           <!--错题集-->
-          <div v-if="isTagactive == 9">
+          <div v-if="isTagactive == 8">
             <ChapterAndQuestion type="1" />
           </div>
         </el-col>
@@ -761,7 +673,6 @@ import {
   pastRealQuestions,
   mockExam,
   challenge,
-  FaceToFaceLesson,
   selfProposed,
 } from "@/api/eda";
 export default {
@@ -812,20 +723,16 @@ export default {
           id: 5,
           name: "刷题挑战",
         },
-        // {
-        //   id: 6,
-        //   name: "面授约课",
-        // },
         {
-          id: 7,
+          id: 6,
           name: "自主出题",
         },
         {
-          id: 8,
+          id: 7,
           name: "收藏夹",
         },
         {
-          id: 9,
+          id: 8,
           name: "错题集",
         },
       ],
@@ -849,8 +756,6 @@ export default {
       } else if (row.id === 5) {
         this.challenge();
       } else if (row.id === 6) {
-        this.FaceToFaceLesson();
-      } else if (row.id === 7) {
         this.selfProposed();
       }
     },
@@ -881,11 +786,6 @@ export default {
       this.challenge();
     },
 
-    //面授约课
-    handlePageChangeface(val) {
-      this.pageNum = val;
-      this.FaceToFaceLesson();
-    },
     //自主出题
     handlePageChangeself(val) {
       this.pageNum = val;
@@ -974,20 +874,7 @@ export default {
         this.listTotal = res.data.total;
       }
     },
-    // 面授约课
-    async FaceToFaceLesson() {
-      const data = {
-        uid: this.$route.query.uid,
-        question_bank_id: this.$route.query.question_bank_id,
-        page: this.pageNum,
-      };
-      const res = await FaceToFaceLesson(data);
-      if (res.code === 0) {
-        this.faceTitle = res.data.data;
-        this.faceList = res.data.list;
-        this.listTotal = res.data.total;
-      }
-    },
+
     // 自主出题
     async selfProposed() {
       const data = {
