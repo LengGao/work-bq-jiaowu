@@ -43,7 +43,7 @@ const searchCache = {
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
             studentList: ['studentChapter'],
-            studentDetail: ['studentChapter', 'learningDetails', 'orderdetail'],
+            studentDetail: ['studentChapter', 'learningDetails', 'orderdetail', 'shift', 'classDetail'],
             questionStatistics: ['learningDetails', 'studentDetail'],
             classDetail: ['learningDetails', 'studentDetail', 'studentChapter'],
             projectStatistics: ['studentDetail'],
