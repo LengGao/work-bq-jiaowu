@@ -101,6 +101,13 @@
         </el-table-column>
       </el-table>
     </div>
+    <div class="table_bottom">
+      <page
+        :data="listTotal"
+        :curpage="pageNum"
+        @pageChange="handlePageChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -116,9 +123,10 @@ export default {
   },
   data() {
     return {
-      active: 1,
       listData: [],
       listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
     };
   },
   created() {
@@ -134,14 +142,20 @@ export default {
         },
       });
     },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.userCourseVideoStatisticsList();
+    },
     async userCourseVideoStatisticsList() {
       this.listLoading = true;
       const data = {
         uid: this.uid,
+        page: this.pageNum,
       };
       const res = await userCourseVideoStatisticsList(data);
       this.listLoading = false;
-      this.listData = res.data;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
     },
   },
 };
