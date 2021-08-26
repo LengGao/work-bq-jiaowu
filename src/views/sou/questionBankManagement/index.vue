@@ -62,7 +62,7 @@
             prop="detect_info"
             label="题库信息"
             align="center"
-            min-width="220"
+            min-width="260"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
