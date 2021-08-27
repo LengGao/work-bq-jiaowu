@@ -1,6 +1,12 @@
 <template>
   <!-- 题库进度 -->
   <div class="question-progress">
+    <!--搜索模块-->
+    <SearchList
+      :options="searchOptions"
+      :data="searchData"
+      @on-search="handleSearch"
+    />
     <div class="table">
       <el-table
         ref="multipleTable"
@@ -119,6 +125,17 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      searchData: {
+        keyword: "",
+      },
+      searchOptions: [
+        {
+          key: "keyword",
+          attrs: {
+            placeholder: "学员姓名/手机号码",
+          },
+        },
+      ],
     };
   },
   components: {
@@ -138,6 +155,13 @@ export default {
         },
       });
     },
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+      };
+      this.getClassQuestionStatistics();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getClassQuestionStatistics();
@@ -147,6 +171,7 @@ export default {
       const data = {
         class_id: this.$route.query.id,
         page: this.pageNum,
+        ...this.searchData,
       };
       const res = await getClassQuestionStatistics(data);
       this.listLoading = false;
