@@ -511,6 +511,14 @@ export function userCenterClassroomVideoList(params) {
     params,
   })
 }
+// 学生详情-回顾统计列表-学生班级下拉
+export function getUserClassroomSelect(params) {
+  return request({
+    url: 'ClassroomVideo/getUserClassroomSelect',
+    method: 'get',
+    params,
+  })
+}
 
 
 

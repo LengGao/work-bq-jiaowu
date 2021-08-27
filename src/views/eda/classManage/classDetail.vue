@@ -56,7 +56,7 @@
 <script>
 import { getClassroomDetail } from "@/api/eda";
 export default {
-  name: "ClassDetail",
+  name: "classDetail",
   data() {
     return {
       activeName: "ClassStudent",
@@ -69,6 +69,9 @@ export default {
         return () => import(`./components/${this.activeName}.vue`);
       }
     },
+  },
+  activated() {
+    this.getClassroomDetail();
   },
   created() {
     this.getClassroomDetail();

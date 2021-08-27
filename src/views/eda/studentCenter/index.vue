@@ -79,6 +79,9 @@ export default {
       }
     },
   },
+  activated() {
+    this.getStudentBasicDetail();
+  },
   created() {
     this.getStudentBasicDetail();
   },

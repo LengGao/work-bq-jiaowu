@@ -72,7 +72,7 @@
         <el-table-column
           align="center"
           prop="answer_num"
-          label="做题人数"
+          label="做题次数"
           min-width="90"
           sortable
           show-overflow-tooltip
@@ -88,7 +88,7 @@
         <el-table-column
           align="center"
           prop="fail_num"
-          label="错题人数"
+          label="错题次数"
           min-width="90"
           sortable
           show-overflow-tooltip

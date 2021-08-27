@@ -169,7 +169,7 @@ export default {
         {
           key: "keyword",
           attrs: {
-            placeholder: "学员姓名/手机号码/班级名称",
+            placeholder: "学员姓名/手机号码",
           },
         },
       ],
