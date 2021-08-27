@@ -1,6 +1,11 @@
 <template>
   <div class="review-statistics">
     <Title text="回顾统计" />
+    <SearchList
+      :options="searchOptions"
+      :data="searchData"
+      @on-search="handleSearch"
+    />
     <div class="card-list">
       <div class="card-item">
         <p>视频总数</p>
@@ -110,6 +115,7 @@
 import {
   userCenterClassroomVideoList,
   userCenterClassroomVideoData,
+  getUserClassroomSelect,
 } from "@/api/eda";
 export default {
   name: "ReviewStatistics",
@@ -127,13 +133,50 @@ export default {
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
+      searchData: {
+        classroom_id: "",
+      },
+      searchOptions: [
+        {
+          key: "classroom_id",
+          type: "select",
+          options: [],
+          width: 280,
+          optionValue: "classroom_id",
+          optionLabel: "classroom_name",
+          attrs: {
+            placeholder: "班级名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+      ],
     };
   },
   created() {
-    this.userCenterClassroomVideoList();
-    this.userCenterClassroomVideoData();
+    this.getUserClassroomSelect();
   },
   methods: {
+    async getUserClassroomSelect() {
+      const data = {
+        uid: this.uid,
+      };
+      const res = await getUserClassroomSelect(data).catch();
+      if (res.code === 0) {
+        this.searchData.classroom_id = res.data[0].classroom_id;
+        this.searchOptions[0].options = res.data;
+      }
+      this.userCenterClassroomVideoList();
+      this.userCenterClassroomVideoData();
+    },
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+      };
+      this.userCenterClassroomVideoData();
+      this.userCenterClassroomVideoList();
+    },
     handleSizeChange(size) {
       this.pageSize = size;
       this.userCenterClassroomVideoList();
@@ -145,6 +188,7 @@ export default {
     async userCenterClassroomVideoData() {
       const data = {
         uid: this.uid,
+        ...this.searchData,
       };
       const res = await userCenterClassroomVideoData(data);
       if (res.code === 0) {
@@ -156,6 +200,7 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         uid: this.uid,
+        ...this.searchData,
       };
       this.listLoading = true;
       const res = await userCenterClassroomVideoList(data);
