@@ -214,7 +214,7 @@ export default {
     // 补放教材
     async issueAdditionalTextbook() {
       const data = {
-        uid: this.ids,
+        uid: this.ids.toString(),
         ...this.ruleForm,
         book_arr: this.ruleForm.books_arr.map((item) => ({
           book_id: item.book_id,
