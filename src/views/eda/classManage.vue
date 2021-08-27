@@ -81,7 +81,7 @@
             show-overflow-tooltip
           ></el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="380">
+          <el-table-column label="操作" fixed="right" min-width="340">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="openEdit(row.classroom_id)"
@@ -90,7 +90,7 @@
                 <el-button type="text" @click="toClassDetail(row.classroom_id)"
                   >班级详情</el-button
                 >
-                <el-button
+                <!-- <el-button
                   type="text"
                   @click="
                     toLearnerManage(
@@ -100,7 +100,7 @@
                     )
                   "
                   >学生管理</el-button
-                >
+                > -->
                 <el-button type="text" @click="toMassMessage(row)"
                   >群发消息</el-button
                 >

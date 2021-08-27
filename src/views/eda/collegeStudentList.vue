@@ -8,6 +8,7 @@
           :props="defaultProps"
           default-expand-all
           ref="tree"
+          highlight-current
           @node-click="onNodeClick"
         >
         </el-tree>
