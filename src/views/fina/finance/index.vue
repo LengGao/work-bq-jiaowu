@@ -27,7 +27,6 @@
       </div>
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
-        <el-tab-pane label="跟进记录" name="FollowUpRecord"></el-tab-pane>
         <el-tab-pane label="证件资料" name="Certificates"></el-tab-pane>
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
