@@ -15,7 +15,7 @@
         <p class="number">{{ statisticsData.total_duration || 0 }}</p>
       </div>
       <div class="card-item">
-        <p>到课率</p>
+        <p>观看总进度</p>
         <p class="number">
           {{ statisticsData.live_progress || 0
           }}<span style="font-size: 18px">%</span>
@@ -173,8 +173,11 @@ export default {
       border: 1px solid #dcdfe6;
       border-radius: 5px;
       color: #606266;
+      display: flex;
+      flex-direction: column;
+      height: 110px;
+      justify-content: space-between;
       .number {
-        margin-top: 20px;
         font-weight: 550;
         font-size: 34px;
       }

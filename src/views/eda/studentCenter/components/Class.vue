@@ -322,11 +322,6 @@ export default {
     this.getuserproject();
     this.unClassCourse();
   },
-  created() {
-    this.getstudendclass();
-    this.getuserproject();
-    this.unClassCourse();
-  },
   methods: {
     // 去转班
     linkTo(row) {

@@ -242,10 +242,6 @@ export default {
     this.getQuestionList();
     this.$refs.chapterMenu.getTopicChapterList();
   },
-  created() {
-    this.getQuestionList();
-  },
-
   methods: {
     async handleBatchSort() {
       const data = {

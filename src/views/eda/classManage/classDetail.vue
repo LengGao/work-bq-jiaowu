@@ -73,9 +73,7 @@ export default {
   activated() {
     this.getClassroomDetail();
   },
-  created() {
-    this.getClassroomDetail();
-  },
+ 
   methods: {
     handlePreview(src) {
       this.$refs.view.show(src);
