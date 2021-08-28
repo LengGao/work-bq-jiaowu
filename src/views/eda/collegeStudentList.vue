@@ -33,6 +33,7 @@
             element-loading-background="#fff"
             tooltip-effect="light"
             stripe
+            style="width: 100%"
             :header-cell-style="{
               'text-align': 'center',
               background: '#f8f8f8',
@@ -75,10 +76,32 @@
               min-width="130"
             ></el-table-column>
             <el-table-column
-              prop="institution_name"
-              label="所属校区"
+              v-if="isActiveAll"
+              prop="type_name"
+              label="学历形式"
               show-overflow-tooltip
-              min-width="130"
+              min-width="100"
+            ></el-table-column>
+            <el-table-column
+              v-if="isActiveAll"
+              prop="university_name"
+              label="院校名称"
+              show-overflow-tooltip
+              min-width="180"
+            ></el-table-column>
+            <el-table-column
+              v-if="isActiveAll"
+              prop="level_name"
+              label="层次名称"
+              show-overflow-tooltip
+              min-width="100"
+            ></el-table-column>
+            <el-table-column
+              v-if="isActiveAll"
+              prop="major_name"
+              label="专业名称"
+              show-overflow-tooltip
+              min-width="150"
             ></el-table-column>
             <el-table-column
               prop="staff_name"
@@ -93,17 +116,37 @@
               min-width="100"
             ></el-table-column>
             <el-table-column
-              prop="order_money"
-              label="订单金额"
-              show-overflow-tooltip
-              min-width="100"
-            ></el-table-column>
-            <el-table-column
               prop="pay_money"
               label="支付金额"
               show-overflow-tooltip
               min-width="100"
-            ></el-table-column>
+            >
+              <template slot-scope="{ row }">
+                <span> ￥{{ row.pay_money }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="order_money"
+              label="订单金额"
+              show-overflow-tooltip
+              min-width="100"
+            >
+              <template slot-scope="{ row }">
+                <span> ￥{{ row.order_money }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="pay_status"
+              label="订单状态"
+              min-width="100"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <el-tag size="small" :type="row.pay_status | orderTagType">{{
+                  row.pay_status | orderStatus
+                }}</el-tag>
+              </template>
+            </el-table-column>
             <el-table-column label="操作" fixed="right" min-width="100">
               <template slot-scope="{ row }">
                 <el-button type="text" @click="toOrderDetail(row.order_id)">
@@ -216,6 +259,7 @@ export default {
       treeData: [],
       treeParams: {},
       exportLoading: false,
+      isActiveAll: true,
     };
   },
   created() {
@@ -246,8 +290,10 @@ export default {
         university_id = "",
         level_id = "",
         major_id = "",
+        title,
       } = data;
       this.treeParams = { type_id, university_id, level_id, major_id };
+      this.isActiveAll = title === "全部";
       this.getEduList();
     },
     async getTreeCategory() {
@@ -338,6 +384,7 @@ export default {
     }
     .table-list {
       flex: 1;
+      overflow: hidden;
     }
   }
   .copy-number {

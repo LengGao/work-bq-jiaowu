@@ -3,7 +3,11 @@
     <section class="mainwrap" v-loading="detailLoading">
       <div class="detail-header">
         <div class="header-item header-user">
-          <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
+          <el-avatar
+            :size="50"
+            icon="el-icon-user-solid"
+            :src="detailData.avatar"
+          ></el-avatar>
           <span class="name">{{ detailData.surname || "--" }}</span>
         </div>
         <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
@@ -17,11 +21,9 @@
           注册日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
+          <el-button @click="dialogVisible = true">教材发放</el-button>
           <el-button type="primary" @click="openSingUpDialog">报名</el-button>
           <el-button type="primary" disabled v-if="false">已报名</el-button>
-          <el-button type="primary" @click="dialogVisible = true"
-            >教材发放</el-button
-          >
         </div>
       </div>
       <el-tabs v-model="activeName">
@@ -80,9 +82,6 @@ export default {
     },
   },
   activated() {
-    this.getStudentBasicDetail();
-  },
-  created() {
     this.getStudentBasicDetail();
   },
   methods: {

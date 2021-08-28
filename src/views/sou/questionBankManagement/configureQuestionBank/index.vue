@@ -101,6 +101,30 @@
                 </template>
               </el-table-column>
               <el-table-column
+                align="center"
+                prop="answer_num"
+                label="做题次数"
+                min-width="90"
+                sortable
+                show-overflow-tooltip
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="collection_num"
+                label="收藏人数"
+                sortable
+                min-width="90"
+                show-overflow-tooltip
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                prop="fail_num"
+                label="错题次数"
+                min-width="90"
+                sortable
+                show-overflow-tooltip
+              ></el-table-column>
+              <el-table-column
                 label="操作"
                 align="center"
                 fixed="right"
@@ -242,10 +266,6 @@ export default {
     this.getQuestionList();
     this.$refs.chapterMenu.getTopicChapterList();
   },
-  created() {
-    this.getQuestionList();
-  },
-
   methods: {
     async handleBatchSort() {
       const data = {
@@ -427,6 +447,7 @@ export default {
     &-right {
       width: calc(100% - 320px);
       margin-left: 20px;
+      overflow: hidden;
     }
   }
 }
