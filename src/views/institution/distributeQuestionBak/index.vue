@@ -1,10 +1,10 @@
 <template>
-  <div class="distribute-courses">
-    <div class="head_remind">*将课程批量分发给入驻机构</div>
+  <div class="distribute-question">
+    <div class="head_remind">*将题库批量分发给入驻机构</div>
     <div class="container">
       <div class="container-table">
         <div class="table-left">
-          <Title text="分发课程" />
+          <Title text="分发题库" />
           <SearchList
             :options="searchLeftOptions"
             :data="searchLeftData"
@@ -26,7 +26,7 @@
           >
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column
-              label="课程名称"
+              label="题库名称"
               show-overflow-tooltip
               min-width="70"
               align="center"
@@ -42,41 +42,13 @@
             >
             </el-table-column>
             <el-table-column
-              prop="user_realname"
-              label="录播班"
-              min-width="160"
-              align="center"
+              label="题库价格"
               show-overflow-tooltip
+              min-width="70"
+              align="center"
+              prop="id"
             >
             </el-table-column>
-            <el-table-column
-              prop="telphone"
-              label="直播特价班"
-              min-width="140"
-              align="center"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="classroom_name"
-              label="直播精英班"
-              min-width="140"
-              align="center"
-              show-overflow-tooltip
-            ></el-table-column>
-            <el-table-column
-              prop="first_time"
-              label="面授班"
-              min-width="140"
-              align="center"
-              show-overflow-tooltip
-            ></el-table-column>
-            <el-table-column
-              prop="last_time"
-              label="学霸班"
-              align="center"
-              min-width="140"
-              show-overflow-tooltip
-            ></el-table-column>
           </el-table>
         </div>
         <div class="table-right">
@@ -115,7 +87,7 @@
       <div class="container-actions">
         <Title text="分发小结" />
         <p class="tips">
-          分发课程数量：<span>30</span> 个，分发机构数量：<span>40</span> 个
+          分发题库数量：<span>30</span> 个，分发机构数量：<span>40</span> 个
         </p>
         <div>
           <el-button>取消</el-button>
@@ -129,7 +101,7 @@
 import { cloneOptions } from "@/utils/index";
 import { getCateList } from "@/api/sou";
 export default {
-  name: "distributeCourses",
+  name: "distributequestion",
   data() {
     return {
       listLeftData: [],
@@ -155,7 +127,7 @@ export default {
         {
           key: "search_box",
           attrs: {
-            placeholder: "课程名称",
+            placeholder: "题库名称",
           },
         },
       ],
@@ -197,7 +169,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.distribute-courses {
+.distribute-question {
   .container {
     padding: 20px;
     &-table {

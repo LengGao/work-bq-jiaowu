@@ -802,6 +802,12 @@ export const asyncRouter = [
     name: 'institution',
     children: [
       {
+        path: 'distributeQuestionBak',
+        name: 'distributeQuestionBak',
+        component: () => import('@/views/institution/distributeQuestionBak/index.vue'),
+        meta: { title: '分发题库', icon: 'product-add' },
+      },
+      {
         path: 'distributeCourses',
         name: 'distributeCourses',
         component: () => import('@/views/institution/distributeCourses/index.vue'),
