@@ -68,6 +68,18 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'projectStatistics',
+        name: 'projectStatistics',
+        component: () => import('@/views/sou/projectStatistics.vue'),
+        meta: { title: '项目统计', icon: 'product-add' },
+      },
+      {
+        path: 'questionStatistics',
+        name: 'questionStatistics',
+        component: () => import('@/views/sou/questionBankManagement/questionStatistics/index.vue'),
+        meta: { title: '题库统计', icon: 'product-add' },
+      },
+      {
         path: 'studentList',
         name: 'studentList',
         component: () => import('@/views/sou/courseManage/studentList/index.vue'),
@@ -78,12 +90,6 @@ export const asyncRouter = [
         name: 'studentChapter',
         component: () => import('@/views/sou/courseManage/studentChapter/index.vue'),
         meta: { title: '章节详情', icon: 'product-add' },
-      },
-      {
-        path: 'studentClasshour',
-        name: 'studentClasshour',
-        component: () => import('@/views/sou/courseManage/studentClasshour/index.vue'),
-        meta: { title: '课时详情', icon: 'product-add' },
       },
       {
         path: 'videoPlayStatistics',
@@ -307,6 +313,12 @@ export const asyncRouter = [
     name: 'etm',
     children: [
       {
+        path: 'eduOrder',
+        name: 'eduOrder',
+        component: () => import('@/views/etm/eduOrder.vue'),
+        meta: { title: '订单列表', icon: 'product-cate' },
+      },
+      {
         path: 'customerManage',
         name: 'customerManage',
         component: () => import('@/views/etm/customerManage.vue'),
@@ -350,6 +362,7 @@ export const asyncRouter = [
     meta: { title: '教务管理', icon: 'zhaoshengguanli' },
     name: 'eda',
     children: [
+
       {
         path: 'courseNotes',
         name: 'courseNotes',
@@ -951,21 +964,24 @@ export const resetRouter = () => {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
 }
-let currentCacheName = ''
+let currentCacheNames = []
 router.beforeEach((to, from, next) => {
   const cacheViews = store.state.cacheView.cacheViews
   const cacheTo = store.state.cacheView.cacheTo
 
-  //  如果去的页面不是缓存条件页面就清除 currentCacheName页面的缓存
-  if (currentCacheName && to.name !== currentCacheName && cacheTo[currentCacheName] && !cacheTo[currentCacheName].includes(to.name)) {
-    store.dispatch('delViewCache', from.name)
-  }
-
   // 添加缓存
   if (cacheViews.includes(to.name)) {
-    currentCacheName = to.name
+    !currentCacheNames.includes(to.name) && currentCacheNames.push(to.name)
     store.dispatch('setViewCache', to.name)
   }
+  //  如果去的页面不是缓存条件页面就清除 currentCacheNames页面的缓存
+  currentCacheNames = currentCacheNames.filter((name) => {
+    if (to.name !== name && !cacheTo[name].includes(to.name)) {
+      store.dispatch('delViewCache', name)
+      return false
+    }
+    return true
+  })
 
   next()
 })

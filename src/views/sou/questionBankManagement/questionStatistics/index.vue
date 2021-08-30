@@ -1,25 +1,17 @@
 <template>
-  <div class="course-student-list">
-    <div class="course-info">
-      <div class="course-info-item">
-        <span class="name">课程名称</span>
-        <span class="value">{{ courseData.course_name }}</span>
+  <div class="question-statistics">
+    <div class="question-info">
+      <div class="question-info-item">
+        <span class="name">题库名称</span>
+        <span class="value">{{ questionData.question_bank_name }}</span>
       </div>
-      <div class="course-info-item">
+      <div class="question-info-item">
         <span class="name">所属分类</span>
-        <span class="value">{{ courseData.cate_name }}</span>
+        <span class="value">{{ questionData.category_name }}</span>
       </div>
-      <div class="course-info-item">
-        <span class="name">总课时</span>
-        <span class="value">{{ courseData.lesson_count }}</span>
-      </div>
-      <div class="course-info-item">
-        <span class="name">总时长</span>
-        <span class="value">{{ courseData.total_duration }}</span>
-      </div>
-      <div class="course-info-item">
+      <div class="question-info-item">
         <span class="name">购买人数</span>
-        <span class="value">{{ courseData.user_count }}</span>
+        <span class="value">{{ questionData.pay_num }}</span>
       </div>
     </div>
     <div class="client_head">
@@ -46,93 +38,84 @@
         <el-table-column
           label="id"
           show-overflow-tooltip
-          min-width="70"
+          width="70"
           align="center"
-          prop="id"
+          prop="uid"
         >
         </el-table-column>
         <el-table-column
-          prop="user_realname"
+          prop="nickname"
           label="学生姓名"
-          min-width="160"
+          min-width="130"
           align="center"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
             <el-button type="text" @click="toStudentDetail(row.uid)">
-              {{ row.user_realname }}
+              {{ row.nickname }}
             </el-button>
           </template>
         </el-table-column>
         <el-table-column
-          prop="telphone"
+          prop="mobile"
           label="手机号码"
           min-width="140"
           align="center"
         >
           <template slot-scope="{ row }">
-            <PartiallyHidden :value="row.telphone" />
+            <PartiallyHidden :value="row.mobile" />
           </template>
         </el-table-column>
         <el-table-column
-          prop="classroom_name"
-          label="所属班级"
-          min-width="140"
+          prop="project_name"
+          label="所属项目"
+          min-width="180"
           align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="first_time"
-          label="首次学习时间"
-          min-width="140"
+          prop="punch_in_days"
+          label="打卡天数"
+          min-width="90"
           align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="last_time"
-          label="最后学习时间"
+          prop="practice_progress"
+          label="章节练习进度"
           align="center"
-          min-width="140"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="duration"
-          label="学习时长"
+          prop="height_test_exam_mark"
+          label="模拟考试最高分"
           align="center"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="finish_lesson_count"
-          label="完成课时"
+          prop="challenge_num"
+          label="刷题挑战次数"
           align="center"
-          min-width="110"
+          min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="progress"
-          label="学习进度"
+          prop="collection_num"
+          label="收藏夹"
           align="center"
-          min-width="110"
+          min-width="90"
           show-overflow-tooltip
         >
-          <template slot-scope="{ row }">
-            <span>{{ row.progress }}%</span>
-          </template>
         </el-table-column>
         <el-table-column
-          prop="progress"
-          label="完成状态"
+          prop="fail_num"
+          label="错题集"
           align="center"
-          min-width="110"
+          min-width="90"
           show-overflow-tooltip
         >
-          <template slot-scope="{ row }">
-            <el-tag size="small" v-if="row.progress === 100" type="success"
-              >已完成</el-tag
-            >
-            <el-tag size="small" v-else type="danger">未完成</el-tag>
-          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -141,17 +124,17 @@
           min-width="100"
         >
           <template slot-scope="scope">
-            <el-button type="text" @click="toChapter(scope.row)"
-              >学习详情</el-button
+            <el-button type="text" @click="toLearningDetails(scope.row)"
+              >做题详情</el-button
             >
           </template>
         </el-table-column>
       </el-table>
       <div class="table_bottom">
         <div>
-          <el-button :loading="exportLoading" @click="exportData"
+          <!-- <el-button :loading="exportLoading" @click="exportData"
             >导出数据</el-button
-          >
+          > -->
         </div>
         <page
           :data="listTotal"
@@ -164,14 +147,10 @@
 </template>
 
 <script>
-import {
-  courseUserVideoStatisticsList,
-  courseUserVideoStatisticsData,
-  exportCourseUserVideoStatisticsList,
-} from "@/api/sou";
+import { questionStatisticsList, questionStatisticsData } from "@/api/sou";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
-  name: "studentList",
+  name: "questionStatistics",
   components: {
     PartiallyHidden,
   },
@@ -182,55 +161,57 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        search_box: "",
+        keyword: "",
+        project_id: "",
       },
       searchOptions: [
         {
-          key: "search_box",
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
           attrs: {
-            placeholder: "学员姓名/手机号码/班级名称",
+            placeholder: "所属项目",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "keyword",
+          attrs: {
+            placeholder: "学员姓名/手机号码",
           },
         },
       ],
-      courseData: {},
+      questionData: {},
       exportLoading: false,
     };
   },
 
   created() {
-    this.courseUserVideoStatisticsList();
-    this.courseUserVideoStatisticsData();
+    this.questionStatisticsList();
+    this.questionStatisticsData();
   },
   methods: {
-    async exportData() {
-      this.exportLoading = true;
-      const data = {
-        course_id: this.$route.query.course_id,
-      };
-      const res = await exportCourseUserVideoStatisticsList(data).catch(() => {
-        this.exportLoading = false;
-      });
-      if (res.code === 0) {
-        this.exportLoading = false;
-        this.$message.success(res.message);
-      }
-    },
-    toChapter(row) {
+    toLearningDetails(row) {
       this.$router.push({
-        name: "studentChapter",
+        name: "learningDetails",
         query: {
           uid: row.uid,
-          course_id: this.$route.query.course_id,
+          question_bank_id: this.$route.query.id,
+          question_bank_name: this.questionData.question_bank_name,
         },
       });
     },
-    async courseUserVideoStatisticsData() {
+    async questionStatisticsData() {
       const data = {
-        course_id: this.$route.query.course_id,
+        question_bank_id: this.$route.query.id,
       };
-      const res = await courseUserVideoStatisticsData(data);
+      const res = await questionStatisticsData(data);
       if (res.code === 0) {
-        this.courseData = res.data;
+        this.questionData = res.data;
+        this.searchOptions[0].options = res.data?.project_list || [];
       }
     },
     handleSearch(data) {
@@ -238,21 +219,21 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.courseUserVideoStatisticsList();
+      this.questionStatisticsList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.courseUserVideoStatisticsList();
+      this.questionStatisticsList();
     },
 
-    async courseUserVideoStatisticsList() {
+    async questionStatisticsList() {
       const data = {
         page: this.pageNum,
-        course_id: this.$route.query.course_id,
+        question_bank_id: this.$route.query.id,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await courseUserVideoStatisticsList(data);
+      const res = await questionStatisticsList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -267,11 +248,11 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
-.course-student-list {
+.question-statistics {
   padding: 20px;
 }
 
-.course-info {
+.question-info {
   display: flex;
   align-items: center;
   &-item {

@@ -92,7 +92,7 @@
 
 <script>
 import SearchList from "@/components/SearchList/index";
-import { dispenseLog } from "@/api/eda";
+import { dispenseLog, getAdditionalTextbookLog } from "@/api/eda";
 export default {
   name: "materialJournal",
   components: {
@@ -112,8 +112,27 @@ export default {
       searchData: {
         date: "",
         staff_name: "",
+        _type: 0,
       },
       searchOptions: [
+        {
+          key: "_type",
+          type: "select",
+          options: [
+            {
+              label: "正常发放",
+              value: 0,
+            },
+            {
+              label: "补发",
+              value: 1,
+            },
+          ],
+
+          attrs: {
+            placeholder: "发放类型",
+          },
+        },
         {
           key: "date",
           type: "datePicker",
@@ -167,9 +186,11 @@ export default {
       };
       delete data.date;
       this.listLoading = true;
-      const res = await dispenseLog(data);
+      const type = this.searchData._type;
+      const api = type === 1 ? getAdditionalTextbookLog : dispenseLog;
+      const res = await api(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = type === 1 ? res.data.data : res.data.list;
       this.listTotal = res.data.total;
     },
   },

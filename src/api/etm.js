@@ -25,6 +25,16 @@ export function getCustomerList(params) {
   })
 }
 /**
+ * 获取项目用户列表
+ */
+export function getProjectUserList(data) {
+  return request({
+    url: '/UserArchives/project_user',
+    method: 'post',
+    data,
+  })
+}
+/**
  * 获取机构下拉列表
  */
 export function getInstitutionList(params) {

@@ -1,6 +1,5 @@
 <template>
-  <div class="playback-statistics">
-    <!--搜索模块-->
+  <div class="course-student-list">
     <div class="client_head">
       <!--搜索模块-->
       <SearchList
@@ -8,6 +7,11 @@
         :data="searchData"
         @on-search="handleSearch"
       />
+      <div>
+        <el-button type="primary" :loading="exportLoading" @click="exportData"
+          >导出数据</el-button
+        >
+      </div>
     </div>
     <!--表格-->
     <div class="userTable">
@@ -21,78 +25,90 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
-        :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
-          label="头像"
-          align="center"
+          label="id"
+          show-overflow-tooltip
           min-width="70"
-          prop="user_img"
+          align="center"
+          prop="id"
         >
-          <template slot-scope="{ row }">
-            <el-avatar
-              :src="row.user_img"
-              icon="el-icon-user-solid"
-            ></el-avatar>
-          </template>
         </el-table-column>
         <el-table-column
-          prop="course_username"
+          prop="user_realname"
           label="学生姓名"
-          min-width="120"
+          min-width="160"
+          align="center"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
             <el-button type="text" @click="toStudentDetail(row.uid)">
-              {{ row.course_username }}
+              {{ row.user_realname }}
             </el-button>
           </template>
         </el-table-column>
         <el-table-column
-          align="center"
           prop="telphone"
           label="手机号码"
-          min-width="100"
-          show-overflow-tooltip
+          min-width="140"
+          align="center"
         >
           <template slot-scope="{ row }">
-            <span>{{ row.telphone | filterPhone }}</span>
+            <PartiallyHidden :value="row.telphone" />
           </template>
         </el-table-column>
         <el-table-column
-          prop="classroom_name"
-          label="所属班级"
-          min-width="250"
+          prop="first_time"
+          label="首次学习时间"
+          min-width="140"
+          align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          prop="last_time"
+          label="最后学习时间"
           align="center"
-          prop="entry_time"
-          label="最早加入时间"
           min-width="140"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          prop="duration"
+          label="学习时长"
           align="center"
-          prop="leave_time"
-          label="最后离开时间"
-          min-width="140"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          align="center"
-          prop="live_video_learn_time"
-          label="观看时长"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          prop="finish_lesson_count"
+          label="完成课时"
           align="center"
+          min-width="110"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
           prop="progress"
-          label="观看进度"
+          label="学习进度"
+          align="center"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.progress }}%</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          label="操作"
+          fixed="right"
+          align="center"
+          min-width="100"
+        >
+          <template slot-scope="scope">
+            <el-button type="text" @click="toChapter(scope.row)"
+              >学习详情</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
@@ -106,17 +122,20 @@
 </template>
 
 <script>
-import { livevideocount, getClassroomSelectByLiveId } from "@/api/eda";
+import {
+  courseUserVideoStatisticsList,
+  exportCourseUserVideoStatisticsList,
+} from "@/api/eda";
+import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
-  name: "PlaybackStatistics",
+  name: "studentList",
+  components: {
+    PartiallyHidden,
+  },
   props: {
-    liveId: {
-      type: [String, Number],
-      default: "",
-    },
-    liveClassId: {
-      type: [String, Number],
-      default: "",
+    classData: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
@@ -126,69 +145,70 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        class_id: "",
         search_box: "",
       },
       searchOptions: [
         {
-          type: "select",
-          options: [],
-          optionValue: "id",
-          optionLabel: "name",
-          key: "class_id",
-          attrs: {
-            clearable: true,
-            filterable: true,
-            placeholder: "班级名称",
-          },
-        },
-        {
           key: "search_box",
           attrs: {
-            placeholder: "学生姓名/手机号码",
+            placeholder: "学员姓名/手机号码",
           },
         },
       ],
+      exportLoading: false,
     };
   },
+
   created() {
-    this.livevideocount();
-    this.getClassroomSelectByLiveId();
+    this.courseUserVideoStatisticsList();
   },
   methods: {
+    async exportData() {
+      this.exportLoading = true;
+      const data = {
+        class_id: this.$route.query.id,
+        course_id: this.classData.course_id,
+      };
+      const res = await exportCourseUserVideoStatisticsList(data).catch(() => {
+        this.exportLoading = false;
+      });
+      if (res.code === 0) {
+        this.exportLoading = false;
+        this.$message.success(res.message);
+      }
+    },
+    toChapter(row) {
+      this.$router.push({
+        name: "studentChapter",
+        query: {
+          uid: row.uid,
+          course_id: this.classData.course_id,
+        },
+      });
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
       };
-      this.livevideocount();
+      this.courseUserVideoStatisticsList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.livevideocount();
+      this.courseUserVideoStatisticsList();
     },
-    // 获取班级选项
-    async getClassroomSelectByLiveId() {
+
+    async courseUserVideoStatisticsList() {
       const data = {
-        live_id: this.liveId || "",
-      };
-      const res = await getClassroomSelectByLiveId(data);
-      if (res.code === 0) {
-        this.searchOptions[0].options = res.data;
-      }
-    },
-    async livevideocount() {
-      const data = {
-        live_id: this.liveId,
-        live_class_id: this.liveClassId,
-        live_course_id: this.$route.query.course_id,
         page: this.pageNum,
+        class_id: this.$route.query.id,
+        course_id: this.classData.course_id,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await livevideocount(data);
+      const res = await courseUserVideoStatisticsList(data);
       this.listLoading = false;
-      this.listData = res.data.data;
+      this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
   },
@@ -201,29 +221,10 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
-.main {
-  padding: 20px;
-  margin: 20px;
-  background: #fff;
-}
-.head_remind {
-  padding: 20px;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 16px;
-  color: #909399;
-  width: 100%;
-  border-bottom: 15px solid #f2f6fc;
-}
+
 .client_head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.userTable {
-  margin-top: 20px;
-}
-.table_bottom {
-  text-align: right;
 }
 </style>

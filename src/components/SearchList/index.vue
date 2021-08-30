@@ -61,7 +61,8 @@ export default {
   },
   methods: {
     initData() {
-      this.searchData = { ...this.data };
+      // this.searchData = { ...this.data };
+      this.searchData = this.data;
     },
     handleReset() {
       for (const key in this.searchData) {

@@ -16,8 +16,15 @@
         :cell-style="{ 'text-align': 'center' }"
         height="540"
       >
-        <el-table-column type="index" label="序号" min-width="60">
+        <el-table-column prop="id" label="序号" min-width="60">
         </el-table-column>
+        <el-table-column
+          prop="create_time"
+          label="操作时间"
+          min-width="110"
+          show-overflow-tooltip
+          sort
+        ></el-table-column>
         <el-table-column
           prop="books_name"
           label="教材名称"
@@ -26,26 +33,31 @@
         >
         </el-table-column>
         <el-table-column
-          prop="chief_editor"
-          label="作者"
+          prop="is_additional"
+          label="发放类型"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span v-if="row.is_additional">补发教材</span>
+            <span v-else>正常发放</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="storehouse_name"
+          label="仓库名称"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
-        <!-- <el-table-column
-          prop="project_name"
-          label="出版日期"
+        <el-table-column
+          prop="num"
+          label="发放数量"
           min-width="110"
           show-overflow-tooltip
-        ></el-table-column> -->
-        <!-- <el-table-column
-          prop="type"
-          label="领取状态"
-          min-width="110"
-          show-overflow-tooltip
-        ></el-table-column> -->
+        ></el-table-column>
         <el-table-column
           prop="type"
-          label="领取方式"
+          label="发放形式"
           min-width="110"
           show-overflow-tooltip
         >
@@ -54,8 +66,8 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="create_time"
-          label="领取时间"
+          prop="staff_name"
+          label="操作人"
           min-width="110"
           show-overflow-tooltip
         ></el-table-column>
@@ -79,7 +91,7 @@
 </template>
 
 <script>
-import { getMaterial } from "@/api/eda";
+import { dispenseBooksLog } from "@/api/eda";
 export default {
   name: "TeachingMaterials",
   props: {
@@ -102,18 +114,18 @@ export default {
     };
   },
   created() {
-    this.getMaterial();
+    this.dispenseBooksLog();
   },
   methods: {
     handleSizeChange(size) {
       this.pageSize = size;
-      this.getMaterial();
+      this.dispenseBooksLog();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getMaterial();
+      this.dispenseBooksLog();
     },
-    async getMaterial() {
+    async dispenseBooksLog() {
       const data = {
         uid: this.uid,
         page: this.pageNum,
@@ -121,7 +133,7 @@ export default {
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getMaterial(data);
+      const res = await dispenseBooksLog(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

@@ -174,20 +174,20 @@
           >
             <template slot-scope="scope">
               <div style="display: flex; justify-content: center">
+                <el-button
+                  type="text"
+                  v-if="scope.row.class_type == 1"
+                  @click="toConfigureCourses(scope.row)"
+                  >配置</el-button
+                >
                 <el-button type="text" @click="toCourseStudent(scope.row)"
-                  >学生管理</el-button
+                  >统计</el-button
                 >
                 <el-button
                   type="text"
                   v-if="scope.row.class_type == 1"
                   @click="toCreateClass(scope.row)"
                   >编辑</el-button
-                >
-                <el-button
-                  type="text"
-                  v-if="scope.row.class_type == 1"
-                  @click="toConfigureCourses(scope.row)"
-                  >配置</el-button
                 >
                 <el-button type="text" @click="handleDelete(scope.row)"
                   >删除</el-button

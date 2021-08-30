@@ -11,7 +11,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button @click="toQuestionList">搜索题目</el-button>
+          <el-button @click="toQuestionList">全部题目</el-button>
           <el-button type="primary" @click="openAdd">添加题库</el-button>
         </div>
       </div>
@@ -59,6 +59,45 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="detect_info"
+            label="题库信息"
+            align="center"
+            min-width="260"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span class="circle"
+                >章节练习<span
+                  class="circle-value"
+                  :class="{ info: !row.practice }"
+                  >({{ row.practice }})</span
+                ></span
+              >
+              <span class="circle"
+                >历年真题<span class="circle-value" :class="{ info: !row.real }"
+                  >({{ row.real }})</span
+                ></span
+              >
+              <span class="circle"
+                >自主出题<span
+                  class="circle-value"
+                  :class="{ info: !row.selfs }"
+                  >({{ row.selfs }})</span
+                ></span
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="buy_num"
+            label="购买人数"
+            min-width="110"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span style="color: #2798ee">{{ row.buy_num }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="book_price"
             label="是否上架"
             min-width="110"
@@ -74,7 +113,7 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="110">
+          <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button
@@ -93,6 +132,9 @@
                   type="text"
                   @click="linkTo('configureScore', row.id, row.title)"
                   >配置分数</el-button
+                >
+                <el-button type="text" @click="toStatistics(row.id)"
+                  >统计</el-button
                 >
                 <el-button type="text" @click="openEdit(row.id)"
                   >编辑</el-button
@@ -178,6 +220,12 @@ export default {
   },
 
   methods: {
+    toStatistics(id) {
+      this.$router.push({
+        name: "questionStatistics",
+        query: { id },
+      });
+    },
     toQuestionList() {
       this.$router.push({ name: "allQuestionList" });
     },
@@ -297,5 +345,17 @@ export default {
 }
 .table_bottom {
   text-align: right;
+}
+.circle {
+  margin-right: 8px;
+  &-value {
+    display: inline-block;
+    margin-left: 3px;
+    text-align: center;
+    color: #6dd152;
+    &.info {
+      color: #bbb;
+    }
+  }
 }
 </style>

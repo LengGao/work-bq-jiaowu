@@ -212,69 +212,81 @@
         >
         </el-table-column>
         <el-table-column
-          prop="video_time_total"
+          prop="category_name"
+          label="所属分类"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="total_lesson_count"
+          label="总课时"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="first_time"
+          label="首次学习时间"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="last_time"
+          label="最后学习时间"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="duration"
           label="学习时长"
           min-width="100"
-          align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="video_progress"
-          label="学习进度"
-          min-width="100"
           align="center"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <span>{{ row.video_progress }}%</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          prop="total_problem"
-          label="做题总数"
+          prop="finish_lesson_count"
+          label="完成课时"
           min-width="100"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           align="center"
-          prop="problem_rate"
-          label="做题进度"
+          prop="progress"
+          label="课程进度"
           min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>{{ row.problem_rate }}%</span>
+            <span>{{ row.progress || 0 }}%</span>
           </template>
         </el-table-column>
         <el-table-column
+          label="操作"
           align="center"
-          prop="real_topic_score"
-          label="历年真题平均分"
+          fixed="right"
           min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          align="center"
-          prop="exam_score"
-          label="模拟考试平均分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          align="center"
-          prop="self_determination_score"
-          label="自主出题最高分"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          align="center"
-          prop="video_time"
-          label="参加直播时长"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <el-button
+              type="text"
+              style="padding: 0"
+              @click="
+                linkTo({
+                  course_student_id: row.id,
+                  old_classroom_id: 0,
+                  course_id: row.course_id,
+                })
+              "
+              >加入班级</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -305,7 +317,7 @@ export default {
       unClassLoading: false,
     };
   },
-  created() {
+  activated() {
     this.getstudendclass();
     this.getuserproject();
     this.unClassCourse();

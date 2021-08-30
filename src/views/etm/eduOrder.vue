@@ -12,10 +12,9 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary" @click="openImport" style="height: 40px">
+          <!-- <el-button type="primary" @click="openImport" style="height: 40px">
             导入订单</el-button
-          >
-          <!-- <el-button type="primary" style="height: 40px"> 导出</el-button> -->
+          > -->
         </div>
       </header>
       <ul class="panel-list">
@@ -180,9 +179,48 @@
               }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="140">
+          <el-table-column
+            prop="contract_status"
+            label="合同状态"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-tag
+                v-if="row.order_id"
+                size="small"
+                :type="statusMap[row.contract_status || 0].type"
+              >
+                {{ statusMap[row.contract_status || 0].text }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
+                <el-button
+                  type="text"
+                  @click="seebtn(row)"
+                  v-if="
+                    !row.contract_status && row.project_ids && !row.sign_url
+                  "
+                  >生成合同</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="seeview(row)"
+                  v-if="row.sign_url && row.contract_status"
+                  >查看合同</el-button
+                >
+                <el-button
+                  type="text"
+                  @click="handleCopy(row.sign_url)"
+                  v-if="
+                    row.sign_url &&
+                    (row.contract_status === 2 || row.contract_status === 4)
+                  "
+                  >复制签名链接</el-button
+                >
                 <el-button
                   type="text"
                   v-if="excludes(row, 0)"
@@ -221,6 +259,71 @@
       :orderInfo="dialogInfo"
       @on-success="getOrderList"
     />
+
+    <!-- 生成合同弹窗 -->
+    <el-dialog
+      title="生成合同"
+      :visible.sync="dialogVisible"
+      width="600px"
+      :close-on-click-modal="false"
+    >
+      <el-form label-width="130px">
+        <el-form-item label="合同模板" prop="template_name">
+          <el-select
+            style="width: 300px"
+            v-model="templateId"
+            clearable
+            placeholder="请选择合同模板"
+          >
+            <el-option
+              v-for="item in dictOptions"
+              :key="item.id"
+              :label="item.template_name"
+              :value="item.id"
+              class="input-width"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="success"
+          :loading="contractLoading"
+          @click="generateContract(1)"
+          >预 览</el-button
+        >
+        <el-button
+          type="primary"
+          :loading="contractLoading"
+          @click="generateContract(0)"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+
+    <!--查看模板弹窗 -->
+    <el-dialog
+      title="查看合同"
+      :visible.sync="viewcondialog"
+      width="1000px"
+      :close-on-click-modal="false"
+      style="margin-top: -6vh"
+      append-to-body
+    >
+      <div style="height: 650px; width: 800px; overflow: hidden; margin-top: 0">
+        <iframe
+          :src="sign_url"
+          ref="iframe"
+          type="application/x-google-chrome-pdf"
+          width="1200px"
+          height="800px"
+          border="0"
+          style="margin-top: -150px; margin-left: -150px"
+        />
+      </div>
+    </el-dialog>
   </section>
 </template>
 
@@ -231,8 +334,10 @@ import { getAdminSelect, getproject } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getOrderList } from "@/api/fina";
 import { cloneOptions } from "@/utils/index";
-import ImportOrder from "./components/ImportOrder";
-import CollectionOrder from "./components/CollectionOrder";
+import { templatelist } from "@/api/system";
+import ImportOrder from "@/views/fina/components/ImportOrder";
+import CollectionOrder from "@/views/fina/components/CollectionOrder";
+import { generate } from "@/api/fina";
 export default {
   name: "finance",
   components: {
@@ -422,40 +527,40 @@ export default {
         money: "",
         reduction: 0,
       },
-      tabFun: [
-        {
-          name: "全部订单",
-          status: "",
-        },
-        {
-          name: "未付款",
-          status: 0,
-        },
-        {
-          name: "新订单",
-          status: 1,
-        },
-        {
-          name: "已付款",
-          status: 3,
-        },
-        {
-          name: "部分付款",
-          status: 2,
-        },
-        {
-          name: "已作废",
-          status: 4,
-        },
-        {
-          name: "已退款",
-          status: 5,
-        },
-      ],
+
       orderActionDialog: false,
       importDialog: false,
       dialogInfo: {},
       dialogType: 1,
+      dictOptions: [],
+      dialogVisible: false,
+      viewcondialog: false,
+      sign_url: "",
+      templateId: "",
+      orderId: "",
+      contractLoading: false,
+      statusMap: {
+        0: {
+          text: "未生成",
+          type: "danger",
+        },
+        1: {
+          text: "未审核",
+          type: "primary",
+        },
+        2: {
+          text: "已审核",
+          type: "success",
+        },
+        3: {
+          text: "已驳回",
+          type: "warning",
+        },
+        4: {
+          text: "签署完成",
+          type: "success",
+        },
+      },
     };
   },
   created() {
@@ -466,6 +571,62 @@ export default {
     this.getproject();
   },
   methods: {
+    // 复制
+    handleCopy(val) {
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message.success("复制成功");
+      }
+    },
+    // 生成合同接口
+    async generateContract(preview) {
+      if (!this.templateId) {
+        this.$message.warning("请选择合同模板");
+        return;
+      }
+      const data = {
+        template_id: this.templateId,
+        order_id: this.orderId,
+        preview,
+      };
+      this.contractLoading = true;
+      const res = await generate(data).catch();
+      this.contractLoading = false;
+      if (res.code == 0) {
+        if (preview) {
+          this.seeview(res.data);
+        } else {
+          this.$message.success(res.message);
+          this.dialogVisible = false;
+          this.getOrderList();
+        }
+      }
+    },
+    seeview(row) {
+      this.viewcondialog = true;
+      this.sign_url = row.sign_url;
+    },
+    seebtn(row) {
+      this.templatelist();
+      this.templateId = "";
+      this.orderId = row.order_id;
+      this.dialogVisible = true;
+    },
+
+    // 合同模板列表接口
+    async templatelist() {
+      const res = await templatelist();
+      if (res.code == 0) {
+        this.dictOptions = res.data.data;
+        console.log(this.dictOptions);
+      }
+    },
+
     // 获取所属分类
     async getCateList() {
       const data = { list: true };

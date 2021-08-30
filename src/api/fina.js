@@ -7,11 +7,11 @@ import request from '@/utils/request'
  * 获取订单列表
  * @param {*} params 
  */
-export function getOrderList(params) {
+export function getOrderList(data) {
     return request({
-        url: '/order/index',
-        method: 'get',
-        params
+        url: '/order/main',
+        method: 'post',
+        data
     })
 }
 /**
