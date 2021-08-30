@@ -39,7 +39,8 @@
               background: '#f8f8f8',
             }"
             :cell-style="{ 'text-align': 'center' }"
-            height="666"
+            height="690"
+            :key="isActiveAll"
           >
             <el-table-column
               prop="surname"
@@ -395,6 +396,7 @@ export default {
   .table_bottom {
     display: flex;
     justify-content: space-between;
+    padding-bottom: 0;
   }
 }
 </style>
