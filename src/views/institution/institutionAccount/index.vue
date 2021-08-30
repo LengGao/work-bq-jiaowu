@@ -10,7 +10,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary">添加机构</el-button>
+          <el-button type="primary" @click="handleAdd">添加机构</el-button>
         </div>
       </div>
       <!--表格-->
@@ -31,38 +31,26 @@
             show-overflow-tooltip
             min-width="70"
             align="center"
-            prop="id"
+            prop="institution_id"
           >
           </el-table-column>
           <el-table-column
             label="机构名称"
             show-overflow-tooltip
-            min-width="70"
-            align="center"
-            prop="id"
+            min-width="240"
+            align="left"
+            prop="institution_name"
           >
           </el-table-column>
           <el-table-column
-            prop="user_realname"
-            label="负责人"
-            min-width="160"
+            prop="balance"
+            label="账户余额"
             align="center"
+            min-width="140"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toStudentDetail(row.uid)">
-                {{ row.user_realname }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="telphone"
-            label="手机号码"
-            min-width="140"
-            align="center"
-          >
-            <template slot-scope="{ row }">
-              <PartiallyHidden :value="row.telphone" />
+              <span class="red">￥{{ row.balance }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -71,28 +59,38 @@
             min-width="140"
             align="center"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                v-model="row.small_program"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="0"
+                @change="modifyInstitutionOther(row, 'small_program')"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="first_time"
             label="开通H5"
             min-width="140"
             align="center"
             show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="last_time"
-            label="账户余额"
-            align="center"
-            min-width="140"
-            show-overflow-tooltip
-          ></el-table-column>
-          <el-table-column
-            prop="duration"
-            label="入驻时间"
-            align="center"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                v-model="row.h5"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="0"
+                @change="modifyInstitutionOther(row, 'h5')"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
           <el-table-column
             label="机构状态"
             align="center"
@@ -101,27 +99,53 @@
           >
             <template slot-scope="{ row }">
               <el-switch
-                v-model="row.is_publish"
+                v-model="row.account_status"
                 active-color="#2798ee"
                 inactive-color="#eaeefb"
                 :active-value="1"
-                :inactive-value="2"
+                :inactive-value="0"
+                @change="modifyInstitutionOther(row, 'account_status')"
               >
               </el-switch>
             </template>
           </el-table-column>
           <el-table-column
+            prop="create_time"
+            label="入驻时间"
+            align="center"
+            min-width="110"
+            show-overflow-tooltip
+          ></el-table-column>
+
+          <el-table-column
             label="操作"
             fixed="right"
             align="center"
-            min-width="160"
+            min-width="260"
           >
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toDetails(row)"
-                >机构详情</el-button
+              <el-button
+                type="text"
+                @click="
+                  linkTo('institutionUser', {
+                    institution_id: row.institution_id,
+                  })
+                "
+                >用户</el-button
               >
-              <el-button type="text" @click="toDetails(row)">充值</el-button>
-              <el-button type="text" @click="toDetails(row)">删除</el-button>
+              <el-button type="text" @click="linkTo('institutionConfig', row)"
+                >配置</el-button
+              >
+              <el-button type="text" @click="linkTo('institutionDetails', row)"
+                >详情</el-button
+              >
+              <el-button type="text" @click="openRecharge(row)">充值</el-button>
+              <el-button type="text" @click="handleEdit(row.institution_id)"
+                >编辑</el-button
+              >
+              <el-button type="text" @click="deleteConfirm(row.institution_id)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -134,17 +158,35 @@
         </div>
       </div>
     </div>
+    <InstitutionDialog
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      :id="currentId"
+      @on-success="getInstitutionList"
+    />
+    <RechargeDialog
+      v-model="rechargeDialogVisible"
+      @on-success="getInstitutionList"
+    />
   </div>
 </template>
 
 <script>
-import { courseUserVideoStatisticsList } from "@/api/sou";
+import {
+  getInstitutionList,
+  modifyInstitutionOther,
+  deletedInstitution,
+} from "@/api/institution";
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
+import InstitutionDialog from "./components/InstitutionDialog";
+import RechargeDialog from "./components/RechargeDialog";
 export default {
   name: "studentList",
   components: {
     PartiallyHidden,
+    InstitutionDialog,
+    RechargeDialog,
   },
   data() {
     return {
@@ -153,7 +195,8 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        search_box: "",
+        keyword: "",
+        date: "",
       },
       searchOptions: [
         {
@@ -171,47 +214,94 @@ export default {
           },
         },
         {
-          key: "search_box",
+          key: "keyword",
           attrs: {
             placeholder: "机构名称/负责人/手机号码",
           },
         },
       ],
-      exportLoading: false,
+      dialogVisible: false,
+      dialogTitle: "",
+      currentId: "",
+      rechargeDialogVisible: false,
     };
   },
 
   created() {
-    this.courseUserVideoStatisticsList();
+    this.getInstitutionList();
   },
   methods: {
-    toDetails(row) {
+    // 删除机构
+    deleteConfirm(institution_id) {
+      this.$confirm("确定要删除此机构吗?", { type: "warning" })
+        .then(() => {
+          this.deletedInstitution(institution_id);
+        })
+        .catch(() => {});
+    },
+    async deletedInstitution(institution_id) {
+      const data = { institution_id };
+      const res = await deletedInstitution(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getInstitutionList();
+      }
+    },
+    async modifyInstitutionOther(row, type) {
+      const data = {
+        keyword: type,
+        state: row[type],
+        institution_id: row.institution_id,
+      };
+      const res = await modifyInstitutionOther(data).catch(() => {
+        row[type] = row[type] === 1 ? 0 : 1;
+      });
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
+    openRecharge() {
+      this.rechargeDialogVisible = true;
+    },
+    handleEdit(institution_id) {
+      this.currentId = institution_id;
+      this.dialogTitle = "编辑机构";
+      this.dialogVisible = true;
+    },
+    handleAdd() {
+      this.currentId = "";
+      this.dialogTitle = "添加机构";
+      this.dialogVisible = true;
+    },
+    linkTo(name, query) {
       this.$router.push({
-        name: "institutionDetails",
-        query: {
-          id: row.id,
-        },
+        name,
+        query,
       });
     },
+
     handleSearch(data) {
       this.pageNum = 1;
+      const date = data.date || ["", ""];
       this.searchData = {
-        ...data,
+        keyword: data.keyword || "",
+        start_time: date[0],
+        end_time: date[1],
       };
-      this.courseUserVideoStatisticsList();
+      this.getInstitutionList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.courseUserVideoStatisticsList();
+      this.getInstitutionList();
     },
-    async courseUserVideoStatisticsList() {
+    async getInstitutionList() {
       const data = {
         page: this.pageNum,
         course_id: 144,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await courseUserVideoStatisticsList(data);
+      const res = await getInstitutionList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -228,6 +318,9 @@ export default {
 }
 .container {
   padding: 20px;
+  .red {
+    color: #fd6584;
+  }
 }
 .client_head {
   display: flex;

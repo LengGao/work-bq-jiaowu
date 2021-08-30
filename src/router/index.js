@@ -820,6 +820,18 @@ export const asyncRouter = [
         meta: { title: '班型管理', icon: 'product-add' },
       },
       {
+        path: 'institutionConfig',
+        name: 'institutionConfig',
+        component: () => import('@/views/institution/institutionAccount/institutionConfig.vue'),
+        meta: { title: '机构配置', icon: 'product-add' },
+      },
+      {
+        path: 'institutionUser',
+        name: 'institutionUser',
+        component: () => import('@/views/institution/institutionAccount/institutionUser.vue'),
+        meta: { title: '机构用户', icon: 'product-add' },
+      },
+      {
         path: 'institutionAccount',
         name: 'institutionAccount',
         component: () => import('@/views/institution/institutionAccount/index.vue'),

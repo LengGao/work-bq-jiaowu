@@ -87,10 +87,7 @@
 
 <script>
 import { provinceAndCityData, CodeToText } from "element-china-area-data";
-import { getInstitutionSelectData } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
 import { updateStudentBasicInfo } from "@/api/eda";
-import { getfieldinfo } from "@/api/etm";
 export default {
   name: "BasicInfo",
   props: {
