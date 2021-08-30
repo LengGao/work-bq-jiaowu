@@ -794,7 +794,39 @@ export const asyncRouter = [
       }
     ],
   },
-
+  {
+    path: '/institution',
+    component: Layout,
+    redirect: '/institution//institutionAccount',
+    meta: { title: '机构管理', icon: 'zhaoshengguanli' },
+    name: 'institution',
+    children: [
+      {
+        path: 'distributeCourses',
+        name: 'distributeCourses',
+        component: () => import('@/views/institution/distributeCourses/index.vue'),
+        meta: { title: '分发课程', icon: 'product-add' },
+      },
+      {
+        path: 'classType',
+        name: 'classType',
+        component: () => import('@/views/institution/classType/index.vue'),
+        meta: { title: '班型管理', icon: 'product-add' },
+      },
+      {
+        path: 'institutionAccount',
+        name: 'institutionAccount',
+        component: () => import('@/views/institution/institutionAccount/index.vue'),
+        meta: { title: '机构账号', icon: 'product-add' },
+      },
+      {
+        path: 'institutionDetails',
+        name: 'institutionDetails',
+        component: () => import('@/views/institution/institutionDetails/index.vue'),
+        meta: { title: '机构详情', icon: 'product-add' },
+      },
+    ]
+  },
   {
     path: '/set',
     component: Layout,
