@@ -533,9 +533,6 @@ export default {
         category_id: Array.isArray(data.category_id)
           ? data.category_id.join(",")
           : "",
-        project_id: Array.isArray(data.project_id)
-          ? data.project_id.join(",")
-          : "",
         from_org: Array.isArray(data.from_org) ? data.from_org.pop() : "",
       };
       this.getOrderList(data);
@@ -550,6 +547,9 @@ export default {
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
+          : "",
+        project_id: Array.isArray(this.searchData.project_id)
+          ? this.searchData.project_id.join(",")
           : "",
       };
       this.listLoading = true;
