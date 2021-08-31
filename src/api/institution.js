@@ -33,7 +33,7 @@ export function modifyInstitution(data) {
         data,
     })
 }
-// 机构列表-修改
+// 机构列表-详情
 export function getInstitutionDetail(params) {
     return request({
         url: 'Organization/info',
@@ -93,6 +93,22 @@ export function getInstitutionUserInfo(params) {
 export function modifyInstitutionUserOther(data) {
     return request({
         url: 'OrganizationAccount/modifyOther',
+        method: 'post',
+        data,
+    })
+}
+// 机构用户列表-修改用户状态，是否超管
+export function modifyInstitutionConfig(data) {
+    return request({
+        url: 'Organization/configuration',
+        method: 'post',
+        data,
+    })
+}
+// 机构列表-充值
+export function institutionRecharge(data) {
+    return request({
+        url: 'Organization/recharge',
         method: 'post',
         data,
     })

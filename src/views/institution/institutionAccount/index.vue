@@ -50,7 +50,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span class="red">￥{{ row.balance }}</span>
+              <span :class="{ red: row.balance > 0 }">￥{{ row.balance }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -133,12 +133,18 @@
                 "
                 >用户</el-button
               >
-              <el-button type="text" @click="linkTo('institutionConfig', row)"
+              <el-button
+                type="text"
+                @click="
+                  linkTo('institutionConfig', {
+                    institution_id: row.institution_id,
+                  })
+                "
                 >配置</el-button
               >
-              <el-button type="text" @click="linkTo('institutionDetails', row)"
+              <!-- <el-button type="text" @click="linkTo('institutionDetails', row)"
                 >详情</el-button
-              >
+              > -->
               <el-button type="text" @click="openRecharge(row)">充值</el-button>
               <el-button type="text" @click="handleEdit(row.institution_id)"
                 >编辑</el-button
@@ -166,6 +172,7 @@
     />
     <RechargeDialog
       v-model="rechargeDialogVisible"
+      :detailData="currentData"
       @on-success="getInstitutionList"
     />
   </div>
@@ -260,7 +267,8 @@ export default {
         this.$message.success(res.message);
       }
     },
-    openRecharge() {
+    openRecharge(row) {
+      this.currentData = row;
       this.rechargeDialogVisible = true;
     },
     handleEdit(institution_id) {
