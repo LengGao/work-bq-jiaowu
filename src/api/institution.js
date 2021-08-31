@@ -113,3 +113,83 @@ export function institutionRecharge(data) {
         data,
     })
 }
+// 班型列表
+export function getClassTypeList(params) {
+    return request({
+        url: '/Merchant/classTypeList',
+        method: 'get',
+        params,
+    })
+}
+// 班型列表-添加
+export function createClassType(data) {
+    return request({
+        url: '/Merchant/createClassType',
+        method: 'post',
+        data,
+    })
+}
+// 班型列表-修改
+export function updateClassType(data) {
+    return request({
+        url: '/Merchant/updateClassType',
+        method: 'post',
+        data,
+    })
+}
+// 班型列表-删除
+export function deleteClassType(data) {
+    return request({
+        url: '/Merchant/deleteClassType',
+        method: 'post',
+        data,
+    })
+}
+// 班型列表-启用禁用
+export function updateClassTypeStatus(data) {
+    return request({
+        url: '/Merchant/updateClassTypeStatus',
+        method: 'post',
+        data,
+    })
+}
+// 班型列表-排序
+export function updateClassTypeSort(data) {
+    return request({
+        url: '/Merchant/updateClassTypeSort',
+        method: 'post',
+        data,
+    })
+}
+// 分发课程-课程列表
+export function getDistributeCourseList(params) {
+    return request({
+        url: '/Merchant/courseList',
+        method: 'get',
+        params,
+    })
+}
+// 分发课程-机构列表
+export function getOrgList(params) {
+    return request({
+        url: '/Merchant/orgList',
+        method: 'get',
+        params,
+    })
+}
+// 分发课程
+export function assignOrgCourse(data) {
+    return request({
+        url: '/Merchant/assignOrgCourse',
+        method: 'post',
+        data,
+    })
+}
+// 分发题库
+export function assignOrgQuestionBank(data) {
+    return request({
+        url: 'OrganizationQuestionBankRelation/authorization',
+        method: 'post',
+        data,
+    })
+}

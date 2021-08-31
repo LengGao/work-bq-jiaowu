@@ -10,7 +10,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary">添加班型</el-button>
+          <el-button type="primary" @click="handleAdd">添加班型</el-button>
         </div>
       </div>
       <!--表格-->
@@ -37,54 +37,85 @@
           <el-table-column
             label="班型名称"
             show-overflow-tooltip
-            min-width="70"
-            align="center"
-            prop="id"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="user_realname"
-            label="题库"
             min-width="160"
             align="center"
-            show-overflow-tooltip
+            prop="title"
           >
           </el-table-column>
           <el-table-column
-            prop="telphone"
+            prop="has_question"
+            label="题库"
+            min-width="80"
+            align="center"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <svg-icon
+                :icon-class="row.has_question === 1 ? 'yes' : 'not'"
+              ></svg-icon>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="has_video"
             label="录播"
-            min-width="140"
+            min-width="80"
             align="center"
           >
+            <template slot-scope="{ row }">
+              <svg-icon
+                :icon-class="row.has_video === 1 ? 'yes' : 'not'"
+              ></svg-icon>
+            </template>
           </el-table-column>
           <el-table-column
-            prop="classroom_name"
+            prop="has_live"
             label="直播"
-            min-width="140"
+            min-width="80"
             align="center"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <svg-icon
+                :icon-class="row.has_live === 1 ? 'yes' : 'not'"
+              ></svg-icon>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="first_time"
+            prop="has_teach"
             label="面授"
-            min-width="140"
+            min-width="80"
             align="center"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <svg-icon
+                :icon-class="row.has_teach === 1 ? 'yes' : 'not'"
+              ></svg-icon>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="last_time"
+            prop="remark"
             label="备注信息"
             align="center"
-            min-width="140"
+            min-width="200"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="duration"
+            prop="sort"
             label="排序"
             align="center"
-            min-width="110"
+            min-width="80"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <el-input
+                type="number"
+                v-model="row.sort"
+                @blur="updateClassTypeSort(row)"
+              >
+              </el-input>
+            </template>
+          </el-table-column>
           <el-table-column
             label="是否启用"
             align="center"
@@ -93,11 +124,12 @@
           >
             <template slot-scope="{ row }">
               <el-switch
-                v-model="row.is_publish"
+                v-model="row.status"
                 active-color="#2798ee"
                 inactive-color="#eaeefb"
                 :active-value="1"
-                :inactive-value="2"
+                :inactive-value="0"
+                @change="updateClassTypeStatus(row)"
               >
               </el-switch>
             </template>
@@ -109,8 +141,10 @@
             min-width="160"
           >
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toDetails(row)">编辑</el-button>
-              <el-button type="text" @click="toDetails(row)">删除</el-button>
+              <el-button type="text" @click="handleEdit(row)">编辑</el-button>
+              <el-button type="text" @click="deleteConfirm(row.id)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -119,22 +153,39 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
     </div>
+    <ClassTypeDialog
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      :detailData="currentData"
+      @on-success="getClassTypeList"
+    />
   </div>
 </template>
 
 <script>
-import { courseUserVideoStatisticsList } from "@/api/sou";
+import {
+  getClassTypeList,
+  deleteClassType,
+  updateClassTypeStatus,
+  updateClassTypeSort,
+} from "@/api/institution";
+import ClassTypeDialog from "./components/ClassTypeDialog";
 export default {
-  name: "studentList",
+  name: "classTypeList",
+  components: {
+    ClassTypeDialog,
+  },
   data() {
     return {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         search_box: "",
@@ -147,41 +198,88 @@ export default {
           },
         },
       ],
-      exportLoading: false,
+      dialogVisible: false,
+      dialogTitle: "",
+      currentData: {},
     };
   },
 
   created() {
-    this.courseUserVideoStatisticsList();
+    this.getClassTypeList();
   },
   methods: {
-    toDetails(row) {
-      this.$router.push({
-        name: "institutionDetails",
-        query: {
-          id: row.id,
-        },
+    async updateClassTypeSort({ id, sort }) {
+      const data = {
+        id,
+        sort,
+      };
+      const res = await updateClassTypeSort(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+      this.getClassTypeList();
+    },
+    async updateClassTypeStatus(row) {
+      const data = {
+        status: row.status,
+        id: row.id,
+      };
+      const res = await updateClassTypeStatus(data).catch(() => {
+        row.status = row.status === 1 ? 0 : 1;
       });
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
+    // 删除机构
+    deleteConfirm(id) {
+      this.$confirm("确定要删除此班型吗?", { type: "warning" })
+        .then(() => {
+          this.deleteClassType(id);
+        })
+        .catch(() => {});
+    },
+    async deleteClassType(id) {
+      const data = { id };
+      const res = await deleteClassType(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getClassTypeList();
+      }
+    },
+    handleEdit(row) {
+      this.currentData = row;
+      this.dialogTitle = "编辑班型";
+      this.dialogVisible = true;
+    },
+    handleAdd() {
+      this.currentData = {};
+      this.dialogTitle = "添加班型";
+      this.dialogVisible = true;
     },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
       };
-      this.courseUserVideoStatisticsList();
+      this.getClassTypeList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.courseUserVideoStatisticsList();
+      this.getClassTypeList();
     },
-    async courseUserVideoStatisticsList() {
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getClassTypeList();
+    },
+    async getClassTypeList() {
       const data = {
         page: this.pageNum,
-        course_id: 144,
+        limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await courseUserVideoStatisticsList(data);
+      const res = await getClassTypeList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
