@@ -319,6 +319,12 @@ export const asyncRouter = [
         meta: { title: '订单列表', icon: 'product-cate' },
       },
       {
+        path: 'customerProject',
+        name: 'customerProject',
+        component: () => import('@/views/etm/customerProject.vue'),
+        meta: { title: '用户项目', icon: 'product-add' },
+      },
+      {
         path: 'customerManage',
         name: 'customerManage',
         component: () => import('@/views/etm/customerManage.vue'),
