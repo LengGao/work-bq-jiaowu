@@ -48,6 +48,23 @@
             clearable
           ></el-cascader>
         </el-form-item>
+        <el-form-item label="渠道来源" prop="sources">
+          <el-select
+            filterable
+            clearable
+            v-model="ruleForm.sources"
+            placeholder="请选择渠道来源"
+            class="input-width"
+          >
+            <el-option
+              v-for="item in field_content"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="备用号码" prop="second_mobile">
           <el-input
             placeholder="请输入备用号码"
@@ -73,6 +90,7 @@
             v-model="ruleForm.wechat"
           ></el-input>
         </el-form-item>
+
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="ruleForm.sex">
             <el-radio :label="1">男</el-radio>
@@ -142,24 +160,6 @@
                 class="input-width"
                 v-model="ruleForm.location"
               ></el-input> -->
-        </el-form-item>
-
-        <el-form-item label="渠道来源" prop="sources">
-          <el-select
-            filterable
-            clearable
-            v-model="ruleForm.sources"
-            placeholder="请选择渠道来源"
-            class="input-width"
-          >
-            <el-option
-              v-for="item in field_content"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
         </el-form-item>
 
         <el-form-item label="备注信息" prop="tips" style="width: 100%">
@@ -281,6 +281,9 @@ export default {
         },
       ],
       rules: {
+        sources: [
+          { required: true, message: "请选择渠道来源", trigger: "change" },
+        ],
         from_organization_id: [
           { required: true, message: "请选择推荐机构", trigger: "change" },
         ],
