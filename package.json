@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:test": "vue-cli-service build --mode testing",
+    "build:stand": "vue-cli-service build --mode stand",
     "test:unit": "vue-cli-service test:unit",
     "analyz": "set npm_config_report=true && npm run build"
   },
