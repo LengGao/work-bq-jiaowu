@@ -81,6 +81,8 @@ let loginApi = {
             type: 'success',
             message: res.data.message,
           })
+        }else{
+          console.log('出错了')
         }
       },
     })
