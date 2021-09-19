@@ -40,7 +40,7 @@
       <page
         :data="listTotal"
         :curpage="pageNum"
-        :pageSize="10"
+        :="10"
         @pageChange="handlePageChange"
       />
     </div>
