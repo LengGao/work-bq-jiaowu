@@ -80,7 +80,6 @@
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
-
           <el-table-column label="操作" fixed="right" min-width="340">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
@@ -104,6 +103,9 @@
                 <el-button type="text" @click="toMassMessage(row)"
                   >群发消息</el-button
                 >
+                <el-button type="text" @click="wxMassMessage(row)"
+                >微信通知</el-button
+              >
                 <el-button type="text" @click="toReturnVisit(row.classroom_id)"
                   >学习回访</el-button
                 >
@@ -283,6 +285,14 @@ export default {
     toMassMessage(row) {
       this.$router.push({
         name: "massMessage",
+        query: {
+          classroom_id: row.classroom_id,
+        },
+      });
+    },
+    wxMassMessage(row) {
+      this.$router.push({
+        name: "wxMessage",
         query: {
           classroom_id: row.classroom_id,
         },
