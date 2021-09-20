@@ -225,6 +225,14 @@ export default {
     },
     // 分发
     async assignOrgCourse() {
+      if (!this.leftSelection.length) {
+        this.$message.warning("请选择课程");
+        return;
+      }
+      if (!this.rightSelection.length) {
+        this.$message.warning("请选择机构");
+        return;
+      }
       const coursePriceMap = {};
       const arr = this.leftSelection.map((item) => ({
         [item.course_id]: item[item.course_id],

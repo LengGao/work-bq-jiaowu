@@ -217,11 +217,23 @@ export default {
     },
     // 分发
     async assignOrgQuestionBank() {
+      if (!this.leftSelection.length) {
+        this.$message.warning("请选择题库");
+        return;
+      }
+      if (!this.rightSelection.length) {
+        this.$message.warning("请选择机构");
+        return;
+      }
+      if (this.leftSelection.some((item) => item.price === "")) {
+        this.$message.warning("请输入选中题库的价格");
+        return;
+      }
       const data = {
         institution_arr: this.rightSelection,
         question_bank_arr: this.leftSelection.map((item) => ({
           question_bank_id: item.id,
-          wholesale_price: item.price,
+          wholesale_price: item.price || 0,
         })),
       };
       this.submitLoading = true;
