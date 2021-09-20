@@ -231,6 +231,7 @@ export default {
       dialogTitle: "",
       currentId: "",
       rechargeDialogVisible: false,
+      currentData: {},
     };
   },
 

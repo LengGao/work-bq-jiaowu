@@ -18,7 +18,6 @@
         <div class="detail-con">{{ $route.query.question_bank_name }}</div>
       </div>
     </div>
-
     <section class="main-contain">
       <el-row style="min-width: 1100px; padding: 0 20px">
         <el-col :lg="24" :md="24" :sm="24" :xs="24">
@@ -684,7 +683,6 @@ export default {
     return {
       pageNum: 1,
       listTotal: 0,
-
       state: 0,
       isTagactive: 1,
       dataTitle: {},
