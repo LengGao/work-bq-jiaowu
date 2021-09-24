@@ -498,6 +498,13 @@ export const asyncRouter = [
         hidden: true,
       },
       {
+        path: 'wxMessage',
+        name: 'wxMessage',
+        component: () => import('@/views/eda/classManage/wxMessage.vue'),
+        meta: { title: '微信通知', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
         path: 'classDetail',
         name: 'classDetail',
         component: () => import('@/views/eda/classManage/classDetail.vue'),
