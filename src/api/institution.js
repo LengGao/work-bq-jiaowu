@@ -97,7 +97,7 @@ export function modifyInstitutionUserOther(data) {
         data,
     })
 }
-// 机构用户列表-修改用户状态，是否超管
+// 机构用户列表-修改机构配置
 export function modifyInstitutionConfig(data) {
     return request({
         url: 'Organization/configuration',
@@ -191,5 +191,40 @@ export function assignOrgQuestionBank(data) {
         url: 'OrganizationQuestionBankRelation/authorization',
         method: 'post',
         data,
+    })
+}
+/**
+ * 获取模板列表
+ */
+export function getOrgWxTemplateConfigData(params) {
+    return request({
+        url: '/Merchant/getOrgWxTemplateConfigData',
+        method: 'get',
+        params,
+    })
+}
+
+/**
+ * 构建模板消息列表
+ */
+export function buildOrgWxTemplateConfigData(params) {
+    return request({
+        url: '/Merchant/buildOrgWxTemplateConfigData',
+        method: 'get',
+        params,
+    })
+}
+
+
+// 小程序，公众号授权文件， 上传
+export const uploadLocal = `${process.env.VUE_APP_LOACTION}/oss/uploadLocal `
+
+
+//修改模板发送状态
+export function updateOrgWxTemplateConfigStatus(data) {
+    return request({
+        url: '/Merchant/updateOrgWxTemplateConfigStatus',
+        method: 'post',
+        data
     })
 }

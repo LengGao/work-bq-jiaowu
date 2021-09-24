@@ -133,7 +133,7 @@ import {
 } from "@/api/institution";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
-  name: "UserManage",
+  name: "institutionUser",
   components: {
     PartiallyHidden,
     InstitutionUserDialog,

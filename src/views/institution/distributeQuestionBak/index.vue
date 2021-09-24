@@ -24,7 +24,7 @@
               background: '#f8f8f8',
             }"
             @selection-change="handleLeftSelection"
-            height="550"
+            height="520"
           >
             <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column
@@ -90,7 +90,7 @@
               'text-align': 'center',
               background: '#f8f8f8',
             }"
-            height="550"
+            height="520"
             @selection-change="handleRightSelection"
           >
             <el-table-column type="selection" width="55"> </el-table-column>

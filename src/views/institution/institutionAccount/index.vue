@@ -189,7 +189,7 @@ import PartiallyHidden from "@/components/PartiallyHidden/index";
 import InstitutionDialog from "./components/InstitutionDialog";
 import RechargeDialog from "./components/RechargeDialog";
 export default {
-  name: "studentList",
+  name: "institutionAccount",
   components: {
     PartiallyHidden,
     InstitutionDialog,
