@@ -828,7 +828,7 @@ export const asyncRouter = [
       {
         path: 'institutionConfig',
         name: 'institutionConfig',
-        component: () => import('@/views/institution/institutionAccount/institutionConfig.vue'),
+        component: () => import('@/views/institution/institutionConfig/index.vue'),
         meta: { title: '机构配置', icon: 'product-add' },
       },
       {
