@@ -1,11 +1,11 @@
 <template>
-  <div class="mainwrap">
+  <div class="general">
     <el-form
       label-width="110px"
       :model="formData"
       :rules="rules"
       ref="ruleForm"
-      class="class-form"
+      class="general-form"
       :show-message="true"
       label-position="right"
     >
@@ -84,14 +84,13 @@
         </quill-editor>
         <el-input v-show="false" v-model="formData.about_us" />
       </el-form-item>
-
-      <div class="entybtn">
-        <el-button @click="getInstitutionDetail">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-          >保 存</el-button
-        >
-      </div>
     </el-form>
+    <div class="entybtn">
+      <el-button @click="getInstitutionDetail">取 消</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')"
+        >保 存</el-button
+      >
+    </div>
   </div>
 </template>
 
@@ -208,17 +207,30 @@ export default {
     min-height: 180px;
   }
 }
-.mainwrap {
+.general {
+  height: 80vh;
+  overflow: hidden;
+  position: relative;
   .text {
     color: #999;
     margin-left: 30px;
     margin-bottom: 20px;
   }
+  &-form {
+    height: 100%;
+    overflow-y: auto;
+  }
+  .entybtn {
+    padding-left: 110px;
+    padding-top: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+  }
 }
 
-.entybtn {
-  margin-left: 110px;
-}
 .qrCode {
   display: flex;
 }

@@ -228,3 +228,12 @@ export function updateOrgWxTemplateConfigStatus(data) {
         data
     })
 }
+
+//根据机构id获取token
+export function getInstitutionToken(data) {
+    return request({
+        url: 'OrganizationAccount/getToken',
+        method: 'post',
+        data
+    })
+}
