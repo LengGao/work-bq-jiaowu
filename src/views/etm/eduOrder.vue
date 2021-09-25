@@ -339,7 +339,7 @@ import ImportOrder from "@/views/fina/components/ImportOrder";
 import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import { generate } from "@/api/fina";
 export default {
-  name: "finance",
+  name: "eduOrder",
   components: {
     ImportOrder,
     CollectionOrder,
