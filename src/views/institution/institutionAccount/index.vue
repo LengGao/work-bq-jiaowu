@@ -35,9 +35,20 @@
           >
           </el-table-column>
           <el-table-column
+            label="机构LOGO"
+            show-overflow-tooltip
+            min-width="160"
+            align="center"
+            prop="institution_id"
+          >
+            <template slot-scope="{ row }">
+              <img class="logo" :src="row.logo" alt="" />
+            </template>
+          </el-table-column>
+          <el-table-column
             label="机构名称"
             show-overflow-tooltip
-            min-width="240"
+            min-width="200"
             align="left"
             prop="institution_name"
           >
@@ -46,7 +57,7 @@
             prop="balance"
             label="账户余额"
             align="center"
-            min-width="140"
+            min-width="120"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -92,7 +103,51 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="机构状态"
+            label="配置小程序"
+            show-overflow-tooltip
+            min-width="100"
+            align="center"
+            prop="institution_id"
+          >
+            <template slot-scope="{ row }">
+              <el-tag
+                :type="row.applet_config_status ? 'success' : 'danger'"
+                size="small"
+                >{{ row.applet_config_status ? "是" : "否" }}</el-tag
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="配置H5"
+            show-overflow-tooltip
+            min-width="100"
+            align="center"
+            prop="institution_id"
+          >
+            <template slot-scope="{ row }">
+              <el-tag
+                :type="row.wechat_config_status ? 'success' : 'danger'"
+                size="small"
+                >{{ row.wechat_config_status ? "是" : "否" }}</el-tag
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="account_num"
+            label="账号数量"
+            align="center"
+            min-width="90"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="last_sign_time"
+            label="最近登录时间"
+            align="center"
+            min-width="140"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            label="是否启用"
             align="center"
             min-width="100"
             show-overflow-tooltip
@@ -110,18 +165,10 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="create_time"
-            label="入驻时间"
-            align="center"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
-
-          <el-table-column
             label="操作"
             fixed="right"
             align="center"
-            min-width="260"
+            min-width="280"
           >
             <template slot-scope="{ row }">
               <el-button
@@ -155,7 +202,7 @@
               <el-button
                 type="text"
                 @click="getInstitutionToken(row.institution_id)"
-                >机构后台</el-button
+                >登录后台</el-button
               >
             </template>
           </el-table-column>
@@ -355,5 +402,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
+.logo {
+  height: 50px;
 }
 </style>
