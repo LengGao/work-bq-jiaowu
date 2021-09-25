@@ -152,6 +152,11 @@
               <el-button type="text" @click="deleteConfirm(row.institution_id)"
                 >删除</el-button
               >
+              <el-button
+                type="text"
+                @click="getInstitutionToken(row.institution_id)"
+                >机构后台</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -183,6 +188,7 @@ import {
   getInstitutionList,
   modifyInstitutionOther,
   deletedInstitution,
+  getInstitutionToken,
 } from "@/api/institution";
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
@@ -239,6 +245,19 @@ export default {
     this.getInstitutionList();
   },
   methods: {
+    async getInstitutionToken(institution_id) {
+      const data = { institution_id };
+      const res = await getInstitutionToken(data);
+      if (res.code === 0) {
+        console.log(res.data);
+        let params = "";
+        for (const key in res.data) {
+          params += `${key}=${res.data[key]}&`;
+        }
+        const url = `//store.beiqujy.com/#/?${params.slice(0, -1)}`;
+        window.open(url);
+      }
+    },
     // 删除机构
     deleteConfirm(institution_id) {
       this.$confirm("确定要删除此机构吗?", { type: "warning" })
