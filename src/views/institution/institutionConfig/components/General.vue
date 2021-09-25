@@ -18,14 +18,14 @@
           >*用于对外展示课程题库的购买人数、学习人数等数据</span
         >
       </el-form-item>
-      <el-form-item label="审核模式">
-        <el-radio-group v-model="formData.debug">
-          <el-radio :label="1">开启</el-radio>
-          <el-radio :label="0">关闭</el-radio>
-        </el-radio-group>
-        <span class="text"
-          >*为了小程序顺利上线，请在审核期间开启审核模式，否则有可能会被驳回。新版小程序发布之后，请立即关闭审核模式。</span
-        >
+      <el-form-item label="审核版本号">
+        <el-input
+          style="width: 280px"
+          placeholder="请输入审核版本号"
+          type="number"
+          v-model="formData.applet_version"
+        ></el-input>
+        <span class="text">*请输入当前机构提交审核的版本号。</span>
       </el-form-item>
       <el-form-item label="网校LOGO" style="margin-bottom: 40px">
         <UploadImg width="280" height="130" v-model="formData.logo">
@@ -118,7 +118,7 @@ export default {
       disabled: false,
       formData: {
         data_source: "System",
-        debug: 0,
+        applet_version: "",
         logo: "",
         logo_other: "",
         app_banner: "",
@@ -131,7 +131,9 @@ export default {
         data_source: [
           { required: true, message: "请选择统计数据", trigger: "blur" },
         ],
-        debug: [{ required: true, message: "请选择审核模式", trigger: "blur" }],
+        applet_version: [
+          { required: true, message: "请输入审核版本号", trigger: "blur" },
+        ],
         logo: [{ required: true, message: "请选择", trigger: "blur" }],
         logo_other: [{ required: true, message: "请选择", trigger: "blur" }],
         app_banner: [{ required: true, message: "请选择", trigger: "blur" }],
