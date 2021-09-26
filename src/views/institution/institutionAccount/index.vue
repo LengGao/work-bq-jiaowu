@@ -42,7 +42,8 @@
             prop="institution_id"
           >
             <template slot-scope="{ row }">
-              <img :src="row.logo" alt="" />
+              <img v-if="row.logo" :src="row.logo" alt="" />
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column
