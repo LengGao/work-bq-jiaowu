@@ -18,22 +18,18 @@ export default {
 
 <style lang="scss" scoped>
 .el-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   color: #606266;
   margin-bottom: 16px;
   font-size: 16px;
   .text {
-    position: relative;
+    display: flex;
+    align-items: center;
   }
   .text::before {
-    position: absolute;
-    left: -8px;
-    top: 2px;
     content: "";
     width: 4px;
     height: 18px;
+    margin-right: 4px;
     background-color: #199fff;
   }
 }

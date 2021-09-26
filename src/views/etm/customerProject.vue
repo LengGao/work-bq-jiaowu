@@ -359,7 +359,7 @@ import addCustomeDialog from "./components/addCustomeDialog";
 import Toexamine from "./components/toexadialog";
 
 export default {
-  name: "customerManage",
+  name: "customerProject",
   components: {
     addCustomeDialog,
     Toexamine,

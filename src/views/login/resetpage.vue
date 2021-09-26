@@ -27,7 +27,7 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="code" style="margin-bottom:20px;text-align: center">
-          <div style="display:flex;align-item:center">
+          <div style="display:flex;align-items:center">
             <el-input
               name="password"
               v-model="loginForm.code"

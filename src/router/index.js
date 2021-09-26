@@ -498,6 +498,13 @@ export const asyncRouter = [
         hidden: true,
       },
       {
+        path: 'wxMessage',
+        name: 'wxMessage',
+        component: () => import('@/views/eda/classManage/wxMessage.vue'),
+        meta: { title: '微信通知', icon: 'product-cate' },
+        hidden: true,
+      },
+      {
         path: 'classDetail',
         name: 'classDetail',
         component: () => import('@/views/eda/classManage/classDetail.vue'),
@@ -800,7 +807,57 @@ export const asyncRouter = [
       }
     ],
   },
-
+  {
+    path: '/institution',
+    component: Layout,
+    redirect: '/institution//institutionAccount',
+    meta: { title: '机构管理', icon: 'zhaoshengguanli' },
+    name: 'institution',
+    children: [
+      {
+        path: 'distributeQuestionBak',
+        name: 'distributeQuestionBak',
+        component: () => import('@/views/institution/distributeQuestionBak/index.vue'),
+        meta: { title: '分发题库', icon: 'product-add' },
+      },
+      {
+        path: 'distributeCourses',
+        name: 'distributeCourses',
+        component: () => import('@/views/institution/distributeCourses/index.vue'),
+        meta: { title: '分发课程', icon: 'product-add' },
+      },
+      {
+        path: 'classType',
+        name: 'classType',
+        component: () => import('@/views/institution/classType/index.vue'),
+        meta: { title: '班型管理', icon: 'product-add' },
+      },
+      {
+        path: 'institutionConfig',
+        name: 'institutionConfig',
+        component: () => import('@/views/institution/institutionConfig/index.vue'),
+        meta: { title: '机构配置', icon: 'product-add' },
+      },
+      {
+        path: 'institutionUser',
+        name: 'institutionUser',
+        component: () => import('@/views/institution/institutionAccount/institutionUser.vue'),
+        meta: { title: '机构用户', icon: 'product-add' },
+      },
+      {
+        path: 'institutionAccount',
+        name: 'institutionAccount',
+        component: () => import('@/views/institution/institutionAccount/index.vue'),
+        meta: { title: '机构账号', icon: 'product-add' },
+      },
+      {
+        path: 'institutionDetails',
+        name: 'institutionDetails',
+        component: () => import('@/views/institution/institutionDetails/index.vue'),
+        meta: { title: '机构详情', icon: 'product-add' },
+      },
+    ]
+  },
   {
     path: '/set',
     component: Layout,

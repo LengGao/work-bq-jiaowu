@@ -7,7 +7,7 @@ console.log('当前baseUrl：', process.env.VUE_APP_LOACTION)
 const isProduction = process.env.NODE_ENV === 'production'
 // 是否使用cdn
 const openCdn = isProduction && true
-// CDN外链，会插入到index.html中
+// CDN外链，会插入到index.html中  
 const cdn = {
   css: [
     'https://cdn.jsdelivr.net/npm/element-ui@2.12.0/lib/theme-chalk/index.css',
@@ -38,18 +38,18 @@ module.exports = {
         // target: 'http://dongpei.kaifa',
         // target: 'http://sc.dp.com', //超
         // target: 'http://thing.com',
-        target: 'http://testadmin.beiqujy.com/apidata', //测试
+        // target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://formal.api.beiqujy.com/', //测试
         // target: 'http://thing.com',
         // target: 'http://192.168.8.100', //权
-        target: 'http://dpadmin.beiqujy.com/apidata', //生产
-        // target: 'http://edu.com',
+        // target: 'http://dpadmin.beiqujy.com/apidata', //生产
+        target: 'http://edu.com',
         //target: 'http://www.beiqujy.com/apidata',
         // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
         changeOrigin: true,
         ws: true,
         pathRewrite: {
-          // 替换target中的请求地址，也就是说以后你在请求http://api.jisuapi.com/XXXXX这个地址的时候直接写成/api即可
+          // 替换target中的请求地址，也就是说以后你在请求http://api.jisuapi.com/XXXXX这个地址的时候直接写成/api即可  
           '^/ai': '/',
         },
       },
