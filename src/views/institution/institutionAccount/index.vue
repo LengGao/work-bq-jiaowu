@@ -42,7 +42,7 @@
             prop="institution_id"
           >
             <template slot-scope="{ row }">
-              <img class="logo" :src="row.logo" alt="" />
+              <img :src="row.logo" alt="" />
             </template>
           </el-table-column>
           <el-table-column
@@ -402,8 +402,5 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
-}
-.logo {
-  height: 50px;
 }
 </style>
