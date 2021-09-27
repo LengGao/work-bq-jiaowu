@@ -22,31 +22,6 @@ export default {
   data() {
     return {
         activeName: "wxNotification",
-    //   value: "",
-    //   teacherData: [],
-    //   studentData: [],
-    //   page: 1,
-    //   messVal: true,
-    //   dialogVisible: false,
-    //   ruleForm: {
-    //     title: "",
-    //     type: "",
-    //     teacher: "",
-    //     time: "",
-    //     content: "",
-    //     address: "",
-    //     remarks: "",
-    //     uid_arr: [],
-    //     wechat_notice: 1,
-    //   },
-    //   classroom_id: 0,
-    //   current: "0",
-    //   topfun: [
-    //     { name: "上课通知" },
-    //     { name: "考试通知" },
-    //     { name: "差生提醒" },
-    //   ],
-    //   schoolData: [],
     };
   },
   computed: {
