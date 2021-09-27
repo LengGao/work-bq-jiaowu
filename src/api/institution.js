@@ -76,7 +76,7 @@ export function createInstitutionUser(data) {
 // 机构用户列表-修改
 export function modifyInstitutionUser(data) {
     return request({
-        url: 'OrganizationAccount/modify',
+        url: 'OrganizationAccount/modifyData',
         method: 'post',
         data,
     })
