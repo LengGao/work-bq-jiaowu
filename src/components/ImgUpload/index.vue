@@ -13,7 +13,7 @@
       :drag="drag"
     >
       <div
-        v-if="uploadImg"
+        v-if="uploadImg && !uploadLoading"
         class="imgs"
         :style="{
           width: width + 'px',
