@@ -368,47 +368,6 @@ export default {
     position: relative;
     width: calc(100% / 4);
   }
-  .upload-item /deep/.el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .upload-item /deep/.el-upload:hover {
-    border-color: #409eff;
-  }
-  .upload-item-icon,
-  .upload-loading {
-    font-size: 28px;
-    color: hsl(215, 8%, 58%);
-    width: 220px;
-    height: 120px;
-    line-height: 120px;
-    text-align: center;
-  }
-  .imgs {
-    padding: 5px;
-    width: 220px;
-    height: 120px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .del {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 0;
-      font-size: 20px;
-    }
-    &:hover {
-      .del {
-        color: #333;
-        display: block;
-      }
-    }
-  }
 }
 /deep/.el-dialog__body {
   padding: 30px 40px 20px 20px;

@@ -57,7 +57,6 @@ import {
   addCourseMaterial,
   getCourseMaterialDetail,
 } from "@/api/sou";
-import AliyunUpload from "@/components/AliyunUpload/index";
 export default {
   props: {
     value: {
@@ -72,9 +71,6 @@ export default {
       type: [String, Number],
       default: "",
     },
-  },
-  components: {
-    AliyunUpload,
   },
   data() {
     return {

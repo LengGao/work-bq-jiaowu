@@ -1,27 +1,20 @@
 <template>
   <div class="ali-yun-upload">
-    <el-button
+    <el-upload
       v-bind="$attrs"
-      size="small"
-      @click="handleFileSelect"
-      :loading="uploadLoading"
-      >选择文件</el-button
+      drag
+      accept="video/*"
+      action="/"
+      :before-upload="beforeUpload"
+      :http-request="upload"
+      :file-list="fileList"
+      :on-remove="handleRemove"
+      :on-change="onChange"
+      ref="uploadEl"
     >
-    <transition name="el-fade-in-linear">
-      <el-progress
-        v-show="percentage && percentage !== 100"
-        :percentage="percentage"
-      ></el-progress>
-    </transition>
-    <ul class="file-list">
-      <li class="file-item" v-for="(file, index) in fileList" :key="file.id">
-        <span class="file-item-name">{{ file.name }}</span>
-        <i
-          class="el-icon-close file-item-delete"
-          @click="handleFileDelete(index)"
-        ></i>
-      </li>
-    </ul>
+      <i class="el-icon-upload"></i>
+      <div class="el-upload__text">将视频文件拖到此处，或<em>点击上传</em></div>
+    </el-upload>
   </div>
 </template>
 
@@ -58,9 +51,8 @@ export default {
       aliyunRegion: "cn-shanghai",
       aliyunUserId: "1160528473305736",
       fileList: [],
-      percentage: 0,
       duration: 0,
-      uploadLoading: false,
+      elementUpload: {},
     };
   },
   watch: {
@@ -68,8 +60,8 @@ export default {
       this.requestId = val;
     },
     defaultFiles: {
-      handler(data) {
-        this.fileList = [...data];
+      handler(list) {
+        this.fileList = [...list];
       },
       immediate: true,
     },
@@ -78,35 +70,25 @@ export default {
     this.initAliYun();
   },
   methods: {
+    onChange(file, fileList) {
+      this.fileList = fileList.slice(-1);
+    },
     // 取消上传
     cancelUpload() {
-      this.aliyunUpload.cancelFile(0);
-      this.percentage = 0;
-      this.uploadLoading = false;
+      this.aliyunUpload.cancelFile(this.aliyunUpload._uploadList.length - 1);
     },
-    handleFileDelete(index) {
-      this.fileList.splice(index, 1);
-      this.$emit("on-remove", index);
-    },
-    handleFileSelect() {
-      let input = document.createElement("input");
-      input.value = "选择文件";
-      input.type = "file";
-      input.accept = "video/*";
-      input.onchange = (event) => {
-        let file = event.target.files[0];
-        this.beforeUpload(file);
-      };
-      input.click();
+    handleRemove() {
+      this.cancelUpload();
+      this.$emit("on-remove");
     },
     beforeUpload(file) {
       if (file.type.indexOf("video") === -1) {
         this.$message.error("请上传视频");
-        return;
+        return false;
       }
       const paramsJson = '{"Vod":{}}';
+      this.cancelUpload();
       this.aliyunUpload.addFile(file, null, null, null, paramsJson);
-      this.upload();
       this.getDuration(file);
     },
     // 获取视频时长
@@ -118,7 +100,8 @@ export default {
         this.duration = video.duration;
       };
     },
-    upload() {
+    upload(elementUpload) {
+      this.elementUpload = elementUpload;
       this.aliyunUpload.startUpload();
     },
 
@@ -127,14 +110,12 @@ export default {
       const file = uploadInfo.file;
       const file_name = file.name;
       const title = this.videoName || file.name.split(".")[0];
-      console.log(title);
       const data = {
         title,
         file_name,
       };
       const res = await createUploadVideo(data).catch(() => {
         // 重置
-        this.uploadLoading = false;
         this.initAliYun();
       });
       if (res.code === 0) {
@@ -155,7 +136,6 @@ export default {
       };
       const res = await refreshuploadvideo(data).catch(() => {
         // 重置
-        this.uploadLoading = false;
         this.initAliYun();
       });
       if (res.code === 0) {
@@ -184,10 +164,7 @@ export default {
         //网络原因失败时，重新上传间隔时间，默认为2秒
         retryDuration: 2,
         // 添加文件成功
-        addFileSuccess: (uploadInfo) => {
-          this.uploadLoading = true;
-          this.percentage = +(Math.random() * 1).toFixed(2);
-        },
+        addFileSuccess: (uploadInfo) => {},
         //开始上传
         onUploadstarted: async (uploadInfo) => {
           // 没有videoId就获取凭证后上传
@@ -200,36 +177,27 @@ export default {
         },
         //文件上传成功
         onUploadSucceed: (uploadInfo) => {
-          this.uploadLoading = false;
           this.onSuccess({ ...uploadInfo, duration: this.duration });
-          this.fileList = [];
-          this.fileList.push({
-            name: uploadInfo.file.name,
-            id: uploadInfo.videoId,
-          });
+          this.elementUpload.onSuccess();
         },
         //文件上传失败
         onUploadFailed: (uploadInfo, code, message) => {
-          this.fileList = [];
-          this.uploadLoading = false;
           console.log("文件上传失败", code, message);
           this.onError(uploadInfo, code, message);
+          this.elementUpload.onError();
         },
         //文件上传进度，单位：字节
         onUploadProgress: (uploadInfo, totalSize, loadedPercent) => {
-          let progress = Math.floor(loadedPercent * 100);
-          progress && (this.percentage = progress);
+          let percent = Math.floor(loadedPercent * 100);
+          percent && this.elementUpload.onProgress({ percent });
         },
         //上传凭证或STS token超时
         onUploadTokenExpired: (uploadInfo) => {
-          this.uploadLoading = false;
           const uploadAuth = this.createUploadVideo(uploadInfo);
           this.aliyunUpload.resumeUploadWithAuth(uploadAuth);
         },
         //全部文件上传结束
-        onUploadEnd: (uploadInfo) => {
-          this.uploadLoading = false;
-        },
+        onUploadEnd: (uploadInfo) => {},
       });
     },
   },
@@ -237,33 +205,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.file-name {
-  margin-left: 10px;
-  color: #909399;
-}
-.file-list {
-  .file-item {
-    padding: 4px;
-    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
-    font-size: 14px;
-    color: #606266;
-    line-height: 1;
-    margin-top: 5px;
-    position: relative;
-    box-sizing: border-box;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    &-delete {
-      display: none;
-    }
+.ali-yun-upload[disabled] {
+  /deep/.el-upload-dragger {
+    background-color: #efefef;
+    cursor: no-drop;
     &:hover {
-      background-color: #f5f7fa;
-      .file-item-delete {
-        display: inline-block;
-      }
+      border-color: #d9d9d9;
     }
   }
 }

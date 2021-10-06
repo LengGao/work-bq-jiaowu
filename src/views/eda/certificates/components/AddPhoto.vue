@@ -10,7 +10,7 @@
   >
     <div class="uploads" v-loading="detailLoading">
       <div class="upload-item" v-for="(item, index) in uploads" :key="index">
-        <ImageUpload v-model="photoData[item.key]">
+        <ImageUpload drag v-model="photoData[item.key]">
           <p slot="tips">{{ item.name }}</p>
         </ImageUpload>
       </div>
@@ -159,47 +159,6 @@ export default {
     margin: 0 22px 16px 0;
     &:nth-of-type(4n) {
       margin-right: 0;
-    }
-  }
-  .upload-item /deep/.el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .upload-item /deep/.el-upload:hover {
-    border-color: #409eff;
-  }
-  .upload-item-icon,
-  .upload-loading {
-    font-size: 28px;
-    color: hsl(215, 8%, 58%);
-    width: 130px;
-    height: 130px;
-    line-height: 130px;
-    text-align: center;
-  }
-  .imgs {
-    padding: 5px;
-    width: 130px;
-    height: 130px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .del {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 0;
-      font-size: 20px;
-    }
-    &:hover {
-      .del {
-        color: #333;
-        display: block;
-      }
     }
   }
 }

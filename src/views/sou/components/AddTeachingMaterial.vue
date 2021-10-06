@@ -276,46 +276,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.add-teaching-material {
-  .upload-cover /deep/.el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .upload-cover /deep/.el-upload:hover {
-    border-color: #409eff;
-  }
-  .upload-cover-icon {
-    font-size: 28px;
-    color: hsl(215, 8%, 58%);
-    width: 130px;
-    height: 130px;
-    line-height: 130px;
-    text-align: center;
-  }
-  .imgs {
-    padding: 5px;
-    width: 130px;
-    height: 130px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .del {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 0;
-      font-size: 20px;
-    }
-    &:hover {
-      .del {
-        color: #333;
-        display: block;
-      }
-    }
-  }
-}
 </style>

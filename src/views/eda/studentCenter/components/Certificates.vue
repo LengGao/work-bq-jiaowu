@@ -12,6 +12,7 @@
         <ImageUpload
           width="300"
           height="180"
+          drag
           v-model="photoData[item.key]"
           @on-delete="modifyCertificate"
           @on-success="modifyCertificate"
