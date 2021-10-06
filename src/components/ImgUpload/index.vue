@@ -10,9 +10,10 @@
       :on-error="handleUploadError"
       :on-success="handleUploadSuccess"
       :before-upload="beforeUpload"
+      :drag="drag"
     >
       <div
-        v-if="uploadImg"
+        v-if="uploadImg && !uploadLoading"
         class="imgs"
         :style="{
           width: width + 'px',
@@ -23,7 +24,7 @@
         <i class="del el-icon-close" @click.stop="hanldeDelete"></i>
       </div>
       <i
-        v-if="!uploadLoading && !uploadImg"
+        v-if="!uploadLoading && !uploadImg && !drag"
         class="el-icon-plus upload-button-icon"
         :style="{
           width: width + 'px',
@@ -31,6 +32,17 @@
           'line-height': height + 'px',
         }"
       ></i>
+      <div
+        class="drag-content"
+        v-if="!uploadLoading && !uploadImg && drag"
+        :style="{
+          width: width + 'px',
+          height: height + 'px',
+        }"
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      </div>
       <i
         class="el-icon-loading upload-loading"
         :style="{
@@ -58,6 +70,10 @@ export default {
     value: {
       type: String,
       default: "",
+    },
+    drag: {
+      type: Boolean,
+      default: false,
     },
     width: {
       type: [String, Number],
@@ -132,6 +148,20 @@ export default {
   }
   .upload-button {
     position: relative;
+  }
+  /deep/.el-upload-dragger {
+    width: auto;
+    height: auto;
+    border: none;
+  }
+  .drag-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .el-icon-upload {
+      margin: 0 0 10px 0;
+    }
   }
   .upload-button /deep/.el-upload {
     border: 1px dashed #d9d9d9;
