@@ -1,6 +1,6 @@
 <template>
     <div class="class-detail">
-        <!-- 上课通知弹窗 -->
+        <!-- 上课通知 -->
         <el-dialog :visible.sync="visible" :title="title" width="600px" :close-on-click-modal="false" @open="handleOpen"
             @closed="resetForm('ruleForm')">
             <el-form :model="ruleForm" ref="ruleForm" :show-message="true" class="formmargin">
