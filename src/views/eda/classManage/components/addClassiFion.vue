@@ -11,13 +11,13 @@
                     <el-input v-model="ruleForm.keyword1" placeholder="请输入上课时间" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="上课地点" :label-width="formLabelWidth">
-                    <el-input v-model="ruleForm.keyword2" placeholder="请输入上课内容" autocomplete="off"></el-input>
+                    <el-input v-model="ruleForm.keyword2" placeholder="请输入上课地点" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="上课老师" :label-width="formLabelWidth">
-                    <el-input v-model="ruleForm.keyword3" placeholder="请输入上课地点" autocomplete="off"></el-input>
+                    <el-input v-model="ruleForm.keyword3" placeholder="请输入上课老师" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="课程名称" :label-width="formLabelWidth">
-                    <el-input v-model="ruleForm.keyword4" placeholder="请输入上课地点" autocomplete="off"></el-input>
+                    <el-input v-model="ruleForm.keyword4" placeholder="请输入课程名称" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="备注信息" :label-width="formLabelWidth">
                     <el-input type="textarea" :rows="4" placeholder="请输入注意事项（请携带XX教材）" v-model="ruleForm.remark">
@@ -61,22 +61,21 @@
         },
         data() {
             return {
-                ruleForm: {
-                    id: "",
-                    first: "",
-                    keyword1: "",
-                    keyword2: "",
-                    keyword3: "",
-                    keyword4: "",
-                    remark: "",
-                },
+            ruleForm: {
+                id: "",
+                first: "",
+                keyword1: "",
+                keyword2: "",
+                keyword3: "",
+                keyword4: "",
+                remark: "",
+            },
                 formLabelWidth: '100px',
                 visible: this.value,
                 dialogTitle: "添加通知",
-                fileList: [],
             };
         },
-
+        
         watch: {
             value(val) {
                 this.visible = val;
@@ -93,15 +92,15 @@
             },
             hanldeCancel() {
                 this.$emit("input", false);
-
+                
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
                 for (var k in this.ruleForm) {
                     this.ruleForm[k] = "";
                 }
-                this.fileList = [];
                 this.hanldeCancel();
+                this.$emit("on-success");
             },
             //添加通知接口
             async createMessage() {
@@ -160,6 +159,7 @@
                     this.hanldeCancel();
                 }
             },
+
 
         },
     };

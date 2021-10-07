@@ -215,13 +215,28 @@
       },
       // 发送消息
       sendOut(id) {
-        this.sendMessage(id)
+        this.$confirm('此操作发送该通知, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+          .then(() => {
+            this.sendMessage(id)
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消发送',
+            })
+          })
+
       },
       // 编辑微信消息
       editNotices(row) {
         this.dialogTitle = '编辑消息'
         this.addtempdialog = true
         this.contractInfo = row
+        this.id = row.id
         console.log(this.contractInfo)
       },
       handlePageChange(val) {
