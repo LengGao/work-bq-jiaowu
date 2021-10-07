@@ -53,7 +53,7 @@
         <template slot-scope="{ row }">
           <div v-if="row.send_status == 2">
           <el-button type="text" @click="linkTo(row)">消息详情</el-button>
-          <el-button type="text" @click="sendRecord(row.id)">发送记录</el-button>
+          <el-button type="text" @click="sendRecord(row.id)">阅读记录</el-button>
         </div>
         <div v-else>
           <el-button type="text" @click="sendOut(row.id)">发送</el-button>
@@ -281,7 +281,21 @@
     methods: {
         // 发送消息
     sendOut(id) {
-      this.sendNotice(id)
+      // this.sendNotice(id)
+      this.$confirm('此操作将发送该通知, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+          .then(() => {
+            this.sendNotice(id)
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消发送',
+            })
+          })
     },
     // 发送消息接口
     async sendNotice(id) {

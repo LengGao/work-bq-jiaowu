@@ -1,7 +1,7 @@
 <template>
     <section>
-        <!-- 发送记录弹窗 -->
-            <el-dialog title="发送记录" :visible.sync="visible" :close-on-click-modal="false" width="1000px" @open="handleOpen"   @closed="handleColse">
+        <!-- 阅读记录弹窗 -->
+            <el-dialog title="阅读记录" :visible.sync="visible" :close-on-click-modal="false" width="1000px" @open="handleOpen"   @closed="handleColse">
                 <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
                 <el-table :data="gridData" :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }">

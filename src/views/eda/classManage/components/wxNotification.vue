@@ -215,7 +215,7 @@
       },
       // 发送消息
       sendOut(id) {
-        this.$confirm('此操作发送该通知, 是否继续?', '提示', {
+        this.$confirm('此操作将发送该通知, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
@@ -258,7 +258,7 @@
         this.contractInfo = {}
         this.dialogTitle = '添加通知'
         this.addtempdialog = true
-        this.currentId =''
+        this.currentId = ''
         console.log(this.contractInfo)
       },
       // 查看发送记录按钮
