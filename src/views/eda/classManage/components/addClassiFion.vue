@@ -92,14 +92,13 @@
             },
             hanldeCancel() {
                 this.$emit("input", false);
-                
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
                 for (var k in this.ruleForm) {
                     this.ruleForm[k] = "";
                 }
-                this.hanldeCancel();
+                // this.hanldeCancel();
                 this.$emit("on-success");
             },
             //添加通知接口
