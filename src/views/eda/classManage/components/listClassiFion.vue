@@ -10,6 +10,11 @@
                   <el-table-column prop="telphone" label="手机号码" width="140"></el-table-column>
                   <el-table-column prop="institution_name" label="所属机构" width="160"></el-table-column>
                   <el-table-column prop="send_status_name" label="发送状态" width="120">
+                      <template slot-scope="scope">
+                          <div :style="{'color':scope.row.send_status_name=='失败'? 'red':'rgb(2, 179, 2)'}">
+                            {{scope.row.send_status_name}}
+                          </div>
+                      </template>
                   </el-table-column>
                   <el-table-column prop="result" label="备注"></el-table-column>
                 </el-table>
@@ -141,7 +146,7 @@
     }
 
     /deep/.selectCss .el-input__inner::-webkit-input-placeholder {
-        color: #fff;
+        color: rgb(255, 255, 255);
     }
 
     /deep/.el-dialog__footer {

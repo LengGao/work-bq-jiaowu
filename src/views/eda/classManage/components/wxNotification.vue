@@ -16,9 +16,9 @@
       <el-table-column prop="title" label="通知标题" min-width="160" align="center" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="content" label="通知内容" min-width="200" align="center" class="noticecontent">
-        <template slot-scope="scope">
+        <template slot-scope="{ row }">
           <span>
-            {{ scope.row.content_data.keyword1}}{{ scope.row.content_data.keyword4}}
+            {{row.content_data.keyword1}}{{row.content_data.keyword4}}
           </span>
         </template>
       </el-table-column>
@@ -32,27 +32,27 @@
       <el-table-column prop="send_time" label="发送时间" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="{row}">
           <div v-if="row.send_time">
-          {{row.send_time}}</div>
+            {{row.send_time}}</div>
           <div v-else>--</div>
         </template>
       </el-table-column>
-      <el-table-column prop="success" label="发送总数/成功/失败" min-width="120" align="center"
-        show-overflow-tooltip>
+      <el-table-column prop="success" label="发送总数/成功/失败" min-width="120" align="center" show-overflow-tooltip>
         <template slot-scope="{ row }">
-            {{ row.total }} / <span style="color: rgb(0, 173, 0);">{{ row.success }} </span>/ <span style="color: orange;">{{ row.fail }}</span>
+          {{ row.total }} / <span style="color: rgb(0, 173, 0);">{{ row.success }} </span>/ <span
+            style="color: orange;">{{ row.fail }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" align="center" min-width="140">
         <template slot-scope="{row}">
           <div v-if="row.send_status == 2">
-          <el-button type="text" @click="linkTo(row)">消息详情</el-button>
-          <el-button type="text" @click="sendRecord(row.id)">发送记录</el-button>
-        </div>
-        <div v-else>
-          <el-button type="text" @click="sendOut(row.id)">发送</el-button>
-          <el-button type="text" @click="editNotices(row)">编辑</el-button>
-          <el-button type="text" @click="handleDelete(row.id)">删除</el-button>
-        </div>
+            <el-button type="text" @click="linkTo(row)">消息详情</el-button>
+            <el-button type="text" @click="sendRecord(row.id)">发送记录</el-button>
+          </div>
+          <div v-else>
+            <el-button type="text" @click="sendOut(row.id)">发送</el-button>
+            <el-button type="text" @click="editNotices(row)">编辑</el-button>
+            <el-button type="text" @click="handleDelete(row.id)">删除</el-button>
+          </div>
         </template>
 
       </el-table-column>
@@ -77,7 +77,8 @@
       </span>
     </el-dialog>
 
-    <addClassiFion v-model="addtempdialog" :id="currentId" :title="dialogTitle" @on-success="getMessageList" :contractInfo="contractInfo" />
+    <addClassiFion v-model="addtempdialog" :id="currentId" :title="dialogTitle" @on-success="getMessageList"
+      :contractInfo="contractInfo" />
     <listClassiFion v-model="dialogVisibleSend" :id="id" />
   </div>
 </template>
@@ -87,10 +88,10 @@
   import { getShortcuts } from "@/utils/date";
   import addClassiFion from './addClassiFion';
   import listClassiFion from './listClassiFion';
-  import { getMessageList,deleteMessage,updateMessage,sendMessage,getMessageRecordList } from "@/api/message";
+  import { getMessageList, deleteMessage, updateMessage, sendMessage, getMessageRecordList } from "@/api/message";
   export default {
     name: "wxNotification",
-    components:{
+    components: {
       addClassiFion,
       listClassiFion,
     },
@@ -106,14 +107,14 @@
             color: "#43D100",
           },
         },
-        detailData:{
-          first:'',
+        detailData: {
+          first: '',
         },
-      contractInfo: {},
-      currentId: '',
-      id: '',
-      dialogTitle: '',
-      addtempdialog: false,
+        contractInfo: {},
+        currentId: '',
+        id: '',
+        dialogTitle: '',
+        addtempdialog: false,
         activeName: "wxNotification",
         dialogVisible: false,
         dialogVisibleSend: false,
@@ -128,20 +129,20 @@
           send_status: '',
         },
         searchOptions: [
-        {
-          key: "date",
-          type: "datePicker",
-          attrs: {
-            type: "daterange",
-            "range-separator": "至",
-            "start-placeholder": "开始日期",
-            "end-placeholder": "结束日期",
-            "value-format": "yyyy-MM-dd",
-             pickerOptions: {
-              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-            },
-          }
-        },
+          {
+            key: "date",
+            type: "datePicker",
+            attrs: {
+              type: "daterange",
+              "range-separator": "至",
+              "start-placeholder": "开始日期",
+              "end-placeholder": "结束日期",
+              "value-format": "yyyy-MM-dd",
+              pickerOptions: {
+                shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+              },
+            }
+          },
           {
             key: "send_status",
             type: "select",
@@ -174,47 +175,58 @@
         },
         formLabelWidth: '100px',
         ruleForm: {
-        datatime: '',
-        content: '',
-      },
+          datatime: '',
+          content: '',
+        },
       };
     },
     created() {
       this.getMessageList()
+      console.log(this.searchData.date);
     },
 
     methods: {
-    
+      handleSearch(data) {
+        const times = data.date || ["", ""];
+        console.log(times);
+        delete data.date;
+        this.pageNum = 1;
+        this.searchData = {
+          ...data,
+          start_time: times[0],
+          end_time: times[1],
+        };
+        console.log(this.searchData);
+        this.getMessageList();
+      },
       // 发送消息接口
-    async sendMessage(id) {
-      const data = {
-        id,
-      }
-      // console.log(data)
-      const res = await sendMessage(data)
-      if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-      }
-      this.getMessageList()
-    },
+      async sendMessage(id) {
+        const data = {
+          id,
+        }
+        // console.log(data)
+        const res = await sendMessage(data)
+        if (res.code == 0) {
+          console.log(res)
+          this.$message.success(res.message)
+        }
+        this.getMessageList()
+      },
       // 发送消息
       sendOut(id) {
-      this.sendMessage(id)
-    },
-     
-    // 编辑微信消息
-    editNotices(row) {
-      this.dialogTitle = '编辑消息'
-      this.addtempdialog = true
-      this.contractInfo = row
-      console.log(this.contractInfo)
-    },
+        this.sendMessage(id)
+      },
+      // 编辑微信消息
+      editNotices(row) {
+        this.dialogTitle = '编辑消息'
+        this.addtempdialog = true
+        this.contractInfo = row
+        console.log(this.contractInfo)
+      },
       handlePageChange(val) {
         this.pageNum = val;
         this.getMessageList();
       },
-
       // 消息详情
       linkTo(row) {
         this.dialogVisible = true
@@ -226,29 +238,28 @@
         this.dialogVisible = false
       },
       addTemplatebtn(row) {
-      this.contractInfo = {}
-      this.dialogTitle = '添加通知'
-      this.addtempdialog = true
-      this.currentId = row.id
-    },
-    // 查看发送记录按钮
-    sendRecord(row) {
-      this.id = row
-      this.dialogTitle = '发送记录'
-      this.dialogVisibleSend = true
-      console.log(this.id)
-    },
-    
-    // 微信通知列表接口
+        this.contractInfo = {}
+        this.dialogTitle = '添加通知'
+        this.addtempdialog = true
+        this.currentId = row.id
+      },
+      // 查看发送记录按钮
+      sendRecord(row) {
+        this.id = row
+        this.dialogTitle = '发送记录'
+        this.dialogVisibleSend = true
+        console.log(this.id)
+      },
+
+      // 微信通知列表接口
       async getMessageList() {
-        console.log(this.searchData.date);
         const data = {
           page: this.pageNum,
           limit: this.pageSize,
           ...this.searchData,
-          classroom_id:this.$route.query.classroom_id,
+          classroom_id: this.$route.query.classroom_id,
         };
-        
+        console.log(data)
         this.listLoading = true;
         const res = await getMessageList(data);
         this.listLoading = false;
@@ -256,56 +267,39 @@
         this.listTotal = res.data.total;
       },
 
-      handleSearch(data) {
-        const times = data.date || ["", ""];
-        delete data.date;
-        this.pageNum = 1;
-        this.searchData = {
-          ...data,
-          start_time: times[0],
-          end_time: times[1],
-        };
-        this.getMessageList();
-      },
-
-     
       handleDelete(id) {
-      this.$confirm('此操作将永久删除该通知, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          this.deleteMessage(id)
+        this.$confirm('此操作将永久删除该通知, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
         })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除',
+          .then(() => {
+            this.deleteMessage(id)
           })
-        })
-    },
-  // 删除微信消息
-  async deleteMessage(id) {
-      const data = {
-        id,
-      }
-      console.log(data)
-      const res = await deleteMessage(data)
-      if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除',
+            })
+          })
+      },
+      // 删除微信消息
+      async deleteMessage(id) {
+        const data = {
+          id,
+        }
+        console.log(data)
+        const res = await deleteMessage(data)
+        if (res.code == 0) {
+          console.log(res)
+          this.$message.success(res.message)
+          this.getMessageList()
+          this.dialogVisible = false
+        }
         this.getMessageList()
-        this.dialogVisible = false
-      }
-      this.getMessageList()
+      },
     },
 
-    },
-    
-    
-    
-    
   };
 </script>
 
@@ -317,9 +311,11 @@
   /deep/.el-dialog__body {
     font-size: 17px;
   }
-  /deep/.el-tag{
-        background-color: #f7fcff !important;
-    }
+
+  /deep/.el-tag {
+    background-color: #f7fcff !important;
+  }
+
   .client_head {
     display: flex;
     justify-content: space-between;
@@ -335,16 +331,17 @@
   .dialogVisibleSend {
     width: 1800px;
   }
-  .noticecontent{
-    width:200px;
+
+  .noticecontent {
+    width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-      }
+  }
 
   .details {
-  display: none;
-}
+    display: none;
+  }
 </style>

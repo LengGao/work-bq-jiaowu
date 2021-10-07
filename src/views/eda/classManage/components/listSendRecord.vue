@@ -72,6 +72,7 @@
             searchData: {
             from_organization_id: [],
             search_box: '',
+            send_status:'',
             },
             searchOptions: [
             {
@@ -84,6 +85,29 @@
                 options: [],
             },
             },
+            {
+            key: "send_status",
+            type: "select",
+            width: 120,
+            options: [
+              {
+                value: 1,
+                label: "未读",
+              },
+              {
+                value: 2,
+                label: "已读",
+              },
+              {
+                value: 3,
+                label: "已确认",
+              },
+            ],
+            attrs: {
+              clearable: true,
+              placeholder: "阅读状态",
+            },
+          },
             {
                 key: "search_box",
                 attrs: {
