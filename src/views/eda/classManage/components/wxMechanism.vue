@@ -10,39 +10,60 @@
       v-loading="listLoading" element-loading-text="loading" element-loading-spinner="el-icon-loading"
       element-loading-background="#fff" :header-cell-style="{ 'text-align': 'center' }"
       :cell-style="{ 'text-align': 'center' }">
-      <el-table-column label="序号" show-overflow-tooltip min-width="60" align="center" prop="uid">
+      <el-table-column label="序号" show-overflow-tooltip min-width="60" align="center" prop="id">
       </el-table-column>
-      <el-table-column prop="surname" label="通知标题" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column prop="title" label="通知标题" min-width="150" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="mobile" label="通知内容" min-width="200" align="center">
+      <el-table-column prop="content" label="通知内容" min-width="200" align="center">
+        <template slot-scope="scope" class="hiddens">
+          <span>
+            {{ scope.row.content | removeTag }}
+          </span>
+        </template>
       </el-table-column>
-      <el-table-column prop="group_id" label="发送状态" min-width="100" align="center" show-overflow-tooltip>
+      <el-table-column prop="send_status" label="发送状态" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="{ row }">
-          <div v-if="row.group_id">
-            {{ row.group_id }}
+          <el-tag size="small" type="text" :style="{ color: statusMap[row.send_status].color }">
+            {{ statusMap[row.send_status || 0].text }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="send_time" label="发送时间" min-width="150" align="center" show-overflow-tooltip>
+        <template slot-scope="{ row }">
+          <div v-if="row.send_time">
+            {{ row.send_time }}
           </div>
           <span v-else>--</span>
         </template>
       </el-table-column>
-      <el-table-column prop="course_list" label="发送时间" min-width="150" align="center" show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column prop="question_bank_list" label="机构名称" min-width="150" align="center" show-overflow-tooltip>
+      <el-table-column prop="org_name_str" label="机构名称" min-width="150" align="center" show-overflow-tooltip>
         <template slot-scope="{ row }">
-          <div v-if="row.question_bank_list">
-            {{ row.question_bank_list }}
+          <div v-if="row.org_name_str">
+            {{ row.org_name_str }}
           </div>
           <span v-else>--</span>
         </template>
       </el-table-column>
       <el-table-column prop="course_list" label="已读人数" min-width="140" align="center" show-overflow-tooltip>
+        <template slot-scope="{ row }">
+          {{ row.read_count }} / {{ row.unread_count }}</span>
+      </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" align="center" min-width="140">
         <template slot-scope="{ row }">
-          <el-button type="text" @click="linkTo(row.uid)">消息详情</el-button>
-          <el-button type="text" @click="sendRecord(row.uid)">阅读记录</el-button>
+          <div v-if="row.send_status == 2">
+          <el-button type="text" @click="linkTo(row)">消息详情</el-button>
+          <el-button type="text" @click="sendRecord(row.id)">发送记录</el-button>
+        </div>
+        <div v-else>
+          <el-button type="text" @click="sendOut(row.id)">发送</el-button>
+          <el-button type="text" @click="editNotice(row)">编辑</el-button>
+          <el-button type="text" @click="handleDelete(row)">删除</el-button>
+        </div>
         </template>
       </el-table-column>
     </el-table>
+
     <div class="table_bottom">
       <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" style="margin-left: auto;" />
     </div>
@@ -69,45 +90,18 @@
     <!-- 消息详情弹窗 -->
     <el-dialog title="消息详情" :visible.sync="dialogVisible" width="800px" :before-close="handleClose"
       :close-on-click-modal="false" class="messageDetails">
-      <h6>【2021中级经济师工商面授A+B班】上课通知</h6>
+      <h6>{{detailData.title}}</h6>
       <div class="noticedata">
-        发布时间：<span>2020-06-13 09:30</span>
-        发布人：<span>林老师</span>
-        已读人数：<span>30/50</span>
+        发布时间：<span>{{detailData.create_time}}</span>
+        发布人：<span>{{detailData.staff_name}}</span>
+        已读人数：<span>{{detailData.read_count}} / {{detailData.unread_count}}</span>
       </div>
-      <div class="content">
-        <p>根据老师课程进度安排，于9月3日（周五）19:00-21:30增加一次工商管理直播课，请大家安排好时间准时参加！<br>
-
-          1、基础上课时间：9月1日（周三）19:00-21:30<br>
-
-          上课内容：第5章 生产要素市场理论<br>
-
-          2、实务上课时间：9月3日（周五）19:00-21:30（加课）
-
-          上课内容：第6章 物流管理<br>
-
-          3、基础上课时间：9月5日（周日）9:30-12:30；14:00-16:00
-
-          （原面授串讲课延后）<br>
-
-          上课内容：第6-9章 就业、失业<br>
-
-          4、基础上课时间：9月6日（周一）19:00-21:30<br>
-
-          上课内容：第9-10章 国际贸易理论和政策<br>
-
-          5、实务上课时间：9月7日（周二）19:00-21:30<br>
-
-          上课内容：第6-7章 技术创新管理<br>
-
-          6、实务上课时间：9月9日（周四）19:00-21:30<br>
-
-          上课内容：第8-9章 技术创新管理</p>
+      <div class="content" v-html="detailData.content">
       </div>
     </el-dialog>
 
     <!-- 阅读记录弹窗 -->
-    <el-dialog title="阅读记录" :visible.sync="dialogVisibleSend" :close-on-click-modal="false" width="900px">
+    <!-- <el-dialog title="阅读记录" :visible.sync="dialogVisibleSend" :close-on-click-modal="false" width="900px">
       <SearchList :options="searchOptionsSend" :data="searchDataSend" @on-search="handleSearch" />
       <el-table :data="gridData" :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }">
@@ -120,7 +114,9 @@
       <div class="table_bottom">
         <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" style="margin-left: auto;" />
       </div>
-    </el-dialog>
+    </el-dialog> -->
+
+    <listSendRecord v-model="dialogVisibleSend" :id="id" />
 
   </div>
 </template>
@@ -131,13 +127,37 @@
   import 'quill/dist/quill.snow.css'
   import 'quill/dist/quill.bubble.css'
   import { quillEditor } from 'vue-quill-editor'
+  import {getNoticeList,createNotice,updateNotice,deleteNotice,sendNotice} from "@/api/message"
+  import listSendRecord from './listSendRecord';
   export default {
     name: "wxMechanism",
     components: {
-    quillEditor
+    listSendRecord,
+    quillEditor,
   },
     data() {
       return {
+        detailData:{},
+        statusMap: {
+          1: {
+            color: "#FD6500",
+            text: "待发送",
+            
+          },
+          2: {
+            color: "#43D100",
+            text: "已发送",
+            
+          },
+        },
+        addtempdialog: false,
+        contractInfo: {},
+        currentId: '',
+        id: '',
+        dialogTitle: '',
+        listLoading: false,
+        pageNum: 1,
+        listTotal: 0,
         activeName: "wxMechanism",
         dialogTitle: "阅读记录",
         dialogVisible: false,
@@ -147,46 +167,21 @@
         placeholder: '请输入通知内容',
       },
         ruleForm: {
-        datatime: '',
+        title: '',
         content: '',
       },
-      rules: {
+        rules: {
         title: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
         content: [{ required: true, message: '请输入公告摘要', trigger: 'blur' }],
         receiver: [{ required: true, message: '请选择账号身份', trigger: 'blur' }],
       },
-        listData: [
-          {
-            Id: "11",
-            surname: "通知标题通知标题",
-            content: "2022年系统集成VIP学霸班上课通知",
-            group_id: "已发送",
-            course_list: "223",
-          }
-        ],
-        gridData: [{
-          date: '1',
-          name: '王小虎',
-          mobile: '13522023030',
-          jg: '越潮教育',
-          bz: "2022-01-01 09:30"
-        }, {
-          date: '2',
-          name: '王小虎',
-          mobile: '13522023030',
-          jg: '北区教育',
-          bz: "2022-01-01 09:30"
-        }, {
-          date: '3',
-          name: '王小虎',
-          mobile: '13522023030',
-          jg: '北区教育',
-          bz: "2022-01-01 09:30"
-        }],
-        listLoading: false,
-        pageNum: 1,
-        listTotal: 0,
-        searchData: {},
+        listData: [],
+        gridData: [],
+        searchData: {
+          date: '',
+          search_box: '',
+          send_status: '',
+        },
         searchOptions: [
           {
             key: "date",
@@ -205,16 +200,16 @@
             },
           },
           {
-            key: "type",
+            key: "send_status",
             type: "select",
             width: 120,
             options: [
               {
-                value: 0,
+                value: 1,
                 label: "待发送",
               },
               {
-                value: 1,
+                value: 2,
                 label: "已发送",
               },
             ],
@@ -224,7 +219,7 @@
             },
           },
           {
-            key: "keyword",
+            key: "search_box",
             attrs: {
               placeholder: "通知标题",
             },
@@ -275,44 +270,180 @@
             },
           },
         ],
+        
       };
     },
 
+    created(){
+      this.getNoticeList()
+      console.log(this.$route.query.classroom_id)
+    },
     methods: {
+        // 发送消息
+    sendOut(id) {
+      this.sendNotice(id)
+    },
+    // 发送消息接口
+    async sendNotice(id) {
+      const data = {
+        id,
+      }
+      // console.log(data)
+      const res = await sendNotice(data)
+      if (res.code == 0) {
+        console.log(res)
+        this.$message.success(res.message)
+      }
+      this.getNoticeList()
+    },
       handleSearch(data) {
+        const times = data.date || ["", ""];
+        delete data.date;
         this.pageNum = 1;
         this.searchData = {
           ...data,
-          category_id: data.category_id.pop(),
+          start_time: times[0],
+          end_time: times[1],
         };
-        this.getClassList();
-      },
-      handleSizeChange(size) {
-        this.pageSize = size;
-        this.getClassList();
+        this.getNoticeList();
       },
       handlePageChange(val) {
         this.pageNum = val;
-        this.getClassList();
+        this.getNoticeList();
       },
-      linkTo() {
+      linkTo(row) {
         this.dialogVisible = true
+        this.id = row.id
+        console.log(this.id)
+        this.detailData = row
       },
       handleClose() {
         this.dialogVisible = false
       },
-      sendRecord() {
-        this.dialogVisibleSend = true
+      // 查看发送记录按钮
+    sendRecord(row) {
+      this.dialogTitle = '发送记录'
+      this.dialogVisibleSend = true
+      this.id = row
+      console.log(this.id)
+    },
+    // 机构通知列表
+    async getNoticeList() {
+        const data = {
+          classroom_id:this.$route.query.classroom_id,
+          page: this.pageNum,
+          limit: this.pageSize,
+          ...this.searchData,
+        };
+        this.listLoading = true;
+        const res = await getNoticeList(data);
+        this.listLoading = false;
+        this.listData = res.data.list;
+        this.listTotal = res.data.total;
       },
-      addClassiFion() {
-      this.dialogTitle = '机构通知'
+    // 添加机构通知
+    addClassiFion() {
+      this.dialogTitle = '添加通知'
       this.ruleForm = {
         title: '',
         content: '',
       }
       this.dialogVisibleadd = true
     },
+    // 编辑通知
+    editNotice(row) {
+      console.log(row)
+      this.dialogTitle = '编辑通知'
+      this.ruleForm = row
+      this.dialogVisibleadd = true
+      this.id = row.id
     },
+      // 添加机构通知接口
+      async createNotice() {
+        const data = {
+          classroom_id: this.$route.query.classroom_id,
+          title:this.ruleForm.title,
+          content:this.ruleForm.content,
+        };
+        const res = await createNotice(data);
+        if(res.code == 0){
+          this.$message.success(res.message);
+        }
+      },
+      // 编辑机构通知接口
+    async updateNotice() {
+      const data = {
+        id: this.ruleForm.id,
+        title: this.ruleForm.title,
+        content: this.ruleForm.content,
+      }
+      const res = await updateNotice(data)
+      console.log(res.data.list)
+      if (res.code == 0) {
+        console.log(res)
+        this.$message.success(res.message)
+        this.getNoticeList()
+        this.dialogVisible = false
+      }
+    },
+      // 删除通知按钮
+    handleDelete(row) {
+      this.$confirm('此操作将永久删除该通知, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.deleteNotice(row.id)
+          this.getNoticeList()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
+    },
+
+     //删除通知接口
+     async deleteNotice(id) {
+      const data = {
+        id,
+      }
+      console.log(data)
+      const res = await deleteNotice(data)
+      if (res.code == 0) {
+        console.log(res)
+        this.$message.success(res.message)
+        this.noticelist()
+        this.dialogVisible = false
+      }
+    },
+
+    submitForm(formName) {
+      console.log(this.ruleForm)
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.ruleForm.id) {
+            //修改
+            this.updateNotice()
+            this.dialogVisibleadd = false
+            this.getNoticeList()
+          } else {
+            //添加
+            this.createNotice()
+            this.dialogVisibleadd = false
+            this.getNoticeList()
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    },
+
+  
   };
 </script>
 
@@ -357,5 +488,11 @@
   }
   .dialog-footer{
     padding-right: 20px;
+  }
+/deep/.el-table .cell{
+    width: 90%;
+    white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
   }
 </style>
