@@ -18,7 +18,8 @@
       <el-table-column prop="content" label="通知内容" min-width="200" align="center" class="noticecontent">
         <template slot-scope="{ row }">
           <span>
-            {{row.content_data.keyword1}}{{row.content_data.keyword4}}
+            {{row.content_data.keyword1}}
+            {{row.content_data.keyword4}}
           </span>
         </template>
       </el-table-column>
@@ -236,6 +237,7 @@
       },
       handleClose() {
         this.dialogVisible = false
+        this.addtempdialog = false
       },
       addTemplatebtn(row) {
         this.contractInfo = {}

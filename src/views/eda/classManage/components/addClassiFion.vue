@@ -2,7 +2,7 @@
     <div class="class-detail">
         <!-- 上课通知弹窗 -->
         <el-dialog :visible.sync="visible" :title="title" width="600px" :close-on-click-modal="false" @open="handleOpen"
-            @closed="resetForm('ruleForm')">
+            @closed="hanldeCancel">
             <el-form :model="ruleForm" ref="ruleForm" :show-message="true" class="formmargin">
                 <el-form-item label="通知标题" :label-width="formLabelWidth">
                     <el-input v-model="ruleForm.first" placeholder="请输入通知标题" autocomplete="off"></el-input>
@@ -93,7 +93,6 @@
             },
             hanldeCancel() {
                 this.$emit("input", false);
-
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
