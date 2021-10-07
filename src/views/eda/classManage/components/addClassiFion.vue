@@ -61,6 +61,7 @@
         },
         data() {
             return {
+                // showClo:false,
             ruleForm: {
                 id: "",
                 first: "",
@@ -98,7 +99,7 @@
                 for (var k in this.ruleForm) {
                     this.ruleForm[k] = "";
                 }
-                // this.hanldeCancel();
+                this.hanldeCancel();
                 this.$emit("on-success");
             },
             //添加通知接口
@@ -128,6 +129,7 @@
                         if (this.contractInfo.id) {
                             //修改
                             this.updateMessage();
+                            this.hanldeCancel();
                         } else {
                             //添加
                             this.createMessage();
