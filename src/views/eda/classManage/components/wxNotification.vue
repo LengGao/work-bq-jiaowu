@@ -55,7 +55,6 @@
             <el-button type="text" @click="handleDelete(row.id)">删除</el-button>
           </div>
         </template>
-
       </el-table-column>
     </el-table>
     <div class="table_bottom">
@@ -80,6 +79,7 @@
 
     <addClassiFion v-model="addtempdialog" :id="currentId" :title="dialogTitle" @on-success="getMessageList"
       :contractInfo="contractInfo" />
+
     <listClassiFion v-model="dialogVisibleSend" :id="id" />
   </div>
 </template>
@@ -239,11 +239,12 @@
         this.dialogVisible = false
         this.addtempdialog = false
       },
-      addTemplatebtn(row) {
+      addTemplatebtn() {
         this.contractInfo = {}
         this.dialogTitle = '添加通知'
         this.addtempdialog = true
-        this.currentId = row.id
+        this.currentId =''
+        console.log(this.contractInfo)
       },
       // 查看发送记录按钮
       sendRecord(row) {
