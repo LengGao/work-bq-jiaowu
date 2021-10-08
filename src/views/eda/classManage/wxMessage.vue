@@ -1,10 +1,10 @@
 <template>
     <section class="main-wrap">
         <div class="header">
-            <p><strong>班级名称：</strong> 2020春-系统集成学霸2班</p>
-            <p><strong>所属分类：</strong> 职称考证</p>
-            <p><strong>班主任：</strong> 罗轻</p>
-            <p><strong>班级人数：</strong> 160</p>
+            <p><strong>班级名称：</strong> {{this.$route.query.classroom_name}}</p>
+            <p><strong>所属分类：</strong> {{this.$route.query.category_name}}</p>
+            <p><strong>班主任：</strong> {{this.$route.query.staff_name}}</p>
+            <p><strong>班级人数：</strong>  {{this.$route.query.student_number}}</p>
         </div>
         
         <div class="college-major-container">
@@ -33,6 +33,11 @@ export default {
   },
   mounted() {
     this.classroom_id = this.$route.query.classroom_id;
+    this.classroom_name = this.$route.query.classroom_name;
+    this.category_name = this.$route.query.category_name;
+    this.staff_name = this.$route.query.staff_name;
+    this.student_number = this.$route.query.student_number;
+    console.log(this.student_number )
   },
 
   methods: {
