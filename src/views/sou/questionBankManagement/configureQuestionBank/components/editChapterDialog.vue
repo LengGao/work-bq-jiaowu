@@ -3,7 +3,7 @@
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    width="450px"
+    width="540px"
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
@@ -36,7 +36,24 @@
           maxlength="10"
         />
       </el-form-item>
+      <el-form-item
+        v-if="chapterType == 3"
+        label="开启时间"
+        prop="time"
+        :rules="[{ required: true, message: '请选择', trigger: 'change' }]"
+      >
+        <el-date-picker
+          v-model="formData.time"
+          type="datetimerange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd HH:mm"
+        >
+        </el-date-picker>
+      </el-form-item>
     </el-form>
+
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
       <el-button
@@ -83,6 +100,7 @@ export default {
         topic_course_id: this.$route.query.topic_course_id,
         chapter_type: "",
         question_bank_id: this.$route.query.id,
+        time: [],
       },
       rules: {
         name: [{ required: true, message: "请输入", trigger: "blur" }],
@@ -120,15 +138,26 @@ export default {
       this.detaiLoading = false;
       if (res.code === 0) {
         for (const k in this.formData) {
-          this.formData[k] = res.data[k];
+          if (k in res.data) {
+            this.formData[k] = res.data[k];
+          }
         }
         this.formData.name = res.data.chapter_name;
+        res.data.start_time && this.formData.time.push(res.data.start_time);
+        res.data.end_time && this.formData.time.push(res.data.end_time);
       }
     },
     async submit() {
+      const { time, ...restParams } = this.formData;
       const data = {
-        ...this.formData,
+        ...restParams,
+        is_timing: 0,
       };
+      if (this.chapterType == 3) {
+        data.start_time = time[0];
+        data.end_time = time[1];
+        data.is_timing = 1;
+      }
       if (this.id) {
         data.id = this.id;
       }
@@ -155,8 +184,8 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
+      this.formData.time = [];
       this.$refs[formName].resetFields();
-      this.selection = [];
       this.hanldeCancel();
     },
     hanldeCancel() {

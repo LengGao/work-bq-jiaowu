@@ -237,9 +237,10 @@ export default {
     },
     //客户列表
     async getCommonUserList() {
+      console.log(this.searchData.date);
       this.checkedIds = [];
       this.intent_id = "";
-      console.log(this.searchData.date);
+      
       const data = {
         page: this.pageNum,
         limit: this.pageSizeNum,
