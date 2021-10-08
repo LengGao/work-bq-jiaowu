@@ -26,8 +26,8 @@
           >{{ item.chapter_name }}（{{ item.topic_total }}）</span
         >
         <div class="list-item-actions" v-if="!item.disabled">
-          <i class="el-icon-edit" @click="openEdit(item.id)"></i>
-          <i class="el-icon-delete" @click="deleteConfirm(item.id)"></i>
+          <i class="el-icon-edit" @click.stop="openEdit(item.id)"></i>
+          <i class="el-icon-delete" @click.stop="deleteConfirm(item.id)"></i>
         </div>
       </li>
     </ul>
