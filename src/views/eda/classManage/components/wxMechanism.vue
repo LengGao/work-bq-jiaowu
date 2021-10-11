@@ -65,7 +65,7 @@
     </el-table>
 
     <div class="table_bottom">
-      <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" style="margin-left: auto;" />
+      <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" @pageSizeChange="handleSizeChange" style="margin-left: auto;" />
     </div>
 
     <!-- 添加机构通知弹窗 -->
@@ -279,8 +279,12 @@
       console.log(this.$route.query.classroom_id)
     },
     methods: {
+      handleSizeChange(size) {
+      this.pageSize = size;
+      this.getNoticeList();
+    },
         // 发送消息
-    sendOut(id) {
+       sendOut(id) {
       // this.sendNotice(id)
       this.$confirm('此操作将发送该通知, 是否继续?', '提示', {
           confirmButtonText: '确定',
