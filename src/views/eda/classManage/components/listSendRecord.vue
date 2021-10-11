@@ -4,7 +4,7 @@
             <el-dialog title="阅读记录" :visible.sync="visible" :close-on-click-modal="false" width="1000px" @open="handleOpen"   @closed="handleColse">
                 <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
                 <el-table :data="gridData" :header-cell-style="{ 'text-align': 'center' }"
-                :cell-style="{ 'text-align': 'center' }">
+                :cell-style="{ 'text-align': 'center' }" height="540">
                 <el-table-column prop="id" label="序号" width="120"></el-table-column>
                 <el-table-column prop="nickname" label="用户姓名" width="200"></el-table-column>
                 <el-table-column prop="institution_name" label="所属机构" width="220"></el-table-column>
@@ -25,7 +25,12 @@
                 </el-table-column>
               </el-table>
               <div class="table_bottom">
-                <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" style="margin-left: auto;" />
+                <page
+                  :data="listTotal"
+                  :curpage="pageNum"
+                  @pageChange="handlePageChange"
+                  @pageSizeChange="handleSizeChange"
+                />
               </div>
               </el-dialog>
     </section>
@@ -68,7 +73,7 @@
             visible: this.value,
             gridData: [],
             pageNum:1,
-            listTotal:1,
+            listTotal:0,
             searchData: {
             from_organization_id: [],
             search_box: '',
@@ -124,6 +129,10 @@
             },
         },
         methods: {
+            handleSizeChange(size) {
+              this.pageSize = size;
+              this.getNoticeRecordList();
+            },
             handleColse(){
                this.$emit('input',false)
             },
@@ -135,9 +144,8 @@
         async getNoticeRecordList() {
         const data = {
           page: this.pageNum,
-          limit: 10,
+          limit: this.pageSize,
           ...this.searchData,
-         
         id: this.id,
 
         };
