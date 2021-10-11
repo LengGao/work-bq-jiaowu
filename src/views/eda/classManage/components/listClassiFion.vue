@@ -84,46 +84,46 @@
                 this.getInstitutionSelectData()
                this.getMessageRecordList()
             },
-        // 微信消息发送记录列表
-        async getMessageRecordList() {
-        const data = {
-          page: this.pageNum,
-          limit: 10,
-          ...this.searchData,
-          id: this.id,
-        };
-        console.log(this.id)
-        this.listLoading = true;
-        const res = await getMessageRecordList(data);
-        this.listLoading = false;
-        this.gridData = res.data.list;
-        this.listTotal = res.data.total;
-      },
-      handleSearch(data) {
-      this.pageNum = 1;
-      this.searchData = {
-        ...data,
-        from_organization_id: data.from_organization_id.pop(),
-        };
-        this.getMessageRecordList();
-      },
-        handlePageChange(val) {
-        this.pageNum = val;
-        this.getMessageRecordList();
-      },
-      // 获取机构
-    async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
-      if (res.code === 0) {
-        this.searchOptions[0].attrs.options = cloneOptions(
-          res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
-      }
-    },
+            // 微信消息发送记录列表
+            async getMessageRecordList() {
+            const data = {
+            page: this.pageNum,
+            limit: 10,
+            ...this.searchData,
+            id: this.id,
+            };
+            console.log(this.id)
+            this.listLoading = true;
+            const res = await getMessageRecordList(data);
+            this.listLoading = false;
+            this.gridData = res.data.list;
+            this.listTotal = res.data.total;
+        },
+        handleSearch(data) {
+        this.pageNum = 1;
+        this.searchData = {
+            ...data,
+            from_organization_id: data.from_organization_id.pop(),
+            };
+            this.getMessageRecordList();
+        },
+            handlePageChange(val) {
+            this.pageNum = val;
+            this.getMessageRecordList();
+        },
+        // 获取机构
+        async getInstitutionSelectData() {
+        const data = { list: true };
+        const res = await getInstitutionSelectData(data);
+        if (res.code === 0) {
+            this.searchOptions[0].attrs.options = cloneOptions(
+            res.data,
+            "institution_name",
+            "institution_id",
+            "children"
+            );
+        }
+        },
 
         },
     };
