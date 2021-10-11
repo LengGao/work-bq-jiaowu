@@ -4,7 +4,8 @@
             <el-dialog title="发送记录" :visible.sync="visible" :close-on-click-modal="false" width="1000px" @open="handleOpen"  @closed="handleColse">
                 <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
                 <el-table :data="gridData" :header-cell-style="{ 'text-align': 'center' }"
-                  :cell-style="{ 'text-align': 'center' }">
+                  :cell-style="{ 'text-align': 'center' }"  height="540"
+                  >
                   <el-table-column prop="id" label="编号" width="120"></el-table-column>
                   <el-table-column prop="user_realname" label="姓名" width="120"></el-table-column>
                   <el-table-column prop="telphone" label="手机号码" width="140"></el-table-column>
@@ -19,7 +20,7 @@
                   <el-table-column prop="result" label="备注"></el-table-column>
                 </el-table>
                 <div class="table_bottom">
-                  <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" style="margin-left: auto;" />
+                  <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" @pageSizeChange="handleSizeChange" style="margin-left: auto;" />
                 </div>
               </el-dialog>
     </section>
@@ -77,6 +78,10 @@
             },
         },
         methods: {
+            handleSizeChange(size) {
+            this.pageSize = size;
+            this.getMessageRecordList();
+            },
             handleColse(){
                 this.$emit('input',false)
             },
@@ -88,7 +93,7 @@
         async getMessageRecordList() {
         const data = {
           page: this.pageNum,
-          limit: 10,
+          limit: this.pageSize,
           ...this.searchData,
           id: this.id,
         };
