@@ -288,7 +288,6 @@ export default {
         name: "massMessage",
         query: {
           classroom_id: row.classroom_id,
-         
         },
       });
     },
