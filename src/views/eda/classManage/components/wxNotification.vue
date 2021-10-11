@@ -58,7 +58,7 @@
       </el-table-column>
     </el-table>
     <div class="table_bottom">
-      <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" style="margin-left: auto;" />
+      <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange"  @pageSizeChange="handleSizeChange" style="margin-left: auto;" />
     </div>
 
     <!-- 消息详情弹窗 -->
@@ -187,6 +187,10 @@
     },
 
     methods: {
+      handleSizeChange(size) {
+      this.pageSize = size;
+      this.getMessageList();
+    },
       handleSearch(data) {
         const times = data.date || ["", ""];
         console.log(times);
