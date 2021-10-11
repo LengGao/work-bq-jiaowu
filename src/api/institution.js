@@ -12,7 +12,7 @@ export function getInstitutionList(params) {
 // 机构列表-开关
 export function modifyInstitutionOther(data) {
     return request({
-        url: 'Organization/modifyOther',
+        url: 'Organization/updateOther',
         method: 'post',
         data,
     })

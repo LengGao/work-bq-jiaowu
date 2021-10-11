@@ -4,7 +4,8 @@
             <el-dialog title="发送记录" :visible.sync="visible" :close-on-click-modal="false" width="1000px" @open="handleOpen"  @closed="handleColse">
                 <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
                 <el-table :data="gridData" :header-cell-style="{ 'text-align': 'center' }"
-                  :cell-style="{ 'text-align': 'center' }">
+                  :cell-style="{ 'text-align': 'center' }"  height="540"
+                  >
                   <el-table-column prop="id" label="编号" width="120"></el-table-column>
                   <el-table-column prop="user_realname" label="姓名" width="120"></el-table-column>
                   <el-table-column prop="telphone" label="手机号码" width="140"></el-table-column>
@@ -19,7 +20,7 @@
                   <el-table-column prop="result" label="备注"></el-table-column>
                 </el-table>
                 <div class="table_bottom">
-                  <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" style="margin-left: auto;" />
+                  <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" @pageSizeChange="handleSizeChange" style="margin-left: auto;" />
                 </div>
               </el-dialog>
     </section>
@@ -77,6 +78,10 @@
             },
         },
         methods: {
+            handleSizeChange(size) {
+            this.pageSize = size;
+            this.getMessageRecordList();
+            },
             handleColse(){
                 this.$emit('input',false)
             },
@@ -84,46 +89,46 @@
                 this.getInstitutionSelectData()
                this.getMessageRecordList()
             },
-            // 微信消息发送记录列表
-            async getMessageRecordList() {
-            const data = {
-            page: this.pageNum,
-            limit: 10,
-            ...this.searchData,
-            id: this.id,
-            };
-            console.log(this.id)
-            this.listLoading = true;
-            const res = await getMessageRecordList(data);
-            this.listLoading = false;
-            this.gridData = res.data.list;
-            this.listTotal = res.data.total;
-        },
-        handleSearch(data) {
-        this.pageNum = 1;
-        this.searchData = {
-            ...data,
-            from_organization_id: data.from_organization_id.pop(),
-            };
-            this.getMessageRecordList();
-        },
-            handlePageChange(val) {
-            this.pageNum = val;
-            this.getMessageRecordList();
-        },
-        // 获取机构
-        async getInstitutionSelectData() {
-        const data = { list: true };
-        const res = await getInstitutionSelectData(data);
-        if (res.code === 0) {
-            this.searchOptions[0].attrs.options = cloneOptions(
-            res.data,
-            "institution_name",
-            "institution_id",
-            "children"
-            );
-        }
-        },
+        // 微信消息发送记录列表
+        async getMessageRecordList() {
+        const data = {
+          page: this.pageNum,
+          limit: this.pageSize,
+          ...this.searchData,
+          id: this.id,
+        };
+        console.log(this.id)
+        this.listLoading = true;
+        const res = await getMessageRecordList(data);
+        this.listLoading = false;
+        this.gridData = res.data.list;
+        this.listTotal = res.data.total;
+      },
+      handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        from_organization_id: data.from_organization_id.pop(),
+        };
+        this.getMessageRecordList();
+      },
+        handlePageChange(val) {
+        this.pageNum = val;
+        this.getMessageRecordList();
+      },
+      // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
+      if (res.code === 0) {
+        this.searchOptions[0].attrs.options = cloneOptions(
+          res.data,
+          "institution_name",
+          "institution_id",
+          "children"
+        );
+      }
+    },
 
         },
     };
