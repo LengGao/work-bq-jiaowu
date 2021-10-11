@@ -16,7 +16,7 @@
       v-loading="detaiLoading"
     >
       <el-form-item label="老师名称" prop="admin_id">
-        <el-select v-model="formData.admin_id" placeholder="请选择">
+        <el-select filterable v-model="formData.admin_id" placeholder="请选择">
           <el-option
             v-for="item in teacherList"
             :key="item.staff_id"

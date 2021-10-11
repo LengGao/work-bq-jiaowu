@@ -61,7 +61,6 @@
         },
         data() {
             return {
-                // showClo:false,
             ruleForm: {
                 id: "",
                 first: "",
@@ -160,8 +159,6 @@
                     this.hanldeCancel();
                 }
             },
-
-
         },
     };
 </script>
@@ -173,7 +170,6 @@
         color: #fff;
         width: 105px;
     }
-
     /deep/.selectCss .el-input .el-select__caret {
         color: #fff;
     }
@@ -189,5 +185,4 @@
     /deep/.el-dialog__footer {
         padding-right: 40px;
     }
-  
 </style>
