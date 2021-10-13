@@ -61,7 +61,6 @@
         },
         data() {
             return {
-                // showClo:false,
             ruleForm: {
                 id: "",
                 first: "",
@@ -160,7 +159,6 @@
                     this.hanldeCancel();
                 }
             },
-
 
         },
     };

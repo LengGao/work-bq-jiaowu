@@ -649,14 +649,87 @@
               </div>
             </div>
           </div>
-          <!--收藏夹-->
+          <!--做题历史-->
           <div v-if="isTagactive == 7">
+            <!--表格-->
+            <div class="userTable">
+              <el-table
+                ref="multipleTable"
+                :data="selfList"
+                tooltip-effect="light"
+                stripe
+                :header-cell-style="{ 'text-align': 'center' }"
+                class="min_table"
+              >
+                <el-table-column
+                  prop="description"
+                  label="标题"
+                  show-overflow-tooltip
+                  min-width="180"
+                  align="left"
+                  
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="use_time"
+                  label="做题用时"
+                  min-width="100"
+                  show-overflow-tooltip
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="mark"
+                  label="成绩"
+                  min-width="100"
+                  show-overflow-tooltip
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="right_num"
+                  label="答对题数"
+                  min-width="100"
+                  show-overflow-tooltip
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="fail_num"
+                  label="答错题数"
+                  min-width="100"
+                  show-overflow-tooltip
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="into_time"
+                  label="进入时间"
+                  min-width="180"
+                  show-overflow-tooltip
+                  align="center"
+                >
+                </el-table-column>
+ 
+              </el-table>
+              <div class="table_bottom">
+                <page
+                  :data="listTotal"
+                  :curpage="pageNum"
+                  @pageChange="Statisticshistory"
+                />
+              </div>
+            </div>
+          </div>
+          <!--收藏夹-->
+          <div v-if="isTagactive == 8">
             <ChapterAndQuestion type="0" />
           </div>
           <!--错题集-->
-          <div v-if="isTagactive == 8">
+          <div v-if="isTagactive == 9">
             <ChapterAndQuestion type="1" />
           </div>
+          
         </el-col>
       </el-row>
     </section>
@@ -673,6 +746,7 @@ import {
   mockExam,
   challenge,
   selfProposed,
+  topicStatisticshistory
 } from "@/api/eda";
 export default {
   name: "questionDetails",
@@ -727,12 +801,17 @@ export default {
         },
         {
           id: 7,
-          name: "收藏夹",
+          name: "做题历史",
         },
         {
           id: 8,
+          name: "收藏夹",
+        },
+        {
+          id: 9,
           name: "错题集",
         },
+        
       ],
     };
   },
@@ -755,6 +834,8 @@ export default {
         this.challenge();
       } else if (row.id === 6) {
         this.selfProposed();
+      } else if (row.id === 7) {
+        this.topicStatisticshistory();
       }
     },
 
@@ -788,6 +869,11 @@ export default {
     handlePageChangeself(val) {
       this.pageNum = val;
       this.selfProposed();
+    },
+    //做题历史
+    Statisticshistory(val) {
+      this.pageNum = val;
+      this.topicStatisticshistory();
     },
 
     //学生基本信息
@@ -887,6 +973,21 @@ export default {
         this.listTotal = res.data.total;
       }
     },
+
+    // 做题历史
+    async topicStatisticshistory() {
+      const data = {
+        uid: this.$route.query.uid,
+        question_bank_id: this.$route.query.question_bank_id,
+        page: this.pageNum,
+      };
+      const res = await topicStatisticshistory(data);
+      if (res.code === 0) {
+        this.selfTitle = res.data;
+        this.selfList = res.data.list;
+        this.listTotal = res.data.total;
+      }
+    },
   },
 };
 </script>
@@ -902,7 +1003,9 @@ export default {
   padding: 9px 0;
   width: 80px;
 }
-
+.textalignleft{
+  text-align: left !important;
+}
 .punchclock ul {
   display: flex;
   justify-content: space-between;
