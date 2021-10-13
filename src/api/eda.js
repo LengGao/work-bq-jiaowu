@@ -605,6 +605,15 @@ export function getBuyQuestionBank(params) {
   })
 }
 
+// 学生详情-学习记录-做题历史
+export function topicStatisticshistory(params) {
+  return request({
+    url: '/topicStatistics/history',
+    method: 'get',
+    params,
+  })
+}
+
 
 
 
