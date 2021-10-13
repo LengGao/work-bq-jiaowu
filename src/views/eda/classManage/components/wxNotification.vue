@@ -13,7 +13,7 @@
       :cell-style="{ 'text-align': 'center' }">
       <el-table-column label="序号" show-overflow-tooltip min-width="60" align="center" prop="id">
       </el-table-column>
-      <el-table-column prop="title" label="通知标题" min-width="160" align="center" show-overflow-tooltip>
+      <el-table-column prop="title" label="通知标题 " min-width="160" align="center" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="content" label="通知内容" min-width="200" align="center" class="noticecontent">
         <template slot-scope="{ row }">
