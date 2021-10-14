@@ -13,14 +13,17 @@
       :cell-style="{ 'text-align': 'center' }">
       <el-table-column label="序号" show-overflow-tooltip min-width="60" align="center" prop="id">
       </el-table-column>
-      <el-table-column prop="title" label="通知标题" min-width="160" align="center" show-overflow-tooltip>
+      <el-table-column prop="title" label="通知标题 " min-width="160" align="center" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="content" label="通知内容" min-width="200" align="center" class="noticecontent">
         <template slot-scope="{ row }">
+          <div v-if="row.content_data.keyword4">
           <span>
             {{row.content_data.keyword1}}
             {{row.content_data.keyword4}}
           </span>
+          </div>
+          <div v-else>--</div>
         </template>
       </el-table-column>
       <el-table-column prop="send_status" label="发送状态" min-width="100" align="center" show-overflow-tooltip>
@@ -77,24 +80,24 @@
       </span>
     </el-dialog>
 
-    <addClassiFion v-model="addtempdialog" :id="currentId" :title="dialogTitle" @on-success="getMessageList"
+    <AddClassiFion v-model="addtempdialog" :id="currentId" :title="dialogTitle" @on-success="getMessageList"
       :contractInfo="contractInfo" />
 
-    <listClassiFion v-model="dialogVisibleSend" :id="id" />
+    <ListClassiFion v-model="dialogVisibleSend" :id="id" />
   </div>
 </template>
 
 <script>
   import { cloneOptions } from "@/utils/index";
   import { getShortcuts } from "@/utils/date";
-  import addClassiFion from './addClassiFion';
-  import listClassiFion from './listClassiFion';
+  import AddClassiFion from './addClassiFion';
+  import ListClassiFion from './listClassiFion';
   import { getMessageList, deleteMessage, updateMessage, sendMessage, getMessageRecordList } from "@/api/message";
   export default {
     name: "wxNotification",
     components: {
-      addClassiFion,
-      listClassiFion,
+      AddClassiFion,
+      ListClassiFion,
     },
     data() {
       return {

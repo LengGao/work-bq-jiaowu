@@ -44,9 +44,9 @@
           <span v-else>--</span>
         </template>
       </el-table-column>
-      <el-table-column prop="course_list" label="已读人数" min-width="140" align="center" show-overflow-tooltip>
+      <el-table-column prop="course_list" label="已读 / 未读人数" min-width="140" align="center" show-overflow-tooltip>
         <template slot-scope="{ row }">
-          {{ row.read_count }} / {{ row.unread_count }}</span>
+          <span style="color: rgb(0, 173, 0);">{{ row.read_count }} </span> / {{ row.unread_count }}</span>
       </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" align="center" min-width="140">
