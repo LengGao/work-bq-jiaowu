@@ -48,7 +48,7 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
-        <el-button @click="hanldeCancel">取 消</el-button>
+        <el-button @click="visible = false">取 消</el-button>
         <el-button type="primary" @click="submitForm('ruleForm')"
           >确 定</el-button
         >
@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import { templateadd, templateedit, uploadUrl } from "@/api/system";
 import { contractaudit } from "@/api/fina";
 
 export default {
@@ -125,7 +124,6 @@ export default {
       }
       this.$refs[formName].resetFields();
       this.hanldeCancel();
-      this.$emit("on-success");
     },
     handleOpen() {
       if (this.contractInfo.id) {
@@ -151,7 +149,7 @@ export default {
       if (res.code == 0) {
         this.$message.success(res.message);
         this.$emit("on-success");
-        this.$refs[formName].resetFields();
+        this.visible = false;
       }
     },
 
@@ -159,23 +157,7 @@ export default {
       console.log(this.ruleForm);
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.ruleForm);
-          if (this.ruleForm.id) {
-            //修改
-            this.contractaudit();
-            this.hanldeCancel();
-            this.$refs[formName].resetFields();
-          } else {
-            //添加
-            this.contractaudit();
-            this.$refs[formName].resetFields();
-            this.hanldeCancel();
-            this.$emit("on-success");
-          }
-        } else {
-          console.log("审核已拒绝");
-          this.hanldeCancel();
-          return false;
+          this.contractaudit();
         }
       });
     },
