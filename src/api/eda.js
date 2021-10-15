@@ -1243,3 +1243,12 @@ export function exportEduList(params) {
     params,
   })
 }
+
+// 用户收藏课程列表
+export function courseCollection(params) {
+  return request({
+    url: '/UserArchives/courseCollection',
+    method: 'get',
+    params,
+  })
+}

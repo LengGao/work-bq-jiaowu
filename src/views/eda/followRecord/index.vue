@@ -95,7 +95,6 @@
 </template>
 
 <script>
-// import { getShortcuts } from "@/utils/date";
 import { getFollowPage } from "@/api/message"
 export default {
   name: "followRecord",
@@ -104,7 +103,6 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
-      // pageSize: 20,
       listTotal: 0,
       searchData: { 
         value: "",
@@ -116,10 +114,8 @@ export default {
             placeholder: "学生姓名/跟进人/跟进内容",
           },
         },
-    ],
+      ],
       currentId: "",
-    //   dialogTitle: "添加班级",
-    //   dialogVisible: false,  
     };
   },
 
@@ -135,8 +131,6 @@ export default {
         this.pageNum = 1;
         this.searchData = {
           ...data,
-          start_time: times[0],
-          end_time: times[1],
         };
         console.log(this.searchData);
         this.getFollowPage();
