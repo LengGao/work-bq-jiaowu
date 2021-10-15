@@ -434,6 +434,12 @@ export const asyncRouter = [
         meta: { title: '班级管理', icon: 'product-cate' },
       },
       {
+        path: 'followRecord',
+        name: 'followRecord',
+        component: () => import('@/views/eda/followRecord/index.vue'),
+        meta: { title: '跟进记录', icon: 'product-cate' },
+      },
+      {
         path: 'livePublicClass',
         name: 'livePublicClass',
         component: () => import('@/views/eda/livePublicClass/index.vue'),
