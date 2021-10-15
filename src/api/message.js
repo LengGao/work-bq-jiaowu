@@ -128,3 +128,15 @@ export function getMessageList(params) {
     params,
   })
 }
+
+/**
+ * 跟进记录列表
+ */
+ export function getFollowPage(params) {
+  return request({
+    url: '/StaffFollow/getFollowPage',
+    method: 'get',
+    params,
+  })
+}
+
