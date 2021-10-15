@@ -5,7 +5,11 @@
     </div>
     <section class="main">
     <!--搜索模块-->
-    <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+    <SearchList 
+    :options="searchOptions" 
+    :data="searchData" 
+    @on-search="handleSearch" 
+    />
     <!--表格-->
     <div class="userTable">
         <el-table
@@ -30,53 +34,53 @@
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
-            prop="name"
+            prop="user_name"
             label="学生姓名"
-            min-width="220"
+            min-width="120"
             align="center"
             show-overflow-tooltip
           >  
           <template slot-scope="{ row }">
             <div class="realname" @click="toStudentDetail(row.uid)">
-              {{ row.realname }}
+              {{ row.user_name }}
             </div>
           </template>
         </el-table-column>
           <el-table-column
-          prop="name"
+          prop="update_time"
           label="跟进时间"
-          min-width="200"
+          min-width="160"
           align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-        prop="name"
+        prop="describe"
         label="跟进内容"
+        min-width="360"
+        align="center"
+        show-overflow-tooltip
+      ></el-table-column>
+      <el-table-column
+        prop="follow_user_name"
+        label="跟进人"
+        min-width="160"
+        align="center"
+        show-overflow-tooltip
+      ></el-table-column>
+      <el-table-column
+        prop="position"
+        label="角色"
+        min-width="120"
+        align="center"
+        show-overflow-tooltip
+      ></el-table-column>
+        <el-table-column
+        prop="next_follow_time"
+        label="下次跟进时间"
         min-width="250"
         align="center"
         show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
-        prop="name"
-        label="跟进人"
-        min-width="180"
-        align="center"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
-        prop="name"
-        label="角色"
-        min-width="180"
-        align="center"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
-      prop="name"
-      label="下次跟进时间"
-      min-width="220"
-      align="center"
-      show-overflow-tooltip
-      ></el-table-column>
+        ></el-table-column>
         </el-table>
         <div class="table_bottom">
           <page :data="listTotal" 
@@ -91,7 +95,8 @@
 </template>
 
 <script>
-import { getShortcuts } from "@/utils/date";
+// import { getShortcuts } from "@/utils/date";
+import { getFollowPage } from "@/api/message"
 export default {
   name: "followRecord",
   data() {
@@ -101,40 +106,25 @@ export default {
       pageNum: 1,
       // pageSize: 20,
       listTotal: 0,
-      searchData: {
-        date: [],
-        keyword: "",
+      searchData: { 
+        value: "",
       },
       searchOptions: [
-      {
-            key: "date",
-            type: "datePicker",
-            attrs: {
-              type: "daterange",
-              "range-separator": "至",
-              "start-placeholder": "开始日期",
-              "end-placeholder": "结束日期",
-              "value-format": "yyyy-MM-dd",
-              pickerOptions: {
-                shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-              },
-            }
-          },
         {
-          key: "keyword",
+          key: "value",
           attrs: {
-            placeholder: "学生姓名",
+            placeholder: "学生姓名/跟进人/跟进内容",
           },
         },
     ],
       currentId: "",
     //   dialogTitle: "添加班级",
-    //   dialogVisible: false,
+    //   dialogVisible: false,  
     };
   },
 
   created() {
-    // this.getClassList();
+    this.getFollowPage();
   },
 
   methods: {
@@ -149,16 +139,29 @@ export default {
           end_time: times[1],
         };
         console.log(this.searchData);
-        // this.getMessageList();
+        this.getFollowPage();
       },
     handlePageChange(val) {
         this.pageNum = val;
-        // this.getNoticeList();
+        this.getFollowPage();
       },
     handleSizeChange(size) {
       this.pageSize = size;
-      // this.getNoticeList();
+      this.getFollowPage();
     },
+    // 跟进记录列表
+    async getFollowPage() {
+        const data = {
+          page: this.pageNum,
+          limit: this.pageSize,
+          ...this.searchData,
+        };
+        this.listLoading = true;
+        const res = await getFollowPage(data);
+        this.listLoading = false;
+        this.listData = res.data.list;
+        this.listTotal = res.data.total;
+      },
   },
 };
 
@@ -169,6 +172,9 @@ export default {
 .el-table__header tr {
   background-color: #f8f8f8;
   color: #909399;
+}
+/deep/.search-lise .search-item[data-v-a11328ce]{
+  width: 300px;
 }
 .input-width {
   width: 240px;
