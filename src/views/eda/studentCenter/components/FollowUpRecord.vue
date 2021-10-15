@@ -32,8 +32,8 @@
         </el-form-item>
       </div>
     </el-form>
-    <div class="record-list">
-      <ul v-loading="listLoading">
+    <div class="record-list" v-loading="listLoading">
+      <ul>
         <li v-for="item in listData" :key="item.id">
           <el-card class="box-card" shadow="never">
             <div class="list-row">
@@ -138,8 +138,6 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         uid: this.uid,
-        follow_type: 5, //5:学习进度
-        follow_state: 3, //3:已完成
       };
       this.listLoading = true;
       const res = await getFollowPage(data);
