@@ -61,7 +61,7 @@
               style="width: 100%"
               class="min_table"
               :header-cell-style="{ 'text-align': 'center' }"
-              height="660"
+              height="650"
               @selection-change="handleTableSelect"
             >
               <el-table-column align="center" type="selection" width="70">
@@ -422,6 +422,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 0;
   }
   .main {
     padding: 20px;
@@ -442,7 +443,7 @@ export default {
       width: 300px;
       border: 1px solid #e4e7ed;
       flex-shrink: 0;
-      height: 800px;
+      height: 780px;
     }
     &-right {
       width: calc(100% - 320px);
