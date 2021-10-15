@@ -103,10 +103,19 @@
                 <el-button type="text" @click="toMassMessage(row)"
                   >群发消息</el-button
                 >
-                <el-button type="text" @click="wxMassMessage(row.classroom_id,row.classroom_name,
-                row.category_name,row.staff_name,row.student_number)"
-                >微信通知</el-button
-              >
+                <el-button
+                  type="text"
+                  @click="
+                    wxMassMessage(
+                      row.classroom_id,
+                      row.classroom_name,
+                      row.category_name,
+                      row.staff_name,
+                      row.student_number
+                    )
+                  "
+                  >微信通知</el-button
+                >
                 <el-button type="text" @click="toReturnVisit(row.classroom_id)"
                   >学习回访</el-button
                 >
@@ -291,15 +300,21 @@ export default {
         },
       });
     },
-    wxMassMessage(classroom_id,classroom_name,category_name,staff_name,student_number) {
+    wxMassMessage(
+      classroom_id,
+      classroom_name,
+      category_name,
+      staff_name,
+      student_number
+    ) {
       this.$router.push({
-        name: "wxMessage",
+        name: "classMessage",
         query: {
           classroom_id,
           classroom_name,
           category_name,
           staff_name,
-          student_number
+          student_number,
         },
       });
     },
