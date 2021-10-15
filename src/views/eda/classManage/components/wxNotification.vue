@@ -19,8 +19,7 @@
         <template slot-scope="{ row }">
           <div v-if="row.content_data.keyword4">
           <span>
-            {{row.content_data.keyword1}}
-            {{row.content_data.keyword4}}
+            {{row.content_data.keyword1}}{{row.content_data.keyword4}}
           </span>
           </div>
           <div v-else>--</div>
