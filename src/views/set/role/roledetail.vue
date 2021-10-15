@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="mainwrap">
+    <section class="mainwrap" v-loading="treeLoading">
       <div>
         <el-form
           :model="formInline"
@@ -28,23 +28,26 @@
           </el-form-item>
         </el-form>
         <span class="authority">功能权限</span>
-        <div class="tree-container" v-loading="treeLoading">
-          <el-tree
-            ref="trees"
-            v-for="(item, index) in roleData"
-            :key="index"
-            :data="item"
-            show-checkbox
-            :props="{
-              label: 'title',
-            }"
-            :expand-on-click-node="false"
-            check-on-click-node
-            default-expand-all
-            node-key="node_id"
-            class="configure"
-          >
-          </el-tree>
+
+        <div class="tree">
+          <div class="tree-container">
+            <el-tree
+              ref="trees"
+              v-for="(item, index) in roleData"
+              :key="index"
+              :data="item"
+              show-checkbox
+              :props="{
+                label: 'title',
+              }"
+              :expand-on-click-node="false"
+              check-on-click-node
+              default-expand-all
+              node-key="node_id"
+              class="configure"
+            >
+            </el-tree>
+          </div>
         </div>
         <div class="tree-footer">
           <el-button @click="handleCancel">取 消</el-button>
@@ -179,11 +182,13 @@ export default {
 /deep/.el-form-item {
   margin-bottom: 10px;
 }
-.tree-container {
-  display: flex;
-  border: 1px solid #ccc;
-  height: calc(100vh - 270px);
+.tree {
+  height: 690px;
   overflow-y: auto;
+  border: 1px solid #ccc;
+  &-container {
+    display: flex;
+  }
 }
 .add-role {
   float: right;

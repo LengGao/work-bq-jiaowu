@@ -1,5 +1,5 @@
 <template>
-  <div class="chapter-menu">
+  <div class="chapter-menu" v-loading="chapterLoading">
     <div class="chapter-menu-header">
       <h4>{{ chapterType == 1 ? "章节名称" : "试卷名称" }}</h4>
       <el-button
@@ -11,7 +11,7 @@
         @click="openAdd"
       ></el-button>
     </div>
-    <ul class="chapter-menu-list" v-loading="chapterLoading">
+    <ul class="chapter-menu-list">
       <li
         :class="{
           'list-item': true,
