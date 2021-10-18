@@ -35,6 +35,7 @@
         <el-tab-pane label="人脸识别记录" name="FaceRecord"></el-tab-pane>
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="用户日志" name="CustomerHistory"></el-tab-pane>
+        <el-tab-pane label="东培菜单" name="Dongpeinav"></el-tab-pane>
       </el-tabs>
       <component
         :is="getComponent"
