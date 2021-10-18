@@ -104,7 +104,7 @@ export default {
       this.detailLoading = false;
       if (res.code === 0) {
         for (const k in this.photoData) {
-          this.photoData[k] = res.data[k];
+          this.photoData[k] = res.data[k] || "";
         }
       }
     },
