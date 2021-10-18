@@ -821,6 +821,12 @@ export const asyncRouter = [
     name: 'institution',
     children: [
       {
+        path: 'applet',
+        name: 'applet',
+        component: () => import('@/views/institution/applet/index.vue'),
+        meta: { title: '小程序管理', icon: 'product-add' },
+      },
+      {
         path: 'distributeQuestionBak',
         name: 'distributeQuestionBak',
         component: () => import('@/views/institution/distributeQuestionBak/index.vue'),

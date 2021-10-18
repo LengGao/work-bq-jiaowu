@@ -280,6 +280,7 @@ export default {
       page: 1,
       dialogVisible: false,
       iconList: [
+        "iconxiaochengxu1",
         "iconrenlianshibie1",
         "iconVideoClip",
         "iconvideo-file",
