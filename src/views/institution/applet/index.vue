@@ -10,15 +10,11 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary" @click="handleAdd"
-            >批量发布新版本</el-button
-          >
-          <el-button type="primary" @click="batchAuditCode">批量审核</el-button>
-          <el-button type="primary" @click="batchUndoCodeAudit"
-            >批量撤回</el-button
-          >
+          <el-button type="primary" @click="handleAdd">上传新版本</el-button>
+          <el-button type="primary" @click="batchAuditCode">审核</el-button>
+          <el-button type="primary" @click="batchUndoCodeAudit">撤回</el-button>
           <el-button type="primary" @click="batchPublishCode"
-            >批量发布</el-button
+            >发布上线</el-button
           >
         </div>
       </div>
@@ -70,6 +66,13 @@
             min-width="180"
             align="center"
             show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="template_id"
+            label="模板Id"
+            min-width="100"
+            align="center"
           >
           </el-table-column>
           <el-table-column
