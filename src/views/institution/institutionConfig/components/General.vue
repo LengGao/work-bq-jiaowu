@@ -31,7 +31,7 @@
         <UploadImg width="280" height="130" v-model="formData.logo">
           <span slot="tips">
             <p>1、支持jpg、 png等格式</p>
-            <p>2、推荐尺寸260x50px，用于网校和后台登录界面</p>
+            <p>2、推荐尺寸320x50px，用于网校和后台登录界面</p>
           </span>
         </UploadImg>
       </el-form-item>
@@ -39,7 +39,7 @@
         <UploadImg width="280" height="130" v-model="formData.logo_other">
           <span slot="tips">
             <p>1、支持jpg、 png等格式</p>
-            <p>2、推荐尺寸260x50px，用于后台左上角导航菜单</p>
+            <p>2、推荐尺寸320x50px，用于后台左上角导航菜单</p>
           </span>
         </UploadImg>
       </el-form-item>
