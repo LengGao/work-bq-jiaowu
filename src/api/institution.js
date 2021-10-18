@@ -237,3 +237,51 @@ export function getInstitutionToken(data) {
         data
     })
 }
+//机构小程序列表
+export function appletManagement(params) {
+    return request({
+        url: '/Merchant/appletManagement',
+        method: 'get',
+        params
+    })
+}
+//机构小程序列表-模板选项
+export function templateSelect(params) {
+    return request({
+        url: '/Merchant/templateSelect',
+        method: 'get',
+        params
+    })
+}
+//机构小程序列表-添加
+export function batchCreateCode(data) {
+    return request({
+        url: 'Merchant/batchCreateCode',
+        method: 'post',
+        data
+    })
+}
+//机构小程序列表-审核
+export function batchAuditCode(data) {
+    return request({
+        url: 'Merchant/batchAuditCode',
+        method: 'post',
+        data
+    })
+}
+//机构小程序列表-审核撤回
+export function batchUndoCodeAudit(data) {
+    return request({
+        url: 'Merchant/batchUndoCodeAudit',
+        method: 'post',
+        data
+    })
+}
+//机构小程序列表-发布
+export function batchPublishCode(data) {
+    return request({
+        url: 'Merchant/batchPublishCode',
+        method: 'post',
+        data
+    })
+}
