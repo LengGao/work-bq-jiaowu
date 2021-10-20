@@ -1,18 +1,7 @@
 const searchCache = {
     state: {
-        // 需要缓存的页面
-        cacheViews: ['studentCenter', 'classManage', 'customerManage',
-            'teachMaterial', 'certificates', 'teachSchedule',
-            'attendanceManage', 'classLive', 'liveSessions', 'livePublicClass',
-            'finance', 'order', 'courseManage', 'apply', 'questionBank', 'achievement',
-            'teachingManage', 'textbookManage', 'warehouseManage', 'agency', 'configureQuestionBank',
-            'allQuestionList', 'videoLibrary', 'aliVideo', 'classVideo', 'collegeStudentList',
-            'configureCourses', 'videoFaceRecord', 'faceScanningRecord', 'operationLog', 'studentList',
-            'studentDetail', 'questionStatistics', 'classDetail', 'projectStatistics', 'projectManage',
-            'institutionAccount', 'customerProject', 'eduOrder'
-        ],
-        // 缓存的触发条件
-        cacheTo: {
+        //   需要缓存的页面:[缓存的触发条件]
+        cacheViews: {
             studentCenter: ['studentDetail'], //示例： 学生中心，只有进入学生详情才能缓存
             classManage: ['classDetail', 'learnerManage', 'massMessage', 'returnVisit', 'classVideo'],
             customerManage: ['cusdetail', 'orderdetail'],
