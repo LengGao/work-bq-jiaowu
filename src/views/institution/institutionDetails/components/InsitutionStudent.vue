@@ -141,12 +141,12 @@ export default {
       statusMap: {
             0: {
                 color: "#FD6500",
-                text: "未购买",
+                text: "未报名",
                 
             },
             1: {
                 color: "#43D100",
-                text: "已购买",
+                text: "已报名",
                 
             },
             },
@@ -180,11 +180,11 @@ export default {
             width: 120,
             options: [
               {
-                value: 1,
+                value: 0,
                 label: "未报名",
               },
               {
-                value: 2,
+                value: 1,
                 label: "已报名",
               },
             ],
