@@ -237,51 +237,96 @@ export function getInstitutionToken(data) {
         data
     })
 }
-//机构小程序列表
-export function appletManagement(params) {
+
+
+
+// ----------------------------- 机构详情接口 -----------------------------
+
+
+/**
+ * 机构学生列表
+ */
+export function Organizationstudents(params) {
     return request({
-        url: '/Merchant/appletManagement',
+        url: '/Organization/students',
         method: 'get',
-        params
+        params,
     })
 }
-//机构小程序列表-模板选项
-export function templateSelect(params) {
+
+/**
+ * 公海学员列表
+ */
+export function highSeasStudent(params) {
     return request({
-        url: '/Merchant/templateSelect',
+        url: '/Organization/highSeasStudent',
         method: 'get',
-        params
+        params,
     })
 }
-//机构小程序列表-添加
-export function batchCreateCode(data) {
+
+/**
+ * 资金流水
+ */
+export function moneyFlowing(params) {
     return request({
-        url: 'Merchant/batchCreateCode',
-        method: 'post',
-        data
+        url: '/Organization/moneyFlowing',
+        method: 'get',
+        params,
     })
 }
-//机构小程序列表-审核
-export function batchAuditCode(data) {
+
+/**
+ * 学生订单
+ */
+export function studentsOrder(params) {
     return request({
-        url: 'Merchant/batchAuditCode',
-        method: 'post',
-        data
+        url: '/Organization/studentsOrder',
+        method: 'get',
+        params,
     })
 }
-//机构小程序列表-审核撤回
-export function batchUndoCodeAudit(data) {
+
+// 课程列表-树状数据
+export function courseCateSelectTree(params) {
     return request({
-        url: 'Merchant/batchUndoCodeAudit',
-        method: 'post',
-        data
+        url: '/Merchant/courseCateSelectTree',
+        method: 'get',
+        params,
     })
 }
-//机构小程序列表-发布
-export function batchPublishCode(data) {
+
+// 机构课程列表
+export function getCourseList(params) {
     return request({
-        url: 'Merchant/batchPublishCode',
-        method: 'post',
-        data
+        url: '/Merchant/orgCourseList',
+        method: 'get',
+        params,
+    })
+}
+
+// 移除课程
+export function deleteOrgCourse(params) {
+    return request({
+        url: '/Merchant/deleteOrgCourse',
+        method: 'get',
+        params,
+    })
+}
+
+// 题库列表
+export function questionBankList(params) {
+    return request({
+        url: '/Organization/questionBankList',
+        method: 'get',
+        params,
+    })
+}
+// 题库分类列表
+export function questionBankCategoryList(params) {
+    return request({
+        url: '/Organization/questionBankCategoryList',
+        method: 'get',
+        params,
     })
 }
