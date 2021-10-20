@@ -237,3 +237,96 @@ export function getInstitutionToken(data) {
         data
     })
 }
+
+
+
+// ----------------------------- 机构详情接口 -----------------------------
+
+
+/**
+ * 机构学生列表
+ */
+export function Organizationstudents(params) {
+    return request({
+        url: '/Organization/students',
+        method: 'get',
+        params,
+    })
+}
+
+/**
+ * 公海学员列表
+ */
+export function highSeasStudent(params) {
+    return request({
+        url: '/Organization/highSeasStudent',
+        method: 'get',
+        params,
+    })
+}
+
+/**
+ * 资金流水
+ */
+export function moneyFlowing(params) {
+    return request({
+        url: '/Organization/moneyFlowing',
+        method: 'get',
+        params,
+    })
+}
+
+/**
+ * 学生订单
+ */
+export function studentsOrder(params) {
+    return request({
+        url: '/Organization/studentsOrder',
+        method: 'get',
+        params,
+    })
+}
+
+// 课程列表-树状数据
+export function courseCateSelectTree(params) {
+    return request({
+        url: '/Merchant/courseCateSelectTree',
+        method: 'get',
+        params,
+    })
+}
+
+// 机构课程列表
+export function getCourseList(params) {
+    return request({
+        url: '/Merchant/orgCourseList',
+        method: 'get',
+        params,
+    })
+}
+
+// 移除课程
+export function deleteOrgCourse(params) {
+    return request({
+        url: '/Merchant/deleteOrgCourse',
+        method: 'get',
+        params,
+    })
+}
+
+// 题库列表
+export function questionBankList(params) {
+    return request({
+        url: '/Organization/questionBankList',
+        method: 'get',
+        params,
+    })
+}
+// 题库分类列表
+export function questionBankCategoryList(params) {
+    return request({
+        url: '/Organization/questionBankCategoryList',
+        method: 'get',
+        params,
+    })
+}

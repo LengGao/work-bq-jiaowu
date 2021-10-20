@@ -68,7 +68,7 @@
           <el-table-column
             prop="classroom_name"
             label="开通小程序"
-            min-width="140"
+            min-width="120"
             align="center"
             show-overflow-tooltip
           >
@@ -87,7 +87,7 @@
           <el-table-column
             prop="first_time"
             label="开通H5"
-            min-width="140"
+            min-width="120"
             align="center"
             show-overflow-tooltip
           >
@@ -106,7 +106,7 @@
           <el-table-column
             label="配置小程序"
             show-overflow-tooltip
-            min-width="100"
+            min-width="80"
             align="center"
             prop="institution_id"
           >
@@ -121,7 +121,7 @@
           <el-table-column
             label="配置H5"
             show-overflow-tooltip
-            min-width="100"
+            min-width="80"
             align="center"
             prop="institution_id"
           >
@@ -137,7 +137,7 @@
             prop="account_num"
             label="账号数量"
             align="center"
-            min-width="90"
+            min-width="80"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -169,7 +169,7 @@
             label="操作"
             fixed="right"
             align="center"
-            min-width="280"
+            min-width="330"
           >
             <template slot-scope="{ row }">
               <el-button
@@ -190,9 +190,9 @@
                 "
                 >配置</el-button
               >
-              <!-- <el-button type="text" @click="linkTo('institutionDetails', row)"
+              <el-button type="text" @click="linkTo('institutionDetails', row)"
                 >详情</el-button
-              > -->
+              >
               <el-button type="text" @click="openRecharge(row)">充值</el-button>
               <el-button type="text" @click="handleEdit(row.institution_id)"
                 >编辑</el-button

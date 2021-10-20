@@ -50,7 +50,7 @@
             >
             </el-table-column>
             <el-table-column
-              prop="user_realname"
+              prop="title"
               :label="item.title"
               min-width="100"
               align="center"

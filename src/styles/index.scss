@@ -209,3 +209,11 @@ a:hover {
   }
 }
 
+// 自定义tree选择样式
+.tree-node {
+  cursor: pointer;
+  color: #666;
+  &--active {
+    color: #199fff;
+  }
+}
