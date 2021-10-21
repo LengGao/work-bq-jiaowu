@@ -21,6 +21,8 @@
           multiple
           placeholder="请选择学员"
           style="width: 100%"
+          filterable
+          clearable
         >
           <el-option
             v-for="item in studentOptions"
