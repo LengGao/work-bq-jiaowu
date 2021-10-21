@@ -1,5 +1,5 @@
 <template>
-  <div class="college-student">
+  <div class="-collegestudent">
     <div class="college-student-container">
       <div class="tree-list">
         <div class="question-bank-list">
