@@ -827,6 +827,12 @@ export const asyncRouter = [
         meta: { title: '小程序管理', icon: 'product-add' },
       },
       {
+        path: 'appletDrafts',
+        name: 'appletDrafts',
+        component: () => import('@/views/institution/appletDrafts/index.vue'),
+        meta: { title: '草稿箱', icon: 'product-add' },
+      },
+      {
         path: 'distributeQuestionBak',
         name: 'distributeQuestionBak',
         component: () => import('@/views/institution/distributeQuestionBak/index.vue'),
