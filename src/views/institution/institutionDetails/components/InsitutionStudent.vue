@@ -174,25 +174,25 @@ export default {
             },
           },
         },
-        {
-            key: "send_status",
-            type: "select",
-            width: 120,
-            options: [
-              {
-                value: 0,
-                label: "未报名",
-              },
-              {
-                value: 1,
-                label: "已报名",
-              },
-            ],
-            attrs: {
-              clearable: true,
-              placeholder: "报名状态",
-            },
-          },
+        // {
+        //     key: "is_pay",
+        //     type: "select",
+        //     width: 120,
+        //     options: [
+        //       {
+        //         value: 0,
+        //         label: "未报名",
+        //       },
+        //       {
+        //         value: 1,
+        //         label: "已报名",
+        //       },
+        //     ],
+        //     attrs: {
+        //       clearable: true,
+        //       placeholder: "报名状态",
+        //     },
+        //   },
         {
           key: "keyword",
           attrs: {
