@@ -2,7 +2,7 @@
   <div class="mainwrap">
     <div class="header">
       *微信模板消息只支持已认证的服务号，并且模板库所在行业的主营行业必须为“教育”->“培训”，副营行业为“其它”->“其它”。
-      <span>请前往配置微信公众号</span>
+      <el-button type="text" @click="open">请前往配置微信公众号</el-button>
     </div>
     <div class="main" v-if="!listData.length">
       <img src="../../../../assets/images/u5067.png" />
@@ -163,6 +163,9 @@ export default {
     this.getOrgWxTemplateConfigData();
   },
   methods: {
+    open() {
+      window.open(" https://mp.weixin.qq.com/");
+    },
     // 模板消息列表
     async getOrgWxTemplateConfigData() {
       this.listLoading = true;
