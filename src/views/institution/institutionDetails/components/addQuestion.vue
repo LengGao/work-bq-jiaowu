@@ -42,7 +42,7 @@
             >
             </el-table-column>
             <el-table-column
-              prop="practice"
+              prop="price"
               label="题库价格"
               min-width="100"
               align="center"
@@ -52,7 +52,7 @@
                 <el-input
                   type="number"
                   size="small"
-                  v-model="row.practice"
+                  v-model="row.price"
                   placeholder="请输入"
                 >
                 </el-input>
@@ -162,7 +162,7 @@
             const oldData = JSON.parse(localStorage.getItem("questionBankPrice"));
             const newDataMap = {};
             newData.forEach((item) => {
-                newDataMap[item.id] = item.practice;
+                newDataMap[item.id] = item.price;
             });
             localStorage.setItem(
                 "questionBankPrice",
@@ -179,7 +179,7 @@
                     this.$message.warning("请选择题库");
                     return;
                 }
-                if (this.leftSelection.some((item) => item.practice === "")) {
+                if (this.leftSelection.some((item) => item.price === "")) {
                     this.$message.warning("请输入选中题库的价格");
                     return;
                 }
@@ -187,17 +187,17 @@
                     institution_arr: [this.$route.query.institution_id],
                     question_bank_arr: this.leftSelection.map((item) => ({
                     question_bank_id: item.id,
-                    wholesale_price: item.practice || 0,
+                    wholesale_price: item.price || 0,
                     })),
                 };
                 this.submitLoading = true;
                 const res = await assignOrgQuestionBank(data).catch(() => {});
-                this.submitLoading = falses;
+                this.submitLoading = false;
                 if (res.code === 0) {
                     this.$message.success(res.message);
                     this.setquestionBankPrice([...this.leftSelection]);
                     this.handleColse();
-                    this.setquestionBankPrice(questionBankPrice)
+                    this.$emit("on-success");
                 }
                 },        
 
