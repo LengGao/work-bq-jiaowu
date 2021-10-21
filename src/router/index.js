@@ -504,10 +504,10 @@ export const asyncRouter = [
         hidden: true,
       },
       {
-        path: 'wxMessage',
-        name: 'wxMessage',
-        component: () => import('@/views/eda/classManage/wxMessage.vue'),
-        meta: { title: '微信通知', icon: 'product-cate' },
+        path: 'classMessage',
+        name: 'classMessage',
+        component: () => import('@/views/eda/classManage/classMessage.vue'),
+        meta: { title: '班级通知', icon: 'product-cate' },
         hidden: true,
       },
       {
@@ -1042,16 +1042,14 @@ export const resetRouter = () => {
 let currentCacheNames = []
 router.beforeEach((to, from, next) => {
   const cacheViews = store.state.cacheView.cacheViews
-  const cacheTo = store.state.cacheView.cacheTo
-
   // 添加缓存
-  if (cacheViews.includes(to.name)) {
+  if (cacheViews[to.name]) {
     !currentCacheNames.includes(to.name) && currentCacheNames.push(to.name)
     store.dispatch('setViewCache', to.name)
   }
   //  如果去的页面不是缓存条件页面就清除 currentCacheNames页面的缓存
   currentCacheNames = currentCacheNames.filter((name) => {
-    if (to.name !== name && !cacheTo[name].includes(to.name)) {
+    if (to.name !== name && !cacheViews[name].includes(to.name)) {
       store.dispatch('delViewCache', name)
       return false
     }
