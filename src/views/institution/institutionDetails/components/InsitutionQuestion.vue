@@ -138,7 +138,7 @@
           />
         </div>
       </div>
-      <AddQuestion v-model="adddialogVisible"  />
+      <AddQuestion v-model="adddialogVisible" @on-success="questionBankList" />
     </div>
   </div>
 </template>
