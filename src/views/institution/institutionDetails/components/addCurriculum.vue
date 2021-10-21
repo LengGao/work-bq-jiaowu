@@ -150,8 +150,10 @@
                 this.submitLoading = false;
                 if (res.code === 0) {
                     this.$message.success(res.message);
-                    this.handleColse();
                     this.setCoursePrice(coursePriceMap);
+                    this.$emit("on-success");
+                    this.handleColse();
+                   
                 }
             },
             // 把输入的价格存到本地

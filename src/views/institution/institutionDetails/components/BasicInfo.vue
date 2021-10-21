@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <AddCurriculum v-model="adddialogVisible"  />
+      <AddCurriculum v-model="adddialogVisible" @on-success="getCourseList"/>
 
     </div>
   </div>
@@ -106,6 +106,7 @@
       // console.log(this.$route.query.institution_id)
     },
     methods: {
+      // 移除按钮
       handleDelete(id) {
         this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -122,6 +123,7 @@
             })
           })
       },
+      // 左边树状分类
       tpl(node) {
         return (
           <span
@@ -177,7 +179,7 @@
         this.getCourseList();
       },
 
-      // 获取列表
+      // 获取课程列表
       async getCourseList() {
         const data = {
           page: this.pageNum,
@@ -229,6 +231,7 @@
         this.getCourseList()
       },
 
+      // 添加课程按钮
       addcoursebtn() {
         this.dialogTitle = '添加课程'
         this.adddialogVisible = true
