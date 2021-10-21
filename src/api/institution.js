@@ -286,6 +286,21 @@ export function batchPublishCode(data) {
         data
     })
 }
+//机构小程序代码草稿箱
+export function templateDraftList() {
+    return request({
+        url: '/Merchant/templateDraftList',
+        method: 'get',
+    })
+}
+//机构小程序代码草稿箱-添加到标准模板库
+export function addToTemplate(data) {
+    return request({
+        url: '/Merchant/addToTemplate',
+        method: 'post',
+        data
+    })
+}
 
 
 // ----------------------------- 机构详情接口 -----------------------------
