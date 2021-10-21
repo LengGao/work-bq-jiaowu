@@ -377,3 +377,12 @@ export function questionBankCategoryList(params) {
         params,
     })
 }
+
+// 移除题库
+export function BankRelationremove(data) {
+    return request({
+        url: 'OrganizationQuestionBankRelation/remove',
+        method: 'post',
+        data,
+    })
+}

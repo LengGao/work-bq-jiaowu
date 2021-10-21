@@ -15,7 +15,7 @@
           <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
           <span>*注意：价格为0表示该班型免费，价格为-1表示该班型不能报名
           </span>
-          <el-button type="primary" class="addcourse">添加课程</el-button>
+          <el-button type="primary" class="addcourse" @click="addcoursebtn">添加课程</el-button>
         </div>
         <!--列表-->
         <div class="userTable">
@@ -25,7 +25,7 @@
               'text-align': 'center',
               background: '#f8f8f8',
             }" :cell-style="{ 'text-align': 'center' }" height="690" :key="isActiveAll">
-            <el-table-column prop="course_id" label="课程ID" min-width="60" show-overflow-tooltip>
+            <el-table-column prop="id" label="ID" min-width="60" show-overflow-tooltip>
             </el-table-column>
             <el-table-column v-if="isActiveAll" prop="course_name" label="课程名称" min-width="160" show-overflow-tooltip>
             </el-table-column>
@@ -35,10 +35,10 @@
             </el-table-column>
             <el-table-column v-if="isActiveAll" prop="user_count" label="购买人数" show-overflow-tooltip min-width="80">
             </el-table-column>
-            <el-table-column prop="user_realname" :label="item.title" min-width="70" align="center"
+            <el-table-column prop="user_realname" :label="item.title" min-width="60" align="center"
               show-overflow-tooltip v-for="(item, index) in classTypes" :key="index">
               <template slot-scope="{ row }">
-                <el-input type="number" size="small" v-model="row[row.course_id][item.id]" placeholder="请输入">
+                <el-input type="number" v-if="row.class_type[index]" size="small" v-model="row.class_type[index].price" placeholder="请输入">
                 </el-input>
               </template>
             </el-table-column>
@@ -56,6 +56,9 @@
             @pageChange="handlePageChange" />
         </div>
       </div>
+
+      <AddCurriculum v-model="adddialogVisible"  />
+
     </div>
   </div>
 </template>
@@ -63,8 +66,12 @@
 <script>
   import { updateStudentBasicInfo } from "@/api/eda";
   import { courseCateSelectTree, getCourseList, deleteOrgCourse } from "@/api/institution";
+  import AddCurriculum from './addCurriculum';
   export default {
     name: "BasicInfo",
+    components: {
+      AddCurriculum,
+    },
     data() {
       return {
         searchData: {
@@ -78,7 +85,6 @@
             },
           },
         ],
-        dialogVisible: false,
         listData: [],
         listLoading: false,
         pageNum: 1,
@@ -90,6 +96,8 @@
         },
         isActiveAll: true,
         classTypes: [],
+        dialogTitle:"",
+        adddialogVisible: false,
       };
     },
     created() {
@@ -219,6 +227,11 @@
           this.dialogVisible = false
         }
         this.getCourseList()
+      },
+
+      addcoursebtn() {
+        this.dialogTitle = '添加课程'
+        this.adddialogVisible = true
       },
     },
   };

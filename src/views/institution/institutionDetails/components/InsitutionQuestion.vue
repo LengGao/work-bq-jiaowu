@@ -19,7 +19,7 @@
             @on-search="handleSearch"
           />
           </span>
-          <el-button type="primary" class="addcourse">添加题库</el-button>
+          <el-button type="primary" class="addcourse" @click="addcoursebtn">添加题库</el-button>
         </div>
 
         <!--列表-->
@@ -107,13 +107,13 @@
           prop="wholesale_price"
           label="题库价格"
           show-overflow-tooltip
-          min-width="80"
+          min-width="100"
         >
         <template slot-scope="{ row }">
           <el-input
             type="number"
             size="small"
-            v-model="row.price"
+            v-model="row.wholesale_price"
             placeholder="请输入"
           >
           </el-input>
@@ -122,7 +122,7 @@
 
             <el-table-column label="操作" fixed="right" min-width="120">
               <template slot-scope="{ row }">
-                <el-button type="text" @click="toOrderDetail(row.order_id)">
+                <el-button type="text" @click="handleDelete(row.id,row.question_bank_id)">
                   移除
                 </el-button>
               </template>
@@ -138,15 +138,20 @@
           />
         </div>
       </div>
+      <AddQuestion v-model="adddialogVisible"  />
     </div>
   </div>
 </template>
 
 <script>
 import { updateStudentBasicInfo } from "@/api/eda";
-import { questionBankList,questionBankCategoryList} from "@/api/institution";
+import { questionBankList,questionBankCategoryList,BankRelationremove} from "@/api/institution";
+import AddQuestion from './addQuestion';
 export default {
-  name: "BasicInfo",
+  name: "InsitutionQuestion",
+  components: {
+    AddQuestion,
+    },
   data() {
     return {
       searchData: {
@@ -169,9 +174,10 @@ export default {
       treeParams: {
         cate_id:"",
         category_id:""
-
       },
       isActiveAll: true,
+      adddialogVisible:false,
+      dialogTitle:"",
     };
   },
   created() {
@@ -179,6 +185,46 @@ export default {
     this.questionBankCategoryList()
   },
   methods: {
+    addcoursebtn() {
+        this.dialogTitle = '添加题库'
+        this.adddialogVisible = true
+      },
+
+      handleDelete(id,question_bank_id) {
+        this.$confirm('此操作将永久删除该题库, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+          .then(() => {
+            this.BankRelationremove(id,question_bank_id)
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除',
+            })
+          })
+      },
+
+      // 移除题库
+      async BankRelationremove(id,question_bank_id) {
+        const data = {
+          id,
+          institution_id:this.$route.query?.institution_id || "",
+          question_bank_id,
+        }
+        console.log(data)
+        const res = await BankRelationremove(data)
+        if (res.code == 0) {
+          console.log(res)
+          this.$message.success(res.message)
+          this.questionBankList()
+          this.dialogVisible = false
+        }
+        this.questionBankList()
+      },
+
     tpl(node) {
       return (
         <span
