@@ -6,6 +6,7 @@
     width="550px"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
+    @open="handleOpen"
   >
     <el-form
       label-width="100px"
@@ -14,40 +15,40 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="通知标题" prop="money">
+      <el-form-item label="通知标题" prop="title">
         <el-input
-          v-model="formData.money"
+          v-model="formData.title"
           placeholder="请输入通知标题"
-          maxlength="40"
+          maxlength="120"
         />
       </el-form-item>
-      <el-form-item label="上课时间" prop="money">
+      <el-form-item label="上课时间" prop="time">
         <el-input
-          v-model="formData.money"
+          v-model="formData.time"
           placeholder="请输入上课时间"
-          maxlength="40"
+          maxlength="120"
         />
       </el-form-item>
-      <el-form-item label="上课内容" prop="money">
+      <el-form-item label="上课内容" prop="content">
         <el-input
-          v-model="formData.money"
+          v-model="formData.content"
           placeholder="请输入上课内容"
-          maxlength="40"
+          maxlength="400"
         />
       </el-form-item>
-      <el-form-item label="上课地点" prop="money">
+      <el-form-item label="上课地点" prop="address">
         <el-input
-          v-model="formData.money"
+          v-model="formData.address"
           placeholder="请输入上课地点"
-          maxlength="40"
+          maxlength="120"
         />
       </el-form-item>
-      <el-form-item label="注意事项" prop="money">
+      <el-form-item label="注意事项" prop="remarks">
         <el-input
           type="textarea"
-          v-model="formData.money"
+          v-model="formData.remarks"
           placeholder="请输入注意事项"
-          maxlength="120"
+          maxlength="400"
         />
       </el-form-item>
     </el-form>
@@ -64,7 +65,7 @@
 </template>
 
 <script>
-import { institutionRecharge } from "@/api/institution";
+import { createClassroomMessage, updateClassroomMessage } from "@/api/message";
 export default {
   name: "classNoticeDialog",
   props: {
@@ -72,9 +73,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    id: {
-      type: [String, Number],
-      default: "",
+    data: {
+      type: Object,
+      default: () => ({}),
     },
     title: {
       type: String,
@@ -85,12 +86,18 @@ export default {
     return {
       visible: this.value,
       formData: {
-        money: "",
-        dec: "",
+        title: "",
+        time: "",
+        content: "",
+        address: "",
+        remarks: "",
       },
       rules: {
-        money: [{ required: true, message: "请输入", trigger: "blur" }],
-        dec: [{ required: true, message: "请输入", trigger: "blur" }],
+        title: [{ required: true, message: "请输入", trigger: "blur" }],
+        time: [{ required: true, message: "请输入", trigger: "blur" }],
+        content: [{ required: true, message: "请输入", trigger: "blur" }],
+        address: [{ required: true, message: "请输入", trigger: "blur" }],
+        remarks: [{ required: true, message: "请输入", trigger: "blur" }],
       },
       addLoading: false,
       detaiLoading: false,
@@ -102,12 +109,32 @@ export default {
     },
   },
   methods: {
+    handleOpen() {
+      if (this.data.id) {
+        for (const k in this.formData) {
+          this.formData[k] = this.data[k] || "";
+        }
+      }
+    },
     async submit() {
-      const data = {
-        ...this.formData,
-      };
+      let data = {};
+      let api = null;
+      if (this.data.id) {
+        data = {
+          ...this.formData,
+          id: this.data.id,
+        };
+        api = updateClassroomMessage;
+      } else {
+        data = {
+          ...this.formData,
+          type: 1,
+          classroom_id: this.$route.query.classroom_id,
+        };
+        api = createClassroomMessage;
+      }
       this.addLoading = true;
-      const res = await institutionRecharge(data).catch(() => {
+      const res = await api(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -137,9 +164,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.w-90 {
-  width: 90%;
-}
-</style>

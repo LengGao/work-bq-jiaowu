@@ -1,11 +1,12 @@
 <template>
-  <!--上课通知弹窗-->
+  <!--差生提醒弹窗-->
   <el-dialog
     :title="title"
     :visible.sync="visible"
     width="550px"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
+    @open="handleOpen"
   >
     <el-form
       label-width="100px"
@@ -14,35 +15,34 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item label="学员姓名" prop="money">
+      <el-form-item label="学员姓名" prop="uid_arr">
         <el-select
-          v-model="formData.value1"
+          v-model="formData.uid_arr"
           multiple
           placeholder="请选择学员"
           style="width: 100%"
         >
           <el-option
             v-for="item in studentOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.uid"
+            :label="item.user_realname"
+            :value="item.uid"
           >
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="通知标题" prop="money">
+      <el-form-item label="通知标题" prop="title">
         <el-input
-          v-model="formData.money"
+          v-model="formData.title"
           placeholder="请输入通知标题"
-          maxlength="40"
+          maxlength="120"
         />
       </el-form-item>
-      <el-form-item label="通知详情" prop="money">
+      <el-form-item label="通知详情" prop="content">
         <el-input
-          type="textarea"
-          v-model="formData.money"
+          v-model="formData.content"
           placeholder="请输入通知详情"
-          maxlength="200"
+          maxlength="120"
         />
       </el-form-item>
     </el-form>
@@ -59,7 +59,11 @@
 </template>
 
 <script>
-import { institutionRecharge } from "@/api/institution";
+import {
+  createClassroomMessage,
+  updateClassroomMessage,
+  getClassroomMessageUserSelect,
+} from "@/api/message";
 export default {
   name: "classNoticeDialog",
   props: {
@@ -67,9 +71,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    id: {
-      type: [String, Number],
-      default: "",
+    data: {
+      type: Object,
+      default: () => ({}),
     },
     title: {
       type: String,
@@ -80,12 +84,14 @@ export default {
     return {
       visible: this.value,
       formData: {
-        money: "",
-        dec: "",
+        title: "",
+        content: "",
+        uid_arr: [],
       },
       rules: {
-        money: [{ required: true, message: "请输入", trigger: "blur" }],
-        dec: [{ required: true, message: "请输入", trigger: "blur" }],
+        uid_arr: [{ required: true, message: "请选择", trigger: "change" }],
+        title: [{ required: true, message: "请输入", trigger: "blur" }],
+        content: [{ required: true, message: "请输入", trigger: "blur" }],
       },
       addLoading: false,
       detaiLoading: false,
@@ -98,12 +104,42 @@ export default {
     },
   },
   methods: {
-    async submit() {
+    handleOpen() {
+      this.getClassroomMessageUserSelect();
+      if (this.data.id) {
+        for (const k in this.formData) {
+          this.formData[k] = this.data[k] || "";
+        }
+      }
+    },
+    async getClassroomMessageUserSelect() {
       const data = {
-        ...this.formData,
+        classroom_id: this.$route.query.classroom_id,
       };
+      const res = await getClassroomMessageUserSelect(data);
+      if (res.code === 0) {
+        this.studentOptions = res.data;
+      }
+    },
+    async submit() {
+      let data = {};
+      let api = null;
+      if (this.data.id) {
+        data = {
+          ...this.formData,
+          id: this.data.id,
+        };
+        api = updateClassroomMessage;
+      } else {
+        data = {
+          ...this.formData,
+          type: 3,
+          classroom_id: this.$route.query.classroom_id,
+        };
+        api = createClassroomMessage;
+      }
       this.addLoading = true;
-      const res = await institutionRecharge(data).catch(() => {
+      const res = await api(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -133,9 +169,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.w-90 {
-  width: 90%;
-}
-</style>

@@ -89,20 +89,6 @@
                 <el-button type="text" @click="toClassDetail(row.classroom_id)"
                   >班级详情</el-button
                 >
-                <!-- <el-button
-                  type="text"
-                  @click="
-                    toLearnerManage(
-                      row.classroom_id,
-                      row.course_id,
-                      row.project_id
-                    )
-                  "
-                  >学生管理</el-button
-                > -->
-                <el-button type="text" @click="toMassMessage(row)"
-                  >群发消息</el-button
-                >
                 <el-button
                   type="text"
                   @click="
@@ -114,7 +100,7 @@
                       row.student_number
                     )
                   "
-                  >微信通知</el-button
+                  >消息通知</el-button
                 >
                 <el-button type="text" @click="toReturnVisit(row.classroom_id)"
                   >学习回访</el-button

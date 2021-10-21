@@ -9,9 +9,15 @@
       />
       <el-popover trigger="click" popper-class="add-msg">
         <div class="btns">
-          <el-button @click="addNotice(1)" size="medium">上课通知</el-button>
-          <el-button @click="addNotice(2)" size="medium">考试通知</el-button>
-          <el-button @click="addNotice(3)" size="medium">差生提醒</el-button>
+          <el-button @click="openNoticeDialog({}, 1)" size="medium"
+            >上课通知</el-button
+          >
+          <el-button @click="openNoticeDialog({}, 2)" size="medium"
+            >考试通知</el-button
+          >
+          <el-button @click="openNoticeDialog({}, 3)" size="medium"
+            >差生提醒</el-button
+          >
         </div>
         <el-button slot="reference" icon="el-icon-caret-bottom" type="primary"
           >添加通知</el-button
@@ -48,21 +54,20 @@
       >
       </el-table-column>
       <el-table-column
-        prop="content"
+        prop="type_name"
+        label="通知类型 "
+        min-width="160"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        prop="content_str"
         label="通知内容"
         min-width="200"
         align="center"
-        class="noticecontent"
+        show-overflow-tooltip
       >
-        <template slot-scope="{ row }">
-          <div v-if="row.content_data.keyword4">
-            <span>
-              {{ row.content_data.keyword1 }}
-              {{ row.content_data.keyword4 }}
-            </span>
-          </div>
-          <div v-else>--</div>
-        </template>
       </el-table-column>
       <el-table-column
         prop="send_status"
@@ -72,12 +77,8 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <el-tag
-            size="small"
-            type="text"
-            :style="{ color: statusMap[row.send_status].color }"
-          >
-            {{ statusMap[row.send_status || 0].text }}
+          <el-tag size="small" :type="statusMap[row.send_status].type">
+            {{ statusMap[row.send_status].text }}
           </el-tag>
         </template>
       </el-table-column>
@@ -115,17 +116,26 @@
         min-width="140"
       >
         <template slot-scope="{ row }">
-          <div v-if="row.send_status == 2">
-            <el-button type="text" @click="linkTo(row)">消息详情</el-button>
-            <el-button type="text" @click="sendRecord(row.id)"
-              >发送记录</el-button
+          <div v-if="row.send_status == 1">
+            <el-button type="text" @click="sendOut(row.id)">发送</el-button>
+            <el-button
+              type="text"
+              @click="
+                openNoticeDialog(
+                  { ...row.content_data, id: row.id, uid_arr: row.uid_arr },
+                  row.type
+                )
+              "
+              >编辑</el-button
+            >
+            <el-button type="text" @click="handleDelete(row.id)"
+              >删除</el-button
             >
           </div>
           <div v-else>
-            <el-button type="text" @click="sendOut(row.id)">发送</el-button>
-            <el-button type="text" @click="editNotices(row)">编辑</el-button>
-            <el-button type="text" @click="handleDelete(row.id)"
-              >删除</el-button
+            <el-button type="text" @click="linkTo(row)">消息详情</el-button>
+            <el-button type="text" @click="sendRecord(row.id)"
+              >发送记录</el-button
             >
           </div>
         </template>
@@ -150,41 +160,34 @@
       :close-on-click-modal="false"
       class="messageDetails"
     >
-      <span>【上课提醒】</span>
-      <p>通知标题：{{ detailData.first }}</p>
-      <p>上课时间：{{ detailData.keyword1 }}</p>
-      <p>上课地点：{{ detailData.keyword2 }}</p>
-      <p>上课老师：{{ detailData.keyword3 }}</p>
-      <p>课程名称：{{ detailData.keyword4 }}</p>
-      <p>备注信息：{{ detailData.remark }}</p>
+      <p v-html="detailData.content_str"></p>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false"
-          >确 定</el-button
+          >关 闭</el-button
         >
       </span>
     </el-dialog>
 
     <ClassNoticeDialog
       v-model="addtempdialog"
-      :id="currentId"
+      :data="detailData"
       :title="dialogTitle"
-      @on-success="getMessageList"
+      @on-success="getClassroomMessageList"
     />
     <TestNoticeDialog
       v-model="addTestNoticeDialog"
-      :id="currentId"
+      :data="detailData"
       :title="dialogTitle"
-      @on-success="getMessageList"
+      @on-success="getClassroomMessageList"
     />
     <PoorStudentNoticeDialog
       v-model="addPoorStudenttNoticeDialog"
-      :id="currentId"
+      :data="detailData"
       :title="dialogTitle"
-      @on-success="getMessageList"
+      @on-success="getClassroomMessageList"
     />
 
-    <ListClassiFion v-model="dialogVisibleSend" :id="id" />
+    <ListClassiFion v-model="dialogVisibleSend" :type="1" :id="currentId" />
   </div>
 </template>
 
@@ -194,7 +197,11 @@ import ClassNoticeDialog from "./ClassNoticeDialog";
 import TestNoticeDialog from "./TestNoticeDialog";
 import PoorStudentNoticeDialog from "./PoorStudentNoticeDialog";
 import ListClassiFion from "./listClassiFion";
-import { getMessageList, deleteMessage, sendMessage } from "@/api/message";
+import {
+  getClassroomMessageList,
+  deleteClassroomMessage,
+  sendClassroomMessage,
+} from "@/api/message";
 export default {
   name: "wxNotification",
   components: {
@@ -208,16 +215,18 @@ export default {
       statusMap: {
         1: {
           text: "待发送",
-          color: "#FD6500",
+          type: "warning",
         },
         2: {
+          text: "发送中",
+          type: "",
+        },
+        3: {
           text: "已发送",
-          color: "#43D100",
+          type: "success",
         },
       },
-      detailData: {
-        first: "",
-      },
+      detailData: {},
       contractInfo: {},
       currentId: "",
       id: "",
@@ -235,6 +244,7 @@ export default {
         date: "",
         search_box: "",
         send_status: "",
+        type: "",
       },
       searchOptions: [
         {
@@ -252,6 +262,29 @@ export default {
           },
         },
         {
+          key: "type",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "上课通知",
+            },
+            {
+              value: 2,
+              label: "考试通知",
+            },
+            {
+              value: 3,
+              label: "差生提醒",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "通知类型",
+          },
+        },
+        {
           key: "send_status",
           type: "select",
           width: 120,
@@ -262,6 +295,10 @@ export default {
             },
             {
               value: 2,
+              label: "发送中",
+            },
+            {
+              value: 3,
               label: "已发送",
             },
           ],
@@ -282,14 +319,14 @@ export default {
     };
   },
   created() {
-    this.getMessageList();
+    this.getClassroomMessageList();
     console.log(this.searchData.date);
   },
 
   methods: {
     handleSizeChange(size) {
       this.pageSize = size;
-      this.getMessageList();
+      this.getClassroomMessageList();
     },
     handleSearch(data) {
       const times = data.date || ["", ""];
@@ -301,31 +338,28 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
-      console.log(this.searchData);
-      this.getMessageList();
+      this.getClassroomMessageList();
     },
     // 发送消息接口
-    async sendMessage(id) {
+    async sendClassroomMessage(id) {
       const data = {
         id,
       };
-      // console.log(data)
-      const res = await sendMessage(data);
+      const res = await sendClassroomMessage(data);
       if (res.code == 0) {
-        console.log(res);
         this.$message.success(res.message);
       }
-      this.getMessageList();
+      this.getClassroomMessageList();
     },
     // 发送消息
     sendOut(id) {
-      this.$confirm("此操作将发送该通知, 是否继续?", "提示", {
+      this.$confirm("此操作将发送该短信, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          this.sendMessage(id);
+          this.sendClassroomMessage(id);
         })
         .catch(() => {
           this.$message({
@@ -334,31 +368,21 @@ export default {
           });
         });
     },
-    // 编辑微信消息
-    editNotices(row) {
-      this.dialogTitle = "编辑消息";
-      this.addtempdialog = true;
-      this.contractInfo = row;
-      this.id = row.id;
-      console.log(this.contractInfo);
-    },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getMessageList();
+      this.getClassroomMessageList();
     },
     // 消息详情
     linkTo(row) {
       this.dialogVisible = true;
-      this.id = row.id;
-      console.log(row);
-      this.detailData = row.content_data;
+      this.detailData = row;
     },
     handleClose() {
       this.dialogVisible = false;
       this.addtempdialog = false;
     },
-    addNotice(type) {
-      this.currentId = "";
+    openNoticeDialog(data, type) {
+      this.detailData = data;
       if (type === 1) {
         this.dialogTitle = "上课通知";
         this.addtempdialog = true;
@@ -373,37 +397,35 @@ export default {
       }
     },
     // 查看发送记录按钮
-    sendRecord(row) {
-      this.id = row;
+    sendRecord(id) {
+      this.currentId = id;
       this.dialogTitle = "发送记录";
       this.dialogVisibleSend = true;
-      console.log(this.id);
     },
 
     // 微信通知列表接口
-    async getMessageList() {
+    async getClassroomMessageList() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
         classroom_id: this.$route.query.classroom_id,
       };
-      console.log(data);
       this.listLoading = true;
-      const res = await getMessageList(data);
+      const res = await getClassroomMessageList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
 
     handleDelete(id) {
-      this.$confirm("此操作将永久删除该通知, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该短信, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
-          this.deleteMessage(id);
+          this.deleteClassroomMessage(id);
         })
         .catch(() => {
           this.$message({
@@ -413,19 +435,19 @@ export default {
         });
     },
     // 删除微信消息
-    async deleteMessage(id) {
+    async deleteClassroomMessage(id) {
       const data = {
         id,
       };
       console.log(data);
-      const res = await deleteMessage(data);
+      const res = await deleteClassroomMessage(data);
       if (res.code == 0) {
         console.log(res);
         this.$message.success(res.message);
-        this.getMessageList();
+        this.getClassroomMessageList();
         this.dialogVisible = false;
       }
-      this.getMessageList();
+      this.getClassroomMessageList();
     },
   },
 };
@@ -442,14 +464,6 @@ export default {
   p {
     padding-top: 15px;
   }
-}
-.noticecontent {
-  width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }
 </style>
 <style lang="less">

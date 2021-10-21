@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column prop="send_status" label="发送状态" min-width="100" align="center" show-overflow-tooltip>
         <template slot-scope="{ row }">
-          <el-tag size="small" type="text" :style="{ color: statusMap[row.send_status].color }">
+          <el-tag size="small" :type="statusMap[row.send_status].type" >
             {{ statusMap[row.send_status || 0].text }}
           </el-tag>
         </template>
@@ -122,394 +122,399 @@
 </template>
 
 <script>
-  import { getShortcuts } from "@/utils/date";
-  import 'quill/dist/quill.core.css'
-  import 'quill/dist/quill.snow.css'
-  import 'quill/dist/quill.bubble.css'
-  import { quillEditor } from 'vue-quill-editor'
-  import {getNoticeList,createNotice,updateNotice,deleteNotice,sendNotice} from "@/api/message"
-  import listSendRecord from './listSendRecord';
-  export default {
-    name: "wxMechanism",
-    components: {
+import { getShortcuts } from "@/utils/date";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor";
+import {
+  getNoticeList,
+  createNotice,
+  updateNotice,
+  deleteNotice,
+  sendNotice,
+} from "@/api/message";
+import listSendRecord from "./listSendRecord";
+export default {
+  name: "wxMechanism",
+  components: {
     listSendRecord,
     quillEditor,
   },
-    data() {
-      return {
-        detailData:{},
-        statusMap: {
-          1: {
-            color: "#FD6500",
-            text: "待发送",
-            
-          },
-          2: {
-            color: "#43D100",
-            text: "已发送",
-            
-          },
+  data() {
+    return {
+      detailData: {},
+      statusMap: {
+        1: {
+          text: "待发送",
+          type: "warning",
         },
-        addtempdialog: false,
-        contractInfo: {},
-        currentId: '',
-        id: '',
-        dialogTitle: '',
-        listLoading: false,
-        pageNum: 1,
-        listTotal: 0,
-        activeName: "wxMechanism",
-        dialogTitle: "阅读记录",
-        dialogVisible: false,
-        dialogVisibleSend: false,
-        dialogVisibleadd:false,
-        editorOption: {
-        placeholder: '请输入通知内容',
-      },
-        ruleForm: {
-        title: '',
-        content: '',
-      },
-        rules: {
-        title: [{ required: true, message: '请输入通知标题', trigger: 'blur' }],
-        content: [{ required: true, message: '请输入公告摘要', trigger: 'blur' }],
-        receiver: [{ required: true, message: '请选择账号身份', trigger: 'blur' }],
-      },
-        listData: [],
-        gridData: [],
-        searchData: {
-          date: '',
-          search_box: '',
-          send_status: '',
+        2: {
+          text: "已发送",
+          type: "success",
         },
-        searchOptions: [
-          {
-            key: "date",
-            type: "datePicker",
-            attrs: {
-              value: "",
-              type: "daterange",
-              "range-separator": "至",
-              "start-placeholder": "开始日期",
-              "end-placeholder": "结束日期",
-              format: "yyyy-MM-dd",
-              "value-format": "yyyy-MM-dd",
-              pickerOptions: {
-                shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-              },
-            },
-          },
-          {
-            key: "send_status",
-            type: "select",
-            width: 120,
-            options: [
-              {
-                value: 1,
-                label: "待发送",
-              },
-              {
-                value: 2,
-                label: "已发送",
-              },
-            ],
-            attrs: {
-              clearable: true,
-              placeholder: "通知状态",
-            },
-          },
-          {
-            key: "search_box",
-            attrs: {
-              placeholder: "通知标题",
-            },
-          },
+      },
+      addtempdialog: false,
+      contractInfo: {},
+      currentId: "",
+      id: "",
+      dialogTitle: "",
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      activeName: "wxMechanism",
+      dialogTitle: "阅读记录",
+      dialogVisible: false,
+      dialogVisibleSend: false,
+      dialogVisibleadd: false,
+      editorOption: {
+        placeholder: "请输入通知内容",
+      },
+      ruleForm: {
+        title: "",
+        content: "",
+      },
+      rules: {
+        title: [{ required: true, message: "请输入通知标题", trigger: "blur" }],
+        content: [
+          { required: true, message: "请输入公告摘要", trigger: "blur" },
         ],
-        searchDataSend: {
-        },
-        searchOptionsSend: [
-          {
-            key: "project_id",
-            type: "select",
-            options: [],
-            optionValue: "project_id",
-            optionLabel: "project_name",
-            attrs: {
-              placeholder: "所属机构",
-              clearable: true,
-              filterable: true,
-            },
-          },
-          {
-            key: "type",
-            type: "select",
-            width: 120,
-            options: [
-              {
-                value: 0,
-                label: "未读",
-              },
-              {
-                value: 1,
-                label: "已读",
-              },
-              {
-                value: 2,
-                label: "已确认",
-              },
-            ],
-            attrs: {
-              clearable: true,
-              placeholder: "阅读状态",
-            },
-          },
-          {
-            key: "keyword",
-            attrs: {
-              placeholder: "搜索用户姓名",
-            },
-          },
+        receiver: [
+          { required: true, message: "请选择账号身份", trigger: "blur" },
         ],
-        
-      };
-    },
+      },
+      listData: [],
+      gridData: [],
+      searchData: {
+        date: "",
+        search_box: "",
+        send_status: "",
+      },
+      searchOptions: [
+        {
+          key: "date",
+          type: "datePicker",
+          attrs: {
+            value: "",
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
+          },
+        },
+        {
+          key: "send_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "待发送",
+            },
+            {
+              value: 2,
+              label: "已发送",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "通知状态",
+          },
+        },
+        {
+          key: "search_box",
+          attrs: {
+            placeholder: "通知标题",
+          },
+        },
+      ],
+      searchDataSend: {},
+      searchOptionsSend: [
+        {
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
+          attrs: {
+            placeholder: "所属机构",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "type",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "未读",
+            },
+            {
+              value: 1,
+              label: "已读",
+            },
+            {
+              value: 2,
+              label: "已确认",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "阅读状态",
+          },
+        },
+        {
+          key: "keyword",
+          attrs: {
+            placeholder: "搜索用户姓名",
+          },
+        },
+      ],
+    };
+  },
 
-    created(){
-      this.getNoticeList()
-      console.log(this.$route.query.classroom_id)
-    },
-    methods: {
-      handleSizeChange(size) {
+  created() {
+    this.getNoticeList();
+    console.log(this.$route.query.classroom_id);
+  },
+  methods: {
+    handleSizeChange(size) {
       this.pageSize = size;
       this.getNoticeList();
     },
-        // 发送消息
-       sendOut(id) {
+    // 发送消息
+    sendOut(id) {
       // this.sendNotice(id)
-      this.$confirm('此操作将发送该通知, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
+      this.$confirm("此操作将发送该通知, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.sendNotice(id);
         })
-          .then(() => {
-            this.sendNotice(id)
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消发送',
-            })
-          })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消发送",
+          });
+        });
     },
     // 发送消息接口
     async sendNotice(id) {
       const data = {
         id,
-      }
+      };
       // console.log(data)
-      const res = await sendNotice(data)
+      const res = await sendNotice(data);
       if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
+        console.log(res);
+        this.$message.success(res.message);
       }
-      this.getNoticeList()
+      this.getNoticeList();
     },
-      handleSearch(data) {
-        const times = data.date || ["", ""];
-        delete data.date;
-        this.pageNum = 1;
-        this.searchData = {
-          ...data,
-          start_time: times[0],
-          end_time: times[1],
-        };
-        this.getNoticeList();
-      },
-      handlePageChange(val) {
-        this.pageNum = val;
-        this.getNoticeList();
-      },
-      linkTo(row) {
-        this.dialogVisible = true
-        this.id = row.id
-        console.log(this.id)
-        this.detailData = row
-      },
-      handleClose() {
-        this.dialogVisible = false
-      },
-      // 查看发送记录按钮
+    handleSearch(data) {
+      const times = data.date || ["", ""];
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+      };
+      this.getNoticeList();
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.getNoticeList();
+    },
+    linkTo(row) {
+      this.dialogVisible = true;
+      this.id = row.id;
+      console.log(this.id);
+      this.detailData = row;
+    },
+    handleClose() {
+      this.dialogVisible = false;
+    },
+    // 查看发送记录按钮
     sendRecord(row) {
-      this.dialogTitle = '发送记录'
-      this.dialogVisibleSend = true
-      this.id = row
-      console.log(this.id)
+      this.dialogTitle = "发送记录";
+      this.dialogVisibleSend = true;
+      this.id = row;
+      console.log(this.id);
     },
     // 机构通知列表
     async getNoticeList() {
-        const data = {
-          classroom_id:this.$route.query.classroom_id,
-          page: this.pageNum,
-          limit: this.pageSize,
-          ...this.searchData,
-        };
-        this.listLoading = true;
-        const res = await getNoticeList(data);
-        this.listLoading = false;
-        this.listData = res.data.list;
-        this.listTotal = res.data.total;
-      },
+      const data = {
+        classroom_id: this.$route.query.classroom_id,
+        page: this.pageNum,
+        limit: this.pageSize,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await getNoticeList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
+    },
     // 添加机构通知
     addClassiFion() {
-      this.dialogTitle = '添加通知'
+      this.dialogTitle = "添加通知";
       this.ruleForm = {
-        title: '',
-        content: '',
-      }
-      this.dialogVisibleadd = true
+        title: "",
+        content: "",
+      };
+      this.dialogVisibleadd = true;
     },
     // 编辑通知
     editNotice(row) {
-      console.log(row)
-      this.dialogTitle = '编辑通知'
-      this.ruleForm = row
-      this.dialogVisibleadd = true
-      this.id = row.id
+      console.log(row);
+      this.dialogTitle = "编辑通知";
+      this.ruleForm = row;
+      this.dialogVisibleadd = true;
+      this.id = row.id;
     },
-      // 添加机构通知接口
-      async createNotice() {
-        const data = {
-          classroom_id: this.$route.query.classroom_id,
-          title:this.ruleForm.title,
-          content:this.ruleForm.content,
-        };
-        const res = await createNotice(data);
-        if(res.code == 0){
-          this.$message.success(res.message);
-        }
-      },
-      // 编辑机构通知接口
+    // 添加机构通知接口
+    async createNotice() {
+      const data = {
+        classroom_id: this.$route.query.classroom_id,
+        title: this.ruleForm.title,
+        content: this.ruleForm.content,
+      };
+      const res = await createNotice(data);
+      if (res.code == 0) {
+        this.$message.success(res.message);
+      }
+    },
+    // 编辑机构通知接口
     async updateNotice() {
       const data = {
         id: this.ruleForm.id,
         title: this.ruleForm.title,
         content: this.ruleForm.content,
-      }
-      const res = await updateNotice(data)
-      console.log(res.data.list)
+      };
+      const res = await updateNotice(data);
+      console.log(res.data.list);
       if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.getNoticeList()
-        this.dialogVisible = false
+        console.log(res);
+        this.$message.success(res.message);
+        this.getNoticeList();
+        this.dialogVisible = false;
       }
     },
-      // 删除通知按钮
+    // 删除通知按钮
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该通知, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("此操作将永久删除该通知, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.deleteNotice(row.id)
-          this.getNoticeList()
+          this.deleteNotice(row.id);
+          this.getNoticeList();
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
 
-     //删除通知接口
-     async deleteNotice(id) {
+    //删除通知接口
+    async deleteNotice(id) {
       const data = {
         id,
-      }
-      console.log(data)
-      const res = await deleteNotice(data)
+      };
+      console.log(data);
+      const res = await deleteNotice(data);
       if (res.code == 0) {
-        console.log(res)
-        this.$message.success(res.message)
-        this.noticelist()
-        this.dialogVisible = false
+        console.log(res);
+        this.$message.success(res.message);
+        this.noticelist();
+        this.dialogVisible = false;
       }
     },
 
     submitForm(formName) {
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.id) {
             //修改
-            this.updateNotice()
-            this.dialogVisibleadd = false
-            this.getNoticeList()
+            this.updateNotice();
+            this.dialogVisibleadd = false;
+            this.getNoticeList();
           } else {
             //添加
-            this.createNotice()
-            this.dialogVisibleadd = false
-            this.getNoticeList()
+            this.createNotice();
+            this.dialogVisibleadd = false;
+            this.getNoticeList();
           }
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
-    },
-  
-  };
+  },
+};
 </script>
 
 <style lang='scss' scoped>
-  /deep/.el-dialog__title {
-    font-size: 16px;
-  }
-  /deep/.el-dialog__body{
-    padding: 30px 40px 30px 30px;
-  }
+/deep/.el-dialog__title {
+  font-size: 16px;
+}
+/deep/.el-dialog__body {
+  padding: 30px 40px 30px 30px;
+}
 
-  .client_head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.client_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .messageDetails h6 {
-    font-size: 20px;
-    font-weight: normal;
-  }
+.messageDetails h6 {
+  font-size: 20px;
+  font-weight: normal;
+}
 
-  .noticedata {
-    line-height: 50px;
-    color: #999;
-    font-size: 15px;
-  }
+.noticedata {
+  line-height: 50px;
+  color: #999;
+  font-size: 15px;
+}
 
-  .noticedata span {
-    color: #666;
-    margin-right: 40px;
-  }
+.noticedata span {
+  color: #666;
+  margin-right: 40px;
+}
 
-  .content {
-    border: 1px solid rgb(233, 233, 233);
-    border-radius: 5px;
-    padding: 15px;
-    font-size: 15px;
-    line-height: 30px;
-    margin: 10px 0;
-    color: #888;
-  }
-  .dialog-footer{
-    padding-right: 20px;
-  }
-/deep/.el-table .cell{
-    width: 90%;
-    white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-  }
+.content {
+  border: 1px solid rgb(233, 233, 233);
+  border-radius: 5px;
+  padding: 15px;
+  font-size: 15px;
+  line-height: 30px;
+  margin: 10px 0;
+  color: #888;
+}
+.dialog-footer {
+  padding-right: 20px;
+}
+/deep/.el-table .cell {
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
