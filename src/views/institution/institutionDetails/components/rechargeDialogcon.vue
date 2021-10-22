@@ -24,7 +24,7 @@
           placeholder="请输入金额"
           class="w-90"
         />
-        元
+         元
       </el-form-item>
       <el-form-item label="备注信息" prop="dec">
         <el-input
@@ -127,5 +127,8 @@ export default {
 <style lang="scss" scoped>
 .w-90 {
   width: 90%;
+}
+/deep/.el-dialog__body{
+  padding: 30px 40px 20px 10px;
 }
 </style>
