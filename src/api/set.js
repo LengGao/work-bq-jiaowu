@@ -90,3 +90,43 @@ export function getSchoolSelect(params) {
     params,
   })
 }
+// 获取部门列表
+export function getDepartmentlists(params) {
+  return request({
+    url: '/TerminalGroup/lists',
+    method: 'get',
+    params,
+  })
+}
+// 获取部门列表--新增
+export function createDepartment(data) {
+  return request({
+    url: 'TerminalGroup/createData',
+    method: 'post',
+    data,
+  })
+}
+// 获取部门列表--新增
+export function modifyDepartment(data) {
+  return request({
+    url: 'TerminalGroup/modifyData',
+    method: 'post',
+    data,
+  })
+}
+// 获取部门列表--新增
+export function getDepartmentInfo(params) {
+  return request({
+    url: 'TerminalGroup/info',
+    method: 'get',
+    params,
+  })
+}
+// 获取部门列表--删除
+export function delDepartment(data) {
+  return request({
+    url: 'TerminalGroup/deletedGroup',
+    method: 'post',
+    data,
+  })
+}

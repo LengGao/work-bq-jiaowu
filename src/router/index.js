@@ -904,7 +904,7 @@ export const asyncRouter = [
       {
         path: 'staff',
         name: 'staff',
-        component: () => import('@/views/set/staff.vue'),
+        component: () => import('@/views/set/staff/index.vue'),
         meta: { title: '员工管理', icon: 'product-add' },
       },
       {
