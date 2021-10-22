@@ -18,6 +18,10 @@ import '@/utils/mixins'
 import './cropper'
 // import './mock/mock'
 moment.locale('zh-cn') //设置语言 或 moment.lang('zh-cn');
+import 'vue-tree-halower/dist/halower-tree.min.css' // 你可以自定义树的样式
+import VTree from 'vue-tree-halower'
+
+Vue.use(VTree)
 Vue.use(ElementUI)
 Vue.prototype.$echarts = echarts //echarts
 Vue.prototype.$moment = moment //moment处理时间http://momentjs.cn/docs/

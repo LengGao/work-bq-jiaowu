@@ -1,13 +1,14 @@
 <template>
   <section class="mainwrap">
     <div class="client_head">
-      <!-- <search2
-        :contentShow="true"
-        api="getHomeclassifiList"
-        inputText="分类名称"
-        @getTable="getTableList"
-      ></search2> -->
-      <div></div>
+      <div>
+        <!--搜索模块-->
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
+      </div>
       <div>
         <el-button type="primary" @click="addMenu">添加菜单</el-button>
         <el-button type="success" @click="addFunction">添加功能</el-button>
@@ -323,23 +324,33 @@ export default {
         "icon15mianshouyueke",
       ],
       iconDialog: false,
+      searchData: {
+        date: "",
+        search_box: "",
+        send_status: "",
+        type: "",
+      },
+      searchOptions: [
+        {
+          key: "search_box",
+          attrs: {
+            placeholder: "菜单名称",
+          },
+        },
+      ],
     };
   },
-  mounted() {
+  created() {
     this.$api.getMenuList(this, "schoolData");
     this.$api.getThumbMenuList(this, "ThumbData");
   },
-  created() {
-    // this.$api.getHomeclassifiList(this, 'schoolData')
-  },
-  // activated: function() {
-  //   console.log(JSON.parse(this.$route.query.url))
-  //   if (this.$route.query.url != undefined) {
-  //     this.url = JSON.parse(this.$route.query.url)
-  //     this.haschoose = true
-  //   }
-  // },
   methods: {
+    handleSearch(data) {
+      this.searchData = {
+        ...data,
+      };
+      this.$api.getMenuList(this, "schoolData");
+    },
     handleIconChange(icon) {
       this.ruleForm.icon = icon;
       this.iconDialog = false;

@@ -567,13 +567,9 @@ let minipro = {
   },
   //菜单管理列表
   getMenuList(self, name) {
-    // let config_id = parseInt(self.$route.query.config_id)
-    let config = {
-      // config_id: config_id,
-    }
     axiosHttp({
       url: url.getMenuList,
-      data: config,
+      data: self.searchData,
       method: 'GET',
       then(res) {
         console.log(res.data.data)

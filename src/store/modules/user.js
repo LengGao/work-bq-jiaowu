@@ -108,8 +108,7 @@ const user = {
         commit('SET_TOKEN', '')
         commit('SET_USER_ROUTERS', [])
         commit('SET_MENUS', [])
-
-        localStorage.clear()
+        localStorage.removeItem("userInfo");
         return Promise.resolve(res)
       }
     },
@@ -126,7 +125,7 @@ const user = {
         commit('SET_USER_ROUTERS', [])
         commit('SET_MENUS', [])
         removeToken()
-        localStorage.clear()
+        localStorage.removeItem("userInfo");
         resolve()
       })
     },

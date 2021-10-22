@@ -8,9 +8,11 @@
           <span class="name">{{ detailData.surname || "--" }}</span>
         </div>
         <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
-        <div class="header-item">手机号码：{{ detailData.mobile || "--" }}</div>
         <div class="header-item">
-          身份证码：{{ detailData.id_card_number || "--" }}
+          手机号码：{{ detailData.mobile | filterPhone }}
+        </div>
+        <div class="header-item">
+          身份证码：{{ detailData.id_card_number | filterIdCard }}
         </div>
         <div class="header-item">
           注册日期：{{ detailData.create_time || "--" }}
