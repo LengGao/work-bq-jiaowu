@@ -44,12 +44,13 @@
               <el-select
                 v-model="formData.pay_type"
                 placeholder="请选择支付方式"
+                filterable
               >
                 <el-option
                   v-for="(item, index) in payTypes"
                   :key="index"
-                  :label="item.name"
-                  :value="item.name"
+                  :label="item.label"
+                  :value="item.label"
                 >
                 </el-option>
               </el-select>
@@ -105,12 +106,13 @@
               <el-select
                 v-model="formData.pay_type"
                 placeholder="请选择退费方式"
+                filterable
               >
                 <el-option
                   v-for="(item, index) in payTypes"
                   :key="index"
-                  :label="item.name"
-                  :value="item.name"
+                  :label="item.label"
+                  :value="item.label"
                 >
                 </el-option>
               </el-select>
@@ -192,16 +194,28 @@ export default {
       visible: this.value,
       payTypes: [
         {
-          name: "现金",
+          label: "现金",
         },
         {
-          name: "微信",
+          label: "微信",
         },
         {
-          name: "支付宝",
+          label: "支付宝",
         },
         {
-          name: "聚合收单",
+          label: "聚合收单",
+        },
+        {
+          label: "银行转账",
+        },
+        {
+          label: "收钱吧",
+        },
+        {
+          label: "机构签约订单",
+        },
+        {
+          label: "pos机",
         },
       ],
       formData: {

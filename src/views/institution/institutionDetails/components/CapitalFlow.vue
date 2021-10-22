@@ -8,12 +8,11 @@
         @on-search="handleSearch"
       />
       <div>
-        <!-- <span style="color: #999; font-size: 15px; padding-right: 15px"
+        <span style="color: #999; font-size: 15px; padding-right: 15px"
           >当前账户余额：<span style="color: #ee4e00"
-            >¥
-          </span></span
-        > -->
-        <el-button type="primary" style="height: 40px">
+            >¥ {{this.$route.query.balance}}
+          </span></span>
+        <el-button type="primary" style="height: 40px" @click="openRecharge">
           充值</el-button
         >
       </div>
@@ -118,6 +117,12 @@
         />
       </div>
     </div>
+
+    <RechargeDialogcon
+      v-model="rechargeDialogVisible"
+    
+      @on-success="moneyFlowing"
+    />
   </div>
 </template>
 
@@ -125,13 +130,18 @@
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import {moneyFlowing} from "@/api/institution";
+import RechargeDialogcon from "./rechargeDialogcon";
+
 export default {
   name: "CapitalFlow",
   components: {
     PartiallyHidden,
+    RechargeDialogcon
   },
   data() {
     return {
+      rechargeDialogVisible: false,
+      currentData: {},
       statusMap: {
             1: {
                 text: "后台充值",
@@ -244,6 +254,12 @@ export default {
       this.listLoading = false;
       this.listData = res.message.list;
       this.listTotal = res.message.total;
+    },
+
+    openRecharge() {
+      // this.currentData = row;
+      this.rechargeDialogVisible = true;
+      console.log(this.currentData)
     },
 
   },
