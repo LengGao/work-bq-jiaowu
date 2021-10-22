@@ -29,7 +29,7 @@
           prop="order_no"
         >
         <template slot-scope="{ row }">
-          <div v-if="row.order_no">
+          <div class="link" v-if="row.order_no" @click="orderDetail(scope.row)">
             {{ row.order_no }}
           </div>
           <span v-else>--</span>
@@ -250,6 +250,14 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
+    orderDetail(ab) {
+      this.$router.push({
+        name: "orderdetail",
+        query: {
+          order_id: ab.order_id,
+        },
+      });
+    },
 
   },
 };
@@ -272,5 +280,9 @@ export default {
 }
 .institution-user-manage[data-v-1b63f2f8]{
   padding: 10px 20px 20px 0;
+}
+.link {
+  cursor: pointer;
+  color: #199fff;
 }
 </style>
