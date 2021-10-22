@@ -79,32 +79,32 @@ export function getNoticeList(params) {
 /**
  * 添加机构通知
  */
-export function createNotice(params) {
+export function createNotice(data) {
   return request({
     url: '/ClassroomMessage/createNotice',
-    method: 'get',
-    params,
+    method: 'post',
+    data,
   })
 }
 
 /**
  * 编辑机构通知
  */
-export function updateNotice(params) {
+export function updateNotice(data) {
   return request({
     url: '/ClassroomMessage/updateNotice',
-    method: 'get',
-    params,
+    method: 'post',
+    data,
   })
 }
 /**
  * 删除机构通知
  */
-export function deleteNotice(params) {
+export function deleteNotice(data) {
   return request({
     url: '/ClassroomMessage/deleteNotice',
-    method: 'get',
-    params,
+    method: 'post',
+    data,
   })
 }
 /**
