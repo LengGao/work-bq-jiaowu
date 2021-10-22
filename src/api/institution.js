@@ -310,7 +310,7 @@ export function addToTemplate(data) {
  */
 export function Organizationstudents(params) {
     return request({
-        url: '/Organization/students',
+        url: '/Organization/studentsList',
         method: 'get',
         params,
     })

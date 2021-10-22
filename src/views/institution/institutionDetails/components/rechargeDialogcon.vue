@@ -40,8 +40,7 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >确 定</el-button
-      >
+        >确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -83,7 +82,7 @@ export default {
       this.visible = val;
     },
   },
-  created(){
+  created() {
     // console.log(this.$route.query.institution_name)
   },
   methods: {
