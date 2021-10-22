@@ -7,7 +7,6 @@ import router from '@/router/index'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_LOACTION, // api的base_url
-  timeout: 15000 // 请求超时时间
 })
 
 // request拦截器
