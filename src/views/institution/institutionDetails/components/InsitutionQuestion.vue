@@ -120,7 +120,7 @@
         </template>
         </el-table-column>
 
-            <el-table-column label="操作" fixed="right" min-width="120">
+            <el-table-column label="操作" min-width="120">
               <template slot-scope="{ row }">
                 <el-button type="text" @click="handleDelete(row.id,row.question_bank_id)">
                   移除
