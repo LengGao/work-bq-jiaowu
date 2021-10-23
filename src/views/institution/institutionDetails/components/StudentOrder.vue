@@ -28,14 +28,12 @@
           align="center"
           prop="order_no"
         >
-        <template slot-scope="{ row }">
-          <div class="link" v-if="row.order_no" @click="orderDetail(scope.row)">
-            {{ row.order_no }}
+        <template slot-scope="scope">
+          <div class="link" @click="orderDetail(scope.row)">
+            {{ scope.row.order_no }}
           </div>
-          <span v-else>--</span>
         </template>
         </el-table-column>
-
         <el-table-column
           prop="create_time"
           label="订单时间"
@@ -96,7 +94,6 @@
           align="center"
           show-overflow-tooltip
         ></el-table-column>
-
       <el-table-column
       prop="pay_status"
       label="订单状态"
@@ -145,7 +142,6 @@ export default {
         0: "已成交",
         1: "已退款",
         2: "待退款",
-
       },
       // statusMap: {
       //       0: {
@@ -218,14 +214,14 @@ export default {
     this.studentsOrder();
   },
   methods: {
-    toDetails(row) {
-      this.$router.push({
-        name: "institutionDetails",
-        query: {
-          id: row.id,
-        },
-      });
-    },
+    // toDetails(row) {
+    //   this.$router.push({
+    //     name: "institutionDetails",
+    //     query: {
+    //       id: row.id,
+    //     },
+    //   });
+    // },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
