@@ -130,7 +130,7 @@ export default {
         data = {
           ...this.formData,
           type: 2,
-          classroom_id: this.$route.query.classroom_id,
+          classroom_id: this.$route.query.id,
         };
         api = createClassroomMessage;
       }

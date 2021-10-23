@@ -365,7 +365,7 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
-        classroom_id: this.$route.query.classroom_id,
+        classroom_id: this.$route.query.id,
       };
       console.log(data);
       this.listLoading = true;

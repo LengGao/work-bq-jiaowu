@@ -104,7 +104,7 @@
             //添加通知接口
             async createMessage() {
                 const data = {
-                    classroom_id: this.$route.query.classroom_id,
+                    classroom_id: this.$route.query.id,
                     first: this.ruleForm.first,
                     keyword1: this.ruleForm.keyword1,
                     keyword2: this.ruleForm.keyword2,
