@@ -639,7 +639,7 @@ export function getTopicChapterList(params) {
 // 添加子项目
 export function createChildSub(data) {
   return request({
-    url: '/project/createSub',
+    url: '/project/addSubject',
     method: 'post',
     data,
   })
@@ -647,7 +647,7 @@ export function createChildSub(data) {
 // 修改子项目
 export function updateChildSub(data) {
   return request({
-    url: '/project/editSub',
+    url: '/project/changeSub',
     method: 'post',
     data,
   })
