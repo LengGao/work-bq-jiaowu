@@ -116,7 +116,7 @@ export default {
     },
     async getClassroomMessageUserSelect() {
       const data = {
-        classroom_id: this.$route.query.classroom_id,
+        classroom_id: this.$route.query.id,
       };
       const res = await getClassroomMessageUserSelect(data);
       if (res.code === 0) {
@@ -136,7 +136,7 @@ export default {
         data = {
           ...this.formData,
           type: 3,
-          classroom_id: this.$route.query.classroom_id,
+          classroom_id: this.$route.query.id,
         };
         api = createClassroomMessage;
       }
