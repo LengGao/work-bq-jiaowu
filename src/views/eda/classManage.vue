@@ -80,7 +80,7 @@
             min-width="100"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="340">
+          <el-table-column label="操作" fixed="right" min-width="280">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="openEdit(row.classroom_id)"
@@ -88,19 +88,6 @@
                 >
                 <el-button type="text" @click="toClassDetail(row.classroom_id)"
                   >班级详情</el-button
-                >
-                <el-button
-                  type="text"
-                  @click="
-                    wxMassMessage(
-                      row.classroom_id,
-                      row.classroom_name,
-                      row.category_name,
-                      row.staff_name,
-                      row.student_number
-                    )
-                  "
-                  >消息通知</el-button
                 >
                 <el-button type="text" @click="toReturnVisit(row.classroom_id)"
                   >学习回访</el-button
@@ -278,42 +265,7 @@ export default {
         );
       }
     },
-    toMassMessage(row) {
-      this.$router.push({
-        name: "massMessage",
-        query: {
-          classroom_id: row.classroom_id,
-        },
-      });
-    },
-    wxMassMessage(
-      classroom_id,
-      classroom_name,
-      category_name,
-      staff_name,
-      student_number
-    ) {
-      this.$router.push({
-        name: "classMessage",
-        query: {
-          classroom_id,
-          classroom_name,
-          category_name,
-          staff_name,
-          student_number,
-        },
-      });
-    },
-    toLearnerManage(classId, course_id, project_id) {
-      this.$router.push({
-        name: "learnerManage",
-        query: {
-          classId,
-          course_id,
-          project_id,
-        },
-      });
-    },
+
     toReturnVisit(class_id) {
       this.$router.push({
         name: "returnVisit",

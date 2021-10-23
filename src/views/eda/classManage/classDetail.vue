@@ -43,6 +43,9 @@
         label="考勤统计"
         name="ClassAttendanceStatistics"
       ></el-tab-pane>
+      <el-tab-pane label="短信通知" name="textMessage"></el-tab-pane>
+      <el-tab-pane label="微信通知" name="wxNotification"></el-tab-pane>
+      <el-tab-pane label="机构通知" name="wxMechanism"></el-tab-pane>
     </el-tabs>
     <component
       :is="getComponent"
@@ -73,7 +76,7 @@ export default {
   activated() {
     this.getClassroomDetail();
   },
- 
+
   methods: {
     handlePreview(src) {
       this.$refs.view.show(src);
