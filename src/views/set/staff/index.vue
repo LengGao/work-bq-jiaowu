@@ -1,181 +1,184 @@
 <template>
-  <div class="institution-user-manage">
-    <div class="tree-list">
-      <p class="title">部门名称</p>
-      <v-tree ref="tree" :tpl="tpl" :data="treeData" />
-    </div>
-    <div class="table-list">
-      <div class="client_head">
-        <!--搜索模块-->
-        <SearchList
-          :options="searchOptions"
-          :data="searchData"
-          @on-search="handleSearch"
-        />
-        <div>
-          <el-button type="primary" @click="handleAdd">添加员工</el-button>
+  <div class="staff">
+    <div class="head_remind">*可按照角色权限对员工账号进行分类管理</div>
+    <div class="mainwrap">
+      <div class="tree-list">
+        <p class="title">部门名称</p>
+        <v-tree ref="tree" :tpl="tpl" :data="treeData" />
+      </div>
+      <div class="table-list">
+        <div class="client_head">
+          <!--搜索模块-->
+          <SearchList
+            :options="searchOptions"
+            :data="searchData"
+            @on-search="handleSearch"
+          />
+          <div>
+            <el-button type="primary" @click="handleAdd">添加员工</el-button>
+          </div>
+        </div>
+        <!--表格-->
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          style="width: 100%"
+          class="min_table"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          :header-cell-style="{ 'text-align': 'center' }"
+        >
+          <el-table-column
+            label="员工ID"
+            show-overflow-tooltip
+            min-width="70"
+            align="center"
+            prop="staff_id"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="staff_name"
+            label="员工姓名"
+            min-width="120"
+            align="center"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="account"
+            label="手机号码"
+            min-width="120"
+            align="center"
+          >
+            <template slot-scope="{ row }">
+              <PartiallyHidden :value="row.account" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="role_name"
+            label="角色"
+            min-width="120"
+            align="center"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="group_name"
+            label="部门名称"
+            min-width="120"
+            align="center"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="scope"
+            label="客户数据查看范围"
+            min-width="140"
+            align="center"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="scope"
+            label="客户数量"
+            min-width="100"
+            align="center"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            label="超管"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                v-model="row.is_super"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="0"
+                @change="updateStaffStatus(row, 'is_super')"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="部门主管"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                v-model="row.is_director"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="0"
+                @change="updateStaffStatus(row, 'is_director')"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="账号状态"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                v-model="row.account_status"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="2"
+                @change="updateStaffStatus(row, 'account_status')"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            fixed="right"
+            align="center"
+            min-width="160"
+          >
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="handleEdit(row.staff_id)"
+                >编辑</el-button
+              >
+              <el-button type="text" @click="deleteConfirm(row, 'is_deleted')"
+                >删除</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
-      <!--表格-->
-      <el-table
-        ref="multipleTable"
-        :data="listData"
-        style="width: 100%"
-        class="min_table"
-        v-loading="listLoading"
-        element-loading-text="loading"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="#fff"
-        :header-cell-style="{ 'text-align': 'center' }"
-      >
-        <el-table-column
-          label="员工ID"
-          show-overflow-tooltip
-          min-width="70"
-          align="center"
-          prop="staff_id"
-        >
-        </el-table-column>
 
-        <el-table-column
-          prop="staff_name"
-          label="员工姓名"
-          min-width="120"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="account"
-          label="手机号码"
-          min-width="120"
-          align="center"
-        >
-          <template slot-scope="{ row }">
-            <PartiallyHidden :value="row.account" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="role_name"
-          label="角色"
-          min-width="120"
-          align="center"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="group_name"
-          label="部门名称"
-          min-width="120"
-          align="center"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="scope"
-          label="客户数据查看范围"
-          min-width="140"
-          align="center"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          prop="scope"
-          label="客户数量"
-          min-width="100"
-          align="center"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          label="超管"
-          align="center"
-          min-width="80"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <el-switch
-              v-model="row.is_super"
-              active-color="#2798ee"
-              inactive-color="#eaeefb"
-              :active-value="1"
-              :inactive-value="0"
-              @change="updateStaffStatus(row, 'is_super')"
-            >
-            </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="部门主管"
-          align="center"
-          min-width="80"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <el-switch
-              v-model="row.is_director"
-              active-color="#2798ee"
-              inactive-color="#eaeefb"
-              :active-value="1"
-              :inactive-value="0"
-              @change="updateStaffStatus(row, 'is_director')"
-            >
-            </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="账号状态"
-          align="center"
-          min-width="80"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <el-switch
-              v-model="row.account_status"
-              active-color="#2798ee"
-              inactive-color="#eaeefb"
-              :active-value="1"
-              :inactive-value="2"
-              @change="updateStaffStatus(row, 'account_status')"
-            >
-            </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          align="center"
-          min-width="160"
-        >
-          <template slot-scope="{ row }">
-            <el-button type="text" @click="handleEdit(row.staff_id)"
-              >编辑</el-button
-            >
-            <el-button type="text" @click="deleteConfirm(row, 'is_deleted')"
-              >删除</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="table_bottom">
-        <page
-          :data="listTotal"
-          :curpage="pageNum"
-          @pageChange="handlePageChange"
-        />
-      </div>
+      <AddStaffDialog
+        v-model="dialogVisible"
+        :title="dialogTitle"
+        :id="currentId"
+        :options="departMentData"
+        @on-success="getStaffList"
+      />
+      <AddDepartmentDialog
+        v-model="dialogDepartmentVisible"
+        :title="dialogDepartmentTitle"
+        :id="departmentId"
+        :options="departMentData"
+        @on-success="getDepartmentlists"
+      />
     </div>
-
-    <AddStaffDialog
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      :id="currentId"
-      :options="departMentData"
-      @on-success="getStaffList"
-    />
-    <AddDepartmentDialog
-      v-model="dialogDepartmentVisible"
-      :title="dialogDepartmentTitle"
-      :id="departmentId"
-      :options="departMentData"
-      @on-success="getDepartmentlists"
-    />
   </div>
 </template>
 
@@ -388,9 +391,11 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
-.institution-user-manage {
-  padding: 20px;
-  display: flex;
+.staff {
+  .mainwrap {
+    padding: 20px;
+    display: flex;
+  }
   .tree-list {
     min-width: 320px;
     flex-shrink: 0;
