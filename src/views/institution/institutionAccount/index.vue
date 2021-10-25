@@ -302,7 +302,7 @@ export default {
         for (const key in res.data) {
           params += `${key}=${res.data[key]}&`;
         }
-        const url = `//store.beiqujy.com/#/?${params.slice(0, -1)}`;
+        const url = `https://store.beiqujy.com/#/?${params.slice(0, -1)}`;
         window.open(url);
       }
     },
