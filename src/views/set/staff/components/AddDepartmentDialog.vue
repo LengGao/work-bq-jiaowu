@@ -20,14 +20,14 @@
         prop="parent_id"
         :rules="[
           {
-            required: title !== `编辑部门`,
+            required: !isEdit,
             message: `请选择`,
             trigger: `change`,
           },
         ]"
       >
         <el-cascader
-          :disabled="title === `编辑部门`"
+          :disabled="isEdit"
           style="width: 100%"
           :options="departmentOptions"
           placeholder="请选择部门"
@@ -115,12 +115,15 @@ export default {
         },
       ].concat(this.options);
     },
+    isEdit() {
+      return this.title === "编辑部门";
+    },
   },
   methods: {
     // dialog 打开时
     handleOpen() {
       this.formData.parent_id = this.id;
-      if (this.title === "编辑部门") {
+      if (this.isEdit) {
         this.getDepartmentInfo();
       }
     },
@@ -145,13 +148,12 @@ export default {
       const { parent_id } = this.formData;
       const data = {
         ...this.formData,
-        parent_id: Array.isArray(parent_id) ? parent_id.pop() : parent_id,
+        parent_id: Array.isArray(parent_id) ? [...parent_id].pop() : parent_id,
       };
-      if (this.title === "编辑部门") {
+      if (this.isEdit) {
         data.id = this.id;
       }
-      const api =
-        this.title === "编辑部门" ? modifyDepartment : createDepartment;
+      const api = this.isEdit ? modifyDepartment : createDepartment;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;

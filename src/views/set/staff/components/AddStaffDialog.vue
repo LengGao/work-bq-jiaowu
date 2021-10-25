@@ -3,7 +3,7 @@
   <el-dialog
     :title="title"
     :visible.sync="visible"
-    width="500px"
+    width="720px"
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
@@ -14,23 +14,34 @@
       :rules="rules"
       ref="formData"
       v-loading="detaiLoading"
+      inline
     >
-      <el-form-item label="用户头像">
-        <ImageUpload width="100" height="100" v-model="formData.cover">
-          <p slot="tips">1. 支持jpg、png等格式； 2. 推荐尺寸200*200或者1:1</p>
-        </ImageUpload>
-      </el-form-item>
-      <el-form-item label="用户姓名" prop="nickname">
+      <el-form-item label="用户姓名" prop="staff_name">
         <el-input
-          v-model="formData.nickname"
+          class="w-217"
+          v-model="formData.staff_name"
           placeholder="请输入用户姓名"
           maxlength="30"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="mobile">
+      <el-form-item label="用户头像">
+        <ImageUpload
+          class="avatar"
+          width="80"
+          height="80"
+          v-model="formData.head_photo"
+        >
+          <div slot="tips">
+            <p>1. 支持jpg、png等格式；</p>
+            <p>2. 推荐尺寸200*200或者1:1</p>
+          </div>
+        </ImageUpload>
+      </el-form-item>
+      <el-form-item label="手机号码" prop="account">
         <el-input
+          class="w-217"
           type="number"
-          v-model="formData.mobile"
+          v-model="formData.account"
           placeholder="请输入手机号码"
         />
       </el-form-item>
@@ -48,12 +59,13 @@
         ]"
       >
         <el-input
+          class="w-217"
           v-model="formData.password"
           placeholder="请输入登录密码"
           maxlength="30"
         />
       </el-form-item>
-      <el-form-item label="部门" prop="role_id">
+      <el-form-item label="所属部门" prop="department_id">
         <el-cascader
           :options="options"
           placeholder="请选择部门"
@@ -62,10 +74,64 @@
           :props="{
             value: 'id',
             label: 'title',
-            children: 'child',
             checkStrictly: true,
           }"
-          v-model="formData.role_id"
+          v-model="formData.department_id"
+        ></el-cascader>
+      </el-form-item>
+      <el-form-item label="部门主管" prop="is_director">
+        <el-radio-group v-model="formData.is_director">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="所属角色" prop="role_ids">
+        <el-select
+          multiple
+          filterable
+          clearable
+          v-model="formData.role_ids"
+          placeholder="请选择所属角色"
+        >
+          <el-option
+            v-for="item in roleOptions"
+            :key="item.role_id"
+            :label="item.role_name"
+            :value="item.role_id"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="人员数据范围">
+        <el-select
+          multiple
+          clearable
+          v-model="formData.user_ids"
+          filterable
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="(item, index) in userAuthOptions"
+            :key="index"
+            :label="item.staff_name"
+            :value="item.staff_id"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="部门数据范围">
+        <el-cascader
+          :options="options"
+          placeholder="请选择"
+          clearable
+          filterable
+          :show-all-levels="false"
+          :props="{
+            value: 'id',
+            label: 'title',
+            multiple: true,
+          }"
+          v-model="formData.group_ids"
         ></el-cascader>
       </el-form-item>
     </el-form>
@@ -83,9 +149,11 @@
 
 <script>
 import {
-  modifyInstitutionUser,
-  createInstitutionUser,
-  getInstitutionUserInfo,
+  modifyStaff,
+  addStaff,
+  getStaffinfo,
+  getRoleSelectData,
+  getStaffList,
 } from "@/api/set";
 import ImageUpload from "@/components/ImgUpload";
 export default {
@@ -116,16 +184,24 @@ export default {
       visible: this.value,
       cityOptions: [],
       formData: {
-        cover: "",
-        nickname: "",
-        mobile: "",
+        head_photo: "",
+        staff_name: "",
+        account: "",
         password: "",
-        role_id: "",
+        department_id: "",
+        is_director: "",
+        role_ids: [],
+        user_ids: [],
+        group_ids: [],
       },
       rules: {
-        role_id: [{ required: true, message: "请选择", trigger: "change" }],
-        nickname: [{ required: true, message: "请输入", trigger: "blur" }],
-        mobile: [
+        is_director: [{ required: true, message: "请选择", trigger: "change" }],
+        role_ids: [{ required: true, message: "请选择", trigger: "change" }],
+        department_id: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
+        staff_name: [{ required: true, message: "请输入", trigger: "blur" }],
+        account: [
           { required: true, message: "请输入", trigger: "blur" },
           {
             validator: this.validataPhone,
@@ -139,6 +215,8 @@ export default {
         label: "name",
         children: "child",
       },
+      roleOptions: [],
+      userAuthOptions: [],
     };
   },
   watch: {
@@ -147,6 +225,19 @@ export default {
     },
   },
   methods: {
+    async getStaffList() {
+      const data = {
+        limit: 99999,
+      };
+      const res = await getStaffList(data);
+      this.userAuthOptions = res.data.list;
+    },
+    async getRoleSelectData() {
+      const res = await getRoleSelectData();
+      if (res.code === 0) {
+        this.roleOptions = res.data;
+      }
+    },
     validataPhone(rule, value, callback) {
       const reg = /^1(3|4|5|6|7|8|9)\d{9}$/;
       if (!value) {
@@ -158,32 +249,44 @@ export default {
       }
     },
     handleOpen() {
-      this.id && this.getInstitutionUserInfo();
+      this.getStaffList();
+      this.getRoleSelectData();
+      console.log(this.id);
+      this.id && this.getStaffinfo();
     },
-    async getInstitutionUserInfo() {
+    async getStaffinfo() {
       const data = { id: this.id };
-      const res = await getInstitutionUserInfo(data);
+      const res = await getStaffinfo(data);
       if (res.code === 0) {
-        this.formData.cover = res.data.cover;
-        this.formData.nickname = res.data.nickname;
-        this.formData.mobile = res.data.mobile;
-        this.formData.password = res.data.password;
-        this.formData.role_id = res.data.role_id;
+        for (const k in this.formData) {
+          if (!["group_ids", "password"].includes(k)) {
+            this.formData[k] = res.data[k] ?? "";
+          }
+          this.formData.group_ids = res.data.arr_group;
+        }
       }
     },
     async submit() {
+      const { department_id, group_ids } = this.formData;
       const data = {
         ...this.formData,
-        role_id: Array.isArray(this.formData.role_id)
-          ? [...this.formData.role_id].pop()
-          : this.formData.role_id,
+        department_id: Array.isArray(department_id)
+          ? [...department_id].pop()
+          : department_id,
+        group_ids: [...group_ids].map((item) => {
+          if (Array.isArray(item)) {
+            return [...item].pop();
+          }
+          return item;
+        }),
+        extends: group_ids,
       };
       if (this.id) {
         data.id = this.id;
       } else {
         data.institution_id = this.$route.query.institution_id;
       }
-      const api = this.id ? modifyInstitutionUser : createInstitutionUser;
+      const api = this.id ? modifyStaff : addStaff;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
@@ -217,11 +320,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.address {
+.w-217 {
+  width: 217px;
+}
+.avatar {
   display: flex;
-  .detailed {
-    margin-left: 20px;
-    flex: 1;
+  /deep/.upload-tips {
+    align-self: flex-end;
+    margin: 0 0 20px 10px;
   }
 }
 </style>

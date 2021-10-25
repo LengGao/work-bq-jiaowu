@@ -50,16 +50,7 @@ export function getFollowPage(params) {
   })
 }
 // 员工管理=======
-/**
- * 获取员工列表
- */
-export function getStaffList(params) {
-  return request({
-    url: '/staff/index',
-    method: 'get',
-    params,
-  })
-}
+
 /**
  * 获取身份下拉列表
  */
@@ -128,5 +119,55 @@ export function delDepartment(data) {
     url: 'TerminalGroup/deletedGroup',
     method: 'post',
     data,
+  })
+}
+/**
+ * 获取员工列表
+ */
+export function getStaffList(params) {
+  return request({
+    url: '/staff/index',
+    method: 'get',
+    params,
+  })
+}
+// 员工列表--新增
+export function addStaff(data) {
+  return request({
+    url: '/staff/add',
+    method: 'post',
+    data,
+  })
+}
+// 员工列表--修改
+export function modifyStaff(data) {
+  return request({
+    url: '/staff/modify',
+    method: 'post',
+    data,
+  })
+}
+// 员工列表--员工信息
+export function getStaffinfo(params) {
+  return request({
+    url: '/staff/info',
+    method: 'get',
+    params,
+  })
+}
+// 员工列表--修改员工状态
+export function updateStaffStatus(data) {
+  return request({
+    url: 'staff/updateOtherStatus',
+    method: 'post',
+    data,
+  })
+}
+// 员工新增--获取角色
+export function getRoleSelectData(params) {
+  return request({
+    url: '/staff/getRoleSelectData',
+    method: 'get',
+    params,
   })
 }

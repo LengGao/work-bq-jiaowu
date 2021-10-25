@@ -33,12 +33,12 @@
           show-overflow-tooltip
           min-width="70"
           align="center"
-          prop="id"
+          prop="staff_id"
         >
         </el-table-column>
 
         <el-table-column
-          prop="nickname"
+          prop="staff_name"
           label="员工姓名"
           min-width="120"
           align="center"
@@ -46,36 +46,75 @@
         >
         </el-table-column>
         <el-table-column
-          prop="mobile"
+          prop="account"
           label="手机号码"
-          min-width="140"
+          min-width="120"
           align="center"
         >
           <template slot-scope="{ row }">
-            <PartiallyHidden :value="row.mobile" />
+            <PartiallyHidden :value="row.account" />
           </template>
         </el-table-column>
         <el-table-column
           prop="role_name"
-          label="部门名称"
-          min-width="220"
+          label="角色"
+          min-width="120"
           align="center"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          label="是否超管"
+          prop="group_name"
+          label="部门名称"
+          min-width="120"
           align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="scope"
+          label="客户数据查看范围"
+          min-width="140"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="scope"
+          label="客户数量"
           min-width="100"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          label="超管"
+          align="center"
+          min-width="80"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
             <el-switch
-              v-model="row.is_master"
+              v-model="row.is_super"
               active-color="#2798ee"
               inactive-color="#eaeefb"
               :active-value="1"
               :inactive-value="0"
-              @change="modifyInstitutionUserOther(row, 'is_master')"
+              @change="updateStaffStatus(row, 'is_super')"
+            >
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="部门主管"
+          align="center"
+          min-width="80"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-switch
+              v-model="row.is_director"
+              active-color="#2798ee"
+              inactive-color="#eaeefb"
+              :active-value="1"
+              :inactive-value="0"
+              @change="updateStaffStatus(row, 'is_director')"
             >
             </el-switch>
           </template>
@@ -83,17 +122,17 @@
         <el-table-column
           label="账号状态"
           align="center"
-          min-width="100"
+          min-width="80"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
             <el-switch
-              v-model="row.status"
+              v-model="row.account_status"
               active-color="#2798ee"
               inactive-color="#eaeefb"
               :active-value="1"
-              :inactive-value="0"
-              @change="modifyInstitutionUserOther(row, 'status')"
+              :inactive-value="2"
+              @change="updateStaffStatus(row, 'account_status')"
             >
             </el-switch>
           </template>
@@ -105,7 +144,9 @@
           min-width="160"
         >
           <template slot-scope="{ row }">
-            <el-button type="text" @click="handleEdit(row.id)">编辑</el-button>
+            <el-button type="text" @click="handleEdit(row.staff_id)"
+              >编辑</el-button
+            >
             <el-button type="text" @click="deleteConfirm(row, 'is_deleted')"
               >删除</el-button
             >
@@ -126,7 +167,7 @@
       :title="dialogTitle"
       :id="currentId"
       :options="departMentData"
-      @on-success="getInstitutionUserList"
+      @on-success="getStaffList"
     />
     <AddDepartmentDialog
       v-model="dialogDepartmentVisible"
@@ -142,8 +183,8 @@
 import AddStaffDialog from "./components/AddStaffDialog";
 import AddDepartmentDialog from "./components/AddDepartmentDialog";
 import {
-  getInstitutionUserList,
-  modifyInstitutionUserOther,
+  getStaffList,
+  updateStaffStatus,
   getDepartmentlists,
   delDepartment,
 } from "@/api/set";
@@ -177,7 +218,7 @@ export default {
       currentId: "",
       treeData: [],
       treeParams: {
-        role_id: "",
+        department_id: "",
       },
       departMentData: [],
       dialogDepartmentVisible: false,
@@ -188,7 +229,7 @@ export default {
 
   created() {
     this.getDepartmentlists();
-    this.getInstitutionUserList();
+    this.getStaffList();
   },
   methods: {
     tpl(node) {
@@ -196,7 +237,7 @@ export default {
         <span
           class={{
             "tree-node": true,
-            "tree-node--active": this.treeParams.role_id === node.id,
+            "tree-node--active": this.treeParams.department_id === node.id,
           }}
           onClick={() => this.onNodeClick(node)}
         >
@@ -277,30 +318,31 @@ export default {
       }
     },
     onNodeClick(data) {
-      const { id: role_id } = data;
-      this.treeParams = { role_id };
-      this.getInstitutionUserList();
+      const { id: department_id } = data;
+      this.treeParams = { department_id };
+      this.pageNum = 1;
+      this.getStaffList();
     },
     // 删除员工
     deleteConfirm(...params) {
       this.$confirm("确定要删除此员工吗?", { type: "warning" })
         .then(() => {
-          this.modifyInstitutionUserOther(...params);
+          this.updateStaffStatus(...params);
         })
         .catch(() => {});
     },
-    async modifyInstitutionUserOther(row, type) {
+    async updateStaffStatus(row, type) {
       const data = {
-        keyword: type,
-        state: row[type] || +(type === "is_deleted"),
-        id: row.id,
+        key: type,
+        value: row[type] || +(type === "is_deleted"),
+        staff_id: row.staff_id,
       };
-      const res = await modifyInstitutionUserOther(data).catch(() => {
+      const res = await updateStaffStatus(data).catch(() => {
         row[type] = row[type] === 1 ? 0 : 1;
       });
       if (res.code === 0) {
         this.$message.success(res.message);
-        type === "is_deleted" && this.getInstitutionUserList();
+        type === "is_deleted" && this.getStaffList();
       }
     },
     handleEdit(id) {
@@ -318,21 +360,20 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.getInstitutionUserList();
+      this.getStaffList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getInstitutionUserList();
+      this.getStaffList();
     },
-    async getInstitutionUserList() {
+    async getStaffList() {
       const data = {
         page: this.pageNum,
-        institution_id: this.$route.query.institution_id || "",
         ...this.searchData,
         ...this.treeParams,
       };
       this.listLoading = true;
-      const res = await getInstitutionUserList(data);
+      const res = await getStaffList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
