@@ -274,6 +274,7 @@ export default {
       this.getDistributeCourseList();
     },
     handleLeftSizeChange(size) {
+      this.pageLeftNum = 1;
       this.pageLeftSize = size;
       this.getDistributeCourseList();
     },
@@ -322,6 +323,7 @@ export default {
       this.getOrgList();
     },
     handleRightSizeChange(size) {
+      this.pageRightNum = 1;
       this.pageRightSize = size;
       this.getOrgList();
     },
