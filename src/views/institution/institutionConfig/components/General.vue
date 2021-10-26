@@ -22,7 +22,6 @@
         <el-input
           style="width: 280px"
           placeholder="请输入审核版本号"
-          type="number"
           v-model="formData.applet_version"
         ></el-input>
         <span class="text">*请输入当前机构提交审核的版本号。</span>
