@@ -139,7 +139,7 @@
             label="操作"
             fixed="right"
             align="center"
-            min-width="220"
+            min-width="260"
           >
             <template slot-scope="{ row }">
               <div
@@ -571,11 +571,13 @@ export default {
           parentId,
           []
         );
-        if (children.length) {
+        if (children.length > 1) {
           resolve(children);
         } else {
           this.getProjectList();
         }
+      } else {
+        this.getProjectList();
       }
     },
     // table懒加载子节点
@@ -612,7 +614,7 @@ export default {
         this.schoolData = res.data.data.map((item, index) => ({
           ...item,
           treeId: this.setId(),
-          hasChildren: true,
+          hasChildren: !!item.child,
           children: [],
         }));
       }

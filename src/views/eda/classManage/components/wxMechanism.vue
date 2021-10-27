@@ -282,7 +282,7 @@ export default {
 
   created() {
     this.getNoticeList();
-    console.log(this.$route.query.classroom_id);
+    console.log(this.$route.query.id);
   },
   methods: {
     handleSizeChange(size) {
@@ -354,7 +354,7 @@ export default {
     // 机构通知列表
     async getNoticeList() {
       const data = {
-        classroom_id: this.$route.query.classroom_id,
+        classroom_id: this.$route.query.id,
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
@@ -385,13 +385,15 @@ export default {
     // 添加机构通知接口
     async createNotice() {
       const data = {
-        classroom_id: this.$route.query.classroom_id,
+        classroom_id: this.$route.query.id,
         title: this.ruleForm.title,
         content: this.ruleForm.content,
       };
       const res = await createNotice(data);
       if (res.code == 0) {
+        this.getNoticeList();
         this.$message.success(res.message);
+        this.dialogVisibleadd = false;
       }
     },
     // 编辑机构通知接口
@@ -407,7 +409,7 @@ export default {
         console.log(res);
         this.$message.success(res.message);
         this.getNoticeList();
-        this.dialogVisible = false;
+        this.dialogVisibleadd = false;
       }
     },
     // 删除通知按钮
@@ -451,13 +453,9 @@ export default {
           if (this.ruleForm.id) {
             //修改
             this.updateNotice();
-            this.dialogVisibleadd = false;
-            this.getNoticeList();
           } else {
             //添加
             this.createNotice();
-            this.dialogVisibleadd = false;
-            this.getNoticeList();
           }
         } else {
           console.log("error submit!!");

@@ -108,6 +108,20 @@
             show-overflow-tooltip
           >
           </el-table-column>
+          <el-table-column
+            label="操作"
+            fixed="right"
+            align="center"
+            min-width="120"
+          >
+            <template slot-scope="{ row }">
+              <el-button
+                type="text"
+                @click="getInstitutionToken(row.from_organization_id)"
+                >登录后台</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
         <div class="table_bottom">
           <page
@@ -130,6 +144,7 @@ import {
   batchAuditCode,
   batchUndoCodeAudit,
   batchPublishCode,
+  getInstitutionToken,
 } from "@/api/institution";
 import AddVersionDialog from "./components/AddVersionDialog";
 export default {
@@ -217,6 +232,18 @@ export default {
     this.templateSelect();
   },
   methods: {
+    async getInstitutionToken(institution_id) {
+      const data = { institution_id };
+      const res = await getInstitutionToken(data);
+      if (res.code === 0) {
+        let params = "";
+        for (const key in res.data) {
+          params += `${key}=${res.data[key]}&`;
+        }
+        const url = `https://store.beiqujy.com/#/?${params.slice(0, -1)}`;
+        window.open(url);
+      }
+    },
     async batchPublishCode() {
       if (!this.selectedIds.length) {
         this.$message.warning("请先选择机构小程序");
