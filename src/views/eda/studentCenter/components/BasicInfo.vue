@@ -157,7 +157,13 @@
             </el-select>
             <span v-else>{{ channelOptions[datas.sources] || "--" }}</span>
           </el-form-item>
-          <el-form-item label="所属机构">
+          <el-form-item
+            label="所属机构"
+            prop="from_organization_id"
+            :rules="[
+              { required: isEdit, message: '请选择', trigger: 'change' },
+            ]"
+          >
             <el-cascader
               filterable
               clearable
