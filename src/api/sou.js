@@ -405,6 +405,14 @@ export function getQuestionBankList(params) {
     params,
   })
 }
+// 机构题库列表
+export function getOrgQuestionBankList(params) {
+  return request({
+    url: 'Organization/questionBank',
+    method: 'get',
+    params,
+  })
+}
 // 更新题库状态
 export function updateQuestionBankStatus(data) {
   return request({
