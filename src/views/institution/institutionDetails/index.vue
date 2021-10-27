@@ -7,6 +7,7 @@
       <el-tab-pane label="机构公海" name="InsitutionSeas"></el-tab-pane>
       <el-tab-pane label="资金流水" name="CapitalFlow"></el-tab-pane>
       <el-tab-pane label="学生订单" name="StudentOrder"></el-tab-pane>
+      <el-tab-pane label="学生对接" name="StudentDocking"></el-tab-pane>
     </el-tabs>
     <component
       :is="getComponent"
@@ -61,5 +62,4 @@ export default {
 .institution-detail {
   padding: 20px;
 }
-
 </style>

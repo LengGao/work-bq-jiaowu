@@ -401,3 +401,11 @@ export function BankRelationremove(data) {
         data,
     })
 }
+// 学生对接列表
+export function getOrgStudentReceptionList(params) {
+    return request({
+        url: '/Merchant/getOrgStudentReceptionList',
+        method: 'get',
+        params,
+    })
+}
