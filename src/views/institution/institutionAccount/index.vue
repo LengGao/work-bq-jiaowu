@@ -297,7 +297,6 @@ export default {
       const data = { institution_id };
       const res = await getInstitutionToken(data);
       if (res.code === 0) {
-        console.log(res.data);
         let params = "";
         for (const key in res.data) {
           params += `${key}=${res.data[key]}&`;
