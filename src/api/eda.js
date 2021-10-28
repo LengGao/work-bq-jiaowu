@@ -950,7 +950,7 @@ export function publicLiveList(params) {
 // 公开课直播列表-修改直播展示状态
 export function updatePublicLiveShowStatus(params) {
   return request({
-    url: '/NewLive/updatePublicLiveShowStatus',
+    url: '/NewLive/updateShowStatusForPublicLive',
     method: 'get',
     params,
   })
@@ -1118,7 +1118,7 @@ export function getFaceCourseSelect(params) {
 // 认证记录列表
 export function getFaceDetectList(params) {
   return request({
-    url: '/FaceDetect/getFaceDetectList',
+    url: '/FaceDetect/getFaceDetectListForAll',
     method: 'get',
     params,
   })

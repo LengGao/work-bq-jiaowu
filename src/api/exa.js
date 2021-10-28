@@ -208,7 +208,7 @@ export function deleteRule(data) {
 //修改科目状态
 export function updateSubjectStatus(data) {
   return request({
-    url: '/Examination/updateSubjectStatus',
+    url: '/Examination/updateStatusForSubject',
     method: 'post',
     data,
   })
@@ -216,7 +216,7 @@ export function updateSubjectStatus(data) {
 //修改规则状态
 export function updateRuleStatus(data) {
   return request({
-    url: '/Examination/updateRuleStatus',
+    url: '/Examination/updateStatusForRule',
     method: 'post',
     data,
   })
