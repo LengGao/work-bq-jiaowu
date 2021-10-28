@@ -148,7 +148,7 @@ export function deleteClassType(data) {
 // 班型列表-启用禁用
 export function updateClassTypeStatus(data) {
     return request({
-        url: '/Merchant/updateClassTypeStatus',
+        url: '/Merchant/updateStatusForClassType',
         method: 'post',
         data,
     })
@@ -156,7 +156,7 @@ export function updateClassTypeStatus(data) {
 // 班型列表-排序
 export function updateClassTypeSort(data) {
     return request({
-        url: '/Merchant/updateClassTypeSort',
+        url: '/Merchant/updateSortForClassType',
         method: 'post',
         data,
     })
