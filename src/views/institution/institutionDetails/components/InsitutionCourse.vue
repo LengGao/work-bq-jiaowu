@@ -68,7 +68,7 @@
   import { courseCateSelectTree, getCourseList, deleteOrgCourse } from "@/api/institution";
   import AddCurriculum from './addCurriculum';
   export default {
-    name: "BasicInfo",
+    name: "InsitutionCourse",
     components: {
       AddCurriculum,
     },
@@ -198,7 +198,7 @@
         this.listData = res.data.list.map((item) => {
           item[item.course_id] = {};
           res.data.class_type.forEach((child) => {
-            // 默认价格为本地缓存的价格
+            // 默认价格为本地缓存价格
             if (
               coursePrice &&
               coursePrice[item.course_id] &&

@@ -1,7 +1,8 @@
 <template>
   <div class="institution-detail">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="机构课程" name="BasicInfo"></el-tab-pane>
+      <el-tab-pane label="机构课程" name="InsitutionCourse"></el-tab-pane>
+      <!-- <el-tab-pane label="机构课程" name="BasicInfo"></el-tab-pane> -->
       <el-tab-pane label="机构题库" name="InsitutionQuestion"></el-tab-pane>
       <el-tab-pane label="机构学生" name="InsitutionStudent"></el-tab-pane>
       <el-tab-pane label="机构公海" name="InsitutionSeas"></el-tab-pane>
@@ -23,7 +24,7 @@ export default {
   name: "studentDetail",
   data() {
     return {
-      activeName: "BasicInfo",
+      activeName: "InsitutionCourse",
       detailData: {},
       detailLoading: false,
     };
