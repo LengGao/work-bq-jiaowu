@@ -814,9 +814,36 @@ export const asyncRouter = [
     ],
   },
   {
+    path: '/CRM',
+    component: Layout,
+    redirect: '/CRM/crmOrder',
+    meta: { title: 'CRM管理' },
+    name: 'CRM',
+    children: [
+      {
+        path: 'crmOrder',
+        name: 'crmOrder',
+        component: () => import('@/views/crm/crmOrder/index.vue'),
+        meta: { title: '订单管理' },
+      },
+      {
+        path: 'performanceTargets',
+        name: 'performanceTargets',
+        component: () => import('@/views/crm/performanceTargets/index.vue'),
+        meta: { title: '业绩目标' },
+      },
+      {
+        path: 'personalTarget',
+        name: 'personalTarget',
+        component: () => import('@/views/crm/performanceTargets/personalTarget/index.vue'),
+        meta: { title: '设置目标' },
+      },
+    ]
+  },
+  {
     path: '/institution',
     component: Layout,
-    redirect: '/institution//institutionAccount',
+    redirect: '/institution/institutionAccount',
     meta: { title: '机构管理', icon: 'zhaoshengguanli' },
     name: 'institution',
     children: [
