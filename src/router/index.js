@@ -838,6 +838,24 @@ export const asyncRouter = [
         component: () => import('@/views/crm/performanceTargets/personalTarget/index.vue'),
         meta: { title: '设置目标' },
       },
+      {
+        path: 'approveConfig',
+        name: 'approveConfig',
+        component: () => import('@/views/crm/approveConfig/index.vue'),
+        meta: { title: '审批设置' },
+      },
+      {
+        path: 'internationalWatersConfig',
+        name: 'internationalWatersConfig',
+        component: () => import('@/views/crm/internationalWatersConfig/index.vue'),
+        meta: { title: '公海规则' },
+      },
+      {
+        path: 'fieldConfig',
+        name: 'fieldConfig',
+        component: () => import('@/views/crm/fieldConfig/index.vue'),
+        meta: { title: '字段设置' },
+      },
     ]
   },
   {
