@@ -856,6 +856,24 @@ export const asyncRouter = [
         component: () => import('@/views/crm/fieldConfig/index.vue'),
         meta: { title: '字段设置' },
       },
+      {
+        path: 'approveManage',
+        name: 'approveManage',
+        component: () => import('@/views/crm/approveManage/index.vue'),
+        meta: { title: '审批管理' },
+      },
+      {
+        path: 'changeManage',
+        name: 'changeManage',
+        component: () => import('@/views/crm/changeManage/index.vue'),
+        meta: { title: '异动管理' },
+      },
+      {
+        path: 'changeDetail',
+        name: 'changeDetail',
+        component: () => import('@/views/crm/changeManage/detail.vue'),
+        meta: { title: '异动详情' },
+      },
     ]
   },
   {

@@ -608,7 +608,6 @@ export default {
         category_id: Array.isArray(data.category_id)
           ? data.category_id.join(",")
           : "",
-        date: Array.isArray(data.date) ? data.date.join(" - ") : "",
         project_id: Array.isArray(data.project_id)
           ? data.project_id.join(",")
           : "",
@@ -623,6 +622,9 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
+        date: Array.isArray(this.searchData.date)
+          ? this.searchData.date.join(" - ")
+          : "",
       };
       this.listLoading = true;
       const res = await getOrderList(data);
