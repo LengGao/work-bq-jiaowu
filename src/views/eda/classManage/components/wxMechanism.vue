@@ -134,6 +134,7 @@ import {
   deleteNotice,
   sendNotice,
 } from "@/api/message";
+import editorOption from "@/utils/quill-config";
 import listSendRecord from "./listSendRecord";
 export default {
   name: "wxMechanism",
@@ -167,9 +168,7 @@ export default {
       dialogVisible: false,
       dialogVisibleSend: false,
       dialogVisibleadd: false,
-      editorOption: {
-        placeholder: "请输入通知内容",
-      },
+      editorOption,
       ruleForm: {
         title: "",
         content: "",
