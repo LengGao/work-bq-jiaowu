@@ -3,10 +3,14 @@
     <div class="mainwrap">
       <div class="tree-list">
         <p class="title">部门列表</p>
-        <v-tree ref="tree" :tpl="tpl" :data="treeData" />
+        <v-tree ref="tree" class="tree-content" :tpl="tpl" :data="treeData" />
       </div>
       <div class="table-list">
-        <h2 class="target-value">2021年回款总金额目标：¥27,000,000.00</h2>
+        <h2 class="target-value">
+          {{ $route.query.title || yearTargetInfo.title }}年回款总金额目标：¥{{
+            yearTargetInfo.target || "0.00"
+          }}
+        </h2>
         <!--表格-->
         <el-table
           ref="multipleTable"
@@ -22,47 +26,54 @@
           <el-table-column
             label="ID"
             show-overflow-tooltip
-            min-width="70"
+            width="60"
             align="center"
-            prop="staff_id"
+            prop="id"
           >
           </el-table-column>
 
           <el-table-column
             prop="staff_name"
             label="员工姓名"
-            min-width="120"
+            min-width="110"
             align="center"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="account"
+            prop="total_performance"
             label="业绩总额"
             min-width="120"
             align="center"
           >
+            <template slot-scope="{ row }">
+              <span> ￥{{ row.total_performance }} </span>
+            </template>
           </el-table-column>
           <el-table-column
             v-for="item in 12"
             :key="item"
             prop="account"
             :label="`${item}月`"
-            min-width="140"
+            min-width="120"
             align="center"
           >
             <template slot-scope="{ row }">
               <el-input
-                v-if="row.edit"
+                v-focus
+                v-if="row[`edit${item}`]"
+                size="small"
+                v-model="row[yearMap[item]]"
                 placeholder="请输入"
                 type="number"
+                @blur="handleEditBlur(row, `edit${item}`)"
               ></el-input>
               <div v-else class="show-value">
-                <span>{{ row.account }}</span>
+                <span>{{ row[yearMap[item]] }}</span>
                 <el-button
+                  @click="handleEditClick(row, `edit${item}`)"
                   class="icon"
                   icon="el-icon-edit"
-                  @click="row.edit = true"
                   type="text"
                 ></el-button>
               </div>
@@ -83,11 +94,11 @@
 
 <script>
 import {
-  getStaffList,
-  updateStaffStatus,
-  getDepartmentlists,
-  delDepartment,
-} from "@/api/set";
+  getStaff,
+  getGroup,
+  getPerformanceTargetsInfo,
+  updateStaffTarget,
+} from "@/api/crm";
 export default {
   name: "UserManage",
   data() {
@@ -96,44 +107,91 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-      searchData: {
-        keyword: "",
-      },
-      searchOptions: [
-        {
-          key: "keyword",
-          attrs: {
-            placeholder: "员工姓名",
-          },
-        },
-      ],
       treeData: [],
       treeParams: {
-        department_id: "",
+        group_id: "",
+      },
+      yearTargetInfo: {},
+      yearMap: {
+        1: "jan",
+        2: "feb",
+        3: "mar",
+        4: "apr",
+        5: "may",
+        6: "jun",
+        7: "jul",
+        8: "aug",
+        9: "sep",
+        10: "otc",
+        11: "nov",
+        12: "dec",
       },
     };
   },
-
   created() {
-    this.getDepartmentlists();
-    this.getStaffList();
+    this.getGroup();
+    this.getStaff();
+    this.getPerformanceTargetsInfo();
   },
   methods: {
+    async updateStaffTarget(params) {
+      const data = {
+        id: this.$route.query.id,
+        arrStaff: [params],
+      };
+      const res = await updateStaffTarget(data).catch(() => {});
+      this.getStaff();
+      if (res.code === 0) {
+        this.getGroup();
+        this.getPerformanceTargetsInfo();
+        this.$message.success(res.message);
+      }
+    },
+    handleEditClick(row, isEdit) {
+      row[isEdit] = true;
+    },
+    handleEditBlur(row, isEdit) {
+      row[isEdit] = false;
+      this.updateStaffTarget(row);
+    },
+    async getPerformanceTargetsInfo() {
+      const data = {
+        id: this.$route.query.id,
+      };
+      const res = await getPerformanceTargetsInfo(data);
+      if (res.code === 0) {
+        this.yearTargetInfo = res.data;
+      }
+    },
+    price(val) {
+      val = val ?? 0;
+      return val >= 10000
+        ? `￥${(val / 10000).toFixed(2)}万`
+        : `￥${(val * 1).toFixed(2)}`;
+    },
     tpl(node) {
       return (
         <span
           class={{
             "tree-node": true,
-            "tree-node--active": this.treeParams.department_id === node.id,
+            "tree-node--active": this.treeParams.group_id === node.id,
           }}
           onClick={() => this.onNodeClick(node)}
         >
-          {node.title}
+          <span> {node.title}</span>
+          {node.title !== "全部" && (
+            <span class="total-price">
+              {this.price(node.total_performance)}
+            </span>
+          )}
         </span>
       );
     },
-    async getDepartmentlists() {
-      const res = await getDepartmentlists();
+    async getGroup() {
+      const data = {
+        id: this.$route.query.id,
+      };
+      const res = await getGroup(data);
       if (res.code === 0) {
         this.setChildrenExpanded(res.data);
         this.treeData = [
@@ -155,34 +213,38 @@ export default {
       });
     },
     onNodeClick(data) {
-      const { id: department_id } = data;
-      this.treeParams = { department_id };
+      const { id: group_id } = data;
+      this.treeParams = { group_id };
       this.pageNum = 1;
-      this.getStaffList();
-    },
-    handleSearch(data) {
-      this.pageNum = 1;
-      this.searchData = {
-        ...data,
-      };
-      this.getStaffList();
+      this.getStaff();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getStaffList();
+      this.getStaff();
     },
-    async getStaffList() {
+    async getStaff() {
       const data = {
         page: this.pageNum,
-        ...this.searchData,
+        id: this.$route.query.id,
         ...this.treeParams,
       };
       this.listLoading = true;
-      const res = await getStaffList(data);
+      const res = await getStaff(data);
       this.listLoading = false;
       this.listData = res.data.list.map((item) => ({
         ...item,
-        edit: false,
+        edit1: false,
+        edit2: false,
+        edit3: false,
+        edit4: false,
+        edit5: false,
+        edit6: false,
+        edit7: false,
+        edit8: false,
+        edit9: false,
+        edit10: false,
+        edit11: false,
+        edit12: false,
       }));
       this.listTotal = res.data.total;
     },
@@ -202,7 +264,7 @@ export default {
     display: flex;
   }
   .tree-list {
-    min-width: 220px;
+    min-width: 250px;
     flex-shrink: 0;
     border: 1px solid #eee;
     margin-right: 20px;
@@ -213,6 +275,9 @@ export default {
       border-bottom: 1px solid #eee;
       padding: 10px;
       color: #666;
+    }
+    .tree-content {
+      padding-right: 10px;
     }
   }
   .table-list {
@@ -234,6 +299,12 @@ export default {
         }
       }
     }
+  }
+  /deep/.halo-tree li {
+    padding-right: 0;
+  }
+  .total-price {
+    float: right;
   }
 }
 </style>

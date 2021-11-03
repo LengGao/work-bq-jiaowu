@@ -15,15 +15,20 @@
       ref="formData"
     >
       <el-form-item label="目标年度" prop="title">
-        <el-select v-model="formData.title" placeholder="请选择">
+        <el-input
+          placeholder="请输入"
+          type="number"
+          v-model="formData.title"
+        ></el-input>
+        <!-- <el-select v-model="formData.title" filterable placeholder="请选择">
           <el-option
             v-for="item in yearOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item"
+            :label="item"
+            :value="item"
           >
           </el-option>
-        </el-select>
+        </el-select> -->
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -39,13 +44,17 @@
 </template>
 
 <script>
-import { updateClassType, createClassType } from "@/api/institution";
+import { createYearRecord, getYear, copyYearRecord } from "@/api/crm";
 export default {
-  name: "institutionDialog",
+  name: "addTarget",
   props: {
     value: {
       type: Boolean,
       default: false,
+    },
+    id: {
+      type: [String, Number],
+      default: "",
     },
   },
   data() {
@@ -55,7 +64,8 @@ export default {
         title: "",
       },
       rules: {
-        title: [{ required: true, message: "请选择", trigger: "blur" }],
+        // title: [{ required: true, message: "请选择", trigger: "blur" }],
+        title: [{ required: true, message: "请输入", trigger: "blur" }],
       },
       addLoading: false,
       yearOptions: [],
@@ -67,19 +77,26 @@ export default {
     },
   },
   methods: {
-    handleOpen() {},
-
+    handleOpen() {
+      this.getYear();
+    },
+    async getYear() {
+      const res = await getYear();
+      if (res.code === 0) {
+        this.yearOptions = res.data;
+      }
+    },
     async submit() {
       const data = {
         title: this.formData.title,
-        remark: this.formData.remark,
-        has_question: +this.formData.items.includes(1),
-        has_video: +this.formData.items.includes(2),
-        has_live: +this.formData.items.includes(3),
-        has_teach: +this.formData.items.includes(4),
       };
+      let api = createYearRecord;
+      if (this.id) {
+        data.copy_id = this.id;
+        api = copyYearRecord;
+      }
       this.addLoading = true;
-      const res = await createClassType(data).catch(() => {
+      const res = await api(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -101,7 +118,6 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
-      this.formData.items = [];
       this.$emit("input", false);
     },
     hanldeCancel() {

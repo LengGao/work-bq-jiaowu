@@ -3,6 +3,8 @@
     <div class="change-title">
       <h3>仅退款-张小北-系统集成项目管理师</h3>
       <span class="change-status" type="success">已通过（不可修改）</span>
+      <el-button type="primary" class="btn-edit">编辑移动</el-button>
+      <el-button>删除移动</el-button>
     </div>
     <el-steps :active="2" finish-status="success" simple style="margin: 20px 0">
       <el-step title="步骤 1"></el-step>
@@ -44,6 +46,9 @@ export default {
   .change-title {
     display: flex;
     align-items: center;
+    .btn-edit {
+      margin-left: auto;
+    }
     .change-status {
       margin-left: 20px;
       color: #999;

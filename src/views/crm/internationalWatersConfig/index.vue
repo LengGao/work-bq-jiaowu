@@ -1,6 +1,6 @@
 <template>
   <!-- 公海配置 -->
-  <div class="international-waters-config">
+  <div class="international-waters-config" v-loading="loading">
     <div class="head_remind">*公海主要目的是让企业的客户资源能循环利用。</div>
     <div class="container">
       <Title text="超过N天'未跟进'的客户，由系统定时划入公海"> </Title>
@@ -17,7 +17,12 @@
             prop="name"
           >
             <template slot-scope="{ row }">
-              <el-switch v-model="row.value1"> </el-switch>
+              <el-switch
+                v-model="row.status"
+                :active-value="1"
+                :inactive-value="0"
+              >
+              </el-switch>
             </template>
           </el-table-column>
           <el-table-column
@@ -32,7 +37,7 @@
                   class="input"
                   type="number"
                   placeholder="0"
-                  v-model="row.value2"
+                  v-model="row.day"
                 ></el-input>
                 天未跟进
               </span>
@@ -47,9 +52,14 @@
               <span>
                 系统会在每天
                 <el-time-picker
+                  format="HH:mm"
+                  value-format="HH:mm"
+                  :picker-options="{
+                    format: 'HH:mm',
+                  }"
                   style="width: 120px"
-                  v-model="row.value3"
-                  placeholder="00:00:00"
+                  v-model="row.plan_time"
+                  placeholder="00:00"
                 >
                 </el-time-picker>
                 将客户划入公海
@@ -68,7 +78,7 @@
                   class="input"
                   type="number"
                   placeholder="0"
-                  v-model="row.value4"
+                  v-model="row.remind_day"
                 ></el-input>
                 天提醒销售人员及时跟进
               </span>
@@ -92,7 +102,12 @@
             prop="name"
           >
             <template slot-scope="{ row }">
-              <el-switch v-model="row.value1"> </el-switch>
+              <el-switch
+                v-model="row.status"
+                :active-value="1"
+                :inactive-value="0"
+              >
+              </el-switch>
             </template>
           </el-table-column>
           <el-table-column
@@ -107,7 +122,7 @@
                   class="input"
                   type="number"
                   placeholder="0"
-                  v-model="row.value2"
+                  v-model="row.day"
                 ></el-input>
                 天未成交
               </span>
@@ -122,9 +137,14 @@
               <span>
                 系统会在每天
                 <el-time-picker
+                  format="HH:mm"
+                  value-format="HH:mm"
+                  :picker-options="{
+                    format: 'HH:mm',
+                  }"
                   style="width: 120px"
-                  v-model="row.value3"
-                  placeholder="00:00:00"
+                  v-model="row.plan_time"
+                  placeholder="00:00"
                 >
                 </el-time-picker>
                 将客户划入公海
@@ -143,7 +163,7 @@
                   class="input"
                   type="number"
                   placeholder="0"
-                  v-model="row.value4"
+                  v-model="row.remind_day"
                 ></el-input>
                 天提醒销售人员及时跟进
               </span>
@@ -153,53 +173,74 @@
       </div>
     </div>
     <div class="submit">
-      <el-button type="primary">保存设置</el-button>
+      <el-button type="primary" @click="setConfig" :loading="saveLoding"
+        >保存设置</el-button
+      >
     </div>
   </div>
 </template>
 
 <script>
 import {
-  getStaffList,
-  updateStaffStatus,
-  getDepartmentlists,
-  delDepartment,
-} from "@/api/set";
+  getInternationalWatersConfig,
+  setInternationalWatersConfig,
+} from "@/api/crm";
 export default {
-  name: "approveConfig",
+  name: "internationalWatersConfig",
   data() {
     return {
-      value: true,
-      followUpData: [
-        {
-          value1: "一级审批",
-          value2: "",
-          value3: "",
-          value4: "",
-        },
-      ],
-      dealData: [
-        {
-          value1: "一级审批",
-          value2: "",
-          value3: "",
-          value4: "",
-        },
-      ],
-      staffOptions: [],
+      loading: false,
+      saveLoding: false,
+      followUpData: [],
+      dealData: [],
     };
   },
 
   created() {
-    this.getStaffList();
+    this.getConfig();
   },
   methods: {
-    async getStaffList() {
+    getConfig() {
+      this.loading = true;
+      this.getInternationalWatersConfig("no_follow_up");
+      this.getInternationalWatersConfig("no_clinch_deal");
+    },
+    setConfig() {
+      this.saveLoding = true;
+      ["no_follow_up", "no_clinch_deal"].forEach((item) => {
+        this.setInternationalWatersConfig(item);
+      });
+    },
+    async setInternationalWatersConfig(title) {
+      const config =
+        title === "no_follow_up" ? this.followUpData[0] : this.dealData[0];
       const data = {
-        limit: 99999,
+        ...config,
+        title,
       };
-      const res = await getStaffList(data);
-      this.staffOptions = res.data.list;
+      const res = await setInternationalWatersConfig(data).catch(() => {
+        this.saveLoding = false;
+      });
+      if (res.code === 0 && title === "no_clinch_deal") {
+        this.saveLoding = false;
+        this.getConfig();
+        this.$message.success(res.message);
+      }
+    },
+    async getInternationalWatersConfig(title) {
+      const data = {
+        title,
+      };
+      const res = await getInternationalWatersConfig(data).catch(() => {
+        this.loading = false;
+      });
+      if (title === "no_follow_up") {
+        this.followUpData = [res.data.config];
+      }
+      if (title === "no_clinch_deal") {
+        this.dealData = [res.data.config];
+        this.loading = false;
+      }
     },
   },
 };

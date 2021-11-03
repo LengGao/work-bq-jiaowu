@@ -14,8 +14,10 @@
         <span class="value">￥1000.00 </span>
       </div>
       <div class="actions">
-        <el-button type="primary">配置回款计划</el-button>
-        <el-button type="primary">添加回款记录</el-button>
+        <el-button type="primary" @click="handleAddPlan"
+          >配置回款计划</el-button
+        >
+        <el-button type="primary" @click="handleAdd">添加回款记录</el-button>
       </div>
     </div>
 
@@ -191,17 +193,40 @@
         </el-table-column>
       </el-table>
     </div>
+    <AddCollectionRecord
+      v-model="dialogVisible"
+      :title="dialogTitle"
+      :id="currentId"
+      @on-success="getClassTypeList"
+    />
+    <AddCollectionPlan
+      v-model="planDialogVisible"
+      :title="planDialogTitle"
+      :id="currentId"
+      @on-success="getClassTypeList"
+    />
   </div>
 </template>
 
 <script>
 import { getClassTypeList } from "@/api/institution";
+import AddCollectionRecord from "./AddCollectionRecord.vue";
+import AddCollectionPlan from "./AddCollectionPlan.vue";
 export default {
-  name: "performanceTargets",
+  name: "CollectionRecord",
+  components: {
+    AddCollectionRecord,
+    AddCollectionPlan,
+  },
   data() {
     return {
       listData: [],
       listLoading: false,
+      currentId: "",
+      dialogTitle: "",
+      dialogVisible: false,
+      planDialogVisible: false,
+      planDialogTitle: "",
     };
   },
 
@@ -209,6 +234,21 @@ export default {
     this.getClassTypeList();
   },
   methods: {
+    handleAddPlan() {
+      this.currentId = "";
+      this.planDialogTitle = "配置回款计划";
+      this.planDialogVisible = true;
+    },
+    handleEdit(row) {
+      this.currentId = row;
+      this.dialogTitle = "编辑回款记录";
+      this.dialogVisible = true;
+    },
+    handleAdd() {
+      this.currentId = "";
+      this.dialogTitle = "添加回款记录";
+      this.dialogVisible = true;
+    },
     async getClassTypeList() {
       this.listLoading = true;
       const res = await getClassTypeList();

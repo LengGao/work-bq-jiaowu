@@ -874,6 +874,12 @@ export const asyncRouter = [
         component: () => import('@/views/crm/changeManage/detail.vue'),
         meta: { title: '异动详情' },
       },
+      {
+        path: 'changeEdit',
+        name: 'changeEdit',
+        component: () => import('@/views/crm/changeManage/edit.vue'),
+        meta: { title: '编辑异动' },
+      },
     ]
   },
   {

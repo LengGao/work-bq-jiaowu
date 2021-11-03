@@ -10,7 +10,9 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary" @click="handleAdd">添加年度目标</el-button>
+          <el-button type="primary" @click="openYearTargetDialog('')"
+            >添加年度目标</el-button
+          >
         </div>
       </div>
       <!--表格-->
@@ -49,6 +51,9 @@
             align="center"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <span> {{ price(row.target) }} </span>
+            </template>
           </el-table-column>
           <el-table-column
             label="是否启用"
@@ -63,7 +68,7 @@
                 inactive-color="#eaeefb"
                 :active-value="1"
                 :inactive-value="0"
-                @change="updateClassTypeStatus(row)"
+                @change="modifyYearStatus(row)"
               >
               </el-switch>
             </template>
@@ -76,7 +81,9 @@
           >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toSetTarget(row)">设置</el-button>
-              <el-button type="text">复制</el-button>
+              <el-button type="text" @click="openYearTargetDialog(row.id)"
+                >复制</el-button
+              >
               <el-button type="text" @click="deleteConfirm(row.id)"
                 >删除</el-button
               >
@@ -93,17 +100,20 @@
         </div>
       </div>
     </div>
-    <AddTarget v-model="dialogVisible" @on-success="getClassTypeList" />
+    <AddTarget
+      v-model="dialogVisible"
+      :id="currentId"
+      @on-success="getPerformanceTargetList"
+    />
   </div>
 </template>
 
 <script>
 import {
-  getClassTypeList,
-  deleteClassType,
-  updateClassTypeStatus,
-  updateClassTypeSort,
-} from "@/api/institution";
+  getPerformanceTargetList,
+  deletedYearRecord,
+  modifyYearStatus,
+} from "@/api/crm";
 import AddTarget from "./components/addTarget.vue";
 export default {
   name: "performanceTargets",
@@ -118,67 +128,64 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        search_box: "",
+        keyword: "",
       },
       searchOptions: [
         {
-          key: "search_box",
+          key: "keyword",
           attrs: {
             placeholder: "年度",
           },
         },
       ],
       dialogVisible: false,
+      currentId: "",
     };
   },
 
   created() {
-    this.getClassTypeList();
+    this.getPerformanceTargetList();
   },
   methods: {
-    async updateClassTypeSort({ id, sort }) {
-      const data = {
-        id,
-        sort,
-      };
-      const res = await updateClassTypeSort(data);
-      if (res.code === 0) {
-        this.$message.success(res.message);
-      }
-      this.getClassTypeList();
+    price(val) {
+      val = val ?? 0;
+      return val >= 10000
+        ? `￥${(val / 10000).toFixed(2)}万`
+        : `￥${(val * 1).toFixed(2)}`;
     },
-    async updateClassTypeStatus(row) {
+    async modifyYearStatus(row) {
       const data = {
         status: row.status,
         id: row.id,
       };
-      const res = await updateClassTypeStatus(data).catch(() => {
+      const res = await modifyYearStatus(data).catch(() => {
         row.status = row.status === 1 ? 0 : 1;
       });
       if (res.code === 0) {
         this.$message.success(res.message);
       }
     },
-    // 删除机构
+    // 删除年度目标
     deleteConfirm(id) {
       this.$confirm("确定要删除此年度吗?", { type: "warning" })
         .then(() => {
-          this.deleteClassType(id);
+          this.deletedYearRecord(id);
         })
         .catch(() => {});
     },
-    async deleteClassType(id) {
+    async deletedYearRecord(id) {
       const data = { id };
-      const res = await deleteClassType(data);
+      const res = await deletedYearRecord(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getClassTypeList();
+        this.getPerformanceTargetList();
       }
     },
     toSetTarget(row) {
-      this.$router.push({ name: "personalTarget" });
+      this.$router.push({ name: "personalTarget", query: { ...row } });
     },
-    handleAdd() {
+    openYearTargetDialog(id) {
+      this.currentId = id;
       this.dialogVisible = true;
     },
     handleSearch(data) {
@@ -186,24 +193,24 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.getClassTypeList();
+      this.getPerformanceTargetList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassTypeList();
+      this.getPerformanceTargetList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
-      this.getClassTypeList();
+      this.getPerformanceTargetList();
     },
-    async getClassTypeList() {
+    async getPerformanceTargetList() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassTypeList(data);
+      const res = await getPerformanceTargetList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
