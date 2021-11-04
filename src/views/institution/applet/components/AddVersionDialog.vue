@@ -23,7 +23,7 @@
         >
           <el-option
             v-for="item in versionOptions"
-            :label="item.template_id"
+            :label="item.user_version"
             :value="item.template_id"
             :key="item.template_id"
           ></el-option>

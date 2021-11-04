@@ -11,9 +11,22 @@
         />
         <div>
           <el-button type="primary" @click="handleAdd">上传新版本</el-button>
-          <el-button type="primary" @click="batchAuditCode">审核</el-button>
-          <el-button type="primary" @click="batchUndoCodeAudit">撤回</el-button>
-          <el-button type="primary" @click="batchPublishCode"
+          <el-button
+            type="primary"
+            :loading="reviewLoading"
+            @click="batchAuditCode"
+            >审核</el-button
+          >
+          <el-button
+            type="primary"
+            :loading="cancelLoading"
+            @click="batchUndoCodeAudit"
+            >撤回</el-button
+          >
+          <el-button
+            type="primary"
+            :loading="releaseLoading"
+            @click="batchPublishCode"
             >发布上线</el-button
           >
         </div>
@@ -154,6 +167,9 @@ export default {
   },
   data() {
     return {
+      reviewLoading: false,
+      cancelLoading: false,
+      releaseLoading: false,
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -177,7 +193,7 @@ export default {
           type: "select",
           options: [],
           optionValue: "template_id",
-          optionLabel: "template_id",
+          optionLabel: "user_version",
           attrs: {
             placeholder: "模板ID",
             clearable: true,
@@ -252,7 +268,9 @@ export default {
       const data = {
         org_id_arr: this.selectedIds,
       };
-      const res = await batchPublishCode(data);
+      this.releaseLoading = true;
+      const res = await batchPublishCode(data).catch(() => {});
+      this.releaseLoading = false;
       if (res.code === 0) {
         this.$alert(`<p>${res.message}</p>`, {
           dangerouslyUseHTMLString: true,
@@ -268,7 +286,9 @@ export default {
       const data = {
         org_id_arr: this.selectedIds,
       };
-      const res = await batchUndoCodeAudit(data);
+      this.cancelLoading = true;
+      const res = await batchUndoCodeAudit(data).catch(() => {});
+      this.cancelLoading = false;
       if (res.code === 0) {
         this.$alert(`<p>${res.message}</p>`, {
           dangerouslyUseHTMLString: true,
@@ -284,7 +304,9 @@ export default {
       const data = {
         org_id_arr: this.selectedIds,
       };
-      const res = await batchAuditCode(data);
+      this.reviewLoading = true;
+      const res = await batchAuditCode(data).catch(() => {});
+      this.reviewLoading = false;
       if (res.code === 0) {
         this.$alert(`<p>${res.message}</p>`, {
           dangerouslyUseHTMLString: true,
