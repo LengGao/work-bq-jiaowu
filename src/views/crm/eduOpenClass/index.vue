@@ -31,7 +31,6 @@
         >
           <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
-            v-if="checkHeader.includes('ID')"
             prop="order_id"
             label="ID"
             show-overflow-tooltip
@@ -43,7 +42,6 @@
             label="客户姓名"
             min-width="90"
             show-overflow-tooltip
-            v-if="checkHeader.includes('客户姓名')"
           >
             <template slot-scope="scope">
               <div class="link" @click="coursDetail(scope.row.uid)">
@@ -55,7 +53,6 @@
             prop="mobile"
             label="手机号码"
             min-width="130"
-            v-if="checkHeader.includes('手机号码')"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -65,7 +62,6 @@
           <el-table-column
             prop="from_institution_name"
             label="客户来源"
-            v-if="checkHeader.includes('客户来源')"
             min-width="130"
             show-overflow-tooltip
           >
@@ -74,7 +70,6 @@
             prop="staff_name"
             label="所属老师"
             min-width="100"
-            v-if="checkHeader.includes('所属老师')"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -82,7 +77,6 @@
             prop="project_name"
             label="客户属性"
             min-width="180"
-            v-if="checkHeader.includes('客户属性')"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -90,7 +84,6 @@
             prop="pay_money"
             label="成交状态"
             min-width="90"
-            v-if="checkHeader.includes('成交状态')"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -101,7 +94,6 @@
           <el-table-column
             prop="overdue_money"
             label="客户标签"
-            v-if="checkHeader.includes('客户标签')"
             min-width="90"
             show-overflow-tooltip
           >
@@ -111,7 +103,6 @@
           </el-table-column>
           <el-table-column
             prop="pay_type"
-            v-if="checkHeader.includes('最后跟进时间')"
             label="最后跟进时间"
             min-width="120"
             show-overflow-tooltip
@@ -120,38 +111,11 @@
           <el-table-column
             prop="pay_type"
             label="创建时间"
-            v-if="checkHeader.includes('创建时间')"
             min-width="120"
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column fixed="right" min-width="160">
-            <template slot="header" slot-scope="scope">
-              <div class="action-header">
-                <span>操作</span>
-                <el-popover
-                  popper-class="setting"
-                  placement="bottom"
-                  width="160"
-                  trigger="click"
-                >
-                  <el-checkbox-group v-model="checkHeader">
-                    <el-checkbox
-                      :label="item"
-                      v-for="(item, index) in tableHeader"
-                      :key="index"
-                    ></el-checkbox>
-                  </el-checkbox-group>
-                  <el-button
-                    slot="reference"
-                    class="icon-setting"
-                    icon="el-icon-setting"
-                    type="text"
-                    title="设置表头"
-                  ></el-button>
-                </el-popover>
-              </div>
-            </template>
+          <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
               <el-button type="text" @click="signUpVisible = true"
                 >报名</el-button
@@ -174,24 +138,23 @@
         </div>
       </div>
     </div>
-    <AddCustomeDialog v-model="dialogVisible" @on-success="getOrderList" />
-    <CustomeSignUp v-model="signUpVisible" @on-success="getOrderList" />
+    <AddStudent v-model="dialogVisible" @on-success="getOrderList" />
   </section>
 </template>
 
 <script>
-import AddCustomeDialog from "./components/AddCustomeDialog";
-import CustomeSignUp from "./components/CustomeSignUp";
+import AddStudent from "./components/AddStudent";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
+import { cloneOptions } from "@/utils";
+import { getInstitutionSelectData } from "@/api/sou";
 import { getAdminSelect } from "@/api/eda";
 import { getOrderList } from "@/api/fina";
 export default {
   name: "eduOrder",
   components: {
     PartiallyHidden,
-    AddCustomeDialog,
-    CustomeSignUp,
+    AddStudent,
   },
   data() {
     return {
@@ -199,30 +162,6 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-      tableHeader: [
-        "ID",
-        "客户姓名",
-        "手机号码",
-        "客户来源",
-        "所属老师",
-        "客户属性",
-        "成交状态",
-        "客户标签",
-        "最后跟进时间",
-        "创建时间",
-      ],
-      checkHeader: [
-        "ID",
-        "客户姓名",
-        "手机号码",
-        "客户来源",
-        "所属老师",
-        "客户属性",
-        "成交状态",
-        "客户标签",
-        "最后跟进时间",
-        "创建时间",
-      ],
       searchData: {
         keyword: "",
         project_id: "",
@@ -248,16 +187,13 @@ export default {
           },
         },
         {
-          key: "staff_id",
-          type: "select",
-          width: 140,
-          options: [],
-          optionValue: "staff_id",
-          optionLabel: "staff_name",
+          key: "from_org",
+          type: "cascader",
           attrs: {
-            placeholder: "客户来源",
+            placeholder: "推荐机构",
             clearable: true,
             filterable: true,
+            options: [],
           },
         },
         {
@@ -280,17 +216,21 @@ export default {
           options: [
             {
               value: 0,
-              label: "我的客户",
+              label: "招生客户",
             },
             {
               value: 1,
-              label: "共享客户",
+              label: "渠道客户",
+            },
+            {
+              value: 2,
+              label: "机构报名",
             },
           ],
           attrs: {
             filterable: true,
             clearable: true,
-            placeholder: "客户属性",
+            placeholder: "客户性质",
           },
         },
         {
@@ -300,43 +240,23 @@ export default {
           options: [
             {
               value: 0,
-              label: "未成交",
+              label: "未开课",
             },
             {
               value: 1,
-              label: "已成交",
+              label: "已开课",
             },
           ],
           attrs: {
             filterable: true,
             clearable: true,
-            placeholder: "成交状态",
-          },
-        },
-        {
-          key: "pay_status1",
-          type: "select",
-          options: [
-            {
-              value: 0,
-              label: "标签1",
-            },
-            {
-              value: 1,
-              label: "标签2",
-            },
-          ],
-          attrs: {
-            filterable: true,
-            clearable: true,
-            placeholder: "客户标签",
-            multiple: true,
+            placeholder: "开课状态",
           },
         },
         {
           key: "keyword",
           attrs: {
-            placeholder: "学生姓名/手机号码",
+            placeholder: "客户姓名/手机号码",
           },
         },
       ],
@@ -346,6 +266,7 @@ export default {
   },
   created() {
     this.getOrderList();
+    this.getInstitutionSelectData();
     this.getAdminSelect();
   },
   methods: {
@@ -361,12 +282,7 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: Array.isArray(data.category_id)
-          ? data.category_id.join(",")
-          : "",
-        project_id: Array.isArray(data.project_id)
-          ? data.project_id.join(",")
-          : "",
+        from_org: data.from_org ? data.from_org.pop() : "",
       };
       this.getOrderList(data);
     },
@@ -393,6 +309,19 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
+    },
+    // 获取机构
+    async getInstitutionSelectData() {
+      const data = { list: true };
+      const res = await getInstitutionSelectData(data);
+      if (res.code === 0) {
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          "institution_name",
+          "institution_id",
+          "children"
+        );
+      }
     },
     coursDetail(uid) {
       this.$router.push({

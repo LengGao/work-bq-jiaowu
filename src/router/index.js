@@ -821,6 +821,12 @@ export const asyncRouter = [
     name: 'CRM',
     children: [
       {
+        path: 'eduOpenClass',
+        name: 'eduOpenClass',
+        component: () => import('@/views/crm/eduOpenClass/index.vue'),
+        meta: { title: '教务开课' },
+      },
+      {
         path: 'crmCustomer',
         name: 'crmCustomer',
         component: () => import('@/views/crm/crmCustomer/index.vue'),
@@ -831,6 +837,12 @@ export const asyncRouter = [
         name: 'crmOrder',
         component: () => import('@/views/crm/crmOrder/index.vue'),
         meta: { title: '订单管理' },
+      },
+      {
+        path: 'crmOrderDetail',
+        name: 'crmOrderDetail',
+        component: () => import('@/views/crm/crmOrder/detail.vue'),
+        meta: { title: '订单详情' },
       },
       {
         path: 'performanceTargets',

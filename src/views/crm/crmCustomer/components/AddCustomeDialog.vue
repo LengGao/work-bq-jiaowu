@@ -111,7 +111,13 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >确 定</el-button
+        >保 存</el-button
+      >
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('formData', 1)"
+        >保存并报名</el-button
       >
     </span>
   </el-dialog>

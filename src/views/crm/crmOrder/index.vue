@@ -204,24 +204,7 @@
                   "
                   >复制签名链接</el-button
                 >
-                <el-button
-                  type="text"
-                  v-if="excludes(row, 0)"
-                  @click="openOrderActions(row, 1)"
-                  >收款</el-button
-                >
-                <!-- <el-button
-                  type="text"
-                  v-if="excludes(row, 4)"
-                  @click="openOrderActions(row, 2)"
-                  >退款</el-button
-                > -->
-                <el-button
-                  type="text"
-                  v-if="excludes(row, 5)"
-                  @click="openOrderActions(row, 3)"
-                  >作废</el-button
-                >
+                <el-button type="text">订单详情</el-button>
               </div>
             </template>
           </el-table-column>
@@ -235,14 +218,6 @@
         </div>
       </div>
     </div>
-    <ImportOrder v-model="importDialog" @on-success="getOrderList" />
-    <CollectionOrder
-      v-model="orderActionDialog"
-      :type="dialogType"
-      :orderInfo="dialogInfo"
-      @on-success="getOrderList"
-    />
-
     <!-- 生成合同弹窗 -->
     <el-dialog
       title="生成合同"
@@ -446,7 +421,6 @@ export default {
           },
         },
       ],
-      activeIndex: 0,
       panelData: {
         total: "",
         order_money: 0,
@@ -456,10 +430,6 @@ export default {
         reduction: 0,
       },
 
-      orderActionDialog: false,
-      importDialog: false,
-      dialogInfo: {},
-      dialogType: 1,
       dictOptions: [],
       dialogVisible: false,
       viewcondialog: false,
@@ -583,24 +553,6 @@ export default {
         this.searchOptions[2].options = res.data;
       }
     },
-    // 按钮操作
-    excludes(row, type) {
-      const auth = {
-        0: row.overdue_money > 0, // 收款
-        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
-        5: ![4, 5].includes(row.pay_status), // 作废
-      };
-      return auth[type];
-    },
-    openOrderActions(row, type) {
-      this.dialogType = type;
-      this.dialogInfo = row;
-      this.orderActionDialog = true;
-    },
-    openImport() {
-      this.importDialog = true;
-    },
-
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
