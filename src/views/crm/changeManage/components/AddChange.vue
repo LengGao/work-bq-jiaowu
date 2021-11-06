@@ -51,7 +51,7 @@
 <script>
 import { updateClassType, createClassType } from "@/api/institution";
 export default {
-  name: "institutionDialog",
+  name: "AddChange",
   props: {
     value: {
       type: Boolean,

@@ -224,6 +224,7 @@ export default {
       this.getClassTypeList();
     },
     handleSizeChange(size) {
+      this.pageNum = 1;
       this.pageSize = size;
       this.getClassTypeList();
     },

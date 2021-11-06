@@ -111,3 +111,43 @@ export function setInternationalWatersConfig(data) {
         data
     })
 }
+// 获取东培公海客户列表
+export function getDpAppletList(params) {
+    return request({
+        url: 'HighSeas/dpApplet',
+        method: 'get',
+        params
+    })
+}
+// 获取机构公海客户列表
+export function getOrgAppletList(params) {
+    return request({
+        url: 'HighSeas/orgApplet',
+        method: 'get',
+        params
+    })
+}
+// 获取crm公海客户列表
+export function getCrmList(params) {
+    return request({
+        url: 'HighSeas/getCrmList',
+        method: 'get',
+        params
+    })
+}
+// 获取东培公海客户列表-删除
+export function deleteDpApplet(data) {
+    return request({
+        url: 'HighSeas/deleteDpApplet',
+        method: 'post',
+        data
+    })
+}
+// 获取东培公海客户列表-领取
+export function receive(data) {
+    return request({
+        url: 'HighSeas/receive',
+        method: 'post',
+        data
+    })
+}

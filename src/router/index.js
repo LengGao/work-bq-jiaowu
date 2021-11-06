@@ -821,6 +821,12 @@ export const asyncRouter = [
     name: 'CRM',
     children: [
       {
+        path: 'crmCustomer',
+        name: 'crmCustomer',
+        component: () => import('@/views/crm/crmCustomer/index.vue'),
+        meta: { title: '客户管理' },
+      },
+      {
         path: 'crmOrder',
         name: 'crmOrder',
         component: () => import('@/views/crm/crmOrder/index.vue'),
@@ -843,6 +849,12 @@ export const asyncRouter = [
         name: 'approveConfig',
         component: () => import('@/views/crm/approveConfig/index.vue'),
         meta: { title: '审批设置' },
+      },
+      {
+        path: 'internationalWaters',
+        name: 'internationalWaters',
+        component: () => import('@/views/crm/internationalWaters/index.vue'),
+        meta: { title: '公海客户' },
       },
       {
         path: 'internationalWatersConfig',
