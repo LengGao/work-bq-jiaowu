@@ -151,3 +151,51 @@ export function receive(data) {
         data
     })
 }
+// 获取自定义字段列表
+export function getCustomfieldPage(params) {
+    return request({
+        url: '/Customfield/getPage',
+        method: 'get',
+        params
+    })
+}
+// 获取自定义字段列表-添加
+export function createCustomfield(data) {
+    return request({
+        url: '/Customfield/createCustom',
+        method: 'post',
+        data
+    })
+}
+// 获取自定义字段列表-修改
+export function modifyCustomfield(data) {
+    return request({
+        url: '/Customfield/modifyCustom',
+        method: 'post',
+        data
+    })
+}
+// 获取自定义字段列表-字段详情
+export function getCustomfieldInfo(params) {
+    return request({
+        url: '/Customfield/getCustomInfo',
+        method: 'get',
+        params
+    })
+}
+// 获取自定义字段列表-字段删除
+export function deletedCustomfield(data) {
+    return request({
+        url: '/Customfield/deletedCustom',
+        method: 'post',
+        data
+    })
+}
+// 获取自定义字段列表-修改字段信息
+export function modifyCustomfieldInfo(data) {
+    return request({
+        url: '/Customfield/modifyInfo',
+        method: 'post',
+        data
+    })
+}

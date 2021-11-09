@@ -2,7 +2,7 @@
   <div class="performance-targets">
     <div class="head_remind">*本模块按照最小粒度“人/月”设置销售业绩目标</div>
     <div class="container">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="handleTabChange">
         <el-tab-pane label="客户字段" name="1"></el-tab-pane>
         <el-tab-pane label="报名字段" name="2"></el-tab-pane>
       </el-tabs>
@@ -31,28 +31,58 @@
           :header-cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
-            label="ID"
+            label="序号"
             show-overflow-tooltip
             min-width="70"
             align="center"
-            prop="id"
+            prop="field_id"
           >
           </el-table-column>
           <el-table-column
-            label="年度"
+            label="字段名称"
             show-overflow-tooltip
             min-width="160"
             align="center"
-            prop="title"
+            prop="field_text"
           >
           </el-table-column>
           <el-table-column
             prop="has_question"
-            label="回款目标"
+            label="字段属性"
             min-width="80"
             align="center"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <span>{{ row.state ? "自定义字段" : "默认字段" }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="field_type"
+            label="字段类型"
+            min-width="80"
+            align="center"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ fieldTypeMap[row.field_type] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="has_question"
+            label="必填"
+            min-width="70"
+            align="center"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-checkbox
+                @change="modifyCustomfieldInfo('required', row)"
+                v-model="row.required"
+                :true-label="1"
+                :false-label="0"
+              ></el-checkbox>
+            </template>
           </el-table-column>
           <el-table-column
             label="是否启用"
@@ -62,12 +92,13 @@
           >
             <template slot-scope="{ row }">
               <el-switch
+                :disabled="!row.state"
                 v-model="row.status"
                 active-color="#2798ee"
                 inactive-color="#eaeefb"
                 :active-value="1"
                 :inactive-value="0"
-                @change="updateClassTypeStatus(row)"
+                @change="modifyCustomfieldInfo('status', row)"
               >
               </el-switch>
             </template>
@@ -76,11 +107,16 @@
             label="操作"
             fixed="right"
             align="center"
-            min-width="160"
+            min-width="120"
           >
             <template slot-scope="{ row }">
-              <el-button type="text">编辑</el-button>
-              <el-button type="text" @click="deleteConfirm(row.id)"
+              <el-button type="text" @click="handleEdit(row.field_id)"
+                >编辑</el-button
+              >
+              <el-button
+                v-if="row.state"
+                type="text"
+                @click="deleteConfirm(row.field_id)"
                 >删除</el-button
               >
             </template>
@@ -100,90 +136,86 @@
       v-model="dialogVisible"
       :title="dialogTitle"
       :id="currentId"
-      @on-success="getClassTypeList"
+      @on-success="getCustomfieldPage"
+      :output-type="activeName"
     />
   </div>
 </template>
 
 <script>
 import {
-  getClassTypeList,
-  deleteClassType,
-  updateClassTypeStatus,
-  updateClassTypeSort,
-} from "@/api/institution";
+  getCustomfieldPage,
+  deletedCustomfield,
+  modifyCustomfieldInfo,
+} from "@/api/crm";
 import AddField from "./components/addField.vue";
 export default {
-  name: "performanceTargets",
+  name: "fieldConfig",
   components: {
     AddField,
   },
   data() {
     return {
-      activeName: "1",
+      activeName: "1", //1：客户字段 2：订单字段
       listData: [],
       listLoading: false,
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        search_box: "",
+        keyword: "",
       },
       searchOptions: [
         {
-          key: "search_box",
+          key: "keyword",
           attrs: {
-            placeholder: "字段名称",
+            placeholder: "字段名称/字段内容",
           },
         },
       ],
       dialogVisible: false,
       dialogTitle: "",
       currentId: "",
+      fieldTypeMap: {
+        text: "文本",
+        select: "单选",
+        multi_select: "多选",
+        date: "日期",
+      },
     };
   },
 
   created() {
-    this.getClassTypeList();
+    this.getCustomfieldPage();
   },
   methods: {
-    async updateClassTypeSort({ id, sort }) {
+    async modifyCustomfieldInfo(keyword, row) {
       const data = {
-        id,
-        sort,
+        keyword,
+        status: row[keyword],
+        field_id: row.field_id,
       };
-      const res = await updateClassTypeSort(data);
-      if (res.code === 0) {
-        this.$message.success(res.message);
-      }
-      this.getClassTypeList();
-    },
-    async updateClassTypeStatus(row) {
-      const data = {
-        status: row.status,
-        id: row.id,
-      };
-      const res = await updateClassTypeStatus(data).catch(() => {
-        row.status = row.status === 1 ? 0 : 1;
+      const res = await modifyCustomfieldInfo(data).catch(() => {
+        row[keyword] = row[keyword] === 1 ? 0 : 1;
       });
       if (res.code === 0) {
         this.$message.success(res.message);
       }
     },
     // 删除机构
-    deleteConfirm(id) {
-      this.$confirm("确定要删除此年度吗?", { type: "warning" })
+    deleteConfirm(field_id) {
+      this.$confirm("确定要删除此字段吗?", { type: "warning" })
         .then(() => {
-          this.deleteClassType(id);
+          this.deletedCustomfield(field_id);
         })
         .catch(() => {});
     },
-    async deleteClassType(id) {
-      const data = { id };
-      const res = await deleteClassType(data);
+    async deletedCustomfield(field_id) {
+      const data = { field_id };
+      const res = await deletedCustomfield(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getClassTypeList();
+        this.getCustomfieldPage();
       }
     },
     handleEdit(row) {
@@ -196,29 +228,34 @@ export default {
       this.dialogTitle = "添加字段";
       this.dialogVisible = true;
     },
+    handleTabChange() {
+      this.pageNum = 1;
+      this.getCustomfieldPage();
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
       };
-      this.getClassTypeList();
+      this.getCustomfieldPage();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getClassTypeList();
+      this.getCustomfieldPage();
     },
     handleSizeChange(size) {
       this.pageSize = size;
-      this.getClassTypeList();
+      this.getCustomfieldPage();
     },
-    async getClassTypeList() {
+    async getCustomfieldPage() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        output_type: this.activeName,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getClassTypeList(data);
+      const res = await getCustomfieldPage(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
