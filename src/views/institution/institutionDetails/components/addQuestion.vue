@@ -70,7 +70,7 @@
             </div>
             </div>
             <div class="table-bottom">
-                <el-button @click="handleColse">取 消</el-button>
+                <el-button @click="handleColse">取 消 </el-button>
                 <el-button type="primary" :loading="submitLoading" @click="assignOrgQuestionBank">确定添加</el-button>
             </div>
         </el-dialog>
