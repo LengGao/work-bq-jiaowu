@@ -68,7 +68,7 @@
           <el-table-column
             prop="classroom_name"
             label="开通小程序"
-            min-width="120"
+            min-width="100"
             align="center"
             show-overflow-tooltip
           >
@@ -87,7 +87,7 @@
           <el-table-column
             prop="first_time"
             label="开通H5"
-            min-width="120"
+            min-width="100"
             align="center"
             show-overflow-tooltip
           >
@@ -104,9 +104,9 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="配置小程序"
+            label="授权小程序"
             show-overflow-tooltip
-            min-width="80"
+            min-width="100"
             align="center"
             prop="institution_id"
           >
@@ -119,9 +119,9 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="配置H5"
+            label="授权公众号"
             show-overflow-tooltip
-            min-width="80"
+            min-width="100"
             align="center"
             prop="institution_id"
           >
