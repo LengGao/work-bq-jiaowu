@@ -34,7 +34,7 @@
       :show-timeout="200"
       :default-active="defaultActive"
       :collapse="isCollapse"
-      background-color="#0856a5"
+      background-color="#445b8a"
       text-color="#fff"
       :unique-opened="true"
       :collapse-transition="true"
