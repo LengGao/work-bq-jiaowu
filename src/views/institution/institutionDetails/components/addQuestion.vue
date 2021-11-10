@@ -1,24 +1,14 @@
 <template>
-  <section>
-    <!-- 添加题库弹窗 -->
-    <el-dialog
-      title="添加题库"
-      :visible.sync="visible"
-      :close-on-click-modal="false"
-      width="950px"
-      @open="handleOpen"
-      @closed="handleColse"
-    >
-      <div class="container-table">
-        <div class="table-left">
-          <div class="tab-search">
-            <SearchList
-              :options="searchLeftOptions"
-              :data="searchLeftData"
-              @on-search="handleLeftSearch"
-            />
-          </div>
-          <el-table
+    <section>
+        <!-- 添加题库 -->
+        <el-dialog title="添加题库" :visible.sync="visible" :close-on-click-modal="false" width="950px" @open="handleOpen"
+            @closed="handleColse">
+            <div class="container-table">
+            <div class="table-left">
+                <div class="tab-search">
+                <SearchList :options="searchLeftOptions" :data="searchLeftData" @on-search="handleLeftSearch" />
+                </div>
+                <el-table
             ref="multipleTable"
             :data="listLeftData"
             style="width: 100%"
