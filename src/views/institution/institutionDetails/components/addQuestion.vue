@@ -59,14 +59,14 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="table_bottom">
+          <!-- <div class="table_bottom">
             <page
               :data="listLeftTotal"
               :curpage="pageLeftNum"
               @pageChange="handleLeftPageChange"
               @pageSizeChange="handleLeftSizeChange"
             />
-          </div>
+          </div> -->
             </div>
             </div>
             <div class="table-bottom">
