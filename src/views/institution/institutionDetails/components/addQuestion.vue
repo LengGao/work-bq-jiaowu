@@ -1,6 +1,6 @@
 <template>
     <section>
-        <!-- 添加题库弹窗 -->
+        <!-- 添加题库 -->
         <el-dialog title="添加题库" :visible.sync="visible" :close-on-click-modal="false" width="950px" @open="handleOpen"
             @closed="handleColse">
             <div class="container-table">
