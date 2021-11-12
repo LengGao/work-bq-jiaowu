@@ -262,7 +262,7 @@ export default {
           if (!["group_ids", "password"].includes(k)) {
             this.formData[k] = res.data[k] ?? "";
           }
-          this.formData.group_ids = res.data.arr_group;
+          this.formData.group_ids = res.data.arr_group || [];
         }
       }
     },

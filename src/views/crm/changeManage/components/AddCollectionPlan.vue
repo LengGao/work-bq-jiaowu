@@ -6,6 +6,7 @@
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
+    append-to-body
   >
     <el-form
       class="table-form"
@@ -39,13 +40,14 @@
               :rules="[
                 { required: true, message: `请选择`, trigger: 'change' },
               ]"
-              :prop="`tableData[${index}].date`"
+              :prop="`tableData[${index}].day`"
             >
               <el-date-picker
                 class="input"
                 type="date"
                 placeholder="选择日期"
-                v-model="row.date"
+                v-model="row.day"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </template>
@@ -69,7 +71,7 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="备注信息"
           align="center"
           min-width="200"
@@ -80,7 +82,7 @@
               <el-input v-model="row.remark" placeholder="请输入" />
             </el-form-item>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           label="操作"
           fixed="right"
@@ -104,7 +106,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="tips">
+      <!-- <div class="tips">
         <div class="tips-item tips-type">
           <span>回款提醒：</span>
           <el-select
@@ -134,7 +136,7 @@
           <span>总回款占比：</span>
           <span>100%</span>
         </div>
-      </div>
+      </div> -->
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
@@ -149,7 +151,7 @@
 </template>
 
 <script>
-import { updateClassType, createClassType } from "@/api/institution";
+import { updateClassType, createOrderPayPlan } from "@/api/crm";
 export default {
   name: "institutionDialog",
   props: {
@@ -173,9 +175,8 @@ export default {
         pay_type: "",
         tableData: [
           {
-            date: "",
+            day: "",
             money: "",
-            remark: "",
           },
         ],
       },
@@ -216,13 +217,12 @@ export default {
     },
     async submit() {
       const data = {
-        title: this.formData.title,
-        remark: this.formData.remark,
+        data: JSON.stringify(this.formData.tableData),
       };
       if (this.id) {
         data.id = this.id;
       }
-      const api = this.id ? updateClassType : createClassType;
+      const api = this.id ? updateClassType : createOrderPayPlan;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
@@ -231,7 +231,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.visible = false;
-        this.$emit("on-success");
+        this.$emit("on-success", res.data);
       }
     },
     submitForm(formName) {

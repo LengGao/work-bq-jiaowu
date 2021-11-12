@@ -174,8 +174,15 @@
         </div>
       </div>
     </div>
-    <AddCustomeDialog v-model="dialogVisible" @on-success="getOrderList" />
-    <CustomeSignUp v-model="signUpVisible" @on-success="getOrderList" />
+    <AddCustomeDialog
+      v-model="dialogVisible"
+      @on-success="onAddCustomeSuccess"
+    />
+    <CustomeSignUp
+      v-model="signUpVisible"
+      :user-info="checkedUser"
+      @on-success="getOrderList"
+    />
   </section>
 </template>
 
@@ -342,6 +349,7 @@ export default {
       ],
       dialogVisible: false,
       signUpVisible: false,
+      checkedUser: {},
     };
   },
   created() {
@@ -349,6 +357,13 @@ export default {
     this.getAdminSelect();
   },
   methods: {
+    onAddCustomeSuccess(isSignUp, userInfo) {
+      if (isSignUp) {
+        this.checkedUser = userInfo;
+        this.signUpVisible = true;
+      }
+      this.getOrderList();
+    },
     // 获取所属老师
     async getAdminSelect() {
       const data = { list: true };

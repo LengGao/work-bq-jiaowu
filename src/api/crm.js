@@ -199,3 +199,35 @@ export function modifyCustomfieldInfo(data) {
         data
     })
 }
+// crm添加客户
+export function createCrmCustomer(data) {
+    return request({
+        url: 'CrmCustomer/create',
+        method: 'post',
+        data
+    })
+}
+// crm报名 
+export function createCrmOrder(data) {
+    return request({
+        url: 'CrmOrder/create',
+        method: 'post',
+        data
+    })
+}
+// crm添加客户-获取标签
+export function getCrmTags(params) {
+    return request({
+        url: 'CrmTags/index',
+        method: 'get',
+        params
+    })
+}
+// crm创建回款计划
+export function createOrderPayPlan(data) {
+    return request({
+        url: 'OrderPayPlan/create',
+        method: 'post',
+        data
+    })
+}

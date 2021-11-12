@@ -22,50 +22,51 @@
         />
       </el-form-item>
 
-      <el-form-item label="手机号码" prop="account">
+      <el-form-item label="手机号码" prop="mobile">
         <el-input
           class="input"
           type="number"
-          v-model="formData.account"
+          v-model="formData.mobile"
           placeholder="请输入手机号码"
         />
       </el-form-item>
-      <el-form-item label="客户来源" prop="title">
-        <el-select v-model="formData.title" placeholder="请选择">
-          <el-option
-            v-for="item in fromOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="客户性别" prop="resource">
-        <el-radio-group v-model="formData.resource">
-          <el-radio label="1">男</el-radio>
-          <el-radio label="2">女</el-radio>
+
+      <el-form-item label="客户性别" prop="sex">
+        <el-radio-group class="input" v-model="formData.sex">
+          <el-radio :label="1">男</el-radio>
+          <el-radio :label="2">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="客户地区" prop="account">
-        <el-input
-          class="input"
-          v-model="formData.account"
-          placeholder="所属省/市/区"
-        />
+      <el-form-item label="客户地区">
+        <el-cascader
+          v-model="formData.address"
+          placeholder="请选地区"
+          filterable
+          clearable
+          size="large"
+          :options="regionData"
+          @change="handleAddressChange"
+        >
+        </el-cascader>
       </el-form-item>
-      <el-form-item label="文化程度" prop="title">
-        <el-select v-model="formData.title" placeholder="请选择文化程度">
+      <el-form-item label="文化程度" prop="education">
+        <el-select
+          v-model="formData.education"
+          filterable
+          clearable
+          placeholder="请选择文化程度"
+        >
           <el-option
             v-for="item in eduOptions"
             :key="item.value"
             :label="item.label"
-            :value="item.value"
+            :value="item.label"
           >
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="客户标签" prop="account" class="block">
+
+      <el-form-item label="客户标签" prop="tags" class="block">
         <el-tag
           class="customer-tag"
           :type="item.checked ? '' : 'info'"
@@ -73,10 +74,10 @@
           :key="index"
           @click="handleTagClick(item)"
           >{{ item.title }}
-          <i
+          <!-- <i
             class="el-icon-circle-close icon-del"
             @click.stop="delConfirm(index)"
-          ></i>
+          ></i> -->
         </el-tag>
         <el-input
           class="tag-input"
@@ -96,11 +97,11 @@
           >新建标签</el-button
         >
       </el-form-item>
-      <el-form-item label="备注信息" prop="account" class="block">
+      <el-form-item label="备注信息" prop="tips" class="block">
         <el-input
           class="remark"
           type="textarea"
-          v-model="formData.account"
+          v-model="formData.tips"
           placeholder="请输入内容"
         />
       </el-form-item>
@@ -116,7 +117,7 @@
       <el-button
         type="primary"
         :loading="addLoading"
-        @click="submitForm('formData', 1)"
+        @click="submitForm('formData', true)"
         >保存并报名</el-button
       >
     </span>
@@ -124,7 +125,8 @@
 </template>
 
 <script>
-import { createClassType } from "@/api/institution";
+import { regionData } from "element-china-area-data";
+import { createCrmCustomer, getCrmTags } from "@/api/crm";
 export default {
   name: "AddCustomeDialog",
   props: {
@@ -135,30 +137,71 @@ export default {
   },
   data() {
     return {
+      regionData,
       visible: this.value,
       formData: {
-        title: "",
+        name: "",
+        mobile: "",
+        sex: 1,
+        education: "",
+        tags: "",
+        tips: "",
+        from: "",
+        province: "",
+        city: "",
+        district: "",
+        address: [],
       },
       rules: {
-        title: [{ required: true, message: "请选择", trigger: "blur" }],
+        name: [{ required: true, message: "请输入", trigger: "blur" }],
+        mobile: [
+          { required: true, message: "请输入", trigger: "blur" },
+          {
+            validator: function (rule, value, callback) {
+              if (/^1\d{10}$/.test(value) == false) {
+                callback(new Error("请输入正确的手机号"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "change",
+          },
+        ],
+        // from: [{ required: true, message: "请选择", trigger: "change" }],
       },
       addLoading: false,
       fromOptions: [],
-      eduOptions: [],
-      tags: [
+      eduOptions: [
         {
-          title: "标签1",
-          checked: false,
+          value: 1,
+          label: "初中及以下",
         },
         {
-          title: "标签2",
-          checked: false,
+          value: 2,
+          label: "中专/中技",
         },
         {
-          title: "标签3",
-          checked: false,
+          value: 3,
+          label: "高中",
+        },
+        {
+          value: 4,
+          label: "高中",
+        },
+        {
+          value: 5,
+          label: "大专",
+        },
+        {
+          value: 6,
+          label: "本科",
+        },
+        {
+          value: 7,
+          label: "研究生及以上",
         },
       ],
+      tags: [],
       inputVisible: false,
       tagName: "",
     };
@@ -169,7 +212,34 @@ export default {
     },
   },
   methods: {
-    handleOpen() {},
+    handleOpen() {
+      this.getCrmTags();
+    },
+    async getCrmTags() {
+      const data = {
+        type: 1,
+      };
+      const res = await getCrmTags(data);
+      if (res.code === 0) {
+        this.tags = res.data.tags.map((item) => ({
+          title: item,
+          checked: false,
+        }));
+      }
+    },
+
+    handleAddressChange(value) {
+      console.log(value); // ["110000", "110100", "110101"]
+      //CodeToText是个大对象，属性是区域码，属性值是汉字 用法例如：CodeToText['110000']输出北京市
+      // console.log(
+      //   CodeToText[value[0]],
+      //   CodeToText[value[1]],
+      //   CodeToText[value[2]]
+      // ) //北京市 市辖区 东城区
+      this.formData.province = value[0];
+      this.formData.city = value[1];
+      this.formData.district = value[2];
+    },
     //删除
     delConfirm(index) {
       this.$confirm("确定要删除此标签吗?", "提示", {
@@ -188,7 +258,7 @@ export default {
       if (title) {
         this.tags.push({
           title,
-          checked: false,
+          checked: true,
         });
       }
       this.inputVisible = false;
@@ -197,26 +267,29 @@ export default {
     handleTagClick(row) {
       row.checked = !row.checked;
     },
-    async submit() {
-      const data = {
-        title: this.formData.title,
-        remark: this.formData.remark,
-      };
+    async submit(isSignUp) {
+      const { address, ...data } = this.formData;
       this.addLoading = true;
-      const res = await createClassType(data).catch(() => {
+      const res = await createCrmCustomer({
+        ...data,
+        tags: this.tags
+          .filter((item) => item.checked)
+          .map(({ title }) => title)
+          .join(","),
+      }).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
         this.visible = false;
-        this.$emit("on-success");
+        this.$emit("on-success", isSignUp, res.data);
       }
     },
-    submitForm(formName) {
+    submitForm(formName, isSignUp) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.submit(isSignUp);
         }
       });
     },
@@ -225,7 +298,8 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
-      this.formData.items = [];
+      this.formData.address = [];
+      this.formData.sex = 1;
       this.$emit("input", false);
     },
     hanldeCancel() {
