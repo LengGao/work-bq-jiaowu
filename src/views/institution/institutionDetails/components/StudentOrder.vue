@@ -240,6 +240,17 @@ export default {
         },
       });
     },
+    orderDetail(row){
+      this.$router.push({
+        name:"orderdetail",
+        query:{
+          order_id:row.order_id
+        }
+      })
+    },
+    orderDetail(name, query){
+      
+    }
 
   },
 };

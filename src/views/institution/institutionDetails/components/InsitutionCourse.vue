@@ -125,30 +125,26 @@
 </template>
 
 <script>
-import {
-  courseCateSelectTree,
-  getCourseList,
-  deleteOrgCourse,
-  assignOrgCourse,
-} from "@/api/institution";
-import AddCurriculum from "./addCurriculum";
-export default {
-  name: "BasicInfo",
-  components: {
-    AddCurriculum,
-  },
-  data() {
-    return {
-      searchData: {
-        search_box: "",
-      },
-      searchOptions: [
-        {
-          key: "search_box",
-          attrs: {
-            placeholder: "课程名称",
-          },
+  import { updateStudentBasicInfo } from "@/api/eda";
+  import { courseCateSelectTree, getCourseList, deleteOrgCourse } from "@/api/institution";
+  import AddCurriculum from "./addCurriculum";
+  export default {
+    name: "InsitutionCourse",
+    components: {
+      AddCurriculum,
+    },
+    data() {
+      return {
+        searchData: {
+          search_box: "",
         },
+        searchOptions: [
+          {
+            key: "search_box",
+            attrs: {
+              placeholder: "课程名称",
+            },
+          },
       ],
       listData: [],
       listLoading: false,
