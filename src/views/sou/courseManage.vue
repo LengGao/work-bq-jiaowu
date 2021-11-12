@@ -148,6 +148,37 @@
           >
           </el-table-column>
           <el-table-column
+            prop="user_count"
+            label="是否为监管课程"
+            align="center"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.is_regulatory ? "是" : "否" }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="监管校验"
+            align="center"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                v-if="row.is_regulatory"
+                v-model="row.regulatory_detect_status"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="0"
+                @change="updateForCourseJgDetect(row)"
+              >
+              </el-switch>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             label="是否上架"
             align="center"
             min-width="100"
@@ -215,6 +246,7 @@ import {
   getCateList,
   bashPublish,
   deleteCourses,
+  updateForCourseJgDetect,
 } from "@/api/sou";
 export default {
   course_id: "",
@@ -272,6 +304,19 @@ export default {
   mounted() {},
 
   methods: {
+    // 监管校验开关
+    async updateForCourseJgDetect(row) {
+      const data = {
+        regulatory_detect_status: row.regulatory_detect_status,
+        course_id: row.course_id,
+      };
+      const res = await updateForCourseJgDetect(data).catch(() => {
+        row.regulatory_detect_status = row.regulatory_detect_status ? 0 : 1;
+      });
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
     toCourseStudent(row) {
       this.$router.push({
         name: "studentList",

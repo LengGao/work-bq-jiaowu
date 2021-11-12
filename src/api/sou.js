@@ -1392,3 +1392,11 @@ export function getProjectStatisticsList(params) {
     params,
   })
 }
+// 监管校验开关
+export function updateForCourseJgDetect(data) {
+  return request({
+    url: '/course/updateForCourseJgDetect',
+    method: 'post',
+    data,
+  })
+}
