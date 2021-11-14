@@ -22,22 +22,13 @@
         <li class="panel-item">
           <span>回款金额</span>
           <div class="time_num">
-            <span
-              >￥{{
-                (
-                  panelData.order_money -
-                    panelData.reduction -
-                    panelData.overdue_money -
-                    panelData.refund_money || 0
-                ).toFixed(2)
-              }}</span
-            >
+            <span>￥{{ panelData.pay_money || 0 }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>未回款金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.pay_money || 0 }}</span>
+            <span>￥{{ panelData.overdue_money || 0 }}</span>
           </div>
         </li>
       </ul>
@@ -63,14 +54,21 @@
             min-width="190"
           >
             <template slot-scope="scope">
-              <div class="link" @click="orderDetail(scope.row)">
+              <div class="link" @click="toCrmOrderDetail(scope.row.order_id)">
                 {{ scope.row.order_no }}
               </div>
             </template>
           </el-table-column>
           <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="140"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="surname"
-            label="学员姓名"
+            label="客户姓名"
             min-width="90"
             show-overflow-tooltip
           >
@@ -81,50 +79,31 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="mobile"
-            label="手机号码"
-            min-width="130"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <PartiallyHidden :value="row.mobile" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="from_institution_name"
-            label="推荐机构"
+            prop="project_name"
+            label="项目名称"
             min-width="130"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="staff_name"
-            label="所属老师"
+            label="业绩归属"
             min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="project_name"
-            label="项目名称"
-            min-width="180"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
             prop="order_money"
-            label="应收金额"
+            label="订单总金额"
             min-width="90"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              ￥{{ (row.order_money - row.reduction).toFixed(2) }}
-            </template>
+            <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
           </el-table-column>
 
           <el-table-column
             prop="pay_money"
-            label="实收金额"
+            label="已回款金额"
             min-width="90"
             show-overflow-tooltip
           >
@@ -134,25 +113,20 @@
           </el-table-column>
 
           <el-table-column
-            prop="overdue_money"
-            label="欠交金额"
-            min-width="90"
+            prop="pay_progress"
+            label="回款进度"
+            min-width="140"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span style="color: #f76c6c">￥{{ row.overdue_money }}</span>
+              <el-progress
+                :percentage="+(row.pay_progress || '').split('%')[0] || 0"
+              ></el-progress>
             </template>
           </el-table-column>
           <el-table-column
-            prop="pay_type"
-            label="支付方式"
-            min-width="120"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
             prop="pay_status"
-            label="订单状态"
+            label="支付状态"
             min-width="100"
             show-overflow-tooltip
           >
@@ -160,6 +134,22 @@
               <el-tag size="small" :type="row.pay_status | orderTagType">{{
                 row.pay_status | orderStatus
               }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="verify_status"
+            label="审批状态"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-tag
+                v-if="row.order_id"
+                size="small"
+                :type="statusMap[row.contract_status || 0].type"
+              >
+                {{ statusMap[row.contract_status || 0].text }}
+              </el-tag>
             </template>
           </el-table-column>
           <el-table-column
@@ -204,7 +194,9 @@
                   "
                   >复制签名链接</el-button
                 >
-                <el-button type="text">订单详情</el-button>
+                <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
+                  >订单详情</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -214,6 +206,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -288,10 +281,9 @@
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts, toDay } from "@/utils/date";
-import { getAdminSelect, getproject } from "@/api/eda";
-import { getCateList } from "@/api/sou";
-import { getOrderList } from "@/api/fina";
-import { cloneOptions } from "@/utils/index";
+import { getproject } from "@/api/eda";
+import { getStaffList } from "@/api/set";
+import { getCrmOrderList } from "@/api/crm";
 import { templatelist } from "@/api/system";
 import ImportOrder from "@/views/fina/components/ImportOrder";
 import CollectionOrder from "@/views/fina/components/CollectionOrder";
@@ -308,13 +300,13 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         date: [toDay(), toDay()],
         keyword: "",
         project_id: "",
-        category_id: "",
-        staff_id: "",
+        union_staff_id: "",
         pay_status: "",
       },
       searchOptions: [
@@ -336,19 +328,23 @@ export default {
         },
 
         {
-          key: "category_id",
-          type: "cascader",
-          width: 240,
-          attrs: {
-            placeholder: "所属分类（多选）",
-            clearable: true,
-            props: {
-              multiple: true,
-              checkStrictly: true,
+          key: "type",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              label: "职称类",
+              value: 0,
             },
-            "collapse-tags": true,
+            {
+              label: "学历类",
+              value: 1,
+            },
+          ],
+          attrs: {
+            placeholder: "所属分类",
+            clearable: true,
             filterable: true,
-            options: [],
           },
         },
         {
@@ -367,7 +363,7 @@ export default {
           },
         },
         {
-          key: "staff_id",
+          key: "union_staff_id",
           type: "select",
           width: 120,
           options: [],
@@ -412,6 +408,33 @@ export default {
           attrs: {
             clearable: true,
             placeholder: "订单状态",
+          },
+        },
+        {
+          key: "verify_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "已通过",
+            },
+            {
+              value: 1,
+              label: "待审批",
+            },
+            {
+              value: 2,
+              label: "已驳回",
+            },
+            {
+              value: 3,
+              label: "已撤销",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "审核状态",
           },
         },
         {
@@ -462,12 +485,19 @@ export default {
     };
   },
   created() {
-    this.getOrderList();
-    this.getCateList();
-    this.getAdminSelect();
+    this.getCrmOrderList();
+    this.getStaffList();
     this.getproject();
   },
   methods: {
+    toCrmOrderDetail(id) {
+      this.$router.push({
+        name: "crmOrderDetail",
+        query: {
+          id,
+        },
+      });
+    },
     // 复制
     handleCopy(val) {
       const input = document.createElement("input");
@@ -500,7 +530,7 @@ export default {
         } else {
           this.$message.success(res.message);
           this.dialogVisible = false;
-          this.getOrderList();
+          this.getCrmOrderList();
         }
       }
     },
@@ -523,29 +553,14 @@ export default {
         console.log(this.dictOptions);
       }
     },
-
-    // 获取所属分类
-    async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
-      if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
-          res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
-      }
+    // 业绩归属
+    async getStaffList() {
+      const data = {
+        limit: 99999,
+      };
+      const res = await getStaffList(data);
+      this.searchOptions[3].options = res.data.list;
     },
-    // 获取所属老师
-    async getAdminSelect() {
-      const data = { list: true };
-      const res = await getAdminSelect(data);
-      if (res.code === 0) {
-        this.searchOptions[3].options = res.data;
-      }
-    },
-
     // 获取项目下拉
     async getproject() {
       const res = await getproject();
@@ -557,29 +572,32 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: Array.isArray(data.category_id)
-          ? data.category_id.join(",")
-          : "",
-        project_id: Array.isArray(data.project_id)
-          ? data.project_id.join(",")
-          : "",
       };
-      this.getOrderList(data);
+      this.getCrmOrderList(data);
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getCrmOrderList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getOrderList();
+      this.getCrmOrderList();
     },
-    async getOrderList() {
+    async getCrmOrderList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
           : "",
+        project_id: Array.isArray(this.searchData.project_id)
+          ? this.searchData.project_id.join(",")
+          : "",
       };
       this.listLoading = true;
-      const res = await getOrderList(data);
+      const res = await getCrmOrderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

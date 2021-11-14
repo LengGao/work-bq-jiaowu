@@ -231,3 +231,19 @@ export function createOrderPayPlan(data) {
         data
     })
 }
+// crm订单列表
+export function getCrmOrderList(data) {
+    return request({
+        url: 'CrmOrder/index',
+        method: 'post',
+        data
+    })
+}
+// crm订单详情
+export function getCrmOrderDetail(params) {
+    return request({
+        url: 'CrmOrder/detail',
+        method: 'get',
+        params
+    })
+}

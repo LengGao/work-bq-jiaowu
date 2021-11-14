@@ -3,15 +3,15 @@
     <div class="header">
       <div>
         <span class="title">订单总金额：</span>
-        <span class="value">￥1000.00 </span>
+        <span class="value">￥{{ data.order_money }} </span>
       </div>
       <div>
         <span class="title">已回款金额：</span>
-        <span class="value">￥1000.00 </span>
+        <span class="value">￥{{ data.pay_money }} </span>
       </div>
       <div>
         <span class="title">未回款金额：</span>
-        <span class="value">￥1000.00 </span>
+        <span class="value">￥{{ data.overdue_money }} </span>
       </div>
       <div class="actions">
         <el-button type="primary" @click="handleAddPlan"
@@ -91,7 +91,7 @@
         min-width="160"
       >
         <template slot-scope="{ row }">
-          <el-button type="text">编辑</el-button>
+          <el-button type="text">催办</el-button>
           <el-button type="text">删除</el-button>
         </template>
       </el-table-column>
@@ -187,8 +187,7 @@
           min-width="160"
         >
           <template slot-scope="{ row }">
-            <el-button type="text">编辑</el-button>
-            <el-button type="text">删除</el-button>
+            <el-button type="text">催办</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -217,6 +216,12 @@ export default {
   components: {
     AddCollectionRecord,
     AddCollectionPlan,
+  },
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {

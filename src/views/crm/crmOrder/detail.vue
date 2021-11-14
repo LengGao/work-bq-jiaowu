@@ -3,8 +3,8 @@
     <div class="change-title">
       <h3>仅退款-张小北-系统集成项目管理师</h3>
       <span class="change-status" type="success">已通过（不可修改）</span>
-      <el-button type="primary" class="btn-edit">编辑移动</el-button>
-      <el-button>删除移动</el-button>
+      <el-button type="primary" class="btn-edit">编辑</el-button>
+      <el-button>删除</el-button>
     </div>
     <el-steps :active="2" finish-status="success" simple style="margin: 20px 0">
       <el-step title="步骤 1"></el-step>
@@ -16,16 +16,18 @@
       <el-tab-pane label="回款记录" name="CollectionRecord"></el-tab-pane>
       <el-tab-pane label="审批记录" name="ApproveRecord"></el-tab-pane>
     </el-tabs>
-    <component :is="getComponent" />
+    <component :is="getComponent" :data="detailData" />
   </div>
 </template>
 
 <script>
+import { getCrmOrderDetail } from "@/api/crm";
 export default {
   name: "changeDetail",
   data() {
     return {
       activeName: "BasicInfo",
+      detailData: {},
     };
   },
   computed: {
@@ -35,8 +37,20 @@ export default {
       }
     },
   },
-  created() {},
-  methods: {},
+  created() {
+    this.getCrmOrderDetail();
+  },
+  methods: {
+    async getCrmOrderDetail() {
+      const data = {
+        order_id: this.$route.query.id,
+      };
+      const res = await getCrmOrderDetail(data);
+      if (res.code === 0) {
+        this.detailData = res.data;
+      }
+    },
+  },
 };
 </script>
 <style lang="less">
