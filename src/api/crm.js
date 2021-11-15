@@ -151,7 +151,15 @@ export function receive(data) {
         data
     })
 }
-// 获取自定义字段列表
+// 获取自定义字段列表-不分页
+export function getCustomfieldList(params) {
+    return request({
+        url: '/Customfield/getList',
+        method: 'get',
+        params
+    })
+}
+// 获取自定义字段列表-分页
 export function getCustomfieldPage(params) {
     return request({
         url: '/Customfield/getPage',

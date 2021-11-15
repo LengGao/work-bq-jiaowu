@@ -65,7 +65,31 @@
           </el-option>
         </el-select>
       </el-form-item>
-
+      <!-- <el-form-item
+        :label="item.field_text"
+        :prop="item.field_name"
+        v-for="item in customFiled"
+        :key="item.field_id"
+        :rules="[
+          {
+            required: item.required === 1,
+            message: ['select', 'multi_select'].includes(item.field_type)
+              ? '请选择'
+              : '请输入',
+            trigger: ['select', 'multi_select'].includes(item.field_type)
+              ? 'change'
+              : 'blur',
+          },
+        ]"
+      >
+        <CustomFormItem
+          filterable
+          clearable
+          class="input"
+          v-model="formData[item.field_name]"
+          :data="item"
+        />
+      </el-form-item> -->
       <el-form-item label="客户标签" prop="tags" class="block">
         <el-tag
           class="customer-tag"
@@ -126,7 +150,8 @@
 
 <script>
 import { regionData } from "element-china-area-data";
-import { createCrmCustomer, getCrmTags } from "@/api/crm";
+import { createCrmCustomer, getCrmTags, getCustomfieldList } from "@/api/crm";
+import CustomFormItem from "./CustomFormItem";
 export default {
   name: "AddCustomeDialog",
   props: {
@@ -134,6 +159,9 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  components: {
+    CustomFormItem,
   },
   data() {
     return {
@@ -204,6 +232,7 @@ export default {
       tags: [],
       inputVisible: false,
       tagName: "",
+      // customFiled: [],
     };
   },
   watch: {
@@ -212,6 +241,17 @@ export default {
     },
   },
   methods: {
+    // // 获取自定义字段
+    // async getCustomfieldList() {
+    //   const data = {
+    //     output_type: 1,
+    //   };
+    //   const res = await getCustomfieldList(data);
+    //   res.data.forEach((item) => {
+    //     this.$set(this.formData, item.field_name, "");
+    //   });
+    //   this.customFiled = res.data;
+    // },
     handleOpen() {
       this.getCrmTags();
     },
