@@ -22,12 +22,8 @@
     </div>
 
     <el-table
-      :data="listData"
+      :data="data.pay_log"
       style="width: 100%; border: 1px solid #eee; border-bottom: none"
-      v-loading="listLoading"
-      element-loading-text="loading"
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="#fff"
       :header-cell-style="{
         'text-align': 'center',
         'background-color': '#f8f8f8',
@@ -36,13 +32,13 @@
       <el-table-column
         label="序号"
         show-overflow-tooltip
-        min-width="160"
+        min-width="70"
         align="center"
-        prop="title"
+        type="index"
       >
       </el-table-column>
       <el-table-column
-        prop="has_question"
+        prop="create_time"
         label="回款日期"
         min-width="80"
         align="center"
@@ -51,12 +47,27 @@
       </el-table-column>
       <el-table-column
         label="回款金额"
+        prop="pay_money"
         align="center"
         min-width="100"
         show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
+        prop="pay_progress"
+        label="回款进度"
+        min-width="140"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-progress
+            :percentage="+(row.pay_progress || '').split('%')[0] || 0"
+          ></el-progress>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="pay_type"
         label="支付方式"
         align="center"
         min-width="100"
@@ -66,6 +77,7 @@
       <el-table-column
         label="收款人员"
         align="center"
+        prop="admin_name"
         min-width="100"
         show-overflow-tooltip
       >
@@ -74,13 +86,26 @@
         label="备注信息"
         align="center"
         min-width="100"
+        prop="tips"
         show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
-        label="更新时间"
+        label="入账状态"
+        prop="pay_status"
         align="center"
         min-width="100"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span>{{ payStatusMap[row.pay_status] || "--" }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="verify_time"
+        label="入账时间"
+        min-width="80"
+        align="center"
         show-overflow-tooltip
       >
       </el-table-column>
@@ -92,13 +117,14 @@
       >
         <template slot-scope="{ row }">
           <el-button type="text">催办</el-button>
-          <el-button type="text">删除</el-button>
+          <!-- <el-button type="text">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
-    <p class="placeholder">或</p>
+    <!-- <p class="placeholder">或</p> -->
+    <Title text="回款计划" style="margin-top: 20px"></Title>
     <div class="term">
-      <div class="term-header">
+      <!-- <div class="term-header">
         <i class="el-icon-notebook-2"></i>
         <div class="info-item">
           <span>第1期回款计划：</span>
@@ -116,14 +142,10 @@
           <span>进度：</span>
           <span>100%</span>
         </div>
-      </div>
+      </div> -->
       <el-table
-        :data="listData"
+        :data="data.pay_plan"
         style="width: 100%"
-        v-loading="listLoading"
-        element-loading-text="loading"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="#fff"
         :header-cell-style="{
           'text-align': 'center',
           'background-color': '#f8f8f8',
@@ -132,13 +154,13 @@
         <el-table-column
           label="序号"
           show-overflow-tooltip
-          min-width="160"
+          min-width="70"
           align="center"
-          prop="title"
+          type="index"
         >
         </el-table-column>
         <el-table-column
-          prop="has_question"
+          prop="day"
           label="回款日期"
           min-width="80"
           align="center"
@@ -147,15 +169,17 @@
         </el-table-column>
         <el-table-column
           label="回款金额"
+          prop="money"
           align="center"
           min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="支付方式"
           align="center"
           min-width="100"
+          prop="pay_type"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -165,18 +189,31 @@
           min-width="100"
           show-overflow-tooltip
         >
-        </el-table-column>
-        <el-table-column
+        </el-table-column> -->
+        <!-- <el-table-column
           label="备注信息"
+          align="center"
+          min-width="100"
+          prop="tips"
+          show-overflow-tooltip
+        >
+        </el-table-column> -->
+        <el-table-column
+          label="入账状态"
+          prop="pay_status"
           align="center"
           min-width="100"
           show-overflow-tooltip
         >
+          <template slot-scope="{ row }">
+            <span>{{ row.finished == 1 ? "已入账" : "未入账" }}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          label="更新时间"
+          prop="pay_day"
+          label="入账时间"
+          min-width="80"
           align="center"
-          min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -196,19 +233,18 @@
       v-model="dialogVisible"
       :title="dialogTitle"
       :id="currentId"
-      @on-success="getClassTypeList"
+      @on-success="$parent.getCrmOrderDetail"
     />
     <AddCollectionPlan
       v-model="planDialogVisible"
       :title="planDialogTitle"
-      :id="currentId"
-      @on-success="getClassTypeList"
+      :order-id="data.order_id"
+      @on-success="$parent.getCrmOrderDetail"
     />
   </div>
 </template>
 
 <script>
-import { getClassTypeList } from "@/api/institution";
 import AddCollectionRecord from "@/views/crm/changeManage/components/AddCollectionRecord.vue";
 import AddCollectionPlan from "@/views/crm/changeManage/components/AddCollectionPlan.vue";
 export default {
@@ -220,23 +256,27 @@ export default {
   props: {
     data: {
       type: Object,
-      default: () => ({}),
+      default: () => ({
+        pay_log: [],
+        pay_plan: [],
+      }),
     },
   },
   data() {
     return {
-      listData: [],
-      listLoading: false,
       currentId: "",
       dialogTitle: "",
       dialogVisible: false,
       planDialogVisible: false,
       planDialogTitle: "",
+      // 1：待入账，3、已入账 ，4、已作废， 5、已退款
+      payStatusMap: {
+        1: "待入账",
+        3: "已入账",
+        4: "已作废",
+        5: "已退款",
+      },
     };
-  },
-
-  created() {
-    this.getClassTypeList();
   },
   methods: {
     handleAddPlan() {
@@ -253,13 +293,6 @@ export default {
       this.currentId = "";
       this.dialogTitle = "添加回款记录";
       this.dialogVisible = true;
-    },
-    async getClassTypeList() {
-      this.listLoading = true;
-      const res = await getClassTypeList();
-      this.listLoading = false;
-      this.listData = res.data.list;
-      this.listTotal = res.data.total;
     },
   },
 };
@@ -288,6 +321,7 @@ export default {
 .term {
   border: 1px solid #eee;
   border-bottom: none;
+  margin-top: 20px;
   &-header {
     display: flex;
     align-items: center;

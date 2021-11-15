@@ -12,7 +12,7 @@
       </div>
       <div class="info-item">
         <span class="info-item__name">客户姓名：</span>
-        <span class="info-item__value">{{ data.create_time }}</span>
+        <span class="info-item__value">{{ data.surname }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">业绩归属：</span>
@@ -214,7 +214,6 @@ export default {
   computed: {
     getTableData() {
       const tableData = JSON.parse(this.data.project) || [];
-      console.log(tableData);
       return tableData;
     },
   },

@@ -1,12 +1,8 @@
 <template>
   <div class="approve-record">
     <el-table
-      :data="listData"
+      :data="data.verify_step"
       style="width: 100%"
-      v-loading="listLoading"
-      element-loading-text="loading"
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="#fff"
       :header-cell-style="{
         'text-align': 'center',
         'background-color': '#f8f8f8',
@@ -17,11 +13,11 @@
         show-overflow-tooltip
         min-width="160"
         align="center"
-        prop="title"
+        prop="finish_time"
       >
       </el-table-column>
       <el-table-column
-        prop="has_question"
+        prop="staff_name"
         label="处理人"
         min-width="80"
         align="center"
@@ -34,11 +30,21 @@
         min-width="100"
         show-overflow-tooltip
       >
+        <template slot-scope="{ row }">
+          <el-tag
+            size="small"
+            v-if="row.status"
+            :type="verifyStatusMap[row.status].type"
+          >
+            {{ verifyStatusMap[row.status].text }}
+          </el-tag>
+        </template>
       </el-table-column>
       <el-table-column
         label="备注信息"
         align="center"
         min-width="100"
+        prop="tips"
         show-overflow-tooltip
       >
       </el-table-column>
@@ -47,27 +53,39 @@
 </template>
 
 <script>
-import { getClassTypeList } from "@/api/institution";
 export default {
-  name: "performanceTargets",
+  name: "ApproveRecord",
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data() {
     return {
-      listData: [],
-      listLoading: false,
+      verifyStatusMap: {
+        1: {
+          text: "待审核",
+          type: "info",
+        },
+        2: {
+          text: "（多人）审核中",
+          type: "primary",
+        },
+        3: {
+          text: "审核通过",
+          type: "success",
+        },
+        8: {
+          text: "已撤销审核",
+          type: "info",
+        },
+        9: {
+          text: "驳回不通过",
+          type: "danger",
+        },
+      },
     };
-  },
-
-  created() {
-    this.getClassTypeList();
-  },
-  methods: {
-    async getClassTypeList() {
-      this.listLoading = true;
-      const res = await getClassTypeList();
-      this.listLoading = false;
-      this.listData = res.data.list;
-      this.listTotal = res.data.total;
-    },
   },
 };
 </script>

@@ -144,11 +144,10 @@
           >
             <template slot-scope="{ row }">
               <el-tag
-                v-if="row.order_id"
                 size="small"
-                :type="statusMap[row.contract_status || 0].type"
+                :type="verifyStatusMap[row.verify_status || 0].type"
               >
-                {{ statusMap[row.contract_status || 0].text }}
+                {{ verifyStatusMap[row.verify_status || 0].text }}
               </el-tag>
             </template>
           </el-table-column>
@@ -416,20 +415,24 @@ export default {
           width: 120,
           options: [
             {
-              value: 0,
-              label: "已通过",
-            },
-            {
               value: 1,
-              label: "待审批",
+              label: "待审核",
             },
             {
               value: 2,
-              label: "已驳回",
+              label: "（多人）审核中",
             },
             {
               value: 3,
-              label: "已撤销",
+              label: "审核通过",
+            },
+            {
+              value: 8,
+              label: "已撤销审核",
+            },
+            {
+              value: 9,
+              label: "驳回不通过",
             },
           ],
           attrs: {
@@ -463,7 +466,7 @@ export default {
       statusMap: {
         0: {
           text: "未生成",
-          type: "danger",
+          type: "info",
         },
         1: {
           text: "未审核",
@@ -475,11 +478,33 @@ export default {
         },
         3: {
           text: "已驳回",
-          type: "warning",
+          type: "danger",
         },
         4: {
           text: "签署完成",
           type: "success",
+        },
+      },
+      verifyStatusMap: {
+        1: {
+          text: "待审核",
+          type: "info",
+        },
+        2: {
+          text: "（多人）审核中",
+          type: "primary",
+        },
+        3: {
+          text: "审核通过",
+          type: "success",
+        },
+        8: {
+          text: "已撤销审核",
+          type: "info",
+        },
+        9: {
+          text: "驳回不通过",
+          type: "danger",
         },
       },
     };

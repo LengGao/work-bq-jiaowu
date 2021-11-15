@@ -151,9 +151,9 @@
 </template>
 
 <script>
-import { updateClassType, createOrderPayPlan } from "@/api/crm";
+import { createOrderPayPlan } from "@/api/crm";
 export default {
-  name: "institutionDialog",
+  name: "AddCollectionPlan",
   props: {
     value: {
       type: Boolean,
@@ -163,7 +163,7 @@ export default {
       type: String,
       default: "",
     },
-    id: {
+    orderId: {
       type: [String, Number],
       default: "",
     },
@@ -200,9 +200,8 @@ export default {
     },
     handleAddRow() {
       this.formData.tableData.push({
-        date: "",
+        day: "",
         money: "",
-        remark: "",
       });
     },
     handleOpen() {},
@@ -219,12 +218,11 @@ export default {
       const data = {
         data: JSON.stringify(this.formData.tableData),
       };
-      if (this.id) {
-        data.id = this.id;
+      if (this.orderId) {
+        data.order_id = this.orderId;
       }
-      const api = this.id ? updateClassType : createOrderPayPlan;
       this.addLoading = true;
-      const res = await api(data).catch(() => {
+      const res = await createOrderPayPlan(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -245,9 +243,8 @@ export default {
       this.$refs[formName].resetFields();
       this.formData.tableData = [
         {
-          date: "",
+          day: "",
           money: "",
-          remark: "",
         },
       ];
       this.$emit("input", false);

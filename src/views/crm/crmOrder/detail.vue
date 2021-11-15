@@ -2,14 +2,29 @@
   <div class="change-detail">
     <div class="change-title">
       <h3>仅退款-张小北-系统集成项目管理师</h3>
-      <span class="change-status" type="success">已通过（不可修改）</span>
-      <el-button type="primary" class="btn-edit">编辑</el-button>
-      <el-button>删除</el-button>
+      <span
+        class="change-status"
+        :type="verifyStatusMap[detailData.verify_status].type"
+        >{{ verifyStatusMap[detailData.verify_status].text }}</span
+      >
+      <!-- <el-button type="primary" class="btn-edit">编辑</el-button>
+      <el-button>删除</el-button> -->
     </div>
-    <el-steps :active="2" finish-status="success" simple style="margin: 20px 0">
-      <el-step title="步骤 1"></el-step>
-      <el-step title="步骤 2" status="error"></el-step>
-      <el-step title="步骤 3"></el-step>
+    <el-steps
+      simple
+      style="margin: 20px 0"
+      v-if="detailData.verify_status != 3"
+    >
+      <el-step
+        :title="`${item.staff_name}审批`"
+        v-for="(item, index) in detailData.verify_step"
+        :status="
+          index === 0 && item.status === 0
+            ? 'process'
+            : approveStatuMap[item.status]
+        "
+        :key="index"
+      ></el-step>
     </el-steps>
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
@@ -27,7 +42,43 @@ export default {
   data() {
     return {
       activeName: "BasicInfo",
-      detailData: {},
+      detailData: {
+        pay_plan: [],
+        pay_log: [],
+        project: "[]",
+        verify_step: [],
+        verify_status: 1,
+      },
+      approveStatuMap: {
+        0: "wait",
+        1: "wait",
+        2: "wait",
+        3: "success",
+        8: "error",
+        9: "error",
+      },
+      verifyStatusMap: {
+        1: {
+          text: "待审核",
+          type: "info",
+        },
+        2: {
+          text: "（多人）审核中",
+          type: "primary",
+        },
+        3: {
+          text: "审核通过",
+          type: "success",
+        },
+        8: {
+          text: "已撤销审核",
+          type: "info",
+        },
+        9: {
+          text: "驳回不通过",
+          type: "error",
+        },
+      },
     };
   },
   computed: {
@@ -73,6 +124,11 @@ export default {
         background-color: #999;
         border-radius: 50%;
         margin-right: 4px;
+      }
+      &[type="primary"] {
+        &::before {
+          background-color: #1999ff;
+        }
       }
       &[type="success"] {
         &::before {
