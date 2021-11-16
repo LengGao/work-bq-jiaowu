@@ -287,6 +287,8 @@ import { templatelist } from "@/api/system";
 import ImportOrder from "@/views/fina/components/ImportOrder";
 import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import { generate } from "@/api/fina";
+import { getCateList } from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
 export default {
   name: "eduOrder",
   components: {
@@ -302,7 +304,7 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: [toDay(), toDay()],
+        date: [],
         keyword: "",
         project_id: "",
         union_staff_id: "",
@@ -325,25 +327,20 @@ export default {
             },
           },
         },
-
         {
-          key: "type",
-          type: "select",
-          width: 120,
-          options: [
-            {
-              label: "职称类",
-              value: 0,
-            },
-            {
-              label: "学历类",
-              value: 1,
-            },
-          ],
+          key: "category_id",
+          type: "cascader",
+          width: 240,
           attrs: {
-            placeholder: "所属分类",
+            placeholder: "所属分类（多选）",
             clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
             filterable: true,
+            options: [],
           },
         },
         {
@@ -406,7 +403,7 @@ export default {
           ],
           attrs: {
             clearable: true,
-            placeholder: "订单状态",
+            placeholder: "支付状态",
           },
         },
         {
@@ -513,6 +510,7 @@ export default {
     this.getCrmOrderList();
     this.getStaffList();
     this.getproject();
+    this.getCateList();
   },
   methods: {
     toCrmOrderDetail(id) {
@@ -569,7 +567,19 @@ export default {
       this.orderId = row.order_id;
       this.dialogVisible = true;
     },
-
+    // 获取所属分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          "category_name",
+          "category_id",
+          "son"
+        );
+      }
+    },
     // 合同模板列表接口
     async templatelist() {
       const res = await templatelist();
@@ -619,6 +629,9 @@ export default {
           : "",
         project_id: Array.isArray(this.searchData.project_id)
           ? this.searchData.project_id.join(",")
+          : "",
+        category_id: Array.isArray(this.searchData.category_id)
+          ? this.searchData.category_id.join(",")
           : "",
       };
       this.listLoading = true;

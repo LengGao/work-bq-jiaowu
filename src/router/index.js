@@ -312,6 +312,57 @@ export const asyncRouter = [
     meta: { title: '招生管理', icon: 'zhaoshengguanli' },
     name: 'etm',
     children: [
+      // ==== 新
+      {
+        path: 'changeManage',
+        name: 'changeManage',
+        component: () => import('@/views/crm/changeManage/index.vue'),
+        meta: { title: '异动管理' },
+      },
+      {
+        path: 'changeDetail',
+        name: 'changeDetail',
+        component: () => import('@/views/crm/changeManage/detail.vue'),
+        meta: { title: '异动详情' },
+      },
+      {
+        path: 'changeEdit',
+        name: 'changeEdit',
+        component: () => import('@/views/crm/changeManage/edit.vue'),
+        meta: { title: '编辑异动' },
+      },
+      {
+        path: 'eduOpenClass',
+        name: 'eduOpenClass',
+        component: () => import('@/views/crm/eduOpenClass/index.vue'),
+        meta: { title: '教务开课' },
+      },
+      {
+        path: 'crmCustomer',
+        name: 'crmCustomer',
+        component: () => import('@/views/crm/crmCustomer/index.vue'),
+        meta: { title: '客户管理' },
+      },
+      {
+        path: 'crmOrder',
+        name: 'crmOrder',
+        component: () => import('@/views/crm/crmOrder/index.vue'),
+        meta: { title: '订单管理' },
+      },
+      {
+        path: 'crmOrderDetail',
+        name: 'crmOrderDetail',
+        component: () => import('@/views/crm/crmOrder/detail.vue'),
+        meta: { title: '订单详情' },
+      },
+      {
+        path: 'internationalWaters',
+        name: 'internationalWaters',
+        component: () => import('@/views/crm/internationalWaters/index.vue'),
+        meta: { title: '公海客户' },
+      },
+
+      //===旧
       {
         path: 'eduOrder',
         name: 'eduOrder',
@@ -814,36 +865,46 @@ export const asyncRouter = [
     ],
   },
   {
+    path: '/channel',
+    component: Layout,
+    redirect: '/channel/approveManage',
+    meta: { title: '渠道管理' },
+    name: 'channel',
+    children: [
+
+
+    ]
+  },
+  {
+    path: '/approve',
+    component: Layout,
+    redirect: '/approve/approveManage',
+    meta: { title: '审批管理' },
+    name: 'approve',
+    children: [
+      {
+        path: 'returnPayment',
+        name: 'returnPayment',
+        component: () => import('@/views/crm/returnPayment/index.vue'),
+        meta: { title: '入账回款' },
+      },
+      {
+        path: 'approveManage',
+        name: 'approveManage',
+        component: () => import('@/views/crm/approveManage/index.vue'),
+        meta: { title: '审批管理' },
+      },
+
+    ]
+  },
+  {
     path: '/CRM',
     component: Layout,
     redirect: '/CRM/crmOrder',
-    meta: { title: 'CRM管理' },
+    meta: { title: 'CRM配置' },
     name: 'CRM',
     children: [
-      {
-        path: 'eduOpenClass',
-        name: 'eduOpenClass',
-        component: () => import('@/views/crm/eduOpenClass/index.vue'),
-        meta: { title: '教务开课' },
-      },
-      {
-        path: 'crmCustomer',
-        name: 'crmCustomer',
-        component: () => import('@/views/crm/crmCustomer/index.vue'),
-        meta: { title: '客户管理' },
-      },
-      {
-        path: 'crmOrder',
-        name: 'crmOrder',
-        component: () => import('@/views/crm/crmOrder/index.vue'),
-        meta: { title: '订单管理' },
-      },
-      {
-        path: 'crmOrderDetail',
-        name: 'crmOrderDetail',
-        component: () => import('@/views/crm/crmOrder/detail.vue'),
-        meta: { title: '订单详情' },
-      },
+
       {
         path: 'performanceTargets',
         name: 'performanceTargets',
@@ -862,12 +923,7 @@ export const asyncRouter = [
         component: () => import('@/views/crm/approveConfig/index.vue'),
         meta: { title: '审批设置' },
       },
-      {
-        path: 'internationalWaters',
-        name: 'internationalWaters',
-        component: () => import('@/views/crm/internationalWaters/index.vue'),
-        meta: { title: '公海客户' },
-      },
+
       {
         path: 'internationalWatersConfig',
         name: 'internationalWatersConfig',
@@ -880,30 +936,8 @@ export const asyncRouter = [
         component: () => import('@/views/crm/fieldConfig/index.vue'),
         meta: { title: '字段设置' },
       },
-      {
-        path: 'approveManage',
-        name: 'approveManage',
-        component: () => import('@/views/crm/approveManage/index.vue'),
-        meta: { title: '审批管理' },
-      },
-      {
-        path: 'changeManage',
-        name: 'changeManage',
-        component: () => import('@/views/crm/changeManage/index.vue'),
-        meta: { title: '异动管理' },
-      },
-      {
-        path: 'changeDetail',
-        name: 'changeDetail',
-        component: () => import('@/views/crm/changeManage/detail.vue'),
-        meta: { title: '异动详情' },
-      },
-      {
-        path: 'changeEdit',
-        name: 'changeEdit',
-        component: () => import('@/views/crm/changeManage/edit.vue'),
-        meta: { title: '编辑异动' },
-      },
+
+
     ]
   },
   {

@@ -7,8 +7,19 @@
         :type="verifyStatusMap[detailData.verify_status].type"
         >{{ verifyStatusMap[detailData.verify_status].text }}</span
       >
-      <!-- <el-button type="primary" class="btn-edit">编辑</el-button>
-      <el-button>删除</el-button> -->
+      <div class="btn-edit">
+        <el-button
+          type="primary"
+          v-if="detailData.verify_status === 1"
+          @click="ActionConfirm(3)"
+          >撤回</el-button
+        >
+        <el-button
+          @click="ActionConfirm(4)"
+          v-if="detailData.verify_status === 8"
+          >删除</el-button
+        >
+      </div>
     </div>
     <el-steps
       simple
@@ -16,15 +27,16 @@
       v-if="detailData.verify_status != 3"
     >
       <el-step
+        :title="`${detailData.submit_name || ''}提交审批`"
+        status="success"
+      ></el-step>
+      <el-step
         :title="`${item.staff_name}审批`"
         v-for="(item, index) in detailData.verify_step"
-        :status="
-          index === 0 && ![8, 9].includes(item.status)
-            ? 'process'
-            : approveStatuMap[item.status]
-        "
+        :status="approveStatuMap[item.status]"
         :key="index"
       ></el-step>
+      <el-step title="审批完成`"></el-step>
     </el-steps>
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
@@ -36,7 +48,7 @@
 </template>
 
 <script>
-import { getCrmOrderDetail } from "@/api/crm";
+import { getCrmOrderDetail, crmOrderApprove } from "@/api/crm";
 export default {
   name: "changeDetail",
   data() {
@@ -92,6 +104,30 @@ export default {
     this.getCrmOrderDetail();
   },
   methods: {
+    ActionConfirm(action) {
+      this.$confirm(
+        `确定要${action === 4 ? "删除" : "撤销"}此订单吗?`,
+        "提示",
+        {
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.crmOrderApprove(action);
+        })
+        .catch(() => {});
+    },
+    async crmOrderApprove(action) {
+      const data = {
+        order_id: this.detailData.order_id,
+        action,
+      };
+      const res = await crmOrderApprove(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getCrmApproveOrder();
+      }
+    },
     async getCrmOrderDetail() {
       const data = {
         order_id: this.$route.query.id,

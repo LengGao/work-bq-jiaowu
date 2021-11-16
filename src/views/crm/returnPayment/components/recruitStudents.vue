@@ -22,39 +22,38 @@
         all="1"
       >
         <el-table-column
-          prop="order_id"
-          label="订单编号"
+          prop="id"
+          label="序号"
           show-overflow-tooltip
-          min-width="190"
+          min-width="70"
         >
-          <template slot-scope="{ row }">
-            <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-              {{ row.order_no }}
-            </el-button>
-          </template>
         </el-table-column>
         <el-table-column
-          prop="create_time"
-          label="创建时间"
+          prop="pay_date"
+          label="回款日期"
           min-width="160"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="surname"
-          label="客户姓名"
+          prop="pay_money"
+          label="回款金额"
           min-width="90"
           show-overflow-tooltip
         >
-          <template slot-scope="scope">
-            <el-button type="text" @click="coursDetail(scope.row.uid)">
-              {{ scope.row.surname }}
-            </el-button>
-          </template>
+          <template slot-scope="{ row }"> ￥{{ row.pay_money || 0 }} </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="pay_type"
+          label="支付方式"
+          min-width="90"
+          show-overflow-tooltip
+        >
         </el-table-column>
         <el-table-column
-          prop="project_name"
-          label="项目名称"
+          prop=""
+          label="部门名称"
           min-width="130"
           show-overflow-tooltip
         >
@@ -67,62 +66,71 @@
         >
         </el-table-column>
         <el-table-column
-          prop="order_money"
-          label="订单总金额"
+          prop="order_id"
+          label="关联订单"
+          show-overflow-tooltip
+          min-width="190"
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
+              {{ row.project_name }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="plan_pay_day"
+          label="计划回款日期"
+          min-width="160"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="plan_pay_money"
+          label="计划回款金额"
           min-width="90"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            ￥{{ row.order_money || 0 }}
+            <span v-if="row.plan_pay_money">
+              ￥{{ row.plan_pay_money || 0 }}
+            </span>
           </template>
         </el-table-column>
-
         <el-table-column
           prop="verify_status"
-          label="审批状态"
-          min-width="100"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <el-tag
-              size="small"
-              :type="verifyStatusMap[row.verify_status || 0].type"
-            >
-              {{ verifyStatusMap[row.verify_status || 0].text }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="finish_staff_id"
-          label="处理状态"
+          label="入账状态"
           min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
             <span
-              v-if="row.finish_staff_id"
-              class="approve-status approve-status--success"
-              >已处理</span
+              v-if="row.verify_status == 0"
+              class="approve-status approve-status--none"
+              >未入账</span
             >
-            <span v-else class="approve-status">待处理</span>
+            <span
+              v-if="row.verify_status == 1"
+              class="approve-status approve-status--success"
+              >已入账</span
+            >
+            <span v-if="row.verify_status == 2" class="approve-status"
+              >已驳回 <i class="el-icon-question" :title="row.tips"></i>
+            </span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="200">
+        <el-table-column label="操作" fixed="right" min-width="120">
           <template slot-scope="{ row }">
             <el-button
-              v-if="row.verify_status == 2"
+              v-if="!row.verify_status"
               type="text"
-              @click="approveConfirm(row, 1)"
-              >通过</el-button
+              @click="approveConfirm(row.id, 1)"
+              >入账</el-button
             >
             <el-button
-              v-if="row.verify_status == 2"
+              v-if="!row.verify_status"
               type="text"
-              @click="approveConfirm(row, 2)"
+              @click="rejectConfirm(row.id, 2)"
               >驳回</el-button
-            >
-            <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
-              >订单详情</el-button
             >
           </template>
         </el-table-column>
@@ -141,9 +149,12 @@
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
-import { getAdminSelect, getproject } from "@/api/eda";
-import { getCateList } from "@/api/sou";
-import { getCrmApproveOrder, crmOrderApprove } from "@/api/crm";
+import {
+  getReturnPaymentList,
+  entryLog,
+  getCustomfieldOptions,
+} from "@/api/crm";
+import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "eduOrder",
@@ -159,11 +170,10 @@ export default {
       searchData: {
         date: "",
         keyword: "",
-        project_id: "",
-        category_id: "",
+        department_id: "",
         staff_id: "",
-        finish_status: "",
         verify_status: "",
+        pay_type: "",
       },
       searchOptions: [
         {
@@ -182,12 +192,26 @@ export default {
             },
           },
         },
+
         {
-          key: "category_id",
+          key: "pay_type",
+          type: "select",
+          width: 240,
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "支付方式",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "department_id",
           type: "cascader",
           width: 240,
           attrs: {
-            placeholder: "所属分类（多选）",
+            placeholder: "部门名称",
             clearable: true,
             props: {
               multiple: true,
@@ -196,21 +220,6 @@ export default {
             "collapse-tags": true,
             filterable: true,
             options: [],
-          },
-        },
-        {
-          key: "project_id",
-          type: "select",
-          options: [],
-          optionValue: "project_id",
-          optionLabel: "project_name",
-          width: 280,
-          attrs: {
-            placeholder: "所属项目（多选）",
-            clearable: true,
-            filterable: true,
-            multiple: true,
-            "collapse-tags": true,
           },
         },
         {
@@ -232,54 +241,27 @@ export default {
           width: 120,
           options: [
             {
+              value: 0,
+              label: "未入账",
+            },
+            {
               value: 1,
-              label: "待审核",
+              label: "已入账",
             },
             {
               value: 2,
-              label: "（多人）审核中",
-            },
-            {
-              value: 3,
-              label: "审核通过",
-            },
-            {
-              value: 8,
-              label: "已撤销审核",
-            },
-            {
-              value: 9,
-              label: "驳回不通过",
+              label: "已驳回",
             },
           ],
           attrs: {
             clearable: true,
-            placeholder: "审核状态",
-          },
-        },
-        {
-          key: "finish_status",
-          type: "select",
-          width: 120,
-          options: [
-            {
-              value: 1,
-              label: "已处理",
-            },
-            {
-              value: 2,
-              label: "待处理",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "处理状态",
+            placeholder: "入账状态",
           },
         },
         {
           key: "keyword",
           attrs: {
-            placeholder: "学生姓名/手机号码",
+            placeholder: "订单名称",
           },
         },
       ],
@@ -310,61 +292,75 @@ export default {
     };
   },
   created() {
-    this.getCrmApproveOrder();
-    this.getCateList();
-    this.getAdminSelect();
-    this.getproject();
+    this.getReturnPaymentList();
+    this.getCustomfieldOptions();
+    this.getStaffList();
+    this.getDepartmentlists();
   },
   methods: {
-    approveConfirm(row, action) {
-      this.$prompt("请输入备注", action === 2 ? "驳回" : "通过", {
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[2].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
+    },
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
+      }
+    },
+    // 业绩归属
+    async getStaffList() {
+      const data = {
+        limit: 99999,
+      };
+      const res = await getStaffList(data);
+      this.searchOptions[3].options = res.data.list;
+    },
+    // 驳回
+    rejectConfirm(id, verify_status) {
+      this.$prompt("请输入驳回原因", "入账驳回", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
       })
         .then(({ value }) => {
-          this.crmOrderApprove(row, action, value);
+          this.entryLog(id, verify_status, value);
         })
         .catch(() => {});
     },
-    async crmOrderApprove({ order_id }, action, tips) {
+    // 入账
+    approveConfirm(id, verify_status) {
+      this.$confirm(`是否确定该笔回款入账？`, "提示", {
+        type: "warning",
+      })
+        .then(() => {
+          this.entryLog(id, verify_status);
+        })
+        .catch(() => {});
+    },
+    async entryLog(id, verify_status, tips) {
       const data = {
-        order_id,
-        action,
+        id,
+        verify_status,
         tips,
       };
-      const res = await crmOrderApprove(data);
+      const res = await entryLog(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getCrmApproveOrder();
-      }
-    },
-    // 获取所属分类
-    async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
-      if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
-          res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
-      }
-    },
-    // 获取所属老师
-    async getAdminSelect() {
-      const data = { list: true };
-      const res = await getAdminSelect(data);
-      if (res.code === 0) {
-        this.searchOptions[3].options = res.data;
-      }
-    },
-
-    // 获取项目下拉
-    async getproject() {
-      const res = await getproject();
-      if (res.code === 0) {
-        this.searchOptions[2].options = res.data;
+        this.getReturnPaymentList();
       }
     },
 
@@ -372,20 +368,17 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: Array.isArray(data.category_id)
-          ? data.category_id.join(",")
-          : "",
-        project_id: Array.isArray(data.project_id)
-          ? data.project_id.join(",")
+        department_id: Array.isArray(data.department_id)
+          ? data.department_id.join(",")
           : "",
       };
-      this.getCrmApproveOrder(data);
+      this.getReturnPaymentList(data);
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getCrmApproveOrder();
+      this.getReturnPaymentList();
     },
-    async getCrmApproveOrder() {
+    async getReturnPaymentList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
@@ -394,7 +387,7 @@ export default {
           : "",
       };
       this.listLoading = true;
-      const res = await getCrmApproveOrder(data).catch(() => {});
+      const res = await getReturnPaymentList(data).catch(() => {});
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -433,6 +426,9 @@ export default {
   }
   &--success::before {
     background-color: #43d100;
+  }
+  &--none::before {
+    background-color: #999;
   }
 }
 </style>

@@ -3,8 +3,8 @@
     <div class="head_remind">*管理查看所有订单审批和异动审批</div>
     <div class="container">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="招生订单" name="orderApprove"></el-tab-pane>
-        <el-tab-pane label="异动审批" name="changeApprove"></el-tab-pane>
+        <el-tab-pane label="招生回款" name="recruitStudents"></el-tab-pane>
+        <!-- <el-tab-pane label="渠道回款" name="changeApprove"></el-tab-pane> -->
       </el-tabs>
       <component :is="getComponent" />
     </div>
@@ -13,10 +13,10 @@
 
 <script>
 export default {
-  name: "approveManage",
+  name: "returnPayment",
   data() {
     return {
-      activeName: "orderApprove",
+      activeName: "recruitStudents",
     };
   },
   computed: {

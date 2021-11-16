@@ -279,3 +279,35 @@ export function getCustomfieldOptions(params) {
         params
     })
 }
+// 获取招生审批订单列表
+export function getCrmApproveOrder(data) {
+    return request({
+        url: 'CrmOrder/authorize',
+        method: 'post',
+        data
+    })
+}
+// 订单操作 1、通过，2：拒绝 , 3:撤销/作废订单，4、删除订单
+export function crmOrderApprove(data) {
+    return request({
+        url: 'CrmOrder/approve',
+        method: 'post',
+        data
+    })
+}
+// 招生回款列表
+export function getReturnPaymentList(data) {
+    return request({
+        url: 'CrmOrder/log',
+        method: 'post',
+        data
+    })
+}
+// 招生回款列表-入账、驳回
+export function entryLog(data) {
+    return request({
+        url: 'CrmOrder/entryLog',
+        method: 'post',
+        data
+    })
+}
