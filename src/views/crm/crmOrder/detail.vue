@@ -19,7 +19,7 @@
         :title="`${item.staff_name}审批`"
         v-for="(item, index) in detailData.verify_step"
         :status="
-          index === 0 && item.status === 0
+          index === 0 && ![8, 9].includes(item.status)
             ? 'process'
             : approveStatuMap[item.status]
         "

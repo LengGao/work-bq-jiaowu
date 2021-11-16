@@ -342,10 +342,10 @@
             filterable
           >
             <el-option
-              v-for="item in payWays"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
+              v-for="item in payMethodOptions"
+              :key="item"
+              :label="item"
+              :value="item"
             >
             </el-option>
           </el-select>
@@ -380,8 +380,7 @@
 </template>
 
 <script>
-import { payWays } from "@/utils";
-import { createCrmOrder } from "@/api/crm";
+import { createCrmOrder, getCustomfieldOptions } from "@/api/crm";
 import { getStaffList } from "@/api/set";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
@@ -403,7 +402,6 @@ export default {
   },
   data() {
     return {
-      payWays,
       visible: this.value,
       formData: {
         surname: "",
@@ -510,6 +508,7 @@ export default {
       projectData: [],
       planDialogVisible: false,
       planOptions: [],
+      payMethodOptions: [],
     };
   },
   watch: {
@@ -537,8 +536,19 @@ export default {
     handleOpen() {
       this.getCateProjectOption();
       this.getStaffList();
+      this.getCustomfieldOptions();
       this.formData.surname = this.userInfo.name;
       this.formData.mobile = this.userInfo.mobile;
+    },
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
+      }
     },
     getPlanOptions(options) {
       this.planOptions = options;
@@ -718,6 +728,7 @@ export default {
       this.formData.type = 0;
       this.projectData = [];
       this.majorData = [];
+      this.planOptions = [];
       this.type_id = "";
       this.school_id = "";
       this.level_id = "";

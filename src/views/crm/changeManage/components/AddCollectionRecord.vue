@@ -14,31 +14,42 @@
       ref="formData"
       inline
     >
-      <el-form-item label="回款日期" prop="date1">
+      <el-form-item label="回款日期" prop="pay_date">
         <el-date-picker
           class="input"
           type="date"
           placeholder="选择日期"
-          v-model="formData.date1"
+          v-model="formData.pay_date"
+          value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="回款期次" prop="region">
         <el-select
           class="input"
-          v-model="formData.region"
+          v-model="formData.plan_id"
           placeholder="请选择回款期次"
+          clearable
         >
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option
+            v-for="(item, index) in planOptions"
+            :key="item.id"
+            :label="item.day"
+            :value="index"
+          >
+          </el-option>
         </el-select>
-        <el-button type="text" style="margin-left: 10px" title="配置回款计划"
+        <el-button
+          type="text"
+          @click="planDialogVisible = true"
+          style="margin-left: 10px"
+          title="配置回款计划"
           >配置</el-button
         >
       </el-form-item>
-      <el-form-item label="回款金额" prop="title">
+      <el-form-item label="回款金额" prop="pay_money">
         <el-input
           class="input"
-          v-model="formData.title"
+          v-model="formData.pay_money"
           type="number"
           placeholder="请输入回款金额"
         />
@@ -59,10 +70,10 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" prop="resource">
+      <el-form-item label="备注" prop="tips">
         <el-input
           style="width: 550px"
-          v-model="formData.title"
+          v-model="formData.tips"
           type="textarea"
           placeholder="请输入备注"
         />
@@ -77,14 +88,20 @@
         >确 定</el-button
       >
     </span>
+    <AddCollectionPlan
+      v-model="planDialogVisible"
+      title="配置回款计划"
+      @on-success="getPlanOptions"
+    />
   </el-dialog>
 </template>
 
 <script>
-import { updateClassType, createClassType } from "@/api/institution";
+import { payLogCreate } from "@/api/crm";
 import { payWays } from "@/utils";
+import AddCollectionPlan from "./AddCollectionPlan";
 export default {
-  name: "institutionDialog",
+  name: "AddCollectionRecord",
   props: {
     value: {
       type: Boolean,
@@ -94,32 +111,34 @@ export default {
       type: String,
       default: "",
     },
-    id: {
+    orderId: {
       type: [String, Number],
       default: "",
     },
   },
+  components: {
+    AddCollectionPlan,
+  },
   data() {
     return {
       visible: this.value,
-      cityOptions: [],
       payWays,
       formData: {
-        title: "",
-        items: [],
-        remark: "",
-        options: [
-          {
-            label: "",
-            id: 1,
-          },
-        ],
+        plan_id: "",
+        tips: "",
+        pay_date: "",
+        pay_money: "",
+        pay_type: "",
       },
       rules: {
-        title: [{ required: true, message: "请输入", trigger: "blur" }],
+        pay_money: [{ required: true, message: "请输入", trigger: "blur" }],
+        pay_date: [{ required: true, message: "请选择", trigger: "change" }],
+        pay_type: [{ required: true, message: "请选择", trigger: "change" }],
       },
 
       addLoading: false,
+      planDialogVisible: false,
+      planOptions: [],
     };
   },
   watch: {
@@ -129,6 +148,9 @@ export default {
   },
   methods: {
     handleOpen() {},
+    getPlanOptions(options) {
+      this.planOptions = options;
+    },
     addOption() {
       this.formData.options.push({
         label: "",
@@ -140,19 +162,11 @@ export default {
     },
     async submit() {
       const data = {
-        title: this.formData.title,
-        remark: this.formData.remark,
-        has_question: +this.formData.items.includes(1),
-        has_video: +this.formData.items.includes(2),
-        has_live: +this.formData.items.includes(3),
-        has_teach: +this.formData.items.includes(4),
+        ...this.formData,
+        order_id: this.orderId,
       };
-      if (this.id) {
-        data.id = this.id;
-      }
-      const api = this.id ? updateClassType : createClassType;
       this.addLoading = true;
-      const res = await api(data).catch(() => {
+      const res = await payLogCreate(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -174,7 +188,7 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
-      this.formData.items = [];
+      this.planOptions = [];
       this.$emit("input", false);
     },
     hanldeCancel() {

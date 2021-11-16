@@ -32,23 +32,23 @@
           <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
             v-if="checkHeader.includes('ID')"
-            prop="order_id"
+            prop="id"
             label="ID"
             show-overflow-tooltip
             width="70"
           >
           </el-table-column>
           <el-table-column
-            prop="surname"
+            prop="name"
             label="客户姓名"
             min-width="90"
             show-overflow-tooltip
             v-if="checkHeader.includes('客户姓名')"
           >
-            <template slot-scope="scope">
-              <div class="link" @click="coursDetail(scope.row.uid)">
-                {{ scope.row.surname }}
-              </div>
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="coustomDetail(row.id)">
+                {{ row.name }}
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -63,7 +63,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="from_institution_name"
+            prop="from"
             label="客户来源"
             v-if="checkHeader.includes('客户来源')"
             min-width="130"
@@ -79,7 +79,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="project_name"
+            prop="customer_type"
             label="客户属性"
             min-width="180"
             v-if="checkHeader.includes('客户属性')"
@@ -94,7 +94,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>￥{{ row.pay_money }}</span>
+              <span>{{ row.deal_num ? "已成交" : "未成交" }}</span>
             </template>
           </el-table-column>
 
@@ -102,26 +102,35 @@
             prop="overdue_money"
             label="客户标签"
             v-if="checkHeader.includes('客户标签')"
-            min-width="90"
-            show-overflow-tooltip
+            min-width="140"
           >
             <template slot-scope="{ row }">
-              <span style="color: #f76c6c">￥{{ row.overdue_money }}</span>
+              <div v-if="row.tags">
+                <el-tag
+                  style="margin: 0 6px 6px 0"
+                  type="info"
+                  size="small"
+                  v-for="(item, index) in row.tags.split(',')"
+                  :key="index"
+                  >{{ item }}
+                </el-tag>
+              </div>
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="pay_type"
+            prop="follow_time"
             v-if="checkHeader.includes('最后跟进时间')"
             label="最后跟进时间"
-            min-width="120"
+            min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="pay_type"
+            prop="create_time"
             label="创建时间"
             v-if="checkHeader.includes('创建时间')"
-            min-width="120"
+            min-width="160"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -153,10 +162,10 @@
               </div>
             </template>
             <template slot-scope="{ row }">
-              <el-button type="text" @click="signUpVisible = true"
-                >报名</el-button
+              <el-button type="text" @click="openSignUp(row)">报名</el-button>
+              <el-button type="text" @click="coustomDetail(row.id)"
+                >客户详情</el-button
               >
-              <el-button type="text">客户详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -175,13 +184,14 @@
       </div>
     </div>
     <AddCustomeDialog
+      :from-options="coustomFrom"
       v-model="dialogVisible"
       @on-success="onAddCustomeSuccess"
     />
     <CustomeSignUp
       v-model="signUpVisible"
       :user-info="checkedUser"
-      @on-success="getOrderList"
+      @on-success="getCrmCustomerList"
     />
   </section>
 </template>
@@ -192,7 +202,11 @@ import CustomeSignUp from "./components/CustomeSignUp";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect } from "@/api/eda";
-import { getOrderList } from "@/api/fina";
+import {
+  getCrmCustomerList,
+  getCrmTags,
+  getCustomfieldOptions,
+} from "@/api/crm";
 export default {
   name: "eduOrder",
   components: {
@@ -231,7 +245,7 @@ export default {
         "创建时间",
       ],
       searchData: {
-        keyword: "",
+        day: "",
         project_id: "",
         category_id: "",
         staff_id: "",
@@ -239,7 +253,7 @@ export default {
       },
       searchOptions: [
         {
-          key: "date",
+          key: "day",
           type: "datePicker",
           attrs: {
             value: "",
@@ -255,12 +269,12 @@ export default {
           },
         },
         {
-          key: "staff_id",
+          key: "sources",
           type: "select",
           width: 140,
           options: [],
-          optionValue: "staff_id",
-          optionLabel: "staff_name",
+          optionValue: "title",
+          optionLabel: "title",
           attrs: {
             placeholder: "客户来源",
             clearable: true,
@@ -281,16 +295,16 @@ export default {
           },
         },
         {
-          key: "pay_status",
+          key: "type",
           type: "select",
           width: 140,
           options: [
             {
-              value: 0,
+              value: 1,
               label: "我的客户",
             },
             {
-              value: 1,
+              value: 2,
               label: "共享客户",
             },
           ],
@@ -301,12 +315,12 @@ export default {
           },
         },
         {
-          key: "pay_status",
+          key: "deal",
           type: "select",
           width: 140,
           options: [
             {
-              value: 0,
+              value: 2,
               label: "未成交",
             },
             {
@@ -321,18 +335,11 @@ export default {
           },
         },
         {
-          key: "pay_status1",
+          key: "tags",
           type: "select",
-          options: [
-            {
-              value: 0,
-              label: "标签1",
-            },
-            {
-              value: 1,
-              label: "标签2",
-            },
-          ],
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
           attrs: {
             filterable: true,
             clearable: true,
@@ -350,19 +357,48 @@ export default {
       dialogVisible: false,
       signUpVisible: false,
       checkedUser: {},
+      fromOptions: [],
     };
   },
   created() {
-    this.getOrderList();
+    this.getCrmCustomerList();
     this.getAdminSelect();
+    this.getCrmTags();
+    this.getCustomfieldOptions();
   },
   methods: {
-    onAddCustomeSuccess(isSignUp, userInfo) {
-      if (isSignUp) {
-        this.checkedUser = userInfo;
-        this.signUpVisible = true;
+    // 获取客户来源
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "customer_source",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.coustomFrom = res.data.field_content;
+        this.searchOptions[1].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
       }
-      this.getOrderList();
+    },
+    // 获取标签
+    async getCrmTags() {
+      const data = {
+        type: 1,
+      };
+      const res = await getCrmTags(data);
+      if (res.code === 0) {
+        this.searchOptions[5].options = res.data.tags.map((item) => ({
+          title: item,
+        }));
+      }
+    },
+    openSignUp(userInfo) {
+      this.checkedUser = userInfo;
+      this.signUpVisible = true;
+    },
+    onAddCustomeSuccess(isSignUp, userInfo) {
+      isSignUp && this.openSignUp(userInfo);
+      this.getCrmCustomerList();
     },
     // 获取所属老师
     async getAdminSelect() {
@@ -376,40 +412,37 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: Array.isArray(data.category_id)
-          ? data.category_id.join(",")
-          : "",
-        project_id: Array.isArray(data.project_id)
-          ? data.project_id.join(",")
-          : "",
       };
-      this.getOrderList(data);
+      this.getCrmCustomerList(data);
     },
     handleSizeChange(size) {
       this.pageSize = size;
       this.pageNum = 1;
-      this.getOrderList();
+      this.getCrmCustomerList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getOrderList();
+      this.getCrmCustomerList();
     },
-    async getOrderList() {
+    async getCrmCustomerList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        date: Array.isArray(this.searchData.date)
-          ? this.searchData.date.join(" - ")
+        day: Array.isArray(this.searchData.day)
+          ? this.searchData.day.join(" - ")
+          : "",
+        tags: Array.isArray(this.searchData.tags)
+          ? this.searchData.tags.join(",")
           : "",
       };
       this.listLoading = true;
-      const res = await getOrderList(data);
+      const res = await getCrmCustomerList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
     },
-    coursDetail(uid) {
+    coustomDetail(uid) {
       this.$router.push({
         name: "cusdetail",
         query: {

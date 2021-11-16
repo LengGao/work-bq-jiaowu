@@ -30,7 +30,22 @@
           placeholder="请输入手机号码"
         />
       </el-form-item>
-
+      <el-form-item label="客户来源" prop="from">
+        <el-select
+          v-model="formData.from"
+          filterable
+          clearable
+          placeholder="请选择客户来源"
+        >
+          <el-option
+            v-for="item in fromOptions"
+            :key="item"
+            :label="item"
+            :value="item"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="客户性别" prop="sex">
         <el-radio-group class="input" v-model="formData.sex">
           <el-radio :label="1">男</el-radio>
@@ -49,6 +64,7 @@
         >
         </el-cascader>
       </el-form-item>
+
       <el-form-item label="文化程度" prop="education">
         <el-select
           v-model="formData.education"
@@ -150,7 +166,7 @@
 
 <script>
 import { regionData } from "element-china-area-data";
-import { createCrmCustomer, getCrmTags, getCustomfieldList } from "@/api/crm";
+import { createCrmCustomer, getCrmTags } from "@/api/crm";
 import CustomFormItem from "./CustomFormItem";
 export default {
   name: "AddCustomeDialog",
@@ -158,6 +174,10 @@ export default {
     value: {
       type: Boolean,
       default: false,
+    },
+    fromOptions: {
+      type: Array,
+      default: () => [],
     },
   },
   components: {
@@ -195,7 +215,7 @@ export default {
             trigger: "change",
           },
         ],
-        // from: [{ required: true, message: "请选择", trigger: "change" }],
+        from: [{ required: true, message: "请选择", trigger: "change" }],
       },
       addLoading: false,
       fromOptions: [],

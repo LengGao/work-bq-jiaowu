@@ -14,16 +14,18 @@
       :rules="rules"
       ref="formData"
     >
-      <el-form-item label="字段名称" prop="field_text">
+      <el-form-item label="字段名称">
         <el-input
+          :disabled="!!id"
           class="input"
           v-model="formData.field_text"
           placeholder="请输入字段名称"
           maxlength="30"
         />
       </el-form-item>
-      <el-form-item label="字段类型" prop="field_type">
+      <el-form-item label="字段类型">
         <el-select
+          :disabled="!!id"
           v-model="formData.field_type"
           placeholder="请选择字段类型"
           clearable
@@ -37,12 +39,12 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="是否必填" prop="required">
+      <!-- <el-form-item label="是否必填" prop="required">
         <el-radio-group v-model="formData.required">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
-      </el-form-item>
+      </el-form-item> -->
       <template v-if="['select', 'multi_select'].includes(formData.field_type)">
         <el-form-item
           :label="`选项${index + 1}`"

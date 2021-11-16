@@ -232,7 +232,7 @@
     <AddCollectionRecord
       v-model="dialogVisible"
       :title="dialogTitle"
-      :id="currentId"
+      :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
     />
     <AddCollectionPlan

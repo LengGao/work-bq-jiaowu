@@ -2,10 +2,10 @@
   <div class="performance-targets">
     <div class="head_remind">*本模块按照最小粒度“人/月”设置销售业绩目标</div>
     <div class="container">
-      <el-tabs v-model="activeName" @tab-click="handleTabChange">
+      <!-- <el-tabs v-model="activeName" @tab-click="handleTabChange">
         <el-tab-pane label="客户字段" name="1"></el-tab-pane>
         <el-tab-pane label="报名字段" name="2"></el-tab-pane>
-      </el-tabs>
+      </el-tabs> -->
       <div class="client_head">
         <!--搜索模块-->
         <SearchList
@@ -13,9 +13,9 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div>
+        <!-- <div>
           <el-button type="primary" @click="handleAdd">添加字段</el-button>
-        </div>
+        </div> -->
       </div>
       <!--表格-->
       <div class="userTable">
@@ -47,15 +47,12 @@
           >
           </el-table-column>
           <el-table-column
-            prop="has_question"
-            label="字段属性"
+            prop="field_name"
+            label="字段key"
             min-width="80"
             align="center"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>{{ row.state ? "自定义字段" : "默认字段" }}</span>
-            </template>
           </el-table-column>
           <el-table-column
             prop="field_type"
@@ -68,7 +65,7 @@
               <span>{{ fieldTypeMap[row.field_type] }}</span>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="has_question"
             label="必填"
             min-width="70"
@@ -102,7 +99,7 @@
               >
               </el-switch>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             label="操作"
             fixed="right"
@@ -113,12 +110,9 @@
               <el-button type="text" @click="handleEdit(row.field_id)"
                 >编辑</el-button
               >
-              <el-button
-                v-if="row.state"
-                type="text"
-                @click="deleteConfirm(row.field_id)"
+              <!-- <el-button type="text" @click="deleteConfirm(row.field_id)"
                 >删除</el-button
-              >
+              > -->
             </template>
           </el-table-column>
         </el-table>

@@ -255,3 +255,27 @@ export function getCrmOrderDetail(params) {
         params
     })
 }
+// crm创建回款记录
+export function payLogCreate(data) {
+    return request({
+        url: 'CrmOrder/payLogCreate',
+        method: 'post',
+        data
+    })
+}
+// crm客户列表
+export function getCrmCustomerList(data) {
+    return request({
+        url: 'CrmCustomer/index',
+        method: 'post',
+        data
+    })
+}
+// crm获取自定义字段的选项
+export function getCustomfieldOptions(params) {
+    return request({
+        url: '/Customfield/getInfo',
+        method: 'get',
+        params
+    })
+}
