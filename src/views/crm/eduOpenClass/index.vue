@@ -31,7 +31,7 @@
         >
           <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
-            prop="order_id"
+            prop="uid"
             label="ID"
             show-overflow-tooltip
             width="70"

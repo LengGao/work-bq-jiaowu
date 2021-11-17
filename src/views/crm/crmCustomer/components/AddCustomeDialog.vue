@@ -218,7 +218,6 @@ export default {
         from: [{ required: true, message: "请选择", trigger: "change" }],
       },
       addLoading: false,
-      fromOptions: [],
       eduOptions: [
         {
           value: 1,
