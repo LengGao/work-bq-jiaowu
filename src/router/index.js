@@ -867,12 +867,16 @@ export const asyncRouter = [
   {
     path: '/channel',
     component: Layout,
-    redirect: '/channel/approveManage',
+    redirect: '/channel/distributeProject',
     meta: { title: '渠道管理' },
     name: 'channel',
     children: [
-
-
+      {
+        path: 'distributeProject',
+        name: 'distributeProject',
+        component: () => import('@/views/crm/distributeProject/index.vue'),
+        meta: { title: '分发项目' },
+      },
     ]
   },
   {

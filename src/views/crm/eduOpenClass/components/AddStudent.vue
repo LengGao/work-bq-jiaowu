@@ -203,13 +203,7 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >保 存</el-button
-      >
-      <el-button
-        type="primary"
-        :loading="addLoading"
-        @click="submitForm('formData', 1)"
-        >保存并报名</el-button
+        >开 课</el-button
       >
     </span>
   </el-dialog>

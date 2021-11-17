@@ -311,3 +311,27 @@ export function entryLog(data) {
         data
     })
 }
+// 开课
+export function openCourse(params) {
+    return request({
+        url: 'CrmOrder/openCourse',
+        method: 'get',
+        params
+    })
+}
+// 分发项目列表
+export function getProjectOrgList(params) {
+    return request({
+        url: 'ProjectOrg/projectIndex',
+        method: 'get',
+        params
+    })
+}
+// 分发项目列表-分发
+export function sendClassType(data) {
+    return request({
+        url: 'ProjectOrg/sendClassType',
+        method: 'post',
+        data
+    })
+}

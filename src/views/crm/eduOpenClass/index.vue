@@ -39,14 +39,14 @@
           </el-table-column>
           <el-table-column
             prop="surname"
-            label="客户姓名"
+            label="学生姓名"
             min-width="90"
             show-overflow-tooltip
           >
-            <template slot-scope="scope">
-              <div class="link" @click="coursDetail(scope.row.uid)">
-                {{ scope.row.surname }}
-              </div>
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="toStudentDetail(row.uid)">
+                {{ row.surname }}
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -61,7 +61,7 @@
           </el-table-column>
           <el-table-column
             prop="from_institution_name"
-            label="客户来源"
+            label="所属机构"
             min-width="130"
             show-overflow-tooltip
           >
@@ -75,60 +75,63 @@
           </el-table-column>
           <el-table-column
             prop="project_name"
-            label="客户属性"
+            label="客户性质"
             min-width="180"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="pay_money"
-            label="成交状态"
-            min-width="90"
+            prop="create_time"
+            label="报名时间"
+            min-width="160"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>￥{{ row.pay_money }}</span>
-            </template>
           </el-table-column>
 
           <el-table-column
-            prop="overdue_money"
-            label="客户标签"
-            min-width="90"
+            prop="project_name"
+            label="项目名称"
+            min-width="220"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="course_name"
+            label="课程名称"
+            min-width="140"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="pay_type"
+            label="开课状态"
+            min-width="120"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span style="color: #f76c6c">￥{{ row.overdue_money }}</span>
+              <span
+                v-if="row.open_course"
+                class="approve-status approve-status--success"
+                >已开课</span
+              >
+              <span v-else class="approve-status">未开课</span>
             </template>
-          </el-table-column>
-          <el-table-column
-            prop="pay_type"
-            label="最后跟进时间"
-            min-width="120"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="pay_type"
-            label="创建时间"
-            min-width="120"
-            show-overflow-tooltip
-          >
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
-              <el-button type="text" @click="signUpVisible = true"
-                >报名</el-button
+              <el-button
+                type="text"
+                v-if="!row.open_course"
+                @click="openCourseConfirm(row.order_id)"
+                >开课</el-button
               >
-              <el-button type="text">客户详情</el-button>
+              <el-button type="text" @click="toStudentDetail(row.uid)"
+                >学生详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <div>
-            <el-button>变更所属老师</el-button>
-            <el-button>迁移到公海</el-button>
-          </div>
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -138,7 +141,7 @@
         </div>
       </div>
     </div>
-    <AddStudent v-model="dialogVisible" @on-success="getOrderList" />
+    <AddStudent v-model="dialogVisible" @on-success="getCrmOrderList" />
   </section>
 </template>
 
@@ -147,9 +150,9 @@ import AddStudent from "./components/AddStudent";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils";
-import { getInstitutionSelectData } from "@/api/sou";
-import { getAdminSelect } from "@/api/eda";
-import { getOrderList } from "@/api/fina";
+import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { getAdminSelect, getproject } from "@/api/eda";
+import { getCrmOrderList, openCourse } from "@/api/crm";
 export default {
   name: "eduOrder",
   components: {
@@ -190,7 +193,7 @@ export default {
           key: "from_org",
           type: "cascader",
           attrs: {
-            placeholder: "推荐机构",
+            placeholder: "所属机构",
             clearable: true,
             filterable: true,
             options: [],
@@ -254,6 +257,37 @@ export default {
           },
         },
         {
+          key: "category_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "所属分类（多选）",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
+          width: 280,
+          attrs: {
+            placeholder: "所属项目（多选）",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "客户姓名/手机号码",
@@ -261,15 +295,55 @@ export default {
         },
       ],
       dialogVisible: false,
-      signUpVisible: false,
     };
   },
   created() {
-    this.getOrderList();
+    this.getCrmOrderList();
     this.getInstitutionSelectData();
     this.getAdminSelect();
+    this.getCateList();
+    this.getproject();
   },
   methods: {
+    // 开课
+    openCourseConfirm(order_id) {
+      this.$confirm("是否确定一键开通课程和题库？", "开课提醒", {
+        type: "warning",
+      })
+        .then(() => {
+          this.openCourse(order_id);
+        })
+        .catch(() => {});
+    },
+    async openCourse(order_id) {
+      const data = { order_id };
+      const res = await openCourse(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getCrmOrderList();
+      }
+    },
+    // 获取项目下拉
+    async getproject() {
+      const res = await getproject();
+      if (res.code === 0) {
+        this.searchOptions[6].options = res.data;
+      }
+    },
+
+    // 获取所属分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[5].attrs.options = cloneOptions(
+          res.data,
+          "category_name",
+          "category_id",
+          "son"
+        );
+      }
+    },
     // 获取所属老师
     async getAdminSelect() {
       const data = { list: true };
@@ -283,28 +357,32 @@ export default {
       this.searchData = {
         ...data,
         from_org: data.from_org ? data.from_org.pop() : "",
+        category_id: Array.isArray(data.category_id)
+          ? data.category_id.join(",")
+          : "",
+        project_id: Array.isArray(data.project_id)
+          ? data.project_id.join(",")
+          : "",
+        date: Array.isArray(data.date) ? data.date.join(" - ") : "",
       };
-      this.getOrderList(data);
+      this.getCrmOrderList(data);
     },
     handleSizeChange(size) {
       this.pageSize = size;
       this.pageNum = 1;
-      this.getOrderList();
+      this.getCrmOrderList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getOrderList();
+      this.getCrmOrderList();
     },
-    async getOrderList() {
+    async getCrmOrderList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        date: Array.isArray(this.searchData.date)
-          ? this.searchData.date.join(" - ")
-          : "",
       };
       this.listLoading = true;
-      const res = await getOrderList(data);
+      const res = await getCrmOrderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -352,35 +430,20 @@ header {
   justify-content: space-between;
   margin: 10px 0;
 }
-.action-header {
-  .icon-setting {
-    margin-left: auto;
-    font-size: 20px;
+.approve-status {
+  &::before {
+    display: inline-block;
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #fd6500;
+    vertical-align: middle;
+    margin-right: 2px;
   }
-  & > span {
-    margin-left: auto;
-  }
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.table_bottom {
-  display: flex;
-  justify-content: space-between;
-}
-</style>
-<style lang="less">
-.setting {
-  padding: 10px 0;
-  .el-checkbox-group {
-    .el-checkbox {
-      width: 100%;
-      margin-right: 0;
-      padding: 5px 10px;
-      &:hover {
-        background-color: #ecf5ff;
-      }
-    }
+  &--success::before {
+    background-color: #43d100;
   }
 }
 </style>
+
