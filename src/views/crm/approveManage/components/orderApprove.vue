@@ -132,6 +132,7 @@
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -155,6 +156,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         date: "",
@@ -372,14 +374,13 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        category_id: Array.isArray(data.category_id)
-          ? data.category_id.join(",")
-          : "",
-        project_id: Array.isArray(data.project_id)
-          ? data.project_id.join(",")
-          : "",
       };
       this.getCrmApproveOrder(data);
+    },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getCrmApproveOrder();
     },
     handlePageChange(val) {
       this.pageNum = val;
@@ -388,9 +389,16 @@ export default {
     async getCrmApproveOrder() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
+          : "",
+        category_id: Array.isArray(this.searchData.category_id)
+          ? this.searchData.category_id.join(",")
+          : "",
+        project_id: Array.isArray(this.searchData.project_id)
+          ? this.searchData.project_id.join(",")
           : "",
       };
       this.listLoading = true;

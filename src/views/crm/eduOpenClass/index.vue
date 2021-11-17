@@ -164,11 +164,10 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
-        project_id: "",
-        category_id: "",
         staff_id: "",
         pay_status: "",
       },
@@ -357,13 +356,6 @@ export default {
       this.searchData = {
         ...data,
         from_org: data.from_org ? data.from_org.pop() : "",
-        category_id: Array.isArray(data.category_id)
-          ? data.category_id.join(",")
-          : "",
-        project_id: Array.isArray(data.project_id)
-          ? data.project_id.join(",")
-          : "",
-        date: Array.isArray(data.date) ? data.date.join(" - ") : "",
       };
       this.getCrmOrderList(data);
     },
@@ -379,7 +371,17 @@ export default {
     async getCrmOrderList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
+        date: Array.isArray(this.searchData.date)
+          ? this.searchData.date.join(" - ")
+          : "",
+        project_id: Array.isArray(this.searchData.project_id)
+          ? this.searchData.project_id.join(",")
+          : "",
+        category_id: Array.isArray(this.searchData.category_id)
+          ? this.searchData.category_id.join(",")
+          : "",
       };
       this.listLoading = true;
       const res = await getCrmOrderList(data);

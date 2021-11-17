@@ -1,7 +1,12 @@
 <template>
-  <div class="approve-config" v-loading="loading">
+  <div class="approve-config">
     <div class="head_remind">*本模块用于设置订单的审批流程</div>
-    <div class="container">
+    <el-tabs class="tab" v-model="type" @tab-click="getApproveConfig">
+      <el-tab-pane label="订单审批" name="order_review"></el-tab-pane>
+      <el-tab-pane label="回款审批" name="receivable_review"></el-tab-pane>
+      <el-tab-pane label="异动审批" name="move_review"></el-tab-pane>
+    </el-tabs>
+    <div class="container" v-loading="loading">
       <Title text="审批开关" class="switch">
         <el-switch
           v-model="status"
@@ -103,6 +108,7 @@ export default {
       staffOptions: [],
       loading: false,
       saveLoding: false,
+      type: "order_review",
       nameMap: {
         1: "一级审批",
         2: "二级审批",
@@ -134,6 +140,7 @@ export default {
       const data = {
         arr,
         status: this.status,
+        type: this.type,
       };
       this.saveLoding = true;
       const res = await setApproveConfig(data).catch(() => {});
@@ -150,7 +157,10 @@ export default {
     },
     async getApproveConfig() {
       this.loading = true;
-      const res = await getApproveConfig().catch(() => {});
+      const data = {
+        type: this.type,
+      };
+      const res = await getApproveConfig(data).catch(() => {});
       this.loading = false;
       if (res.code === 0) {
         this.status = res.data.switch.content;
@@ -208,5 +218,8 @@ export default {
   button {
     width: 200px;
   }
+}
+.tab {
+  margin: 20px 20px 0;
 }
 </style>

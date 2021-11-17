@@ -219,6 +219,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       tableHeader: [
         "ID",
@@ -246,10 +247,7 @@ export default {
       ],
       searchData: {
         day: "",
-        project_id: "",
-        category_id: "",
         staff_id: "",
-        pay_status: "",
       },
       searchOptions: [
         {
@@ -427,6 +425,7 @@ export default {
     async getCrmCustomerList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         day: Array.isArray(this.searchData.day)
           ? this.searchData.day.join(" - ")

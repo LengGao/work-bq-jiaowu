@@ -4,7 +4,7 @@
     <div class="container">
       <el-tabs v-model="activeName">
         <el-tab-pane label="招生订单" name="orderApprove"></el-tab-pane>
-        <el-tab-pane label="异动审批" name="changeApprove"></el-tab-pane>
+        <!-- <el-tab-pane label="异动审批" name="changeApprove"></el-tab-pane> -->
       </el-tabs>
       <component :is="getComponent" />
     </div>

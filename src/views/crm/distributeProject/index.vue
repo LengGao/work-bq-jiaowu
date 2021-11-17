@@ -155,12 +155,12 @@ export default {
       pageLeftNum: 1,
       pageLeftSize: 20,
       searchLeftData: {
-        search_box: "",
-        cate_id: [],
+        keyword: "",
+        category_id: [],
       },
       searchLeftOptions: [
         {
-          key: "cate_id",
+          key: "category_id",
           type: "cascader",
           attrs: {
             placeholder: "所属分类",
@@ -171,7 +171,7 @@ export default {
           },
         },
         {
-          key: "search_box",
+          key: "keyword",
           attrs: {
             placeholder: "项目名称",
           },
@@ -184,11 +184,11 @@ export default {
       pageRightNum: 1,
       pageRightSize: 20,
       searchRightData: {
-        search_box: "",
+        keyword: "",
       },
       searchRightOptions: [
         {
-          key: "search_box",
+          key: "keyword",
           attrs: {
             placeholder: "机构名称",
           },
@@ -251,7 +251,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.handleReset();
-        // this.setProjectPrice(projectPriceMap);
+        this.setProjectPrice(projectPriceMap);
       }
     },
     handleRightSelection(selection) {
@@ -264,7 +264,7 @@ export default {
       this.pageLeftNum = 1;
       this.searchLeftData = {
         ...data,
-        cate_id: data.cate_id.pop(),
+        category_id: data.category_id.pop(),
       };
       this.getProjectOrgList();
     },
@@ -292,8 +292,16 @@ export default {
       this.classTypes = res.data.class_type;
       this.listLeftData = res.data.list.map((item) => {
         item[item.id] = [];
-        res.data.class_type.forEach((child) => {
-          item[item.id].push({ ...child, price: "" });
+        res.data.class_type.forEach((child, index) => {
+          item[item.id].push({
+            ...child,
+            price:
+              (projectPrice &&
+                projectPrice[item.id] &&
+                projectPrice[item.id][index] &&
+                projectPrice[item.id][index].price) ||
+              "",
+          });
         });
         return {
           ...item,
