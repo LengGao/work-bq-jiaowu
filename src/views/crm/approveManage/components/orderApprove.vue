@@ -147,7 +147,7 @@ import { getCateList } from "@/api/sou";
 import { getCrmApproveOrder, crmOrderApprove } from "@/api/crm";
 import { cloneOptions } from "@/utils/index";
 export default {
-  name: "eduOrder",
+  name: "orderApprove",
   components: {
     PartiallyHidden,
   },

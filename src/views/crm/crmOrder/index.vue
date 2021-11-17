@@ -290,7 +290,7 @@ import { generate } from "@/api/fina";
 import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
-  name: "eduOrder",
+  name: "crmOrder",
   components: {
     ImportOrder,
     CollectionOrder,

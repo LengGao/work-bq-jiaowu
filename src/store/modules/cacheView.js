@@ -33,14 +33,20 @@ const searchCache = {
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
             studentList: ['studentChapter'],
-            studentDetail: ['studentChapter', 'learningDetails', 'orderdetail', 'shift', 'classDetail'],
+            studentDetail: ['studentChapter', 'learningDetails', 'orderdetail', 'shift', 'classDetail', 'crmOrderDetail'],
+            cusdetail: ['studentChapter', 'learningDetails', 'orderdetail', 'shift', 'classDetail', 'crmOrderDetail'],
             questionStatistics: ['learningDetails', 'studentDetail'],
             classDetail: ['learningDetails', 'studentDetail', 'studentChapter'],
             projectStatistics: ['studentDetail'],
             projectManage: ['projectStatistics'],
             institutionAccount: ['institutionConfig', 'institutionUser'],
             customerProject: ['orderdetail', 'cusdetail'],
-            eduOrder: ['orderdetail', 'cusdetail']
+            eduOrder: ['orderdetail', 'cusdetail'],
+            crmCustomer: ['cusdetail'],
+            crmOrder: ['crmOrderDetail', 'cusdetail'],
+            eduOpenClass: ['studentDetail'],
+            approveManage: ['crmOrderDetail', 'cusdetail'],
+            returnPayment: ['crmOrderDetail'],
         },
         // 当前缓存的页面
         currentCache: []

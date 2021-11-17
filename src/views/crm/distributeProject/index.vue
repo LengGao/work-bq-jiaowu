@@ -146,7 +146,7 @@ import { getCateList } from "@/api/sou";
 import { getOrgList } from "@/api/institution";
 import { getProjectOrgList, sendClassType } from "@/api/crm";
 export default {
-  name: "distributeCourses",
+  name: "distributeProject",
   data() {
     return {
       listLeftData: [],

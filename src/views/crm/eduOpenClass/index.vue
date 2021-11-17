@@ -154,7 +154,7 @@ import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { getCrmOrderList, openCourse } from "@/api/crm";
 export default {
-  name: "eduOrder",
+  name: "eduOpenClass",
   components: {
     PartiallyHidden,
     AddStudent,

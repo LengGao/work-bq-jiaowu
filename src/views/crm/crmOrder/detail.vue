@@ -50,7 +50,7 @@
 <script>
 import { getCrmOrderDetail, crmOrderApprove } from "@/api/crm";
 export default {
-  name: "changeDetail",
+  name: "crmOrderDetail",
   data() {
     return {
       activeName: "BasicInfo",

@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: "changeEdit",
+  name: "internationalWaters",
   data() {
     return {
       activeName: "CRM",

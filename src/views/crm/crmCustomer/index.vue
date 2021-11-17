@@ -28,8 +28,9 @@
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
           :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
         >
-          <el-table-column type="selection" width="45"> </el-table-column>
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             v-if="checkHeader.includes('ID')"
             prop="uid"
@@ -171,7 +172,7 @@
         </el-table>
         <div class="table_bottom">
           <div>
-            <el-button>变更所属老师</el-button>
+            <el-button @click="openTeacherDialog">变更所属老师</el-button>
             <el-button>迁移到公海</el-button>
           </div>
           <page
@@ -193,6 +194,11 @@
       :user-info="checkedUser"
       @on-success="getCrmCustomerList"
     />
+    <UpdateTeacher
+      v-model="updateTeacherDialog"
+      :ids="checkedIds"
+      @on-success="getCrmCustomerList"
+    />
   </section>
 </template>
 
@@ -202,17 +208,19 @@ import CustomeSignUp from "./components/CustomeSignUp";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect } from "@/api/eda";
+import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import {
   getCrmCustomerList,
   getCrmTags,
   getCustomfieldOptions,
 } from "@/api/crm";
 export default {
-  name: "eduOrder",
+  name: "crmCustomer",
   components: {
     PartiallyHidden,
     AddCustomeDialog,
     CustomeSignUp,
+    UpdateTeacher,
   },
   data() {
     return {
@@ -356,6 +364,8 @@ export default {
       signUpVisible: false,
       checkedUser: {},
       coustomFrom: [],
+      checkedIds: [],
+      updateTeacherDialog: false,
     };
   },
   created() {
@@ -365,6 +375,16 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.id);
+    },
+    openTeacherDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择学生！");
+        return;
+      }
+      this.updateTeacherDialog = true;
+    },
     // 获取客户来源
     async getCustomfieldOptions() {
       const data = {
