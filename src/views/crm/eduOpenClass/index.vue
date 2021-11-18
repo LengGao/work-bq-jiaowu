@@ -56,7 +56,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <PartiallyHidden :value="row.mobile" />
+              <PartiallyHidden :value="row.mobile || ''" />
             </template>
           </el-table-column>
           <el-table-column
@@ -141,7 +141,11 @@
         </div>
       </div>
     </div>
-    <AddStudent v-model="dialogVisible" @on-success="getCrmOrderList" />
+    <AddStudent
+      v-model="dialogVisible"
+      :institution-options="institutionOptions"
+      @on-success="getCrmOrderList"
+    />
   </section>
 </template>
 
@@ -294,6 +298,7 @@ export default {
         },
       ],
       dialogVisible: false,
+      institutionOptions: [],
     };
   },
   created() {
@@ -395,12 +400,13 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
-          res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
+        this.searchOptions[1].attrs.options = this.institutionOptions =
+          cloneOptions(
+            res.data,
+            "institution_name",
+            "institution_id",
+            "children"
+          );
       }
     },
     coursDetail(uid) {

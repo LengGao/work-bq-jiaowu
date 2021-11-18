@@ -335,3 +335,21 @@ export function sendClassType(data) {
         data
     })
 }
+// 教务开课，机构班型
+export function getInstitutionClassType(data) {
+    return request({
+        url: 'CrmCourse/classType',
+        method: 'post',
+        data
+    })
+}
+
+// 教务开课
+export function openCrmOrder(data) {
+    return request({
+        url: 'CrmOrder/open',
+        method: 'post',
+        data
+    })
+}
+

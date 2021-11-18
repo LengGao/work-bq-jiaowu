@@ -39,21 +39,27 @@
         <template slot-scope="{ row }">
           <el-select
             v-if="row.isEdit"
-            v-model="row.value2"
+            v-model="row.channel_staff_id"
             placeholder="请选择"
             filterable
             clearable
           >
             <el-option
-              v-for="item in cities"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in staffOptions"
+              :key="item.staff_id"
+              :label="item.staff_name"
+              :value="item.staff_id"
             >
-              <span style="float: left">{{ item.label }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.value
-              }}</span>
+              <span style="float: left">{{ item.staff_name }}</span>
+              <span
+                style="
+                  float: right;
+                  color: #8492a6;
+                  font-size: 13px;
+                  margin: 0 15px 0 10px;
+                "
+                >{{ item.department_name }}</span
+              >
             </el-option>
           </el-select>
           <span v-else>{{ row.channel_staff_name }}</span>
@@ -69,21 +75,28 @@
         <template slot-scope="{ row }">
           <el-select
             v-if="row.isEdit"
-            v-model="row.value1"
+            v-model="row.education_staff_id_arr"
             placeholder="请选择"
             filterable
             clearable
+            multiple
           >
             <el-option
-              v-for="item in cities"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in staffOptions"
+              :key="item.staff_id"
+              :label="item.staff_name"
+              :value="item.staff_id + ''"
             >
-              <span style="float: left">{{ item.label }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{
-                item.value
-              }}</span>
+              <span style="float: left">{{ item.staff_name }}</span>
+              <span
+                style="
+                  float: right;
+                  color: #8492a6;
+                  font-size: 13px;
+                  margin: 0 15px 0 10px;
+                "
+                >{{ item.department_name }}</span
+              >
             </el-option>
           </el-select>
           <span v-else>{{ row.education_staff_name_str }}</span>
@@ -96,7 +109,10 @@
         align="center"
       >
         <template slot-scope="{ row }">
-          <el-button type="text" v-if="row.isEdit" @click="handleSave(row)"
+          <el-button
+            type="text"
+            v-if="row.isEdit"
+            @click="setStudentReception(row)"
             >保存</el-button
           >
           <el-button type="text" v-if="row.isEdit" @click="row.isEdit = false"
@@ -112,48 +128,48 @@
 </template>
 
 <script>
-import { getOrgStudentReceptionList } from "@/api/institution";
+import {
+  getOrgStudentReceptionList,
+  getStaffSelect,
+  setStudentReception,
+} from "@/api/institution";
 export default {
   name: "InsitutionSeas",
   data() {
     return {
       listData: [],
       listLoading: false,
-      cities: [
-        {
-          value: "Beijing",
-          label: "北京",
-        },
-        {
-          value: "Shanghai",
-          label: "上海",
-        },
-        {
-          value: "Nanjing",
-          label: "南京",
-        },
-        {
-          value: "Chengdu",
-          label: "成都",
-        },
-        {
-          value: "Shenzhen",
-          label: "深圳",
-        },
-        {
-          value: "Guangzhou",
-          label: "广州",
-        },
-      ],
+      staffOptions: [],
     };
   },
 
   created() {
     this.getOrgStudentReceptionList();
+    this.getStaffSelect();
   },
   methods: {
-    handleSave(row) {
-      console.log(row);
+    async setStudentReception({
+      channel_staff_id,
+      category_id: cate_id,
+      education_staff_id_arr,
+    }) {
+      const data = {
+        org_id: this.$route.query?.institution_id || "",
+        channel_staff_id,
+        cate_id,
+        education_staff_id_arr,
+      };
+      const res = await setStudentReception(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getOrgStudentReceptionList();
+      }
+    },
+    async getStaffSelect() {
+      const res = await getStaffSelect();
+      if (res.code === 0) {
+        this.staffOptions = res.data;
+      }
     },
     // 公海学员
     async getOrgStudentReceptionList() {

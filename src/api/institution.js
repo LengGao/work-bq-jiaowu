@@ -409,3 +409,19 @@ export function getOrgStudentReceptionList(params) {
         params,
     })
 }
+// 机构详情-学生对接列表-获取员工选项
+export function getStaffSelect(params) {
+    return request({
+        url: '/Merchant/getStaffSelect',
+        method: 'get',
+        params
+    })
+}
+// 机构详情-学生对接列表-保存
+export function setStudentReception(params) {
+    return request({
+        url: '/Merchant/setStudentReception',
+        method: 'get',
+        params
+    })
+}
