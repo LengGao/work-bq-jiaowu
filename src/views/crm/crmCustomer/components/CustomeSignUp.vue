@@ -537,8 +537,9 @@ export default {
       this.getCateProjectOption();
       this.getStaffList();
       this.getCustomfieldOptions();
-      this.formData.surname = this.userInfo.name;
+      this.formData.surname = this.userInfo.name || this.userInfo.surname;
       this.formData.mobile = this.userInfo.mobile;
+      this.formData.id_card_number = this.userInfo.id_card_number || "";
     },
     // 获取支付方式
     async getCustomfieldOptions() {

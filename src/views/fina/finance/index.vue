@@ -41,18 +41,18 @@
         :uid="detailData.uid"
       />
       <!-- 报名 -->
-      <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
+      <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
     </section>
   </div>
 </template>
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
-import CustomeRegist from "@/views/etm/components/customeRegist";
+import CustomeSignUp from "@/views/crm/crmCustomer/components/CustomeSignUp";
 export default {
   name: "cusdetail",
   components: {
-    CustomeRegist,
+    CustomeSignUp,
   },
   data() {
     return {

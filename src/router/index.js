@@ -1087,13 +1087,6 @@ export const asyncRouter = [
         meta: { title: '添加角色', icon: 'product-add' },
         hidden: true,
       },
-      // {
-      //   path: 'cusdetail',
-      //   name: 'cusdetail',
-      //   component: () => import('@/views/fina/finance/cusdetail.vue'),
-      //   meta: { title: '客户详情', icon: 'product-cate' },
-      //   hidden: true,
-      // },
     ],
   },
 

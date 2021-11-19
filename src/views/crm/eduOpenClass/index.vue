@@ -74,7 +74,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="project_name"
+            prop="customer_type"
             label="客户性质"
             min-width="180"
             show-overflow-tooltip
@@ -141,11 +141,7 @@
         </div>
       </div>
     </div>
-    <AddStudent
-      v-model="dialogVisible"
-      :institution-options="institutionOptions"
-      @on-success="getCrmOrderList"
-    />
+    <AddStudent v-model="dialogVisible" @on-success="getCrmOrderList" />
   </section>
 </template>
 

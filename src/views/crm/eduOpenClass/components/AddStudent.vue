@@ -26,6 +26,7 @@
           :rules="[{ required: true, message: `请输入`, trigger: 'blur' }]"
         >
           <el-input
+            :disabled="!!userInfo.surname"
             v-model="formData.student[index].surname"
             class="input"
             placeholder="请输入客户姓名"
@@ -44,6 +45,7 @@
           ]"
         >
           <el-input
+            :disabled="!!userInfo.surname"
             class="input"
             type="number"
             v-model="formData.student[index].mobile"
@@ -64,6 +66,7 @@
           ]"
         >
           <el-input
+            :disabled="!!userInfo.surname"
             class="input"
             type="number"
             v-model="formData.student[index].id_card_number"
@@ -76,7 +79,11 @@
             v-if="formData.student.length > 1"
             @click="handleDelForm(index)"
           ></i>
-          <i class="el-icon-circle-plus-outline add" @click="handleAddForm"></i>
+          <i
+            v-if="!userInfo.surname"
+            class="el-icon-circle-plus-outline add"
+            @click="handleAddForm"
+          ></i>
         </span>
       </div>
       <Title text="开课信息"></Title>
@@ -333,6 +340,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    userInfo: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -478,6 +489,16 @@ export default {
     handleOpen() {
       this.getCateProjectOption();
       this.getInstitutionList();
+      if (this.userInfo.surname) {
+        this.formData.student = [
+          {
+            surname: this.userInfo.surname,
+            mobile: this.userInfo.mobile,
+            id_card_number: this.userInfo.id_card_number,
+            id: 1,
+          },
+        ];
+      }
     },
     async getInstitutionList() {
       const data = {
