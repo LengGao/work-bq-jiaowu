@@ -60,7 +60,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="from_institution_name"
+            prop="institution_name"
             label="所属机构"
             min-width="130"
             show-overflow-tooltip
@@ -95,13 +95,13 @@
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="course_name"
             label="课程名称"
             min-width="140"
             show-overflow-tooltip
           >
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="pay_type"
             label="开课状态"
@@ -122,7 +122,7 @@
               <el-button
                 type="text"
                 v-if="!row.open_course"
-                @click="openCourseConfirm(row.order_id)"
+                @click="eduOpenCourseConfirm(row.id)"
                 >开课</el-button
               >
               <el-button type="text" @click="toStudentDetail(row.uid)"
@@ -141,7 +141,7 @@
         </div>
       </div>
     </div>
-    <AddStudent v-model="dialogVisible" @on-success="getCrmOrderList" />
+    <AddStudent v-model="dialogVisible" @on-success="projectUser" />
   </section>
 </template>
 
@@ -152,7 +152,7 @@ import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getAdminSelect, getproject } from "@/api/eda";
-import { getCrmOrderList, openCourse } from "@/api/crm";
+import { projectUser, eduOpenCourse } from "@/api/crm";
 export default {
   name: "eduOpenClass",
   components: {
@@ -169,7 +169,8 @@ export default {
       searchData: {
         keyword: "",
         staff_id: "",
-        pay_status: "",
+        type: "",
+        open_course: "",
       },
       searchOptions: [
         {
@@ -212,7 +213,7 @@ export default {
           },
         },
         {
-          key: "pay_status",
+          key: "type",
           type: "select",
           width: 140,
           options: [
@@ -236,7 +237,7 @@ export default {
           },
         },
         {
-          key: "pay_status",
+          key: "open_course",
           type: "select",
           width: 140,
           options: [
@@ -298,7 +299,7 @@ export default {
     };
   },
   created() {
-    this.getCrmOrderList();
+    this.projectUser();
     this.getInstitutionSelectData();
     this.getAdminSelect();
     this.getCateList();
@@ -306,21 +307,21 @@ export default {
   },
   methods: {
     // 开课
-    openCourseConfirm(order_id) {
+    eduOpenCourseConfirm(id) {
       this.$confirm("是否确定一键开通课程和题库？", "开课提醒", {
         type: "warning",
       })
         .then(() => {
-          this.openCourse(order_id);
+          this.eduOpenCourse(id);
         })
         .catch(() => {});
     },
-    async openCourse(order_id) {
-      const data = { order_id };
-      const res = await openCourse(data);
+    async eduOpenCourse(id) {
+      const data = { id };
+      const res = await eduOpenCourse(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getCrmOrderList();
+        this.projectUser();
       }
     },
     // 获取项目下拉
@@ -358,18 +359,18 @@ export default {
         ...data,
         from_org: data.from_org ? data.from_org.pop() : "",
       };
-      this.getCrmOrderList(data);
+      this.projectUser(data);
     },
     handleSizeChange(size) {
       this.pageSize = size;
       this.pageNum = 1;
-      this.getCrmOrderList();
+      this.projectUser();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getCrmOrderList();
+      this.projectUser();
     },
-    async getCrmOrderList() {
+    async projectUser() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
@@ -385,7 +386,7 @@ export default {
           : "",
       };
       this.listLoading = true;
-      const res = await getCrmOrderList(data);
+      const res = await projectUser(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

@@ -312,9 +312,9 @@ export function entryLog(data) {
     })
 }
 // 开课
-export function openCourse(params) {
+export function eduOpenCourse(params) {
     return request({
-        url: 'CrmOrder/openCourse',
+        url: 'CrmOrder/eduOpenCourse',
         method: 'get',
         params
     })
@@ -348,6 +348,14 @@ export function getInstitutionClassType(data) {
 export function openCrmOrder(data) {
     return request({
         url: 'CrmOrder/open',
+        method: 'post',
+        data
+    })
+}
+// 教务开课列表
+export function projectUser(data) {
+    return request({
+        url: 'CrmOrder/projectUser',
         method: 'post',
         data
     })
