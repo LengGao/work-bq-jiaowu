@@ -11,6 +11,7 @@
       :on-success="handleUploadSuccess"
       :before-upload="beforeUpload"
       :drag="drag"
+      :data="{ type: dataType }"
     >
       <div
         v-if="uploadImg && !uploadLoading"
@@ -82,6 +83,10 @@ export default {
     height: {
       type: [String, Number],
       default: 120,
+    },
+    dataType: {
+      type: String,
+      default: "",
     },
   },
   data() {
