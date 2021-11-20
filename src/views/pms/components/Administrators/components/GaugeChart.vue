@@ -4,15 +4,30 @@
     <div class="gauge-info">
       <div class="gauge-info-item">
         <p class="gauge-info-item-title">业绩目标</p>
-        <p class="gauge-info-item-value">2200</p>
+        <p class="gauge-info-item-value">
+          {{ unitFormat(data.totalPerformance)
+          }}<span class="unit">{{
+            data.totalPerformance >= 10000 ? "万元" : "元"
+          }}</span>
+        </p>
       </div>
       <div class="gauge-info-item">
         <p class="gauge-info-item-title">订单金额</p>
-        <p class="gauge-info-item-value">2200</p>
+        <p class="gauge-info-item-value">
+          {{ unitFormat(data.orderMoney)
+          }}<span class="unit">{{
+            data.orderMoney >= 10000 ? "万元" : "元"
+          }}</span>
+        </p>
       </div>
       <div class="gauge-info-item">
         <p class="gauge-info-item-title">回款金额</p>
-        <p class="gauge-info-item-value">2200<span class="unit">万元</span></p>
+        <p class="gauge-info-item-value">
+          {{ unitFormat(data.payMoney)
+          }}<span class="unit">{{
+            data.payMoney >= 10000 ? "万元" : "元"
+          }}</span>
+        </p>
       </div>
     </div>
   </div>
@@ -20,14 +35,31 @@
 <script>
 export default {
   name: "GaugeChart",
-  data() {
-    return {};
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   mounted() {
     this.chartInit();
   },
+  watch: {
+    "data.completion"(val) {
+      this.chartInit(val);
+    },
+  },
   methods: {
-    chartInit() {
+    unitFormat(val) {
+      if (!val) {
+        return `0.00`;
+      }
+      if (val / 10000 >= 1) {
+        return (val / 10000).toFixed(2);
+      }
+      return (+val).toFixed(2);
+    },
+    chartInit(value = 0) {
       let myChart = this.$echarts.init(document.getElementById("gauge-chart"));
       myChart.setOption({
         series: [
@@ -84,7 +116,7 @@ export default {
             },
             data: [
               {
-                value: 19.999,
+                value,
                 name: "完成率(%)",
               },
             ],

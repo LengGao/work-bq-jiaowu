@@ -41,6 +41,7 @@
                 multiple: true,
               }"
               v-model="departmentIds"
+              @change="getBindUser"
             ></el-cascader>
           </div>
           <div class="form-item">
@@ -78,7 +79,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { getDepartmentlists, getStaffList } from "@/api/set";
+import { terminalGroup, getBindUser } from "@/api/workbench";
 export default {
   name: "workbench",
   data() {
@@ -102,19 +103,18 @@ export default {
     },
   },
   created() {
-    this.getDepartmentlists();
-    this.getStaffList();
+    this.terminalGroup();
   },
   methods: {
-    async getStaffList() {
+    async getBindUser() {
       const data = {
-        limit: 99999,
+        group_id: this.departmentIds,
       };
-      const res = await getStaffList(data);
+      const res = await getBindUser(data);
       this.userOptions = res.data.list;
     },
-    async getDepartmentlists() {
-      const res = await getDepartmentlists();
+    async terminalGroup() {
+      const res = await terminalGroup();
       if (res.code === 0) {
         this.departMentOptions = res.data;
       }

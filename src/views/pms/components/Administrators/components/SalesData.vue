@@ -2,35 +2,57 @@
   <div class="sales-data">
     <div class="sales-data-item">
       <p class="sales-data-item-title">招生客户</p>
-      <p class="sales-data-item-value">999</p>
+      <p class="sales-data-item-value">{{ data.customerNum || 0 }}</p>
     </div>
     <div class="sales-data-item">
       <p class="sales-data-item-title">招生订单</p>
-      <p class="sales-data-item-value">999</p>
+      <p class="sales-data-item-value">{{ data.orderNum || 0 }}</p>
     </div>
     <div class="sales-data-item">
       <p class="sales-data-item-title">渠道学生</p>
-      <p class="sales-data-item-value">999</p>
+      <p class="sales-data-item-value">{{ data.channelCustomers || 0 }}</p>
     </div>
     <div class="sales-data-item">
       <p class="sales-data-item-title">机构回款</p>
-      <p class="sales-data-item-value">999</p>
+      <p class="sales-data-item-value">{{ data.channelOrder || 0 }}</p>
     </div>
     <div class="sales-data-item">
       <p class="sales-data-item-title">订单金额</p>
-      <p class="sales-data-item-value">999</p>
+      <p class="sales-data-item-value">
+        {{ unitFormat(data.orderMoney)
+        }}<span class="unit">{{
+          data.orderMoney >= 10000 ? "万元" : "元"
+        }}</span>
+      </p>
     </div>
     <div class="sales-data-item">
       <p class="sales-data-item-title">回款金额</p>
-      <p class="sales-data-item-value">999</p>
+      <p class="sales-data-item-value">
+        {{ unitFormat(data.payMoney)
+        }}<span class="unit">{{ data.payMoney >= 10000 ? "万元" : "元" }}</span>
+      </p>
     </div>
   </div>
 </template>
 <script>
 export default {
   name: "salesData",
-  data() {
-    return {};
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  methods: {
+    unitFormat(val) {
+      if (!val) {
+        return `0.00`;
+      }
+      if (val / 10000 >= 1) {
+        return (val / 10000).toFixed(2);
+      }
+      return val.toFixed(2);
+    },
   },
 };
 </script>
@@ -53,6 +75,9 @@ export default {
     &-value {
       font-size: 36px;
       color: #666;
+      span.unit {
+        font-size: 14px;
+      }
     }
   }
 }

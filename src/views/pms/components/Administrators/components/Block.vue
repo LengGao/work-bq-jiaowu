@@ -4,8 +4,8 @@
       <slot name="header-title"></slot>
       <slot name="header-center"></slot>
       <el-select
-        v-if="dateType == 1"
-        :value="value"
+        v-if="['1', '2'].includes(dateType)"
+        v-model="dateSlect"
         clearable
         filterable
         placeholder="请选择"
@@ -22,13 +22,38 @@
         </el-option>
       </el-select>
       <el-date-picker
-        v-else
-        :value="value"
+        v-if="dateType == 4"
+        v-model="mounth"
+        class="date-select"
         @change="handleDateSelectChange"
         type="month"
+        value-format="yyyy-MM"
         placeholder="选择月"
       >
       </el-date-picker>
+      <div v-if="dateType == 3">
+        <el-date-picker
+          class="date-select"
+          v-model="year"
+          @change="handleYearChange"
+          type="year"
+          value-format="yyyy"
+          placeholder="选择年"
+        >
+        </el-date-picker>
+        <el-select
+          v-model="yearType"
+          clearable
+          filterable
+          placeholder="请选择"
+          class="date-select"
+          @change="handleYearChange"
+        >
+          <i slot="prefix" class="el-icon-date"></i>
+          <el-option label="按月" value="1"> </el-option>
+          <el-option label="按季度" value="2"> </el-option>
+        </el-select>
+      </div>
     </div>
     <slot> </slot>
   </div>
@@ -42,51 +67,80 @@ export default {
       default: () => [],
     },
     dateType: {
-      type: [String, Number],
-      default: 1,
+      type: String,
+      default: "1",
     },
     value: {
-      type: String,
+      type: [String, Number],
       default: "",
     },
   },
 
   data() {
     return {
-      dateSlect: "",
+      dateSlect: 0,
+      yearType: "1",
+      year: new Date().getFullYear() + "",
+      mounth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
       dateTypeMap: {
         1: [
           {
             label: "今天",
-            value: 1,
-          },
-          {
-            label: "昨天",
-            value: 2,
-          },
-          {
-            label: "本月",
-            value: 3,
-          },
-          {
-            label: "上月",
-            value: 4,
-          },
-          {
-            label: "本季度",
-            value: 5,
-          },
-          {
-            label: "上季度",
             value: 6,
           },
           {
-            label: "今年",
+            label: "昨天",
             value: 7,
           },
           {
+            label: "本月",
+            value: 0,
+          },
+          {
+            label: "上月",
+            value: 1,
+          },
+          {
+            label: "本季度",
+            value: 2,
+          },
+          {
+            label: "上季度",
+            value: 3,
+          },
+          {
+            label: "今年",
+            value: 4,
+          },
+          {
             label: "去年",
-            value: 8,
+            value: 5,
+          },
+        ],
+        2: [
+          {
+            label: "本月",
+            value: 0,
+          },
+          {
+            label: "上月",
+            value: 1,
+          },
+          {
+            label: "本季度",
+            value: 2,
+          },
+          {
+            label: "上季度",
+            value: 3,
+          },
+          {
+            label: "今年",
+            value: 4,
+          },
+          {
+            label: "去年",
+            value: 5,
           },
         ],
       },
@@ -94,7 +148,10 @@ export default {
   },
   methods: {
     handleDateSelectChange(e) {
-      this.$emit("input", e);
+      this.$emit("date-change", e);
+    },
+    handleYearChange() {
+      this.$emit("year-change", this.year, this.yearType);
     },
   },
 };
@@ -112,6 +169,7 @@ export default {
     margin-bottom: 16px;
     .date-select {
       width: 120px;
+      margin-left: 10px;
     }
     /deep/.el-input__prefix {
       left: 10px;
