@@ -1,0 +1,203 @@
+<template>
+  <!-- 学生对接 -->
+  <div class="student-docking">
+    <!--表格-->
+    <el-table
+      ref="multipleTable"
+      :data="listData"
+      style="width: 100%"
+      class="min_table"
+      v-loading="listLoading"
+      element-loading-text="loading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="#fff"
+      :header-cell-style="{ 'text-align': 'center' }"
+    >
+      <el-table-column
+        label="分类ID"
+        show-overflow-tooltip
+        min-width="80"
+        align="center"
+        prop="category_id"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="category_name"
+        label="课程分类"
+        min-width="160"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        prop="channel_staff_name"
+        label="对接渠道"
+        min-width="180"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-select
+            v-if="row.isEdit"
+            v-model="row.channel_staff_id"
+            placeholder="请选择"
+            filterable
+            clearable
+          >
+            <el-option
+              v-for="item in staffOptions"
+              :key="item.staff_id"
+              :label="item.staff_name"
+              :value="item.staff_id"
+            >
+              <span style="float: left">{{ item.staff_name }}</span>
+              <span
+                style="
+                  float: right;
+                  color: #8492a6;
+                  font-size: 13px;
+                  margin: 0 15px 0 10px;
+                "
+                >{{ item.department_name }}</span
+              >
+            </el-option>
+          </el-select>
+          <span v-else>{{ row.channel_staff_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="education_staff_name_str"
+        label="对接教务"
+        min-width="180"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-select
+            v-if="row.isEdit"
+            v-model="row.education_staff_id_arr"
+            placeholder="请选择"
+            filterable
+            clearable
+            multiple
+          >
+            <el-option
+              v-for="item in staffOptions"
+              :key="item.staff_id"
+              :label="item.staff_name"
+              :value="item.staff_id + ''"
+            >
+              <span style="float: left">{{ item.staff_name }}</span>
+              <span
+                style="
+                  float: right;
+                  color: #8492a6;
+                  font-size: 13px;
+                  margin: 0 15px 0 10px;
+                "
+                >{{ item.department_name }}</span
+              >
+            </el-option>
+          </el-select>
+          <span v-else>{{ row.education_staff_name_str }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        min-width="180"
+        align="center"
+      >
+        <template slot-scope="{ row }">
+          <el-button
+            type="text"
+            v-if="row.isEdit"
+            @click="setStudentReception(row)"
+            >保存</el-button
+          >
+          <el-button type="text" v-if="row.isEdit" @click="row.isEdit = false"
+            >取消</el-button
+          >
+          <el-button type="text" v-else @click="row.isEdit = true"
+            >编辑</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+</template>
+
+<script>
+import {
+  getOrgStudentReceptionList,
+  getStaffSelect,
+  setStudentReception,
+} from "@/api/institution";
+export default {
+  name: "InsitutionSeas",
+  data() {
+    return {
+      listData: [],
+      listLoading: false,
+      staffOptions: [],
+    };
+  },
+
+  created() {
+    this.getOrgStudentReceptionList();
+    this.getStaffSelect();
+  },
+  methods: {
+    async setStudentReception({
+      channel_staff_id,
+      category_id: cate_id,
+      education_staff_id_arr,
+    }) {
+      const data = {
+        org_id: this.$route.query?.institution_id || "",
+        channel_staff_id,
+        cate_id,
+        education_staff_id_arr,
+      };
+      const res = await setStudentReception(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getOrgStudentReceptionList();
+      }
+    },
+    async getStaffSelect() {
+      const res = await getStaffSelect();
+      if (res.code === 0) {
+        this.staffOptions = res.data;
+      }
+    },
+    // 公海学员
+    async getOrgStudentReceptionList() {
+      const data = {
+        org_id: this.$route.query?.institution_id || "",
+      };
+      this.listLoading = true;
+      const res = await getOrgStudentReceptionList(data);
+      this.listLoading = false;
+      this.listData = res.data.map((item) => ({
+        ...item,
+        isEdit: false,
+        loading: false,
+        value1: "",
+        value2: "",
+      }));
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+/deep/.el-table__header th,
+.el-table__header tr {
+  background-color: #f8f8f8;
+  color: #909399;
+}
+.institution-user-manage {
+  padding: 20px;
+}
+</style>

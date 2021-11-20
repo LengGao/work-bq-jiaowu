@@ -80,7 +80,13 @@ const filters = {
         return tagTypeMap[status]
     }
 }
-
+Vue.directive('focus', {
+    // 当被绑定的元素插入到 DOM 中时……
+    inserted: function (el) {
+        // 聚焦元素
+        el.querySelector('input').focus()
+    }
+})
 Object.keys(filters).forEach(key => {
     Vue.filter(key, filters[key])
 })

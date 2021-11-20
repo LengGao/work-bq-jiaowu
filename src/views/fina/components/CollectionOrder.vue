@@ -165,6 +165,7 @@
 <script>
 import { uploadImageUrl } from "@/api/educational";
 import { orderCollect, orderCancel } from "@/api/fina";
+import { payWays as payTypes } from "@/utils";
 export default {
   props: {
     value: {
@@ -192,32 +193,7 @@ export default {
         token: this.$store.state.user.token,
       },
       visible: this.value,
-      payTypes: [
-        {
-          label: "现金",
-        },
-        {
-          label: "微信",
-        },
-        {
-          label: "支付宝",
-        },
-        {
-          label: "聚合收单",
-        },
-        {
-          label: "银行转账",
-        },
-        {
-          label: "收钱吧",
-        },
-        {
-          label: "机构签约订单",
-        },
-        {
-          label: "pos机",
-        },
-      ],
+      payTypes,
       formData: {
         pay_type: "",
         pay_money: "",

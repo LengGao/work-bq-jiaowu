@@ -134,3 +134,59 @@ export function thirdSign(params) {
         params
     })
 }
+// 获取部门列表
+export function terminalGroup(params) {
+    return request({
+        url: '/index/terminalGroup',
+        method: 'get',
+        params
+    })
+}
+// 根据部门获取可选员工
+export function getBindUser(params) {
+    return request({
+        url: '/index/bindUser',
+        method: 'get',
+        params
+    })
+}
+// 获取业绩指标数据
+export function performanceIndicators(params) {
+    return request({
+        url: '/index/performanceIndicators',
+        method: 'get',
+        params
+    })
+}
+// 获取销售趋势数据
+export function getTrendData(params) {
+    return request({
+        url: '/index/trend',
+        method: 'get',
+        params
+    })
+}
+// 获取销售龙虎榜
+export function getSalesRankData(params) {
+    return request({
+        url: '/index/salesRank',
+        method: 'get',
+        params
+    })
+}
+// 获取客户录入排行榜
+export function getCustomerRankData(params) {
+    return request({
+        url: '/index/customerRank',
+        method: 'get',
+        params
+    })
+}
+// 获取在线人数
+export function getOnlineStatistics(params) {
+    return request({
+        url: '/index/onlineStatistics',
+        method: 'get',
+        params
+    })
+}

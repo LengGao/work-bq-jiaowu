@@ -230,7 +230,7 @@ import { getShortcuts, toDay } from "@/utils/date";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getOrderList } from "@/api/fina";
-import { cloneOptions } from "@/utils/index";
+import { payWays, cloneOptions } from "@/utils";
 import ImportOrder from "./components/ImportOrder";
 import CollectionOrder from "./components/CollectionOrder";
 export default {
@@ -332,40 +332,7 @@ export default {
           key: "pay_type",
           type: "select",
           width: 120,
-          options: [
-            {
-              value: "现金",
-              label: "现金",
-            },
-            {
-              value: "微信",
-              label: "微信",
-            },
-            {
-              value: "支付宝",
-              label: "支付宝",
-            },
-            {
-              value: "聚合收单",
-              label: "聚合收单",
-            },
-            {
-              value: "银行转账",
-              label: "银行转账",
-            },
-            {
-              value: "收钱吧",
-              label: "收钱吧",
-            },
-            {
-              value: "机构签约订单",
-              label: "机构签约订单",
-            },
-            {
-              value: "pos机",
-              label: "pos机",
-            },
-          ],
+          options: payWays,
           attrs: {
             clearable: true,
             placeholder: "支付方式",
