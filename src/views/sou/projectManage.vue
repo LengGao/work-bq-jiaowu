@@ -17,6 +17,10 @@
         <el-table
           ref="multipleTable"
           :data="schoolData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
           style="width: 100%"
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
@@ -341,6 +345,73 @@
           </li>
           <li @click="materialDialogShow" style="cursor: pointer">选择</li>
         </ul>
+        <h3 class="project-h3" style="margin: 20px 0">教务负责人</h3>
+        <el-table :data="tableData" style="width: 100%">
+          <el-table-column label="序号" width="70" type="index">
+          </el-table-column>
+          <el-table-column prop="date" label="归属部门" min-width="180">
+            <template slot-scope="{ row }">
+              <el-select
+                v-model="row.department_id"
+                filterable
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in departMentData"
+                  :key="item.id"
+                  :label="item.title"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column prop="name" label="负责老师" min-width="180">
+            <template slot-scope="{ row }">
+              <el-select
+                v-model="row.staff_id"
+                filterable
+                clearable
+                multiple
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in staffOptions"
+                  :key="item.staff_id"
+                  :label="item.staff_name"
+                  :value="item.staff_id + ''"
+                >
+                  <span style="float: left">{{ item.staff_name }}</span>
+                  <span
+                    style="
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                      margin: 0 16px 0 10px;
+                    "
+                    >{{ item.group_name }}</span
+                  >
+                </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column min-width="120" label="操作">
+            <template slot-scope="{ $index: index }">
+              <div class="table-actions">
+                <i
+                  class="el-icon-remove-outline del"
+                  v-if="tableData.length > 1"
+                  @click="tableData.splice(index, 1)"
+                ></i>
+                <i
+                  class="el-icon-circle-plus-outline add"
+                  @click="handleTableAdd"
+                ></i>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="handleConfirm('ruleForm')"
@@ -402,7 +473,7 @@ import CourseDialog from "./components/courseDialog";
 import MaterialDialog from "./components/materialDialog";
 import QuestionBank from "./components/QuestionBank";
 import Asstemplate from "./components/asstemplate";
-
+import { getStaffList, getDepartmentlists } from "@/api/set";
 export default {
   name: "projectManage",
   components: {
@@ -500,6 +571,7 @@ export default {
         },
       ],
       schoolData: [],
+      listLoading: false,
       dialogVisible: false,
       showCourse: false,
       courseTag: [],
@@ -514,14 +586,43 @@ export default {
       treeId: 0,
       treeLoadMap: new Map(),
       moveDialogVisible: false,
+      tableData: [
+        {
+          department_id: "",
+          staff_id: [],
+        },
+      ],
+      staffOptions: [],
+      departMentData: [],
     };
   },
   created() {
     this.getCateList();
     this.getProjectList();
+    this.getStaffList();
+    this.getDepartmentlists();
   },
 
   methods: {
+    handleTableAdd() {
+      this.tableData.push({
+        department_id: "",
+        staff_id: [],
+      });
+    },
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.departMentData = res.data;
+      }
+    },
+    async getStaffList() {
+      const data = {
+        limit: 99999,
+      };
+      const res = await getStaffList(data);
+      this.staffOptions = res.data.list;
+    },
     toStatistics(project_id) {
       this.$router.push({ name: "projectStatistics", query: { project_id } });
     },
@@ -608,7 +709,9 @@ export default {
         ...this.searchData,
         category_id: [...this.searchData.category_id].pop(),
       };
-      const res = await getProjectList(data);
+      this.listLoading = true;
+      const res = await getProjectList(data).catch(() => {});
+      this.listLoading = false;
       if (res.code === 0) {
         this.listTotal = res.data?.total || 0;
         this.schoolData = res.data.data.map((item, index) => ({
@@ -717,6 +820,12 @@ export default {
       //   this.ruleForm[item] = ''
       // }
       this.ruleForm.project_id = ab.project_id;
+      this.tableData = [
+        {
+          department_id: "",
+          staff_id: [],
+        },
+      ];
       this.dialogTitle = "编辑项目";
       this.dialogVisible = true;
       this.$api.editProject(this, this.ruleForm, "GET");
@@ -745,6 +854,12 @@ export default {
       this.dialogTitle = "添加项目";
       this.dialogVisible = true;
       //初始化参数
+      this.tableData = [
+        {
+          department_id: "",
+          staff_id: [],
+        },
+      ];
       this.ruleForm = {
         project_name: "",
         category_id: "",
@@ -778,12 +893,30 @@ export default {
       if (this.ruleForm.category_id.length) {
         this.ruleForm.category_id = [...this.ruleForm.category_id].pop();
       }
+      const edu = [];
+      this.tableData.forEach((item) => {
+        if (!item.department_id || !item.staff_id || !item.staff_id.length) {
+          this.$message.warning("请完善教务负责人");
+          throw new Error("error");
+        }
+        edu.push({
+          department_id: item.department_id,
+          staff_id: item.staff_id.join(","),
+        });
+      });
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.id) {
-            this.$api.editProject(this, this.ruleForm, "POST");
+            this.$api.editProject(
+              this,
+              { ...this.ruleForm, edu: JSON.stringify(edu) },
+              "POST"
+            );
           } else {
-            this.$api.createProject(this, this.ruleForm);
+            this.$api.createProject(this, {
+              ...this.ruleForm,
+              edu: JSON.stringify(edu),
+            });
           }
         } else {
           return false;
@@ -881,5 +1014,18 @@ export default {
 .entry2 {
   display: none;
   margin: 0;
+}
+.table-actions {
+  i {
+    font-size: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+    &.add {
+      color: #199fff;
+    }
+    &.del {
+      color: #ff4e00;
+    }
+  }
 }
 </style>

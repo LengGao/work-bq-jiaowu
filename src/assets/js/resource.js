@@ -326,7 +326,7 @@ let resource = {
       problem: ruleForm.problem,
       textbooks: ruleForm.textbooks,
       status: ruleForm.status,
-
+      edu: ruleForm.edu,
       school: ruleForm.school,
     }
     // console.log(config)
@@ -390,7 +390,7 @@ let resource = {
         problem: ruleForm.problem,
         textbooks: ruleForm.textbooks,
         status: ruleForm.status,
-
+        edu: ruleForm.edu,
         school: ruleForm.school,
       }
     }
@@ -418,6 +418,15 @@ let resource = {
             console.log(self.ruleForm.category_id)
             // self.ruleForm.service_period = data.service_period
             console.log(data.service_period)
+            const tableData = JSON.parse(data.edu)
+            if (tableData.length) {
+              self.tableData = tableData.map(item => ({
+                ...item,
+                staff_id: item.staff_id.split(',')
+              }));
+            }
+            console.log(self.tableData)
+
           } else {
             self.$message({
               type: 'success',
