@@ -1,6 +1,20 @@
 <template>
-  <div>
+  <div class="gauge">
     <div id="gauge-chart"></div>
+    <div class="gauge-info">
+      <div class="gauge-info-item">
+        <p class="gauge-info-item-title">业绩目标</p>
+        <p class="gauge-info-item-value">2200</p>
+      </div>
+      <div class="gauge-info-item">
+        <p class="gauge-info-item-title">订单金额</p>
+        <p class="gauge-info-item-value">2200</p>
+      </div>
+      <div class="gauge-info-item">
+        <p class="gauge-info-item-title">回款金额</p>
+        <p class="gauge-info-item-value">2200<span class="unit">万元</span></p>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -25,9 +39,9 @@ export default {
               lineStyle: {
                 width: 10,
                 color: [
-                  [0.168, "#FD6500"],
-                  [0.668, "#FDC400"],
-                  [0.835, "#199FFF"],
+                  [0.16666, "#FD6500"],
+                  [0.66666, "#FDC400"],
+                  [0.83333, "#199FFF"],
                   [1, "#43D100"],
                 ],
               },
@@ -55,7 +69,7 @@ export default {
             },
             axisLabel: {
               color: "auto",
-              distance: 20,
+              distance: 5,
               fontSize: 14,
             },
             detail: {
@@ -70,7 +84,7 @@ export default {
             },
             data: [
               {
-                value: 80,
+                value: 19.999,
                 name: "完成率(%)",
               },
             ],
@@ -82,8 +96,27 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-#gauge-chart {
-  width: 500px;
-  height: 400px;
+.gauge {
+  display: flex;
+  align-items: center;
+  #gauge-chart {
+    width: 70%;
+    height: 400px;
+  }
+  &-info {
+    &-item {
+      padding: 20px;
+      color: #666;
+      &-title {
+        font-size: 14px;
+      }
+      &-value {
+        font-size: 34px;
+        .unit {
+          font-size: 14px;
+        }
+      }
+    }
+  }
 }
 </style>
