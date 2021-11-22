@@ -22,8 +22,16 @@
         </div>
         <div class="header-item">
           <el-button @click="dialogVisible = true">教材发放</el-button>
-          <el-button type="primary" @click="openSingUpDialog">报名</el-button>
-          <el-button type="primary" @click="openCourseDialog = true"
+          <el-button
+            type="primary"
+            v-if="$route.query.customer_type === '招生订单'"
+            @click="openSingUpDialog"
+            >报名</el-button
+          >
+          <el-button
+            type="primary"
+            v-if="$route.query.customer_type === '渠道订单'"
+            @click="openCourseDialog = true"
             >开课</el-button
           >
         </div>

@@ -44,7 +44,12 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toStudentDetail(row.uid)">
+              <el-button
+                type="text"
+                @click="
+                  toStudentDetail(row.uid, { customer_type: row.customer_type })
+                "
+              >
                 {{ row.surname }}
               </el-button>
             </template>

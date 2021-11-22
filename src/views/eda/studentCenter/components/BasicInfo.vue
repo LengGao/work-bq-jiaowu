@@ -78,7 +78,7 @@
               placeholder="请选择客户地区"
               class="w-100"
               :options="cityOptions"
-              @change="handleCityChange($event, 1)"
+              @change="handleCityChange"
             >
             </el-cascader>
             <span v-else>{{
@@ -120,15 +120,14 @@
           </el-form-item>
           <el-form-item label="共享客户">
             <el-input
-              :value="datas.admin_name"
+              :value="datas.union_staff_name"
               v-if="isEdit"
               disabled
             ></el-input>
-            <span v-else>{{ datas.admin_name || "--" }}</span>
+            <span v-else>{{ datas.union_staff_name || "--" }}</span>
           </el-form-item>
           <el-form-item
             label="机构名称"
-            prop="from_organization_id"
             :rules="[
               { required: isEdit, message: '请选择', trigger: 'change' },
             ]"
@@ -143,7 +142,7 @@
               :options="selectOptions"
             >
             </el-cascader> -->
-            <span>{{ datas.from_organization_name }}</span>
+            <span>{{ datas.from_organization_name || "--" }}</span>
           </el-form-item>
           <el-form-item label="客户性质">
             <span>{{ datas.customer_type || "--" }}</span>
@@ -352,14 +351,10 @@ export default {
         this.isEdit = false;
       }
     },
-    // 选择城市 1：籍贯 2：常驻地
-    handleCityChange(val, type) {
-      if (type === 1) {
-        this.ruleForm.province = val[0];
-        this.ruleForm.city = val[1];
-      } else {
-        this.ruleForm.location = val[1];
-      }
+    // 选择城市
+    handleCityChange(val) {
+      this.ruleForm.province = val[0];
+      this.ruleForm.city = val[1];
     },
     // 机构下拉
     async getInstitutionSelectData() {
