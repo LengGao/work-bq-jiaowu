@@ -40,6 +40,7 @@
               v-model="ruleForm.id_card_number"
               v-if="isEdit"
               placeholder="请输入"
+              disabled
             ></el-input>
             <span v-else>{{ datas.id_card_number | filterIdCard }}</span>
           </el-form-item>
@@ -59,7 +60,7 @@
                 :key="index"
               ></el-option>
             </el-select>
-            <span v-else>{{ channelOptions[datas.sources] || "--" }}</span>
+            <span v-else>{{ datas.sources || "--" }}</span>
           </el-form-item>
           <el-form-item label="学员性别">
             <el-radio-group v-if="isEdit" v-model="ruleForm.sex" class="w-100">
@@ -132,7 +133,7 @@
               { required: isEdit, message: '请选择', trigger: 'change' },
             ]"
           >
-            <el-cascader
+            <!-- <el-cascader
               filterable
               clearable
               v-if="isEdit"
@@ -141,16 +142,11 @@
               class="w-100"
               :options="selectOptions"
             >
-            </el-cascader>
-            <span v-else>{{ datas.from_organization_name }}</span>
+            </el-cascader> -->
+            <span>{{ datas.from_organization_name }}</span>
           </el-form-item>
           <el-form-item label="客户性质">
-            <el-input
-              :value="datas.admin_name"
-              v-if="isEdit"
-              disabled
-            ></el-input>
-            <span v-else>{{ datas.admin_name || "--" }}</span>
+            <span>{{ datas.customer_type || "--" }}</span>
           </el-form-item>
           <el-form-item label="客户标签" prop="tags" class="block">
             <el-tag
@@ -294,10 +290,18 @@ export default {
       city1: "",
       channelOptions: [],
       inputVisible: false,
-      tags: [{ title: 123 }],
+      tags: [],
       tagName: "",
       updateTeacherDialog: false,
     };
+  },
+  watch: {
+    "datas.tags"(val) {
+      this.tags = val.split(",").map((item, index) => ({
+        title: item,
+        id: index,
+      }));
+    },
   },
   created() {
     this.getCustomfieldOptions();
@@ -335,11 +339,11 @@ export default {
             this.ruleForm.from_organization_id.length - 1
           ];
       }
-      console.log(this.ruleForm);
       const data = {
         ...this.ruleForm,
         id: this.datas.id,
         from_organization_id,
+        tags: this.tags.map((item) => item.title).join(","),
       };
       const res = await updateStudentBasicInfo(data);
       if (res.code === 0) {
