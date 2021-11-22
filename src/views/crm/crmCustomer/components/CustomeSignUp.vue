@@ -35,7 +35,6 @@
       <el-form-item label="身份证号码" prop="id_card_number">
         <el-input
           class="input"
-          type="number"
           v-model="formData.id_card_number"
           placeholder="请输入身份证号码"
         />
@@ -612,6 +611,7 @@ export default {
     },
     // 报名缴费
     async createCrmOrder() {
+      const union_staff_id = this.formData.union_staff_id;
       let data = {
         order_token: Date.now(),
         id: this.userInfo.id,
@@ -626,7 +626,6 @@ export default {
         type: this.formData.type,
       };
       // 学历报名参数
-      const union_staff_id = this.formData.union_staff_id;
       if (this.formData.type === 1) {
         data = {
           ...data,

@@ -110,13 +110,13 @@
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="{ row }">
             <el-button
-              v-if="row.verify_status == 2"
+              v-if="!row.finish_staff_id"
               type="text"
               @click="approveConfirm(row, 1)"
               >通过</el-button
             >
             <el-button
-              v-if="row.verify_status == 2"
+              v-if="!row.finish_staff_id"
               type="text"
               @click="approveConfirm(row, 2)"
               >驳回</el-button
