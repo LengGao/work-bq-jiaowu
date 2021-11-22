@@ -4,8 +4,8 @@
       <h3>仅退款-张小北-系统集成项目管理师</h3>
       <span
         class="change-status"
-        :type="verifyStatusMap[detailData.verify_status].type"
-        >{{ verifyStatusMap[detailData.verify_status].text }}</span
+        :type="verifyStatusMap[detailData.verify_status || 1].type"
+        >{{ verifyStatusMap[detailData.verify_status || 1].text }}</span
       >
       <div class="btn-edit">
         <el-button
@@ -19,12 +19,30 @@
           v-if="detailData.verify_status === 8"
           >删除</el-button
         >
+        <el-button
+          v-if="detailData.is_my_review"
+          type="primary"
+          @click="approveConfirm(1)"
+          >通过</el-button
+        >
+        <el-button
+          v-if="detailData.is_my_review"
+          type="primary"
+          @click="approveConfirm(2)"
+          >驳回</el-button
+        >
+        <el-button
+          v-if="detailData.verify_status === 2"
+          type="primary"
+          @click="hurryUp"
+          >催办</el-button
+        >
       </div>
     </div>
     <el-steps
       simple
       style="margin: 20px 0"
-      v-if="detailData.verify_status != 3"
+      v-if="detailData.verify_status && detailData.verify_status != 3"
     >
       <el-step
         :title="`${detailData.submit_name || ''}提交审批`"
@@ -48,7 +66,7 @@
 </template>
 
 <script>
-import { getCrmOrderDetail, crmOrderApprove } from "@/api/crm";
+import { getCrmOrderDetail, crmOrderApprove, hurryUp } from "@/api/crm";
 export default {
   name: "crmOrderDetail",
   data() {
@@ -59,7 +77,7 @@ export default {
         pay_log: [],
         project: "[]",
         verify_step: [],
-        verify_status: 1,
+        verify_status: 0,
       },
       approveStatuMap: {
         0: "wait",
@@ -104,6 +122,40 @@ export default {
     this.getCrmOrderDetail();
   },
   methods: {
+    // 催办
+    async hurryUp() {
+      const data = {
+        order_id: this.detailData.order_id,
+      };
+      const res = await hurryUp(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
+    // 审批订单
+    approveConfirm(action) {
+      this.$prompt("请输入备注", action === 2 ? "驳回" : "通过", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(({ value }) => {
+          this.approveCrmOrder(action, value);
+        })
+        .catch(() => {});
+    },
+    async approveCrmOrder(action, tips) {
+      const data = {
+        order_id: this.detailData.order_id,
+        action,
+        tips,
+      };
+      const res = await crmOrderApprove(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getCrmOrderDetail();
+      }
+    },
+    // 撤销删除订单
     ActionConfirm(action) {
       this.$confirm(
         `确定要${action === 4 ? "删除" : "撤销"}此订单吗?`,
@@ -125,7 +177,7 @@ export default {
       const res = await crmOrderApprove(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getCrmApproveOrder();
+        this.getCrmOrderDetail();
       }
     },
     async getCrmOrderDetail() {

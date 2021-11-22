@@ -361,3 +361,12 @@ export function projectUser(data) {
     })
 }
 
+// 订单催办
+export function hurryUp(data) {
+    return request({
+        url: 'CrmOrder/hurryUp',
+        method: 'post',
+        data
+    })
+}
+
