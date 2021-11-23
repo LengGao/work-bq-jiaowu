@@ -66,7 +66,7 @@
           class="tab-item"
           :class="{ 'tab-item--active': onlineState === 1 }"
           @click="handleOnlineChange(1)"
-          >机构段</span
+          >机构端</span
         >
       </div>
       <OnlineChart :data="onlineData" v-loading="onlineLoading" />
