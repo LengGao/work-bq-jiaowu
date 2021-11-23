@@ -40,7 +40,7 @@
       <el-table-column
         prop="create_time"
         label="回款日期"
-        min-width="80"
+        min-width="140"
         align="center"
         show-overflow-tooltip
       >
@@ -52,19 +52,6 @@
         min-width="100"
         show-overflow-tooltip
       >
-      </el-table-column>
-      <el-table-column
-        prop="pay_progress"
-        label="回款进度"
-        min-width="140"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-          <el-progress
-            :percentage="+(row.pay_progress || '').split('%')[0] || 0"
-          ></el-progress>
-        </template>
       </el-table-column>
       <el-table-column
         prop="pay_type"
@@ -104,12 +91,12 @@
       <el-table-column
         prop="verify_time"
         label="入账时间"
-        min-width="80"
+        min-width="160"
         align="center"
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         label="操作"
         fixed="right"
         align="center"
@@ -117,9 +104,9 @@
       >
         <template slot-scope="{ row }">
           <el-button type="text">催办</el-button>
-          <!-- <el-button type="text">删除</el-button> -->
+          <el-button type="text">删除</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <!-- <p class="placeholder">或</p> -->
     <Title text="回款计划" style="margin-top: 20px"></Title>
@@ -216,16 +203,6 @@
           align="center"
           show-overflow-tooltip
         >
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          align="center"
-          min-width="160"
-        >
-          <template slot-scope="{ row }">
-            <el-button type="text">催办</el-button>
-          </template>
         </el-table-column>
       </el-table>
     </div>

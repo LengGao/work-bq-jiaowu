@@ -3,6 +3,7 @@ const searchCache = {
         //   需要缓存的页面:[缓存的触发条件]
         cacheViews: {
             studentCenter: ['studentDetail'], //示例： 学生中心，只有进入学生详情才能缓存
+            channelStudent: ['studentDetail'],
             classManage: ['classDetail', 'learnerManage', 'massMessage', 'returnVisit', 'classVideo', 'classMessage'],
             customerManage: ['cusdetail', 'orderdetail'],
             teachMaterial: ['materialJournal'],
@@ -47,6 +48,7 @@ const searchCache = {
             eduOpenClass: ['studentDetail'],
             approveManage: ['crmOrderDetail', 'cusdetail'],
             returnPayment: ['crmOrderDetail'],
+            studentOrder: ['studentOrderDetail'],
         },
         // 当前缓存的页面
         currentCache: []

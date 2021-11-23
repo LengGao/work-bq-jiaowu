@@ -116,6 +116,9 @@
             <span v-if="row.verify_status == 2" class="approve-status"
               >已驳回 <i class="el-icon-question" :title="row.tips"></i>
             </span>
+            <span v-if="row.verify_status == 3" class="approve-status--wait"
+              >多级审批中
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="120">
@@ -426,6 +429,9 @@ export default {
   }
   &--success::before {
     background-color: #43d100;
+  }
+  &--wait::before {
+    background-color: #199fff;
   }
   &--none::before {
     background-color: #999;
