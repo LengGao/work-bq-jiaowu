@@ -1,7 +1,7 @@
 <template>
   <div class="change-detail">
     <div class="change-title">
-      <h3>仅退款-张小北-系统集成项目管理师</h3>
+      <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
       <span
         class="change-status"
         :type="verifyStatusMap[detailData.verify_status || 1].type"
@@ -82,7 +82,7 @@ export default {
       approveStatuMap: {
         0: "wait",
         1: "wait",
-        2: "wait",
+        2: "finish",
         3: "success",
         8: "error",
         9: "error",

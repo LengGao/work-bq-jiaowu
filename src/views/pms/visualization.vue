@@ -3,7 +3,7 @@
     <div class="workbench-header">
       <div class="avatars">
         <div class="avatar-item">
-          <img v-if="userInfo.avatar" :src="userInfo.head_photo" alt="" />
+          <img v-if="userInfo.head_photo" :src="userInfo.head_photo" alt="" />
           <span v-else>{{ userInfo.staff_name.substr(-2) }}</span>
         </div>
         <!-- <div class="user-info">
@@ -103,6 +103,7 @@ export default {
       checkedUserIds: [],
       checkedUser: [],
       userPopver: false,
+      userIds: [],
     };
   },
   computed: {

@@ -278,24 +278,16 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts, toDay } from "@/utils/date";
 import { getproject } from "@/api/eda";
 import { getStaffList } from "@/api/set";
 import { getCrmOrderList } from "@/api/crm";
 import { templatelist } from "@/api/system";
-import ImportOrder from "@/views/fina/components/ImportOrder";
-import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import { generate } from "@/api/fina";
 import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "crmOrder",
-  components: {
-    ImportOrder,
-    CollectionOrder,
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],
