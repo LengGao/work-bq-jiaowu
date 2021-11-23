@@ -108,7 +108,6 @@ export default {
     return {
       loading: false,
       date: new Date(),
-
       // 销售简报
       salesData: {},
       salesLoading: false,
@@ -149,26 +148,23 @@ export default {
       handler() {
         this.performanceIndicators(1);
         this.getTrendData(this.date.getFullYear(), 1);
-        this.getSalesRankData(
-          this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
-        );
-        this.getCustomerRankData(
-          this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
-        );
+        this.getSalesRankData(this.currentMonth);
+        this.getCustomerRankData(this.currentMonth);
         this.getBriefing(0);
       },
       deep: true,
     },
   },
+  computed: {
+    currentMonth() {
+      return `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
+    },
+  },
   created() {
     this.performanceIndicators(1);
     this.getTrendData(this.date.getFullYear(), 1);
-    this.getSalesRankData(
-      this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
-    );
-    this.getCustomerRankData(
-      this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
-    );
+    this.getSalesRankData(this.currentMonth);
+    this.getCustomerRankData(this.currentMonth);
     this.getOnlineStatistics();
     this.getBriefing(0);
   },

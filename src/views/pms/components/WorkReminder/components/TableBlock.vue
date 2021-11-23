@@ -66,7 +66,6 @@ export default {
   },
   computed: {
     isMore() {
-      console.log(this.listTotal);
       return this.data.length < this.listTotal;
     },
   },

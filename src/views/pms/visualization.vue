@@ -93,7 +93,7 @@
 import { mapGetters } from "vuex";
 import { terminalGroup, getBindUser } from "@/api/workbench";
 export default {
-  name: "workbench",
+  name: "visualization",
   data() {
     return {
       activeName: "DataStatistics",
