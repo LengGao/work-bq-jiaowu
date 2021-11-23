@@ -150,10 +150,10 @@ export default {
         this.performanceIndicators(1);
         this.getTrendData(this.date.getFullYear(), 1);
         this.getSalesRankData(
-          this.date.getFullYear() + "" + this.date.getMonth() + 1
+          this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
         );
         this.getCustomerRankData(
-          this.date.getFullYear() + "" + this.date.getMonth() + 1
+          this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
         );
         this.getBriefing(0);
       },
@@ -164,10 +164,10 @@ export default {
     this.performanceIndicators(1);
     this.getTrendData(this.date.getFullYear(), 1);
     this.getSalesRankData(
-      this.date.getFullYear() + "" + this.date.getMonth() + 1
+      this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
     );
     this.getCustomerRankData(
-      this.date.getFullYear() + "" + this.date.getMonth() + 1
+      this.date.getFullYear() + "-" + (this.date.getMonth() + 1)
     );
     this.getOnlineStatistics();
     this.getBriefing(0);
