@@ -62,20 +62,11 @@
 export default {
   name: "Block",
   props: {
-    tabs: {
-      type: Array,
-      default: () => [],
-    },
     dateType: {
       type: String,
       default: "1",
     },
-    value: {
-      type: [String, Number],
-      default: "",
-    },
   },
-
   data() {
     return {
       dateSlect: 0,

@@ -190,3 +190,51 @@ export function getOnlineStatistics(params) {
         params
     })
 }
+// 获取在线人数
+export function getBriefing(params) {
+    return request({
+        url: '/index/briefing',
+        method: 'get',
+        params
+    })
+}
+// 获取回款计划提醒
+export function receivablePlan(params) {
+    return request({
+        url: '/index/receivablePlan',
+        method: 'get',
+        params
+    })
+}
+// 获取待跟进客户
+export function staffFollow(params) {
+    return request({
+        url: '/index/staffFollow',
+        method: 'get',
+        params
+    })
+}
+// 获取系统公告
+export function getSystemMsgList(params) {
+    return request({
+        url: '/index/getSystemAnnouncementList',
+        method: 'get',
+        params
+    })
+}
+// 获取工作通知
+export function getStaffNotice(params) {
+    return request({
+        url: 'StaffNotice/index',
+        method: 'get',
+        params
+    })
+}
+// 工作通知-标为已读
+export function readStaffNotice(params) {
+    return request({
+        url: 'StaffNotice/read',
+        method: 'get',
+        params
+    })
+}

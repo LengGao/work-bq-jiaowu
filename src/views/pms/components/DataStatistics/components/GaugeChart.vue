@@ -137,7 +137,7 @@ export default {
   }
   &-info {
     &-item {
-      padding: 20px;
+      padding: 20px 0;
       color: #666;
       &-title {
         font-size: 14px;

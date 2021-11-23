@@ -1,8 +1,8 @@
 <template>
   <div class="admin" v-loading="loading">
-    <Block date-type="1" :value="1" @date-change="performanceIndicators">
+    <Block date-type="1" :value="0" @date-change="getBriefing">
       <Title slot="header-title" text="销售简报"></Title>
-      <SalesData :data="salesData" />
+      <SalesData :data="salesData" v-loading="salesLoading" />
     </Block>
     <div class="admin-center">
       <div class="admin-center-left">
@@ -80,6 +80,7 @@ import {
   getSalesRankData,
   getCustomerRankData,
   getOnlineStatistics,
+  getBriefing,
 } from "@/api/workbench.js";
 import Block from "./components/Block";
 import SalesData from "./components/SalesData";
@@ -97,6 +98,12 @@ export default {
     RankBar,
     OnlineChart,
   },
+  props: {
+    userIds: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       loading: false,
@@ -104,6 +111,7 @@ export default {
 
       // 销售简报
       salesData: {},
+      salesLoading: false,
       // 业绩目标
       performanceData: {},
       performanceLoading: false,
@@ -136,7 +144,22 @@ export default {
       onlineLoading: false,
     };
   },
-
+  watch: {
+    userIds: {
+      handler() {
+        this.performanceIndicators(1);
+        this.getTrendData(this.date.getFullYear(), 1);
+        this.getSalesRankData(
+          this.date.getFullYear() + "" + this.date.getMonth() + 1
+        );
+        this.getCustomerRankData(
+          this.date.getFullYear() + "" + this.date.getMonth() + 1
+        );
+        this.getBriefing(0);
+      },
+      deep: true,
+    },
+  },
   created() {
     this.performanceIndicators(1);
     this.getTrendData(this.date.getFullYear(), 1);
@@ -147,8 +170,22 @@ export default {
       this.date.getFullYear() + "" + this.date.getMonth() + 1
     );
     this.getOnlineStatistics();
+    this.getBriefing(0);
   },
   methods: {
+    // 销售简报
+    async getBriefing(type) {
+      const data = {
+        type,
+        arr_uid: this.userIds,
+      };
+      this.salesLoading = true;
+      const res = await getBriefing(data).catch(() => {});
+      this.salesLoading = false;
+      if (res.code === 0) {
+        this.salesData = res.data;
+      }
+    },
     // 在线人数
     handleOnlineChange(state) {
       this.onlineState = state;
@@ -171,7 +208,7 @@ export default {
     async getCustomerRankData(month) {
       const data = {
         month,
-        // arr_uid:[],
+        arr_uid: this.userIds,
       };
       this.customerRankLoading = true;
       const res = await getCustomerRankData(data).catch(() => {});
@@ -189,7 +226,7 @@ export default {
     async getSalesRankData(month) {
       const data = {
         month,
-        // arr_uid:[],
+        arr_uid: this.userIds,
       };
       this.salesRankLoading = true;
       const res = await getSalesRankData(data).catch(() => {});
@@ -207,6 +244,7 @@ export default {
       const data = {
         year,
         type,
+        arr_uid: this.userIds,
       };
       this.trendLoading = true;
       const res = await getTrendData(data).catch(() => {});
@@ -219,7 +257,7 @@ export default {
     async performanceIndicators(type) {
       const data = {
         type,
-        // arr_uid: [],
+        arr_uid: this.userIds,
       };
       this.performanceLoading = true;
       const res = await performanceIndicators(data).catch(() => {});

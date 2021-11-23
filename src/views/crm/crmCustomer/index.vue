@@ -173,7 +173,7 @@
         <div class="table_bottom">
           <div>
             <el-button @click="openTeacherDialog">变更所属老师</el-button>
-            <el-button>迁移到公海</el-button>
+            <!-- <el-button>迁移到公海</el-button> -->
           </div>
           <page
             :data="listTotal"

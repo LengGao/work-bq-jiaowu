@@ -2,10 +2,10 @@ import Vue from 'vue'
 const mixin = {
     methods: {
         // 跳转到学生详情
-        toStudentDetail(id) {
+        toStudentDetail(id, query) {
             this.$router.push({
                 name: "studentDetail",
-                query: { id },
+                query: { id, ...query },
             });
         },
         // 跳转到班级详情
