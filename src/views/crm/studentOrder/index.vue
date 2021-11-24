@@ -122,7 +122,7 @@ export default {
         from_org: [],
         keyword: "",
         project_id: "",
-        union_staff_id: "",
+        staff_id: "",
         pay_status: "",
       },
       searchOptions: [
@@ -174,7 +174,7 @@ export default {
           },
         },
         {
-          key: "union_staff_id",
+          key: "staff_id",
           type: "select",
           width: 120,
           options: [],
