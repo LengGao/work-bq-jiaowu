@@ -36,27 +36,15 @@
             min-width="90"
           ></el-table-column>
           <el-table-column
-            prop="realname"
+            prop="surname"
             label="学生姓名"
             min-width="100"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toStudentDetail(row.uid)">
-                {{ row.realname }}
+                {{ row.surname }}
               </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="sex"
-            label="性别"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span v-if="row.sex === 1">男</span>
-              <span v-else-if="row.sex === 2">女</span>
-              <span v-else>未知</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -70,8 +58,8 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="institution_name"
-            label="推荐机构"
+            prop="from_institution_name"
+            label="所属机构"
             min-width="150"
             show-overflow-tooltip
           ></el-table-column>
@@ -83,44 +71,33 @@
           ></el-table-column>
 
           <el-table-column
-            prop="classroom_name"
-            label="所属班级"
-            min-width="230"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span>{{
-                row.classroom.map((item) => item.classroom_name).join("，")
-              }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="online_course"
-            label="是否开通网课"
+            prop="customer_type"
+            label="客户性质"
             min-width="100"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>{{ row.online_course ? "是" : "否" }}</span>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="is_graduate"
-            label="是否毕业"
+            prop="category_name"
+            label="所属分类"
             min-width="100"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              <span>{{ row.is_graduate === 3 ? "是" : "否" }}</span>
-            </template>
+          </el-table-column>
+          <el-table-column
+            prop="project_name"
+            label="项目名称"
+            min-width="220"
+            show-overflow-tooltip
+          >
           </el-table-column>
           <el-table-column
             prop="create_time"
-            label="创建时间"
+            label="报名时间"
             min-width="140"
             show-overflow-tooltip
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="toStudentDetail(row.uid)"
@@ -147,7 +124,8 @@
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
-import { getStudentList, getproject } from "@/api/eda";
+import { getproject, getAdminSelect } from "@/api/eda";
+import { getChannelStudentList } from "@/api/crm";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 export default {
   name: "channelStudent",
@@ -163,14 +141,11 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        type: 0,
-        date: "",
-        course_category_id: [],
-        project_id: "",
-        classroom_id: "",
-        organization_id: [],
+        date: [],
+        category_id: [],
+        project_id: [],
+        from_org: "",
         keyword: "",
-        student_type: 1,
       },
       searchOptions: [
         {
@@ -188,23 +163,31 @@ export default {
           },
         },
         {
-          key: "student_type",
-          type: "select",
-          options: [
-            { label: "网课", value: 1 },
-            { label: "非网课", value: 2 },
-          ],
+          key: "from_org",
+          type: "cascader",
           attrs: {
-            placeholder: "学生类型",
+            placeholder: "所属机构",
+            filterable: true,
             clearable: true,
+            options: [],
           },
         },
         {
-          key: "course_category_id",
-          type: "cascader",
-          events: {
-            change: this.handleTypeChange,
+          key: "staff_id",
+          type: "select",
+          width: 140,
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
           },
+        },
+        {
+          key: "category_id",
+          type: "cascader",
           attrs: {
             placeholder: "所属分类",
             props: { checkStrictly: true },
@@ -223,18 +206,10 @@ export default {
             placeholder: "所属项目",
             clearable: true,
             filterable: true,
+            multiple: true,
           },
         },
-        {
-          key: "organization_id",
-          type: "cascader",
-          attrs: {
-            placeholder: "推荐机构",
-            filterable: true,
-            clearable: true,
-            options: [],
-          },
-        },
+
         {
           key: "keyword",
           attrs: {
@@ -242,85 +217,72 @@ export default {
           },
         },
       ],
-      checked: "",
-      submitLoading: false,
-      dialogVisible: false,
-      classOptions: [], // 班级选项
-      formData: {
-        classroom_id: "",
-      },
-      rules: {
-        classroom_id: [{ required: true, message: "请选择", trigger: "blur" }],
-      },
-      updateTeacherDialog: false,
     };
   },
 
   created() {
+    this.getChannelStudentList();
     this.getInstitutionSelectData();
     this.getproject();
     this.getCateList();
-    this.getStudentList();
+    this.getAdminSelect();
   },
 
   methods: {
-    // 当分类选择时
-    handleTypeChange(ids) {
-      const id = ids ? [...ids].pop() : "";
-      this.getproject(id);
-    },
     // 获取项目下拉
-    async getproject(category_id = "") {
-      const data = {
-        category_id,
-      };
-      const res = await getproject(data);
+    async getproject() {
+      const res = await getproject();
       if (res.code === 0) {
-        this.searchOptions[3].options = res.data;
+        this.searchOptions[4].options = res.data;
       }
     },
-    //  // 获取班级下拉
-    // async getcourseallclass(category_id) {
-    //   const data = { category_id };
-    //   const res = await getcourseallclass(data);
-    //   if (res.code === 0) {
-    //     this.classOptions = res.data;
-    //     this.searchOptions[5].options = res.data;
-    //   }
-    // },
+    // 获取所属老师
+    async getAdminSelect() {
+      const data = { list: true };
+      const res = await getAdminSelect(data);
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data;
+      }
+    },
     handleSearch(data) {
-      const times = data.date || ["", ""];
-      delete data.date;
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        organization_id: data.organization_id.pop(),
-        course_category_id: data.course_category_id.pop(),
-        start_time: times[0],
-        end_time: times[1],
       };
-      this.getStudentList();
+      this.getChannelStudentList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
-      this.getStudentList();
+      this.getChannelStudentList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getStudentList();
+      this.getChannelStudentList();
     },
     //学生列表
-    async getStudentList() {
+    async getChannelStudentList() {
       this.intent_id = "";
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
+        date: Array.isArray(this.searchData.date)
+          ? this.searchData.date.join(" - ")
+          : "",
+        category_id: Array.isArray(this.searchData.category_id)
+          ? this.searchData.category_id.join(",")
+          : "",
+        project_id: Array.isArray(this.searchData.project_id)
+          ? this.searchData.project_id.join(",")
+          : "",
+        from_org: Array.isArray(this.searchData.from_org)
+          ? [...this.searchData.from_org].pop()
+          : "",
       };
       this.listLoading = true;
-      const res = await getStudentList(data);
+      const res = await getChannelStudentList(data);
       this.listLoading = false;
-      this.listData = res.data.data;
+      this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
     // 获取教材分类
@@ -328,7 +290,7 @@ export default {
       const data = { list: true };
       const res = await getCateList(data);
       if (res.code === 0) {
-        this.searchOptions[2].attrs.options = cloneOptions(
+        this.searchOptions[3].attrs.options = cloneOptions(
           res.data,
           "category_name",
           "category_id",
@@ -341,7 +303,7 @@ export default {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
       if (res.code === 0) {
-        this.searchOptions[4].attrs.options = cloneOptions(
+        this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
           "institution_name",
           "institution_id",

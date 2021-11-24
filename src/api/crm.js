@@ -369,4 +369,12 @@ export function hurryUp(data) {
         data
     })
 }
+// 渠道学生列表
+export function getChannelStudentList(data) {
+    return request({
+        url: 'CrmOrder/archives',
+        method: 'post',
+        data
+    })
+}
 

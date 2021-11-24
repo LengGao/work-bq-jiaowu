@@ -38,6 +38,7 @@
             min-width="110"
             align="center"
             show-overflow-tooltip
+            fixed="left"
           >
           </el-table-column>
           <el-table-column
