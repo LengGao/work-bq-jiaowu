@@ -46,16 +46,16 @@
 
           <el-form-item label="课程名称" prop="course_name">
             <el-input
-              style="width:740px;"
+              style="width: 740px"
               v-model="formData.course_name"
               placeholder="请输入课程名称"
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="课程名称" prop="brief" style="width:100%">
+          <el-form-item label="课程简介" prop="brief" style="width: 100%">
             <el-input
               type="textarea"
-              style="width:740px;"
+              style="width: 740px"
               v-model="formData.brief"
               placeholder="请输入课程简介"
             ></el-input>
@@ -233,7 +233,7 @@
             label="课程介绍"
             class="textarea_date"
             prop="introduction"
-            style="width:100%;height:334px"
+            style="width: 100%; height: 334px"
           >
             <el-upload
               class="avatar-uploader"
@@ -251,7 +251,7 @@
               ref="myQuillEditor"
               :options="editorOption"
               @change="onEditorChange($event)"
-              style="height:200px"
+              style="height: 200px"
             >
             </quill-editor>
           </el-form-item>
@@ -283,12 +283,12 @@
 </template>
 
 <script>
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-import { quillEditor } from 'vue-quill-editor'
-import { uploadImageUrl } from '@/api/educational'
-import Vue from 'vue'
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor";
+import { uploadImageUrl } from "@/api/educational";
+import Vue from "vue";
 import {
   addCourse,
   getCateList,
@@ -296,25 +296,25 @@ import {
   getCoursesDetail,
   videocollectionlist,
   getProblemCourseList,
-} from '@/api/sou'
-import axios from 'axios'
-import store from '@/store'
+} from "@/api/sou";
+import axios from "axios";
+import store from "@/store";
 const toolbarOptions = [
-  ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+  ["bold", "italic", "underline", "strike"], // toggled buttons
   [{ header: 1 }, { header: 2 }], // custom button values
-  [{ list: 'ordered' }, { list: 'bullet' }],
-  [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-  [{ direction: 'rtl' }], // text direction
-  [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+  [{ direction: "rtl" }], // text direction
+  [{ size: ["small", false, "large", "huge"] }], // custom dropdown
   //[{ header: [1, 2, 3, 4, 5, 6, false] }],
   [{ color: [] }, { background: [] }], // dropdown with defaults from theme
   [{ font: [] }],
   [{ align: [] }],
-  ['link', 'image'],
-  ['clean'],
-]
+  ["link", "image"],
+  ["clean"],
+];
 export default {
-  name: 'IntentionEntry',
+  name: "IntentionEntry",
   components: {
     quillEditor,
   },
@@ -334,64 +334,64 @@ export default {
       questionBank: {},
 
       formData: {
-        is_topping: '',
-        course_name: '',
-        course_category_id: '',
-        teacher_id: '',
-        video_collection_id: '',
-        problem_course_id: '',
+        is_topping: "",
+        course_name: "",
+        course_category_id: "",
+        teacher_id: "",
+        video_collection_id: "",
+        problem_course_id: "",
         sale_type: 1,
-        is_hot: '',
-        course_price: '',
-        past_price: '',
-        index_category_id: '',
+        is_hot: "",
+        course_price: "",
+        past_price: "",
+        index_category_id: "",
         fictitious_num: null,
-        cover_img: '',
-        introduction: '',
-        edu_qr_code: '',
+        cover_img: "",
+        introduction: "",
+        edu_qr_code: "",
         is_fictitious: 1,
-        sort: '',
+        sort: "",
         include_course_ids: [],
         class_type: 1,
-        brief: '',
+        brief: "",
         free_sort: 0,
         hot_sort: 0,
       },
-      url: '',
+      url: "",
       pictureVisible: false,
       haschoose: false,
       rules: {
         course_name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { required: true, message: "请输入活动名称", trigger: "blur" },
           {
             min: 1,
             max: 128,
-            message: '长度在 1到 32 个字符',
-            trigger: 'blur',
+            message: "长度在 1到 32 个字符",
+            trigger: "blur",
           },
         ],
         course_category_id: [
-          { required: true, message: '请选择课程分类', trigger: 'change' },
+          { required: true, message: "请选择课程分类", trigger: "change" },
         ],
         teacher_id: [
-          { required: true, message: '请选择任课老师', trigger: 'change' },
+          { required: true, message: "请选择任课老师", trigger: "change" },
         ],
 
         sale_type: [
-          { required: true, message: '请选择售卖方式', trigger: 'change' },
+          { required: true, message: "请选择售卖方式", trigger: "change" },
         ],
         is_hot: [
-          { required: true, message: '是否热门推荐', trigger: 'change' },
+          { required: true, message: "是否热门推荐", trigger: "change" },
         ],
-        brief: [{ required: true, message: '请输入课程简介', trigger: 'blur' }],
+        brief: [{ required: true, message: "请输入课程简介", trigger: "blur" }],
         fictitious_num: [
-          { required: true, message: '请输入虚拟数量', trigger: 'change' },
+          { required: true, message: "请输入虚拟数量", trigger: "change" },
         ],
         past_price: [
-          { required: true, message: '请输入划线价格', trigger: 'blur' },
+          { required: true, message: "请输入划线价格", trigger: "blur" },
         ],
         course_price: [
-          { required: true, message: '请输入课程价格', trigger: 'blur' },
+          { required: true, message: "请输入课程价格", trigger: "blur" },
         ],
       },
 
@@ -399,18 +399,18 @@ export default {
       quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画，刚开始是false,不显示
       content: null,
       editorOption: {
-        placeholder: '',
-        theme: 'snow', // or 'bubble'
+        placeholder: "",
+        theme: "snow", // or 'bubble'
         modules: {
           toolbar: {
             container: toolbarOptions,
             handlers: {
-              image: function(value) {
+              image: function (value) {
                 if (value) {
                   // 触发input框选择图片文件
-                  document.querySelector('.avatar-uploader input').click()
+                  document.querySelector(".avatar-uploader input").click();
                 } else {
-                  this.quill.format('image', false)
+                  this.quill.format("image", false);
                 }
               },
             },
@@ -422,14 +422,14 @@ export default {
         token: this.$store.state.user.token,
       }, // 有的图片服务器要求请求头需要有token
       /***********quillEditor编辑器需要的参数**********/
-    }
+    };
   },
   created() {
-    this.course_id = this.$route.query.course_id
-    this.course_id ? this.getCoursesDetail() : ''
-    this.getCateList() //获取所属分类
-    this.$api.getTeacherSublist(this, 'teacherData') //老师列表
-    this.$api.getHomeclassifiList(this, 'homeData') //获取首页分类
+    this.course_id = this.$route.query.course_id;
+    this.course_id ? this.getCoursesDetail() : "";
+    this.getCateList(); //获取所属分类
+    this.$api.getTeacherSublist(this, "teacherData"); //老师列表
+    this.$api.getHomeclassifiList(this, "homeData"); //获取首页分类
     // this.$api.getProblemCourseList(this, 'questionBank') //课程题库列表
     // this.$api.videocollectionlist(this, 'videoData') //视频列表
   },
@@ -459,20 +459,20 @@ export default {
     // },
 
     changeCategory(ids) {
-      console.log(ids)
-      const id = ids ? [...ids].pop() : ''
-      console.log(id)
-      this.videocollectionlist(id)
-      this.getProblemCourseList(id)
+      console.log(ids);
+      const id = ids ? [...ids].pop() : "";
+      console.log(id);
+      this.videocollectionlist(id);
+      this.getProblemCourseList(id);
     },
     // 获取关联题库
     async getProblemCourseList(category_id) {
       const data = {
         category_id,
-      }
-      const res = await getProblemCourseList(data)
+      };
+      const res = await getProblemCourseList(data);
       if (res.code === 0) {
-        this.questionBank = res.data.list
+        this.questionBank = res.data.list;
       }
     },
     // 获取关联视屏
@@ -480,84 +480,84 @@ export default {
       const data = {
         course_category_id: category_id,
         limit: 9999,
-      }
-      const res = await videocollectionlist(data)
+      };
+      const res = await videocollectionlist(data);
       if (res.code === 0) {
-        this.videoData = res.data.data
+        this.videoData = res.data.data;
       }
     },
     handleAvatarSuccess(res, file) {
-      console.log(res)
-      this.formData.cover_img = res.data?.data?.url || ''
+      console.log(res);
+      this.formData.cover_img = res.data?.data?.url || "";
     },
     beforeAvatarUpload(file) {
-      const isImg = file.type.indexOf('image') !== -1
-      const isLt20M = file.size / 1024 / 1024 < 20
+      const isImg = file.type.indexOf("image") !== -1;
+      const isLt20M = file.size / 1024 / 1024 < 20;
       if (!isImg) {
-        this.$message.error('请上传图片')
+        this.$message.error("请上传图片");
       }
       if (!isLt20M) {
-        this.$message.error('上传图片大小不能超过 20MB!')
+        this.$message.error("上传图片大小不能超过 20MB!");
       }
-      return isLt20M && isImg
+      return isLt20M && isImg;
     },
     async getCoursesDetail() {
-      const data = { id: this.course_id }
-      console.log(data)
-      const res = await getCoursesDetail(data)
-      console.log(res)
+      const data = { id: this.course_id };
+      console.log(data);
+      const res = await getCoursesDetail(data);
+      console.log(res);
       if (res.code === 0) {
-        this.formData = res.data.info
-        const id = res.data.info.course_category_id
+        this.formData = res.data.info;
+        const id = res.data.info.course_category_id;
         if (id) {
-          this.videocollectionlist(id)
-          this.getProblemCourseList(id)
+          this.videocollectionlist(id);
+          this.getProblemCourseList(id);
         }
-        this.formData.course_category_id = res.data.info.course_category_id
+        this.formData.course_category_id = res.data.info.course_category_id;
       }
     },
     handleCancle() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     isReal(ab) {
-      console.log(ab)
+      console.log(ab);
       if (ab == 0) {
-        this.formData.fictitious_num = 0
+        this.formData.fictitious_num = 0;
       }
     },
     isFree(zx) {
-      console.log(zx)
+      console.log(zx);
       if (zx == 2) {
-        this.formData.course_price = 0
-        this.formData.past_price = 0
+        this.formData.course_price = 0;
+        this.formData.past_price = 0;
       }
     },
     async submit(num) {
       const data = {
         ...this.formData,
         course_category_id: Array.isArray(this.formData.course_category_id)
-          ?[...this.formData.course_category_id].pop()
+          ? [...this.formData.course_category_id].pop()
           : this.formData.course_category_id,
-      }
+      };
       if (this.course_id) {
-        data.course_id = this.course_id
+        data.course_id = this.course_id;
       }
-      const api = this.course_id ? editCourse : addCourse
-      const res = await api(data)
-      console.log(res)
+      const api = this.course_id ? editCourse : addCourse;
+      const res = await api(data);
+      console.log(res);
       if (res.code === 0) {
         this.$message({
-          type: 'success',
+          type: "success",
           message: res.message,
-        })
+        });
         if (num) {
           //保存并设置
           this.$router.push({
-            path: '/sou/configureCourses',
-          })
+            path: "/sou/configureCourses",
+          });
         } else {
           //保存
-          this.$router.go(-1)
+          this.$router.go(-1);
         }
 
         // this.hanldeCancel()
@@ -567,52 +567,52 @@ export default {
     handleSave(formName, num) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit(num)
+          this.submit(num);
         }
-      })
+      });
     },
     addIcon() {
-      this.pictureVisible = true
+      this.pictureVisible = true;
     },
     clearUrl() {
       // this.url = ''
       // this.haschoose = false
-      this.pictureVisible = false
+      this.pictureVisible = false;
     },
     closeImg(radioUrl) {
-      console.log(this.formData)
+      console.log(this.formData);
       // console.log(radioUrl + '我好睡')
-      this.pictureVisible = false
+      this.pictureVisible = false;
       if (radioUrl != undefined) {
-        this.haschoose = true
-        this.url = radioUrl
-        this.formData.cover_img = radioUrl
+        this.haschoose = true;
+        this.url = radioUrl;
+        this.formData.cover_img = radioUrl;
       } else {
-        this.url = ''
-        this.haschoose = false
-        this.formData.cover_img = ''
+        this.url = "";
+        this.haschoose = false;
+        this.formData.cover_img = "";
       }
     },
     async getCateList() {
-      const data = { list: true }
-      const res = await getCateList(data)
-      console.log(res)
+      const data = { list: true };
+      const res = await getCateList(data);
+      console.log(res);
       if (res.code === 0) {
-        this.cloneData(res.data, this.selectData)
-        console.log(this.selectData)
+        this.cloneData(res.data, this.selectData);
+        console.log(this.selectData);
         // this.searchOptions[0].attrs.options = this.selectData
       }
     },
     cloneData(data, newData) {
       data.forEach((item, index) => {
-        newData[index] = {}
-        newData[index].value = item.category_id
-        newData[index].label = item.category_name
+        newData[index] = {};
+        newData[index].value = item.category_id;
+        newData[index].label = item.category_name;
         if (item.son && item.son.length) {
-          newData[index].children = []
-          this.cloneData(item.son, newData[index].children)
+          newData[index].children = [];
+          this.cloneData(item.son, newData[index].children);
         }
-      })
+      });
     },
     //跳转配置课程页面
     toConfigureCourses() {
@@ -624,46 +624,46 @@ export default {
     /***************quillEditor编辑器事件****************/
     onEditorChange({ editor, html, text }) {
       //内容改变事件
-      this.formData.introduction = html
-      this.content = html
+      this.formData.introduction = html;
+      this.content = html;
     },
     // 富文本图片上传前
     beforeUpload() {
       // 显示loading动画
-      this.quillUpdateImg = true
+      this.quillUpdateImg = true;
     },
     uploadSuccess(res, file) {
       // res为图片服务器返回的数据
       // 获取富文本组件实例
-      console.log(res)
-      let quill = this.$refs.myQuillEditor.quill
+      console.log(res);
+      let quill = this.$refs.myQuillEditor.quill;
       // 如果上传成功
       if (res.code == 0) {
         this.$message({
-          type: 'success',
+          type: "success",
           message: res.message,
-        })
+        });
         // 获取光标所在位置
-        let length = quill.getSelection().index
+        let length = quill.getSelection().index;
         // 插入图片 res.url为服务器返回的图片地址
-        quill.insertEmbed(length, 'image', res.data.data.url)
+        quill.insertEmbed(length, "image", res.data.data.url);
         // 调整光标到最后
-        quill.setSelection(length + 1)
+        quill.setSelection(length + 1);
       } else {
-        this.$message.error('图片插入失败')
+        this.$message.error("图片插入失败");
       }
       // loading动画消失
-      this.quillUpdateImg = false
+      this.quillUpdateImg = false;
     },
     // 富文本图片上传失败
     uploadError() {
       // loading动画消失
-      this.quillUpdateImg = false
-      this.$message.error('图片插入失败')
+      this.quillUpdateImg = false;
+      this.$message.error("图片插入失败");
     },
     /***************quillEditor编辑器事件****************/
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

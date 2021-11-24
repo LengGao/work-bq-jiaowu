@@ -184,11 +184,11 @@ export default {
       pageRightNum: 1,
       pageRightSize: 20,
       searchRightData: {
-        keyword: "",
+        search_box: "",
       },
       searchRightOptions: [
         {
-          key: "keyword",
+          key: "search_box",
           attrs: {
             placeholder: "机构名称",
           },

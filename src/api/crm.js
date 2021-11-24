@@ -345,9 +345,9 @@ export function getInstitutionClassType(data) {
 }
 
 // 教务开课
-export function openCrmOrder(data) {
+export function orderOpen(data) {
     return request({
-        url: 'CrmOrder/open',
+        url: 'CrmOrder/orderOpen',
         method: 'post',
         data
     })

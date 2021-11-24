@@ -44,13 +44,6 @@
             min-width="110"
             show-overflow-tooltip
           ></el-table-column>
-
-          <el-table-column
-            prop="category_name"
-            label="课程属性"
-            min-width="110"
-            show-overflow-tooltip
-          ></el-table-column>
         </el-table>
         <div
           class="table_bottom"
