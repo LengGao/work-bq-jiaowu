@@ -177,7 +177,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="has_question"
+          prop="category_name"
           label="所属分类"
           min-width="80"
           align="center"
