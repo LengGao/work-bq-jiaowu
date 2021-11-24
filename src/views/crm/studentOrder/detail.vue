@@ -1,5 +1,5 @@
 <template>
-  <div class="student-order-detail">
+  <div class="student-order-detail" v-loading="loading">
     <div class="student-order-title">
       <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
       <span class="student-order-status">机构学生单</span>
@@ -240,6 +240,7 @@ export default {
   name: "studentOrderDetail",
   data() {
     return {
+      loading: false,
       detailData: {
         pay_plan: [],
         pay_log: [],
@@ -264,7 +265,9 @@ export default {
       const data = {
         order_id: this.$route.query.id,
       };
-      const res = await getCrmOrderDetail(data);
+      this.loading = true;
+      const res = await getCrmOrderDetail(data).catch(() => {});
+      this.loading = false;
       if (res.code === 0) {
         this.detailData = res.data;
       }
