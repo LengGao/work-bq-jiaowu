@@ -265,6 +265,7 @@ export default {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        channel: 1,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
