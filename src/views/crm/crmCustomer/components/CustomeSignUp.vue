@@ -312,7 +312,9 @@
             <el-option
               v-for="(item, index) in planOptions"
               :key="item.id"
-              :label="item.day"
+              :label="`第${index + 1}期 ${item.day} ￥${(
+                +item.money || 0
+              ).toFixed(2)}`"
               :value="index"
             >
             </el-option>

@@ -1,5 +1,5 @@
 <template>
-  <div class="change-detail">
+  <div class="change-detail" v-loading="loading">
     <div class="change-title">
       <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
       <span
@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       activeName: "BasicInfo",
+      loading: false,
       detailData: {
         pay_plan: [],
         pay_log: [],
@@ -184,7 +185,9 @@ export default {
       const data = {
         order_id: this.$route.query.id,
       };
-      const res = await getCrmOrderDetail(data);
+      this.loading = true;
+      const res = await getCrmOrderDetail(data).catch(() => {});
+      this.loading = false;
       if (res.code === 0) {
         this.detailData = res.data;
       }

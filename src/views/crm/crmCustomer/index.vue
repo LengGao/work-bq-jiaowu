@@ -95,7 +95,10 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>{{ row.deal_num ? "已成交" : "未成交" }}</span>
+              <el-tag size="small" v-if="row.deal_num" type="success"
+                >已成交</el-tag
+              >
+              <el-tag size="small" v-else type="warning">未成交</el-tag>
             </template>
           </el-table-column>
 
@@ -307,7 +310,7 @@ export default {
           options: [
             {
               value: 1,
-              label: "我的客户",
+              label: "独立客户",
             },
             {
               value: 2,
