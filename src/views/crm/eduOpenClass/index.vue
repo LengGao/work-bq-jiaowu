@@ -115,7 +115,7 @@
           >
             <template slot-scope="{ row }">
               <span
-                v-if="row.open_course"
+                v-if="row.open_course === 1"
                 class="approve-status approve-status--success"
                 >已开课</span
               >
