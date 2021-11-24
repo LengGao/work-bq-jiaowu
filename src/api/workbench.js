@@ -142,7 +142,16 @@ export function terminalGroup(params) {
         params
     })
 }
-// 根据部门获取可选员工
+// 获取部门下的用户id
+export function getDepartmentUser(data) {
+    return request({
+        url: 'index/getDepartmentUser',
+        method: 'post',
+        data
+    })
+}
+
+// 获取可选员工
 export function getBindUser(params) {
     return request({
         url: '/index/bindUser',
@@ -151,75 +160,75 @@ export function getBindUser(params) {
     })
 }
 // 获取业绩指标数据
-export function performanceIndicators(params) {
+export function performanceIndicators(data) {
     return request({
         url: '/index/performanceIndicators',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取销售趋势数据
-export function getTrendData(params) {
+export function getTrendData(data) {
     return request({
         url: '/index/trend',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取销售龙虎榜
-export function getSalesRankData(params) {
+export function getSalesRankData(data) {
     return request({
         url: '/index/salesRank',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取客户录入排行榜
-export function getCustomerRankData(params) {
+export function getCustomerRankData(data) {
     return request({
         url: '/index/customerRank',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取在线人数
-export function getOnlineStatistics(params) {
+export function getOnlineStatistics(data) {
     return request({
         url: '/index/onlineStatistics',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取在线人数
-export function getBriefing(params) {
+export function getBriefing(data) {
     return request({
         url: '/index/briefing',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取回款计划提醒
-export function receivablePlan(params) {
+export function receivablePlan(data) {
     return request({
         url: '/index/receivablePlan',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取待跟进客户
-export function staffFollow(params) {
+export function staffFollow(data) {
     return request({
         url: '/index/staffFollow',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取系统公告
-export function getSystemMsgList(params) {
+export function getSystemMsgList(data) {
     return request({
         url: '/index/getSystemAnnouncementList',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 获取工作通知

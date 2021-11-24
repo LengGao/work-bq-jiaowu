@@ -12,10 +12,19 @@
         </div> -->
         <div
           class="avatar-item"
-          v-for="item in checkedUser"
-          :key="item.staff_id"
+          v-for="(item, index) in checkedData"
+          :key="item.staff_id || index"
+          :style="{
+            backgroundColor: item.backgroundColor,
+          }"
+          :title="item.staff_name || item.title"
         >
-          <span>{{ item.staff_name.substr(-2) }}</span>
+          <img v-if="item.head_photo" :src="item.head_photo" alt="" />
+          <span v-else>{{
+            item.staff_name
+              ? item.staff_name.substr(-2)
+              : item.title.substr(0, 2)
+          }}</span>
         </div>
       </div>
 
@@ -24,7 +33,7 @@
           type="text"
           class="reset"
           @click="handlUserReset"
-          v-if="checkedUser.length"
+          v-if="checkedData.length"
           >重置
         </el-button>
         <el-popover
@@ -52,8 +61,9 @@
                 label: 'title',
                 multiple: true,
               }"
+              ref="cascader"
+              @change="getDepartmentUser"
               v-model="departmentIds"
-              @change="getBindUser"
             ></el-cascader>
           </div>
           <div class="form-item">
@@ -91,7 +101,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { terminalGroup, getBindUser } from "@/api/workbench";
+import { terminalGroup, getBindUser, getDepartmentUser } from "@/api/workbench";
 export default {
   name: "visualization",
   data() {
@@ -101,9 +111,10 @@ export default {
       userOptions: [],
       departmentIds: [],
       checkedUserIds: [],
-      checkedUser: [],
+      checkedData: [],
       userPopver: false,
       userIds: [],
+      departmentUserIds: [],
     };
   },
   computed: {
@@ -117,19 +128,40 @@ export default {
   },
   created() {
     this.terminalGroup();
+    this.getBindUser();
   },
   methods: {
     handlUserReset() {
-      this.checkedUser = [];
+      this.departmentIds = [];
+      this.checkedData = [];
       this.checkedUserIds = [];
       this.userIds = [];
     },
     handleOk() {
-      this.checkedUser = this.userOptions.filter((item) =>
-        this.checkedUserIds.includes(item.staff_id)
-      );
+      this.checkedData = [];
+      // 选中的人
+      this.userOptions.forEach((item) => {
+        if (this.checkedUserIds.includes(item.staff_id)) {
+          this.checkedData.push({
+            ...item,
+            backgroundColor:
+              "#" + Math.random().toString(16).substr(2, 6).toUpperCase(),
+          });
+        }
+      });
+      // 选中的部门
+      const nodes = this.$refs.cascader.getCheckedNodes();
+      nodes.forEach((item) => {
+        this.checkedData.push({
+          title: item.data.title,
+          backgroundColor:
+            "#" + Math.random().toString(16).substr(2, 6).toUpperCase(),
+        });
+      });
       this.userPopver = false;
-      this.userIds = this.checkedUserIds;
+      this.userIds = [
+        ...new Set(this.checkedUserIds.concat(this.departmentUserIds)),
+      ];
     },
     async getBindUser() {
       this.userOptions = [];
@@ -141,6 +173,16 @@ export default {
       };
       const res = await getBindUser(data);
       this.userOptions = res.data;
+    },
+    async getDepartmentUser(arr) {
+      console.log(arr.map((item) => [...item].pop()));
+      const data = {
+        id: arr.map((item) => [...item].pop()),
+      };
+      const res = await getDepartmentUser(data);
+      if (res.code === 0) {
+        this.departmentUserIds = res.data || [];
+      }
     },
     async terminalGroup() {
       const res = await terminalGroup();
@@ -170,6 +212,7 @@ export default {
         justify-content: center;
         background-color: #199f;
         color: #fff;
+        cursor: pointer;
         font-size: 14px;
         border-radius: 50%;
         margin-right: 10px;

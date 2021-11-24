@@ -24,12 +24,13 @@
         <slot name="left" :row="item" :index="index"></slot>
         <slot name="right" :row="item" :index="index"></slot>
       </div>
+      <div class="no-data" v-if="!data.length">
+        <img src="../../../../../assets/images/no-data.png" alt="" />
+        <p>暂无数据</p>
+      </div>
     </div>
     <div v-if="isMore" class="table-block-load-more" @click="handleLoadMore">
       <span>加载更多...</span>
-    </div>
-    <div v-else class="table-block-load-more">
-      <span>没有更多了</span>
     </div>
   </div>
 </template>
@@ -114,6 +115,7 @@ export default {
   &-list {
     height: 360px;
     overflow-y: auto;
+    position: relative;
     .list-item {
       display: flex;
       justify-content: space-between;
@@ -123,6 +125,18 @@ export default {
       cursor: pointer;
       &:hover {
         background-color: #f2f6fc;
+      }
+    }
+    .no-data {
+      position: absolute;
+      left: 0;
+      top: 30%;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #999;
+      img {
+        width: 200px;
       }
     }
   }
