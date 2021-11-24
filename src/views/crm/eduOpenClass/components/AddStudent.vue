@@ -330,7 +330,7 @@
 
 <script>
 import { getInstitutionList } from "@/api/institution";
-import { openCrmOrder, getInstitutionClassType } from "@/api/crm";
+import { orderOpen, getInstitutionClassType } from "@/api/crm";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 export default {
@@ -623,8 +623,12 @@ export default {
           })
         );
       }
+      if (data.project === "[]") {
+        this.$message.error("请选择有效的项目！");
+        return;
+      }
       this.addLoading = true;
-      const res = await openCrmOrder(data).catch(() => {
+      const res = await orderOpen(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;

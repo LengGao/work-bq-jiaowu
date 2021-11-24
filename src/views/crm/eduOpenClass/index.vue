@@ -115,7 +115,7 @@
           >
             <template slot-scope="{ row }">
               <span
-                v-if="row.open_course"
+                v-if="row.open_course === 1"
                 class="approve-status approve-status--success"
                 >已开课</span
               >
@@ -223,16 +223,12 @@ export default {
           width: 140,
           options: [
             {
-              value: 0,
+              value: 1,
               label: "招生客户",
             },
             {
-              value: 1,
-              label: "渠道客户",
-            },
-            {
               value: 2,
-              label: "机构报名",
+              label: "渠道客户",
             },
           ],
           attrs: {
@@ -247,7 +243,7 @@ export default {
           width: 140,
           options: [
             {
-              value: 0,
+              value: 2,
               label: "未开课",
             },
             {
