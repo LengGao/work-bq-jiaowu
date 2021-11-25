@@ -56,7 +56,7 @@
               <el-option
                 v-for="(item, index) in channelOptions"
                 :label="item"
-                :value="index + ''"
+                :value="item"
                 :key="index"
               ></el-option>
             </el-select>

@@ -33,7 +33,7 @@
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             v-if="checkHeader.includes('ID')"
-            prop="uid"
+            prop="id"
             label="ID"
             show-overflow-tooltip
             width="70"
@@ -47,7 +47,7 @@
             v-if="checkHeader.includes('客户姓名')"
           >
             <template slot-scope="{ row }">
-              <el-button type="text" @click="coustomDetail(row.uid)">
+              <el-button type="text" @click="coustomDetail(row.uid, row.id)">
                 {{ row.name }}
               </el-button>
             </template>
@@ -167,7 +167,7 @@
             </template>
             <template slot-scope="{ row }">
               <el-button type="text" @click="openSignUp(row)">报名</el-button>
-              <el-button type="text" @click="coustomDetail(row.uid)"
+              <el-button type="text" @click="coustomDetail(row.uid, row.id)"
                 >客户详情</el-button
               >
             </template>
@@ -464,11 +464,12 @@ export default {
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
     },
-    coustomDetail(uid) {
+    coustomDetail(uid, cid) {
       this.$router.push({
         name: "cusdetail",
         query: {
           uid,
+          cid,
         },
       });
     },
