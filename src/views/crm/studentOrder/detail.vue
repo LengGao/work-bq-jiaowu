@@ -92,6 +92,7 @@
     <template v-if="detailData.type === 1">
       <Title text="学历信息"></Title>
       <el-table
+        :key="detailData.type"
         :data="getTableData"
         style="border: 1px solid #f1f1f1"
         v-loading="false"
@@ -176,6 +177,7 @@
     <template v-else>
       <Title text="项目信息"></Title>
       <el-table
+        :key="detailData.type"
         :data="getTableData"
         style="border: 1px solid #f1f1f1"
         v-loading="false"
