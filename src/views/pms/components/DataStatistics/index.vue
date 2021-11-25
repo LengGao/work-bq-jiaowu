@@ -1,6 +1,6 @@
 <template>
   <div class="admin" v-loading="loading">
-    <Block date-type="1" :value="0" @date-change="getBriefing">
+    <Block date-type="1" :value="6" @date-change="getBriefing">
       <Title slot="header-title" text="销售简报"></Title>
       <SalesData :data="salesData" v-loading="salesLoading" />
     </Block>
@@ -146,11 +146,11 @@ export default {
   watch: {
     userIds: {
       handler() {
-        this.performanceIndicators(1);
+        this.performanceIndicators(0);
         this.getTrendData(this.date.getFullYear(), 1);
         this.getSalesRankData(this.currentMonth);
         this.getCustomerRankData(this.currentMonth);
-        this.getBriefing(0);
+        this.getBriefing(6);
       },
       deep: true,
     },
@@ -161,12 +161,12 @@ export default {
     },
   },
   created() {
-    this.performanceIndicators(1);
+    this.performanceIndicators(0);
     this.getTrendData(this.date.getFullYear(), 1);
     this.getSalesRankData(this.currentMonth);
     this.getCustomerRankData(this.currentMonth);
     this.getOnlineStatistics();
-    this.getBriefing(0);
+    this.getBriefing(6);
   },
   methods: {
     // 销售简报

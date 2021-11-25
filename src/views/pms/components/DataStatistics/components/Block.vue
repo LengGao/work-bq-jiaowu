@@ -66,10 +66,14 @@ export default {
       type: String,
       default: "1",
     },
+    value: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
-      dateSlect: 0,
+      dateSlect: this.value,
       yearType: "1",
       year: new Date().getFullYear() + "",
       mounth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
