@@ -148,58 +148,50 @@
         </el-table-column>
         <el-table-column
           prop="day"
-          label="回款日期"
-          min-width="80"
+          label="计划回款日期"
+          min-width="140"
           align="center"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          label="回款金额"
+          label="计划回款金额"
           prop="money"
           align="center"
           min-width="100"
           show-overflow-tooltip
         >
-        </el-table-column>
-        <!-- <el-table-column
-          label="支付方式"
-          align="center"
-          min-width="100"
-          prop="pay_type"
-          show-overflow-tooltip
-        >
+          <template slot-scope="{ row }">
+            <span>{{ row.money | moneyFormat }}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          label="收款人员"
-          align="center"
-          min-width="100"
-          show-overflow-tooltip
-        >
-        </el-table-column> -->
-        <!-- <el-table-column
-          label="备注信息"
-          align="center"
-          min-width="100"
-          prop="tips"
-          show-overflow-tooltip
-        >
-        </el-table-column> -->
-        <el-table-column
-          label="入账状态"
-          prop="pay_status"
+          label="已回款金额"
+          prop="money"
           align="center"
           min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>{{ row.finished == 1 ? "已入账" : "未入账" }}</span>
+            <span>{{ row.pay_money | moneyFormat }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_progress"
+          label="回款进度"
+          min-width="140"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-progress
+              :percentage="+(row.pay_progress || '').split('%')[0] || 0"
+            ></el-progress>
           </template>
         </el-table-column>
         <el-table-column
           prop="pay_day"
-          label="入账时间"
-          min-width="80"
+          label="回款时间"
+          min-width="140"
           align="center"
           show-overflow-tooltip
         >
@@ -211,6 +203,7 @@
       :title="dialogTitle"
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
+      :plan-options="data.pay_plan"
     />
     <AddCollectionPlan
       v-model="planDialogVisible"
@@ -260,11 +253,6 @@ export default {
       this.currentId = "";
       this.planDialogTitle = "配置回款计划";
       this.planDialogVisible = true;
-    },
-    handleEdit(row) {
-      this.currentId = row;
-      this.dialogTitle = "编辑回款记录";
-      this.dialogVisible = true;
     },
     handleAdd() {
       this.currentId = "";
