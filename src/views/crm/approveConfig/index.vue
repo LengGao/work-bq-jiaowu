@@ -26,11 +26,12 @@
                 <el-radio :label="2" v-if="type != 2"
                   >部门主管（任意一人）</el-radio
                 >
-                <el-radio :label="3">指定用户（任意一人）</el-radio>
+                <el-radio :label="4">指定用户（任意一人）</el-radio>
+                <el-radio :label="0" v-if="row.level !== 1">无</el-radio>
               </el-radio-group>
               <el-select
                 :key="row.type"
-                v-if="row.type === 3"
+                v-if="row.type === 4"
                 v-model="row.multiple"
                 clearable
                 filterable
@@ -93,7 +94,8 @@ export default {
     async setApproveConfig() {
       const arr = this.listData.map(
         ({ multiple, single, name, id, ...params }) => {
-          if (params.type === 3) {
+          params.staff_id = "";
+          if (params.type === 4) {
             if (!multiple.length) {
               this.$message.error("请选择指定用户");
               throw new Error("请选择指定用户");
@@ -133,7 +135,7 @@ export default {
           return {
             ...item,
             multiple:
-              item.type === 3
+              item.type === 4
                 ? item.staff_id.split(",").map((staff_id) => +staff_id)
                 : [],
             name: this.nameMap[item.level],
