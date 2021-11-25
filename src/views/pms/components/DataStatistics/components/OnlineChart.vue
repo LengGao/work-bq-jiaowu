@@ -123,7 +123,6 @@ export default {
           {
             name: "累计在线",
             type: "line",
-            stack: "Total",
             smooth: true,
             color: "#2CA7FF",
             data: totalData,
@@ -131,7 +130,6 @@ export default {
           {
             name: "pc端",
             type: "line",
-            stack: "Total",
             smooth: true,
             color: "#4CD30C",
             data: pcData,
@@ -139,7 +137,6 @@ export default {
           {
             name: "小程序",
             type: "line",
-            stack: "Total",
             smooth: true,
             color: "#FDC70B",
             data: appletData,

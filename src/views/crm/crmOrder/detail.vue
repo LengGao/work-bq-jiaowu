@@ -3,10 +3,12 @@
     <div class="change-title">
       <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
       <span
+        v-if="!detailData.is_deleted"
         class="change-status"
         :type="verifyStatusMap[detailData.verify_status || 1].type"
         >{{ verifyStatusMap[detailData.verify_status || 1].text }}</span
       >
+      <span v-else class="change-status" type="del">该订单已删除</span>
       <div class="btn-edit">
         <el-button
           type="primary"
@@ -16,7 +18,7 @@
         >
         <el-button
           @click="ActionConfirm(4)"
-          v-if="detailData.verify_status === 8"
+          v-if="detailData.verify_status === 8 && !detailData.is_deleted"
           >删除</el-button
         >
         <el-button
@@ -54,7 +56,10 @@
         :status="approveStatuMap[item.status]"
         :key="index"
       ></el-step>
-      <el-step title="审批完成`"></el-step>
+      <el-step
+        title="审批完成`"
+        v-if="![8, 9].includes(detailData.verify_status)"
+      ></el-step>
     </el-steps>
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
@@ -221,6 +226,12 @@ export default {
         background-color: #999;
         border-radius: 50%;
         margin-right: 4px;
+      }
+      &[type="del"] {
+        color: #fd6500;
+        &::before {
+          background-color: #fd6500;
+        }
       }
       &[type="primary"] {
         &::before {
