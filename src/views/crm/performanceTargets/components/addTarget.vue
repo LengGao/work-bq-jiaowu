@@ -15,12 +15,7 @@
       ref="formData"
     >
       <el-form-item label="目标年度" prop="title">
-        <el-input
-          placeholder="请输入"
-          type="number"
-          v-model="formData.title"
-        ></el-input>
-        <!-- <el-select v-model="formData.title" filterable placeholder="请选择">
+        <el-select v-model="formData.title" filterable placeholder="请选择">
           <el-option
             v-for="item in yearOptions"
             :key="item"
@@ -28,7 +23,7 @@
             :value="item"
           >
           </el-option>
-        </el-select> -->
+        </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

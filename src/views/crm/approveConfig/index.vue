@@ -94,6 +94,10 @@ export default {
       const arr = this.listData.map(
         ({ multiple, single, name, id, ...params }) => {
           if (params.type === 3) {
+            if (!multiple.length) {
+              this.$message.error("请选择指定用户");
+              throw new Error("请选择指定用户");
+            }
             params.staff_id = multiple.join(",");
           }
           params.bind_id = this.type;

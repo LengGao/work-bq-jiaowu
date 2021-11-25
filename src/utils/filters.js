@@ -1,6 +1,9 @@
 import Vue from 'vue'
 const min = (val) => val < 10 ? '0' + val : val
 const filters = {
+    moneyFormat(number, isCompact) {
+        return new Intl.NumberFormat('zh-CN', { style: 'currency', minimumFractionDigits: 2, notation: isCompact ? 'compact' : 'standard', currency: 'CNY' }).format(number || 0)
+    },
     filterPhone(val) {
         if (!val) return "--";
         val = val + ''

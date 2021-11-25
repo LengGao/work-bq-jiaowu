@@ -52,7 +52,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span> {{ price(row.target) }} </span>
+              <span> {{ row.target | moneyFormat(true) }} </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -147,12 +147,6 @@ export default {
     this.getPerformanceTargetList();
   },
   methods: {
-    price(val) {
-      val = val ?? 0;
-      return val >= 10000
-        ? `￥${(val / 10000).toFixed(2)}万`
-        : `￥${(val * 1).toFixed(2)}`;
-    },
     async modifyYearStatus(row) {
       const data = {
         status: row.status,

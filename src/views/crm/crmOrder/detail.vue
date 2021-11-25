@@ -49,7 +49,7 @@
         status="success"
       ></el-step>
       <el-step
-        :title="`${item.staff_name}审批`"
+        :title="`${item.staff_name}${statusText[item.status]}`"
         v-for="(item, index) in detailData.verify_step"
         :status="approveStatuMap[item.status]"
         :key="index"
@@ -87,6 +87,12 @@ export default {
         3: "success",
         8: "error",
         9: "error",
+      },
+      statusText: {
+        0: "审批",
+        3: "审批通过",
+        8: "撤销审批",
+        9: "驳回审批",
       },
       verifyStatusMap: {
         1: {
