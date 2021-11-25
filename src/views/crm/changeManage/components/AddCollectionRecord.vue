@@ -33,18 +33,13 @@
           <el-option
             v-for="(item, index) in planOptions"
             :key="item.id"
-            :label="item.day"
-            :value="index"
+            :label="`第${index + 1}期 ${item.day} ￥${(
+              +item.money || 0
+            ).toFixed(2)}`"
+            :value="item.id"
           >
           </el-option>
         </el-select>
-        <el-button
-          type="text"
-          @click="planDialogVisible = true"
-          style="margin-left: 10px"
-          title="配置回款计划"
-          >配置</el-button
-        >
       </el-form-item>
       <el-form-item label="回款金额" prop="pay_money">
         <el-input
@@ -88,11 +83,6 @@
         >确 定</el-button
       >
     </span>
-    <AddCollectionPlan
-      v-model="planDialogVisible"
-      title="配置回款计划"
-      @on-success="getPlanOptions"
-    />
   </el-dialog>
 </template>
 
@@ -115,6 +105,10 @@ export default {
       type: [String, Number],
       default: "",
     },
+    planOptions: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     AddCollectionPlan,
@@ -135,10 +129,7 @@ export default {
         pay_date: [{ required: true, message: "请选择", trigger: "change" }],
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
       },
-
       addLoading: false,
-      planDialogVisible: false,
-      planOptions: [],
     };
   },
   watch: {
@@ -148,9 +139,6 @@ export default {
   },
   methods: {
     handleOpen() {},
-    getPlanOptions(options) {
-      this.planOptions = options;
-    },
     addOption() {
       this.formData.options.push({
         label: "",
@@ -188,7 +176,6 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
-      this.planOptions = [];
       this.$emit("input", false);
     },
     hanldeCancel() {
