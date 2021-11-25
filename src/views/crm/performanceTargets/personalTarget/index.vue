@@ -7,8 +7,8 @@
       </div>
       <div class="table-list">
         <h2 class="target-value">
-          {{ $route.query.title || yearTargetInfo.title }}年回款总金额目标：¥{{
-            yearTargetInfo.target || "0.00"
+          {{ $route.query.title || yearTargetInfo.title }}年回款总金额目标：{{
+            yearTargetInfo.target | moneyFormat
           }}
         </h2>
         <!--表格-->
@@ -22,16 +22,8 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center' }"
+          height="78vh"
         >
-          <el-table-column
-            label="ID"
-            show-overflow-tooltip
-            width="60"
-            align="center"
-            prop="id"
-          >
-          </el-table-column>
-
           <el-table-column
             prop="staff_name"
             label="员工姓名"
@@ -48,7 +40,7 @@
             align="center"
           >
             <template slot-scope="{ row }">
-              <span> ￥{{ row.total_performance }} </span>
+              <span> {{ row.total_performance | moneyFormat }} </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -70,7 +62,7 @@
                 @blur="handleEditBlur(row, `edit${item}`)"
               ></el-input>
               <div v-else class="show-value">
-                <span>{{ row[yearMap[item]] }}</span>
+                <span>{{ row[yearMap[item]] | moneyFormat }}</span>
                 <el-button
                   @click="handleEditClick(row, `edit${item}`)"
                   class="icon"
@@ -164,12 +156,6 @@ export default {
         this.yearTargetInfo = res.data;
       }
     },
-    price(val) {
-      val = val ?? 0;
-      return val >= 10000
-        ? `￥${(val / 10000).toFixed(2)}万`
-        : `￥${(val * 1).toFixed(2)}`;
-    },
     tpl(node) {
       return (
         <span
@@ -182,7 +168,7 @@ export default {
           <span> {node.title}</span>
           {node.title !== "全部" && (
             <span class="total-price">
-              {this.price(node.total_performance)}
+              {this.$options.filters.moneyFormat(node.total_performance, true)}
             </span>
           )}
         </span>
@@ -259,6 +245,7 @@ export default {
   background-color: #f8f8f8;
   color: #909399;
 }
+
 .personal-target {
   .mainwrap {
     padding: 20px;
@@ -267,9 +254,9 @@ export default {
   .tree-list {
     min-width: 250px;
     flex-shrink: 0;
+    height: 82vh;
     border: 1px solid #eee;
     margin-right: 20px;
-    min-height: 90vh;
     overflow-y: auto;
     .title {
       margin-bottom: 10px;
@@ -290,6 +277,7 @@ export default {
     }
     .show-value {
       cursor: pointer;
+      line-height: 32px;
       .icon {
         padding: 0 4px;
         display: none;
@@ -317,5 +305,8 @@ input::-webkit-inner-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+}
+.min_table .el-table__body-wrapper::-webkit-scrollbar {
+  height: 10px;
 }
 </style>
