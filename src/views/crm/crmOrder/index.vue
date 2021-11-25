@@ -170,11 +170,14 @@
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="{ row }">
               <div style="display: flex; justify-content: center">
-                <el-button
+                <!-- <el-button
                   type="text"
                   @click="seebtn(row)"
                   v-if="
-                    !row.contract_status && row.project_ids && !row.sign_url
+                    !row.contract_status &&
+                    row.project_ids &&
+                    !row.sign_url &&
+                    row.verify_status === 3
                   "
                   >生成合同</el-button
                 >
@@ -192,7 +195,7 @@
                     (row.contract_status === 2 || row.contract_status === 4)
                   "
                   >复制签名链接</el-button
-                >
+                > -->
                 <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
                   >订单详情</el-button
                 >
@@ -537,7 +540,7 @@ export default {
         preview,
       };
       this.contractLoading = true;
-      const res = await generate(data).catch();
+      const res = await generate(data).catch(() => {});
       this.contractLoading = false;
       if (res.code == 0) {
         if (preview) {
