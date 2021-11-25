@@ -321,7 +321,7 @@
           </el-select>
           <el-button
             type="text"
-            @click="planDialogVisible = true"
+            @click="openPlanDialog"
             style="margin-left: 10px"
             title="配置回款计划"
             >配置</el-button
@@ -376,6 +376,7 @@
       v-model="planDialogVisible"
       title="配置回款计划"
       @on-success="getPlanOptions"
+      :data="planDialogData"
     />
   </el-dialog>
 </template>
@@ -386,6 +387,7 @@ import { getStaffList } from "@/api/set";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 import AddCollectionPlan from "@/views/crm/changeManage/components/AddCollectionPlan";
+import { toDay } from "@/utils/date";
 export default {
   name: "CustomeSignUp",
   props: {
@@ -508,6 +510,7 @@ export default {
       majorData: [],
       projectData: [],
       planDialogVisible: false,
+      planDialogData: [],
       planOptions: [],
       payMethodOptions: [],
     };
@@ -541,6 +544,11 @@ export default {
       this.formData.surname = this.userInfo.name || this.userInfo.surname;
       this.formData.mobile = this.userInfo.mobile;
       this.formData.id_card_number = this.userInfo.id_card_number || "";
+      this.formData.pay_day = toDay();
+    },
+    openPlanDialog() {
+      this.planDialogData = [...this.planOptions];
+      this.planDialogVisible = true;
     },
     // 获取支付方式
     async getCustomfieldOptions() {

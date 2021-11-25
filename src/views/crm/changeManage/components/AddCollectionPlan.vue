@@ -167,6 +167,10 @@ export default {
       type: [String, Number],
       default: "",
     },
+    data: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -204,7 +208,14 @@ export default {
         money: "",
       });
     },
-    handleOpen() {},
+    handleOpen() {
+      if (this.data.length) {
+        this.formData.tableData = this.data.map(({ day, money }) => ({
+          day,
+          money,
+        }));
+      }
+    },
     addOption() {
       this.formData.options.push({
         label: "",
