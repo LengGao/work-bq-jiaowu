@@ -78,9 +78,16 @@ export default {
     },
     //学生基本信息
     async getStudentBasicDetail() {
-      const data = {
-        uid: this.$route.query?.uid || "",
-      };
+      const uid = this.$route.query?.uid;
+      const cid = this.$route.query?.cid;
+      const data = {};
+      if (uid) {
+        data.uid = uid;
+      } else if (cid) {
+        data.cid = cid;
+      } else {
+        data.uid = "";
+      }
       const res = await getStudentBasicDetail(data);
       if (res.code === 0) {
         console;
