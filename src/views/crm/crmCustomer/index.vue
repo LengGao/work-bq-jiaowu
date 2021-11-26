@@ -139,7 +139,7 @@
           >
           </el-table-column>
           <el-table-column fixed="right" min-width="160">
-            <template slot="header" slot-scope="scope">
+            <template slot="header" >
               <div class="action-header">
                 <span>操作</span>
                 <el-popover

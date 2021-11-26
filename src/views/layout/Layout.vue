@@ -142,7 +142,4 @@ export default {
   width: 100%;
   background: #fff;
 }
-.sidebar-container {
-  // background-color: #380638;
-}
 </style>
