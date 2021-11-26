@@ -20,7 +20,7 @@
         <el-button type="primary" @click="handleAdd">添加回款记录</el-button>
       </div>
     </div>
-
+    <Title text="回款记录" style="margin-top: 20px"></Title>
     <el-table
       :data="data.pay_log"
       style="width: 100%; border: 1px solid #eee; border-bottom: none"
@@ -56,6 +56,14 @@
       <el-table-column
         prop="pay_type"
         label="支付方式"
+        align="center"
+        min-width="100"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        prop="pay_plan_sort"
+        label="关联期次"
         align="center"
         min-width="100"
         show-overflow-tooltip
@@ -139,12 +147,14 @@
         }"
       >
         <el-table-column
-          label="序号"
+          label="计划期次"
           show-overflow-tooltip
           min-width="70"
           align="center"
-          type="index"
         >
+          <template slot-scope="{ $index: index }">
+            <span>第{{ index + 1 }}期</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="day"
@@ -179,13 +189,20 @@
         <el-table-column
           prop="pay_progress"
           label="回款进度"
-          min-width="140"
+          min-width="90"
+          align="center"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <el-progress
-              :percentage="+(row.pay_progress || '').split('%')[0] || 0"
-            ></el-progress>
+            <span
+              class="progress"
+              :class="{
+                'progress--wait': +(row.pay_progress || '').split('%')[0] > 0,
+                'progress--success':
+                  +(row.pay_progress || '').split('%')[0] >= 100,
+              }"
+              >{{ row.pay_progress }}</span
+            >
           </template>
         </el-table-column>
         <el-table-column
@@ -277,6 +294,15 @@ export default {
   }
   .actions {
     margin-left: auto;
+  }
+}
+.progress {
+  color: #999;
+  &--wait {
+    color: #fe7d00;
+  }
+  &--success {
+    color: #43d100;
   }
 }
 .placeholder {

@@ -263,3 +263,11 @@ export function getUserId(data) {
         data
     })
 }
+// 根据数据范围选项查询用户ID
+export function getNoticeData(params) {
+    return request({
+        url: 'StaffNotice/notice',
+        method: 'get',
+        params
+    })
+}

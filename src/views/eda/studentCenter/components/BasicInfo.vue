@@ -204,7 +204,8 @@
     <FollowUpRecord class="record" v-if="$attrs.uid" v-bind="$attrs" />
     <UpdateTeacher
       v-model="updateTeacherDialog"
-      :ids="[datas.uid]"
+      :ids="[datas.id]"
+      :is-crm="'cid' in $route.query"
       @on-success="$parent.getStudentBasicDetail"
     />
   </div>

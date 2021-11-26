@@ -51,7 +51,7 @@
             prop="order_id"
             label="订单编号"
             show-overflow-tooltip
-            min-width="190"
+            min-width="160"
           >
             <template slot-scope="scope">
               <div class="link" @click="toCrmOrderDetail(scope.row.order_id)">
@@ -81,7 +81,7 @@
           <el-table-column
             prop="project_name"
             label="项目名称"
-            min-width="130"
+            min-width="220"
             show-overflow-tooltip
           >
           </el-table-column>

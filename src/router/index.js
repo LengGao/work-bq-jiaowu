@@ -1147,6 +1147,7 @@ export const createUserRouter = (data) => {
           path: route.path,
           icon: item.icon,
           id: item.id,
+          badge: 0
         }
         userRouter.push(route)
         // 添加到菜单 show_at_list ===1：在菜单中显示
