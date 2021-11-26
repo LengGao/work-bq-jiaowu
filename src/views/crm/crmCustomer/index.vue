@@ -176,7 +176,7 @@
         <div class="table_bottom">
           <div>
             <el-button @click="openTeacherDialog">变更所属老师</el-button>
-            <!-- <el-button>迁移到公海</el-button> -->
+            <el-button @click="batchRemove">迁移到公海</el-button>
           </div>
           <page
             :data="listTotal"
@@ -217,6 +217,7 @@ import {
   getCrmCustomerList,
   getCrmTags,
   getCustomfieldOptions,
+  batchRemove,
 } from "@/api/crm";
 export default {
   name: "crmCustomer",
@@ -379,6 +380,20 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    async batchRemove() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择学生！");
+        return;
+      }
+      const data = {
+        arr_id: this.checkedIds,
+      };
+      const res = await batchRemove(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getCrmCustomerList();
+      }
+    },
     handleSeletChange(selection) {
       this.checkedIds = selection.map((item) => item.id);
     },

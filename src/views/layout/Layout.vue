@@ -62,8 +62,8 @@ export default {
       const res = await getNoticeData();
       if (res.code === 0) {
         // 发送系统通知
-        if (res.data && res.data.length) {
-          res.data.forEach((item) => {
+        if (res.data.data && res.data.data.length) {
+          res.data.data.forEach((item) => {
             this.showDeskTopNotice(item.keyword, item.tips);
           });
         }
