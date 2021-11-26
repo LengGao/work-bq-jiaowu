@@ -200,6 +200,7 @@
     <UpdateTeacher
       v-model="updateTeacherDialog"
       :ids="checkedIds"
+      :is-crm="true"
       @on-success="getCrmCustomerList"
     />
   </section>
@@ -446,6 +447,7 @@ export default {
       this.getCrmCustomerList();
     },
     async getCrmCustomerList() {
+      this.checkedIds = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,

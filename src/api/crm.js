@@ -377,4 +377,12 @@ export function getChannelStudentList(data) {
         data
     })
 }
+// 更换所属老师
+export function changeStaffId(data) {
+    return request({
+        url: 'CrmCustomer/changeStaffId',
+        method: 'post',
+        data
+    })
+}
 

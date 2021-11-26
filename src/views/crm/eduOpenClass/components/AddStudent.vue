@@ -704,6 +704,7 @@ export default {
     async getCateProjectOption() {
       const data = {
         no_edu: 1,
+        level: 1,
       };
       const res = await getCateProjectOption(data);
       if (res.code === 0) {
