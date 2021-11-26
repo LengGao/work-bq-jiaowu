@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column
         prop="category_name"
-        label="课程分类"
+        label="项目分类"
         min-width="160"
         align="center"
         show-overflow-tooltip

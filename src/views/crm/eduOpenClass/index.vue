@@ -13,7 +13,7 @@
         />
         <div>
           <el-button type="primary" @click="dialogVisible = true"
-            >添加客户</el-button
+            >添加学生</el-button
           >
         </div>
       </header>

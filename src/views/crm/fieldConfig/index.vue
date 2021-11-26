@@ -163,7 +163,7 @@ export default {
         {
           key: "keyword",
           attrs: {
-            placeholder: "字段名称/字段内容",
+            placeholder: "字段名称",
           },
         },
       ],

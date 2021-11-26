@@ -125,7 +125,7 @@
             type="primary"
             :loading="submitLoading"
             @click="assignOrgQuestionBank"
-            >确定分拨</el-button
+            >确定分发</el-button
           >
         </div>
       </div>
@@ -299,7 +299,7 @@ export default {
       this.getOrgList();
     },
     handleRightSizeChange(size) {
-        this.pageRightNum = 1;
+      this.pageRightNum = 1;
       this.pageRightSize = size;
       this.getOrgList();
     },

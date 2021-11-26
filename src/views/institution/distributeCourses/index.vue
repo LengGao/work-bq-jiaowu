@@ -133,7 +133,7 @@
             type="primary"
             :loading="submitLoading"
             @click="assignOrgCourse"
-            >确定分拨</el-button
+            >确定分发</el-button
           >
         </div>
       </div>
