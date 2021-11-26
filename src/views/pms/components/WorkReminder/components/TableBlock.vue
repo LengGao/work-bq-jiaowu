@@ -28,9 +28,9 @@
         <img src="../../../../../assets/images/no-data.png" alt="" />
         <p>暂无数据</p>
       </div>
-    </div>
-    <div v-if="isMore" class="table-block-load-more" @click="handleLoadMore">
-      <span>加载更多...</span>
+      <div v-if="isMore" class="table-block-load-more" @click="handleLoadMore">
+        <span>加载更多...</span>
+      </div>
     </div>
   </div>
 </template>
@@ -67,6 +67,7 @@ export default {
   },
   computed: {
     isMore() {
+      console.log(this.data.length, this.listTotal);
       return this.data.length < this.listTotal;
     },
   },

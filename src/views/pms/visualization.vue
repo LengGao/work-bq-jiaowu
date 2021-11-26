@@ -83,8 +83,8 @@
       </div>
     </div>
     <el-tabs v-model="activeName" class="workbench-tab">
-      <el-tab-pane label="数据看板" name="DataStatistics"></el-tab-pane>
       <el-tab-pane label="工作提醒" name="WorkReminder"> </el-tab-pane>
+      <el-tab-pane label="数据看板" name="DataStatistics"></el-tab-pane>
     </el-tabs>
     <template v-if="activeName">
       <component :is="getComponent" :user-ids="userIds" />
@@ -98,7 +98,7 @@ export default {
   name: "visualization",
   data() {
     return {
-      activeName: "DataStatistics",
+      activeName: "WorkReminder",
       departMentOptions: [],
       rangeOptions: [],
       checkedRangeIds: [],
