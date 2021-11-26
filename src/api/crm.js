@@ -385,4 +385,12 @@ export function changeStaffId(data) {
         data
     })
 }
+// 迁移到公海
+export function batchRemove(data) {
+    return request({
+        url: 'HighSeas/batchRemove',
+        method: 'post',
+        data
+    })
+}
 
