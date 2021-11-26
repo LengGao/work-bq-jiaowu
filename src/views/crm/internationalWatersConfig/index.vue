@@ -112,7 +112,7 @@
           </el-table-column>
           <el-table-column
             prop="has_question"
-            label="未跟进天数"
+            label="未成交天数"
             min-width="160"
           >
             <template slot-scope="{ row }">
