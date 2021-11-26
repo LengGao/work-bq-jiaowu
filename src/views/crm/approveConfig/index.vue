@@ -29,6 +29,7 @@
                 <el-radio :label="4">指定用户（任意一人）</el-radio>
                 <el-radio :label="0" v-if="row.level !== 1">无</el-radio>
               </el-radio-group>
+              <p style="height: 6px"></p>
               <el-select
                 :key="row.type"
                 v-if="row.type === 4"

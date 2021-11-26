@@ -1,26 +1,23 @@
 <template>
   <div class="college-student">
     <div class="college-student-container">
-      <div class="tree-list">
+      <!-- <div class="tree-list">
         <div class="question-bank-list">
           <div class="tree-list">
-            <p class="title">题库分类</p>
+            <p class="title">项目分类</p>
             <v-tree ref="tree" :tpl="tpl" :data="treeData" />
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="table-list">
         <!--搜索模块-->
-        <div class="college-student-search">
+        <!-- <div class="college-student-search">
           <SearchList
             :options="searchOptions"
             :data="searchData"
             @on-search="handleSearch"
           />
-          <el-button type="primary" class="addcourse" @click="addcoursebtn"
-            >添加题库</el-button
-          >
-        </div>
+        </div> -->
 
         <!--列表-->
         <div class="userTable">
@@ -39,91 +36,49 @@
             }"
             :cell-style="{ 'text-align': 'center' }"
             height="690"
-            :key="isActiveAll"
           >
             <el-table-column
-              prop="question_bank_id"
-              label="题库ID"
+              prop="project_id"
+              label="项目ID"
               min-width="60"
               show-overflow-tooltip
             >
             </el-table-column>
             <el-table-column
-              v-if="isActiveAll"
-              prop="question_bank_name"
-              label="题库名称"
+              prop="project_name"
+              label="项目名称"
               min-width="180"
               show-overflow-tooltip
             >
             </el-table-column>
             <el-table-column
-              v-if="isActiveAll"
               prop="category_name"
               label="所属分类"
               min-width="80"
               show-overflow-tooltip
             >
             </el-table-column>
-
-            <el-table-column
-              prop="detect_info"
-              label="题库信息"
-              align="center"
-              min-width="260"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <span class="circle"
-                  >章节练习<span
-                    class="circle-value"
-                    :class="{ info: !row.practice }"
-                    >({{ row.practice }})</span
-                  ></span
-                >
-                <span class="circle"
-                  >历年真题<span
-                    class="circle-value"
-                    :class="{ info: !row.real }"
-                    >({{ row.real }})</span
-                  ></span
-                >
-                <span class="circle"
-                  >自主出题<span
-                    class="circle-value"
-                    :class="{ info: !row.selfs }"
-                    >({{ row.selfs }})</span
-                  ></span
-                >
-              </template>
-            </el-table-column>
-
-            <el-table-column
-              v-if="isActiveAll"
+            <!-- <el-table-column
               prop="buy_num"
               label="购买人数"
               show-overflow-tooltip
               min-width="100"
-            ></el-table-column>
-
+            ></el-table-column> -->
             <el-table-column
-              prop="wholesale_price"
-              label="题库价格"
+              v-for="(item, index) in classTypes"
+              :key="index"
+              :label="item.title"
               show-overflow-tooltip
               min-width="100"
             >
               <template slot-scope="{ row }">
-                <el-input
-                  type="number"
-                  size="small"
-                  v-model="row.wholesale_price"
-                  placeholder="请输入"
-                  @blur="handlePriceBlur(row)"
-                >
-                </el-input>
+                <span>
+                  {{ row.org_class_type[index].price | moneyFormat }}
+                </span>
               </template>
             </el-table-column>
 
-            <el-table-column label="操作" min-width="120">
+            <!-- <el-table-column label="操作" min-width="120">
               <template slot-scope="{ row }">
                 <el-button
                   type="text"
@@ -132,7 +87,7 @@
                   移除
                 </el-button>
               </template>
-            </el-table-column>
+            </el-table-column> -->
           </el-table>
         </div>
         <div class="table_bottom">
@@ -144,14 +99,13 @@
           />
         </div>
       </div>
-      <AddQuestion v-model="adddialogVisible" @on-success="questionBankList" />
     </div>
   </div>
 </template>
 
 <script>
 import {
-  questionBankList,
+  getOrgProjectr,
   questionBankCategoryList,
   BankRelationremove,
   assignOrgQuestionBank,
@@ -182,16 +136,14 @@ export default {
       listTotal: 0,
       treeData: [],
       treeParams: {
-        cate_id: "",
         category_id: "",
       },
-      isActiveAll: true,
-      adddialogVisible: false,
-      dialogTitle: "",
+      classTypes: [],
     };
   },
   created() {
-    this.questionBankList(), this.questionBankCategoryList();
+    this.getOrgProjectr();
+    this.questionBankCategoryList();
   },
   methods: {
     async handlePriceBlur({ question_bank_id, wholesale_price }) {
@@ -208,10 +160,6 @@ export default {
       if (res.code === 0) {
         this.$message.success("保存成功");
       }
-    },
-    addcoursebtn() {
-      this.dialogTitle = "添加题库";
-      this.adddialogVisible = true;
     },
 
     handleDelete(id, question_bank_id) {
@@ -243,10 +191,10 @@ export default {
       if (res.code == 0) {
         console.log(res);
         this.$message.success(res.message);
-        this.questionBankList();
+        this.getOrgProjectr();
         this.dialogVisible = false;
       }
-      this.questionBankList();
+      this.getOrgProjectr();
     },
 
     tpl(node) {
@@ -286,38 +234,41 @@ export default {
     onNodeClick(data) {
       const { category_id: category_id } = data;
       this.treeParams = { category_id };
-      this.questionBankList();
+      this.getOrgProjectr();
     },
 
     handleSizeChange(size) {
       this.pageSize = size;
-      this.questionBankList();
+      this.getOrgProjectr();
     },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
       };
-      this.questionBankList();
+      this.getOrgProjectr();
     },
 
     handlePageChange(val) {
       this.pageNum = val;
-      this.questionBankList();
+      this.getOrgProjectr();
     },
     // 获取列表
-    async questionBankList() {
+    async getOrgProjectr() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
         ...this.treeParams,
-        org_id: this.$route.query?.institution_id || "",
+        from_organization_id: this.$route.query?.institution_id || "",
       };
       this.listLoading = true;
-      const res = await questionBankList(data);
+      const res = await getOrgProjectr(data);
       this.listLoading = false;
       if (res.code === 0) {
+        if (res.data.list.length) {
+          this.classTypes = res.data.list[0].org_class_type;
+        }
         this.listData = res.data.list;
         this.listTotal = res.data.total;
       }
