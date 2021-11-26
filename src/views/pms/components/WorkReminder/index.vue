@@ -42,7 +42,11 @@
             }"
           >
             <img :src="row.head_photo" alt="" v-if="row.head_photo" />
-            <span v-else> {{ row.staff_name.substr(-2) }}</span>
+            <span v-else>
+              {{
+                (row.staff_name && row.staff_name.substr(-2)) || row.staff_name
+              }}</span
+            >
           </div>
           <div class="info">
             <span class="info-user">{{ row.staff_name }}</span>
@@ -432,6 +436,7 @@ export default {
     }
   }
   .table-right {
+    flex-shrink: 0;
     .date {
       color: #fd6584;
     }
