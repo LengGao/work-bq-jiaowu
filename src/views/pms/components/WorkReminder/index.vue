@@ -41,7 +41,7 @@
                 '#' + Math.random().toString(16).substr(2, 6).toUpperCase(),
             }"
           >
-            <img src="" alt="" v-if="row.head_photo" />
+            <img :src="row.head_photo" alt="" v-if="row.head_photo" />
             <span v-else> {{ row.staff_name.substr(-2) }}</span>
           </div>
           <div class="info">

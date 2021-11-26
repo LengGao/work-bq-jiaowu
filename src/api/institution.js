@@ -425,3 +425,11 @@ export function setStudentReception(params) {
         params
     })
 }
+// 机构详情-机构项目
+export function getOrgProjectr(params) {
+    return request({
+        url: 'ProjectOrg/myProjectr',
+        method: 'get',
+        params
+    })
+}
