@@ -131,19 +131,32 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="100">
+        <el-table-column label="操作" fixed="right" min-width="140">
           <template slot-scope="{ row }">
             <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
               >订单详情</el-button
+            >
+            <el-button
+              v-if="row.refund == 1"
+              @click="openOrderActions(row)"
+              type="text"
+              >作废</el-button
             >
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <CollectionOrder
+      v-model="orderActionDialog"
+      :type="3"
+      :orderInfo="dialogInfo"
+      @on-success="orderdetail"
+    />
   </div>
 </template>
 
 <script>
+import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import { getCrmOrderList } from "@/api/crm";
 export default {
   name: "OrderRecords",
@@ -152,6 +165,9 @@ export default {
       type: [String, Number],
       default: "",
     },
+  },
+  components: {
+    CollectionOrder,
   },
   data() {
     return {
@@ -201,12 +217,19 @@ export default {
           type: "danger",
         },
       },
+      dialogInfo: {},
+      orderActionDialog: false,
     };
   },
   created() {
     this.getCrmOrderList();
   },
   methods: {
+    //作废弹窗
+    openOrderActions(row) {
+      this.dialogInfo = row;
+      this.orderActionDialog = true;
+    },
     toCrmOrderDetail(id) {
       this.$router.push({
         name: "crmOrderDetail",
