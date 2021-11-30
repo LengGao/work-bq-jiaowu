@@ -502,7 +502,7 @@ export default {
     },
     async getInstitutionList() {
       const data = {
-        limit: 100,
+        limit: 99999,
       };
       const res = await getInstitutionList(data);
       this.institutionOptions = res.data.list;
