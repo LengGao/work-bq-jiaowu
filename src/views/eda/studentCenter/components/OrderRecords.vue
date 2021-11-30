@@ -150,7 +150,7 @@
       v-model="orderActionDialog"
       :type="3"
       :orderInfo="dialogInfo"
-      @on-success="orderdetail"
+      @on-success="getCrmOrderList"
     />
   </div>
 </template>
