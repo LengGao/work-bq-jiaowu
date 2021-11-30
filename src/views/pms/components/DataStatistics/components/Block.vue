@@ -55,7 +55,9 @@
         </el-select>
       </div>
     </div>
-    <slot> </slot>
+    <div class="block-container">
+      <slot> </slot>
+    </div>
   </div>
 </template>
 <script >

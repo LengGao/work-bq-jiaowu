@@ -1,5 +1,5 @@
 <template>
-  <div class="rank-bar" :id="barId"></div>
+  <div class="rank-bar" ref="barEl" :id="barId"></div>
 </template>
 <script>
 export default {
@@ -29,15 +29,24 @@ export default {
   watch: {
     data: {
       handler() {
-        this.chartInit();
+        this.setHeight();
       },
       deep: true,
     },
   },
+
   mounted() {
-    this.chartInit();
+    this.setHeight();
   },
   methods: {
+    setHeight() {
+      if (this.data.length > 15) {
+        this.$refs.barEl.style.height = this.data.length * 26 + "px";
+      } else {
+        this.$refs.barEl.style.height = 400 + "px";
+      }
+      this.chartInit();
+    },
     unitFormat(val) {
       if (!val) {
         return `0.00元`;
@@ -65,6 +74,7 @@ export default {
           .reverse();
       }
       let myChart = this.$echarts.init(document.getElementById(this.barId));
+      myChart.resize();
       myChart.setOption({
         tooltip: {
           trigger: "axis",

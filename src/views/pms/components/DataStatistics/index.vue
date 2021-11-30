@@ -10,7 +10,11 @@
           <Title slot="header-title" text="业绩指标"></Title>
           <GaugeChart :data="performanceData" v-loading="performanceLoading" />
         </Block>
-        <Block date-type="4" @date-change="getSalesRankData">
+        <Block
+          date-type="4"
+          @date-change="getSalesRankData"
+          class="scroll-chart"
+        >
           <Title slot="header-title" text="销售龙虎榜"></Title>
           <div class="tab" slot="header-center">
             <span
@@ -40,7 +44,11 @@
           <TrendBar :data="trendData" v-loading="trendLoading" />
         </Block>
 
-        <Block date-type="4" @date-change="getCustomerRankData">
+        <Block
+          class="scroll-chart"
+          date-type="4"
+          @date-change="getCustomerRankData"
+        >
           <Title slot="header-title" text="录入客户排行榜"></Title>
           <RankBar
             bar-color="#24A3FF"
@@ -291,6 +299,12 @@ export default {
       &--active-r {
         color: #ff6c59;
       }
+    }
+  }
+  .scroll-chart {
+    /deep/.block-container {
+      height: 400px;
+      overflow-y: auto;
     }
   }
 }
