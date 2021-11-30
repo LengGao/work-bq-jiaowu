@@ -130,7 +130,11 @@
                 @click="eduOpenCourseConfirm(row.id)"
                 >开课</el-button
               >
-              <el-button type="text" @click="toStudentDetail(row.uid)"
+              <el-button
+                type="text"
+                @click="
+                  toStudentDetail(row.uid, { customer_type: row.customer_type })
+                "
                 >学生详情</el-button
               >
             </template>
