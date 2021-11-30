@@ -312,6 +312,57 @@ export const asyncRouter = [
     meta: { title: '招生管理', icon: 'zhaoshengguanli' },
     name: 'etm',
     children: [
+      // ==== 新
+      {
+        path: 'changeManage',
+        name: 'changeManage',
+        component: () => import('@/views/crm/changeManage/index.vue'),
+        meta: { title: '异动管理' },
+      },
+      {
+        path: 'changeDetail',
+        name: 'changeDetail',
+        component: () => import('@/views/crm/changeManage/detail.vue'),
+        meta: { title: '异动详情' },
+      },
+      {
+        path: 'changeEdit',
+        name: 'changeEdit',
+        component: () => import('@/views/crm/changeManage/edit.vue'),
+        meta: { title: '编辑异动' },
+      },
+      {
+        path: 'eduOpenClass',
+        name: 'eduOpenClass',
+        component: () => import('@/views/crm/eduOpenClass/index.vue'),
+        meta: { title: '教务开课' },
+      },
+      {
+        path: 'crmCustomer',
+        name: 'crmCustomer',
+        component: () => import('@/views/crm/crmCustomer/index.vue'),
+        meta: { title: '客户管理' },
+      },
+      {
+        path: 'crmOrder',
+        name: 'crmOrder',
+        component: () => import('@/views/crm/crmOrder/index.vue'),
+        meta: { title: '订单管理' },
+      },
+      {
+        path: 'crmOrderDetail',
+        name: 'crmOrderDetail',
+        component: () => import('@/views/crm/crmOrder/detail.vue'),
+        meta: { title: '订单详情' },
+      },
+      {
+        path: 'internationalWaters',
+        name: 'internationalWaters',
+        component: () => import('@/views/crm/internationalWaters/index.vue'),
+        meta: { title: '公海客户' },
+      },
+
+      //===旧
       {
         path: 'eduOrder',
         name: 'eduOrder',
@@ -814,9 +865,107 @@ export const asyncRouter = [
     ],
   },
   {
+    path: '/channel',
+    component: Layout,
+    redirect: '/channel/distributeProject',
+    meta: { title: '渠道管理' },
+    name: 'channel',
+    children: [
+      {
+        path: 'channelStudent',
+        name: 'channelStudent',
+        component: () => import('@/views/crm/channelStudent/index.vue'),
+        meta: { title: '学生管理' },
+      },
+      {
+        path: 'studentOrder',
+        name: 'studentOrder',
+        component: () => import('@/views/crm/studentOrder/index.vue'),
+        meta: { title: '学生订单' },
+      },
+      {
+        path: 'studentOrderDetail',
+        name: 'studentOrderDetail',
+        component: () => import('@/views/crm/studentOrder/detail.vue'),
+        meta: { title: '学生订单详情' },
+      },
+      {
+        path: 'distributeProject',
+        name: 'distributeProject',
+        component: () => import('@/views/crm/distributeProject/index.vue'),
+        meta: { title: '分发项目' },
+      },
+    ]
+  },
+  {
+    path: '/approve',
+    component: Layout,
+    redirect: '/approve/approveManage',
+    meta: { title: '审批管理' },
+    name: 'approve',
+    children: [
+      {
+        path: 'returnPayment',
+        name: 'returnPayment',
+        component: () => import('@/views/crm/returnPayment/index.vue'),
+        meta: { title: '入账回款' },
+      },
+      {
+        path: 'approveManage',
+        name: 'approveManage',
+        component: () => import('@/views/crm/approveManage/index.vue'),
+        meta: { title: '审批管理' },
+      },
+
+    ]
+  },
+  {
+    path: '/CRM',
+    component: Layout,
+    redirect: '/CRM/crmOrder',
+    meta: { title: 'CRM配置' },
+    name: 'CRM',
+    children: [
+
+      {
+        path: 'performanceTargets',
+        name: 'performanceTargets',
+        component: () => import('@/views/crm/performanceTargets/index.vue'),
+        meta: { title: '业绩目标' },
+      },
+      {
+        path: 'personalTarget',
+        name: 'personalTarget',
+        component: () => import('@/views/crm/performanceTargets/personalTarget/index.vue'),
+        meta: { title: '设置目标' },
+      },
+      {
+        path: 'approveConfig',
+        name: 'approveConfig',
+        component: () => import('@/views/crm/approveConfig/index.vue'),
+        meta: { title: '审批设置' },
+      },
+
+      {
+        path: 'internationalWatersConfig',
+        name: 'internationalWatersConfig',
+        component: () => import('@/views/crm/internationalWatersConfig/index.vue'),
+        meta: { title: '公海规则' },
+      },
+      {
+        path: 'fieldConfig',
+        name: 'fieldConfig',
+        component: () => import('@/views/crm/fieldConfig/index.vue'),
+        meta: { title: '字段设置' },
+      },
+
+
+    ]
+  },
+  {
     path: '/institution',
     component: Layout,
-    redirect: '/institution//institutionAccount',
+    redirect: '/institution/institutionAccount',
     meta: { title: '机构管理', icon: 'zhaoshengguanli' },
     name: 'institution',
     children: [
@@ -904,7 +1053,7 @@ export const asyncRouter = [
       {
         path: 'staff',
         name: 'staff',
-        component: () => import('@/views/set/staff.vue'),
+        component: () => import('@/views/set/staff/index.vue'),
         meta: { title: '员工管理', icon: 'product-add' },
       },
       {
@@ -956,13 +1105,6 @@ export const asyncRouter = [
         meta: { title: '添加角色', icon: 'product-add' },
         hidden: true,
       },
-      // {
-      //   path: 'cusdetail',
-      //   name: 'cusdetail',
-      //   component: () => import('@/views/fina/finance/cusdetail.vue'),
-      //   meta: { title: '客户详情', icon: 'product-cate' },
-      //   hidden: true,
-      // },
     ],
   },
 
@@ -1005,6 +1147,7 @@ export const createUserRouter = (data) => {
           path: route.path,
           icon: item.icon,
           id: item.id,
+          badge: 0
         }
         userRouter.push(route)
         // 添加到菜单 show_at_list ===1：在菜单中显示

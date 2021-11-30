@@ -3,6 +3,7 @@ const searchCache = {
         //   需要缓存的页面:[缓存的触发条件]
         cacheViews: {
             studentCenter: ['studentDetail'], //示例： 学生中心，只有进入学生详情才能缓存
+            channelStudent: ['studentDetail'],
             classManage: ['classDetail', 'learnerManage', 'massMessage', 'returnVisit', 'classVideo', 'classMessage'],
             customerManage: ['cusdetail', 'orderdetail'],
             teachMaterial: ['materialJournal'],
@@ -33,14 +34,22 @@ const searchCache = {
             faceScanningRecord: ['studentDetail'],
             operationLog: ['logDetails'],
             studentList: ['studentChapter'],
-            studentDetail: ['studentChapter', 'learningDetails', 'orderdetail', 'shift', 'classDetail'],
+            studentDetail: ['studentChapter', 'learningDetails', 'orderdetail', 'shift', 'classDetail', 'crmOrderDetail'],
+            cusdetail: ['studentChapter', 'learningDetails', 'orderdetail', 'shift', 'classDetail', 'crmOrderDetail'],
             questionStatistics: ['learningDetails', 'studentDetail'],
             classDetail: ['learningDetails', 'studentDetail', 'studentChapter'],
             projectStatistics: ['studentDetail'],
             projectManage: ['projectStatistics'],
             institutionAccount: ['institutionConfig', 'institutionUser'],
             customerProject: ['orderdetail', 'cusdetail'],
-            eduOrder: ['orderdetail', 'cusdetail']
+            eduOrder: ['orderdetail', 'cusdetail'],
+            crmCustomer: ['cusdetail'],
+            crmOrder: ['crmOrderDetail', 'cusdetail'],
+            visualization: ['crmOrderDetail', 'openClass', 'returnPayment'],
+            eduOpenClass: ['studentDetail'],
+            approveManage: ['crmOrderDetail', 'cusdetail'],
+            returnPayment: ['crmOrderDetail'],
+            studentOrder: ['studentOrderDetail'],
         },
         // 当前缓存的页面
         currentCache: []

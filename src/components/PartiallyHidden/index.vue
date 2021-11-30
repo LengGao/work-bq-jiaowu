@@ -5,7 +5,7 @@
     </span>
     <span v-else> {{ value | filterPhone }} </span>
     <i
-      v-if="copy"
+      v-if="copy && value"
       class="el-icon-document-copy copy-number"
       @click="handleCopy(value)"
       title="复制"

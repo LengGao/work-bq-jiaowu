@@ -134,3 +134,140 @@ export function thirdSign(params) {
         params
     })
 }
+// 获取部门列表
+export function terminalGroup(params) {
+    return request({
+        url: '/index/terminalGroup',
+        method: 'get',
+        params
+    })
+}
+// 获取部门下的用户id
+export function getDepartmentUser(data) {
+    return request({
+        url: 'index/getDepartmentUser',
+        method: 'post',
+        data
+    })
+}
+
+// 获取可选员工
+export function getBindUser(params) {
+    return request({
+        url: '/index/bindUser',
+        method: 'get',
+        params
+    })
+}
+// 获取业绩指标数据
+export function performanceIndicators(data) {
+    return request({
+        url: '/index/performanceIndicators',
+        method: 'post',
+        data
+    })
+}
+// 获取销售趋势数据
+export function getTrendData(data) {
+    return request({
+        url: '/index/trend',
+        method: 'post',
+        data
+    })
+}
+// 获取销售龙虎榜
+export function getSalesRankData(data) {
+    return request({
+        url: '/index/salesRank',
+        method: 'post',
+        data
+    })
+}
+// 获取客户录入排行榜
+export function getCustomerRankData(data) {
+    return request({
+        url: '/index/customerRank',
+        method: 'post',
+        data
+    })
+}
+// 获取在线人数
+export function getOnlineStatistics(data) {
+    return request({
+        url: '/index/onlineStatistics',
+        method: 'post',
+        data
+    })
+}
+// 获取在线人数
+export function getBriefing(data) {
+    return request({
+        url: '/index/briefing',
+        method: 'post',
+        data
+    })
+}
+// 获取回款计划提醒
+export function receivablePlan(data) {
+    return request({
+        url: '/index/receivablePlan',
+        method: 'post',
+        data
+    })
+}
+// 获取待跟进客户
+export function staffFollow(data) {
+    return request({
+        url: '/index/staffFollow',
+        method: 'post',
+        data
+    })
+}
+// 获取系统公告
+export function getSystemMsgList(data) {
+    return request({
+        url: '/index/getSystemAnnouncementList',
+        method: 'post',
+        data
+    })
+}
+// 获取工作通知
+export function getStaffNotice(params) {
+    return request({
+        url: 'StaffNotice/index',
+        method: 'get',
+        params
+    })
+}
+// 工作通知-标为已读
+export function readStaffNotice(params) {
+    return request({
+        url: 'StaffNotice/read',
+        method: 'get',
+        params
+    })
+}
+// 获取查看数据范围选项
+export function getGroupWithUser(params) {
+    return request({
+        url: '/index/getGroupWithUser',
+        method: 'get',
+        params
+    })
+}
+// 根据数据范围选项查询用户ID
+export function getUserId(data) {
+    return request({
+        url: 'index/getUserId',
+        method: 'post',
+        data
+    })
+}
+// 根据数据范围选项查询用户ID
+export function getNoticeData(params) {
+    return request({
+        url: 'StaffNotice/notice',
+        method: 'get',
+        params
+    })
+}

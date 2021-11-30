@@ -7,10 +7,9 @@
             <p class="title">题库分类</p>
             <v-tree ref="tree" :tpl="tpl" :data="treeData" />
           </div>
-      </div>
+        </div>
       </div>
       <div class="table-list">
-
         <!--搜索模块-->
         <div class="college-student-search">
           <SearchList
@@ -18,8 +17,9 @@
             :data="searchData"
             @on-search="handleSearch"
           />
-          </span>
-          <el-button type="primary" class="addcourse" @click="addcoursebtn">添加题库</el-button>
+          <el-button type="primary" class="addcourse" @click="addcoursebtn"
+            >添加题库</el-button
+          >
         </div>
 
         <!--列表-->
@@ -41,15 +41,15 @@
             height="690"
             :key="isActiveAll"
           >
-          <el-table-column
-          prop="question_bank_id"
-          label="题库ID"
-          min-width="60"
-          show-overflow-tooltip
-        >
-        </el-table-column>
             <el-table-column
-            v-if="isActiveAll"
+              prop="question_bank_id"
+              label="题库ID"
+              min-width="60"
+              show-overflow-tooltip
+            >
+            </el-table-column>
+            <el-table-column
+              v-if="isActiveAll"
               prop="question_bank_name"
               label="题库名称"
               min-width="180"
@@ -57,7 +57,7 @@
             >
             </el-table-column>
             <el-table-column
-            v-if="isActiveAll"
+              v-if="isActiveAll"
               prop="category_name"
               label="所属分类"
               min-width="80"
@@ -66,34 +66,36 @@
             </el-table-column>
 
             <el-table-column
-            prop="detect_info"
-            label="题库信息"
-            align="center"
-            min-width="260"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span class="circle"
-                >章节练习<span
-                  class="circle-value"
-                  :class="{ info: !row.practice }"
-                  >({{ row.practice }})</span
-                ></span
-              >
-              <span class="circle"
-                >历年真题<span class="circle-value" :class="{ info: !row.real }"
-                  >({{ row.real }})</span
-                ></span
-              >
-              <span class="circle"
-                >自主出题<span
-                  class="circle-value"
-                  :class="{ info: !row.selfs }"
-                  >({{ row.selfs }})</span
-                ></span
-              >
-            </template>
-          </el-table-column>
+              prop="detect_info"
+              label="题库信息"
+              align="center"
+              min-width="260"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <span class="circle"
+                  >章节练习<span
+                    class="circle-value"
+                    :class="{ info: !row.practice }"
+                    >({{ row.practice }})</span
+                  ></span
+                >
+                <span class="circle"
+                  >历年真题<span
+                    class="circle-value"
+                    :class="{ info: !row.real }"
+                    >({{ row.real }})</span
+                  ></span
+                >
+                <span class="circle"
+                  >自主出题<span
+                    class="circle-value"
+                    :class="{ info: !row.selfs }"
+                    >({{ row.selfs }})</span
+                  ></span
+                >
+              </template>
+            </el-table-column>
 
             <el-table-column
               v-if="isActiveAll"
@@ -102,28 +104,31 @@
               show-overflow-tooltip
               min-width="100"
             ></el-table-column>
-   
-          <el-table-column
-          prop="wholesale_price"
-          label="题库价格"
-          show-overflow-tooltip
-          min-width="100"
-        >
-        <template slot-scope="{ row }">
-          <el-input
-            type="number"
-            size="small"
-            v-model="row.wholesale_price"
-            placeholder="请输入"
-            @blur="handlePriceBlur(row)"
-          >
-          </el-input>
-        </template>
-        </el-table-column>
+
+            <el-table-column
+              prop="wholesale_price"
+              label="题库价格"
+              show-overflow-tooltip
+              min-width="100"
+            >
+              <template slot-scope="{ row }">
+                <el-input
+                  type="number"
+                  size="small"
+                  v-model="row.wholesale_price"
+                  placeholder="请输入"
+                  @blur="handlePriceBlur(row)"
+                >
+                </el-input>
+              </template>
+            </el-table-column>
 
             <el-table-column label="操作" min-width="120">
               <template slot-scope="{ row }">
-                <el-button type="text" @click="handleDelete(row.id,row.question_bank_id)">
+                <el-button
+                  type="text"
+                  @click="handleDelete(row.id, row.question_bank_id)"
+                >
                   移除
                 </el-button>
               </template>

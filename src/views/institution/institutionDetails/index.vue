@@ -4,10 +4,12 @@
       <el-tab-pane label="机构课程" name="InsitutionCourse"></el-tab-pane>
       <!-- <el-tab-pane label="机构课程" name="BasicInfo"></el-tab-pane> -->
       <el-tab-pane label="机构题库" name="InsitutionQuestion"></el-tab-pane>
+      <el-tab-pane label="机构项目" name="InsitutionProject"></el-tab-pane>
       <el-tab-pane label="机构学生" name="InsitutionStudent"></el-tab-pane>
       <el-tab-pane label="机构公海" name="InsitutionSeas"></el-tab-pane>
       <el-tab-pane label="资金流水" name="CapitalFlow"></el-tab-pane>
       <el-tab-pane label="学生订单" name="StudentOrder"></el-tab-pane>
+      <el-tab-pane label="学生对接" name="StudentDocking"></el-tab-pane>
     </el-tabs>
     <component
       :is="getComponent"
@@ -62,5 +64,4 @@ export default {
 .institution-detail {
   padding: 20px;
 }
-
 </style>

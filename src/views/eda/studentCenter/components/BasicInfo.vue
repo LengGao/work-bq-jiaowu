@@ -23,6 +23,10 @@
             ></el-input>
             <span v-else>{{ datas.surname || "--" }}</span>
           </el-form-item>
+          <el-form-item label="微信昵称">
+            <el-input :value="datas.wechat" v-if="isEdit" disabled></el-input>
+            <span v-else>{{ datas.wechat || "--" }}</span>
+          </el-form-item>
           <el-form-item label="手机号码">
             <el-input
               v-model="ruleForm.mobile"
@@ -31,29 +35,32 @@
             ></el-input>
             <span v-else>{{ datas.mobile | filterPhone }}</span>
           </el-form-item>
-          <el-form-item label="备用号码">
-            <el-input
-              v-model="ruleForm.second_mobile"
-              v-if="isEdit"
-              placeholder="请输入"
-            ></el-input>
-            <span v-else>{{ datas.second_mobile | filterPhone }}</span>
-          </el-form-item>
           <el-form-item label="身份证号">
             <el-input
               v-model="ruleForm.id_card_number"
               v-if="isEdit"
               placeholder="请输入"
+              disabled
             ></el-input>
             <span v-else>{{ datas.id_card_number | filterIdCard }}</span>
           </el-form-item>
-          <el-form-item label="微信">
-            <el-input
-              v-model="ruleForm.wechat"
+          <el-form-item label="客户来源">
+            <el-select
+              filterable
+              clearable
               v-if="isEdit"
-              placeholder="请输入"
-            ></el-input>
-            <span v-else>{{ datas.wechat || "--" }}</span>
+              v-model="ruleForm.sources"
+              placeholder="请选择客户来源"
+              class="w-100"
+            >
+              <el-option
+                v-for="(item, index) in channelOptions"
+                :label="item"
+                :value="item"
+                :key="index"
+              ></el-option>
+            </el-select>
+            <span v-else>{{ datas.sources || "--" }}</span>
           </el-form-item>
           <el-form-item label="学员性别">
             <el-radio-group v-if="isEdit" v-model="ruleForm.sex" class="w-100">
@@ -62,33 +69,24 @@
             </el-radio-group>
             <span v-else>{{ sexMap[datas.sex] }}</span>
           </el-form-item>
-          <el-form-item label="出生日期">
-            <el-date-picker
+          <el-form-item label="客户地区">
+            <el-cascader
+              filterable
+              clearable
               v-if="isEdit"
+              v-model="city1"
+              placeholder="请选择客户地区"
               class="w-100"
-              type="date"
-              placeholder="选择日期"
-              v-model="ruleForm.birthday"
-            ></el-date-picker>
-            <span v-else>{{ datas.birthday || "--" }}</span>
+              :options="cityOptions"
+              @change="handleCityChange"
+            >
+            </el-cascader>
+            <span v-else>{{
+              datas.city
+                ? (CodeToText[datas.province] || "") + CodeToText[datas.city]
+                : "--"
+            }}</span>
           </el-form-item>
-          <el-form-item label="QQ">
-            <el-input
-              v-model="ruleForm.qq"
-              v-if="isEdit"
-              placeholder="请输入"
-            ></el-input>
-            <span v-else>{{ datas.qq || "--" }}</span>
-          </el-form-item>
-          <el-form-item label="邮箱地址">
-            <el-input
-              v-model="ruleForm.email"
-              v-if="isEdit"
-              placeholder="请输入"
-            ></el-input>
-            <span v-else>{{ datas.email || "--" }}</span>
-          </el-form-item>
-
           <el-form-item label="文化程度">
             <el-select
               v-if="isEdit"
@@ -107,64 +105,34 @@
             </el-select>
             <span v-else>{{ datas.culture || "--" }}</span>
           </el-form-item>
-          <el-form-item label="籍贯">
-            <el-cascader
-              filterable
-              clearable
-              v-if="isEdit"
-              v-model="city1"
-              placeholder="请选择籍贯"
-              class="w-100"
-              :options="cityOptions"
-              @change="handleCityChange($event, 1)"
-            >
-            </el-cascader>
-            <span v-else>{{
-              datas.city
-                ? (CodeToText[datas.province] || "") + CodeToText[datas.city]
-                : "--"
-            }}</span>
+          <el-form-item label="所属老师">
+            <template v-if="isEdit">
+              <el-input
+                style="width: 80%; margin-right: 10px"
+                :value="datas.admin_name"
+                disabled
+              ></el-input>
+              <el-button @click="updateTeacherDialog = true" type="text"
+                >变更</el-button
+              >
+            </template>
+            <span v-else>{{ datas.admin_name || "--" }}</span>
           </el-form-item>
-          <el-form-item label="常住地">
-            <el-cascader
-              filterable
-              clearable
+          <el-form-item label="共享客户">
+            <el-input
+              :value="datas.union_staff_name"
               v-if="isEdit"
-              v-model="city2"
-              placeholder="请选择常住地"
-              class="w-100"
-              @change="handleCityChange($event, 2)"
-              :options="cityOptions"
-            >
-            </el-cascader>
-            <span v-else>{{ CodeToText[datas.location] || "--" }}</span>
-          </el-form-item>
-          <el-form-item label="渠道来源">
-            <el-select
-              filterable
-              clearable
-              v-if="isEdit"
-              v-model="ruleForm.sources"
-              placeholder="请选择渠道来源"
-              class="w-100"
-            >
-              <el-option
-                v-for="(item, index) in channelOptions"
-                :label="item"
-                :value="index + ''"
-                :key="index"
-              ></el-option>
-            </el-select>
-            <span v-else>{{ channelOptions[datas.sources] || "--" }}</span>
+              disabled
+            ></el-input>
+            <span v-else>{{ datas.union_staff_name || "--" }}</span>
           </el-form-item>
           <el-form-item
-            label="所属机构"
-            prop="from_organization_id"
+            label="机构名称"
             :rules="[
               { required: isEdit, message: '请选择', trigger: 'change' },
             ]"
           >
-            <el-cascader
+            <!-- <el-cascader
               filterable
               clearable
               v-if="isEdit"
@@ -173,32 +141,40 @@
               class="w-100"
               :options="selectOptions"
             >
-            </el-cascader>
-            <span v-else>{{ datas.from_organization_name }}</span>
+            </el-cascader> -->
+            <span>{{ datas.from_organization_name || "--" }}</span>
           </el-form-item>
-          <el-form-item label="所属老师">
-            <el-input
-              :value="datas.admin_name"
-              v-if="isEdit"
-              disabled
-            ></el-input>
-            <span v-else>{{ datas.admin_name || "--" }}</span>
+          <el-form-item label="客户性质">
+            <span>{{ datas.customer_type || "--" }}</span>
           </el-form-item>
-          <el-form-item label="是否开通网课">
-            <el-radio-group v-model="ruleForm.online_course" v-if="isEdit">
-              <el-radio :label="1">是</el-radio>
-              <el-radio :label="0">否</el-radio>
-            </el-radio-group>
-            <span v-else>{{ datas.online_course ? "是" : "否" }}</span>
+          <el-form-item label="客户标签" prop="tags" class="block">
+            <el-tag
+              class="customer-tag"
+              type="info"
+              v-for="(item, index) in tags"
+              :key="index"
+              >{{ item.title }}
+            </el-tag>
+            <template v-if="isEdit">
+              <el-input
+                class="tag-input"
+                v-focus
+                v-if="inputVisible"
+                v-model="tagName"
+                size="small"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+              >
+              </el-input>
+              <el-button
+                v-else
+                class="button-new-tag"
+                size="small"
+                @click="inputVisible = true"
+                >新建标签</el-button
+              >
+            </template>
           </el-form-item>
-          <el-form-item label="是否毕业">
-            <el-radio-group v-model="ruleForm.is_graduate" v-if="isEdit">
-              <el-radio :label="3">是</el-radio>
-              <el-radio :label="0">否</el-radio>
-            </el-radio-group>
-            <span v-else>{{ datas.is_graduate === 3 ? "是" : "否" }}</span>
-          </el-form-item>
-
           <el-form-item label="备注信息" class="desc">
             <el-input
               v-if="isEdit"
@@ -226,16 +202,23 @@
       </div>
     </div>
     <FollowUpRecord class="record" v-if="$attrs.uid" v-bind="$attrs" />
+    <UpdateTeacher
+      v-model="updateTeacherDialog"
+      :ids="[datas.id]"
+      :is-crm="'cid' in $route.query"
+      @on-success="$parent.getStudentBasicDetail"
+    />
   </div>
 </template>
 
 <script>
 import FollowUpRecord from "./FollowUpRecord";
+import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import { provinceAndCityData, CodeToText } from "element-china-area-data";
 import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 import { updateStudentBasicInfo } from "@/api/eda";
-import { getfieldinfo } from "@/api/etm";
+import { getCustomfieldOptions } from "@/api/crm";
 export default {
   name: "basicInfo",
   props: {
@@ -246,6 +229,7 @@ export default {
   },
   components: {
     FollowUpRecord,
+    UpdateTeacher,
   },
   data() {
     return {
@@ -290,17 +274,11 @@ export default {
       ruleForm: {
         surname: "",
         mobile: "",
-        second_mobile: "",
         id_card_number: "",
-        wechat: "",
-        qq: "",
-        email: "",
         sex: "",
-        birthday: "",
         culture: "",
         province: "", // 籍贯
         city: "",
-        location: "",
         sources: "",
         from_organization_id: "",
         tips: "",
@@ -311,19 +289,44 @@ export default {
       city2: "",
       city1: "",
       channelOptions: [],
+      inputVisible: false,
+      tags: [],
+      tagName: "",
+      updateTeacherDialog: false,
     };
   },
+  watch: {
+    "datas.tags"(val) {
+      this.tags = val.split(",").map((item, index) => ({
+        title: item,
+        id: index,
+      }));
+    },
+  },
   created() {
-    this.getfieldinfo();
+    this.getCustomfieldOptions();
     this.getInstitutionSelectData();
   },
   methods: {
-    async getfieldinfo() {
+    handleInputConfirm() {
+      let title = this.tagName;
+      if (title) {
+        this.tags.push({
+          title,
+          checked: true,
+        });
+      }
+      this.inputVisible = false;
+      this.tagName = "";
+    },
+    // 获取客户来源
+    async getCustomfieldOptions() {
       const data = {
-        field_text: "渠道来源",
+        field_name: "customer_source",
       };
-      const res = await getfieldinfo(data);
+      const res = await getCustomfieldOptions(data);
       if (res.code === 0) {
+        this.coustomFrom = res.data.field_content;
         this.channelOptions = res.data.field_content;
       }
     },
@@ -336,11 +339,11 @@ export default {
             this.ruleForm.from_organization_id.length - 1
           ];
       }
-      console.log(this.ruleForm);
       const data = {
         ...this.ruleForm,
         id: this.datas.id,
         from_organization_id,
+        tags: this.tags.map((item) => item.title).join(","),
       };
       const res = await updateStudentBasicInfo(data);
       if (res.code === 0) {
@@ -349,14 +352,10 @@ export default {
         this.isEdit = false;
       }
     },
-    // 选择城市 1：籍贯 2：常驻地
-    handleCityChange(val, type) {
-      if (type === 1) {
-        this.ruleForm.province = val[0];
-        this.ruleForm.city = val[1];
-      } else {
-        this.ruleForm.location = val[1];
-      }
+    // 选择城市
+    handleCityChange(val) {
+      this.ruleForm.province = val[0];
+      this.ruleForm.city = val[1];
     },
     // 机构下拉
     async getInstitutionSelectData() {
@@ -416,7 +415,7 @@ export default {
       flex-wrap: wrap;
       justify-content: space-between;
       .el-form-item {
-        width: 300px;
+        width: 340px;
       }
       .desc {
         width: 100%;
@@ -426,6 +425,9 @@ export default {
   .record {
     padding-left: 20px;
     flex: 1;
+  }
+  .customer-tag {
+    margin-right: 6px;
   }
 }
 </style>

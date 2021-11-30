@@ -41,9 +41,14 @@
 
 <script>
 import { changeUserAdminId, getAdminSelect } from "@/api/eda";
+import { changeStaffId } from "@/api/crm";
 export default {
   props: {
     value: {
+      type: Boolean,
+      default: false,
+    },
+    isCrm: {
       type: Boolean,
       default: false,
     },
@@ -83,7 +88,23 @@ export default {
         this.teacherList = res.data;
       }
     },
-    async submit() {
+    async changeStaffId() {
+      const data = {
+        staff_id: this.formData.admin_id,
+        id: this.ids.join(","),
+      };
+      this.addLoading = true;
+      const res = await changeStaffId(data).catch(() => {
+        this.addLoading = false;
+      });
+      this.addLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.resetForm("formData");
+        this.$emit("on-success");
+      }
+    },
+    async changeUserAdminId() {
       const data = {
         admin_id: this.formData.admin_id,
         user_archives_id_arr: this.ids,
@@ -97,6 +118,13 @@ export default {
         this.$message.success(res.message);
         this.resetForm("formData");
         this.$emit("on-success");
+      }
+    },
+    async submit() {
+      if (this.isCrm) {
+        this.changeStaffId();
+      } else {
+        this.changeUserAdminId();
       }
     },
     submitForm(formName) {

@@ -18,20 +18,30 @@
           身份证码：{{ detailData.id_card_number | filterIdCard }}
         </div>
         <div class="header-item">
-          注册日期：{{ detailData.create_time || "--" }}
+          录入日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
           <el-button @click="dialogVisible = true">教材发放</el-button>
-          <el-button type="primary" @click="openSingUpDialog">报名</el-button>
-          <el-button type="primary" disabled v-if="false">已报名</el-button>
+          <el-button
+            type="primary"
+            v-if="$route.query.customer_type === '招生订单'"
+            @click="openSingUpDialog"
+            >报名</el-button
+          >
+          <el-button
+            type="primary"
+            v-if="$route.query.customer_type === '渠道订单'"
+            @click="openCourseDialog = true"
+            >开课</el-button
+          >
         </div>
       </div>
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
         <el-tab-pane label="证件资料" name="Certificates"></el-tab-pane>
+        <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
         <el-tab-pane label="项目班级" name="Class"></el-tab-pane>
         <el-tab-pane label="学习记录" name="LearningRecords"></el-tab-pane>
-        <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
         <el-tab-pane label="人脸识别记录" name="FaceRecord"></el-tab-pane>
         <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
         <el-tab-pane label="用户日志" name="CustomerHistory"></el-tab-pane>
@@ -45,7 +55,9 @@
       />
     </section>
     <!-- 报名 -->
-    <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
+    <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
+    <!-- 开课 -->
+    <AddStudent v-model="openCourseDialog" :user-info="detailData" />
     <!-- 发放教材 -->
     <GrantTeachMaterials
       v-model="dialogVisible"
@@ -58,11 +70,13 @@
 <script>
 import GrantTeachMaterials from "@/views/eda/components/GrantTeachMaterials";
 import { getStudentBasicDetail } from "@/api/eda";
-import CustomeRegist from "@/views/etm/components/customeRegist";
+import CustomeSignUp from "@/views/crm/crmCustomer/components/CustomeSignUp";
+import AddStudent from "@/views/crm/eduOpenClass/components/AddStudent";
 export default {
   name: "studentDetail",
   components: {
-    CustomeRegist,
+    AddStudent,
+    CustomeSignUp,
     GrantTeachMaterials,
   },
   data() {
@@ -72,6 +86,7 @@ export default {
       detailLoading: false,
       signUpDialog: false,
       dialogVisible: false,
+      openCourseDialog: false,
       projectInfo: {},
     };
   },

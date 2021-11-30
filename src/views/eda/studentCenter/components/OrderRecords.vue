@@ -5,40 +5,93 @@
       <el-table
         ref="multipleTable"
         :data="listData"
-        tooltip-effect="light"
         v-loading="listLoading"
         element-loading-text="loading"
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
-        stripe
-        style="width: 100%"
-        class="min_table"
-        :header-cell-style="{ 'text-align': 'center' }"
+        :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
+        all="1"
       >
         <el-table-column
-          prop="order_no"
+          prop="order_id"
           label="订单编号"
           show-overflow-tooltip
-          min-width="160"
+          min-width="190"
         >
-          <template slot-scope="{ row }">
-            <el-button type="text" @click="orderDetail(row)">
-              {{ row.order_no }}
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              @click="toCrmOrderDetail(scope.row.order_id)"
+            >
+              {{ scope.row.order_no }}
             </el-button>
           </template>
         </el-table-column>
         <el-table-column
-          prop="project_name"
-          label="项目名称"
+          prop="create_time"
+          label="创建时间"
+          min-width="140"
           show-overflow-tooltip
-          min-width="220"
         >
         </el-table-column>
         <el-table-column
+          prop="surname"
+          label="客户姓名"
+          min-width="90"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="project_name"
+          label="项目名称"
+          min-width="130"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="staff_name"
+          label="业绩归属"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="订单总金额"
+          min-width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="pay_money"
+          label="已回款金额"
+          min-width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.pay_money }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="pay_progress"
+          label="回款进度"
+          min-width="140"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-progress
+              :percentage="+(row.pay_progress || '').split('%')[0] || 0"
+            ></el-progress>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="pay_status"
-          label="订单状态"
-          min-width="110"
+          label="支付状态"
+          min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -48,156 +101,129 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="order_money"
-          label="订单总价"
+          prop="verify_status"
+          label="审批状态"
           min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>￥{{ row.order_money }}</span>
+            <el-tag
+              size="small"
+              :type="verifyStatusMap[row.verify_status || 0].type"
+            >
+              {{ verifyStatusMap[row.verify_status || 0].text }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column
-          prop="reduction"
-          label="优惠金额"
+          prop="contract_status"
+          label="合同状态"
           min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>￥{{ row.reduction }}</span>
+            <el-tag
+              v-if="row.order_id"
+              size="small"
+              :type="statusMap[row.contract_status || 0].type"
+            >
+              {{ statusMap[row.contract_status || 0].text }}
+            </el-tag>
           </template>
-        </el-table-column>
-        <el-table-column
-          prop="order_money"
-          label="应收金额"
-          min-width="100"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <span>￥{{ (row.order_money - row.reduction).toFixed(2) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="pay_money"
-          label="实收金额"
-          min-width="100"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <span>￥{{ row.pay_money }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="overdue_money"
-          label="欠缴金额"
-          min-width="100"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <span class="overdue-money">￥{{ row.overdue_money }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="pay_type"
-          label="支付方式"
-          min-width="90"
-          show-overflow-tooltip
-        >
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="{ row }">
-            <div class="operation_btn">
-              <el-button
-                type="text"
-                v-if="excludes(row, 0)"
-                @click="openOrderActions(row, 1)"
-                >收款</el-button
-              >
-              <!-- <el-button
-                type="text"
-                v-if="excludes(row, 4)"
-                @click="openOrderActions(row, 2)"
-                >退款</el-button
-              > -->
-              <el-button
-                type="text"
-                v-if="excludes(row, 5)"
-                @click="openOrderActions(row, 3)"
-                >作废</el-button
-              >
-            </div>
+            <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
+              >订单详情</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <CollectionOrder
-      v-model="orderActionDialog"
-      :type="dialogType"
-      :orderInfo="dialogInfo"
-      @on-success="getOrderList"
-    />
   </div>
 </template>
 
 <script>
-import CollectionOrder from "@/views/fina/components/CollectionOrder";
-import { getOrderList } from "@/api/eda";
+import { getCrmOrderList } from "@/api/crm";
 export default {
-  name: "orderRecords",
+  name: "OrderRecords",
   props: {
     uid: {
       type: [String, Number],
       default: "",
     },
   },
-  components: {
-    CollectionOrder,
-  },
   data() {
     return {
       listData: [],
       listLoading: false,
-      orderActionDialog: false,
-      dialogInfo: {},
-      dialogType: 1,
+      statusMap: {
+        0: {
+          text: "未生成",
+          type: "info",
+        },
+        1: {
+          text: "未审核",
+          type: "primary",
+        },
+        2: {
+          text: "已审核",
+          type: "success",
+        },
+        3: {
+          text: "已驳回",
+          type: "danger",
+        },
+        4: {
+          text: "签署完成",
+          type: "success",
+        },
+      },
+      verifyStatusMap: {
+        1: {
+          text: "待审核",
+          type: "info",
+        },
+        2: {
+          text: "（多人）审核中",
+          type: "primary",
+        },
+        3: {
+          text: "审核通过",
+          type: "success",
+        },
+        8: {
+          text: "已撤销审核",
+          type: "info",
+        },
+        9: {
+          text: "驳回不通过",
+          type: "danger",
+        },
+      },
     };
   },
   created() {
-    this.getOrderList();
+    this.getCrmOrderList();
   },
   methods: {
-    orderDetail(ab) {
+    toCrmOrderDetail(id) {
       this.$router.push({
-        name: "orderdetail",
+        name: "crmOrderDetail",
         query: {
-          order_id: ab.order_id,
+          id,
         },
       });
     },
-    // 按钮操作
-    excludes(row, type) {
-      const auth = {
-        0: row.overdue_money > 0 && ![4, 5].includes(row.pay_status), // 收款
-        4: ![4, 5].includes(row.pay_status) && row.pay_money > 0, // 退款
-        5: ![4, 5].includes(row.pay_status), // 作废
-      };
-      return auth[type];
-    },
-    openOrderActions(row, type) {
-      this.dialogType = type;
-      this.dialogInfo = row;
-      this.orderActionDialog = true;
-    },
+
     //订单列表
-    async getOrderList() {
+    async getCrmOrderList() {
       this.checkedIds = [];
       this.listLoading = true;
       const data = {
-        all: 1,
-        op_uid: -1,
         uid: this.uid,
       };
-      const res = await getOrderList(data);
+      const res = await getCrmOrderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
     },

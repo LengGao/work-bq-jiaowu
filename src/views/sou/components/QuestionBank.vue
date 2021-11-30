@@ -260,6 +260,8 @@ export default {
       }
     }
     ul {
+      height: 426px;
+      overflow-y: auto;
       li {
         display: flex;
         padding: 14px 25px;
