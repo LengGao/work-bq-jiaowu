@@ -42,7 +42,7 @@
             clearable
           >
             <el-option
-              v-for="item in staffOptions"
+              v-for="item in channelStaffOptions"
               :key="item.staff_id"
               :label="item.staff_name"
               :value="item.staff_id"
@@ -77,7 +77,7 @@
             multiple
           >
             <el-option
-              v-for="item in staffOptions"
+              v-for="item in eduStaffOptions"
               :key="item.staff_id"
               :label="item.staff_name"
               :value="item.staff_id + ''"
@@ -130,7 +130,8 @@ export default {
   data() {
     return {
       visible: this.value,
-      staffOptions: [],
+      channelStaffOptions: [],
+      eduStaffOptions: [],
       tableData: [],
       addLoading: false,
       tableLoading: false,
@@ -144,7 +145,8 @@ export default {
   methods: {
     handleOpen() {
       this.getOrgCateIdArr();
-      this.getStaffSelect();
+      this.getStaffSelect(1);
+      this.getStaffSelect(2);
     },
     async getOrgCateIdArr() {
       const data = {
@@ -161,10 +163,17 @@ export default {
         }));
       }
     },
-    async getStaffSelect() {
-      const res = await getStaffSelect();
+    async getStaffSelect(status) {
+      const data = {
+        status,
+      };
+      const res = await getStaffSelect(data);
       if (res.code === 0) {
-        this.staffOptions = res.data;
+        if (status === 1) {
+          this.channelStaffOptions = res.data;
+        } else if (status === 2) {
+          this.eduStaffOptions = res.data;
+        }
       }
     },
     async batchSetStudentReception() {
