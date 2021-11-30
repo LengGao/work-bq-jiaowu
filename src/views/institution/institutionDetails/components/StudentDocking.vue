@@ -45,7 +45,7 @@
             @change="setStudentReception(row)"
           >
             <el-option
-              v-for="item in staffOptions"
+              v-for="item in channelStaffOptions"
               :key="item.staff_id"
               :label="item.staff_name"
               :value="item.staff_id"
@@ -81,7 +81,7 @@
             @change="setStudentReception(row)"
           >
             <el-option
-              v-for="item in staffOptions"
+              v-for="item in eduStaffOptions"
               :key="item.staff_id"
               :label="item.staff_name"
               :value="item.staff_id + ''"
@@ -116,13 +116,16 @@ export default {
     return {
       listData: [],
       listLoading: false,
-      staffOptions: [],
+      channelStaffOptions: [],
+      eduStaffOptions: [],
+      lastTime: 0,
     };
   },
 
   created() {
     this.getOrgStudentReceptionList();
-    this.getStaffSelect();
+    this.getStaffSelect(1);
+    this.getStaffSelect(2);
   },
   methods: {
     async setStudentReception({
@@ -138,13 +141,24 @@ export default {
       };
       const res = await setStudentReception(data);
       if (res.code === 0) {
-        this.$message.success(res.message);
+        const currentTime = Date.now();
+        if (currentTime - this.lastTime > 1500) {
+          this.$message.success(res.message);
+          this.lastTime = currentTime;
+        }
       }
     },
-    async getStaffSelect() {
-      const res = await getStaffSelect();
+    async getStaffSelect(status) {
+      const data = {
+        status,
+      };
+      const res = await getStaffSelect(data);
       if (res.code === 0) {
-        this.staffOptions = res.data;
+        if (status === 1) {
+          this.channelStaffOptions = res.data;
+        } else if (status === 2) {
+          this.eduStaffOptions = res.data;
+        }
       }
     },
     // 公海学员
