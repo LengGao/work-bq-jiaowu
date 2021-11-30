@@ -38,11 +38,11 @@
       >
         <template slot-scope="{ row }">
           <el-select
-            v-if="row.isEdit"
             v-model="row.channel_staff_id"
             placeholder="请选择"
             filterable
             clearable
+            @change="setStudentReception(row)"
           >
             <el-option
               v-for="item in staffOptions"
@@ -62,7 +62,6 @@
               >
             </el-option>
           </el-select>
-          <span v-else>{{ row.channel_staff_name }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -74,12 +73,12 @@
       >
         <template slot-scope="{ row }">
           <el-select
-            v-if="row.isEdit"
             v-model="row.education_staff_id_arr"
             placeholder="请选择"
             filterable
             clearable
             multiple
+            @change="setStudentReception(row)"
           >
             <el-option
               v-for="item in staffOptions"
@@ -99,28 +98,6 @@
               >
             </el-option>
           </el-select>
-          <span v-else>{{ row.education_staff_name_str }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        min-width="180"
-        align="center"
-      >
-        <template slot-scope="{ row }">
-          <el-button
-            type="text"
-            v-if="row.isEdit"
-            @click="setStudentReception(row)"
-            >保存</el-button
-          >
-          <el-button type="text" v-if="row.isEdit" @click="row.isEdit = false"
-            >取消</el-button
-          >
-          <el-button type="text" v-else @click="row.isEdit = true"
-            >编辑</el-button
-          >
         </template>
       </el-table-column>
     </el-table>
@@ -162,7 +139,6 @@ export default {
       const res = await setStudentReception(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getOrgStudentReceptionList();
       }
     },
     async getStaffSelect() {
