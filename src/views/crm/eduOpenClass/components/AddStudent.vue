@@ -328,8 +328,7 @@
 </template>
 
 <script>
-import { getInstitutionList } from "@/api/institution";
-import { orderOpen, getInstitutionClassType } from "@/api/crm";
+import { orderOpen, getInstitutionClassType, switchList } from "@/api/crm";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 export default {
@@ -487,7 +486,7 @@ export default {
   methods: {
     handleOpen() {
       this.getCateProjectOption();
-      this.getInstitutionList();
+      this.switchList();
       if (this.userInfo.surname) {
         this.formData.student = [
           {
@@ -499,11 +498,8 @@ export default {
         ];
       }
     },
-    async getInstitutionList() {
-      const data = {
-        limit: 99999,
-      };
-      const res = await getInstitutionList(data);
+    async switchList() {
+      const res = await switchList();
       this.institutionOptions = res.data.list;
     },
     async getInstitutionClassType(project_id, tableData) {

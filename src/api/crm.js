@@ -393,4 +393,12 @@ export function batchRemove(data) {
         data
     })
 }
+// 教务开课-获取机构
+export function switchList(params) {
+    return request({
+        url: 'Organization/switchList',
+        method: 'get',
+        params
+    })
+}
 
