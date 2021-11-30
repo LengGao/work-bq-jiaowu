@@ -299,7 +299,7 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: [],
+        date: [toDay(), toDay()],
         keyword: "",
         project_id: "",
         staff_id: "",

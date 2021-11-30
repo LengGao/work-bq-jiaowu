@@ -80,7 +80,7 @@
             <el-button
               :loading="row.loading"
               type="text"
-              @click="toStudentDetail(row.uid)"
+              @click="toCusdetail(row.uid)"
               >客户详情</el-button
             >
             <el-button :loading="row.loading" type="text" @click="receive(row)"
@@ -151,6 +151,9 @@ export default {
     this.getCrmList();
   },
   methods: {
+    toCusdetail(uid) {
+      this.$router.push({ name: "cusdetail", query: { uid } });
+    },
     // 领取
     async receive(row) {
       const data = {

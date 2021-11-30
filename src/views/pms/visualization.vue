@@ -2,9 +2,9 @@
   <div class="workbench">
     <div class="workbench-header">
       <div class="avatars">
-        <div class="avatar-item">
+        <div class="avatar-item" v-if="!checkedData.length">
           <img v-if="userInfo.head_photo" :src="userInfo.head_photo" alt="" />
-          <span v-else>{{ userInfo.staff_name.substr(-2) }}</span>
+          <span v-else>{{ (userInfo.staff_name || "").substr(-2) }}</span>
         </div>
         <!-- <div class="user-info">
           <p class="user-info-name">张老师</p>
@@ -22,8 +22,8 @@
           <img v-if="item.head_photo" :src="item.head_photo" alt="" />
           <span v-else>{{
             item.type === "user"
-              ? item.title.substr(-2)
-              : item.title.substr(0, 2)
+              ? (item.title || "").substr(-2)
+              : (item.title || "").substr(0, 2)
           }}</span>
         </div>
       </div>
