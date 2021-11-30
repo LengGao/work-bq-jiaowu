@@ -310,6 +310,9 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
+      this.formData.group_ids = [];
+      this.formData.user_ids = [];
+      this.formData.role_ids = [];
       this.$emit("input", false);
     },
     hanldeCancel() {
