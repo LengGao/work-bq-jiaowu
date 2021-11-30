@@ -139,6 +139,7 @@ export default {
           if (item.type === "user") {
             uIds.push(item.id);
           } else {
+            console.log(item);
             departmentIds.push(item.id);
           }
         }
@@ -147,7 +148,15 @@ export default {
     },
     async getGroupWithUser() {
       const res = await getGroupWithUser();
-      this.rangeOptions = res.data;
+      this.rangeOptions = [
+        {
+          title: "全部数据",
+          id: 0,
+          type: "group",
+          group_tree: "-",
+        },
+      ].concat(res.data || []);
+      console.log(this.rangeOptions);
     },
     async getUserId(arr_uid, arr_group, checkedData) {
       const data = {
