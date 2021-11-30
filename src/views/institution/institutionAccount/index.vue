@@ -25,7 +25,9 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
         >
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             label="机构ID"
             show-overflow-tooltip
@@ -209,6 +211,9 @@
           </el-table-column>
         </el-table>
         <div class="table_bottom">
+          <div>
+            <el-button @click="openDockingDialog">学生对接</el-button>
+          </div>
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -228,6 +233,11 @@
       :detailData="currentData"
       @on-success="getInstitutionList"
     />
+    <DockingDialog
+      v-model="dockingDialog"
+      :ids="checkedIds"
+      @on-success="getInstitutionList"
+    />
   </div>
 </template>
 
@@ -241,6 +251,7 @@ import {
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import InstitutionDialog from "./components/InstitutionDialog";
+import DockingDialog from "./components/DockingDialog";
 import RechargeDialog from "./components/RechargeDialog";
 export default {
   name: "institutionAccount",
@@ -248,6 +259,7 @@ export default {
     PartiallyHidden,
     InstitutionDialog,
     RechargeDialog,
+    DockingDialog,
   },
   data() {
     return {
@@ -286,6 +298,8 @@ export default {
       currentId: "",
       rechargeDialogVisible: false,
       currentData: {},
+      checkedIds: [],
+      dockingDialog: false,
     };
   },
 
@@ -293,6 +307,16 @@ export default {
     this.getInstitutionList();
   },
   methods: {
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.institution_id);
+    },
+    openDockingDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择机构");
+        return;
+      }
+      this.dockingDialog = true;
+    },
     async getInstitutionToken(institution_id) {
       const data = { institution_id };
       const res = await getInstitutionToken(data);
@@ -370,9 +394,9 @@ export default {
       this.getInstitutionList();
     },
     async getInstitutionList() {
+      this.checkedIds = [];
       const data = {
         page: this.pageNum,
-        course_id: 144,
         ...this.searchData,
       };
       this.listLoading = true;
@@ -402,5 +426,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
+.table_bottom {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

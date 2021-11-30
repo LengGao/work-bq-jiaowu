@@ -1,26 +1,24 @@
 <template>
-  <!-- 学生对接 -->
-  <div class="student-docking">
-    <!--表格-->
+  <!--学生对接弹窗-->
+  <el-dialog
+    title="学生对接"
+    :visible.sync="visible"
+    width="600px"
+    @open="handleOpen"
+    :close-on-click-modal="false"
+    @closed="resetForm('formData')"
+  >
     <el-table
       ref="multipleTable"
-      :data="listData"
+      :data="tableData"
       style="width: 100%"
       class="min_table"
-      v-loading="listLoading"
+      v-loading="tableLoading"
       element-loading-text="loading"
       element-loading-spinner="el-icon-loading"
       element-loading-background="#fff"
       :header-cell-style="{ 'text-align': 'center' }"
     >
-      <el-table-column
-        label="分类ID"
-        show-overflow-tooltip
-        min-width="80"
-        align="center"
-        prop="category_id"
-      >
-      </el-table-column>
       <el-table-column
         prop="category_name"
         label="项目分类"
@@ -38,8 +36,7 @@
       >
         <template slot-scope="{ row }">
           <el-select
-            v-if="row.isEdit"
-            v-model="row.channel_staff_id"
+            v-model="row.channel"
             placeholder="请选择"
             filterable
             clearable
@@ -62,7 +59,6 @@
               >
             </el-option>
           </el-select>
-          <span v-else>{{ row.channel_staff_name }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -74,8 +70,7 @@
       >
         <template slot-scope="{ row }">
           <el-select
-            v-if="row.isEdit"
-            v-model="row.education_staff_id_arr"
+            v-model="row.education"
             placeholder="请选择"
             filterable
             clearable
@@ -99,70 +94,71 @@
               >
             </el-option>
           </el-select>
-          <span v-else>{{ row.education_staff_name_str }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        min-width="180"
-        align="center"
-      >
-        <template slot-scope="{ row }">
-          <el-button
-            type="text"
-            v-if="row.isEdit"
-            @click="setStudentReception(row)"
-            >保存</el-button
-          >
-          <el-button type="text" v-if="row.isEdit" @click="row.isEdit = false"
-            >取消</el-button
-          >
-          <el-button type="text" v-else @click="row.isEdit = true"
-            >编辑</el-button
-          >
         </template>
       </el-table-column>
     </el-table>
-  </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="hanldeCancel">取 消</el-button>
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="batchSetStudentReception"
+        >确 定</el-button
+      >
+    </span>
+  </el-dialog>
 </template>
 
 <script>
 import {
-  getOrgStudentReceptionList,
+  getOrgCateIdArr,
   getStaffSelect,
-  setStudentReception,
+  batchSetStudentReception,
 } from "@/api/institution";
 export default {
-  name: "StudentDocking",
+  name: "DockingDialog",
+  props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
+    ids: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
-      listData: [],
-      listLoading: false,
+      visible: this.value,
       staffOptions: [],
+      tableData: [],
+      addLoading: false,
+      tableLoading: false,
     };
   },
-
-  created() {
-    this.getOrgStudentReceptionList();
-    this.getStaffSelect();
+  watch: {
+    value(val) {
+      this.visible = val;
+    },
   },
   methods: {
-    async setStudentReception({
-      channel_staff_id,
-      category_id: cate_id,
-      education_staff_id_arr,
-    }) {
+    handleOpen() {
+      this.getOrgCateIdArr();
+      this.getStaffSelect();
+    },
+    async getOrgCateIdArr() {
       const data = {
-        org_id: this.$route.query?.institution_id || "",
-        channel_staff_id,
-        cate_id,
-        education_staff_id_arr,
+        org_id_arr: this.ids,
       };
-      const res = await setStudentReception(data);
+      this.tableLoading = true;
+      const res = await getOrgCateIdArr(data).catch(() => {});
+      this.tableLoading = false;
       if (res.code === 0) {
-        this.$message.success(res.message);
-        this.getOrgStudentReceptionList();
+        this.tableData = res.data.map((item) => ({
+          ...item,
+          education: [],
+          channel: "",
+        }));
       }
     },
     async getStaffSelect() {
@@ -171,31 +167,42 @@ export default {
         this.staffOptions = res.data;
       }
     },
-    // 公海学员
-    async getOrgStudentReceptionList() {
+    async batchSetStudentReception() {
       const data = {
-        org_id: this.$route.query?.institution_id || "",
+        cate_arr: this.tableData.map(
+          ({ category_id: cate_id, education, channel }) => ({
+            cate_id,
+            education,
+            channel,
+          })
+        ),
+        org_id_arr: this.ids,
       };
-      this.listLoading = true;
-      const res = await getOrgStudentReceptionList(data);
-      this.listLoading = false;
-      this.listData = res.data.map((item) => ({
-        ...item,
-        isEdit: false,
-        loading: false,
-      }));
+      this.addLoading = true;
+      const res = await batchSetStudentReception(data).catch(() => {});
+      this.addLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.$emit("on-success");
+        this.hanldeCancel();
+      }
+    },
+    resetForm() {
+      this.$emit("input", false);
+    },
+    hanldeCancel() {
+      this.visible = false;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-/deep/.el-table__header th,
-.el-table__header tr {
-  background-color: #f8f8f8;
-  color: #909399;
-}
-.institution-user-manage {
-  padding: 20px;
+.address {
+  display: flex;
+  .detailed {
+    margin-left: 20px;
+    flex: 1;
+  }
 }
 </style>

@@ -433,3 +433,19 @@ export function getOrgProjectr(params) {
         params
     })
 }
+// 机构列表-学生对接分类列表
+export function getOrgCateIdArr(data) {
+    return request({
+        url: 'Merchant/getOrgCateIdArr',
+        method: 'post',
+        data
+    })
+}
+// 机构列表-批量学生对接
+export function batchSetStudentReception(data) {
+    return request({
+        url: 'Merchant/batchSetStudentReception',
+        method: 'post',
+        data
+    })
+}
