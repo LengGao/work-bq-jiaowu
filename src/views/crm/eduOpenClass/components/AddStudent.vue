@@ -68,7 +68,6 @@
           <el-input
             :disabled="!!userInfo.surname"
             class="input"
-            type="number"
             v-model="formData.student[index].id_card_number"
             placeholder="请输入身份证号"
           />
