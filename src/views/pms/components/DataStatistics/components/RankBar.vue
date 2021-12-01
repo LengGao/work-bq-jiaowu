@@ -2,8 +2,10 @@
   <div class="rank-bar" ref="barEl" :id="barId"></div>
 </template>
 <script>
+import resizeMixin from "../mixins";
 export default {
   name: "RankBar",
+  mixins: [resizeMixin],
   props: {
     barColor: {
       type: String,
@@ -26,20 +28,25 @@ export default {
       default: "",
     },
   },
+  data() {
+    return {
+      chartInstance: null,
+    };
+  },
   watch: {
     data: {
       handler() {
-        this.setHeight();
+        this.handleDataChange();
+        this.chartInstance && this.chartInstance.resize();
       },
       deep: true,
     },
   },
-
   mounted() {
-    this.setHeight();
+    this.handleDataChange();
   },
   methods: {
-    setHeight() {
+    handleDataChange() {
       if (this.data.length > 15) {
         this.$refs.barEl.style.height = this.data.length * 26 + "px";
       } else {
@@ -73,9 +80,10 @@ export default {
           .map(({ name }, index) => index + 1 + ". " + name)
           .reverse();
       }
-      let myChart = this.$echarts.init(document.getElementById(this.barId));
-      myChart.resize();
-      myChart.setOption({
+      this.chartInstance = this.$echarts.init(
+        document.getElementById(this.barId)
+      );
+      this.chartInstance.setOption({
         tooltip: {
           trigger: "axis",
           axisPointer: {

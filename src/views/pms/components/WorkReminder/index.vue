@@ -73,6 +73,7 @@
       :list-total="staffFollowTotal"
       v-loading="staffFollowLoading"
       @load-more="loadMoreStaffFollow"
+      @list-click="handleStaffFollowClick"
     >
       <span slot="header-right" class="tips"
         >*超过30天未跟进的未成交客户将被系统自动划入公海</span
@@ -221,6 +222,15 @@ export default {
     this.getStaffNotice();
   },
   methods: {
+    handleStaffFollowClick(row) {
+      this.$router.push({
+        name: "cusdetail",
+        query: {
+          uid: row.uid,
+          cid: row.id,
+        },
+      });
+    },
     // 系统通知
     handleMsgOk(read) {
       this.msgData.forEach((item) => {
@@ -365,6 +375,9 @@ export default {
   }
   .table-block {
     width: calc(50% - 10px);
+    @media only screen and (max-width: 1200px) {
+      width: 100%;
+    }
   }
   .table-left {
     .money {

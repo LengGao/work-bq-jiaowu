@@ -64,13 +64,20 @@
   </div>
 </template>
 <script>
+import resizeMixin from "../mixins";
 export default {
   name: "OnlineChart",
+  mixins: [resizeMixin],
   props: {
     data: {
       type: Object,
       default: () => ({}),
     },
+  },
+  data() {
+    return {
+      chartInstance: null,
+    };
   },
   watch: {
     data: {
@@ -92,8 +99,10 @@ export default {
       const appletData = Object.values(this.data.list.applet);
       const pcData = Object.values(this.data.list.pc);
       const totalData = Object.values(this.data.list.total);
-      let myChart = this.$echarts.init(document.getElementById("online-chart"));
-      myChart.setOption({
+      this.chartInstance = this.$echarts.init(
+        document.getElementById("online-chart")
+      );
+      this.chartInstance.setOption({
         tooltip: {
           trigger: "axis",
         },
