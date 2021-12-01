@@ -303,8 +303,10 @@ export default {
       institutionOptions: [],
     };
   },
-  created() {
+  activated() {
     this.projectUser();
+  },
+  created() {
     this.getInstitutionSelectData();
     this.getAdminSelect();
     this.getCateList();
