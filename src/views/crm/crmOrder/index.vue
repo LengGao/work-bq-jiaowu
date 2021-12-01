@@ -501,8 +501,10 @@ export default {
       },
     };
   },
-  created() {
+  activated() {
     this.getCrmOrderList();
+  },
+  created() {
     this.getStaffList();
     this.getproject();
     this.getCateList();

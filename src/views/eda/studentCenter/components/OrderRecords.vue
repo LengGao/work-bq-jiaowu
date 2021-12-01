@@ -221,6 +221,9 @@ export default {
       orderActionDialog: false,
     };
   },
+  activated() {
+    this.getCrmOrderList();
+  },
   created() {
     this.getCrmOrderList();
   },

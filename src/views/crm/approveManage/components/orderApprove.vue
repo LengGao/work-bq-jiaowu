@@ -311,6 +311,9 @@ export default {
       orderActionDialog: false,
     };
   },
+  activated() {
+    this.getCrmApproveOrder();
+  },
   created() {
     this.getCrmApproveOrder();
     this.getCateList();
