@@ -419,6 +419,7 @@ export default {
         pay_day: "",
         pay_money: "",
         pay_type: "",
+        planIndex: "",
       },
       rules: {
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
