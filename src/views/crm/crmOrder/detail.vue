@@ -12,7 +12,7 @@
       <div class="btn-edit">
         <el-button
           type="primary"
-          v-if="detailData.verify_status === 1"
+          v-if="detailData.verify_status === 1 && detailData.is_my_review !== 1"
           @click="ActionConfirm(3)"
           >撤回</el-button
         >
@@ -23,16 +23,17 @@
         >
         <el-button
           v-if="detailData.is_my_review"
-          type="primary"
-          @click="approveConfirm(1)"
-          >通过</el-button
+          type="danger"
+          @click="approveConfirm(2)"
+          >驳回</el-button
         >
         <el-button
           v-if="detailData.is_my_review"
           type="primary"
-          @click="approveConfirm(2)"
-          >驳回</el-button
+          @click="approveConfirm(1)"
+          >通过</el-button
         >
+
         <el-button
           v-if="detailData.verify_status === 2"
           type="primary"
