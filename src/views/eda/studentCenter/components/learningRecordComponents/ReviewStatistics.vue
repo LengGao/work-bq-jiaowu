@@ -163,7 +163,7 @@ export default {
       };
       const res = await getUserClassroomSelect(data).catch();
       if (res.code === 0) {
-        this.searchData.classroom_id = res.data[0].classroom_id;
+        this.searchData.classroom_id = res.data[0]?.classroom_id;
         this.searchOptions[0].options = res.data;
       }
       this.userCenterClassroomVideoList();
