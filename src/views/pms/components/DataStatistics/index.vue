@@ -4,81 +4,72 @@
       <Title slot="header-title" text="销售简报"></Title>
       <SalesData :data="salesData" v-loading="salesLoading" />
     </Block>
-    <div class="admin-center">
-      <div class="admin-center-left">
-        <Block date-type="2" :value="0" @date-change="performanceIndicators">
-          <Title slot="header-title" text="业绩指标"></Title>
-          <GaugeChart :data="performanceData" v-loading="performanceLoading" />
-        </Block>
-        <Block
-          date-type="4"
-          @date-change="getSalesRankData"
-          class="scroll-chart"
-        >
-          <Title slot="header-title" text="销售龙虎榜"></Title>
-          <div class="tab" slot="header-center">
-            <span
-              class="tab-item"
-              :class="{ 'tab-item--active-r': rankType === 1 }"
-              @click="handleRankTypeChange(1)"
-              >回款金额</span
-            >
-            <span
-              class="tab-item"
-              :class="{ 'tab-item--active-r': rankType === 2 }"
-              @click="handleRankTypeChange(2)"
-              >订单金额</span
-            >
-          </div>
-          <RankBar
-            v-loading="salesRankLoading"
-            :data="salesRankCheckedData"
-            type="1"
-            :series-name="rankType === 1 ? '回款' : '订单'"
-          />
-        </Block>
-      </div>
-      <div class="admin-center-right">
-        <Block date-type="3" @year-change="getTrendData">
-          <Title slot="header-title" text="销售趋势"></Title>
-          <TrendBar :data="trendData" v-loading="trendLoading" />
-        </Block>
-
-        <Block
-          class="scroll-chart"
-          date-type="4"
-          @date-change="getCustomerRankData"
-        >
-          <Title slot="header-title" text="录入客户排行榜"></Title>
-          <RankBar
-            bar-color="#24A3FF"
-            bar-id="bar2"
-            type="2"
-            :data="customerRankData"
-            series-name="客户数量"
-            v-loading="customerRankLoading"
-          />
-        </Block>
-      </div>
+    <div class="admin-container">
+      <Block date-type="2" :value="0" @date-change="performanceIndicators">
+        <Title slot="header-title" text="业绩指标"></Title>
+        <GaugeChart :data="performanceData" v-loading="performanceLoading" />
+      </Block>
+      <Block date-type="3" @year-change="getTrendData">
+        <Title slot="header-title" text="销售趋势"></Title>
+        <TrendBar :data="trendData" v-loading="trendLoading" />
+      </Block>
+      <Block date-type="4" @date-change="getSalesRankData" class="scroll-chart">
+        <Title slot="header-title" text="销售龙虎榜"></Title>
+        <div class="tab" slot="header-center">
+          <span
+            class="tab-item"
+            :class="{ 'tab-item--active-r': rankType === 1 }"
+            @click="handleRankTypeChange(1)"
+            >回款金额</span
+          >
+          <span
+            class="tab-item"
+            :class="{ 'tab-item--active-r': rankType === 2 }"
+            @click="handleRankTypeChange(2)"
+            >订单金额</span
+          >
+        </div>
+        <RankBar
+          v-loading="salesRankLoading"
+          :data="salesRankCheckedData"
+          type="1"
+          :series-name="rankType === 1 ? '回款' : '订单'"
+        />
+      </Block>
+      <Block
+        class="scroll-chart"
+        date-type="4"
+        @date-change="getCustomerRankData"
+      >
+        <Title slot="header-title" text="录入客户排行榜"></Title>
+        <RankBar
+          bar-color="#24A3FF"
+          bar-id="bar2"
+          type="2"
+          :data="customerRankData"
+          series-name="客户数量"
+          v-loading="customerRankLoading"
+        />
+      </Block>
+      <Block class="online" @date-change="getOnlineStatistics">
+        <Title slot="header-title" text="在线人数"></Title>
+        <div class="tab" slot="header-center">
+          <span
+            class="tab-item"
+            @click="handleOnlineChange(0)"
+            :class="{ 'tab-item--active': onlineState === 0 }"
+            >东培学堂</span
+          >
+          <span
+            class="tab-item"
+            :class="{ 'tab-item--active': onlineState === 1 }"
+            @click="handleOnlineChange(1)"
+            >机构端</span
+          >
+        </div>
+        <OnlineChart :data="onlineData" v-loading="onlineLoading" />
+      </Block>
     </div>
-    <Block @date-change="getOnlineStatistics">
-      <Title slot="header-title" text="在线人数"></Title>
-      <div class="tab" slot="header-center">
-        <span
-          class="tab-item"
-          @click="handleOnlineChange(0)"
-          :class="{ 'tab-item--active': onlineState === 0 }"
-          >东培学堂</span
-        >
-        <span
-          class="tab-item"
-          :class="{ 'tab-item--active': onlineState === 1 }"
-          @click="handleOnlineChange(1)"
-          >机构端</span
-        >
-      </div>
-      <OnlineChart :data="onlineData" v-loading="onlineLoading" />
-    </Block>
   </div>
 </template>
 <script>
@@ -275,13 +266,19 @@ export default {
 </script>
 <style lang="scss" scoped>
 .admin {
-  &-center {
+  &-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    &-left,
-    &-right {
+    flex-wrap: wrap;
+    .block {
       width: calc(50% - 10px);
+      &.online {
+        width: 100%;
+      }
+      @media only screen and (max-width: 1200px) {
+        width: 100%;
+      }
     }
   }
   .tab {

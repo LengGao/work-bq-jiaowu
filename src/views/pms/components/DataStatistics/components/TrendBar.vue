@@ -2,8 +2,10 @@
   <div id="trend-bar"></div>
 </template>
 <script>
+import resizeMixin from "../mixins";
 export default {
   name: "TrendBar",
+  mixins: [resizeMixin],
   props: {
     data: {
       type: Array,
@@ -11,7 +13,9 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      chartInstance: null,
+    };
   },
   watch: {
     data: {
@@ -45,8 +49,10 @@ export default {
               "11月",
               "12月",
             ];
-      let myChart = this.$echarts.init(document.getElementById("trend-bar"));
-      myChart.setOption({
+      this.chartInstance = this.$echarts.init(
+        document.getElementById("trend-bar")
+      );
+      this.chartInstance.setOption({
         color: ["#FFE5c8", "#FFB76A"],
         tooltip: {
           trigger: "axis",

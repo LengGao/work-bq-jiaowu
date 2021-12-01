@@ -33,21 +33,28 @@
   </div>
 </template>
 <script>
+import resizeMixin from "../mixins";
 export default {
   name: "GaugeChart",
+  mixins: [resizeMixin],
   props: {
     data: {
       type: Object,
       default: () => ({}),
     },
   },
-  mounted() {
-    this.chartInit();
+  data() {
+    return {
+      chartInstance: null,
+    };
   },
   watch: {
     "data.completion"(val) {
       this.chartInit(val);
     },
+  },
+  mounted() {
+    this.chartInit();
   },
   methods: {
     unitFormat(val) {
@@ -60,8 +67,10 @@ export default {
       return (+val).toFixed(2);
     },
     chartInit(value = 0) {
-      let myChart = this.$echarts.init(document.getElementById("gauge-chart"));
-      myChart.setOption({
+      this.chartInstance = this.$echarts.init(
+        document.getElementById("gauge-chart")
+      );
+      this.chartInstance.setOption({
         series: [
           {
             type: "gauge",
