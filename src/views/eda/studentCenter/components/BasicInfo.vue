@@ -118,12 +118,18 @@
             </template>
             <span v-else>{{ datas.admin_name || "--" }}</span>
           </el-form-item>
-          <el-form-item label="共享客户">
-            <el-input
-              :value="datas.union_staff_name"
-              v-if="isEdit"
-              disabled
-            ></el-input>
+          <el-form-item label="共享老师">
+            <template v-if="isEdit">
+              <el-input
+                style="width: 80%; margin-right: 10px"
+                :value="datas.union_staff_name"
+                disabled
+              ></el-input>
+              <el-button @click="updateShareTeacherDialog = true" type="text"
+                >变更</el-button
+              >
+            </template>
+
             <span v-else>{{ datas.union_staff_name || "--" }}</span>
           </el-form-item>
           <el-form-item
@@ -208,11 +214,18 @@
       :is-crm="'cid' in $route.query"
       @on-success="$parent.getStudentBasicDetail"
     />
+    <UpdateShareTeacher
+      v-model="updateShareTeacherDialog"
+      :uid="datas.uid"
+      :id="datas.id"
+      @on-success="$parent.getStudentBasicDetail"
+    />
   </div>
 </template>
 
 <script>
 import FollowUpRecord from "./FollowUpRecord";
+import UpdateShareTeacher from "@/views/eda/components/UpdateShareTeacher.vue";
 import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import { provinceAndCityData, CodeToText } from "element-china-area-data";
 import { getInstitutionSelectData } from "@/api/sou";
@@ -230,6 +243,7 @@ export default {
   components: {
     FollowUpRecord,
     UpdateTeacher,
+    UpdateShareTeacher,
   },
   data() {
     return {
@@ -293,6 +307,7 @@ export default {
       tags: [],
       tagName: "",
       updateTeacherDialog: false,
+      updateShareTeacherDialog: false,
     };
   },
   watch: {
