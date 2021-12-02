@@ -45,14 +45,13 @@ const searchCache = {
             eduOrder: ['orderdetail', 'cusdetail'],
             crmCustomer: ['cusdetail'],
             crmOrder: ['crmOrderDetail', 'cusdetail'],
-            visualization: ['crmOrderDetail', 'eduOpenClass', 'returnPayment', 'cusdetail', 'crmCustomer', 'crmOrder', 'channelStudent'],
             eduOpenClass: ['studentDetail'],
             approveManage: ['crmOrderDetail', 'cusdetail'],
             returnPayment: ['crmOrderDetail'],
             studentOrder: ['studentOrderDetail'],
         },
         // 当前缓存的页面
-        currentCache: []
+        currentCache: ['visualization']
     },
     mutations: {
         SET_VIEW_CACHE(state, viewName) {
