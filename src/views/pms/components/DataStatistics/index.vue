@@ -1,6 +1,6 @@
 <template>
   <div class="admin" v-loading="loading">
-    <Block date-type="1" :value="6" @date-change="getBriefing">
+    <Block date-type="1" v-model="salesDateType" @date-change="getBriefing">
       <Title slot="header-title" text="销售简报"></Title>
       <SalesData
         @item-click="handleItemClick"
@@ -9,15 +9,24 @@
       />
     </Block>
     <div class="admin-container">
-      <Block date-type="2" :value="0" @date-change="performanceIndicators">
+      <Block
+        date-type="2"
+        v-model="performanceType"
+        @date-change="performanceIndicators"
+      >
         <Title slot="header-title" text="业绩指标"></Title>
         <GaugeChart :data="performanceData" v-loading="performanceLoading" />
       </Block>
-      <Block date-type="3" @year-change="getTrendData">
+      <Block date-type="3" v-model="trendYear" @year-change="getTrendData">
         <Title slot="header-title" text="销售趋势"></Title>
         <TrendBar :data="trendData" v-loading="trendLoading" />
       </Block>
-      <Block date-type="4" @date-change="getSalesRankData" class="scroll-chart">
+      <Block
+        date-type="4"
+        v-model="salesRankMonth"
+        @date-change="getSalesRankData"
+        class="scroll-chart"
+      >
         <Title slot="header-title" text="销售龙虎榜"></Title>
         <div class="tab" slot="header-center">
           <span
@@ -43,6 +52,7 @@
       <Block
         class="scroll-chart"
         date-type="4"
+        v-model="customerRankMonth"
         @date-change="getCustomerRankData"
       >
         <Title slot="header-title" text="录入客户排行榜"></Title>
@@ -85,6 +95,7 @@ import {
   getOnlineStatistics,
   getBriefing,
 } from "@/api/workbench.js";
+import { dateMap } from "@/utils/date";
 import Block from "./components/Block";
 import SalesData from "./components/SalesData";
 import GaugeChart from "./components/GaugeChart";
@@ -118,17 +129,24 @@ export default {
       // 业绩目标
       performanceData: {},
       performanceLoading: false,
+      performanceType: 0,
       // 销售趋势
       trendData: [],
       trendLoading: false,
+      trendType: 1,
+      trendYear: new Date().getFullYear() + "",
       // 销售龙虎榜
       salesRankData: {},
       salesRankCheckedData: [],
       rankType: 1,
       salesRankLoading: false,
+      salesRankMonth:
+        new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
       // 录入客户排行榜
       customerRankData: [],
       customerRankLoading: false,
+      customerRankMonth:
+        new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
       // 在线人数
       onlineData: {
         list: {
@@ -150,49 +168,27 @@ export default {
   watch: {
     userIds: {
       handler() {
-        this.performanceIndicators(0);
-        this.getTrendData(this.date.getFullYear(), 1);
-        this.getSalesRankData(this.currentMonth);
-        this.getCustomerRankData(this.currentMonth);
-        this.getBriefing(6);
+        this.performanceIndicators();
+        this.getTrendData();
+        this.getSalesRankData();
+        this.getCustomerRankData();
+        this.getBriefing();
       },
       deep: true,
     },
   },
-  computed: {
-    currentMonth() {
-      return `${this.date.getFullYear()}-${this.date.getMonth() + 1}`;
-    },
-  },
+
   created() {
-    this.performanceIndicators(0);
-    this.getTrendData(this.date.getFullYear(), 1);
-    this.getSalesRankData(this.currentMonth);
-    this.getCustomerRankData(this.currentMonth);
+    this.performanceIndicators();
+    this.getTrendData();
+    this.getSalesRankData();
+    this.getCustomerRankData();
     this.getOnlineStatistics();
-    this.getBriefing(6);
+    this.getBriefing();
   },
   methods: {
     // 销售简报
     handleItemClick(type) {
-      console.log(this.$moment().startOf("month").format("YYYY-MM-DD"));
-      const today = this.$moment().format("YYYY-MM-DD");
-      const yesterday = this.$moment().subtract(1, "day").format("YYYY-MM-DD");
-      const thisMonth = this.$moment().startOf("month").format("YYYY-MM-DD");
-      const lastMonthStart = this.$moment()
-        .subtract(1, "month")
-        .startOf("month")
-        .format("YYYY-MM-DD");
-      const lastMonthEnd = this.$moment()
-        .subtract(1, "month")
-        .endOf("month")
-        .format("YYYY-MM-DD");
-      const dateMap = {
-        0: `${thisMonth},${today}`,
-        1: `${lastMonthStart},${lastMonthEnd}`,
-        6: `${today},${today}`,
-        7: `${yesterday},${yesterday}`,
-      };
       let router = "";
       switch (type) {
         case 1:
@@ -205,18 +201,18 @@ export default {
           router = "channelStudent";
           break;
       }
-      // router &&
-      //   this.$router.push({
-      //     name: router,
-      //     query: {
-      //       date: [],
-      //     },
-      //   });
+      router &&
+        this.$router.push({
+          name: router,
+          query: {
+            date: dateMap[this.salesDateType],
+            uid: this.userIds.join(","),
+          },
+        });
     },
-    async getBriefing(type) {
-      this.salesDateType = type;
+    async getBriefing() {
       const data = {
-        type,
+        type: this.salesDateType,
         arr_uid: this.userIds,
       };
       this.salesLoading = true;
@@ -245,9 +241,9 @@ export default {
       }
     },
     // 录入客户排行榜
-    async getCustomerRankData(month) {
+    async getCustomerRankData() {
       const data = {
-        month,
+        month: this.customerRankMonth,
         arr_uid: this.userIds,
       };
       this.customerRankLoading = true;
@@ -263,9 +259,9 @@ export default {
       this.salesRankCheckedData =
         type === 1 ? this.salesRankData.payRank : this.salesRankData.orderRank;
     },
-    async getSalesRankData(month) {
+    async getSalesRankData() {
       const data = {
-        month,
+        month: this.salesRankMonth,
         arr_uid: this.userIds,
       };
       this.salesRankLoading = true;
@@ -280,10 +276,11 @@ export default {
       }
     },
     // 销售趋势
-    async getTrendData(year, type) {
+    async getTrendData(type) {
+      type && (this.trendType = type);
       const data = {
-        year,
-        type,
+        year: this.trendYear,
+        type: this.trendType,
         arr_uid: this.userIds,
       };
       this.trendLoading = true;
@@ -294,9 +291,9 @@ export default {
       }
     },
     // 业绩指标
-    async performanceIndicators(type) {
+    async performanceIndicators() {
       const data = {
-        type,
+        type: this.performanceType,
         arr_uid: this.userIds,
       };
       this.performanceLoading = true;

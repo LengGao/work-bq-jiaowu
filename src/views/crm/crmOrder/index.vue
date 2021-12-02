@@ -281,7 +281,7 @@
 </template>
 
 <script>
-import { getShortcuts, toDay } from "@/utils/date";
+import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
 import { getStaffList } from "@/api/set";
 import { getCrmOrderList } from "@/api/crm";
@@ -299,11 +299,12 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: [toDay(), toDay()],
+        date: (this.$route.query.date || `${today},${today}`).split(","),
         keyword: "",
         project_id: "",
         staff_id: "",
         pay_status: "",
+        uid: this.$route.query.uid || "",
       },
       searchOptions: [
         {

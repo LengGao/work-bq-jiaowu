@@ -139,7 +139,6 @@ export default {
           if (item.type === "user") {
             uIds.push(item.id);
           } else {
-            console.log(item);
             departmentIds.push(item.id);
           }
         }
@@ -156,7 +155,6 @@ export default {
           group_tree: "-",
         },
       ].concat(res.data || []);
-      console.log(this.rangeOptions);
     },
     async getUserId(arr_uid, arr_group, checkedData) {
       const data = {

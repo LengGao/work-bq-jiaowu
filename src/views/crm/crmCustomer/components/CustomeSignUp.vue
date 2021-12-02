@@ -387,7 +387,7 @@ import { getStaffList } from "@/api/set";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 import AddCollectionPlan from "@/views/crm/changeManage/components/AddCollectionPlan";
-import { toDay } from "@/utils/date";
+import { today } from "@/utils/date";
 export default {
   name: "CustomeSignUp",
   props: {
@@ -545,7 +545,7 @@ export default {
       this.formData.surname = this.userInfo.name || this.userInfo.surname;
       this.formData.mobile = this.userInfo.mobile;
       this.formData.id_card_number = this.userInfo.id_card_number || "";
-      this.formData.pay_day = toDay();
+      this.formData.pay_day = today;
     },
     openPlanDialog() {
       this.planDialogData = [...this.planOptions];

@@ -226,7 +226,7 @@
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import { getShortcuts, toDay } from "@/utils/date";
+import { getShortcuts, today } from "@/utils/date";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getOrderList } from "@/api/fina";
@@ -247,7 +247,7 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        date: [toDay(), toDay()],
+        date: [today, today],
         keyword: "",
         from_org: "",
         project_id: "",

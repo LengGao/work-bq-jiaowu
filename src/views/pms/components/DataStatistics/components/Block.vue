@@ -69,7 +69,7 @@ export default {
       default: "1",
     },
     value: {
-      type: Number,
+      type: [Number, String, Date],
       default: 0,
     },
   },
@@ -77,8 +77,8 @@ export default {
     return {
       dateSlect: this.value,
       yearType: "1",
-      year: new Date().getFullYear() + "",
-      mounth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
+      year: this.value,
+      mounth: this.value,
       dateTypeMap: {
         1: [
           {
@@ -145,10 +145,12 @@ export default {
   },
   methods: {
     handleDateSelectChange(e) {
+      this.$emit("input", e);
       this.$emit("date-change", e);
     },
     handleYearChange() {
-      this.$emit("year-change", this.year, this.yearType);
+      this.$emit("input", this.year);
+      this.$emit("year-change", this.yearType, this.year);
     },
   },
 };

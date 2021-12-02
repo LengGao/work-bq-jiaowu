@@ -139,7 +139,7 @@
           >
           </el-table-column>
           <el-table-column fixed="right" min-width="160">
-            <template slot="header" >
+            <template slot="header">
               <div class="action-header">
                 <span>操作</span>
                 <el-popover
@@ -259,8 +259,9 @@ export default {
         "创建时间",
       ],
       searchData: {
-        day: "",
+        day: (this.$route.query.date || "").split(","),
         staff_id: "",
+        uid: this.$route.query.uid || "",
       },
       searchOptions: [
         {

@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { getShortcuts, toDay } from "@/utils/date";
+import { getShortcuts, today } from "@/utils/date";
 import { getRecentLoginUser, clearlogininfo } from "@/api/etm";
 export default {
   name: "seaStudent",
@@ -145,7 +145,7 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        date: [toDay(), toDay()],
+        date: [today, today],
         keyword: "",
       },
       searchOptions: [
