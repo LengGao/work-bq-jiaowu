@@ -24,14 +24,11 @@
           <el-button @click="dialogVisible = true">教材发放</el-button>
           <el-button
             type="primary"
-            v-if="$route.query.customer_type === '招生订单'"
+            v-if="!detailData.from_organization_id"
             @click="openSingUpDialog"
             >报名</el-button
           >
-          <el-button
-            type="primary"
-            v-if="$route.query.customer_type === '渠道订单'"
-            @click="openCourseDialog = true"
+          <el-button type="primary" v-else @click="openCourseDialog = true"
             >开课</el-button
           >
         </div>

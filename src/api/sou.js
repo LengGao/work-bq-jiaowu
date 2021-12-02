@@ -1400,3 +1400,11 @@ export function updateForCourseJgDetect(data) {
     data,
   })
 }
+// 导出自主出题
+export function exportQuestion(data) {
+  return request({
+    url: '/ExportIndependent/export',
+    method: 'post',
+    data,
+  })
+}
