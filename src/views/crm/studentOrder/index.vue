@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { getShortcuts, toDay } from "@/utils/date";
+import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
 import { getStaffList } from "@/api/set";
 import { getCrmOrderList } from "@/api/crm";
@@ -118,7 +118,7 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: [toDay(), toDay()],
+        date: [today, today],
         from_org: [],
         keyword: "",
         project_id: "",

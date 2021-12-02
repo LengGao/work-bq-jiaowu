@@ -187,7 +187,7 @@
 <script>
 import CollectionOrder from "./components/CollectionOrder";
 import { Approvalist, Orderentry } from "@/api/fina";
-import { getShortcuts, toDay } from "@/utils/date";
+import { getShortcuts, today } from "@/utils/date";
 export default {
   name: "order",
   components: {
@@ -226,7 +226,7 @@ export default {
       ],
       //搜索框
       searchData: {
-        date: [toDay(), toDay()],
+        date: [today, today],
         keyword: "",
       },
       searchOptions: [

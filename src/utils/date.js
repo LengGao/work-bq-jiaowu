@@ -1,4 +1,6 @@
 // date.js
+import moment from 'moment' //导入moment模块
+moment.locale('zh-cn') //设置语言
 export function formatDate(date, fmt) {
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
@@ -191,10 +193,44 @@ export function getShortcuts(types) {
   return shortcuts
 }
 
-export function toDay() {
-  const date = new Date()
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  return `${year}-${month}-${day}`
-}
+// 今天
+export const today = moment().format("YYYY-MM-DD");
+// 昨天
+const yesterday = moment().subtract(1, "day").format("YYYY-MM-DD");
+// 这个月
+const thisMonth = moment().startOf("month").format("YYYY-MM-DD");
+// 上月
+const lastMonthStart = moment()
+  .subtract(1, "month")
+  .startOf("month")
+  .format("YYYY-MM-DD");
+const lastMonthEnd = moment()
+  .subtract(1, "month")
+  .endOf("month")
+  .format("YYYY-MM-DD");
+// 本季度
+const thisQuarterStart = moment()
+  .startOf("quarter")
+  .format("YYYY-MM-DD");
+// 上季度
+const lastQuarterStart = moment()
+  .quarter(moment().quarter() - 1)
+  .startOf("quarter")
+  .format("YYYY-MM-DD");
+const lastQuarterEnd = moment().quarter(moment().quarter() - 1).endOf('quarter').format('YYYY-MM-DD')
+// 本年
+const thisYearStart = moment().year(moment().year()).startOf('year').format('YYYY-MM-DD')
+//去年第一天
+const lastYearStart = moment().subtract(1, 'year').startOf('year').format('YYYY-MM-DD')
+//去年最后一天
+const lastYearEnd = moment().subtract(1, 'year').endOf('year').format('YYYY-MM-DD')
+export const dateMap = {
+  0: `${thisMonth},${today}`,
+  1: `${lastMonthStart},${lastMonthEnd}`,
+  2: `${thisQuarterStart},${today}`,
+  3: `${lastQuarterStart},${lastQuarterEnd}`,
+  4: `${thisYearStart},${today}`,
+  5: `${lastYearStart},${lastYearEnd}`,
+  6: `${today},${today}`,
+  7: `${yesterday},${yesterday}`,
+};

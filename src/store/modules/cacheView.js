@@ -45,7 +45,7 @@ const searchCache = {
             eduOrder: ['orderdetail', 'cusdetail'],
             crmCustomer: ['cusdetail'],
             crmOrder: ['crmOrderDetail', 'cusdetail'],
-            visualization: ['crmOrderDetail', 'openClass', 'returnPayment', 'cusdetail'],
+            visualization: ['crmOrderDetail', 'eduOpenClass', 'returnPayment', 'cusdetail', 'crmCustomer', 'crmOrder', 'channelStudent'],
             eduOpenClass: ['studentDetail'],
             approveManage: ['crmOrderDetail', 'cusdetail'],
             returnPayment: ['crmOrderDetail'],

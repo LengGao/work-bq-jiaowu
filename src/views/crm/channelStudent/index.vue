@@ -141,11 +141,12 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: [],
+        date: (this.$route.query.date || "").split(","),
         category_id: [],
         project_id: [],
         from_org: "",
         keyword: "",
+        uid: this.$route.query.uid || "",
       },
       searchOptions: [
         {
