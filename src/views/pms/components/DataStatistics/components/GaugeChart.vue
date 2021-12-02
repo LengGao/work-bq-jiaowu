@@ -62,7 +62,7 @@ export default {
         return `0.00`;
       }
       if (val / 10000 >= 1) {
-        return (val / 10000).toFixed(2);
+        return (val / 10000).toFixed(3).slice(0, -1);
       }
       return (+val).toFixed(2);
     },

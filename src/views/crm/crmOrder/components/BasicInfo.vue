@@ -146,6 +146,21 @@
             <span> ￥{{ row.total_money }} </span>
           </template>
         </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          fixed="right"
+          min-width="100"
+        >
+          <template slot-scope="{ row }">
+            <el-button
+              type="text"
+              v-if="row.open_course_id && data.verify_status === 3"
+              @click="eduOpenCourseConfirm(row.open_course_id)"
+              >开课</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </template>
     <template v-else>
@@ -197,11 +212,27 @@
             <span> ￥{{ row.project_price }} </span>
           </template>
         </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          fixed="right"
+          min-width="100"
+        >
+          <template slot-scope="{ row }">
+            <el-button
+              type="text"
+              v-if="row.open_course_id && data.verify_status === 3"
+              @click="eduOpenCourseConfirm(row.open_course_id)"
+              >开课</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </template>
   </div>
 </template>
 <script>
+import { eduOpenCourse } from "@/api/crm";
 export default {
   name: "orderBasicInfo",
   props: {
@@ -216,7 +247,28 @@ export default {
   computed: {
     getTableData() {
       const tableData = JSON.parse(this.data.project) || [];
+      console.log(tableData);
       return tableData;
+    },
+  },
+  methods: {
+    // 开课
+    eduOpenCourseConfirm(id) {
+      this.$confirm("是否确定一键开通课程和题库？", "开课提醒", {
+        type: "warning",
+      })
+        .then(() => {
+          this.eduOpenCourse(id);
+        })
+        .catch(() => {});
+    },
+    async eduOpenCourse(id) {
+      const data = { id };
+      const res = await eduOpenCourse(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.$parent.getCrmOrderDetail();
+      }
     },
   },
 };
