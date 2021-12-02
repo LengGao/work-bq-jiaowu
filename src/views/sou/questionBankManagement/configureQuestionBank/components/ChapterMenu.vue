@@ -26,8 +26,22 @@
           >{{ item.chapter_name }}（{{ item.topic_total }}）</span
         >
         <div class="list-item-actions" v-if="!item.disabled">
-          <i class="el-icon-edit" @click.stop="openEdit(item.id)"></i>
-          <i class="el-icon-delete" @click.stop="deleteConfirm(item.id)"></i>
+          <i
+            class="el-icon-edit"
+            title="编辑"
+            @click.stop="openEdit(item.id)"
+          ></i>
+          <i
+            class="el-icon-delete"
+            title="删除"
+            @click.stop="deleteConfirm(item.id)"
+          ></i>
+          <i
+            class="el-icon-download"
+            title="导出"
+            v-if="chapterType == 3"
+            @click.stop="exportQuestion(item.id)"
+          ></i>
         </div>
       </li>
     </ul>
@@ -38,11 +52,16 @@
       :chapterType="chapterType"
       @on-success="getTopicChapterList"
     />
+    <a href="" ref="download" download=""></a>
   </div>
 </template>
 
 <script>
-import { getTopicChapterList, deletedTopicChapter } from "@/api/sou";
+import {
+  getTopicChapterList,
+  deletedTopicChapter,
+  exportQuestion,
+} from "@/api/sou";
 import editChapterDialog from "./editChapterDialog";
 export default {
   name: "ChapterMenu",
@@ -74,6 +93,14 @@ export default {
     this.getTopicChapterList();
   },
   methods: {
+    async exportQuestion(chapter_id) {
+      const data = { chapter_id };
+      const res = await exportQuestion(data);
+      if (res.code === 0) {
+        this.$refs.download.href = res.data.url;
+        this.$refs.download.click();
+      }
+    },
     openEdit(id) {
       this.dialogTitle = `编辑${this.chapterType == 1 ? "章节" : "试卷"}`;
       this.currentId = id;

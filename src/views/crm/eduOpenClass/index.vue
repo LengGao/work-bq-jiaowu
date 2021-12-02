@@ -44,12 +44,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <el-button
-                type="text"
-                @click="
-                  toStudentDetail(row.uid, { customer_type: row.customer_type })
-                "
-              >
+              <el-button type="text" @click="toStudentDetail(row.uid)">
                 {{ row.surname }}
               </el-button>
             </template>
@@ -130,11 +125,7 @@
                 @click="eduOpenCourseConfirm(row.id)"
                 >开课</el-button
               >
-              <el-button
-                type="text"
-                @click="
-                  toStudentDetail(row.uid, { customer_type: row.customer_type })
-                "
+              <el-button type="text" @click="toStudentDetail(row.uid)"
                 >学生详情</el-button
               >
             </template>
