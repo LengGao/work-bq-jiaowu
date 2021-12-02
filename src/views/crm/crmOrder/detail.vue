@@ -42,11 +42,7 @@
         >
       </div>
     </div>
-    <el-steps
-      simple
-      style="margin: 20px 0"
-      v-if="detailData.verify_status && detailData.verify_status != 3"
-    >
+    <el-steps simple style="margin: 20px 0" v-if="detailData.verify_status">
       <el-step
         :title="`${detailData.submit_name || ''}提交审批`"
         status="success"
@@ -59,6 +55,7 @@
       ></el-step>
       <el-step
         title="审批完成`"
+        :status="detailData.verify_status === 3 ? 'success' : 'wait'"
         v-if="![8, 9].includes(detailData.verify_status)"
       ></el-step>
     </el-steps>
