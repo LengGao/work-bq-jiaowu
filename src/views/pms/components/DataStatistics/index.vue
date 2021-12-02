@@ -2,7 +2,11 @@
   <div class="admin" v-loading="loading">
     <Block date-type="1" :value="6" @date-change="getBriefing">
       <Title slot="header-title" text="销售简报"></Title>
-      <SalesData :data="salesData" v-loading="salesLoading" />
+      <SalesData
+        @item-click="handleItemClick"
+        :data="salesData"
+        v-loading="salesLoading"
+      />
     </Block>
     <div class="admin-container">
       <Block date-type="2" :value="0" @date-change="performanceIndicators">
@@ -110,6 +114,7 @@ export default {
       // 销售简报
       salesData: {},
       salesLoading: false,
+      salesDateType: 6,
       // 业绩目标
       performanceData: {},
       performanceLoading: false,
@@ -169,7 +174,47 @@ export default {
   },
   methods: {
     // 销售简报
+    handleItemClick(type) {
+      console.log(this.$moment().startOf("month").format("YYYY-MM-DD"));
+      const today = this.$moment().format("YYYY-MM-DD");
+      const yesterday = this.$moment().subtract(1, "day").format("YYYY-MM-DD");
+      const thisMonth = this.$moment().startOf("month").format("YYYY-MM-DD");
+      const lastMonthStart = this.$moment()
+        .subtract(1, "month")
+        .startOf("month")
+        .format("YYYY-MM-DD");
+      const lastMonthEnd = this.$moment()
+        .subtract(1, "month")
+        .endOf("month")
+        .format("YYYY-MM-DD");
+      const dateMap = {
+        0: `${thisMonth},${today}`,
+        1: `${lastMonthStart},${lastMonthEnd}`,
+        6: `${today},${today}`,
+        7: `${yesterday},${yesterday}`,
+      };
+      let router = "";
+      switch (type) {
+        case 1:
+          router = "crmCustomer";
+          break;
+        case 2:
+          router = "crmOrder";
+          break;
+        case 3:
+          router = "channelStudent";
+          break;
+      }
+      // router &&
+      //   this.$router.push({
+      //     name: router,
+      //     query: {
+      //       date: [],
+      //     },
+      //   });
+    },
     async getBriefing(type) {
+      this.salesDateType = type;
       const data = {
         type,
         arr_uid: this.userIds,

@@ -271,7 +271,7 @@ export default {
         this.linkTo("crmOrderDetail", { id: row.order_id });
       }
       if (row.type === 2) {
-        this.linkTo("openClass");
+        this.linkTo("eduOpenClass");
       }
       if (row.type === 3) {
         this.linkTo("returnPayment");
