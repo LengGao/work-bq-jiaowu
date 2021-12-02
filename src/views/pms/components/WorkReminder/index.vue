@@ -152,6 +152,7 @@ export default {
       //回款计划提醒
       returnPaymentTotal: 0,
       returnPaymentPage: 1,
+      returnPaymentType: 0,
       returnPaymentLoading: false,
       returnPaymentData: [],
       returnPaymentTabs: [
@@ -209,14 +210,26 @@ export default {
   watch: {
     userIds: {
       handler() {
-        this.receivablePlan(0);
+        this.staffFollowPage = 1;
+        this.returnPaymentPage = 1;
+        this.receivablePlan();
         this.staffFollow();
       },
       deep: true,
     },
   },
+  activated() {
+    this.workMsgPage = 1;
+    this.msgPage = 1;
+    this.staffFollowPage = 1;
+    this.returnPaymentPage = 1;
+    this.receivablePlan();
+    this.staffFollow();
+    this.getSystemMsgList();
+    this.getStaffNotice();
+  },
   created() {
-    this.receivablePlan(0);
+    this.receivablePlan();
     this.staffFollow();
     this.getSystemMsgList();
     this.getStaffNotice();
@@ -335,10 +348,11 @@ export default {
     },
     async receivablePlan(type) {
       if (type) {
+        this.returnPaymentType = type;
         this.returnPaymentPage = 1;
       }
       const data = {
-        type,
+        type: this.returnPaymentType,
         page: this.returnPaymentPage,
         arr_uid: this.userIds,
       };

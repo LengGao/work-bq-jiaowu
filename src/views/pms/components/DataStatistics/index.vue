@@ -177,7 +177,14 @@ export default {
       deep: true,
     },
   },
-
+  activated() {
+    this.performanceIndicators();
+    this.getTrendData();
+    this.getSalesRankData();
+    this.getCustomerRankData();
+    this.getOnlineStatistics();
+    this.getBriefing();
+  },
   created() {
     this.performanceIndicators();
     this.getTrendData();
