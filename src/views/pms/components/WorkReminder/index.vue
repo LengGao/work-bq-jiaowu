@@ -7,6 +7,7 @@
       :data="returnPaymentData"
       :list-total="returnPaymentTotal"
       @load-more="loadMoreReceivablePlan"
+      @list-click="handlePlanClick"
       v-loading="returnPaymentLoading"
     >
       <template slot="left" slot-scope="{ row }">
@@ -121,12 +122,18 @@
       </template>
     </TableBlock>
     <MsgDialog v-model="msgDialog" :id="msgCurrnetId" @ok="handleMsgOk" />
+    <AddCollectionRecord
+      v-model="recordDialog"
+      :data="recordData"
+      @on-success="handleAddRecordSuccess"
+    />
   </div>
 </template>
 <script>
 import MsgDialog from "./components/MsgDialog";
 import TableBlock from "./components/TableBlock";
 import { followRoute } from "@/utils/index";
+import AddCollectionRecord from "../AddCollectionRecord";
 import {
   receivablePlan,
   staffFollow,
@@ -139,6 +146,7 @@ export default {
   components: {
     TableBlock,
     MsgDialog,
+    AddCollectionRecord,
   },
   props: {
     userIds: {
@@ -205,6 +213,9 @@ export default {
       workMsgTotal: 0,
       workMsgPage: 1,
       workMsgLoading: false,
+      // 添加回款记录
+      recordDialog: false,
+      recordData: {},
     };
   },
   watch: {
@@ -235,6 +246,14 @@ export default {
     this.getStaffNotice();
   },
   methods: {
+    handleAddRecordSuccess() {
+      this.returnPaymentPage = 1;
+      this.receivablePlan();
+    },
+    handlePlanClick(row) {
+      this.recordData = row;
+      this.recordDialog = true;
+    },
     handleStaffFollowClick(row) {
       this.$router.push({
         name: "cusdetail",
@@ -347,7 +366,7 @@ export default {
       this.receivablePlan();
     },
     async receivablePlan(type) {
-      if (type) {
+      if (type || type === 0) {
         this.returnPaymentType = type;
         this.returnPaymentPage = 1;
       }

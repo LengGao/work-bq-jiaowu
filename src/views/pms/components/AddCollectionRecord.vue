@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="title"
+    title="添加回款记录"
     :visible.sync="visible"
     width="750px"
     @open="handleOpen"
@@ -14,6 +14,23 @@
       ref="formData"
       inline
     >
+      <el-form-item label="订单名称">
+        <el-input
+          :title="`${data.nickname}-${data.project_name}`"
+          class="input"
+          :value="`${data.nickname}-${data.project_name}`"
+          disabled
+        ></el-input>
+      </el-form-item>
+      <br />
+      <el-form-item label="回款期次" prop="region">
+        <el-input
+          disabled
+          class="input"
+          :title="`${data.day} ￥${(+data.money || 0).toFixed(2)}`"
+          :value="`${data.day} ￥${(+data.money || 0).toFixed(2)}`"
+        ></el-input>
+      </el-form-item>
       <el-form-item label="回款日期" prop="pay_date">
         <el-date-picker
           class="input"
@@ -23,24 +40,7 @@
           value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="回款期次" prop="region">
-        <el-select
-          class="input"
-          v-model="formData.plan_id"
-          placeholder="请选择回款期次"
-          clearable
-        >
-          <el-option
-            v-for="(item, index) in planOptions"
-            :key="item.id"
-            :label="`第${index + 1}期 ${item.day} ￥${(
-              +item.money || 0
-            ).toFixed(2)}`"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
+
       <el-form-item label="回款金额" prop="pay_money">
         <el-input
           class="input"
@@ -96,13 +96,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    title: {
-      type: String,
-      default: "",
-    },
-    orderId: {
-      type: [String, Number],
-      default: "",
+    data: {
+      type: Object,
+      default: () => ({}),
     },
     planOptions: {
       type: Array,
@@ -134,11 +130,13 @@ export default {
     },
   },
   methods: {
-    handleOpen() {},
+    handleOpen() {
+      this.formData.plan_id = this.data.plan_id;
+    },
     async submit() {
       const data = {
         ...this.formData,
-        order_id: this.orderId,
+        order_id: this.data.order_id,
       };
       this.addLoading = true;
       const res = await payLogCreate(data).catch(() => {
@@ -174,6 +172,6 @@ export default {
 
 <style lang="scss" scoped>
 .input {
-  width: 217px;
+  width: 240px;
 }
 </style>
