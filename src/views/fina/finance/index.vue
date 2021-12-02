@@ -81,7 +81,7 @@ export default {
       const uid = this.$route.query?.uid;
       const cid = this.$route.query?.cid;
       const data = {};
-      if (uid) {
+      if (uid && uid != 0) {
         data.uid = uid;
       } else if (cid) {
         data.cid = cid;
