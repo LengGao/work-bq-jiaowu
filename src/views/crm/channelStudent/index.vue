@@ -28,7 +28,9 @@
           class="min_table"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
         >
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             prop="uid"
             label="ID"
@@ -109,6 +111,9 @@
         </el-table>
       </div>
       <div class="table_bottom">
+        <div>
+          <el-button @click="openResetDialog">二次开发</el-button>
+        </div>
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -117,10 +122,16 @@
         />
       </div>
     </div>
+    <ResetDialog
+      v-model="ResetDialogflag"
+      :uids="uids"
+      @on-success="getChannelStudentList"
+    />
   </section>
 </template>
 
 <script>
+import ResetDialog from "./components/ResetDialog";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
@@ -131,6 +142,7 @@ export default {
   name: "channelStudent",
   components: {
     PartiallyHidden,
+    ResetDialog,
   },
   data() {
     return {
@@ -218,6 +230,8 @@ export default {
           },
         },
       ],
+      ResetDialogflag: false,
+      uids: [],
     };
   },
 
@@ -230,6 +244,16 @@ export default {
   },
 
   methods: {
+    handleSeletChange(selection) {
+      this.uids = selection.map((item) => item.uid);
+    },
+    openResetDialog() {
+      if (!this.uids.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      this.ResetDialogflag = true;
+    },
     // 获取项目下拉
     async getproject() {
       const res = await getproject();
@@ -262,7 +286,7 @@ export default {
     },
     //学生列表
     async getChannelStudentList() {
-      this.intent_id = "";
+      this.uids = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
@@ -354,5 +378,9 @@ export default {
 }
 .userTable {
   margin-top: 20px;
+}
+.table_bottom {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

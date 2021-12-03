@@ -405,7 +405,16 @@ export function switchList(params) {
 // 学生详情-修改共享老师
 export function updateUnionStaffId(data) {
     return request({
-        url: '/UserArchives/updateUnionStaffId',
+        url: '/Crm/updateUnionStaffId',
+        method: 'post',
+        data
+    })
+}
+
+// 学生详情-二次开发
+export function secondDevelop(data) {
+    return request({
+        url: '/Crm/secondDevelop',
         method: 'post',
         data
     })
