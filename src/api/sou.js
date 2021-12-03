@@ -1416,3 +1416,11 @@ export function getResults(params) {
     params,
   })
 }
+// 自主出题-考试记录-详情
+export function getResultsDetail(params) {
+  return request({
+    url: 'questionBank/getTest',
+    method: 'get',
+    params,
+  })
+}

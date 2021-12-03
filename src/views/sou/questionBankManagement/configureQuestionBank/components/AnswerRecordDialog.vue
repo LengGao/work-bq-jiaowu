@@ -66,6 +66,11 @@
           align="center"
           show-overflow-tooltip
         ></el-table-column>
+        <el-table-column label="操作" min-width="100" align="center">
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="openDetail(row.id)">详情</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="table_bottom">
@@ -80,14 +85,19 @@
       <el-button @click="hanldeCancel">关 闭</el-button>
     </span>
     <a href="" ref="download" download=""></a>
+    <AnswerRecordDetailDialog
+      v-model="AnswerRecordDetailDialogVisible"
+      :id="currentId"
+    />
   </el-dialog>
 </template>
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { exportQuestion, getResults } from "@/api/sou";
+import AnswerRecordDetailDialog from "./AnswerRecordDetailDialog";
 export default {
-  name: "answerRecord",
+  name: "AnswerRecordDialog",
   props: {
     chapterId: {
       type: [String, Number],
@@ -100,6 +110,7 @@ export default {
   },
   components: {
     PartiallyHidden,
+    AnswerRecordDetailDialog,
   },
   data() {
     return {
@@ -108,6 +119,8 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      AnswerRecordDetailDialogVisible: false,
+      currentId: "",
     };
   },
   watch: {
@@ -116,6 +129,10 @@ export default {
     },
   },
   methods: {
+    openDetail(id) {
+      this.currentId = id;
+      this.AnswerRecordDetailDialogVisible = true;
+    },
     hanldeCancel() {
       this.visible = false;
     },
