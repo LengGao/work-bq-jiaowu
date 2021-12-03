@@ -1408,3 +1408,11 @@ export function exportQuestion(data) {
     data,
   })
 }
+// 自主出题-考试记录
+export function getResults(params) {
+  return request({
+    url: 'questionBank/getResults',
+    method: 'get',
+    params,
+  })
+}

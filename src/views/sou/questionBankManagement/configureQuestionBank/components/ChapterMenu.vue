@@ -37,36 +37,37 @@
             @click.stop="deleteConfirm(item.id)"
           ></i>
           <i
-            class="el-icon-download"
-            title="导出"
+            class="el-icon-view"
+            title="考试记录"
             v-if="chapterType == 3"
-            @click.stop="exportQuestion(item.id)"
+            @click.stop="openRecordDialog(item.id)"
           ></i>
         </div>
       </li>
     </ul>
-    <editChapterDialog
+    <EditChapterDialog
       v-model="dialogVisible"
       :title="dialogTitle"
       :id="currentId"
       :chapterType="chapterType"
       @on-success="getTopicChapterList"
     />
-    <a href="" ref="download" download=""></a>
+    <AnswerRecordDialog
+      v-model="AnswerRecordDialogVisible"
+      :chapterId="currentId"
+    />
   </div>
 </template>
 
 <script>
-import {
-  getTopicChapterList,
-  deletedTopicChapter,
-  exportQuestion,
-} from "@/api/sou";
-import editChapterDialog from "./editChapterDialog";
+import { getTopicChapterList, deletedTopicChapter } from "@/api/sou";
+import EditChapterDialog from "./editChapterDialog";
+import AnswerRecordDialog from "./AnswerRecordDialog";
 export default {
   name: "ChapterMenu",
   components: {
-    editChapterDialog,
+    EditChapterDialog,
+    AnswerRecordDialog,
   },
   props: {
     chapterType: {
@@ -82,6 +83,7 @@ export default {
       chapterList: [],
       chapterLoading: false,
       chapterActiveId: 0,
+      AnswerRecordDialogVisible: false,
     };
   },
   watch: {
@@ -93,13 +95,9 @@ export default {
     this.getTopicChapterList();
   },
   methods: {
-    async exportQuestion(chapter_id) {
-      const data = { chapter_id };
-      const res = await exportQuestion(data);
-      if (res.code === 0) {
-        this.$refs.download.href = res.data.url;
-        this.$refs.download.click();
-      }
+    openRecordDialog(id) {
+      this.currentId = id;
+      this.AnswerRecordDialogVisible = true;
     },
     openEdit(id) {
       this.dialogTitle = `编辑${this.chapterType == 1 ? "章节" : "试卷"}`;
