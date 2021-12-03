@@ -411,3 +411,12 @@ export function updateUnionStaffId(data) {
     })
 }
 
+// 学生详情-二次开发
+export function secondDevelop(data) {
+    return request({
+        url: '/Crm/secondDevelop',
+        method: 'post',
+        data
+    })
+}
+
