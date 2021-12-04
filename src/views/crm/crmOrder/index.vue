@@ -434,6 +434,26 @@ export default {
           },
         },
         {
+          key: "order_money",
+          type: "numberRange",
+          width: 280,
+          attrs: {
+            startPlaceholde: "订单金额起",
+            endPlaceholde: "订单金额止",
+            valueFormat: " - ",
+          },
+        },
+        {
+          key: "pay_money",
+          type: "numberRange",
+          width: 280,
+          attrs: {
+            startPlaceholde: "回款金额起",
+            endPlaceholde: "回款金额止",
+            valueFormat: " - ",
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "学生姓名/手机号码",

@@ -262,6 +262,16 @@ export default {
           },
         },
         {
+          key: "pay_money",
+          type: "numberRange",
+          width: 280,
+          attrs: {
+            startPlaceholde: "回款金额起",
+            endPlaceholde: "回款金额止",
+            valueFormat: " - ",
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "订单名称",
