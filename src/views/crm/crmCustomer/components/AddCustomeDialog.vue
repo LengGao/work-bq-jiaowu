@@ -335,8 +335,17 @@ export default {
           .filter((item) => item.checked)
           .map(({ title }) => title)
           .join(","),
-      }).catch(() => {
+      }).catch((err) => {
         this.addLoading = false;
+        if (err.code === 301) {
+          this.$confirm(err.message, "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+            .then(() => {})
+            .catch(() => {});
+        }
       });
       this.addLoading = false;
       if (res.code === 0) {
