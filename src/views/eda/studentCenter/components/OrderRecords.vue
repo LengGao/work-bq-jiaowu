@@ -248,6 +248,7 @@ export default {
       this.listLoading = true;
       const data = {
         uid: this.uid,
+        person: 1,
       };
       const res = await getCrmOrderList(data);
       this.listLoading = false;
