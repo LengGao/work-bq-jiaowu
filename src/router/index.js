@@ -872,6 +872,18 @@ export const asyncRouter = [
     name: 'channel',
     children: [
       {
+        path: 'institutionalCollection',
+        name: 'institutionalCollection',
+        component: () => import('@/views/crm/institutionalCollection/index.vue'),
+        meta: { title: '机构回款' },
+      },
+      {
+        path: 'institutionalCollectionDetail',
+        name: 'institutionalCollectionDetail',
+        component: () => import('@/views/crm/institutionalCollection/detail.vue'),
+        meta: { title: '机构回款详情' },
+      },
+      {
         path: 'channelStudent',
         name: 'channelStudent',
         component: () => import('@/views/crm/channelStudent/index.vue'),
