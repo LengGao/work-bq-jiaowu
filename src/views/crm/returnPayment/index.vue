@@ -1,6 +1,6 @@
 <template>
   <div class="approve-manage">
-    <div class="head_remind">*管理查看所有订单审批和异动审批</div>
+    <div class="head_remind">*管理查看所有回款入账信息</div>
     <div class="container">
       <el-tabs v-model="activeName">
         <el-tab-pane label="招生回款" name="recruitStudents"></el-tab-pane>

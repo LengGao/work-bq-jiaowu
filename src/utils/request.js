@@ -21,7 +21,6 @@ service.interceptors.request.use(config => {
   return config
 }, error => {
   // Do something with request error
-  console.log(error) // for debug
   Promise.reject(error)
 })
 
@@ -38,7 +37,6 @@ service.interceptors.response.use(
         type: 'error',
         duration: 3 * 1000
       })
-      console.log(res.code)
       // 5000:未登录;
       if (res.code === 50000) {
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
@@ -52,13 +50,12 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject('error')
+      return Promise.reject(res)
     } else {
-      return response.data
+      return res
     }
   },
   error => {
-    console.log('err' + error)// for debug
     error.message && Message({
       message: error.message,
       type: 'error',

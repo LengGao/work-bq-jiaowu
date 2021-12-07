@@ -419,4 +419,76 @@ export function secondDevelop(data) {
         data
     })
 }
+// 机构回款列表
+export function getOrgReceivableList(params) {
+    return request({
+        url: '/OrgReceivable/getList',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表-添加-获取订单
+export function getOrder(params) {
+    return request({
+        url: '/OrgReceivable/getOrder',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表-添加-获取分类
+export function getCategory(params) {
+    return request({
+        url: '/OrgReceivable/getCategory',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表-添加-获取项目
+export function getProject(params) {
+    return request({
+        url: '/OrgReceivable/getProject',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表-添加-获取机构
+export function getOrgName(params) {
+    return request({
+        url: '/OrgReceivable/getOrgName',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表-添加
+export function addReceivable(data) {
+    return request({
+        url: '/OrgReceivable/receivable',
+        method: 'post',
+        data
+    })
+}
+// 机构回款列表-入账状态
+export function getReceivableStatus(params) {
+    return request({
+        url: '/OrgReceivable/getStatus',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表-回款详情
+export function getReceivableInfo(params) {
+    return request({
+        url: '/OrgReceivable/getInfo',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表-业绩归属人
+export function getBelongPeople(params) {
+    return request({
+        url: '/OrgReceivable/belongPeople',
+        method: 'get',
+        params
+    })
+}
 
