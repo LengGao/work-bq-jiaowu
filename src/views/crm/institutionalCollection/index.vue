@@ -30,12 +30,12 @@
           <el-table-column
             prop="pay_date"
             label="回款日期"
-            min-width="160"
+            min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop=""
+            prop="org_name"
             label="机构名称"
             min-width="130"
             show-overflow-tooltip
@@ -50,63 +50,66 @@
           </el-table-column>
 
           <el-table-column
-            prop="order_id"
-            label="关联订单"
+            prop="order_num"
+            label="关联订单数"
             show-overflow-tooltip
-            min-width="190"
+            min-width="100"
           >
-            <template slot-scope="{ row }">
-              <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-                {{ row.project_name }}
-              </el-button>
-            </template>
           </el-table-column>
           <el-table-column
-            prop="pay_money"
+            prop="receivable_money"
             label="回款总金额"
-            min-width="90"
+            min-width="120"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              ￥{{ row.pay_money || 0 }}
+              ￥{{ row.receivable_money || 0 }}
             </template>
           </el-table-column>
           <el-table-column
-            prop="verify_status"
+            prop="check_state"
             label="入账状态"
             min-width="100"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
               <span
-                v-if="row.verify_status == 0"
+                v-if="row.check_state == 0"
                 class="approve-status approve-status--none"
-                >未入账</span
+                >待确认</span
               >
               <span
-                v-if="row.verify_status == 1"
-                class="approve-status approve-status--success"
-                >已入账</span
+                v-if="row.check_state == 1"
+                class="approve-status approve-status--wait"
+                >已确认</span
               >
-              <span v-if="row.verify_status == 2" class="approve-status"
-                >已驳回 <i class="el-icon-question" :title="row.tips"></i>
+              <span
+                v-if="row.check_state == 2"
+                class="approve-status approve-status--success"
+                >已入账
               </span>
-              <span v-if="row.verify_status == 3" class="approve-status--wait"
-                >多级审批中
+              <span v-if="row.check_state == -1" class="approve-status"
+                >已驳回 <i class="el-icon-question" :title="row.tips"></i>
               </span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="create_time"
+            prop="check_time"
             label="入账时间"
             min-width="160"
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="120">
+          <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toDetail(row.id)"
+              <el-button type="text" @click="toDetail(row.log_id)"
                 >回款详情</el-button
+              >
+              <el-button
+                v-if="row.check_state == 2"
+                type="text"
+                @click="openAddCollectionDialog(row.log_id)"
+                >再次回款</el-button
               >
             </template>
           </el-table-column>
@@ -120,15 +123,23 @@
         </div>
       </div>
     </section>
-    <AddCollection v-model="addCollectionVisible" />
+    <AddCollection
+      v-model="addCollectionVisible"
+      :id="currentId"
+      @on-success="getOrgReceivableList"
+    />
   </div>
 </template>
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
-import { getReturnPaymentList, switchList } from "@/api/crm";
-import { getAdminSelect } from "@/api/eda";
+import {
+  getOrgReceivableList,
+  getOrgName,
+  getReceivableStatus,
+  getBelongPeople,
+} from "@/api/crm";
 import AddCollection from "./components/AddCollection";
 export default {
   name: "institutionalCollection",
@@ -143,11 +154,8 @@ export default {
       pageNum: 1,
       listTotal: 0,
       searchData: {
-        date: "",
         keyword: "",
-        institution_id: "",
-        staff_id: "",
-        verify_status: "",
+        check_state: "-2",
       },
       searchOptions: [
         {
@@ -167,9 +175,9 @@ export default {
           },
         },
         {
-          key: "institution_id",
+          key: "from_organization_id",
           type: "select",
-          optionValue: "institution_id",
+          optionValue: "from_organization_id",
           optionLabel: "institution_name",
           options: [],
           attrs: {
@@ -192,36 +200,24 @@ export default {
           },
         },
         {
-          key: "verify_status",
+          key: "check_state",
           type: "select",
           width: 120,
-          options: [
-            {
-              value: 0,
-              label: "未入账",
-            },
-            {
-              value: 1,
-              label: "已入账",
-            },
-            {
-              value: 2,
-              label: "已驳回",
-            },
-          ],
+          options: [],
+          optionValue: "check_state",
+          optionLabel: "title",
           attrs: {
             clearable: true,
             placeholder: "入账状态",
           },
         },
         {
-          key: "pay_money",
+          key: "money",
           type: "numberRange",
           width: 280,
           attrs: {
             startPlaceholde: "回款金额起",
             endPlaceholde: "回款金额止",
-            valueFormat: " - ",
           },
         },
         {
@@ -231,65 +227,65 @@ export default {
           },
         },
       ],
-      verifyStatusMap: {
-        1: {
-          text: "待审核",
-          type: "info",
-        },
-        2: {
-          text: "（多人）审核中",
-          type: "primary",
-        },
-        3: {
-          text: "审核通过",
-          type: "success",
-        },
-        8: {
-          text: "已撤销审核",
-          type: "info",
-        },
-        9: {
-          text: "驳回不通过",
-          type: "danger",
-        },
-      },
+
       addCollectionVisible: false,
+      currentId: "",
     };
   },
   created() {
-    this.getReturnPaymentList();
-    this.switchList();
-    this.getAdminSelect();
+    this.getOrgReceivableList();
+    this.getOrgName();
+    this.getBelongPeople();
+    this.getReceivableStatus();
   },
   methods: {
-    // 获取机构
-    async switchList() {
-      const res = await switchList();
+    openAddCollectionDialog(id) {
+      this.currentId = id;
+      this.addCollectionVisible = true;
+    },
+    // 获取入账状态
+    async getReceivableStatus() {
+      const res = await getReceivableStatus();
       if (res.code === 0) {
-        this.searchOptions[1].options = res.data.list;
+        this.searchOptions[3].options = res.data;
+      }
+    },
+    // 获取机构
+    async getOrgName() {
+      const res = await getOrgName();
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
       }
     },
 
     // 业绩归属
-    async getAdminSelect() {
+    async getBelongPeople() {
       const data = { list: true };
-      const res = await getAdminSelect(data);
+      const res = await getBelongPeople(data);
       if (res.code === 0) {
         this.searchOptions[2].options = res.data;
       }
     },
     handleSearch(data) {
       this.pageNum = 1;
+      const money = data.money || ["", ""];
+      const date = data.date || ["", ""];
+      delete data.money;
+      delete data.date;
       this.searchData = {
         ...data,
+        min_money: money[0],
+        max_money: money[1],
+        start_date: date[0],
+        end_date: date[1],
       };
-      this.getReturnPaymentList(data);
+      this.getOrgReceivableList(data);
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getReturnPaymentList();
+      this.getOrgReceivableList();
     },
-    async getReturnPaymentList() {
+    async getOrgReceivableList() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
@@ -298,7 +294,7 @@ export default {
           : "",
       };
       this.listLoading = true;
-      const res = await getReturnPaymentList(data).catch(() => {});
+      const res = await getOrgReceivableList(data).catch(() => {});
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -308,6 +304,7 @@ export default {
         name: "institutionalCollectionDetail",
         query: {
           id,
+          isFromList: 1,
         },
       });
     },

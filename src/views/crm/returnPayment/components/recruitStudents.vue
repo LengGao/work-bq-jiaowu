@@ -29,9 +29,16 @@
         >
         </el-table-column>
         <el-table-column
+          prop="surname"
+          label="客户姓名"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="pay_date"
           label="回款日期"
-          min-width="160"
+          min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -52,9 +59,9 @@
         >
         </el-table-column>
         <el-table-column
-          prop=""
+          prop="group_name"
           label="部门名称"
-          min-width="130"
+          min-width="160"
           show-overflow-tooltip
         >
         </el-table-column>

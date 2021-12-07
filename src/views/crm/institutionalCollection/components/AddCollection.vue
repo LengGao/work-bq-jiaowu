@@ -24,29 +24,30 @@
           clearable
           placeholder="请选择机构"
           @change="onOrgChange"
+          :disabled="!!id"
         >
           <el-option
             v-for="item in institutionOptions"
-            :key="item.institution_id"
+            :key="item.from_organization_id"
             :label="item.institution_name"
-            :value="item.institution_id"
+            :value="item.from_organization_id"
           >
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="pay_day" label="回款日期">
+      <el-form-item prop="pay_date" label="回款日期">
         <el-date-picker
           class="input"
           type="date"
           placeholder="选择日期"
-          v-model="formData.pay_day"
+          v-model="formData.pay_date"
           value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="回款金额" prop="pay_money">
+      <el-form-item label="回款金额" prop="total_money">
         <el-input
           class="input"
-          v-model="formData.pay_money"
+          v-model="formData.total_money"
           type="number"
           placeholder="请输入回款金额"
         />
@@ -67,21 +68,129 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="备注信息" prop="tips" class="block">
+      <el-form-item label="备注信息" prop="note" class="block">
         <el-input
           class="remark"
           type="textarea"
-          v-model="formData.tips"
+          v-model="formData.note"
           placeholder="请输入内容"
         />
       </el-form-item>
       <Title text="关联订单"></Title>
-      <div class="tables">
+      <!-- 再次回款 -->
+      <div class="tables" v-if="id">
+        <div class="checked-table again-table">
+          <div class="money-total">
+            <span
+              >未回款总金额：<span class="price">{{
+                (againData.total_order_money - againData.receivable_money)
+                  | moneyFormat
+              }}</span></span
+            >
+            <span
+              >本次回款总金额：<span class="price">{{
+                (formData.total_money || 0) | moneyFormat
+              }}</span></span
+            >
+            <span
+              >已填金额合计：<span class="price">{{
+                totalInputMoney | moneyFormat
+              }}</span></span
+            >
+          </div>
+          <el-table
+            :data="againListData"
+            v-loading="againListLoading"
+            element-loading-text="loading"
+            element-loading-spinner="el-icon-loading"
+            element-loading-background="#fff"
+            :header-cell-style="{
+              'text-align': 'center',
+              'background-color': '#f8f8f8',
+            }"
+            :cell-style="{ 'text-align': 'center' }"
+            height="500"
+          >
+            <el-table-column min-width="70" label="序号" type="index">
+            </el-table-column>
+            <el-table-column
+              show-overflow-tooltip
+              min-width="150"
+              prop="user_name"
+              label="客户姓名"
+            >
+            </el-table-column>
+            <el-table-column
+              label="项目名称"
+              show-overflow-tooltip
+              min-width="150"
+              prop="project_name"
+            >
+            </el-table-column>
+            <el-table-column
+              label="订单金额"
+              show-overflow-tooltip
+              min-width="150"
+              prop="project_name"
+            >
+              <template slot-scope="{ row }">
+                <span> ￥{{ row.order_money || 0 }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="已回款金额"
+              show-overflow-tooltip
+              min-width="150"
+              prop="project_name"
+            >
+              <template slot-scope="{ row }">
+                <span> ￥{{ row.pay_money || 0 }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="本次回款金额"
+              show-overflow-tooltip
+              min-width="200"
+              prop="project_name"
+            >
+              <template slot="header">
+                <div class="header-money">
+                  <el-input
+                    v-model="totalMoney"
+                    size="mini"
+                    placeholder="本次回款金额"
+                  />
+                  <div class="header-money-actions">
+                    <span
+                      class="btn-distribution"
+                      @click="handleComputedMoney(1)"
+                      >分配</span
+                    >
+                    <span class="btn-fill" @click="handleComputedMoney(0)"
+                      >填充</span
+                    >
+                  </div>
+                </div>
+              </template>
+              <template slot-scope="{ row }">
+                <el-input
+                  v-model="row.currentMoney"
+                  size="mini"
+                  placeholder="回款金额"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <!-- 首次回款 -->
+      <div class="tables" v-else>
         <div class="order-table">
           <SearchList
             :options="searchOptions"
             :data="searchData"
             @on-search="handleSearch"
+            ref="searchList"
           />
           <el-table
             :data="listData"
@@ -110,7 +219,7 @@
             >
             </el-table-column>
             <el-table-column
-              prop="price"
+              prop="user_name"
               label="客户姓名"
               min-width="110"
               show-overflow-tooltip
@@ -139,14 +248,22 @@
               :data="listTotal"
               :curpage="pageNum"
               @pageChange="handlePageChange"
-              @pageSizeChange="handleSizeChange"
             />
+            <!-- @pageSizeChange="handleSizeChange" -->
           </div>
         </div>
         <div class="checked-table">
           <div class="money-total">
-            <span>回款总金额：<span class="price">￥60000</span></span>
-            <span>已填金额合计：<span class="price">￥60000</span></span>
+            <span
+              >回款总金额：<span class="price">{{
+                (formData.total_money || 0) | moneyFormat
+              }}</span></span
+            >
+            <span
+              >已填金额合计：<span class="price">{{
+                totalInputMoney | moneyFormat
+              }}</span></span
+            >
           </div>
           <el-table
             :data="checkedOrderData"
@@ -160,20 +277,22 @@
             <el-table-column
               show-overflow-tooltip
               min-width="150"
-              prop="create_time"
+              prop="user_name"
             >
               <template slot="header">
                 <span>已选学生：{{ checkedOrderData.length }}</span>
               </template>
             </el-table-column>
             <el-table-column
-              prop="price"
               label="订单金额"
-              min-width="110"
               show-overflow-tooltip
+              min-width="150"
+              prop="project_name"
             >
+              <template slot-scope="{ row }">
+                <span> ￥{{ row.order_money || 0 }} </span>
+              </template>
             </el-table-column>
-
             <el-table-column
               label="已回款金额"
               show-overflow-tooltip
@@ -181,7 +300,7 @@
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.order_money || 0 }} </span>
+                <span> ￥{{ row.pay_money || 0 }} </span>
               </template>
             </el-table-column>
             <el-table-column
@@ -193,15 +312,28 @@
               <template slot="header">
                 <div class="header-money">
                   <el-input
-                    v-model="formData.money"
+                    v-model="totalMoney"
                     size="mini"
                     placeholder="本次回款金额"
                   />
                   <div class="header-money-actions">
-                    <span class="btn-distribution">分配</span>
-                    <span class="btn-fill">填充</span>
+                    <span
+                      class="btn-distribution"
+                      @click="handleComputedMoney(1)"
+                      >分配</span
+                    >
+                    <span class="btn-fill" @click="handleComputedMoney(0)"
+                      >填充</span
+                    >
                   </div>
                 </div>
+              </template>
+              <template slot-scope="{ row }">
+                <el-input
+                  v-model="row.currentMoney"
+                  size="mini"
+                  placeholder="回款金额"
+                />
               </template>
             </el-table-column>
             <el-table-column
@@ -238,15 +370,15 @@
 
 <script>
 import {
-  orderOpen,
-  switchList,
+  addReceivable,
+  getOrgName,
   getCustomfieldOptions,
-  getCrmOrderList,
+  getOrder,
+  getCategory,
+  getProject,
+  getReceivableInfo,
 } from "@/api/crm";
-import { getproject } from "@/api/eda";
 import { getShortcuts } from "@/utils/date";
-import { getCateList } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
 export default {
   name: "AddCustomeDialog",
   props: {
@@ -254,9 +386,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    userInfo: {
-      type: Object,
-      default: () => ({}),
+    id: {
+      type: [String, Number],
+      default: "",
     },
   },
   data() {
@@ -265,17 +397,18 @@ export default {
       addLoading: false,
       formData: {
         from_organization_id: "",
+        total_money: "",
+        pay_type: "",
+        pay_date: "",
+        note: "",
       },
       rules: {
-        selectProject: [
-          { required: true, message: "请选择", trigger: "change" },
-        ],
-        selectMajor: [{ required: true, message: "请选择", trigger: "change" }],
-        type: [{ required: true, message: "请选择", trigger: "change" }],
+        total_money: [{ required: true, message: "请输入", trigger: "blur" }],
+        pay_date: [{ required: true, message: "请选择", trigger: "change" }],
+        pay_type: [{ required: true, message: "请选择", trigger: "change" }],
         from_organization_id: [
           { required: true, message: "请选择", trigger: "change" },
         ],
-        title: [{ required: true, message: "请选择", trigger: "blur" }],
       },
       payMethodOptions: [],
       institutionOptions: [],
@@ -305,23 +438,22 @@ export default {
           },
         },
         {
-          key: "category_id",
-          type: "cascader",
+          key: "arr_category",
+          type: "select",
           width: 150,
+          options: [],
+          optionValue: "category_id",
+          optionLabel: "category_name",
           attrs: {
             placeholder: "所属分类（多选）",
             clearable: true,
-            props: {
-              multiple: true,
-              checkStrictly: true,
-            },
-            "collapse-tags": true,
             filterable: true,
-            options: [],
+            multiple: true,
+            "collapse-tags": true,
           },
         },
         {
-          key: "project_id",
+          key: "arr_project",
           type: "select",
           options: [],
           optionValue: "project_id",
@@ -335,15 +467,14 @@ export default {
             "collapse-tags": true,
           },
         },
-        {
-          width: 150,
-          key: "keyword",
-          attrs: {
-            placeholder: "订单名称",
-          },
-        },
       ],
       checkedOrderData: [],
+      totalMoney: "",
+
+      //再次回款
+      againListData: [],
+      againListLoading: false,
+      againData: {},
     };
   },
   watch: {
@@ -351,16 +482,58 @@ export default {
       this.visible = val;
     },
   },
+  computed: {
+    totalInputMoney() {
+      if (this.id) {
+        return this.againListData.reduce((p, c) => p + c.currentMoney * 1, 0);
+      }
+      return this.checkedOrderData.reduce((p, c) => p + c.currentMoney * 1, 0);
+    },
+  },
   methods: {
     handleOpen() {
       this.getCustomfieldOptions();
-      this.switchList();
-      this.getproject();
-      this.getCateList();
+      this.getOrgName();
+      if (this.id) {
+        this.getReceivableInfo();
+      }
+    },
+    // 回款详情数据
+    async getReceivableInfo() {
+      const data = {
+        log_id: this.id,
+      };
+      this.againListLoading = true;
+      const res = await getReceivableInfo(data).catch(() => {});
+      this.againListLoading = false;
+      if (res.code === 0) {
+        this.againData = res.data.data;
+        this.formData.from_organization_id = res.data?.data?.organization_id;
+        this.againListData = res.data.list.map((item) => ({
+          ...item,
+          currentMoney: 0,
+        }));
+      }
+    },
+    handleComputedMoney(isDistribution) {
+      const data = this.id ? this.againListData : this.checkedOrderData;
+      const leng = data.length;
+      const totalMoney = this.totalMoney;
+      if (leng && totalMoney) {
+        let value = totalMoney;
+        if (isDistribution) {
+          value = (totalMoney / leng + "").split(".")[0];
+        }
+        data.forEach((item) => {
+          item.currentMoney = value;
+        });
+      }
     },
     onOrgChange() {
       this.hadleResetOrder();
       this.handlePageChange(1);
+      this.getProject();
+      this.getCategory();
     },
     // 右侧已选删除
     handleRemoveOrder(index) {
@@ -376,65 +549,59 @@ export default {
       this.$refs.multipleTable.toggleRowSelection(row);
     },
     handleOrderTableChange(selection) {
-      this.checkedOrderData = selection || [];
+      this.checkedOrderData = [...selection];
     },
     handleSearch(data) {
       this.pageNum = 1;
+      const date = data.date || ["", ""];
+      delete data.date;
       this.searchData = {
         ...data,
+        start_date: date[0],
+        end_date: date[1],
       };
-      this.getCrmOrderList();
+      this.getOrder();
     },
     handleSizeChange(size) {
       this.pageNum = 1;
       this.pageSize = size;
-      this.getCrmOrderList();
+      this.getOrder();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getCrmOrderList();
+      this.getOrder();
     },
-    async getCrmOrderList() {
+    async getOrder() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
-        from_org: this.formData.from_organization_id,
+        from_organization_id: this.formData.from_organization_id,
         ...this.searchData,
-        date: Array.isArray(this.searchData.date)
-          ? this.searchData.date.join(" - ")
-          : "",
-        project_id: Array.isArray(this.searchData.project_id)
-          ? this.searchData.project_id.join(",")
-          : "",
-        category_id: Array.isArray(this.searchData.category_id)
-          ? this.searchData.category_id.join(",")
-          : "",
       };
       this.listLoading = true;
-      const res = await getCrmOrderList(data);
+      const res = await getOrder(data);
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        currentMoney: 0,
+      }));
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
     },
     // 获取项目下拉
-    async getproject() {
-      const res = await getproject();
+    async getProject() {
+      const data = { from_organization_id: this.formData.from_organization_id };
+      const res = await getProject(data);
       if (res.code === 0) {
         this.searchOptions[2].options = res.data;
       }
     },
     // 获取所属分类
-    async getCateList() {
-      const data = { list: true };
-      const res = await getCateList(data);
+    async getCategory() {
+      const data = { from_organization_id: this.formData.from_organization_id };
+      const res = await getCategory(data);
       if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
-          res.data,
-          "category_name",
-          "category_id",
-          "son"
-        );
+        this.searchOptions[1].options = res.data;
       }
     },
     // 获取支付方式
@@ -448,14 +615,25 @@ export default {
       }
     },
     // 获取机构
-    async switchList() {
-      const res = await switchList();
-      this.institutionOptions = res.data.list;
+    async getOrgName() {
+      const res = await getOrgName();
+      this.institutionOptions = res.data;
     },
     async submit() {
-      const data = {};
+      const data = {
+        ...this.formData,
+      };
+      if (this.id) {
+        data.arr_receivable = this.againListData.map(
+          ({ currentMoney: pay_money, order_id }) => ({ order_id, pay_money })
+        );
+      } else {
+        data.arr_receivable = this.checkedOrderData.map(
+          ({ currentMoney: pay_money, order_id }) => ({ order_id, pay_money })
+        );
+      }
       this.addLoading = true;
-      const res = await orderOpen(data).catch(() => {
+      const res = await addReceivable(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -478,6 +656,15 @@ export default {
         this.formData[k] = "";
       }
       this.$emit("input", false);
+      if (this.id) {
+        this.againListData = [];
+      } else {
+        this.hadleResetOrder();
+        this.pageNum = 1;
+        this.pageSize = 20;
+        this.$refs.searchList.handleReset();
+        this.listData = [];
+      }
     },
     hanldeCancel() {
       this.visible = false;
@@ -502,6 +689,9 @@ export default {
   /deep/.el-table {
     border: 1px solid #efefef;
     border-bottom: none;
+  }
+  .again-table {
+    flex: 1;
   }
   .order-table {
     width: 53.5%;

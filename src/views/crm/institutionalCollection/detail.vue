@@ -1,42 +1,49 @@
 <template>
   <div class="student-order-detail" v-loading="loading">
     <div class="student-order-title">
-      <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
-      <span class="student-order-status">机构学生单</span>
+      <h3>{{ orderData.org_name }}-回款{{ orderData.receivable_money }}元</h3>
+      <span class="student-order-status">机构回款订单</span>
+      <div class="actions">
+        <el-button
+          type="primary"
+          v-if="$route.query.isFromList && orderData.check_state == 2"
+          @click="addCollectionVisible = true"
+          >再次回款</el-button
+        >
+      </div>
     </div>
     <Title text="回款信息"></Title>
     <div class="info-block">
       <div class="info-item">
         <span class="info-item__name">回款日期：</span>
-        <span class="info-item__value">{{ detailData.order_no }}</span>
+        <span class="info-item__value">{{ orderData.pay_date }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">机构名称：</span>
-        <span class="info-item__value">{{ detailData.create_time }}</span>
+        <span class="info-item__value">{{ orderData.org_name }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">业绩归属：</span>
-        <span class="info-item__value">{{ detailData.surname }}</span>
+        <span class="info-item__value">{{ orderData.staff_name }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">关联订单数：</span>
-        <span class="info-item__value">{{ detailData.staff_name }}</span>
+        <span class="info-item__value">{{ orderData.order_num }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">回款总金额：</span>
         <span class="info-item__value"
-          >￥{{ detailData.order_money || 0 }}</span
+          >￥{{ orderData.receivable_money || 0 }}</span
         >
       </div>
       <div class="info-item">
         <span class="info-item__name">订单备注：</span>
-        <span class="info-item__value">{{ detailData.tips || "--" }}</span>
+        <span class="info-item__value">{{ orderData.note || "--" }}</span>
       </div>
     </div>
     <Title text="关联订单"></Title>
     <el-table
-      :key="detailData.type"
-      :data="getTableData"
+      :data="listData"
       style="border: 1px solid #f1f1f1"
       v-loading="false"
       element-loading-text="loading"
@@ -49,21 +56,26 @@
     >
       <el-table-column
         label="订单编号"
-        min-width="70"
+        min-width="200"
         align="center"
-        type="index"
+        prop="order_no"
       >
+        <template slot-scope="{ row }">
+          <el-button type="text" @click="toCrmOrderDetail(row.order_id)">{{
+            row.order_no
+          }}</el-button>
+        </template>
       </el-table-column>
       <el-table-column
         label="创建时间"
         show-overflow-tooltip
         min-width="160"
         align="center"
-        prop="project_name"
+        prop="create_time"
       >
       </el-table-column>
       <el-table-column
-        prop="has_question"
+        prop="user_name"
         label="客户姓名"
         min-width="80"
         align="center"
@@ -71,9 +83,9 @@
       >
       </el-table-column>
       <el-table-column
-        prop="class_type_name"
+        prop="project_name"
         label="项目名称"
-        min-width="100"
+        min-width="220"
         align="center"
         show-overflow-tooltip
       >
@@ -82,35 +94,33 @@
         label="订单总金额"
         align="center"
         min-width="100"
-        prop="price"
+        prop="order_money"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> ￥{{ row.price }} </span>
+          <span> ￥{{ row.order_money || 0 }} </span>
         </template>
       </el-table-column>
       <el-table-column
         label="已回款金额"
         align="center"
         min-width="100"
-        prop="price"
+        prop="pay_money"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> ￥{{ row.price }} </span>
+          <span> ￥{{ row.pay_money || 0 }} </span>
         </template>
       </el-table-column>
 
       <el-table-column
-        prop="pay_progress"
+        prop="progress"
         label="回款进度"
         min-width="140"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <el-progress
-            :percentage="+(row.pay_progress || '').split('%')[0] || 0"
-          ></el-progress>
+          <el-progress :percentage="+row.progress || 0"></el-progress>
         </template>
       </el-table-column>
       <el-table-column
@@ -133,45 +143,44 @@
         </template>
       </el-table-column>
     </el-table>
+    <AddCollection
+      v-model="addCollectionVisible"
+      :id="orderData.id"
+      @on-success="getReceivableInfo"
+    />
   </div>
 </template>
 
 <script>
-import { getCrmOrderDetail } from "@/api/crm";
+import { getReceivableInfo } from "@/api/crm";
+import AddCollection from "./components/AddCollection";
 export default {
   name: "studentOrderDetail",
+  components: {
+    AddCollection,
+  },
   data() {
     return {
       loading: false,
-      detailData: {
-        pay_plan: [],
-        pay_log: [],
-        project: "[]",
-        verify_step: [],
-        verify_status: 0,
-      },
+      orderData: {},
+      listData: [],
+      addCollectionVisible: false,
     };
   },
-  computed: {
-    getTableData() {
-      const tableData = JSON.parse(this.detailData.project) || [];
-      console.log(tableData);
-      return tableData;
-    },
-  },
   created() {
-    this.getCrmOrderDetail();
+    this.getReceivableInfo();
   },
   methods: {
-    async getCrmOrderDetail() {
+    async getReceivableInfo() {
       const data = {
-        order_id: this.$route.query.id,
+        log_id: this.$route.query.id,
       };
       this.loading = true;
-      const res = await getCrmOrderDetail(data).catch(() => {});
+      const res = await getReceivableInfo(data).catch(() => {});
       this.loading = false;
       if (res.code === 0) {
-        this.detailData = res.data;
+        this.orderData = res.data.data;
+        this.listData = res.data.list;
       }
     },
     toCrmOrderDetail(id) {
@@ -192,6 +201,9 @@ export default {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
+    .actions {
+      margin-left: auto;
+    }
     .student-order-status {
       margin-left: 20px;
       color: #999;
