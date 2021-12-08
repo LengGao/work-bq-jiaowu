@@ -65,9 +65,9 @@
         </el-form-item>
         <el-form-item style="margin-bottom: 60px">
           <div style="display: flex; justify-content: space-between">
-            <el-checkbox v-model="checked" @change="remember"
+            <!-- <el-checkbox v-model="checked" @change="remember"
               >忘记密码</el-checkbox
-            >
+            > -->
             <!-- <router-link to="/forget" style="color: #199fff"
               >忘记密码</router-link
             > -->
