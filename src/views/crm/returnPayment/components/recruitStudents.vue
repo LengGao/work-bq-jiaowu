@@ -68,7 +68,7 @@
         <el-table-column
           prop="staff_name"
           label="业绩归属"
-          min-width="100"
+          min-width="90"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -76,7 +76,7 @@
           prop="order_id"
           label="关联订单"
           show-overflow-tooltip
-          min-width="190"
+          min-width="220"
         >
           <template slot-scope="{ row }">
             <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
@@ -87,7 +87,7 @@
         <el-table-column
           prop="plan_pay_day"
           label="计划回款日期"
-          min-width="160"
+          min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -106,7 +106,7 @@
         <el-table-column
           prop="verify_status"
           label="入账状态"
-          min-width="100"
+          min-width="90"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
