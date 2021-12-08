@@ -10,6 +10,25 @@
           @click="addCollectionVisible = true"
           >再次回款</el-button
         >
+        <el-button
+          type="danger"
+          v-if="$route.query.isFromApproval && orderData.check_state == 0"
+          @click="rejectConfirm"
+          >驳 回</el-button
+        >
+        <el-button
+          type="primary"
+          v-if="$route.query.isFromApproval && orderData.check_state == 0"
+          @click="approveConfirm"
+          >入 账</el-button
+        >
+
+        <el-tag
+          type="success"
+          v-if="$route.query.isFromApproval && orderData.check_state == 2"
+          >已入账</el-tag
+        >
+        <el-tag type="danger" v-if="orderData.check_state == -1">已驳回</el-tag>
       </div>
     </div>
     <Title text="回款信息"></Title>
@@ -152,10 +171,10 @@
 </template>
 
 <script>
-import { getReceivableInfo } from "@/api/crm";
+import { getReceivableInfo, reviewReceivableOrder } from "@/api/crm";
 import AddCollection from "./components/AddCollection";
 export default {
-  name: "studentOrderDetail",
+  name: "institutionalCollectionDetail",
   components: {
     AddCollection,
   },
@@ -171,6 +190,39 @@ export default {
     this.getReceivableInfo();
   },
   methods: {
+    // 驳回
+    rejectConfirm() {
+      this.$prompt("请输入驳回原因", "入账驳回", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(({ value }) => {
+          this.reviewReceivableOrder(-1, value);
+        })
+        .catch(() => {});
+    },
+    // 入账
+    approveConfirm() {
+      this.$confirm(`是否确定该笔回款入账？`, "提示", {
+        type: "warning",
+      })
+        .then(() => {
+          this.reviewReceivableOrder(2);
+        })
+        .catch(() => {});
+    },
+    async reviewReceivableOrder(check_state, rejected_note) {
+      const data = {
+        log_id: this.$route.query.id,
+        rejected_note,
+        check_state,
+      };
+      const res = await reviewReceivableOrder(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getReceivableInfo();
+      }
+    },
     async getReceivableInfo() {
       const data = {
         log_id: this.$route.query.id,
@@ -203,6 +255,7 @@ export default {
     margin-bottom: 16px;
     .actions {
       margin-left: auto;
+      margin-right: 30px;
     }
     .student-order-status {
       margin-left: 20px;

@@ -89,7 +89,8 @@
                 >已入账
               </span>
               <span v-if="row.check_state == -1" class="approve-status"
-                >已驳回 <i class="el-icon-question" :title="row.tips"></i>
+                >已驳回
+                <i class="el-icon-question" :title="row.rejected_note"></i>
               </span>
             </template>
           </el-table-column>
@@ -289,9 +290,6 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        date: Array.isArray(this.searchData.date)
-          ? this.searchData.date.join(" - ")
-          : "",
       };
       this.listLoading = true;
       const res = await getOrgReceivableList(data).catch(() => {});

@@ -491,4 +491,12 @@ export function getBelongPeople(params) {
         params
     })
 }
+// 机构回款审批
+export function reviewReceivableOrder(data) {
+    return request({
+        url: '/OrgReceivable/reviewReceivableOrder',
+        method: 'post',
+        data
+    })
+}
 
