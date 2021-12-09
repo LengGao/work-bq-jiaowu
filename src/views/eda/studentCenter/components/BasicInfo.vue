@@ -312,10 +312,12 @@ export default {
   },
   watch: {
     "datas.tags"(val) {
-      this.tags = val.split(",").map((item, index) => ({
-        title: item,
-        id: index,
-      }));
+      if (val) {
+        this.tags = val.split(",").map((item, index) => ({
+          title: item,
+          id: index,
+        }));
+      }
     },
   },
   created() {

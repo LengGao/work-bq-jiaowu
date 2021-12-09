@@ -10,7 +10,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary" @click="addCollectionVisible = true"
+          <el-button type="primary" @click="openAddCollectionDialog('')"
             >添加回款</el-button
           >
         </div>
@@ -89,7 +89,8 @@
                 >已入账
               </span>
               <span v-if="row.check_state == -1" class="approve-status"
-                >已驳回 <i class="el-icon-question" :title="row.tips"></i>
+                >已驳回
+                <i class="el-icon-question" :title="row.rejected_note"></i>
               </span>
             </template>
           </el-table-column>
@@ -220,12 +221,12 @@ export default {
             endPlaceholde: "回款金额止",
           },
         },
-        {
-          key: "keyword",
-          attrs: {
-            placeholder: "订单名称",
-          },
-        },
+        // {
+        //   key: "keyword",
+        //   attrs: {
+        //     placeholder: "订单名称",
+        //   },
+        // },
       ],
 
       addCollectionVisible: false,
@@ -289,9 +290,6 @@ export default {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-        date: Array.isArray(this.searchData.date)
-          ? this.searchData.date.join(" - ")
-          : "",
       };
       this.listLoading = true;
       const res = await getOrgReceivableList(data).catch(() => {});

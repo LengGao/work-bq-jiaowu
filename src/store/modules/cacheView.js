@@ -47,7 +47,9 @@ const searchCache = {
             crmOrder: ['crmOrderDetail', 'cusdetail'],
             eduOpenClass: ['studentDetail'],
             approveManage: ['crmOrderDetail', 'cusdetail'],
-            returnPayment: ['crmOrderDetail'],
+            returnPayment: ['crmOrderDetail', 'institutionalCollectionDetail'],
+            institutionalCollection: ['institutionalCollectionDetail'],
+            institutionalCollectionDetail: ['crmOrderDetail'],
             studentOrder: ['studentOrderDetail'],
         },
         // 当前缓存的页面
