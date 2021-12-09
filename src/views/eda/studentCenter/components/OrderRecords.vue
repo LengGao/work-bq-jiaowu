@@ -11,8 +11,9 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
-        all="1"
+        @selection-change="handleSeletChange"
       >
+        <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
           prop="order_id"
           label="订单编号"
@@ -145,6 +146,9 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="footer">
+        <el-button @click="openStaffDialog">更改业绩归属人</el-button>
+      </div>
     </div>
     <CollectionOrder
       v-model="orderActionDialog"
@@ -152,11 +156,17 @@
       :orderInfo="dialogInfo"
       @on-success="getCrmOrderList"
     />
+    <UpdatePerformanceAttribution
+      v-model="staffDialog"
+      :orderIds="checkedIds"
+      @on-success="getCrmOrderList"
+    />
   </div>
 </template>
 
 <script>
 import CollectionOrder from "@/views/fina/components/CollectionOrder";
+import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
 import { getCrmOrderList } from "@/api/crm";
 export default {
   name: "OrderRecords",
@@ -168,6 +178,7 @@ export default {
   },
   components: {
     CollectionOrder,
+    UpdatePerformanceAttribution,
   },
   data() {
     return {
@@ -219,6 +230,8 @@ export default {
       },
       dialogInfo: {},
       orderActionDialog: false,
+      checkedIds: [],
+      staffDialog: false,
     };
   },
   activated() {
@@ -228,6 +241,16 @@ export default {
     this.getCrmOrderList();
   },
   methods: {
+    openStaffDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择订单");
+        return;
+      }
+      this.staffDialog = true;
+    },
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.order_id);
+    },
     //作废弹窗
     openOrderActions(row) {
       this.dialogInfo = row;
@@ -261,5 +284,8 @@ export default {
 <style lang="scss" scoped>
 .overdue-money {
   color: #f67979;
+}
+.footer {
+  padding: 10px 0;
 }
 </style>

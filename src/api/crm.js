@@ -499,4 +499,12 @@ export function reviewReceivableOrder(data) {
         data
     })
 }
+// 更改业绩归属人
+export function changeStaffOwner(data) {
+    return request({
+        url: 'CrmOrder/changeStaffOwner',
+        method: 'post',
+        data
+    })
+}
 
