@@ -80,7 +80,7 @@
         prop="order_no"
       >
         <template slot-scope="{ row }">
-          <el-button type="text" @click="toCrmOrderDetail(row.order_id)">{{
+          <el-button type="text" @click="toStudentOrderDetail(row.order_id)">{{
             row.order_no
           }}</el-button>
         </template>
@@ -156,7 +156,7 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right" min-width="100">
         <template slot-scope="{ row }">
-          <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
+          <el-button type="text" @click="toStudentOrderDetail(row.order_id)"
             >订单详情</el-button
           >
         </template>
@@ -236,9 +236,9 @@ export default {
         this.listData = res.data.list;
       }
     },
-    toCrmOrderDetail(id) {
+    toStudentOrderDetail(id) {
       this.$router.push({
-        name: "crmOrderDetail",
+        name: "studentOrderDetail",
         query: {
           id,
         },
