@@ -10,7 +10,7 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary" @click="addCollectionVisible = true"
+          <el-button type="primary" @click="openAddCollectionDialog('')"
             >添加回款</el-button
           >
         </div>
@@ -221,12 +221,12 @@ export default {
             endPlaceholde: "回款金额止",
           },
         },
-        {
-          key: "keyword",
-          attrs: {
-            placeholder: "订单名称",
-          },
-        },
+        // {
+        //   key: "keyword",
+        //   attrs: {
+        //     placeholder: "订单名称",
+        //   },
+        // },
       ],
 
       addCollectionVisible: false,

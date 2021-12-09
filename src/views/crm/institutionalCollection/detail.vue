@@ -221,6 +221,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getReceivableInfo();
+        check_state === 2 && this.$router.back();
       }
     },
     async getReceivableInfo() {

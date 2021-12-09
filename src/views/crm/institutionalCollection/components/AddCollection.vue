@@ -50,6 +50,7 @@
           v-model="formData.total_money"
           type="number"
           placeholder="请输入回款金额"
+          @input="onInput"
         />
       </el-form-item>
       <el-form-item label="支付方式" prop="pay_type">
@@ -206,7 +207,7 @@
             @selection-change="handleOrderTableChange"
             row-key="order_id"
             ref="multipleTable"
-            height="500"
+            height="470"
             @row-click="toggleSelection"
           >
             <el-table-column type="selection" width="45" reserve-selection>
@@ -228,11 +229,11 @@
             <el-table-column
               label="项目名称"
               show-overflow-tooltip
-              min-width="150"
+              min-width="200"
               prop="project_name"
             >
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               label="订单金额"
               show-overflow-tooltip
               min-width="150"
@@ -241,7 +242,7 @@
               <template slot-scope="{ row }">
                 <span> ￥{{ row.order_money || 0 }} </span>
               </template>
-            </el-table-column>
+            </el-table-column> -->
           </el-table>
           <div class="table_bottom">
             <page
@@ -272,16 +273,23 @@
               'background-color': '#f8f8f8',
             }"
             :cell-style="{ 'text-align': 'center' }"
-            height="500"
+            height="470"
           >
             <el-table-column
               show-overflow-tooltip
-              min-width="150"
+              min-width="100"
               prop="user_name"
             >
               <template slot="header">
                 <span>已选学生：{{ checkedOrderData.length }}</span>
               </template>
+            </el-table-column>
+            <el-table-column
+              label="订单编号"
+              show-overflow-tooltip
+              min-width="200"
+              prop="order_no"
+            >
             </el-table-column>
             <el-table-column
               label="订单金额"
@@ -306,14 +314,16 @@
             <el-table-column
               label="本次回款金额"
               show-overflow-tooltip
-              min-width="200"
+              min-width="160"
               prop="project_name"
+              fixed="right"
             >
               <template slot="header">
                 <div class="header-money">
                   <el-input
                     v-model="totalMoney"
                     size="mini"
+                    type="number"
                     placeholder="本次回款金额"
                   />
                   <div class="header-money-actions">
@@ -332,6 +342,7 @@
                 <el-input
                   v-model="row.currentMoney"
                   size="mini"
+                  type="number"
                   placeholder="回款金额"
                 />
               </template>
@@ -339,7 +350,7 @@
             <el-table-column
               show-overflow-tooltip
               min-width="100"
-              prop="project_name"
+              fixed="right"
             >
               <template slot="header">
                 <el-button type="text" @click="hadleResetOrder"
@@ -497,6 +508,9 @@ export default {
       if (this.id) {
         this.getReceivableInfo();
       }
+    },
+    onInput(val) {
+      this.totalMoney = val;
     },
     // 回款详情数据
     async getReceivableInfo() {
@@ -694,13 +708,13 @@ export default {
     flex: 1;
   }
   .order-table {
-    width: 53.5%;
+    width: 44%;
     .table_bottom {
       padding-bottom: 0;
     }
   }
   .checked-table {
-    width: 45.5%;
+    width: 55%;
     .money-total {
       text-align: right;
       padding: 16px 0;
@@ -715,7 +729,7 @@ export default {
       display: flex;
       align-items: center;
       &-actions {
-        width: 60px;
+        width: 40px;
         flex-shrink: 0;
         font-size: 12px;
         font-weight: normal;

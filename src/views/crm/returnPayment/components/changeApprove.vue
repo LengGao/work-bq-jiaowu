@@ -96,9 +96,6 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
-            <el-button type="text" @click="toDetail(row.log_id)"
-              >回款详情</el-button
-            >
             <el-button
               type="text"
               v-if="!row.check_state"
@@ -110,6 +107,9 @@
               v-if="!row.check_state"
               @click="rejectConfirm(row.log_id, -1)"
               >驳回</el-button
+            >
+            <el-button type="text" @click="toDetail(row.log_id)"
+              >回款详情</el-button
             >
           </template>
         </el-table-column>
@@ -213,14 +213,17 @@ export default {
             endPlaceholde: "回款金额止",
           },
         },
-        {
-          key: "keyword",
-          attrs: {
-            placeholder: "订单名称",
-          },
-        },
+        // {
+        //   key: "keyword",
+        //   attrs: {
+        //     placeholder: "订单名称",
+        //   },
+        // },
       ],
     };
+  },
+  activated() {
+    this.getOrgReceivableList();
   },
   created() {
     this.getOrgReceivableList();
@@ -271,7 +274,10 @@ export default {
     },
     // 获取机构
     async getOrgName() {
-      const res = await getOrgName();
+      const data = {
+        state: 1,
+      };
+      const res = await getOrgName(data);
       if (res.code === 0) {
         this.searchOptions[1].options = res.data;
       }
