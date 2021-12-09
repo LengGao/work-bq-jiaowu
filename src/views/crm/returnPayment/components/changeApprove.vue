@@ -136,7 +136,7 @@ import {
   reviewReceivableOrder,
 } from "@/api/crm";
 export default {
-  name: "institutionalCollection",
+  name: "changeApprove",
   components: {
     PartiallyHidden,
   },

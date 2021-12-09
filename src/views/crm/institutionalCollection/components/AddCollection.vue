@@ -115,6 +115,13 @@
             <el-table-column min-width="70" label="序号" type="index">
             </el-table-column>
             <el-table-column
+              label="订单编号"
+              show-overflow-tooltip
+              min-width="200"
+              prop="order_no"
+            >
+            </el-table-column>
+            <el-table-column
               show-overflow-tooltip
               min-width="150"
               prop="user_name"
@@ -642,9 +649,18 @@ export default {
           ({ currentMoney: pay_money, order_id }) => ({ order_id, pay_money })
         );
       } else {
-        data.arr_receivable = this.checkedOrderData.map(
-          ({ currentMoney: pay_money, order_id }) => ({ order_id, pay_money })
-        );
+        data.arr_receivable = this.checkedOrderData.map((item) => {
+          if (+item.currentMoney > +item.order_money) {
+            this.$message.error(
+              `客户 ${item.user_name} 的本次回款金额大于订单金额`
+            );
+            throw new Error("error");
+          }
+          return {
+            order_id: item.order_id,
+            pay_money: item.currentMoney,
+          };
+        });
       }
       this.addLoading = true;
       const res = await addReceivable(data).catch(() => {
@@ -676,6 +692,7 @@ export default {
         this.hadleResetOrder();
         this.pageNum = 1;
         this.pageSize = 20;
+        this.totalMoney = "";
         this.$refs.searchList.handleReset();
         this.listData = [];
       }

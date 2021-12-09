@@ -167,7 +167,7 @@ import {
 import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions } from "@/utils/index";
 export default {
-  name: "eduOrder",
+  name: "recruitStudents",
   components: {
     PartiallyHidden,
   },
