@@ -234,7 +234,7 @@
 <script>
 import { eduOpenCourse } from "@/api/crm";
 export default {
-  name: "orderBasicInfo",
+  name: "SBasicInfo",
   props: {
     data: {
       type: Object,

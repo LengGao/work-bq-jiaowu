@@ -49,7 +49,7 @@ const searchCache = {
             approveManage: ['crmOrderDetail', 'cusdetail'],
             returnPayment: ['crmOrderDetail', 'institutionalCollectionDetail'],
             institutionalCollection: ['institutionalCollectionDetail'],
-            institutionalCollectionDetail: ['crmOrderDetail'],
+            institutionalCollectionDetail: ['studentOrderDetail'],
             studentOrder: ['studentOrderDetail'],
         },
         // 当前缓存的页面

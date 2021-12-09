@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column
         prop="create_time"
-        label="回款日期"
+        label="创建时间"
         min-width="140"
         align="center"
         show-overflow-tooltip

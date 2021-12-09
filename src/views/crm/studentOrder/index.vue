@@ -31,7 +31,7 @@
             min-width="190"
           >
             <template slot-scope="scope">
-              <div class="link" @click="toCrmOrderDetail(scope.row.order_id)">
+              <div class="link" @click="toDetail(scope.row.order_id)">
                 {{ scope.row.order_no }}
               </div>
             </template>
@@ -82,7 +82,7 @@
 
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
+              <el-button type="text" @click="toDetail(row.order_id)"
                 >订单详情</el-button
               >
             </template>
@@ -223,7 +223,7 @@ export default {
     this.getInstitutionSelectData();
   },
   methods: {
-    toCrmOrderDetail(id) {
+    toDetail(id) {
       this.$router.push({
         name: "studentOrderDetail",
         query: {
