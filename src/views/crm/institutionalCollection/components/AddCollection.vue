@@ -109,6 +109,7 @@
               'text-align': 'center',
               'background-color': '#f8f8f8',
             }"
+            key="2"
             :cell-style="{ 'text-align': 'center' }"
             height="500"
           >
@@ -201,6 +202,7 @@
             ref="searchList"
           />
           <el-table
+            key="1"
             :data="listData"
             v-loading="listLoading"
             element-loading-text="loading"
