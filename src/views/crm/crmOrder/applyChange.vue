@@ -294,7 +294,12 @@
       </Title>
       <el-table
         :data="detailData.pay_log"
-        style="width: 100%; border: 1px solid #eee; border-bottom: none"
+        style="
+          width: 100%;
+          border: 1px solid #eee;
+          border-bottom: none;
+          margin-bottom: 20px;
+        "
         :header-cell-style="{
           'text-align': 'center',
           'background-color': '#f8f8f8',
@@ -395,6 +400,13 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-form-item class="remark" label="异动理由" prop="reason">
+        <el-input
+          type="textarea"
+          v-model="formData.reason"
+          placeholder="请输入异动理由"
+        />
+      </el-form-item>
       <div>
         <el-button @click="hanldeCancel">取 消</el-button>
         <el-button
@@ -449,9 +461,11 @@ export default {
         order_money: "",
         union_staff_id: "",
         tips: "",
+        reason: "",
       },
       rules: {
         order_money: [{ required: true, message: "请输入", trigger: "blur" }],
+        reason: [{ required: true, message: "请输入", trigger: "blur" }],
       },
       addLoading: false,
       staffOptions: [],
@@ -483,15 +497,21 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    hanldeCancel() {
+      this.$router.back();
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.orderReshuffle();
         }
       });
     },
     async orderReshuffle() {
       const data = {
         ...this.formData,
+        pay_plan: this.detailData.pay_plan,
+        pay_log: this.detailData.pay_log,
       };
       const res = await orderReshuffle(data);
       if (res.code === 0) {
