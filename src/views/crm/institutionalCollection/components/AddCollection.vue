@@ -747,6 +747,7 @@ export default {
     .header-money {
       display: flex;
       align-items: center;
+      padding: 0;
       &-actions {
         width: 40px;
         flex-shrink: 0;
@@ -754,6 +755,7 @@ export default {
         font-weight: normal;
         display: flex;
         flex-direction: column;
+        line-height: 1.5;
         .btn-fill {
           color: #fcc850;
           cursor: pointer;
