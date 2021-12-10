@@ -232,8 +232,8 @@
 </template>
 
 <script>
-import AddCollectionRecord from "@/views/crm/changeManage/components/AddCollectionRecord.vue";
-import AddCollectionPlan from "@/views/crm/changeManage/components/AddCollectionPlan.vue";
+import AddCollectionRecord from "./AddCollectionRecord.vue";
+import AddCollectionPlan from "./AddCollectionPlan.vue";
 export default {
   name: "CollectionRecord",
   components: {

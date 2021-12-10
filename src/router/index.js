@@ -313,23 +313,18 @@ export const asyncRouter = [
     name: 'etm',
     children: [
       // ==== 新
+
       {
-        path: 'changeManage',
-        name: 'changeManage',
-        component: () => import('@/views/crm/changeManage/index.vue'),
-        meta: { title: '异动管理' },
+        path: 'applyChange',
+        name: 'applyChange',
+        component: () => import('@/views/crm/crmOrder/applyChange.vue'),
+        meta: { title: '申请异动' },
       },
       {
-        path: 'changeDetail',
-        name: 'changeDetail',
-        component: () => import('@/views/crm/changeManage/detail.vue'),
-        meta: { title: '异动详情' },
-      },
-      {
-        path: 'changeEdit',
-        name: 'changeEdit',
-        component: () => import('@/views/crm/changeManage/edit.vue'),
-        meta: { title: '编辑异动' },
+        path: 'eduOpenClass',
+        name: 'eduOpenClass',
+        component: () => import('@/views/crm/eduOpenClass/index.vue'),
+        meta: { title: '教务开课' },
       },
       {
         path: 'eduOpenClass',

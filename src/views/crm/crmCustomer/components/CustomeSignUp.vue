@@ -386,7 +386,7 @@ import { createCrmOrder, getCustomfieldOptions } from "@/api/crm";
 import { getStaffList } from "@/api/set";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
-import AddCollectionPlan from "@/views/crm/changeManage/components/AddCollectionPlan";
+import AddCollectionPlan from "@/views/crm/crmOrder/components/AddCollectionPlan";
 import { today } from "@/utils/date";
 export default {
   name: "CustomeSignUp",

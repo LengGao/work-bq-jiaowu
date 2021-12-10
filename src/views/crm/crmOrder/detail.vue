@@ -12,6 +12,12 @@
       <div class="btn-edit">
         <el-button
           type="primary"
+          v-if="detailData.verify_status === 3 && detailData.is_my_review !== 1"
+          @click="toOrderChange"
+          >申请异动</el-button
+        >
+        <el-button
+          type="primary"
           v-if="detailData.verify_status === 1 && detailData.is_my_review !== 1"
           @click="ActionConfirm(3)"
           >撤回</el-button
@@ -132,6 +138,14 @@ export default {
     this.getCrmOrderDetail();
   },
   methods: {
+    toOrderChange() {
+      this.$router.push({
+        name: "applyChange",
+        query: {
+          id: this.$route.query.id,
+        },
+      });
+    },
     // 催办
     async hurryUp() {
       const data = {
