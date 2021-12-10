@@ -507,4 +507,12 @@ export function changeStaffOwner(data) {
         data
     })
 }
+// 订单申请异动
+export function orderReshuffle(data) {
+    return request({
+        url: 'CrmOrder/reshuffle',
+        method: 'post',
+        data
+    })
+}
 

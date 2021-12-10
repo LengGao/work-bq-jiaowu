@@ -288,7 +288,7 @@
         </el-table-column>
       </el-table>
       <Title text="回款记录" class="table-title">
-        <el-button type="primary" plain @click="handleAdd"
+        <el-button type="primary" plain @click="handleAdd()"
           >添加回款记录</el-button
         >
       </Title>
@@ -309,8 +309,8 @@
         >
         </el-table-column>
         <el-table-column
-          prop="create_time"
-          label="创建时间"
+          prop="pay_date"
+          label="回款日期"
           min-width="140"
           align="center"
           show-overflow-tooltip
@@ -323,6 +323,9 @@
           min-width="100"
           show-overflow-tooltip
         >
+          <template slot-scope="{ row }">
+            <span>{{ row.pay_money | moneyFormat }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="pay_type"
@@ -381,18 +384,33 @@
           align="center"
           min-width="160"
         >
-          <template slot-scope="{ row }">
-            <el-button type="text">删除</el-button>
+          <template slot-scope="{ row, $index: index }">
+            <el-button
+              type="text"
+              v-if="row.pay_status === 1"
+              @click="handleAdd(row, index)"
+              >编辑</el-button
+            >
+            <el-button type="text" v-if="row.pay_status === 1">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <div>
+        <el-button @click="hanldeCancel">取 消</el-button>
+        <el-button
+          type="primary"
+          :loading="addLoading"
+          @click="submitForm('formData')"
+          >确 定</el-button
+        >
+      </div>
     </el-form>
-    <AddCollectionRecord
+    <SetCollectionRecord
       v-model="dialogVisible"
       :title="dialogTitle"
-      :order-id="detailData.order_id"
-      @on-success="getCrmOrderDetail"
-      :plan-options="detailData.pay_plan"
+      @on-success="onSetRecordSuccess"
+      :staff-options="staffOptions"
+      :data="editRecord"
     />
     <SetCollectionPlan
       v-model="planDialogVisible"
@@ -404,14 +422,18 @@
 </template>
 
 <script>
-import { getCrmOrderDetail, getCustomfieldOptions } from "@/api/crm";
+import {
+  getCrmOrderDetail,
+  getCustomfieldOptions,
+  orderReshuffle,
+} from "@/api/crm";
 import { getStaffList } from "@/api/set";
-import AddCollectionRecord from "./components/AddCollectionRecord.vue";
+import SetCollectionRecord from "./components/SetCollectionRecord.vue";
 import SetCollectionPlan from "./components/SetCollectionPlan.vue";
 export default {
   name: "applyChange",
   components: {
-    AddCollectionRecord,
+    SetCollectionRecord,
     SetCollectionPlan,
   },
   data() {
@@ -431,10 +453,13 @@ export default {
       rules: {
         order_money: [{ required: true, message: "请输入", trigger: "blur" }],
       },
+      addLoading: false,
       staffOptions: [],
       payMethodOptions: [],
       dialogTitle: "",
       dialogVisible: false,
+      editRecord: {},
+      editIndex: null,
       planDialogVisible: false,
       planDialogTitle: "",
       // 1：待入账，3、已入账 ，4、已作废， 5、已退款
@@ -458,17 +483,39 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+        }
+      });
+    },
+    async orderReshuffle() {
+      const data = {
+        ...this.formData,
+      };
+      const res = await orderReshuffle(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
+    },
+    onSetRecordSuccess(data) {
+      if (this.editIndex || this.editIndex === 0) {
+        this.detailData.pay_log.splice(this.editIndex, 1, data);
+        return;
+      }
+      (this.detailData.pay_log || (this.detailData.pay_log = [])).push(data);
+    },
     onSetPlanSuccess(data) {
       this.detailData.pay_plan = data;
     },
     handleAddPlan() {
-      this.currentId = "";
       this.planDialogTitle = "配置回款计划";
       this.planDialogVisible = true;
     },
-    handleAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加回款记录";
+    handleAdd(row, index) {
+      this.editRecord = row || {};
+      this.editIndex = index ?? null;
+      this.dialogTitle = `${row ? "编辑" : "添加"}回款记录`;
       this.dialogVisible = true;
     },
     //获取业绩共享人
