@@ -192,7 +192,7 @@
     <AddCollection
       v-model="addCollectionVisible"
       :id="orderData.id"
-      @on-success="getReceivableInfo"
+      @on-success="$router.back()"
     />
   </div>
 </template>
