@@ -151,7 +151,7 @@
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.order_money || 0 }} </span>
+                <span>{{ row.order_money | moneyFormat }} </span>
               </template>
             </el-table-column>
             <el-table-column
@@ -161,7 +161,7 @@
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.pay_money || 0 }} </span>
+                <span>{{ row.pay_money | moneyFormat }} </span>
               </template>
             </el-table-column>
             <el-table-column
@@ -258,7 +258,7 @@
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.outstanding_amount || 0 }} </span>
+                <span>{{ row.outstanding_amount | moneyFormat }} </span>
               </template>
             </el-table-column>
           </el-table>
@@ -321,7 +321,7 @@
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.order_money || 0 }} </span>
+                <span>{{ row.order_money | moneyFormat }} </span>
               </template>
             </el-table-column>
             <el-table-column
@@ -331,7 +331,7 @@
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.pay_money || 0 }} </span>
+                <span>{{ row.pay_money | moneyFormat }} </span>
               </template>
             </el-table-column>
             <el-table-column
@@ -341,7 +341,7 @@
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.outstanding_amount || 0 }} </span>
+                <span>{{ row.outstanding_amount | moneyFormat }} </span>
               </template>
             </el-table-column>
             <el-table-column

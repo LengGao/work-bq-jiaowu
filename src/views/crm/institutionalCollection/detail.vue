@@ -51,9 +51,9 @@
       </div>
       <div class="info-item">
         <span class="info-item__name">回款总金额：</span>
-        <span class="info-item__value"
-          >￥{{ orderData.receivable_money || 0 }}</span
-        >
+        <span class="info-item__value">{{
+          orderData.receivable_money | moneyFormat
+        }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">订单备注：</span>
@@ -117,7 +117,7 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> ￥{{ row.order_money || 0 }} </span>
+          <span> {{ row.order_money | moneyFormat }} </span>
         </template>
       </el-table-column>
       <el-table-column
@@ -128,7 +128,7 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> ￥{{ row.receivable_money || 0 }} </span>
+          <span> {{ row.receivable_money | moneyFormat }} </span>
         </template>
       </el-table-column>
       <el-table-column
@@ -139,7 +139,7 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> ￥{{ row.pay_money || 0 }} </span>
+          <span> {{ row.pay_money | moneyFormat }} </span>
         </template>
       </el-table-column>
 
@@ -158,6 +158,7 @@
         label="审批后回款进度"
         min-width="140"
         show-overflow-tooltip
+        v-if="!orderData.check_state"
       >
         <template slot-scope="{ row }">
           <el-progress :percentage="+row.success_progress || 0"></el-progress>
