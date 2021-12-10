@@ -121,6 +121,17 @@
         </template>
       </el-table-column>
       <el-table-column
+        label="本次回款金额"
+        align="center"
+        min-width="100"
+        prop="pay_money"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span> ￥{{ row.receivable_money || 0 }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column
         label="已回款金额"
         align="center"
         min-width="100"
@@ -146,6 +157,7 @@
         prop="pay_status"
         label="支付状态"
         min-width="100"
+        align="center"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
@@ -154,7 +166,12 @@
           }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" fixed="right" min-width="100">
+      <el-table-column
+        label="操作"
+        fixed="right"
+        align="center"
+        min-width="100"
+      >
         <template slot-scope="{ row }">
           <el-button type="text" @click="toStudentOrderDetail(row.order_id)"
             >订单详情</el-button
