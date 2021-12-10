@@ -145,12 +145,22 @@
 
       <el-table-column
         prop="progress"
-        label="回款进度"
+        label="已回款进度"
         min-width="140"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
           <el-progress :percentage="+row.progress || 0"></el-progress>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="success_progress"
+        label="审批后回款进度"
+        min-width="140"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-progress :percentage="+row.success_progress || 0"></el-progress>
         </template>
       </el-table-column>
       <el-table-column

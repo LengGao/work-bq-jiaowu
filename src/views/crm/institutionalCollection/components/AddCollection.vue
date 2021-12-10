@@ -42,6 +42,9 @@
           placeholder="选择日期"
           v-model="formData.pay_date"
           value-format="yyyy-MM-dd"
+          :picker-options="{
+            disabledDate: disabledDate,
+          }"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="回款金额" prop="total_money">
@@ -96,6 +99,11 @@
             <span
               >已填金额合计：<span class="price">{{
                 totalInputMoney | moneyFormat
+              }}</span></span
+            >
+            <span
+              >剩余分配金额：<span class="price">{{
+                accSub(formData.total_money, totalInputMoney) | moneyFormat
               }}</span></span
             >
           </div>
@@ -167,6 +175,7 @@
                   <el-input
                     v-model="totalMoney"
                     size="mini"
+                    style="padding: 0"
                     placeholder="本次回款金额"
                   />
                   <div class="header-money-actions">
@@ -242,16 +251,16 @@
               prop="project_name"
             >
             </el-table-column>
-            <!-- <el-table-column
-              label="订单金额"
+            <el-table-column
+              label="未回款金额"
               show-overflow-tooltip
-              min-width="150"
+              min-width="100"
               prop="project_name"
             >
               <template slot-scope="{ row }">
-                <span> ￥{{ row.order_money || 0 }} </span>
+                <span> ￥{{ row.outstanding_amount || 0 }} </span>
               </template>
-            </el-table-column> -->
+            </el-table-column>
           </el-table>
           <div class="table_bottom">
             <page
@@ -272,6 +281,11 @@
             <span
               >已填金额合计：<span class="price">{{
                 totalInputMoney | moneyFormat
+              }}</span></span
+            >
+            <span
+              >剩余分配金额：<span class="price">{{
+                accSub(formData.total_money, totalInputMoney) | moneyFormat
               }}</span></span
             >
           </div>
@@ -303,7 +317,7 @@
             <el-table-column
               label="订单金额"
               show-overflow-tooltip
-              min-width="150"
+              min-width="100"
               prop="project_name"
             >
               <template slot-scope="{ row }">
@@ -313,7 +327,7 @@
             <el-table-column
               label="已回款金额"
               show-overflow-tooltip
-              min-width="150"
+              min-width="100"
               prop="project_name"
             >
               <template slot-scope="{ row }">
@@ -321,9 +335,19 @@
               </template>
             </el-table-column>
             <el-table-column
+              label="未回款金额"
+              show-overflow-tooltip
+              min-width="100"
+              prop="project_name"
+            >
+              <template slot-scope="{ row }">
+                <span> ￥{{ row.outstanding_amount || 0 }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column
               label="本次回款金额"
               show-overflow-tooltip
-              min-width="160"
+              min-width="180"
               prop="project_name"
               fixed="right"
             >
@@ -334,6 +358,7 @@
                     size="mini"
                     type="number"
                     placeholder="本次回款金额"
+                    style="padding: 0"
                   />
                   <div class="header-money-actions">
                     <span
@@ -399,6 +424,7 @@ import {
   getReceivableInfo,
 } from "@/api/crm";
 import { getShortcuts } from "@/utils/date";
+import { accSub } from "@/utils";
 export default {
   name: "AddCustomeDialog",
   props: {
@@ -413,6 +439,7 @@ export default {
   },
   data() {
     return {
+      accSub,
       visible: this.value,
       addLoading: false,
       formData: {
@@ -517,6 +544,9 @@ export default {
       if (this.id) {
         this.getReceivableInfo();
       }
+    },
+    disabledDate(e) {
+      return e.getTime() > Date.now();
     },
     onInput(val) {
       this.totalMoney = val;
@@ -756,6 +786,7 @@ export default {
         display: flex;
         flex-direction: column;
         line-height: 1.5;
+        padding: 0;
         .btn-fill {
           color: #fcc850;
           cursor: pointer;
