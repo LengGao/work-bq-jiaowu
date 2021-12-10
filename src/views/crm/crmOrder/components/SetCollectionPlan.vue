@@ -108,9 +108,8 @@
 </template>
 
 <script>
-import { createOrderPayPlan } from "@/api/crm";
 export default {
-  name: "AddCollectionPlan",
+  name: "SetCollectionPlan",
   props: {
     value: {
       type: Boolean,
@@ -118,10 +117,6 @@ export default {
     },
     title: {
       type: String,
-      default: "",
-    },
-    orderId: {
-      type: [String, Number],
       default: "",
     },
     data: {
@@ -133,7 +128,6 @@ export default {
     return {
       visible: this.value,
       formData: {
-        pay_type: "",
         tableData: [
           {
             day: "",
@@ -142,12 +136,6 @@ export default {
         ],
       },
       addLoading: false,
-      tipOptions: [
-        {
-          label: "准时提醒",
-          value: "",
-        },
-      ],
     };
   },
   watch: {
@@ -167,10 +155,7 @@ export default {
     },
     handleOpen() {
       if (this.data.length) {
-        this.formData.tableData = this.data.map(({ day, money }) => ({
-          day,
-          money,
-        }));
+        this.formData.tableData = this.data.map((item) => ({ ...item }));
       }
     },
     addOption() {
@@ -182,28 +167,15 @@ export default {
     delOption(index) {
       this.formData.options.splice(index, 1);
     },
-    async submit() {
-      const data = {
-        data: JSON.stringify(this.formData.tableData),
-      };
-      if (this.orderId) {
-        data.order_id = this.orderId;
-      }
-      this.addLoading = true;
-      const res = await createOrderPayPlan(data).catch(() => {
-        this.addLoading = false;
-      });
-      this.addLoading = false;
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.visible = false;
-        this.$emit("on-success", res.data);
-      }
-    },
+
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.$emit(
+            "on-success",
+            this.formData.tableData.map((item) => ({ ...item }))
+          );
+          this.hanldeCancel();
         }
       });
     },

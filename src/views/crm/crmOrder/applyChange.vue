@@ -394,10 +394,10 @@
       @on-success="getCrmOrderDetail"
       :plan-options="detailData.pay_plan"
     />
-    <AddCollectionPlan
+    <SetCollectionPlan
       v-model="planDialogVisible"
       title="配置回款计划"
-      @on-success="getCrmOrderDetail"
+      @on-success="onSetPlanSuccess"
       :data="detailData.pay_plan"
     />
   </div>
@@ -407,12 +407,12 @@
 import { getCrmOrderDetail, getCustomfieldOptions } from "@/api/crm";
 import { getStaffList } from "@/api/set";
 import AddCollectionRecord from "./components/AddCollectionRecord.vue";
-import AddCollectionPlan from "./components/AddCollectionPlan.vue";
+import SetCollectionPlan from "./components/SetCollectionPlan.vue";
 export default {
   name: "applyChange",
   components: {
     AddCollectionRecord,
-    AddCollectionPlan,
+    SetCollectionPlan,
   },
   data() {
     return {
@@ -458,6 +458,9 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    onSetPlanSuccess(data) {
+      this.detailData.pay_plan = data;
+    },
     handleAddPlan() {
       this.currentId = "";
       this.planDialogTitle = "配置回款计划";
