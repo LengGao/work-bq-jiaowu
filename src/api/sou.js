@@ -1424,3 +1424,12 @@ export function getResultsDetail(params) {
     params,
   })
 }
+// 视频库-生成小程序码
+export function getVideoQrcode(params) {
+  return request({
+    url: 'VideoRepository/getVideoQrcode',
+    method: 'get',
+    responseType: 'blob',
+    params,
+  })
+}

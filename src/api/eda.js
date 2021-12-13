@@ -1252,3 +1252,31 @@ export function courseCollection(params) {
     params,
   })
 }
+
+// 获取用户其他资料列表
+export function getUserFileList(params) {
+  return request({
+    url: '/User/getUserFileList',
+    method: 'get',
+    params,
+  })
+}
+// 删除用户其他资料
+export function deleteUserFile(data) {
+  return request({
+    url: '/User/deleteFile',
+    method: 'post',
+    data,
+  })
+}
+// 上传用户其他资料
+export const createUserFile = `${process.env.VUE_APP_LOACTION}/User/createFile`
+// 修改用户其他资料
+export const updateUserFile = `${process.env.VUE_APP_LOACTION}/User/updateFile`
+export function updateUserFileName(data) {
+  return request({
+    url: '/User/updateFile',
+    method: 'post',
+    data,
+  })
+}
