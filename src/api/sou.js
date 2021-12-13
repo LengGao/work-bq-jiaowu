@@ -1433,3 +1433,11 @@ export function getVideoQrcode(params) {
     params,
   })
 }
+// 微视频统计
+export function getSingleVideoStatisticsList(params) {
+  return request({
+    url: 'VideoRepository/getSingleVideoStatisticsList',
+    method: 'get',
+    params,
+  })
+}

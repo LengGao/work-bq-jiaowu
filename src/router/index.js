@@ -110,6 +110,12 @@ export const asyncRouter = [
         meta: { title: '视频库', icon: 'product-add' },
       },
       {
+        path: 'microVideoStatistics',
+        name: 'microVideoStatistics',
+        component: () => import('@/views/sou/microVideoStatistics/index.vue'),
+        meta: { title: '微视频统计', icon: 'product-add' },
+      },
+      {
         path: 'collegeMajor',
         name: 'collegeMajor',
         component: () => import('@/views/sou/collegeMajor/index.vue'),
