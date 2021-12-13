@@ -288,6 +288,9 @@
         </el-table-column>
       </el-table>
       <Title text="回款记录" class="table-title">
+        <span class="tips"
+          >（当回款记录日期与回款计划日期一致时，将自动关联）</span
+        >
         <el-button type="primary" plain @click="handleAdd()"
           >添加回款记录</el-button
         >
@@ -340,14 +343,14 @@
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="pay_plan_sort"
           label="关联期次"
           align="center"
           min-width="100"
           show-overflow-tooltip
         >
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           label="收款人员"
           align="center"
@@ -405,15 +408,16 @@
           type="textarea"
           v-model="formData.reason"
           placeholder="请输入异动理由"
+          maxlength="400"
         />
       </el-form-item>
-      <div>
+      <div class="footer-submit">
         <el-button @click="hanldeCancel">取 消</el-button>
         <el-button
           type="primary"
           :loading="addLoading"
           @click="submitForm('formData')"
-          >确 定</el-button
+          >提 交</el-button
         >
       </div>
     </el-form>
@@ -597,6 +601,16 @@ export default {
       display: flex;
       justify-content: space-between;
       padding-top: 10px;
+      .tips {
+        font-size: 12px;
+        color: #fd6500;
+        margin-right: auto;
+        margin-left: 10px;
+        align-self: center;
+      }
+    }
+    .footer-submit {
+      text-align: center;
     }
   }
 }
