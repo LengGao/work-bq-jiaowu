@@ -465,7 +465,7 @@ export default {
       listTotal: 0,
       searchData: {
         date: "",
-        keyword: "",
+        user_name: "",
       },
       searchOptions: [
         {
@@ -512,6 +512,12 @@ export default {
             filterable: true,
             multiple: true,
             "collapse-tags": true,
+          },
+        },
+        {
+          key: "user_name",
+          attrs: {
+            placeholder: "客户姓名",
           },
         },
       ],
