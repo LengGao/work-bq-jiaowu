@@ -27,6 +27,23 @@
           <el-table-column label="序号" min-width="70" type="index">
           </el-table-column>
           <el-table-column
+            prop="title"
+            label="视频名称"
+            min-width="200"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="duration"
+            label="视频时长"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.duration | filterDuration }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="user_realname"
             label="客户姓名"
             min-width="100"
@@ -42,13 +59,6 @@
             <template slot-scope="{ row }">
               <PartiallyHidden :value="row.telphone" />
             </template>
-          </el-table-column>
-          <el-table-column
-            prop="title"
-            label="视频名称"
-            min-width="200"
-            show-overflow-tooltip
-          >
           </el-table-column>
 
           <el-table-column
@@ -66,7 +76,7 @@
           <el-table-column
             prop="total_second"
             label="累计观看时长"
-            min-width="140"
+            min-width="100"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -89,6 +99,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -109,6 +120,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         search_box: "",
@@ -136,6 +148,11 @@ export default {
       };
       this.getSingleVideoStatisticsList();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getSingleVideoStatisticsList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getSingleVideoStatisticsList();
@@ -143,6 +160,7 @@ export default {
     async getSingleVideoStatisticsList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
       };
       this.listLoading = true;
