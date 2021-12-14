@@ -72,6 +72,14 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-button
+        type="primary"
+        @click="handleExport"
+        :loading="downloadLoading"
+        style="margin-left: 20px"
+        >导出回款模板</el-button
+      >
+
       <el-form-item label="备注信息" prop="note" class="block">
         <el-input
           class="remark"
@@ -422,9 +430,10 @@ import {
   getCategory,
   getProject,
   getReceivableInfo,
+  getExcelOrgReceivable,
 } from "@/api/crm";
 import { getShortcuts } from "@/utils/date";
-import { accSub } from "@/utils";
+import { accSub, download } from "@/utils";
 export default {
   name: "AddCustomeDialog",
   props: {
@@ -466,6 +475,7 @@ export default {
       searchData: {
         date: "",
         user_name: "",
+        arr_project: [],
       },
       searchOptions: [
         {
@@ -523,7 +533,7 @@ export default {
       ],
       checkedOrderData: [],
       totalMoney: "",
-
+      downloadLoading: false,
       //再次回款
       againListData: [],
       againListLoading: false,
@@ -549,6 +559,33 @@ export default {
       this.getOrgName();
       if (this.id) {
         this.getReceivableInfo();
+      }
+    },
+    handleExport() {
+      this.$refs.formData.validate((valid) => {
+        if (valid) {
+          console.log(this.searchData);
+          if (this.searchData.arr_project.length != 1) {
+            this.$message.warning("请选择单个项目！");
+            return;
+          }
+          this.getExcelOrgReceivable();
+        }
+      });
+    },
+    async getExcelOrgReceivable() {
+      const data = {
+        ...this.formData,
+        project_id: this.searchData.arr_project[0],
+      };
+      this.downloadLoading = true;
+      const res = await getExcelOrgReceivable(data).catch(() => {});
+      this.downloadLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.visible = false;
+        this.$emit("on-success");
+        download(res.data.url);
       }
     },
     disabledDate(e) {

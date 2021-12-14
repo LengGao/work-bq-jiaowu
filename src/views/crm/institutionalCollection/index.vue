@@ -9,10 +9,23 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div>
+        <div class="actions">
           <el-button type="primary" @click="openAddCollectionDialog('')"
             >添加回款</el-button
           >
+          <el-upload
+            name="excel"
+            :headers="headers"
+            :action="orgReceivableImportUrl"
+            :show-file-list="false"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            :before-upload="handleBeforeUpload"
+          >
+            <el-button type="primary" :loading="uploadLoading"
+              >导入回款</el-button
+            >
+          </el-upload>
         </div>
       </header>
       <!--列表-->
@@ -149,11 +162,13 @@
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
+import { download } from "@/utils";
 import {
   getOrgReceivableList,
   getOrgName,
   getReceivableStatus,
   getBelongPeople,
+  orgReceivableImportUrl,
 } from "@/api/crm";
 import AddCollection from "./components/AddCollection";
 export default {
@@ -164,6 +179,10 @@ export default {
   },
   data() {
     return {
+      orgReceivableImportUrl,
+      headers: {
+        token: this.$store.state.user.token,
+      },
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -245,6 +264,7 @@ export default {
 
       addCollectionVisible: false,
       currentId: "",
+      uploadLoading: false,
     };
   },
   created() {
@@ -254,6 +274,25 @@ export default {
     this.getReceivableStatus();
   },
   methods: {
+    handleBeforeUpload() {
+      this.uploadLoading = true;
+    },
+    handleUploadSuccess(res) {
+      this.uploadLoading = false;
+      if (res.code !== 0) {
+        this.$message.error(res.message);
+      } else {
+        this.$message.success(res.message);
+        this.getOrgReceivableList();
+        if (res.data.error_data) {
+          download(res.data.error_data);
+        }
+      }
+    },
+    handleUploadError() {
+      this.uploadLoading = false;
+      this.$message.error("导入失败");
+    },
     openAddCollectionDialog(id) {
       this.currentId = id;
       this.addCollectionVisible = true;
@@ -339,6 +378,13 @@ export default {
     header {
       display: flex;
       justify-content: space-between;
+      .actions {
+        display: flex;
+        button {
+          align-self: flex-start;
+          margin-left: 10px;
+        }
+      }
     }
   }
 }

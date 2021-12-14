@@ -507,4 +507,37 @@ export function changeStaffOwner(data) {
         data
     })
 }
-
+// 订单申请异动
+export function orderReshuffle(data) {
+    return request({
+        url: 'CrmOrder/reshuffle',
+        method: 'post',
+        data
+    })
+}
+// 订单异动申请列表
+export function getUnusualList(data) {
+    return request({
+        url: 'CrmOrder/unusual',
+        method: 'post',
+        data
+    })
+}
+// 订单异动-审批
+export function orderUnusualApprove(data) {
+    return request({
+        url: 'CrmOrder/action',
+        method: 'post',
+        data
+    })
+}
+// 机构回款模板导出
+export function getExcelOrgReceivable(data) {
+    return request({
+        url: '/OrgReceivable/getExcel',
+        method: 'post',
+        data
+    })
+}
+// 机构回款模板导入
+export const orgReceivableImportUrl = `${process.env.VUE_APP_LOACTION}/OrgReceivable/importExcel`
