@@ -51,9 +51,9 @@
       </div>
       <div class="info-item">
         <span class="info-item__name">回款总金额：</span>
-        <span class="info-item__value"
-          >￥{{ orderData.receivable_money || 0 }}</span
-        >
+        <span class="info-item__value">{{
+          orderData.receivable_money | moneyFormat
+        }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">订单备注：</span>
@@ -117,7 +117,18 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> ￥{{ row.order_money || 0 }} </span>
+          <span> {{ row.order_money | moneyFormat }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="本次回款金额"
+        align="center"
+        min-width="100"
+        prop="pay_money"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span> {{ row.receivable_money | moneyFormat }} </span>
         </template>
       </el-table-column>
       <el-table-column
@@ -128,7 +139,7 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> ￥{{ row.pay_money || 0 }} </span>
+          <span> {{ row.pay_money | moneyFormat }} </span>
         </template>
       </el-table-column>
       <el-table-column
@@ -140,7 +151,7 @@
       </el-table-column>
       <el-table-column
         prop="progress"
-        label="回款进度"
+        label="已回款进度"
         min-width="140"
         show-overflow-tooltip
       >
@@ -149,9 +160,21 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="success_progress"
+        label="审批后回款进度"
+        min-width="140"
+        show-overflow-tooltip
+        v-if="!orderData.check_state"
+      >
+        <template slot-scope="{ row }">
+          <el-progress :percentage="+row.success_progress || 0"></el-progress>
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="pay_status"
         label="支付状态"
         min-width="100"
+        align="center"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
@@ -160,7 +183,12 @@
           }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" fixed="right" min-width="100">
+      <el-table-column
+        label="操作"
+        fixed="right"
+        align="center"
+        min-width="100"
+      >
         <template slot-scope="{ row }">
           <el-button type="text" @click="toStudentOrderDetail(row.order_id)"
             >订单详情</el-button
@@ -171,7 +199,7 @@
     <AddCollection
       v-model="addCollectionVisible"
       :id="orderData.id"
-      @on-success="getReceivableInfo"
+      @on-success="$router.back()"
     />
   </div>
 </template>

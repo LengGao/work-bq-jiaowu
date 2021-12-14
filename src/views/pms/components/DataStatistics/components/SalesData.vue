@@ -25,12 +25,26 @@
         }}</span>
       </p>
     </div>
+
     <div class="sales-data-item">
       <p class="sales-data-item-title">回款金额</p>
       <p class="sales-data-item-value">
         {{ unitFormat(data.payMoney)
         }}<span class="unit">{{ data.payMoney >= 10000 ? "万元" : "元" }}</span>
       </p>
+    </div>
+    <div class="sales-data-item">
+      <p class="sales-data-item-title">退款金额</p>
+      <p class="sales-data-item-value">
+        {{ unitFormat(Math.abs(data.refundAmount))
+        }}<span class="unit">{{
+          Math.abs(data.refundAmount) >= 10000 ? "万元" : "元"
+        }}</span>
+      </p>
+    </div>
+    <div class="sales-data-item" @click="$emit('item-click', 4)">
+      <p class="sales-data-item-title">退款订单</p>
+      <p class="sales-data-item-value">{{ data.refundOrderNum || 0 }}</p>
     </div>
   </div>
 </template>

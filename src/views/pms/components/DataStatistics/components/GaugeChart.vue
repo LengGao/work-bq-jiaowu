@@ -29,6 +29,15 @@
           }}</span>
         </p>
       </div>
+      <div class="gauge-info-item">
+        <p class="gauge-info-item-title">退款金额</p>
+        <p class="gauge-info-item-value">
+          {{ unitFormat(Math.abs(data.refundAmount))
+          }}<span class="unit">{{
+            Math.abs(data.refundAmount) >= 10000 ? "万元" : "元"
+          }}</span>
+        </p>
+      </div>
     </div>
   </div>
 </template>

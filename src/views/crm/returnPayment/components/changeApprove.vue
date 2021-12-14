@@ -21,6 +21,13 @@
         :cell-style="{ 'text-align': 'center' }"
       >
         <el-table-column
+          prop="log_id"
+          label="ID"
+          min-width="70"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="pay_date"
           label="回款日期"
           min-width="100"

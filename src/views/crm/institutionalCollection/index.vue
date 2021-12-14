@@ -28,6 +28,13 @@
           :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
+            prop="log_id"
+            label="ID"
+            min-width="70"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="pay_date"
             label="回款日期"
             min-width="100"
@@ -97,6 +104,13 @@
           <el-table-column
             prop="check_time"
             label="入账时间"
+            min-width="160"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
             min-width="160"
             show-overflow-tooltip
           >
