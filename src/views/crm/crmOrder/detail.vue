@@ -1,26 +1,49 @@
 <template>
-  <div class="change-detail" v-loading="loading">
+  <div class="crm-order-detail" v-loading="loading">
     <el-alert
+      type="warning"
       show-icon
+      class="unusual-reason"
       v-if="
         detailData.reshuffle &&
         detailData.reshuffle_list &&
         detailData.reshuffle_list.length
       "
-      :title="`${detailData.reshuffle_list[unusualIndex].reason} ${detailData.reshuffle_list[unusualIndex].desc}`"
-      type="warning"
-      effect="dark"
-      style="margin-bottom: 10px"
     >
+      <p style="border-bottom: 1px solid #fff; padding-bottom: 6px">
+        {{ detailData.reshuffle_list[unusualIndex].reason }}
+      </p>
+      <p style="padding-top: 6px">
+        {{ detailData.reshuffle_list[unusualIndex].desc }}
+      </p>
     </el-alert>
     <div class="change-title">
       <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
-      <span
-        v-if="!detailData.is_deleted"
-        class="change-status"
-        :type="verifyStatusMap[detailData.verify_status || 1].type"
-        >{{ verifyStatusMap[detailData.verify_status || 1].text }}</span
-      >
+      <template v-if="!detailData.is_deleted">
+        <span
+          v-if="
+            detailData.reshuffle &&
+            detailData.reshuffle_list &&
+            detailData.reshuffle_list.length
+          "
+          class="change-status"
+          :type="
+            unusualStatusMap[detailData.reshuffle_list[unusualIndex].status]
+              .type
+          "
+          >{{
+            unusualStatusMap[detailData.reshuffle_list[unusualIndex].status]
+              .text
+          }}</span
+        >
+        <span
+          v-else
+          class="change-status"
+          :type="verifyStatusMap[detailData.verify_status || 1].type"
+          >{{ verifyStatusMap[detailData.verify_status || 1].text }}</span
+        >
+      </template>
+
       <span v-else class="change-status" type="del">该订单已删除</span>
       <div class="btn-edit">
         <template v-if="$route.query.isFromList">
@@ -117,6 +140,26 @@
         :key="index"
       ></el-tab-pane>
     </el-tabs>
+    <el-alert
+      class="reject-tips"
+      v-if="
+        activeName.includes(unusualLabelName) &&
+        detailData.reshuffle_list[unusualIndex].status === 3
+      "
+      title="驳回原因："
+      :description="detailData.reshuffle_list[unusualIndex].tips || '--'"
+      type="info"
+    >
+    </el-alert>
+    <!-- <p
+      class="reject-tips"
+      v-if="
+        activeName.includes(unusualLabelName) &&
+        detailData.reshuffle_list[unusualIndex].status === 3
+      "
+    >
+      驳回原因：{{ detailData.reshuffle_list[unusualIndex].tips || "--" }}
+    </p> -->
     <component
       :is="getComponent"
       :data="
@@ -181,6 +224,24 @@ export default {
         },
         9: {
           text: "驳回不通过",
+          type: "error",
+        },
+      },
+      unusualStatusMap: {
+        0: {
+          text: "异动待审核",
+          type: "info",
+        },
+        1: {
+          text: "异动审核中",
+          type: "primary",
+        },
+        2: {
+          text: "异动审核通过",
+          type: "success",
+        },
+        3: {
+          text: "异动驳回不通过",
           type: "error",
         },
       },
@@ -299,8 +360,20 @@ export default {
 };
 </script>
 <style lang="less">
-.change-detail {
+.crm-order-detail {
   padding: 16px;
+  .unusual-reason {
+    background-color: olive;
+    margin-bottom: 10px;
+    color: #fff;
+    p {
+      color: #fff;
+      font-size: 14px;
+    }
+  }
+  .reject-tips {
+    margin-bottom: 10px;
+  }
   .change-title {
     display: flex;
     align-items: center;

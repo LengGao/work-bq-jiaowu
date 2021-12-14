@@ -21,6 +21,9 @@
           placeholder="选择日期"
           v-model="formData.pay_date"
           value-format="yyyy-MM-dd"
+          :picker-options="{
+            disabledDate: disabledDate,
+          }"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="回款期次" prop="region">
@@ -135,6 +138,9 @@ export default {
   },
   methods: {
     handleOpen() {},
+      disabledDate(e) {
+      return e.getTime() > Date.now();
+    },
     async submit() {
       const data = {
         ...this.formData,

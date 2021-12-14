@@ -13,7 +13,7 @@
         <span class="title">未回款金额：</span>
         <span class="value">￥{{ data.overdue_money }} </span>
       </div>
-      <div class="actions">
+      <div class="actions" v-if="!$route.query.isFromApprove">
         <el-button type="primary" @click="handleAddPlan"
           >配置回款计划</el-button
         >

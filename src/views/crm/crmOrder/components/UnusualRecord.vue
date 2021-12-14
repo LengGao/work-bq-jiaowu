@@ -2,16 +2,20 @@
   <div class="refund-record">
     <div class="header">
       <div>
-        <span class="title">新订单金额：</span>
-        <span class="value">￥{{ data.order_money }} </span>
+        <span class="title">异动后订单金额：</span>
+        <span class="value">{{ data.order_money | moneyFormat }} </span>
+      </div>
+      <div>
+        <span class="title">优惠金额：</span>
+        <span class="value">{{ data.reduction | moneyFormat }} </span>
       </div>
       <div>
         <span class="title">已回款金额：</span>
-        <span class="value">￥{{ data.pay_money }} </span>
+        <span class="value">{{ data.pay_money | moneyFormat }} </span>
       </div>
       <div>
         <span class="title">未回款金额：</span>
-        <span class="value">￥{{ data.overdue_money }} </span>
+        <span class="value">{{ data.overdue_money | moneyFormat }} </span>
       </div>
     </div>
     <Title text="回款记录" style="margin-top: 20px"></Title>

@@ -182,6 +182,9 @@ export default {
       ],
     };
   },
+  activated() {
+    this.getUnusualList();
+  },
   created() {
     this.getUnusualList();
   },
@@ -215,7 +218,7 @@ export default {
       const res = await orderUnusualApprove(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getCrmApproveOrder();
+        this.getUnusualList();
       }
     },
     handleSearch(data) {
@@ -223,7 +226,7 @@ export default {
       this.searchData = {
         ...data,
       };
-      this.getUnusualList(data);
+      this.getUnusualList();
     },
     handlePageChange(val) {
       this.pageNum = val;

@@ -21,6 +21,9 @@
           placeholder="选择日期"
           v-model="formData.pay_date"
           value-format="yyyy-MM-dd"
+          :picker-options="{
+            disabledDate: disabledDate,
+          }"
         ></el-date-picker>
       </el-form-item>
 
@@ -119,6 +122,9 @@ export default {
       if ("pay_date" in this.data) {
         this.formData = { ...this.data };
       }
+    },
+    disabledDate(e) {
+      return e.getTime() > Date.now();
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
