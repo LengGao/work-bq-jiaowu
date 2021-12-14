@@ -531,4 +531,13 @@ export function orderUnusualApprove(data) {
         data
     })
 }
-
+// 机构回款模板导出
+export function getExcelOrgReceivable(data) {
+    return request({
+        url: '/OrgReceivable/getExcel',
+        method: 'post',
+        data
+    })
+}
+// 机构回款模板导入
+export const orgReceivableImportUrl = `${process.env.VUE_APP_LOACTION}/OrgReceivable/importExcel`
