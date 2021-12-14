@@ -536,6 +536,7 @@ export default {
         name: "crmOrderDetail",
         query: {
           id,
+          isFromList:1
         },
       });
     },
@@ -664,14 +665,6 @@ export default {
         name: "cusdetail",
         query: {
           uid,
-        },
-      });
-    },
-    orderDetail(ab) {
-      this.$router.push({
-        name: "orderdetail",
-        query: {
-          order_id: ab.order_id,
         },
       });
     },

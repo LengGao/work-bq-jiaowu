@@ -48,28 +48,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="收款人员">
-        <el-select
-          class="input"
-          v-model="formData.admin_id"
-          placeholder="请选择"
-          clearable
-          filterable
-          @change="handleStaffChange"
-        >
-          <el-option
-            v-for="item in staffOptions"
-            :key="item.staff_id"
-            :value="item.staff_id"
-            :label="item.staff_name"
-          >
-            <span style="float: left">{{ item.staff_name }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{
-              item.group_name
-            }}</span>
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="备注" prop="tips">
         <el-input
           style="width: 550px"
@@ -118,8 +96,6 @@ export default {
       visible: this.value,
       payWays,
       formData: {
-        admin_id: "",
-        admin_name: "",
         tips: "",
         pay_date: "",
         pay_money: "",
@@ -142,15 +118,6 @@ export default {
     handleOpen() {
       if ("pay_date" in this.data) {
         this.formData = { ...this.data };
-      }
-    },
-    handleStaffChange(id) {
-      if (id) {
-        this.staffOptions.forEach((item) => {
-          if (item.staff_id === id) {
-            this.formData.admin_name = item.staff_name;
-          }
-        });
       }
     },
     submitForm(formName) {

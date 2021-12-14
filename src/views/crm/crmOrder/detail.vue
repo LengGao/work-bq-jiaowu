@@ -1,5 +1,18 @@
 <template>
   <div class="change-detail" v-loading="loading">
+    <el-alert
+      show-icon
+      v-if="
+        detailData.reshuffle &&
+        detailData.reshuffle_list &&
+        detailData.reshuffle_list.length
+      "
+      :title="`${detailData.reshuffle_list[unusualIndex].reason} ${detailData.reshuffle_list[unusualIndex].desc}`"
+      type="warning"
+      effect="dark"
+      style="margin-bottom: 10px"
+    >
+    </el-alert>
     <div class="change-title">
       <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
       <span
@@ -10,42 +23,70 @@
       >
       <span v-else class="change-status" type="del">该订单已删除</span>
       <div class="btn-edit">
-        <el-button
-          type="primary"
-          v-if="detailData.verify_status === 3 && detailData.is_my_review !== 1"
-          @click="toOrderChange"
-          >申请异动</el-button
-        >
-        <el-button
-          type="primary"
-          v-if="detailData.verify_status === 1 && detailData.is_my_review !== 1"
-          @click="ActionConfirm(3)"
-          >撤回</el-button
-        >
-        <el-button
-          @click="ActionConfirm(4)"
-          v-if="detailData.verify_status === 8 && !detailData.is_deleted"
-          >删除</el-button
-        >
-        <el-button
-          v-if="detailData.is_my_review"
-          type="danger"
-          @click="approveConfirm(2)"
-          >驳回</el-button
-        >
-        <el-button
-          v-if="detailData.is_my_review"
-          type="primary"
-          @click="approveConfirm(1)"
-          >通过</el-button
-        >
+        <template v-if="$route.query.isFromList">
+          <el-button
+            type="primary"
+            v-if="detailData.verify_status === 3 && !detailData.reshuffle"
+            @click="toOrderChange"
+            >申请异动</el-button
+          >
+          <el-button
+            type="primary"
+            v-if="detailData.verify_status === 1"
+            @click="ActionConfirm(3)"
+            >撤回</el-button
+          >
+          <el-button
+            @click="ActionConfirm(4)"
+            v-if="detailData.verify_status === 8 && !detailData.is_deleted"
+            >删除</el-button
+          >
 
-        <el-button
-          v-if="detailData.verify_status === 2"
-          type="primary"
-          @click="hurryUp"
-          >催办</el-button
-        >
+          <el-button
+            v-if="detailData.verify_status === 2"
+            type="primary"
+            @click="hurryUp"
+            >催办</el-button
+          >
+        </template>
+        <template v-if="$route.query.isFromApprove">
+          <!-- 异动审批 -->
+          <template v-if="$route.query.isOrderUnusual">
+            <el-button
+              v-if="
+                detailData.reshuffle_list &&
+                detailData.reshuffle_list[0].my_reshuffle_review
+              "
+              type="danger"
+              @click="approveConfirm(2)"
+              >驳回</el-button
+            >
+            <el-button
+              v-if="
+                detailData.reshuffle_list &&
+                detailData.reshuffle_list[0].my_reshuffle_review
+              "
+              type="primary"
+              @click="approveConfirm(1)"
+              >通过</el-button
+            >
+          </template>
+          <!-- 订单审批 -->
+          <template v-else>
+            <el-button
+              v-if="detailData.is_my_review"
+              type="danger"
+              @click="approveConfirm(2)"
+              >驳回</el-button
+            >
+            <el-button
+              v-if="detailData.is_my_review"
+              type="primary"
+              @click="approveConfirm(1)"
+              >通过</el-button
+            >
+          </template>
+        </template>
       </div>
     </div>
     <el-steps simple style="margin: 20px 0" v-if="detailData.verify_status">
@@ -65,17 +106,35 @@
         v-if="![8, 9].includes(detailData.verify_status)"
       ></el-step>
     </el-steps>
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="activeName" @tab-click="handleTabClick">
       <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
       <el-tab-pane label="回款记录" name="CollectionRecord"></el-tab-pane>
       <el-tab-pane label="审批记录" name="ApproveRecord"></el-tab-pane>
+      <el-tab-pane
+        :label="`${unusualLabelName}-${index + 1}`"
+        :name="`${unusualLabelName}-${index + 1}`"
+        v-for="(item, index) in detailData.reshuffle_list"
+        :key="index"
+      ></el-tab-pane>
     </el-tabs>
-    <component :is="getComponent" :data="detailData" />
+    <component
+      :is="getComponent"
+      :data="
+        activeName.includes(unusualLabelName)
+          ? detailData.reshuffle_list[unusualIndex].new_detail
+          : detailData
+      "
+    />
   </div>
 </template>
 
 <script>
-import { getCrmOrderDetail, crmOrderApprove, hurryUp } from "@/api/crm";
+import {
+  getCrmOrderDetail,
+  crmOrderApprove,
+  hurryUp,
+  orderUnusualApprove,
+} from "@/api/crm";
 export default {
   name: "crmOrderDetail",
   data() {
@@ -125,12 +184,17 @@ export default {
           type: "error",
         },
       },
+      unusualIndex: 0,
+      unusualLabelName: "异动记录",
     };
   },
   computed: {
     getComponent() {
       if (this.activeName) {
-        return () => import(`./components/${this.activeName}.vue`);
+        let componentName = this.activeName.includes(this.unusualLabelName)
+          ? "UnusualRecord"
+          : this.activeName;
+        return () => import(`./components/${componentName}.vue`);
       }
     },
   },
@@ -138,6 +202,12 @@ export default {
     this.getCrmOrderDetail();
   },
   methods: {
+    handleTabClick(e) {
+      const label = e.label;
+      if (label.includes(this.unusualLabelName)) {
+        this.unusualIndex = label.split("-")[1] - 1;
+      }
+    },
     toOrderChange() {
       this.$router.push({
         name: "applyChange",
@@ -168,15 +238,25 @@ export default {
         .catch(() => {});
     },
     async approveCrmOrder(action, tips) {
-      const data = {
+      // 是否是异动审批
+      const isOrderUnusual = !!this.$route.query.isOrderUnusual;
+      let data = {
         order_id: this.detailData.order_id,
         action,
         tips,
       };
-      const res = await crmOrderApprove(data);
+      if (isOrderUnusual) {
+        data = {
+          id: this.detailData.reshuffle,
+          verify: action,
+          tips,
+        };
+      }
+      const approveApi = isOrderUnusual ? orderUnusualApprove : crmOrderApprove;
+      const res = await approveApi(data);
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.getCrmOrderDetail();
+        this.$router.back();
       }
     },
     // 撤销删除订单

@@ -60,6 +60,14 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="优惠金额">
+        <el-input
+          type="number"
+          class="input"
+          v-model="formData.reduction"
+          placeholder="请输入优惠金额"
+        />
+      </el-form-item>
       <template v-if="detailData.type === 1">
         <el-form-item label="考前辅导费：">
           <span>{{ detailData.pre_tutor | moneyFormat }}</span>
@@ -462,6 +470,7 @@ export default {
         verify_status: 0,
       },
       formData: {
+        reduction: "",
         order_money: "",
         union_staff_id: "",
         tips: "",
@@ -514,12 +523,15 @@ export default {
     async orderReshuffle() {
       const data = {
         ...this.formData,
+        union_staff_id: (this.formData.union_staff_id || []).join(","),
         pay_plan: this.detailData.pay_plan,
         pay_log: this.detailData.pay_log,
+        order_id: this.detailData.order_id,
       };
       const res = await orderReshuffle(data);
       if (res.code === 0) {
         this.$message.success(res.message);
+        this.hanldeCancel();
       }
     },
     onSetRecordSuccess(data) {
@@ -569,6 +581,13 @@ export default {
       this.loading = false;
       if (res.code === 0) {
         this.detailData = res.data;
+        const union_staff_id = res.data.union_staff_id;
+        this.formData.union_staff_id = union_staff_id
+          ? res.data.union_staff_id.split(",").map((item) => +item)
+          : "";
+        this.formData.reduction = res.data.reduction;
+        this.formData.order_money = res.data.order_money;
+        this.formData.tips = res.data.tips;
       }
     },
   },

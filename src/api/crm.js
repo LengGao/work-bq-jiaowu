@@ -515,4 +515,20 @@ export function orderReshuffle(data) {
         data
     })
 }
+// 订单异动申请列表
+export function getUnusualList(data) {
+    return request({
+        url: 'CrmOrder/unusual',
+        method: 'post',
+        data
+    })
+}
+// 订单异动-审批
+export function orderUnusualApprove(data) {
+    return request({
+        url: 'CrmOrder/action',
+        method: 'post',
+        data
+    })
+}
 

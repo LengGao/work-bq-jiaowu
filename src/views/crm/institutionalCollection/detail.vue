@@ -131,7 +131,13 @@
           <span> ￥{{ row.pay_money || 0 }} </span>
         </template>
       </el-table-column>
-
+      <el-table-column
+        prop="pay_type"
+        label="支付方式"
+        min-width="100"
+        show-overflow-tooltip
+      >
+      </el-table-column>
       <el-table-column
         prop="progress"
         label="回款进度"
