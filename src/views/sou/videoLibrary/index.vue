@@ -265,10 +265,6 @@ export default {
       row.qrLoading = true;
       const res = await getVideoQrcode(data).catch(() => {});
       row.qrLoading = false;
-      if (res.code != 0) {
-        this.$message.error(res.message);
-        return;
-      }
       const url = URL.createObjectURL(new Blob([res], { type: "image/png" }));
       downloadQRcode(url, row.title);
     },
