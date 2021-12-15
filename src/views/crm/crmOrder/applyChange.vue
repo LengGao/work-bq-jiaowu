@@ -407,7 +407,12 @@
               @click="handleAdd(row, index)"
               >编辑</el-button
             >
-            <el-button type="text" v-if="row.pay_status === 1">删除</el-button>
+            <el-button
+              type="text"
+              v-if="row.pay_status === 1"
+              @click="handleDel(index)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -547,6 +552,9 @@ export default {
     handleAddPlan() {
       this.planDialogTitle = "配置回款计划";
       this.planDialogVisible = true;
+    },
+    handleDel(index) {
+      this.detailData.pay_log.splice(index, 1);
     },
     handleAdd(row, index) {
       this.editRecord = row || {};
