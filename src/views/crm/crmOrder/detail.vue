@@ -46,32 +46,6 @@
 
       <span v-else class="change-status" type="del">该订单已删除</span>
       <div class="btn-edit">
-        <template v-if="$route.query.isFromList">
-          <el-button
-            type="primary"
-            v-if="detailData.pay_status < 4 && !detailData.reshuffle"
-            @click="toOrderChange"
-            >申请异动</el-button
-          >
-          <el-button
-            type="primary"
-            v-if="detailData.verify_status === 1"
-            @click="ActionConfirm(3)"
-            >撤回</el-button
-          >
-          <el-button
-            @click="ActionConfirm(4)"
-            v-if="detailData.verify_status === 8 && !detailData.is_deleted"
-            >删除</el-button
-          >
-
-          <el-button
-            v-if="detailData.verify_status === 2"
-            type="primary"
-            @click="hurryUp"
-            >催办</el-button
-          >
-        </template>
         <template v-if="$route.query.isFromApprove">
           <!-- 异动审批 -->
           <template v-if="$route.query.isOrderUnusual">
@@ -109,6 +83,32 @@
               >通过</el-button
             >
           </template>
+        </template>
+        <template v-else>
+          <el-button
+            type="primary"
+            v-if="detailData.pay_status < 4 && !detailData.reshuffle"
+            @click="toOrderChange"
+            >申请异动</el-button
+          >
+          <el-button
+            type="primary"
+            v-if="detailData.verify_status === 1 && !detailData.reshuffle"
+            @click="ActionConfirm(3)"
+            >撤回</el-button
+          >
+          <el-button
+            @click="ActionConfirm(4)"
+            v-if="detailData.verify_status === 8 && !detailData.is_deleted"
+            >删除</el-button
+          >
+
+          <el-button
+            v-if="detailData.verify_status === 2"
+            type="primary"
+            @click="hurryUp"
+            >催办</el-button
+          >
         </template>
       </div>
     </div>

@@ -48,6 +48,9 @@
                 placeholder="选择日期"
                 v-model="row.day"
                 value-format="yyyy-MM-dd"
+                :picker-options="{
+                  disabledDate: disabledDate,
+                }"
               ></el-date-picker>
             </el-form-item>
           </template>
@@ -156,6 +159,9 @@ export default {
     },
   },
   methods: {
+    disabledDate(e) {
+      return Date.now() - 86400000 > e.getTime();
+    },
     handleDelRow(index) {
       this.formData.tableData.splice(index, 1);
     },
