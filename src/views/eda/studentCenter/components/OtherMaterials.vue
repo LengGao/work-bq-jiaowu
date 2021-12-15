@@ -79,19 +79,25 @@
       :title="dialogTitle"
       :id="currentId"
       :file-name="currentName"
+       :uid="uid"
       @on-success="getUserFileList"
     />
   </div>
 </template>
 
 <script>
-import { download } from "@/utils/index";
 import OtherMaterialsDialog from "./OtherMaterialsDialog";
 import { getUserFileList, deleteUserFile } from "@/api/eda";
 export default {
   name: "OtherMaterials",
   components: {
     OtherMaterialsDialog,
+  },
+  props: {
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
   },
   data() {
     return {
@@ -171,7 +177,7 @@ export default {
     // 课程资料列表
     async getUserFileList() {
       const data = {
-        uid: this.$route.query?.uid || "",
+        uid: this.uid,
         page: this.pageNum,
         ...this.searchData,
       };

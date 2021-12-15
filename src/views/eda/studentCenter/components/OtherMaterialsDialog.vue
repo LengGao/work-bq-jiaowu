@@ -72,6 +72,10 @@ export default {
       type: [String, Number],
       default: "",
     },
+    uid: {
+      type: [String, Number],
+      default: "",
+    },
   },
   data() {
     return {
@@ -147,7 +151,7 @@ export default {
             this.formData.id = this.id;
           } else {
             //新增
-            this.formData.uid = this.$route.query.uid || "";
+            this.formData.uid = this.uid;
           }
           // 修改文件名
           if (!uploadFiles.length) {

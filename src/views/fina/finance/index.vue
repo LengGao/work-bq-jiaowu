@@ -38,7 +38,7 @@
         :is="getComponent"
         @on-basic-success="getStudentBasicDetail"
         :datas="detailData"
-        :uid="detailData.uid"
+        :uid="$route.query.uid"
       />
       <!-- 报名 -->
       <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
