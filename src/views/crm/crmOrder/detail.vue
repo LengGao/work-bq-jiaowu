@@ -49,7 +49,7 @@
         <template v-if="$route.query.isFromList">
           <el-button
             type="primary"
-            v-if="detailData.verify_status === 3 && !detailData.reshuffle"
+            v-if="detailData.pay_status < 4 && !detailData.reshuffle"
             @click="toOrderChange"
             >申请异动</el-button
           >
