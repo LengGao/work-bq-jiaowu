@@ -48,6 +48,9 @@
                 placeholder="选择日期"
                 v-model="row.day"
                 value-format="yyyy-MM-dd"
+                :picker-options="{
+                  disabledDate: disabledDate,
+                }"
               ></el-date-picker>
             </el-form-item>
           </template>
@@ -71,18 +74,6 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <!-- <el-table-column
-          label="备注信息"
-          align="center"
-          min-width="200"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <el-form-item>
-              <el-input v-model="row.remark" placeholder="请输入" />
-            </el-form-item>
-          </template>
-        </el-table-column> -->
         <el-table-column
           label="操作"
           fixed="right"
@@ -106,37 +97,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- <div class="tips">
-        <div class="tips-item tips-type">
-          <span>回款提醒：</span>
-          <el-select
-            v-model="formData.pay_type"
-            placeholder="请选择"
-            class="input"
-            filterable
-          >
-            <el-option
-              v-for="item in tipOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.label"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="tips-item">
-          <span>总计划期次：</span>
-          <span>3期</span>
-        </div>
-        <div class="tips-item">
-          <span>总回款金额：</span>
-          <span>¥ 7800.00</span>
-        </div>
-        <div class="tips-item">
-          <span>总回款占比：</span>
-          <span>100%</span>
-        </div>
-      </div> -->
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
@@ -151,9 +111,8 @@
 </template>
 
 <script>
-import { createOrderPayPlan } from "@/api/crm";
 export default {
-  name: "AddCollectionPlan",
+  name: "SetCollectionPlan",
   props: {
     value: {
       type: Boolean,
@@ -161,10 +120,6 @@ export default {
     },
     title: {
       type: String,
-      default: "",
-    },
-    orderId: {
-      type: [String, Number],
       default: "",
     },
     data: {
@@ -176,7 +131,6 @@ export default {
     return {
       visible: this.value,
       formData: {
-        pay_type: "",
         tableData: [
           {
             day: "",
@@ -185,12 +139,6 @@ export default {
         ],
       },
       addLoading: false,
-      tipOptions: [
-        {
-          label: "准时提醒",
-          value: "",
-        },
-      ],
     };
   },
   watch: {
@@ -199,6 +147,9 @@ export default {
     },
   },
   methods: {
+    disabledDate(e) {
+      return Date.now() - 86400000 > e.getTime();
+    },
     handleDelRow(index) {
       this.formData.tableData.splice(index, 1);
     },
@@ -210,10 +161,7 @@ export default {
     },
     handleOpen() {
       if (this.data.length) {
-        this.formData.tableData = this.data.map(({ day, money }) => ({
-          day,
-          money,
-        }));
+        this.formData.tableData = this.data.map((item) => ({ ...item }));
       }
     },
     addOption() {
@@ -225,28 +173,15 @@ export default {
     delOption(index) {
       this.formData.options.splice(index, 1);
     },
-    async submit() {
-      const data = {
-        data: JSON.stringify(this.formData.tableData),
-      };
-      if (this.orderId) {
-        data.order_id = this.orderId;
-      }
-      this.addLoading = true;
-      const res = await createOrderPayPlan(data).catch(() => {
-        this.addLoading = false;
-      });
-      this.addLoading = false;
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.visible = false;
-        this.$emit("on-success", res.data);
-      }
-    },
+
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.$emit(
+            "on-success",
+            this.formData.tableData.map((item) => ({ ...item }))
+          );
+          this.hanldeCancel();
         }
       });
     },

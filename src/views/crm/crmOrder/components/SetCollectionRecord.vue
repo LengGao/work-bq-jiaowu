@@ -21,26 +21,12 @@
           placeholder="选择日期"
           v-model="formData.pay_date"
           value-format="yyyy-MM-dd"
+          :picker-options="{
+            disabledDate: disabledDate,
+          }"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="回款期次" prop="region">
-        <el-select
-          class="input"
-          v-model="formData.plan_id"
-          placeholder="请选择回款期次"
-          clearable
-        >
-          <el-option
-            v-for="(item, index) in planOptions"
-            :key="item.id"
-            :label="`第${index + 1}期 ${item.day} ￥${(
-              +item.money || 0
-            ).toFixed(2)}`"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
+
       <el-form-item label="回款金额" prop="pay_money">
         <el-input
           class="input"
@@ -87,10 +73,9 @@
 </template>
 
 <script>
-import { payLogCreate } from "@/api/crm";
 import { payWays } from "@/utils";
 export default {
-  name: "AddCollectionRecord",
+  name: "SetCollectionRecord",
   props: {
     value: {
       type: Boolean,
@@ -100,13 +85,13 @@ export default {
       type: String,
       default: "",
     },
-    orderId: {
-      type: [String, Number],
-      default: "",
-    },
-    planOptions: {
+    staffOptions: {
       type: Array,
       default: () => [],
+    },
+    data: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
@@ -114,7 +99,6 @@ export default {
       visible: this.value,
       payWays,
       formData: {
-        plan_id: "",
         tips: "",
         pay_date: "",
         pay_money: "",
@@ -134,27 +118,19 @@ export default {
     },
   },
   methods: {
-    handleOpen() {},
-    async submit() {
-      const data = {
-        ...this.formData,
-        order_id: this.orderId,
-      };
-      this.addLoading = true;
-      const res = await payLogCreate(data).catch(() => {
-        this.addLoading = false;
-      });
-      this.addLoading = false;
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.visible = false;
-        this.$emit("on-success");
+    handleOpen() {
+      if ("pay_date" in this.data) {
+        this.formData = { ...this.data };
       }
+    },
+    disabledDate(e) {
+      return e.getTime() > Date.now();
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.$emit("on-success", { ...this.formData, pay_status: 1 });
+          this.hanldeCancel();
         }
       });
     },

@@ -24,6 +24,7 @@ const filters = {
     },
     // 视频时长
     filterDuration(val) {
+        val = (+val || 0).toFixed(0)
         let s = val
         let h = 0
         let m = 0

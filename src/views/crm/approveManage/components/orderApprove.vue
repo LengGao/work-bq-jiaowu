@@ -433,6 +433,7 @@ export default {
         name: "crmOrderDetail",
         query: {
           id,
+          isFromApprove: 1,
         },
       });
     },

@@ -54,9 +54,12 @@
             min-width="160"
           >
             <template slot-scope="scope">
-              <div class="link" @click="toCrmOrderDetail(scope.row.order_id)">
+              <el-button
+                type="text"
+                @click="toCrmOrderDetail(scope.row.order_id)"
+              >
                 {{ scope.row.order_no }}
-              </div>
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -73,9 +76,9 @@
             show-overflow-tooltip
           >
             <template slot-scope="scope">
-              <div class="link" @click="coursDetail(scope.row.uid)">
+              <el-button type="text" @click="coursDetail(scope.row.uid)">
                 {{ scope.row.surname }}
-              </div>
+              </el-button>
             </template>
           </el-table-column>
           <el-table-column
@@ -140,15 +143,18 @@
             prop="verify_status"
             label="审批状态"
             min-width="100"
-            show-overflow-tooltip
+            style="overflow: auto"
+            class-name="badge"
           >
             <template slot-scope="{ row }">
-              <el-tag
-                size="small"
-                :type="verifyStatusMap[row.verify_status || 0].type"
-              >
-                {{ verifyStatusMap[row.verify_status || 0].text }}
-              </el-tag>
+              <el-badge :value="row.reshuffle ? '异' : ''" class="item">
+                <el-tag
+                  size="small"
+                  :type="verifyStatusMap[row.verify_status || 0].type"
+                >
+                  {{ verifyStatusMap[row.verify_status || 0].text }}
+                </el-tag>
+              </el-badge>
             </template>
           </el-table-column>
           <el-table-column
@@ -536,6 +542,7 @@ export default {
         name: "crmOrderDetail",
         query: {
           id,
+          isFromList: 1,
         },
       });
     },
@@ -667,14 +674,6 @@ export default {
         },
       });
     },
-    orderDetail(ab) {
-      this.$router.push({
-        name: "orderdetail",
-        query: {
-          order_id: ab.order_id,
-        },
-      });
-    },
   },
 };
 </script>
@@ -697,40 +696,12 @@ header {
   width: 100%;
   border-bottom: 15px solid #f2f6fc;
 }
-.customer_navigation {
-  display: flex;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 16px;
-  margin-bottom: 20px;
-  li {
-    min-width: 60px;
-    height: 28px;
-    font-size: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 10px;
-    cursor: pointer;
-    color: #666666;
-    border-bottom: 2px solid #fff;
-    &.active {
-      color: #199fff;
-      border-color: #199fff;
-    }
-  }
-  li:last-child {
-    margin-right: 0px;
-  }
-  li:hover {
-    color: #199fff;
-    border-color: #199fff;
+/deep/.badge {
+  .cell {
+    overflow: initial;
   }
 }
-.link {
-  cursor: pointer;
-  color: #199fff;
-}
+
 .panel-list {
   display: flex;
   align-items: center;

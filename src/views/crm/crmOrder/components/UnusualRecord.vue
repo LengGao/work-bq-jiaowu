@@ -2,22 +2,20 @@
   <div class="refund-record">
     <div class="header">
       <div>
-        <span class="title">订单总金额：</span>
-        <span class="value">￥{{ data.order_money }} </span>
+        <span class="title">异动后订单金额：</span>
+        <span class="value">{{ data.order_money | moneyFormat }} </span>
+      </div>
+      <div>
+        <span class="title">优惠金额：</span>
+        <span class="value">{{ data.reduction | moneyFormat }} </span>
       </div>
       <div>
         <span class="title">已回款金额：</span>
-        <span class="value">￥{{ data.pay_money }} </span>
+        <span class="value">{{ data.pay_money | moneyFormat }} </span>
       </div>
       <div>
         <span class="title">未回款金额：</span>
-        <span class="value">￥{{ data.overdue_money }} </span>
-      </div>
-      <div class="actions" v-if="!$route.query.isFromApprove">
-        <el-button type="primary" @click="handleAddPlan"
-          >配置回款计划</el-button
-        >
-        <el-button type="primary" @click="handleAdd">添加回款记录</el-button>
+        <span class="value">{{ data.overdue_money | moneyFormat }} </span>
       </div>
     </div>
     <Title text="回款记录" style="margin-top: 20px"></Title>
@@ -104,40 +102,9 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      <!-- <el-table-column
-        label="操作"
-        fixed="right"
-        align="center"
-        min-width="160"
-      >
-        <template slot-scope="{ row }">
-          <el-button type="text">催办</el-button>
-          <el-button type="text">删除</el-button>
-        </template>
-      </el-table-column> -->
     </el-table>
-    <!-- <p class="placeholder">或</p> -->
     <Title text="回款计划" style="margin-top: 20px"></Title>
     <div class="term">
-      <!-- <div class="term-header">
-        <i class="el-icon-notebook-2"></i>
-        <div class="info-item">
-          <span>第1期回款计划：</span>
-          <span>2021-11-01 </span>
-        </div>
-        <div class="info-item">
-          <span>应收：</span>
-          <span>¥ 2500.00</span>
-        </div>
-        <div class="info-item">
-          <span>已收：</span>
-          <span> ¥ 2500.00</span>
-        </div>
-        <div class="info-item">
-          <span>进度：</span>
-          <span>100%</span>
-        </div>
-      </div> -->
       <el-table
         :data="data.pay_plan"
         style="width: 100%"
@@ -215,31 +182,12 @@
         </el-table-column>
       </el-table>
     </div>
-    <AddCollectionRecord
-      v-model="dialogVisible"
-      :title="dialogTitle"
-      :order-id="data.order_id"
-      @on-success="$parent.getCrmOrderDetail"
-      :plan-options="data.pay_plan"
-    />
-    <AddCollectionPlan
-      v-model="planDialogVisible"
-      :title="planDialogTitle"
-      :order-id="data.order_id"
-      @on-success="$parent.getCrmOrderDetail"
-    />
   </div>
 </template>
 
 <script>
-import AddCollectionRecord from "./AddCollectionRecord.vue";
-import AddCollectionPlan from "./AddCollectionPlan.vue";
 export default {
-  name: "CollectionRecord",
-  components: {
-    AddCollectionRecord,
-    AddCollectionPlan,
-  },
+  name: "UnusualRecord",
   props: {
     data: {
       type: Object,
@@ -251,11 +199,6 @@ export default {
   },
   data() {
     return {
-      currentId: "",
-      dialogTitle: "",
-      dialogVisible: false,
-      planDialogVisible: false,
-      planDialogTitle: "",
       // 1：待入账，3、已入账 ，4、已作废， 5、已退款
       payStatusMap: {
         1: "待入账",
@@ -265,18 +208,7 @@ export default {
       },
     };
   },
-  methods: {
-    handleAddPlan() {
-      this.currentId = "";
-      this.planDialogTitle = "配置回款计划";
-      this.planDialogVisible = true;
-    },
-    handleAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加回款记录";
-      this.dialogVisible = true;
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="less" scoped>
@@ -303,25 +235,6 @@ export default {
   }
   &--success {
     color: #43d100;
-  }
-}
-.placeholder {
-  padding: 20px 0;
-  text-align: center;
-}
-.term {
-  border: 1px solid #eee;
-  border-bottom: none;
-  margin-top: 20px;
-  &-header {
-    display: flex;
-    align-items: center;
-    color: #666;
-    padding: 16px;
-    background-color: #f2f6fc;
-    .info-item {
-      padding: 0 10px;
-    }
   }
 }
 </style>
