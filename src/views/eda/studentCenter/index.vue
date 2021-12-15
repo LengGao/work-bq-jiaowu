@@ -48,7 +48,7 @@
         :is="getComponent"
         @on-basic-success="getStudentBasicDetail"
         :datas="detailData"
-        :uid="detailData.uid"
+        :uid="$route.query.id"
       />
     </section>
     <!-- 报名 -->

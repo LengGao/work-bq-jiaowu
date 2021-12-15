@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="other">
-      <OtherMaterials />
+      <OtherMaterials :uid="uid"/>
     </div>
     <a ref="a" download="证件资料"></a>
     <PreviewImg ref="view" />
