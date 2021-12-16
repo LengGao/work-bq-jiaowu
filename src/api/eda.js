@@ -1280,3 +1280,11 @@ export function updateUserFileName(data) {
     data,
   })
 }
+// 导出学生直播回顾
+export function exportUserLiveVideoStatistics(data) {
+  return request({
+    url: 'User/exportUserLiveVideoStatistics',
+    method: 'post',
+    data,
+  })
+}
