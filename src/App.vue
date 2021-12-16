@@ -22,13 +22,13 @@ export default {
     };
   },
   beforeCreate() {
-    if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      )
-    ) {
-      window.location = "http://m.edu.beiqujy.com";
-    }
+    // if (
+    //   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    //     navigator.userAgent
+    //   )
+    // ) {
+    //   window.location = "http://m.edu.beiqujy.com";
+    // }
   },
   methods: {
     reload() {

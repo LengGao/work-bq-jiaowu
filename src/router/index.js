@@ -321,6 +321,13 @@ export const asyncRouter = [
       // ==== 新
 
       {
+        path: 'collectionList',
+        name: 'collectionList',
+        component: () => import('@/views/crm/collectionList/index.vue'),
+        meta: { title: '回款管理' },
+      },
+
+      {
         path: 'applyChange',
         name: 'applyChange',
         component: () => import('@/views/crm/crmOrder/applyChange.vue'),

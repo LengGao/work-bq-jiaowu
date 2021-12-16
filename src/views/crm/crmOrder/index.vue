@@ -82,6 +82,13 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="from"
+            label="客户来源"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="project_name"
             label="项目名称"
             min-width="220"
@@ -290,7 +297,7 @@
 import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
 import { getStaffList } from "@/api/set";
-import { getCrmOrderList } from "@/api/crm";
+import { getCrmOrderList, getCustomfieldOptions } from "@/api/crm";
 import { templatelist } from "@/api/system";
 import { generate } from "@/api/fina";
 import { getCateList } from "@/api/sou";
@@ -440,6 +447,21 @@ export default {
           },
         },
         {
+          key: "sources",
+          type: "select",
+          width: 200,
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "客户来源",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,
@@ -535,6 +557,7 @@ export default {
     this.getStaffList();
     this.getproject();
     this.getCateList();
+    this.getCustomfieldOptions();
   },
   methods: {
     toCrmOrderDetail(id) {
@@ -591,6 +614,19 @@ export default {
       this.templateId = "";
       this.orderId = row.order_id;
       this.dialogVisible = true;
+    },
+    // 获取客户来源
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "customer_source",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.coustomFrom = res.data.field_content;
+        this.searchOptions[6].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
+      }
     },
     // 获取所属分类
     async getCateList() {
@@ -657,6 +693,9 @@ export default {
           : "",
         category_id: Array.isArray(this.searchData.category_id)
           ? this.searchData.category_id.join(",")
+          : "",
+        sources: Array.isArray(this.searchData.sources)
+          ? this.searchData.sources.join(",")
           : "",
       };
       this.listLoading = true;
