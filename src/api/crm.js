@@ -541,3 +541,11 @@ export function getExcelOrgReceivable(data) {
 }
 // 机构回款模板导入
 export const orgReceivableImportUrl = `${process.env.VUE_APP_LOACTION}/OrgReceivable/importExcel`
+// 订单异动重置
+export function oneMoreReshuffle(params) {
+    return request({
+        url: '/CrmOrder/oneMoreReshuffle',
+        method: 'get',
+        params
+    })
+}

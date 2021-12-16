@@ -18,7 +18,7 @@
         <span class="value">{{ data.overdue_money | moneyFormat }} </span>
       </div>
       <div>
-        <span class="title">业绩归属：</span>
+        <span class="title">共享业绩：</span>
         <span>{{ data.union_staff_name }} </span>
       </div>
     </div>

@@ -150,6 +150,12 @@
                 >驳回</el-button
               >
             </template>
+            <el-button
+              type="text"
+              v-if="row.status === 2 && row.reshuffle"
+              @click="oneMoreReshuffle(row.id)"
+              >重置</el-button
+            >
             <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
               >订单详情</el-button
             >
@@ -169,7 +175,11 @@
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import { getUnusualList, orderUnusualApprove } from "@/api/crm";
+import {
+  getUnusualList,
+  orderUnusualApprove,
+  oneMoreReshuffle,
+} from "@/api/crm";
 export default {
   name: "changeApprove",
   components: {
@@ -220,6 +230,14 @@ export default {
     this.getUnusualList();
   },
   methods: {
+    async oneMoreReshuffle(id) {
+      const data = { id };
+      const res = await oneMoreReshuffle(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getUnusualList();
+      }
+    },
     toCrmOrderDetail(id) {
       this.$router.push({
         name: "crmOrderDetail",

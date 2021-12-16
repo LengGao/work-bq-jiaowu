@@ -132,12 +132,15 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="140">
+        <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
             <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
               >订单详情</el-button
             >
-            <el-button @click="openOrderActions(row)" type="text"
+            <el-button @click="openOrderActions(row, 2)" type="text"
+              >退款</el-button
+            >
+            <el-button @click="openOrderActions(row, 3)" type="text"
               >作废</el-button
             >
           </template>
@@ -149,7 +152,7 @@
     </div>
     <CollectionOrder
       v-model="orderActionDialog"
-      :type="3"
+      :type="orderActionType"
       :orderInfo="dialogInfo"
       @on-success="getCrmOrderList"
     />
@@ -227,6 +230,7 @@ export default {
       },
       dialogInfo: {},
       orderActionDialog: false,
+      orderActionType: null,
       checkedIds: [],
       staffDialog: false,
     };
@@ -249,7 +253,8 @@ export default {
       this.checkedIds = selection.map((item) => item.order_id);
     },
     //作废弹窗
-    openOrderActions(row) {
+    openOrderActions(row, type) {
+      this.orderActionType = type;
       this.dialogInfo = row;
       this.orderActionDialog = true;
     },
