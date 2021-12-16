@@ -148,7 +148,7 @@
       "
       title="驳回原因："
       :description="detailData.reshuffle_list[unusualIndex].tips || '--'"
-      type="info"
+      type="error"
     >
     </el-alert>
     <!-- <p

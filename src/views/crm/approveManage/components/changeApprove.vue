@@ -107,14 +107,27 @@
         <el-table-column
           prop="pay_type"
           label="支付方式"
+          min-width="80"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="verify_status"
+          label="审批状态"
           min-width="100"
           show-overflow-tooltip
         >
+          <template slot-scope="{ row }">
+            <el-tag size="small" :type="statusMap[row.status || 0].type">
+              {{ statusMap[row.status || 0].text }}
+            </el-tag>
+          </template>
         </el-table-column>
         <el-table-column
           prop="status"
           label="处理状态"
-          min-width="100"
+          min-width="80"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -180,6 +193,24 @@ export default {
           },
         },
       ],
+      statusMap: {
+        0: {
+          text: "待审核",
+          type: "info",
+        },
+        1: {
+          text: "（多人）审核中",
+          type: "primary",
+        },
+        2: {
+          text: "审核通过",
+          type: "success",
+        },
+        3: {
+          text: "驳回不通过",
+          type: "danger",
+        },
+      },
     };
   },
   activated() {

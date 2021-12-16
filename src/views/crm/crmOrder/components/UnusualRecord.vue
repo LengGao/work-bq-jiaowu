@@ -17,6 +17,10 @@
         <span class="title">未回款金额：</span>
         <span class="value">{{ data.overdue_money | moneyFormat }} </span>
       </div>
+      <div>
+        <span class="title">业绩归属：</span>
+        <span>{{ data.union_staff_name }} </span>
+      </div>
     </div>
     <Title text="回款记录" style="margin-top: 20px"></Title>
     <el-table
@@ -59,14 +63,14 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="pay_plan_sort"
         label="关联期次"
         align="center"
         min-width="100"
         show-overflow-tooltip
       >
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         label="收款人员"
         align="center"
