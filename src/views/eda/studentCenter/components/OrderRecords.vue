@@ -137,10 +137,7 @@
             <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
               >订单详情</el-button
             >
-            <el-button
-              v-if="row.refund == 1 && row.pay_status != 4"
-              @click="openOrderActions(row)"
-              type="text"
+            <el-button @click="openOrderActions(row)" type="text"
               >作废</el-button
             >
           </template>
