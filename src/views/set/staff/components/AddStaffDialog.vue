@@ -66,18 +66,25 @@
         />
       </el-form-item>
       <el-form-item label="所属部门" prop="department_id">
-        <el-cascader
-          :options="options"
+        <el-select
+          class="input"
+          v-model="formData.department_id"
           placeholder="请选择部门"
           clearable
           filterable
-          :props="{
-            value: 'id',
-            label: 'title',
-            checkStrictly: true,
-          }"
-          v-model="formData.department_id"
-        ></el-cascader>
+        >
+          <el-option
+            v-for="item in groupOptions"
+            :key="item.id"
+            :value="item.id"
+            :label="item.title"
+          >
+            <span style="float: left">{{ item.title }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{
+              item.group_tree
+            }}</span>
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="部门主管" prop="is_director">
         <el-radio-group v-model="formData.is_director">
@@ -120,19 +127,32 @@
         </el-select>
       </el-form-item>
       <el-form-item label="部门数据范围">
-        <el-cascader
-          :options="options"
+        <el-select
+          class="input"
+          v-model="formData.group_ids"
           placeholder="请选择"
           clearable
           filterable
-          :show-all-levels="false"
-          :props="{
-            value: 'id',
-            label: 'title',
-            multiple: true,
-          }"
-          v-model="formData.group_ids"
-        ></el-cascader>
+          multiple
+        >
+          <el-option
+            v-for="item in groupOptions"
+            :key="item.id"
+            :value="item.id"
+            :label="item.title"
+          >
+            <span style="float: left">{{ item.title }}</span>
+            <span
+              style="
+                float: right;
+                color: #8492a6;
+                font-size: 13px;
+                margin: 0 18px;
+              "
+              >{{ item.group_tree }}</span
+            >
+          </el-option>
+        </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -154,6 +174,7 @@ import {
   getStaffinfo,
   getRoleSelectData,
   getStaffList,
+  switchGroupList,
 } from "@/api/set";
 import ImageUpload from "@/components/ImgUpload";
 export default {
@@ -217,6 +238,7 @@ export default {
       },
       roleOptions: [],
       userAuthOptions: [],
+      groupOptions: [],
     };
   },
   watch: {
@@ -225,6 +247,12 @@ export default {
     },
   },
   methods: {
+    async switchGroupList() {
+      const res = await switchGroupList();
+      if (res.code === 0) {
+        this.groupOptions = res.data || [];
+      }
+    },
     async getStaffList() {
       const data = {
         limit: 99999,
@@ -251,7 +279,7 @@ export default {
     handleOpen() {
       this.getStaffList();
       this.getRoleSelectData();
-      console.log(this.id);
+      this.switchGroupList();
       this.id && this.getStaffinfo();
     },
     async getStaffinfo() {
@@ -259,27 +287,15 @@ export default {
       const res = await getStaffinfo(data);
       if (res.code === 0) {
         for (const k in this.formData) {
-          if (!["group_ids", "password"].includes(k)) {
+          if (!["password"].includes(k)) {
             this.formData[k] = res.data[k] ?? "";
           }
-          this.formData.group_ids = res.data.arr_group || [];
         }
       }
     },
     async submit() {
-      const { department_id, group_ids } = this.formData;
       const data = {
         ...this.formData,
-        department_id: Array.isArray(department_id)
-          ? [...department_id].pop()
-          : department_id,
-        group_ids: [...group_ids].map((item) => {
-          if (Array.isArray(item)) {
-            return [...item].pop();
-          }
-          return item;
-        }),
-        extends: group_ids,
       };
       if (this.id) {
         data.id = this.id;

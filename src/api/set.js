@@ -171,3 +171,11 @@ export function getRoleSelectData(params) {
     params,
   })
 }
+// 获取部门扁平数据
+export function switchGroupList(params) {
+  return request({
+    url: 'TerminalGroup/switchList',
+    method: 'get',
+    params,
+  })
+}
