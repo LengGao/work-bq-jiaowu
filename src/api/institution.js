@@ -449,3 +449,11 @@ export function batchSetStudentReception(data) {
         data
     })
 }
+// 机构项目统计列表
+export function orgCateStatisticsList(params) {
+    return request({
+        url: 'Merchant/orgCateStatisticsList',
+        method: 'get',
+        params
+    })
+}

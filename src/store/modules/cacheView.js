@@ -52,6 +52,7 @@ const searchCache = {
             institutionalCollectionDetail: ['studentOrderDetail'],
             studentOrder: ['studentOrderDetail'],
             collectionList: ['crmOrderDetail'],
+            institutionProject: ['institutionDetails'],
         },
         // 当前缓存的页面
         currentCache: ['visualization']
