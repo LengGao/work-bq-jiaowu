@@ -58,7 +58,7 @@ export default {
       if (!val) {
         return `0.00元`;
       }
-      if (val / 10000 >= 1) {
+      if (Math.abs(val / 10000) >= 1) {
         return (val / 10000).toFixed(2) + "万元";
       }
       return val.toFixed(2) + "元";
