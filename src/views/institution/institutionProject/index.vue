@@ -105,6 +105,7 @@
           placeholder="请选择"
           filterable
           clearable
+          @change="isChange = true"
         >
           <el-option
             v-for="item in channelStaffOptions"
@@ -133,6 +134,7 @@
           filterable
           clearable
           multiple
+          @change="isChange = true"
         >
           <el-option
             v-for="item in eduStaffOptions"
@@ -189,6 +191,7 @@ export default {
       visible: false,
       currentData: {},
       currentCateId: "",
+      isChange: false,
     };
   },
 
@@ -199,6 +202,10 @@ export default {
   },
   methods: {
     onChangeDialogClose() {
+      if (!this.isChange) {
+        return;
+      }
+      this.isChange = false;
       this.setStudentReception();
       // 设置选中的人名
       this.currentData[`education_staff_name_${this.currentCateId}`] =
@@ -210,16 +217,16 @@ export default {
           )
           .map((item) => item.staff_name)
           .join(",");
-
+      let name = "";
       this.channelStaffOptions.forEach((item) => {
         if (
           item.staff_id ===
           this.currentData[`channel_staff_id_${this.currentCateId}`]
         ) {
-          this.currentData[`channel_staff_name_${this.currentCateId}`] =
-            item.staff_name;
+          name = item.staff_name;
         }
       });
+      this.currentData[`channel_staff_name_${this.currentCateId}`] = name;
     },
     openChangeDialog(row, cateId) {
       this.currentCateId = cateId;
