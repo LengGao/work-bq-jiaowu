@@ -41,12 +41,18 @@
             @click="handleRankTypeChange(2)"
             >订单金额</span
           >
+          <span
+            class="tab-item"
+            :class="{ 'tab-item--active-r': rankType === 3 }"
+            @click="handleRankTypeChange(3)"
+            >退款金额</span
+          >
         </div>
         <RankBar
           v-loading="salesRankLoading"
           :data="salesRankCheckedData"
           type="1"
-          :series-name="rankType === 1 ? '回款' : '订单'"
+          :series-name="rankTypeName"
         />
       </Block>
       <Block
@@ -139,6 +145,7 @@ export default {
       salesRankData: {},
       salesRankCheckedData: [],
       rankType: 1,
+      rankTypeName: "回款",
       salesRankLoading: false,
       salesRankMonth:
         new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
@@ -262,9 +269,19 @@ export default {
     },
     // 销售龙虎榜
     handleRankTypeChange(type) {
+      const keyNameMap = {
+        1: "payRank",
+        2: "orderRank",
+        3: "refundRank",
+      };
+      const typeNameMap = {
+        1: "回款",
+        2: "订单",
+        3: "退款",
+      };
       this.rankType = type;
-      this.salesRankCheckedData =
-        type === 1 ? this.salesRankData.payRank : this.salesRankData.orderRank;
+      this.rankTypeName = typeNameMap[type];
+      this.salesRankCheckedData = this.salesRankData[keyNameMap[type]];
     },
     async getSalesRankData() {
       const data = {
@@ -275,11 +292,14 @@ export default {
       const res = await getSalesRankData(data).catch(() => {});
       this.salesRankLoading = false;
       if (res.code === 0) {
+        const keyNameMap = {
+          1: "payRank",
+          2: "orderRank",
+          3: "refundRank",
+        };
         this.salesRankData = res.data;
         this.salesRankCheckedData =
-          this.rankType === 1
-            ? this.salesRankData.payRank
-            : this.salesRankData.orderRank;
+          this.salesRankData[keyNameMap[this.rankType]];
       }
     },
     // 销售趋势
