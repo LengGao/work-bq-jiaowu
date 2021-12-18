@@ -158,7 +158,7 @@ export default {
         project_id: [],
         from_org: "",
         keyword: "",
-        uid: this.$route.query.uid || "",
+        staff_id: this.$route.query.uid || "",
       },
       searchOptions: [
         {
