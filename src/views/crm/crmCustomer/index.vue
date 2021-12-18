@@ -260,8 +260,7 @@ export default {
       ],
       searchData: {
         day: (this.$route.query.date || "").split(","),
-        staff_id: "",
-        uid: this.$route.query.uid || "",
+        staff_id: this.$route.query.uid || "",
       },
       searchOptions: [
         {

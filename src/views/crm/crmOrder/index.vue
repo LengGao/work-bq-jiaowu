@@ -315,9 +315,8 @@ export default {
         date: (this.$route.query.date || `${today},${today}`).split(","),
         keyword: "",
         project_id: "",
-        staff_id: "",
+        staff_id: this.$route.query.uid || "",
         pay_status: "",
-        uid: this.$route.query.uid || "",
       },
       searchOptions: [
         {
