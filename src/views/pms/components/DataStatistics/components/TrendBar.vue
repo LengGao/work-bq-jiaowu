@@ -30,8 +30,15 @@ export default {
   },
   methods: {
     chartInit() {
-      const totalData = this.data.map(({ order_money }) => order_money);
-      const payData = this.data.map(({ pay_money }) => pay_money);
+      const totalData = [];
+      const payData = [];
+      const refundData = [];
+      this.data.forEach(({ order_money, pay_money, refund_money }) => {
+        totalData.push(order_money);
+        payData.push(pay_money);
+        refundData.push(refund_money);
+      });
+
       const xData =
         this.data.length !== 12
           ? ["第一季度", "第二季度", "第三季度", "第四季度"]
@@ -53,7 +60,7 @@ export default {
         document.getElementById("trend-bar")
       );
       this.chartInstance.setOption({
-        color: ["#FFE5c8", "#FFB76A"],
+        color: ["#FFE5c8", "#FFB76A", "#ff6c59"],
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -96,6 +103,12 @@ export default {
             barWidth: 20,
             data: payData,
             name: "回款",
+            type: "bar",
+          },
+          {
+            barWidth: 20,
+            data: refundData,
+            name: "退款",
             type: "bar",
           },
         ],
