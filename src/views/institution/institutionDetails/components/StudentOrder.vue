@@ -20,7 +20,9 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
+        @selection-change="handleSeletChange"
       >
+        <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
           label="订单编号"
           show-overflow-tooltip
@@ -116,6 +118,9 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
+        <div>
+          <el-button @click="openStaffDialog">更改业绩归属人</el-button>
+        </div>
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -123,6 +128,11 @@
         />
       </div>
     </div>
+    <UpdatePerformanceAttribution
+      v-model="staffDialog"
+      :orderIds="checkedIds"
+      @on-success="studentsOrder"
+    />
   </div>
 </template>
 
@@ -130,10 +140,12 @@
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { studentsOrder } from "@/api/institution";
+import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
 export default {
   name: "StudentOrder",
   components: {
     PartiallyHidden,
+    UpdatePerformanceAttribution,
   },
   data() {
     return {
@@ -206,6 +218,8 @@ export default {
           },
         },
       ],
+      checkedIds: [],
+      staffDialog: false,
     };
   },
 
@@ -213,6 +227,16 @@ export default {
     this.studentsOrder();
   },
   methods: {
+    openStaffDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择订单");
+        return;
+      }
+      this.staffDialog = true;
+    },
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.order_id);
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
@@ -226,6 +250,7 @@ export default {
     },
     // 学生订单
     async studentsOrder() {
+      this.checkedIds = [];
       const data = {
         page: this.pageNum,
         ...this.searchData,
@@ -279,5 +304,9 @@ export default {
 .link {
   cursor: pointer;
   color: #199fff;
+}
+.table_bottom {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

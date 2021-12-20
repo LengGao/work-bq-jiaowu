@@ -20,7 +20,9 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
+        @selection-change="handleSeletChange"
       >
+        <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
           label="ID"
           show-overflow-tooltip
@@ -128,6 +130,9 @@
         </el-table-column>
       </el-table>
       <div class="table_bottom">
+        <div>
+          <el-button @click="openTeacherDialog">更换所属老师</el-button>
+        </div>
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -135,10 +140,16 @@
         />
       </div>
     </div>
+    <UpdateTeacher
+      v-model="updateTeacherDialog"
+      :ids="checkedIds"
+      @on-success="Organizationstudents"
+    />
   </div>
 </template>
 
 <script>
+import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { Organizationstudents } from "@/api/institution";
@@ -146,6 +157,7 @@ export default {
   name: "InsitutionStudent",
   components: {
     PartiallyHidden,
+    UpdateTeacher,
   },
   data() {
     return {
@@ -209,6 +221,8 @@ export default {
           },
         },
       ],
+      checkedIds: [],
+      updateTeacherDialog: false,
     };
   },
 
@@ -216,14 +230,16 @@ export default {
     this.Organizationstudents();
   },
   methods: {
-    // toDetails(row) {
-    //   this.$router.push({
-    //     name: "institutionDetails",
-    //     query: {
-    //       id: row.id,
-    //     },
-    //   });
-    // },
+    openTeacherDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择学生！");
+        return;
+      }
+      this.updateTeacherDialog = true;
+    },
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.archive_id);
+    },
     handleSearch(data) {
       const times = data.date || ["", ""];
       console.log(times);
@@ -243,6 +259,7 @@ export default {
     },
     // 学生列表
     async Organizationstudents() {
+      this.checkedIds = [];
       const data = {
         page: this.pageNum,
         ...this.searchData,
@@ -275,5 +292,9 @@ export default {
 }
 .institution-user-manage[data-v-53ad5394] {
   padding: 10px 20px 20px 0;
+}
+.table_bottom {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
