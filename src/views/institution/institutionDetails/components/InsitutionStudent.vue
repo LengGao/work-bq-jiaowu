@@ -54,6 +54,13 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="staff_name"
+          label="归属人"
+          min-width="100"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
           prop="create_time"
           label="注册时间"
           min-width="140"
@@ -67,13 +74,13 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <div v-if="row.course_list">
-            {{ row.course_list }}
-          </div>
-          <span v-else>--</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <div v-if="row.course_list">
+              {{ row.course_list }}
+            </div>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="question_bank_list"
           label="题库名称"
@@ -81,13 +88,13 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <div v-if="row.question_bank_list">
-            {{ row.question_bank_list }}
-          </div>
-          <span v-else>--</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <div v-if="row.question_bank_list">
+              {{ row.question_bank_list }}
+            </div>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="is_pay"
           label="报名状态"
@@ -95,25 +102,29 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <el-tag size="small" type="text" :style="{ color: statusMap[row.is_pay].color }">
-            {{ statusMap[row.is_pay || 0].text }}
-          </el-tag>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <el-tag
+              size="small"
+              type="text"
+              :style="{ color: statusMap[row.is_pay].color }"
+            >
+              {{ statusMap[row.is_pay || 0].text }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           fixed="right"
           align="center"
           min-width="160"
         >
-        <template slot-scope="{ row }">
-          <div style="display: flex; justify-content: center">
-            <el-button type="text" @click="toStudentDetail(row.uid)"
-              >学生详情</el-button
-            >
-          </div>
-        </template>
+          <template slot-scope="{ row }">
+            <div style="display: flex; justify-content: center">
+              <el-button type="text" @click="toStudentDetail(row.uid)"
+                >学生详情</el-button
+              >
+            </div>
+          </template>
         </el-table-column>
       </el-table>
       <div class="table_bottom">
@@ -130,7 +141,7 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import {Organizationstudents} from "@/api/institution";
+import { Organizationstudents } from "@/api/institution";
 export default {
   name: "InsitutionStudent",
   components: {
@@ -139,17 +150,15 @@ export default {
   data() {
     return {
       statusMap: {
-            0: {
-                color: "#FD6500",
-                text: "未报名",
-                
-            },
-            1: {
-                color: "#43D100",
-                text: "已报名",
-                
-            },
-            },
+        0: {
+          color: "#FD6500",
+          text: "未报名",
+        },
+        1: {
+          color: "#43D100",
+          text: "已报名",
+        },
+      },
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -216,18 +225,18 @@ export default {
     //   });
     // },
     handleSearch(data) {
-        const times = data.date || ["", ""];
-        console.log(times);
-        delete data.date;
-        this.pageNum = 1;
-        this.searchData = {
-          ...data,
-          start_time: times[0],
-          end_time: times[1],
-        };
-        console.log(this.searchData);
-        this.Organizationstudents();
-      },
+      const times = data.date || ["", ""];
+      console.log(times);
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+      };
+      console.log(this.searchData);
+      this.Organizationstudents();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.Organizationstudents();
@@ -245,7 +254,6 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
-
   },
 };
 </script>
@@ -265,7 +273,7 @@ export default {
   align-items: center;
   margin-bottom: 16px;
 }
-.institution-user-manage[data-v-53ad5394]{
+.institution-user-manage[data-v-53ad5394] {
   padding: 10px 20px 20px 0;
 }
 </style>

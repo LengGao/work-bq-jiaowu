@@ -15,7 +15,7 @@
         name="InstitutionalCollection"
       ></el-tab-pane>
     </el-tabs>
-    <component :is="getComponent" @on-basic-success="getStudentBasicDetail" />
+    <component :is="getComponent" />
   </div>
 </template>
 

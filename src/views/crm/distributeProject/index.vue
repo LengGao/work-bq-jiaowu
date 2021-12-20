@@ -240,7 +240,6 @@ export default {
           projectPriceMap[key] = item[key];
         }
       });
-      console.log(projectPriceMap);
       const data = {
         from_organization_id: this.rightSelection.join(","),
         project: JSON.stringify(arr),

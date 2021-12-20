@@ -28,11 +28,11 @@
           align="center"
           prop="order_no"
         >
-        <template slot-scope="scope">
-          <div class="link" @click="orderDetail(scope.row)">
-            {{ scope.row.order_no }}
-          </div>
-        </template>
+          <template slot-scope="scope">
+            <div class="link" @click="orderDetail(scope.row)">
+              {{ scope.row.order_no }}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="create_time"
@@ -60,19 +60,26 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="staff_name"
+          label="归属人"
+          min-width="100"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
           prop="course_name"
           label="开通课程"
           min-width="180"
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <div v-if="row.course_name">
-            {{ row.course_name }}
-          </div>
-          <span v-else>--</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <div v-if="row.course_name">
+              {{ row.course_name }}
+            </div>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="problem_name"
           label="开通题库"
@@ -80,13 +87,13 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <div v-if="row.problem_name">
-            {{ row.problem_name }}
-          </div>
-          <span v-else>--</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <div v-if="row.problem_name">
+              {{ row.problem_name }}
+            </div>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="overdue_money"
           label="订单金额"
@@ -94,20 +101,19 @@
           align="center"
           show-overflow-tooltip
         ></el-table-column>
-      <el-table-column
-      prop="pay_status"
-      label="订单状态"
-      min-width="140"
-      align="center"
-      show-overflow-tooltip
-    >
-    <template slot-scope="{ row }">
-     <span>
-        {{ statusMap[row.pay_status]}}
-     </span>
-    </template>
-  </el-table-column>
-
+        <el-table-column
+          prop="pay_status"
+          label="订单状态"
+          min-width="140"
+          align="center"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>
+              {{ statusMap[row.pay_status] }}
+            </span>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
@@ -123,7 +129,7 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import {studentsOrder} from "@/api/institution";
+import { studentsOrder } from "@/api/institution";
 export default {
   name: "StudentOrder",
   components: {
@@ -139,11 +145,11 @@ export default {
       // statusMap: {
       //       0: {
       //           text: "已成交",
-                
+
       //       },
       //       1: {
       //           text: "未成交",
-                
+
       //       },
       //       },
       listData: [],
@@ -171,28 +177,28 @@ export default {
           },
         },
         {
-            key: "pay_status",
-            type: "select",
-            width: 120,
-            options: [
-              {
-                value: 0,
-                label: "已成交",
-              },
-              {
-                value: 1,
-                label: "已退款",
-              },
-              {
-                value:2,
-                label: "待退款",
-              },
-            ],
-            attrs: {
-              clearable: true,
-              placeholder: "订单状态",
+          key: "pay_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "已成交",
             },
+            {
+              value: 1,
+              label: "已退款",
+            },
+            {
+              value: 2,
+              label: "待退款",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "订单状态",
           },
+        },
         {
           key: "keyword",
           attrs: {
@@ -207,7 +213,6 @@ export default {
     this.studentsOrder();
   },
   methods: {
-
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
@@ -240,18 +245,15 @@ export default {
         },
       });
     },
-    orderDetail(row){
+    orderDetail(row) {
       this.$router.push({
-        name:"orderdetail",
-        query:{
-          order_id:row.order_id
-        }
-      })
+        name: "orderdetail",
+        query: {
+          order_id: row.order_id,
+        },
+      });
     },
-    orderDetail(name, query){
-      
-    }
-
+    orderDetail(name, query) {},
   },
 };
 </script>
@@ -271,7 +273,7 @@ export default {
   align-items: center;
   margin-bottom: 16px;
 }
-.institution-user-manage[data-v-1b63f2f8]{
+.institution-user-manage[data-v-1b63f2f8] {
   padding: 10px 20px 20px 0;
 }
 .link {

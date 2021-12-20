@@ -1,120 +1,89 @@
 <template>
-  <div class="college-student">
-    <div class="college-student-container">
-      <!-- <div class="tree-list">
-        <div class="question-bank-list">
-          <div class="tree-list">
-            <p class="title">项目分类</p>
-            <v-tree ref="tree" :tpl="tpl" :data="treeData" />
-          </div>
-        </div>
-      </div> -->
-      <div class="table-list">
-        <!--搜索模块-->
-        <!-- <div class="college-student-search">
-          <SearchList
-            :options="searchOptions"
-            :data="searchData"
-            @on-search="handleSearch"
-          />
-        </div> -->
-
-        <!--列表-->
-        <div class="userTable">
-          <el-table
-            :data="listData"
-            v-loading="listLoading"
-            element-loading-text="loading"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="#fff"
-            tooltip-effect="light"
-            stripe
-            style="width: 100%"
-            :header-cell-style="{
-              'text-align': 'center',
-              background: '#f8f8f8',
-            }"
-            :cell-style="{ 'text-align': 'center' }"
-            height="690"
+  <div class="insitution-project">
+    <div class="actions">
+      <el-button type="primary" @click="addDialog = true">添加项目</el-button>
+    </div>
+    <div class="table-list">
+      <!--列表-->
+      <div class="userTable">
+        <el-table
+          :data="listData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%"
+          :header-cell-style="{
+            'text-align': 'center',
+            background: '#f8f8f8',
+          }"
+          :cell-style="{ 'text-align': 'center' }"
+          height="690"
+        >
+          <el-table-column
+            prop="project_id"
+            label="项目ID"
+            min-width="60"
+            show-overflow-tooltip
           >
-            <el-table-column
-              prop="project_id"
-              label="项目ID"
-              min-width="60"
-              show-overflow-tooltip
-            >
-            </el-table-column>
-            <el-table-column
-              prop="project_name"
-              label="项目名称"
-              min-width="180"
-              show-overflow-tooltip
-            >
-            </el-table-column>
-            <el-table-column
-              prop="category_name"
-              label="所属分类"
-              min-width="80"
-              show-overflow-tooltip
-            >
-            </el-table-column>
-            <!-- <el-table-column
-              prop="buy_num"
-              label="购买人数"
-              show-overflow-tooltip
-              min-width="100"
-            ></el-table-column> -->
-            <el-table-column
-              v-for="(item, index) in classTypes"
-              :key="index"
-              :label="item.title"
-              show-overflow-tooltip
-              min-width="100"
-            >
-              <template slot-scope="{ row }">
-                <span>
-                  {{ row.org_class_type[index].price | moneyFormat }}
-                </span>
-              </template>
-            </el-table-column>
-
-            <!-- <el-table-column label="操作" min-width="120">
-              <template slot-scope="{ row }">
-                <el-button
-                  type="text"
-                  @click="handleDelete(row.id, row.question_bank_id)"
-                >
-                  移除
-                </el-button>
-              </template>
-            </el-table-column> -->
-          </el-table>
-        </div>
-        <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageSizeChange="handleSizeChange"
-            @pageChange="handlePageChange"
-          />
-        </div>
+          </el-table-column>
+          <el-table-column
+            prop="project_name"
+            label="项目名称"
+            min-width="180"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
+            min-width="80"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            v-for="(item, index) in classTypes"
+            :key="index"
+            :label="item.title"
+            show-overflow-tooltip
+            min-width="100"
+          >
+            <template slot-scope="{ row }">
+              <el-input
+                @blur="sendClassType(row)"
+                type="number"
+                size="small"
+                v-model="row.org_class_type[index].price"
+                placeholder="请输入"
+              >
+              </el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="table_bottom">
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
+    <AddProject v-model="addDialog" @success="getOrgProjectr" />
   </div>
 </template>
 
 <script>
-import {
-  getOrgProjectr,
-  questionBankCategoryList,
-  BankRelationremove,
-  assignOrgQuestionBank,
-} from "@/api/institution";
-import AddQuestion from "./addQuestion";
+import AddProject from "./addProject";
+import { getOrgProjectr } from "@/api/institution";
+import { sendClassType } from "@/api/crm";
 export default {
-  name: "InsitutionQuestion",
+  name: "InsitutionProject",
   components: {
-    AddQuestion,
+    AddProject,
   },
   data() {
     return {
@@ -134,109 +103,31 @@ export default {
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
-      treeData: [],
-      treeParams: {
-        category_id: "",
-      },
       classTypes: [],
+      addDialog: false,
     };
   },
   created() {
     this.getOrgProjectr();
-    this.questionBankCategoryList();
   },
   methods: {
-    async handlePriceBlur({ question_bank_id, wholesale_price }) {
+    // 分发
+    async sendClassType(row) {
+      const arr = [
+        {
+          [row.project_id]: row.org_class_type,
+        },
+      ];
+      console.log(arr);
       const data = {
-        institution_arr: [this.$route.query.institution_id],
-        question_bank_arr: [
-          {
-            question_bank_id,
-            wholesale_price,
-          },
-        ],
+        from_organization_id: this.$route.query?.institution_id || "",
+        project: JSON.stringify(arr),
       };
-      const res = await assignOrgQuestionBank(data);
+      const res = await sendClassType(data).catch(() => {});
       if (res.code === 0) {
-        this.$message.success("保存成功");
-      }
-    },
-
-    handleDelete(id, question_bank_id) {
-      this.$confirm("此操作将永久删除该题库, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          this.BankRelationremove(id, question_bank_id);
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-
-    // 移除题库
-    async BankRelationremove(id, question_bank_id) {
-      const data = {
-        id,
-        institution_id: this.$route.query?.institution_id || "",
-        question_bank_id,
-      };
-      console.log(data);
-      const res = await BankRelationremove(data);
-      if (res.code == 0) {
-        console.log(res);
         this.$message.success(res.message);
-        this.getOrgProjectr();
-        this.dialogVisible = false;
-      }
-      this.getOrgProjectr();
-    },
-
-    tpl(node) {
-      return (
-        <span
-          class={{
-            "tree-node": true,
-            "tree-node--active":
-              this.treeParams.category_id === node.category_id,
-          }}
-          onClick={() => this.onNodeClick(node)}
-        >
-          {node.category_name === "全部"
-            ? node.category_name
-            : `${node.category_name}`}
-        </span>
-      );
-    },
-    async questionBankCategoryList() {
-      const data = {
-        org_id: this.$route.query.institution_id,
-      };
-      console.log(data);
-      const res = await questionBankCategoryList(data);
-      if (res.code === 0) {
-        this.treeData = [
-          {
-            category_id: "",
-            category_name: "全部",
-            expanded: true,
-            children: res.data.map(({ children, ...rest }) => rest),
-          },
-        ];
       }
     },
-
-    onNodeClick(data) {
-      const { category_id: category_id } = data;
-      this.treeParams = { category_id };
-      this.getOrgProjectr();
-    },
-
     handleSizeChange(size) {
       this.pageSize = size;
       this.getOrgProjectr();
@@ -259,7 +150,6 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
-        ...this.treeParams,
         from_organization_id: this.$route.query?.institution_id || "",
       };
       this.listLoading = true;
@@ -288,7 +178,11 @@ export default {
     -moz-appearance: textfield;
   }
 }
-.college-student {
+.insitution-project {
+  .actions {
+    text-align: right;
+    margin-bottom: 10px;
+  }
   &-container {
     padding: 10px 20px 20px 0;
     display: flex;
@@ -328,7 +222,7 @@ export default {
     float: right;
   }
 }
-.college-student-search {
+.insitution-project-search {
   display: flex;
   justify-content: flex-start;
   span {
