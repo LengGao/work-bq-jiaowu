@@ -990,6 +990,12 @@ export const asyncRouter = [
     name: 'institution',
     children: [
       {
+        path: 'collectionDetail',
+        name: 'collectionDetail',
+        component: () => import('@/views/institution/institutionDetails/collectionDetail.vue'),
+        meta: { title: '机构回款详情', icon: 'product-add' },
+      },
+      {
         path: 'institutionProject',
         name: 'institutionProject',
         component: () => import('@/views/institution/institutionProject/index.vue'),

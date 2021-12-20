@@ -457,3 +457,11 @@ export function orgCateStatisticsList(params) {
         params
     })
 }
+// 机构回款列表
+export function getReceivableList(params) {
+    return request({
+        url: '/Organization/receivableList',
+        method: 'get',
+        params
+    })
+}

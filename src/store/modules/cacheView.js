@@ -40,7 +40,7 @@ const searchCache = {
             classDetail: ['learningDetails', 'studentDetail', 'studentChapter'],
             projectStatistics: ['studentDetail'],
             projectManage: ['projectStatistics'],
-            institutionAccount: ['institutionConfig', 'institutionUser'],
+            institutionAccount: ['institutionConfig', 'institutionUser', 'institutionDetails', 'collectionDetail'],
             customerProject: ['orderdetail', 'cusdetail'],
             eduOrder: ['orderdetail', 'cusdetail'],
             crmCustomer: ['cusdetail'],
@@ -53,6 +53,7 @@ const searchCache = {
             studentOrder: ['studentOrderDetail'],
             collectionList: ['crmOrderDetail'],
             institutionProject: ['institutionDetails'],
+            institutionDetails: ['collectionDetail'],
         },
         // 当前缓存的页面
         currentCache: ['visualization']
