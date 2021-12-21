@@ -465,3 +465,19 @@ export function getReceivableList(params) {
         params
     })
 }
+// 机构项目对接人列表
+export function getProjectEduList(params) {
+    return request({
+        url: '/ProjectEdu/getList',
+        method: 'get',
+        params
+    })
+}
+// 机构项目对接人列表-修改
+export function modifyProjectEdu(data) {
+    return request({
+        url: '/ProjectEdu/modifly',
+        method: 'post',
+        data
+    })
+}
