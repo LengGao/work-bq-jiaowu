@@ -96,6 +96,43 @@
           min-width="130"
           show-overflow-tooltip
         ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="create_time"
+          label="开课状态"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-tag
+              size="small"
+              :type="openCourseMap[row.open_course || 0].type"
+              >{{ openCourseMap[row.open_course || 0].text }}</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          fixed="right"
+          min-width="160"
+        >
+          <template slot-scope="{ row }">
+            <el-button
+              @click="closeCourseConfirm(row.project_id, 1)"
+              v-if="row.open_course !== 2"
+              type="text"
+              style="padding: 0"
+              >毕业关课</el-button
+            >
+            <el-button
+              type="text"
+              style="padding: 0"
+              @click="closeCourseConfirm(row.project_id, 2)"
+              >作废关课</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <h4 class="table-title">归属班级</h4>
@@ -298,6 +335,8 @@ import {
   getuserproject,
   unClassCourse,
   classstudentsBatchRemove,
+  graduateCloseCourse,
+  cancelCloseCourse,
 } from "@/api/eda";
 export default {
   name: "class",
@@ -315,6 +354,20 @@ export default {
       classLoading: false,
       unClassData: [],
       unClassLoading: false,
+      openCourseMap: {
+        0: {
+          text: "未开课",
+          type: "info",
+        },
+        1: {
+          text: "已开课",
+          type: "success",
+        },
+        2: {
+          text: "已毕业",
+          type: "",
+        },
+      },
     };
   },
   activated() {
@@ -328,6 +381,28 @@ export default {
     this.unClassCourse();
   },
   methods: {
+    // 毕业,作废关课
+    closeCourseConfirm(project_id, type) {
+      this.$confirm(`确定要执行${type === 1 ? "毕业关课" : "作废关课"}吗?`, {
+        type: "warning",
+      })
+        .then(() => {
+          this.closeCourse(project_id, type);
+        })
+        .catch(() => {});
+    },
+    async closeCourse(project_id, type) {
+      const data = {
+        uid: this.uid,
+        project_id,
+      };
+      const api = type === 1 ? graduateCloseCourse : cancelCloseCourse;
+      const res = await api(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getuserproject();
+      }
+    },
     // 去转班
     linkTo(row) {
       const query = {
