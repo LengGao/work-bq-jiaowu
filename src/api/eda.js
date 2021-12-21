@@ -1288,3 +1288,19 @@ export function exportUserLiveVideoStatistics(data) {
     data,
   })
 }
+// 毕业关课
+export function graduateCloseCourse(data) {
+  return request({
+    url: 'User/graduateCloseCourse',
+    method: 'post',
+    data,
+  })
+}
+// 作废关课
+export function cancelCloseCourse(data) {
+  return request({
+    url: 'User/cancelCloseCourse',
+    method: 'post',
+    data,
+  })
+}
