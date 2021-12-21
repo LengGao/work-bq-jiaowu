@@ -19,13 +19,12 @@
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
         :cell-style="{ 'text-align': 'center' }"
-        all="1"
       >
         <el-table-column
           prop="id"
           label="序号"
           show-overflow-tooltip
-          min-width="70"
+          width="60"
         >
         </el-table-column>
         <el-table-column
@@ -34,6 +33,16 @@
           min-width="100"
           show-overflow-tooltip
         >
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="订单金额"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.order_money | moneyFormat }}
+          </template>
         </el-table-column>
         <el-table-column
           prop="pay_date"
@@ -48,7 +57,9 @@
           min-width="90"
           show-overflow-tooltip
         >
-          <template slot-scope="{ row }"> ￥{{ row.pay_money || 0 }} </template>
+          <template slot-scope="{ row }">
+            {{ row.pay_money | moneyFormat }}
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -99,8 +110,24 @@
         >
           <template slot-scope="{ row }">
             <span v-if="row.plan_pay_money">
-              ￥{{ row.plan_pay_money || 0 }}
+              {{ row.plan_pay_money | moneyFormat }}
             </span>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="order_verify_status"
+          label="订单状态"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-tag
+              size="small"
+              :type="verifyStatusMap[row.order_verify_status || 0].type"
+            >
+              {{ verifyStatusMap[row.order_verify_status || 0].text }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column
