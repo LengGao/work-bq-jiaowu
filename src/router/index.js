@@ -880,6 +880,12 @@ export const asyncRouter = [
     name: 'channel',
     children: [
       {
+        path: 'resetProjectPrice',
+        name: 'resetProjectPrice',
+        component: () => import('@/views/crm/resetProjectPrice/index.vue'),
+        meta: { title: '重设项目价格' },
+      },
+      {
         path: 'institutionalCollection',
         name: 'institutionalCollection',
         component: () => import('@/views/crm/institutionalCollection/index.vue'),

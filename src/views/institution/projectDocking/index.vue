@@ -116,7 +116,7 @@ import {
 import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils";
 export default {
-  name: "institutionProject",
+  name: "projectDocking",
   data() {
     return {
       listData: [],

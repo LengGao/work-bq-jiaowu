@@ -1,0 +1,297 @@
+<template>
+  <div>
+    <div class="head_remind">*本模块用来重置项目订单价格。</div>
+    <section>
+      <!--搜索模块-->
+      <header>
+        <el-form
+          label-width="100px"
+          :model="formData"
+          :rules="rules"
+          inline
+          ref="formData"
+        >
+          <el-form-item label="机构名称" prop="from_organization_id">
+            <el-select
+              v-model="formData.from_organization_id"
+              filterable
+              clearable
+              placeholder="请选择机构"
+              @change="onOrgChange"
+            >
+              <el-option
+                v-for="item in institutionOptions"
+                :key="item.institution_id"
+                :label="item.institution_name"
+                :value="item.institution_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="项目名称" prop="project_id">
+            <el-select
+              v-model="formData.project_id"
+              filterable
+              clearable
+              placeholder="请选择项目"
+              @change="onProjectChange"
+            >
+              <el-option
+                v-for="item in projectOptions"
+                :key="item.project_id"
+                :label="item.project_name"
+                :value="item.project_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="项目价格" prop="price">
+            <el-select
+              v-model="formData.price"
+              filterable
+              clearable
+              placeholder="请选择价格"
+            >
+              <el-option
+                v-for="item in classTypeOptions"
+                :key="item.id"
+                :label="`${item.title}：￥${item.price}`"
+                :value="item.price"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              :loading="restLoading"
+              @click="submitForm('formData')"
+              >重 设</el-button
+            >
+          </el-form-item>
+        </el-form>
+      </header>
+      <!--列表-->
+      <div class="userTable">
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
+          :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSelection"
+        >
+          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            prop="order_id"
+            label="订单ID"
+            show-overflow-tooltip
+            min-width="70"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="order_money"
+            label="订单金额"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="pay_money"
+            label="回款金额"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.pay_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="overdue_money"
+            label="欠缴金额"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.overdue_money | moneyFormat }}
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script>
+import {
+  getProjectOrder,
+  switchList,
+  getOrgClassType,
+  modifyProjectOrder,
+} from "@/api/crm";
+import { getOrgProjectr } from "@/api/institution";
+export default {
+  name: "resetProjectPrice",
+  data() {
+    return {
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      listTotal: 0,
+      orderActionDialog: false,
+      institutionOptions: [],
+      projectOptions: [],
+      classTypeOptions: [],
+      formData: {
+        project_id: "",
+        from_organization_id: "",
+        price: "",
+      },
+      rules: {
+        price: [{ required: true, message: "请选择", trigger: "change" }],
+        project_id: [{ required: true, message: "请选择", trigger: "change" }],
+        from_organization_id: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
+        title: [{ required: true, message: "请选择", trigger: "blur" }],
+      },
+      restLoading: false,
+      selection: [],
+    };
+  },
+  created() {
+    this.switchList();
+  },
+  methods: {
+    handleSelection(selection) {
+      this.selection = selection;
+    },
+    async modifyProjectOrder() {
+      const data = {
+        arr_order_id: this.selection.map((item) => item.order_id),
+        price: this.formData.price,
+        institution_id: this.formData.from_organization_id,
+        project_id: this.formData.project_id,
+      };
+      this.restLoading = true;
+      const res = await modifyProjectOrder(data).catch(() => {});
+      this.restLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getProjectOrder();
+      }
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (!this.selection.length) {
+            this.$message.warning("请选择订单");
+            return;
+          }
+          this.modifyProjectOrder();
+        }
+      });
+    },
+    onOrgChange() {
+      this.formData.project_id = "";
+      this.formData.price = "";
+      this.listData = [];
+      this.listTotal = 0;
+      this.pageNum = 1;
+      this.getOrgProjectr();
+    },
+    onProjectChange() {
+      this.formData.price = "";
+      this.pageNum = 1;
+      this.listData = [];
+      this.listTotal = 0;
+      this.getProjectOrder();
+      this.getOrgClassType();
+    },
+    // 获取列表
+    async getOrgProjectr() {
+      const data = {
+        limit: 99999,
+        from_organization_id: this.formData.from_organization_id,
+      };
+      const res = await getOrgProjectr(data);
+      if (res.code === 0) {
+        this.projectOptions = res.data.list;
+      }
+    },
+    async getOrgClassType() {
+      const data = {
+        institution_id: this.formData.from_organization_id,
+        project_id: this.formData.project_id,
+      };
+      const res = await getOrgClassType(data);
+      this.classTypeOptions = res.data;
+    },
+    async switchList() {
+      const res = await switchList();
+      this.institutionOptions = res.data.list;
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.getProjectOrder();
+    },
+    async getProjectOrder() {
+      this.selection = [];
+      const data = {
+        page: this.pageNum,
+        institution_id: this.formData.from_organization_id,
+        project_id: this.formData.project_id,
+      };
+      this.listLoading = true;
+      const res = await getProjectOrder(data).catch(() => {});
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+section {
+  padding: 16px;
+}
+.approve-status {
+  &::before {
+    display: inline-block;
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #fd6500;
+    vertical-align: middle;
+    margin-right: 2px;
+  }
+  &--success::before {
+    background-color: #43d100;
+  }
+  &--wait::before {
+    background-color: #199fff;
+  }
+  &--none::before {
+    background-color: #999;
+  }
+}
+</style>

@@ -549,3 +549,27 @@ export function oneMoreReshuffle(params) {
         params
     })
 }
+// 项目价格列表
+export function getOrgClassType(params) {
+    return request({
+        url: '/project/getOrgClassType',
+        method: 'get',
+        params
+    })
+}
+// 项目订单列表
+export function getProjectOrder(params) {
+    return request({
+        url: '/project/getProjectOrder',
+        method: 'get',
+        params
+    })
+}
+// 项目订单价格批量修改
+export function modifyProjectOrder(data) {
+    return request({
+        url: '/project/modifyProjectOrder',
+        method: 'post',
+        data
+    })
+}
