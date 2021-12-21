@@ -428,11 +428,11 @@ export function getOrgReceivableList(params) {
     })
 }
 // 机构回款列表-添加-获取订单
-export function getOrder(params) {
+export function getOrder(data) {
     return request({
         url: '/OrgReceivable/getOrder',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 机构回款列表-添加-获取分类
