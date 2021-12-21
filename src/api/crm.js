@@ -428,11 +428,11 @@ export function getOrgReceivableList(params) {
     })
 }
 // 机构回款列表-添加-获取订单
-export function getOrder(params) {
+export function getOrder(data) {
     return request({
         url: '/OrgReceivable/getOrder',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 // 机构回款列表-添加-获取分类
@@ -547,5 +547,29 @@ export function oneMoreReshuffle(params) {
         url: '/CrmOrder/oneMoreReshuffle',
         method: 'get',
         params
+    })
+}
+// 项目价格列表
+export function getOrgClassType(params) {
+    return request({
+        url: '/project/getOrgClassType',
+        method: 'get',
+        params
+    })
+}
+// 项目订单列表
+export function getProjectOrder(params) {
+    return request({
+        url: '/project/getProjectOrder',
+        method: 'get',
+        params
+    })
+}
+// 项目订单价格批量修改
+export function modifyProjectOrder(data) {
+    return request({
+        url: '/project/modifyProjectOrder',
+        method: 'post',
+        data
     })
 }

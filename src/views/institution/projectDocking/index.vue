@@ -88,7 +88,7 @@
             v-for="item in eduStaffOptions"
             :key="item.staff_id"
             :label="item.staff_name"
-            :value="item.staff_id"
+            :value="item.staff_id + ''"
           >
             <span style="float: left">{{ item.staff_name }}</span>
             <span
@@ -116,7 +116,7 @@ import {
 import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils";
 export default {
-  name: "institutionProject",
+  name: "projectDocking",
   data() {
     return {
       listData: [],
@@ -125,6 +125,7 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
+        category_id: [],
         project_name: "",
       },
       searchOptions: [
@@ -166,13 +167,12 @@ export default {
       }
       this.isChange = false;
       this.modifyProjectEdu();
-      // 设置选中的人名
-      this.currentData.staff_name = this.eduStaffOptions
-        .filter((item) => this.currentData.staff_id.includes(item.staff_id))
-        .map((item) => item.staff_name)
-        .join(",");
     },
     openChangeDialog(row) {
+      if (typeof row.staff_id === "string") {
+        row.staff_id = row.staff_id ? row.staff_id.split(",") : [];
+      }
+      console.log(row.staff_id);
       this.currentData = row;
       this.visible = true;
     },
@@ -191,6 +191,13 @@ export default {
       const res = await modifyProjectEdu(data);
       if (res.code === 0) {
         this.$message.success(res.message);
+        // 设置选中的人名
+        this.currentData.staff_name = this.eduStaffOptions
+          .filter((item) =>
+            this.currentData.staff_id.includes(item.staff_id + "")
+          )
+          .map((item) => item.staff_name)
+          .join(",");
       }
     },
     async getStaffSelect(status) {

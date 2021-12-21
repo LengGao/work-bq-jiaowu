@@ -476,7 +476,7 @@ export function getProjectEduList(params) {
 // 机构项目对接人列表-修改
 export function modifyProjectEdu(data) {
     return request({
-        url: '/ProjectEdu/modifly',
+        url: '/ProjectEdu/modify',
         method: 'post',
         data
     })

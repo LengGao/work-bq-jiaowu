@@ -45,13 +45,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="pay_date"
-          label="回款日期"
-          min-width="100"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
           prop="pay_money"
           label="回款金额"
           min-width="90"
@@ -61,7 +54,13 @@
             {{ row.pay_money | moneyFormat }}
           </template>
         </el-table-column>
-
+        <el-table-column
+          prop="pay_date"
+          label="回款日期"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
         <el-table-column
           prop="pay_type"
           label="支付方式"
