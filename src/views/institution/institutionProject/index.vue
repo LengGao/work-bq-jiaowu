@@ -39,6 +39,14 @@
               >
             </template>
           </el-table-column>
+          <el-table-column
+            label="项目总数"
+            show-overflow-tooltip
+            min-width="80"
+            align="center"
+            prop="total_project_count"
+          >
+          </el-table-column>
 
           <el-table-column
             v-for="(item, index) in listColumnData"
