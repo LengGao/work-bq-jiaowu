@@ -12,7 +12,8 @@
               @on-search="handleLeftSearch"
             />
             <p class="tips">
-              *注意：价格为0表示该班型免费，价格为-1表示该班型不能报名
+              *注意：价格为0表示该班型免费，价格为-1表示该班型不能报名;
+              双击班级类型快速输入-1
             </p>
           </div>
 
@@ -58,6 +59,11 @@
               v-for="(item, index) in classTypes"
               :key="index"
             >
+              <template slot="header">
+                <span @dblclick="handleColumnClick(index)">{{
+                  item.title
+                }}</span>
+              </template>
               <template slot-scope="{ row }">
                 <el-input
                   type="number"
@@ -205,6 +211,14 @@ export default {
     this.getCateList();
   },
   methods: {
+    handleColumnClick(index) {
+      this.listLeftData.forEach((item) => {
+        if (item[item.id]) {
+          item[item.id][index].price =
+            item[item.id][index].price === -1 ? "" : -1;
+        }
+      });
+    },
     handleReset() {
       this.getOrgList();
       this.getProjectOrgList();
