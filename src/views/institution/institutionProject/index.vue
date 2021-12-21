@@ -215,26 +215,6 @@ export default {
       }
       this.isChange = false;
       this.setStudentReception();
-      // 设置选中的人名
-      this.currentData[`education_staff_name_${this.currentCateId}`] =
-        this.eduStaffOptions
-          .filter((item) =>
-            this.currentData[
-              `education_staff_id_arr_${this.currentCateId}`
-            ].includes(item.staff_id + "")
-          )
-          .map((item) => item.staff_name)
-          .join(",");
-      let name = "";
-      this.channelStaffOptions.forEach((item) => {
-        if (
-          item.staff_id ===
-          this.currentData[`channel_staff_id_${this.currentCateId}`]
-        ) {
-          name = item.staff_name;
-        }
-      });
-      this.currentData[`channel_staff_name_${this.currentCateId}`] = name;
     },
     openChangeDialog(row, cateId) {
       this.currentCateId = cateId;
@@ -259,6 +239,26 @@ export default {
       const res = await setStudentReception(data);
       if (res.code === 0) {
         this.$message.success(res.message);
+        // 设置选中的人名
+        this.currentData[`education_staff_name_${this.currentCateId}`] =
+          this.eduStaffOptions
+            .filter((item) =>
+              this.currentData[
+                `education_staff_id_arr_${this.currentCateId}`
+              ].includes(item.staff_id + "")
+            )
+            .map((item) => item.staff_name)
+            .join(",");
+        let name = "";
+        this.channelStaffOptions.forEach((item) => {
+          if (
+            item.staff_id ===
+            this.currentData[`channel_staff_id_${this.currentCateId}`]
+          ) {
+            name = item.staff_name;
+          }
+        });
+        this.currentData[`channel_staff_name_${this.currentCateId}`] = name;
       }
     },
     async getStaffSelect(status) {
