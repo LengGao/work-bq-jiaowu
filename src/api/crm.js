@@ -573,3 +573,11 @@ export function modifyProjectOrder(data) {
         data
     })
 }
+// 项目列表
+export function getOrderProject(params) {
+    return request({
+        url: '/project/getOrderProject',
+        method: 'get',
+        params
+    })
+}

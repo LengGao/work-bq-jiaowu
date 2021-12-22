@@ -28,6 +28,16 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="项目类型" prop="type">
+            <el-select
+              v-model="formData.type"
+              placeholder="请选择项目"
+              @change="onOrgChange"
+            >
+              <el-option label="单项目" value="1"> </el-option>
+              <el-option label="多项目" value="2"> </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="项目名称" prop="project_id">
             <el-select
               v-model="formData.project_id"
@@ -38,14 +48,14 @@
             >
               <el-option
                 v-for="item in projectOptions"
-                :key="item.project_id"
+                :key="item.project_ids"
                 :label="item.project_name"
-                :value="item.project_id"
+                :value="item.project_ids"
               >
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="项目价格" prop="price">
+          <el-form-item v-if="formData.type == 1" label="项目价格" prop="price">
             <el-select
               v-model="formData.price"
               filterable
@@ -60,6 +70,9 @@
               >
               </el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item v-else label="项目价格" prop="price">
+            <el-input v-model="formData.price" placeholder="请输入价格" />
           </el-form-item>
           <el-form-item>
             <el-button
@@ -176,8 +189,8 @@ import {
   switchList,
   getOrgClassType,
   modifyProjectOrder,
+  getOrderProject,
 } from "@/api/crm";
-import { getOrgProjectr } from "@/api/institution";
 export default {
   name: "resetProjectPrice",
   data() {
@@ -194,6 +207,7 @@ export default {
         project_id: "",
         from_organization_id: "",
         price: "",
+        type: "1",
       },
       rules: {
         price: [{ required: true, message: "请选择", trigger: "change" }],
@@ -246,7 +260,7 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.pageNum = 1;
-      this.getOrgProjectr();
+      this.getOrderProject();
     },
     onProjectChange() {
       this.formData.price = "";
@@ -254,17 +268,19 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.getProjectOrder();
-      this.getOrgClassType();
+      if (this.formData.type == 1) {
+        this.getOrgClassType();
+      }
     },
     // 获取列表
-    async getOrgProjectr() {
+    async getOrderProject() {
       const data = {
-        limit: 99999,
-        from_organization_id: this.formData.from_organization_id,
+        institution_id: this.formData.from_organization_id,
+        type: this.formData.type,
       };
-      const res = await getOrgProjectr(data);
+      const res = await getOrderProject(data);
       if (res.code === 0) {
-        this.projectOptions = res.data.list;
+        this.projectOptions = res.data;
       }
     },
     async getOrgClassType() {
