@@ -6,7 +6,7 @@ console.log('当前环境：', process.env.NODE_ENV)
 console.log('当前baseUrl：', process.env.VUE_APP_LOACTION)
 const isProduction = process.env.NODE_ENV === 'production'
 // 是否使用cdn
-const openCdn = isProduction && false
+const openCdn = isProduction
 // CDN外链，会插入到index.html中  
 const cdn = {
   css: [
