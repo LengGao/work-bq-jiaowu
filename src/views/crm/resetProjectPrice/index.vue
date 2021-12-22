@@ -93,6 +93,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="user_name"
+            label="客户姓名"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="category_name"
             label="所属分类"
             min-width="100"
@@ -105,6 +112,9 @@
             min-width="100"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="pay_money"
@@ -125,6 +135,27 @@
             <template slot-scope="{ row }">
               {{ row.overdue_money | moneyFormat }}
             </template>
+          </el-table-column>
+          <el-table-column
+            prop="receivable_num"
+            label="回款总数"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="booked_num"
+            label="入账总数"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="160"
+            show-overflow-tooltip
+          >
           </el-table-column>
         </el-table>
         <div class="table_bottom">
