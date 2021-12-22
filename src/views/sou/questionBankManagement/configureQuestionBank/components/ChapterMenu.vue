@@ -26,28 +26,48 @@
           >{{ item.chapter_name }}（{{ item.topic_total }}）</span
         >
         <div class="list-item-actions" v-if="!item.disabled">
-          <i class="el-icon-edit" @click.stop="openEdit(item.id)"></i>
-          <i class="el-icon-delete" @click.stop="deleteConfirm(item.id)"></i>
+          <i
+            class="el-icon-edit"
+            title="编辑"
+            @click.stop="openEdit(item.id)"
+          ></i>
+          <i
+            class="el-icon-delete"
+            title="删除"
+            @click.stop="deleteConfirm(item.id)"
+          ></i>
+          <i
+            class="el-icon-view"
+            title="考试记录"
+            v-if="chapterType == 3"
+            @click.stop="openRecordDialog(item.id)"
+          ></i>
         </div>
       </li>
     </ul>
-    <editChapterDialog
+    <EditChapterDialog
       v-model="dialogVisible"
       :title="dialogTitle"
       :id="currentId"
       :chapterType="chapterType"
       @on-success="getTopicChapterList"
     />
+    <AnswerRecordDialog
+      v-model="AnswerRecordDialogVisible"
+      :chapterId="currentId"
+    />
   </div>
 </template>
 
 <script>
 import { getTopicChapterList, deletedTopicChapter } from "@/api/sou";
-import editChapterDialog from "./editChapterDialog";
+import EditChapterDialog from "./editChapterDialog";
+import AnswerRecordDialog from "./AnswerRecordDialog";
 export default {
   name: "ChapterMenu",
   components: {
-    editChapterDialog,
+    EditChapterDialog,
+    AnswerRecordDialog,
   },
   props: {
     chapterType: {
@@ -63,6 +83,7 @@ export default {
       chapterList: [],
       chapterLoading: false,
       chapterActiveId: 0,
+      AnswerRecordDialogVisible: false,
     };
   },
   watch: {
@@ -74,6 +95,10 @@ export default {
     this.getTopicChapterList();
   },
   methods: {
+    openRecordDialog(id) {
+      this.currentId = id;
+      this.AnswerRecordDialogVisible = true;
+    },
     openEdit(id) {
       this.dialogTitle = `编辑${this.chapterType == 1 ? "章节" : "试卷"}`;
       this.currentId = id;

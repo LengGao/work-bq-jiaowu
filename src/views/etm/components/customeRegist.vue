@@ -545,7 +545,7 @@ import {
   createOrder,
 } from "@/api/etm";
 import { getUniversityMajorDetailList } from "@/api/sou";
-import { parsePrice } from "@/utils/index";
+import { payWays, parsePrice } from "@/utils";
 import AddPhoto from "@/views/eda/certificates/components/AddPhoto";
 export default {
   props: {
@@ -565,40 +565,7 @@ export default {
     return {
       parsePrice,
       openStatus: this.value,
-      payWays: [
-        {
-          value: 1,
-          label: "现金",
-        },
-        {
-          value: 2,
-          label: "微信",
-        },
-        {
-          value: 3,
-          label: "支付宝",
-        },
-        {
-          value: 4,
-          label: "聚合收单",
-        },
-        {
-          value: 5,
-          label: "银行转账",
-        },
-        {
-          value: 6,
-          label: "收钱吧",
-        },
-        {
-          value: 7,
-          label: "机构签约订单",
-        },
-        {
-          value: 8,
-          label: "pos机",
-        },
-      ],
+      payWays,
       ruleForm: {
         online_course: "",
         pay_type: "",

@@ -11,9 +11,22 @@
         />
         <div>
           <el-button type="primary" @click="handleAdd">上传新版本</el-button>
-          <el-button type="primary" @click="batchAuditCode">审核</el-button>
-          <el-button type="primary" @click="batchUndoCodeAudit">撤回</el-button>
-          <el-button type="primary" @click="batchPublishCode"
+          <el-button
+            type="primary"
+            :loading="reviewLoading"
+            @click="batchAuditCode"
+            >审核</el-button
+          >
+          <el-button
+            type="primary"
+            :loading="cancelLoading"
+            @click="batchUndoCodeAudit"
+            >撤回</el-button
+          >
+          <el-button
+            type="primary"
+            :loading="releaseLoading"
+            @click="batchPublishCode"
             >发布上线</el-button
           >
         </div>
@@ -108,6 +121,20 @@
             show-overflow-tooltip
           >
           </el-table-column>
+          <el-table-column
+            label="操作"
+            fixed="right"
+            align="center"
+            min-width="120"
+          >
+            <template slot-scope="{ row }">
+              <el-button
+                type="text"
+                @click="getInstitutionToken(row.from_organization_id)"
+                >登录后台</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
         <div class="table_bottom">
           <page
@@ -130,6 +157,7 @@ import {
   batchAuditCode,
   batchUndoCodeAudit,
   batchPublishCode,
+  getInstitutionToken,
 } from "@/api/institution";
 import AddVersionDialog from "./components/AddVersionDialog";
 export default {
@@ -139,6 +167,9 @@ export default {
   },
   data() {
     return {
+      reviewLoading: false,
+      cancelLoading: false,
+      releaseLoading: false,
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -162,7 +193,7 @@ export default {
           type: "select",
           options: [],
           optionValue: "template_id",
-          optionLabel: "template_id",
+          optionLabel: "user_version",
           attrs: {
             placeholder: "模板ID",
             clearable: true,
@@ -217,6 +248,18 @@ export default {
     this.templateSelect();
   },
   methods: {
+    async getInstitutionToken(institution_id) {
+      const data = { institution_id };
+      const res = await getInstitutionToken(data);
+      if (res.code === 0) {
+        let params = "";
+        for (const key in res.data) {
+          params += `${key}=${res.data[key]}&`;
+        }
+        const url = `https://store.beiqujy.com/#/?${params.slice(0, -1)}`;
+        window.open(url);
+      }
+    },
     async batchPublishCode() {
       if (!this.selectedIds.length) {
         this.$message.warning("请先选择机构小程序");
@@ -225,7 +268,9 @@ export default {
       const data = {
         org_id_arr: this.selectedIds,
       };
-      const res = await batchPublishCode(data);
+      this.releaseLoading = true;
+      const res = await batchPublishCode(data).catch(() => {});
+      this.releaseLoading = false;
       if (res.code === 0) {
         this.$alert(`<p>${res.message}</p>`, {
           dangerouslyUseHTMLString: true,
@@ -241,7 +286,9 @@ export default {
       const data = {
         org_id_arr: this.selectedIds,
       };
-      const res = await batchUndoCodeAudit(data);
+      this.cancelLoading = true;
+      const res = await batchUndoCodeAudit(data).catch(() => {});
+      this.cancelLoading = false;
       if (res.code === 0) {
         this.$alert(`<p>${res.message}</p>`, {
           dangerouslyUseHTMLString: true,
@@ -257,7 +304,9 @@ export default {
       const data = {
         org_id_arr: this.selectedIds,
       };
-      const res = await batchAuditCode(data);
+      this.reviewLoading = true;
+      const res = await batchAuditCode(data).catch(() => {});
+      this.reviewLoading = false;
       if (res.code === 0) {
         this.$alert(`<p>${res.message}</p>`, {
           dangerouslyUseHTMLString: true,

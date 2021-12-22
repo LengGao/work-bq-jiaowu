@@ -405,6 +405,14 @@ export function getQuestionBankList(params) {
     params,
   })
 }
+// 机构题库列表
+export function getOrgQuestionBankList(params) {
+  return request({
+    url: 'Organization/questionBank',
+    method: 'get',
+    params,
+  })
+}
 // 更新题库状态
 export function updateQuestionBankStatus(data) {
   return request({
@@ -639,7 +647,7 @@ export function getTopicChapterList(params) {
 // 添加子项目
 export function createChildSub(data) {
   return request({
-    url: '/project/createSub',
+    url: '/project/addSubject',
     method: 'post',
     data,
   })
@@ -647,7 +655,7 @@ export function createChildSub(data) {
 // 修改子项目
 export function updateChildSub(data) {
   return request({
-    url: '/project/editSub',
+    url: '/project/changeSub',
     method: 'post',
     data,
   })
@@ -1380,6 +1388,55 @@ export function getSelectList(params) {
 export function getProjectStatisticsList(params) {
   return request({
     url: '/project/users',
+    method: 'get',
+    params,
+  })
+}
+// 监管校验开关
+export function updateForCourseJgDetect(data) {
+  return request({
+    url: '/course/updateForCourseJgDetect',
+    method: 'post',
+    data,
+  })
+}
+// 导出自主出题
+export function exportQuestion(data) {
+  return request({
+    url: '/ExportIndependent/export',
+    method: 'post',
+    data,
+  })
+}
+// 自主出题-考试记录
+export function getResults(params) {
+  return request({
+    url: 'questionBank/getResults',
+    method: 'get',
+    params,
+  })
+}
+// 自主出题-考试记录-详情
+export function getResultsDetail(params) {
+  return request({
+    url: 'questionBank/getTest',
+    method: 'get',
+    params,
+  })
+}
+// 视频库-生成小程序码
+export function getVideoQrcode(params) {
+  return request({
+    url: 'VideoRepository/getVideoQrcode',
+    method: 'get',
+    responseType: 'blob',
+    params,
+  })
+}
+// 微视频统计
+export function getSingleVideoStatisticsList(params) {
+  return request({
+    url: 'VideoRepository/getSingleVideoStatisticsList',
     method: 'get',
     params,
   })

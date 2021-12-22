@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import NumberRange from "./components/NumberRange";
 export default {
   name: "SearchList",
   props: {
@@ -45,6 +46,9 @@ export default {
       default: () => ({}),
     },
   },
+  components: {
+    NumberRange,
+  },
   data() {
     return {
       allComponents: {
@@ -52,6 +56,7 @@ export default {
         select: "el-select",
         datePicker: "el-date-picker",
         cascader: "el-cascader",
+        numberRange: "NumberRange",
       },
       searchData: {},
     };

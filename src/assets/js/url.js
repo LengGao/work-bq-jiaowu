@@ -22,7 +22,7 @@ export default {
   createRoom: '/Schoolroom/createRoom',
   updateRoom: '/Schoolroom/updateRoom',
   deleteRoom: '/Schoolroom/deleteRoom',
-  updateRoomStatus: '/Schoolroom/updateRoomStatus',
+  updateRoomStatus: '/Schoolroom/updateStatusForRoom',
   changeUpdateStatus: '/School/updateStatus',
   getProjectList: '/project/index',
   createProject: '/project/create',

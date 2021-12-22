@@ -146,6 +146,9 @@
       <div class="table_bottom">
         <div>
           <el-button @click="openTeacherDialog">更换所属老师</el-button>
+          <el-button @click="exportUserLiveVideoStatistics"
+            >导出直播回顾数据</el-button
+          >
         </div>
         <page
           :data="listTotal"
@@ -205,7 +208,12 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
-import { getStudentList, getproject, addstudents } from "@/api/eda";
+import {
+  getStudentList,
+  getproject,
+  addstudents,
+  exportUserLiveVideoStatistics,
+} from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import UpdateTeacher from "./components/UpdateTeacher.vue";
 export default {
@@ -313,6 +321,7 @@ export default {
         classroom_id: [{ required: true, message: "请选择", trigger: "blur" }],
       },
       updateTeacherDialog: false,
+      checkedUids: [],
     };
   },
 
@@ -324,6 +333,20 @@ export default {
   },
 
   methods: {
+    async exportUserLiveVideoStatistics() {
+      if (!this.checkedUids.length) {
+        this.$message.warning("请选择学生！");
+        return;
+      }
+      const data = {
+        uid_arr: this.checkedUids,
+      };
+      const res = await exportUserLiveVideoStatistics(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getStudentList();
+      }
+    },
     openTeacherDialog() {
       if (!this.checkedIds.length) {
         this.$message.warning("请先选择学生！");
@@ -357,6 +380,7 @@ export default {
     handleSeletChange(selection) {
       this.intent_id = selection[0]?.intent_id || "";
       this.checkedIds = selection.map((item) => item.id);
+      this.checkedUids = selection.map((item) => item.uid);
     },
     async addstudents() {
       const data = {
@@ -436,6 +460,7 @@ export default {
     //学生列表
     async getStudentList() {
       this.checkedIds = [];
+      this.checkedUids = [];
       this.intent_id = "";
       const data = {
         page: this.pageNum,

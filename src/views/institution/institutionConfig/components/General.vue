@@ -22,13 +22,17 @@
         <el-input
           style="width: 280px"
           placeholder="请输入审核版本号"
-          type="number"
           v-model="formData.applet_version"
         ></el-input>
         <span class="text">*请输入当前机构提交审核的版本号。</span>
       </el-form-item>
       <el-form-item label="网校LOGO" style="margin-bottom: 40px">
-        <UploadImg width="280" height="130" v-model="formData.logo">
+        <UploadImg
+          width="280"
+          height="130"
+          data-type="org"
+          v-model="formData.logo"
+        >
           <span slot="tips">
             <p>1、支持jpg、 png等格式</p>
             <p>2、推荐尺寸320x50px，用于网校和后台登录界面</p>
@@ -36,7 +40,12 @@
         </UploadImg>
       </el-form-item>
       <el-form-item label="反白LOGO" style="margin-bottom: 40px">
-        <UploadImg width="280" height="130" v-model="formData.logo_other">
+        <UploadImg
+          width="280"
+          height="130"
+          data-type="org"
+          v-model="formData.logo_other"
+        >
           <span slot="tips">
             <p>1、支持jpg、 png等格式</p>
             <p>2、推荐尺寸320x50px，用于后台左上角导航菜单</p>

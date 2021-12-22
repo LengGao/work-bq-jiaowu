@@ -1,6 +1,9 @@
 import Vue from 'vue'
 const min = (val) => val < 10 ? '0' + val : val
 const filters = {
+    moneyFormat(number, isCompact) {
+        return new Intl.NumberFormat('zh-CN', { style: 'currency', minimumFractionDigits: 2, notation: isCompact ? 'compact' : 'standard', currency: 'CNY' }).format(number || 0)
+    },
     filterPhone(val) {
         if (!val) return "--";
         val = val + ''
@@ -21,6 +24,7 @@ const filters = {
     },
     // 视频时长
     filterDuration(val) {
+        val = (+val || 0).toFixed(0)
         let s = val
         let h = 0
         let m = 0
@@ -80,7 +84,13 @@ const filters = {
         return tagTypeMap[status]
     }
 }
-
+Vue.directive('focus', {
+    // 当被绑定的元素插入到 DOM 中时……
+    inserted: function (el) {
+        // 聚焦元素
+        el.querySelector('input').focus()
+    }
+})
 Object.keys(filters).forEach(key => {
     Vue.filter(key, filters[key])
 })

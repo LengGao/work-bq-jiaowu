@@ -20,7 +20,9 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="#fff"
         :header-cell-style="{ 'text-align': 'center' }"
+        @selection-change="handleSeletChange"
       >
+        <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
           label="ID"
           show-overflow-tooltip
@@ -54,6 +56,13 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="staff_name"
+          label="归属人"
+          min-width="100"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
           prop="create_time"
           label="注册时间"
           min-width="140"
@@ -67,13 +76,13 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <div v-if="row.course_list">
-            {{ row.course_list }}
-          </div>
-          <span v-else>--</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <div v-if="row.course_list">
+              {{ row.course_list }}
+            </div>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="question_bank_list"
           label="题库名称"
@@ -81,13 +90,13 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <div v-if="row.question_bank_list">
-            {{ row.question_bank_list }}
-          </div>
-          <span v-else>--</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <div v-if="row.question_bank_list">
+              {{ row.question_bank_list }}
+            </div>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="is_pay"
           label="报名状态"
@@ -95,28 +104,35 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <el-tag size="small" type="text" :style="{ color: statusMap[row.is_pay].color }">
-            {{ statusMap[row.is_pay || 0].text }}
-          </el-tag>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <el-tag
+              size="small"
+              type="text"
+              :style="{ color: statusMap[row.is_pay].color }"
+            >
+              {{ statusMap[row.is_pay || 0].text }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           fixed="right"
           align="center"
           min-width="160"
         >
-        <template slot-scope="{ row }">
-          <div style="display: flex; justify-content: center">
-            <el-button type="text" @click="toStudentDetail(row.uid)"
-              >学生详情</el-button
-            >
-          </div>
-        </template>
+          <template slot-scope="{ row }">
+            <div style="display: flex; justify-content: center">
+              <el-button type="text" @click="toStudentDetail(row.uid)"
+                >学生详情</el-button
+              >
+            </div>
+          </template>
         </el-table-column>
       </el-table>
       <div class="table_bottom">
+        <div>
+          <el-button @click="openTeacherDialog">更换所属老师</el-button>
+        </div>
         <page
           :data="listTotal"
           :curpage="pageNum"
@@ -124,32 +140,37 @@
         />
       </div>
     </div>
+    <UpdateTeacher
+      v-model="updateTeacherDialog"
+      :ids="checkedIds"
+      @on-success="Organizationstudents"
+    />
   </div>
 </template>
 
 <script>
+import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import {Organizationstudents} from "@/api/institution";
+import { Organizationstudents } from "@/api/institution";
 export default {
   name: "InsitutionStudent",
   components: {
     PartiallyHidden,
+    UpdateTeacher,
   },
   data() {
     return {
       statusMap: {
-            0: {
-                color: "#FD6500",
-                text: "未报名",
-                
-            },
-            1: {
-                color: "#43D100",
-                text: "已报名",
-                
-            },
-            },
+        0: {
+          color: "#FD6500",
+          text: "未报名",
+        },
+        1: {
+          color: "#43D100",
+          text: "已报名",
+        },
+      },
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -200,6 +221,8 @@ export default {
           },
         },
       ],
+      checkedIds: [],
+      updateTeacherDialog: false,
     };
   },
 
@@ -207,33 +230,36 @@ export default {
     this.Organizationstudents();
   },
   methods: {
-    // toDetails(row) {
-    //   this.$router.push({
-    //     name: "institutionDetails",
-    //     query: {
-    //       id: row.id,
-    //     },
-    //   });
-    // },
+    openTeacherDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请先选择学生！");
+        return;
+      }
+      this.updateTeacherDialog = true;
+    },
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.archive_id);
+    },
     handleSearch(data) {
-        const times = data.date || ["", ""];
-        console.log(times);
-        delete data.date;
-        this.pageNum = 1;
-        this.searchData = {
-          ...data,
-          start_time: times[0],
-          end_time: times[1],
-        };
-        console.log(this.searchData);
-        this.Organizationstudents();
-      },
+      const times = data.date || ["", ""];
+      console.log(times);
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+      };
+      console.log(this.searchData);
+      this.Organizationstudents();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.Organizationstudents();
     },
     // 学生列表
     async Organizationstudents() {
+      this.checkedIds = [];
       const data = {
         page: this.pageNum,
         ...this.searchData,
@@ -245,7 +271,6 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
-
   },
 };
 </script>
@@ -265,7 +290,11 @@ export default {
   align-items: center;
   margin-bottom: 16px;
 }
-.institution-user-manage[data-v-53ad5394]{
+.institution-user-manage[data-v-53ad5394] {
   padding: 10px 20px 20px 0;
+}
+.table_bottom {
+  display: flex;
+  justify-content: space-between;
 }
 </style>

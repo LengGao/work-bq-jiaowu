@@ -15,7 +15,7 @@
           身份证码：{{ detailData.id_card_number | filterIdCard }}
         </div>
         <div class="header-item">
-          注册日期：{{ detailData.create_time || "--" }}
+          录入日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
           <el-button
@@ -30,7 +30,7 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
         <el-tab-pane label="证件资料" name="Certificates"></el-tab-pane>
-        <el-tab-pane label="学习轨迹" name="LearningTrack"></el-tab-pane>
+        <el-tab-pane label="学习记录" name="LearningRecords"></el-tab-pane>
         <el-tab-pane label="订单记录" name="OrderRecords"></el-tab-pane>
         <el-tab-pane label="用户日志" name="CustomerHistory"></el-tab-pane>
       </el-tabs>
@@ -38,21 +38,21 @@
         :is="getComponent"
         @on-basic-success="getStudentBasicDetail"
         :datas="detailData"
-        :uid="detailData.uid"
+        :uid="$route.query.uid"
       />
       <!-- 报名 -->
-      <CustomeRegist v-model="signUpDialog" :userInfo="detailData" />
+      <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
     </section>
   </div>
 </template>
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
-import CustomeRegist from "@/views/etm/components/customeRegist";
+import CustomeSignUp from "@/views/crm/crmCustomer/components/CustomeSignUp";
 export default {
   name: "cusdetail",
   components: {
-    CustomeRegist,
+    CustomeSignUp,
   },
   data() {
     return {
@@ -78,9 +78,16 @@ export default {
     },
     //学生基本信息
     async getStudentBasicDetail() {
-      const data = {
-        uid: this.$route.query?.uid || "",
-      };
+      const uid = this.$route.query?.uid;
+      const cid = this.$route.query?.cid;
+      const data = {};
+      if (uid && uid != 0) {
+        data.uid = uid;
+      } else if (cid) {
+        data.cid = cid;
+      } else {
+        data.uid = "";
+      }
       const res = await getStudentBasicDetail(data);
       if (res.code === 0) {
         console;

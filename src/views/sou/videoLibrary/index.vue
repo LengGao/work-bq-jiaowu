@@ -109,7 +109,7 @@
               min-width="90"
               show-overflow-tooltip
             ></el-table-column>
-            <el-table-column label="操作" fixed="right" min-width="200">
+            <el-table-column label="操作" fixed="right" min-width="230">
               <template slot-scope="{ row }">
                 <div style="display: flex; justify-content: center">
                   <el-button
@@ -124,6 +124,12 @@
                     :loading="row.updateLoading"
                     @click="completeVideoInfo(row)"
                     >刷新</el-button
+                  >
+                  <el-button
+                    type="text"
+                    :loading="row.qrLoading"
+                    @click="getVideoQrcode(row)"
+                    >小程序码</el-button
                   >
                   <el-button type="text" @click="deleteConfirm(row.id)"
                     >删除</el-button
@@ -155,12 +161,14 @@
 
 <script>
 import { getShortcuts } from "@/utils/date";
+import { download as downloadQRcode } from "@/utils";
 import VideoMenu from "./components/VideoMenu";
 import {
   getVideoList,
   deleteVideo,
   getAdminSelect,
   completeVideoInfo,
+  getVideoQrcode,
 } from "@/api/sou";
 import UploadVideoDialog from "./components/UploadVideoDialog.vue";
 import UsageTimesDialog from "./components/UsageTimesDialog.vue";
@@ -251,6 +259,14 @@ export default {
     openUsageTimesDialog(row) {
       this.videoData = row;
       this.usageTimesDialog = true;
+    },
+    async getVideoQrcode(row) {
+      const data = { id: row.id };
+      row.qrLoading = true;
+      const res = await getVideoQrcode(data).catch(() => {});
+      row.qrLoading = false;
+      const url = URL.createObjectURL(new Blob([res], { type: "image/png" }));
+      downloadQRcode(url, row.title);
     },
     // 预览
     previewVideo(row) {
@@ -353,6 +369,7 @@ export default {
         ...item,
         loading: false,
         updateLoading: false,
+        qrLoading: false,
       }));
       this.listTotal = res.data.total;
     },

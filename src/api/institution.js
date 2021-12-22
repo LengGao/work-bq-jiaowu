@@ -148,7 +148,7 @@ export function deleteClassType(data) {
 // 班型列表-启用禁用
 export function updateClassTypeStatus(data) {
     return request({
-        url: '/Merchant/updateClassTypeStatus',
+        url: '/Merchant/updateStatusForClassType',
         method: 'post',
         data,
     })
@@ -156,7 +156,7 @@ export function updateClassTypeStatus(data) {
 // 班型列表-排序
 export function updateClassTypeSort(data) {
     return request({
-        url: '/Merchant/updateClassTypeSort',
+        url: '/Merchant/updateSortForClassType',
         method: 'post',
         data,
     })
@@ -399,5 +399,85 @@ export function BankRelationremove(data) {
         url: 'OrganizationQuestionBankRelation/remove',
         method: 'post',
         data,
+    })
+}
+// 学生对接列表
+export function getOrgStudentReceptionList(params) {
+    return request({
+        url: '/Merchant/getOrgStudentReceptionList',
+        method: 'get',
+        params,
+    })
+}
+// 机构详情-学生对接列表-获取员工选项
+export function getStaffSelect(params) {
+    return request({
+        url: '/Merchant/getStaffSelect',
+        method: 'get',
+        params
+    })
+}
+// 机构详情-学生对接列表-保存
+export function setStudentReception(params) {
+    return request({
+        url: '/Merchant/setStudentReception',
+        method: 'get',
+        params
+    })
+}
+// 机构详情-机构项目
+export function getOrgProjectr(params) {
+    return request({
+        url: 'ProjectOrg/myProjectr',
+        method: 'get',
+        params
+    })
+}
+// 机构列表-学生对接分类列表
+export function getOrgCateIdArr(data) {
+    return request({
+        url: 'Merchant/getOrgCateIdArr',
+        method: 'post',
+        data
+    })
+}
+// 机构列表-批量学生对接
+export function batchSetStudentReception(data) {
+    return request({
+        url: 'Merchant/batchSetStudentReception',
+        method: 'post',
+        data
+    })
+}
+// 机构项目统计列表
+export function orgCateStatisticsList(params) {
+    return request({
+        url: 'Merchant/orgCateStatisticsList',
+        method: 'get',
+        params
+    })
+}
+// 机构回款列表
+export function getReceivableList(params) {
+    return request({
+        url: '/Organization/receivableList',
+        method: 'get',
+        params
+    })
+}
+// 机构项目对接人列表
+export function getProjectEduList(params) {
+    return request({
+        url: '/ProjectEdu/getList',
+        method: 'get',
+        params
+    })
+}
+// 机构项目对接人列表-修改
+export function modifyProjectEdu(data) {
+    return request({
+        url: '/ProjectEdu/modify',
+        method: 'post',
+        data
     })
 }

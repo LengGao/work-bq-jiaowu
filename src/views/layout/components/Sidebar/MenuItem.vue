@@ -13,9 +13,9 @@
         :class="{ 'p-l': item.path === '/visualization' && isCollapse }"
         :index="`${defaultPath}${reg(item.path) ? '' : '/'}${item.path}`"
       >
-        <i :class="['iconfont', item.icon || '']"></i
-        >{{ item.name }}</el-menu-item
-      >
+        <i :class="['iconfont', item.icon || '']"></i>
+        <span :class="{ dot: !!item.badge }">{{ item.name }}</span>
+      </el-menu-item>
     </div>
   </div>
 </template>
@@ -53,5 +53,18 @@ export default {
 }
 .p-l {
   padding-left: 10px !important;
+}
+.dot {
+  position: relative;
+  &::after {
+    position: absolute;
+    top: -2px;
+    right: -10px;
+    content: "";
+    width: 6px;
+    height: 6px;
+    background-color: #fd6500;
+    border-radius: 50%;
+  }
 }
 </style>

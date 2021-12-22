@@ -950,7 +950,7 @@ export function publicLiveList(params) {
 // 公开课直播列表-修改直播展示状态
 export function updatePublicLiveShowStatus(params) {
   return request({
-    url: '/NewLive/updatePublicLiveShowStatus',
+    url: '/NewLive/updateShowStatusForPublicLive',
     method: 'get',
     params,
   })
@@ -1118,7 +1118,7 @@ export function getFaceCourseSelect(params) {
 // 认证记录列表
 export function getFaceDetectList(params) {
   return request({
-    url: '/FaceDetect/getFaceDetectList',
+    url: '/FaceDetect/getFaceDetectListForAll',
     method: 'get',
     params,
   })
@@ -1250,5 +1250,57 @@ export function courseCollection(params) {
     url: '/UserArchives/courseCollection',
     method: 'get',
     params,
+  })
+}
+
+// 获取用户其他资料列表
+export function getUserFileList(params) {
+  return request({
+    url: '/User/getUserFileList',
+    method: 'get',
+    params,
+  })
+}
+// 删除用户其他资料
+export function deleteUserFile(data) {
+  return request({
+    url: '/User/deleteFile',
+    method: 'post',
+    data,
+  })
+}
+// 上传用户其他资料
+export const createUserFile = `${process.env.VUE_APP_LOACTION}/User/createFile`
+// 修改用户其他资料
+export const updateUserFile = `${process.env.VUE_APP_LOACTION}/User/updateFile`
+export function updateUserFileName(data) {
+  return request({
+    url: '/User/updateFile',
+    method: 'post',
+    data,
+  })
+}
+// 导出学生直播回顾
+export function exportUserLiveVideoStatistics(data) {
+  return request({
+    url: 'User/exportUserLiveVideoStatistics',
+    method: 'post',
+    data,
+  })
+}
+// 毕业关课
+export function graduateCloseCourse(data) {
+  return request({
+    url: 'User/graduateCloseCourse',
+    method: 'post',
+    data,
+  })
+}
+// 作废关课
+export function cancelCloseCourse(data) {
+  return request({
+    url: 'User/cancelCloseCourse',
+    method: 'post',
+    data,
   })
 }

@@ -1,25 +1,30 @@
 <template>
-  <!-- 证件资料 -->
-  <div class="certificates" v-loading="loading">
-    <div class="certificates-header">
-      <el-button @click="handlePreview">查看大图</el-button>
-      <el-button :loading="downloadLoading" @click="zipDownload"
-        >打包下载</el-button
-      >
-    </div>
-    <div class="certificates-uploads">
-      <div class="upload-item" v-for="(item, index) in uploads" :key="index">
-        <ImageUpload
-          width="300"
-          height="180"
-          drag
-          v-model="photoData[item.key]"
-          @on-delete="modifyCertificate"
-          @on-success="modifyCertificate"
+  <div class="material">
+    <!-- 证件资料 -->
+    <div class="certificates" v-loading="loading">
+      <div class="certificates-header">
+        <el-button @click="handlePreview">查看大图</el-button>
+        <el-button :loading="downloadLoading" @click="zipDownload"
+          >打包图片下载</el-button
         >
-          <p slot="tips">{{ item.name }}</p>
-        </ImageUpload>
       </div>
+      <div class="certificates-uploads">
+        <div class="upload-item" v-for="(item, index) in uploads" :key="index">
+          <ImageUpload
+            width="170"
+            height="120"
+            drag
+            v-model="photoData[item.key]"
+            @on-delete="modifyCertificate"
+            @on-success="modifyCertificate"
+          >
+            <p slot="tips">{{ item.name }}</p>
+          </ImageUpload>
+        </div>
+      </div>
+    </div>
+    <div class="other">
+      <OtherMaterials :uid="uid"/>
     </div>
     <a ref="a" download="证件资料"></a>
     <PreviewImg ref="view" />
@@ -33,13 +38,12 @@ import {
   getCertificateInfo,
 } from "@/api/educational";
 import ImageUpload from "@/components/ImgUpload";
+import OtherMaterials from "./OtherMaterials";
 export default {
   name: "certificates",
   components: {
     ImageUpload,
-  },
-  components: {
-    ImageUpload,
+    OtherMaterials,
   },
   props: {
     uid: {
@@ -158,64 +162,81 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.certificates {
-  .certificates-header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-bottom: 20px;
-    margin-top: 10px;
-  }
-  .certificates-uploads {
-    display: flex;
-    text-align: center;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    .upload-item {
-      position: relative;
-      margin: 0 40px 26px 0;
-    }
-    .upload-item /deep/.el-upload {
-      border: 1px dashed #d9d9d9;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    .upload-item /deep/.el-upload:hover {
-      border-color: #409eff;
-    }
-    .upload-item-icon,
-    .upload-loading {
-      font-size: 28px;
-      color: hsl(215, 8%, 58%);
-      width: 300px;
-      height: 200px;
-      line-height: 200px;
-      text-align: center;
-    }
-    .imgs {
-      padding: 5px;
-      width: 300px;
-      height: 200px;
-      position: relative;
+.material {
+  display: flex;
+  justify-content: space-between;
+  .certificates {
+    width: 38%;
+    .certificates-header {
       display: flex;
+      justify-content: flex-end;
       align-items: center;
-      justify-content: center;
-      .del {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 0;
-        font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .certificates-uploads {
+      display: flex;
+      text-align: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      .upload-item {
+        position: relative;
+        margin-bottom: 20px;
       }
-      &:hover {
+      .upload-item /deep/.el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        padding: 0 10px;
+        .el-upload__text {
+          font-size: 12px;
+        }
+        .el-icon-upload {
+          font-size: 50px;
+        }
+      }
+      .upload-item /deep/.el-upload:hover {
+        border-color: #409eff;
+      }
+      .upload-item-icon,
+      .upload-loading {
+        font-size: 28px;
+        color: hsl(215, 8%, 58%);
+        width: 300px;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+      }
+      .imgs {
+        padding: 5px;
+        width: 300px;
+        height: 200px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         .del {
-          color: #333;
-          display: block;
+          display: none;
+          position: absolute;
+          right: 0;
+          top: 0;
+          font-size: 20px;
+        }
+        &:hover {
+          .del {
+            color: #333;
+            display: block;
+          }
         }
       }
     }
+  }
+  .other {
+    border-left: 1px solid #ededed;
+    width: 62%;
+    padding-left: 10px;
+    margin-left: 10px;
   }
 }
 </style>

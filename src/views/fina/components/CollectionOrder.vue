@@ -44,12 +44,13 @@
               <el-select
                 v-model="formData.pay_type"
                 placeholder="请选择支付方式"
+                filterable
               >
                 <el-option
                   v-for="(item, index) in payTypes"
                   :key="index"
-                  :label="item.name"
-                  :value="item.name"
+                  :label="item.label"
+                  :value="item.label"
                 >
                 </el-option>
               </el-select>
@@ -105,12 +106,13 @@
               <el-select
                 v-model="formData.pay_type"
                 placeholder="请选择退费方式"
+                filterable
               >
                 <el-option
                   v-for="(item, index) in payTypes"
                   :key="index"
-                  :label="item.name"
-                  :value="item.name"
+                  :label="item.label"
+                  :value="item.label"
                 >
                 </el-option>
               </el-select>
@@ -163,6 +165,7 @@
 <script>
 import { uploadImageUrl } from "@/api/educational";
 import { orderCollect, orderCancel } from "@/api/fina";
+import { payWays as payTypes } from "@/utils";
 export default {
   props: {
     value: {
@@ -190,20 +193,7 @@ export default {
         token: this.$store.state.user.token,
       },
       visible: this.value,
-      payTypes: [
-        {
-          name: "现金",
-        },
-        {
-          name: "微信",
-        },
-        {
-          name: "支付宝",
-        },
-        {
-          name: "聚合收单",
-        },
-      ],
+      payTypes,
       formData: {
         pay_type: "",
         pay_money: "",
