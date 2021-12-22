@@ -44,6 +44,13 @@
         >
         </el-table-column>
         <el-table-column
+          prop="from_institution_name"
+          label="推荐机构"
+          min-width="110"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="project_name"
           label="项目名称"
           min-width="130"
