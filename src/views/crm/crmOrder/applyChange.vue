@@ -377,13 +377,13 @@
         </el-table-column>
         <el-table-column
           label="入账状态"
-          prop="pay_status"
+          prop="verify_status"
           align="center"
           min-width="100"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>{{ payStatusMap[row.pay_status] || "--" }}</span>
+            <span>{{ payStatusMap[row.verify_status] || "--" }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -403,13 +403,13 @@
           <template slot-scope="{ row, $index: index }">
             <el-button
               type="text"
-              v-if="row.pay_status === 1"
+              v-if="row.verify_status === 0"
               @click="handleAdd(row, index)"
               >编辑</el-button
             >
             <el-button
               type="text"
-              v-if="row.pay_status === 1"
+              v-if="[0, 2].includes(row.verify_status)"
               @click="handleDel(index)"
               >删除</el-button
             >
@@ -494,12 +494,11 @@ export default {
       editIndex: null,
       planDialogVisible: false,
       planDialogTitle: "",
-      // 1：待入账，3、已入账 ，4、已作废， 5、已退款
       payStatusMap: {
-        1: "待入账",
-        3: "已入账",
-        4: "已作废",
-        5: "已退款",
+        0: "待入账",
+        1: "已入账",
+        2: "已驳回",
+        3: "确认入账中",
       },
     };
   },

@@ -89,13 +89,13 @@
       </el-table-column>
       <el-table-column
         label="入账状态"
-        prop="pay_status"
+        prop="verify_status"
         align="center"
         min-width="100"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span>{{ payStatusMap[row.pay_status] || "--" }}</span>
+          <span>{{ payStatusMap[row.verify_status] || "--" }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -203,12 +203,11 @@ export default {
   },
   data() {
     return {
-      // 1：待入账，3、已入账 ，4、已作废， 5、已退款
       payStatusMap: {
-        1: "待入账",
-        3: "已入账",
-        4: "已作废",
-        5: "已退款",
+        0: "待入账",
+        1: "已入账",
+        2: "已驳回",
+        3: "确认入账中",
       },
     };
   },
