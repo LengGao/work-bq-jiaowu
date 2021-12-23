@@ -581,3 +581,27 @@ export function getOrderProject(params) {
         params
     })
 }
+// 分发学历-分类
+export function universityTypeSelect(params) {
+    return request({
+        url: 'Crm/universityTypeSelect',
+        method: 'get',
+        params
+    })
+}
+// 分发学历-学校列表
+export function universityMajorDetailList(params) {
+    return request({
+        url: 'Crm/universityMajorDetailList',
+        method: 'get',
+        params
+    })
+}
+// 分发学历-分发
+export function assignUniversity(data) {
+    return request({
+        url: 'Crm/assignUniversity',
+        method: 'post',
+        data
+    })
+}
