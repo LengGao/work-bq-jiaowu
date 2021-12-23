@@ -132,13 +132,12 @@
 
             <span v-else>{{ datas.union_staff_name || "--" }}</span>
           </el-form-item>
-          <el-form-item
-            label="机构名称"
-            :rules="[
+          <el-form-item label="机构名称">
+            <!-- :rules="[
               { required: isEdit, message: '请选择', trigger: 'change' },
-            ]"
-          >
-            <el-cascader
+            ]" -->
+
+            <!-- <el-cascader
               filterable
               clearable
               v-if="isEdit"
@@ -147,7 +146,17 @@
               class="w-100"
               :options="selectOptions"
             >
-            </el-cascader>
+            </el-cascader> -->
+            <template v-if="isEdit">
+              <el-input
+                style="width: 80%; margin-right: 10px"
+                :value="datas.from_organization_name"
+                disabled
+              ></el-input>
+              <el-button @click="updateInstitutionDialog = true" type="text"
+                >变更</el-button
+              >
+            </template>
             <span v-else>{{ datas.from_organization_name || "--" }}</span>
           </el-form-item>
           <el-form-item label="客户性质">
@@ -220,10 +229,16 @@
       :id="datas.id"
       @on-success="$parent.getStudentBasicDetail"
     />
+    <UpdateInstitution
+      v-model="updateInstitutionDialog"
+      :ids="[datas.uid]"
+      @on-success="$parent.getStudentBasicDetail"
+    />
   </div>
 </template>
 
 <script>
+import UpdateInstitution from "../../components/UpdateInstitution.vue";
 import FollowUpRecord from "./FollowUpRecord";
 import UpdateShareTeacher from "@/views/eda/components/UpdateShareTeacher.vue";
 import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
@@ -244,9 +259,11 @@ export default {
     FollowUpRecord,
     UpdateTeacher,
     UpdateShareTeacher,
+    UpdateInstitution,
   },
   data() {
     return {
+      updateInstitutionDialog: false,
       isEdit: false,
       sexMap: {
         0: "保密",

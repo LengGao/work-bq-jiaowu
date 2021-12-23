@@ -5,6 +5,7 @@
     width="450px"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
+    @open="handleOpen"
   >
     <el-form
       label-width="100px"
@@ -14,13 +15,20 @@
       v-loading="detaiLoading"
     >
       <el-form-item label="机构名称" prop="institution_id">
-        <el-cascader
-          placeholder="请选择"
+        <el-select
           v-model="formData.institution_id"
-          :options="institutionData"
-          clearable
           filterable
-        ></el-cascader>
+          clearable
+          placeholder="请选择机构"
+        >
+          <el-option
+            v-for="item in institutionOptions"
+            :key="item.institution_id"
+            :label="item.institution_name"
+            :value="item.institution_id"
+          >
+          </el-option>
+        </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -37,6 +45,7 @@
 
 <script>
 import { updateUserFromOrgId } from "@/api/eda";
+import { switchList } from "@/api/crm";
 export default {
   props: {
     value: {
@@ -44,10 +53,6 @@ export default {
       default: false,
     },
     ids: {
-      type: Array,
-      default: () => [],
-    },
-    institutionData: {
       type: Array,
       default: () => [],
     },
@@ -65,6 +70,7 @@ export default {
       },
       addLoading: false,
       detaiLoading: false,
+      institutionOptions: [],
     };
   },
   watch: {
@@ -72,14 +78,18 @@ export default {
       this.visible = val;
     },
   },
-
   methods: {
+    handleOpen() {
+      this.switchList();
+    },
+    async switchList() {
+      const res = await switchList();
+      this.institutionOptions = res.data.list;
+    },
     async submit() {
       const institution_id = this.formData.institution_id;
       const data = {
-        institution_id: Array.isArray(institution_id)
-          ? institution_id.pop()
-          : institution_id,
+        institution_id,
         uid_arr: this.ids,
       };
       this.addLoading = true;
@@ -101,9 +111,7 @@ export default {
       });
     },
     resetForm(formName) {
-      for (const k in this.formData) {
-        this.formData[k] = "";
-      }
+      this.formData.institution_id = "";
       this.$refs[formName].resetFields();
       this.hanldeCancel();
     },
