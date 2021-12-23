@@ -360,6 +360,23 @@
             value-format="yyyy-MM-dd"
           ></el-date-picker>
         </el-form-item>
+        <el-form-item label="回款凭证" style="margin-left: 40px">
+          <el-upload
+            :headers="headers"
+            :action="uploadImageUrl"
+            :on-remove="handleRemoveImg"
+            :before-remove="beforeRemoveImg"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            multiple
+            name="image"
+            accept="image/*"
+            list-type="picture-card"
+            :file-list="formData.receipt_file"
+          >
+            <i class="el-icon-plus" style="font-size: 14px"></i>
+          </el-upload>
+        </el-form-item>
       </div>
     </el-form>
 
@@ -382,6 +399,7 @@
 </template>
 
 <script>
+import { uploadImageUrl } from "@/api/educational";
 import { createCrmOrder, getCustomfieldOptions } from "@/api/crm";
 import { getStaffList } from "@/api/set";
 import { getUniversityMajorDetailList } from "@/api/sou";
@@ -406,6 +424,10 @@ export default {
   data() {
     return {
       visible: this.value,
+      uploadImageUrl,
+      headers: {
+        token: this.$store.state.user.token,
+      },
       formData: {
         surname: "",
         mobile: "",
@@ -420,6 +442,7 @@ export default {
         pay_money: "",
         pay_type: "",
         planIndex: "",
+        receipt_file: [],
       },
       rules: {
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
@@ -547,6 +570,18 @@ export default {
       this.formData.id_card_number = this.userInfo.id_card_number || "";
       this.formData.pay_day = today;
     },
+    handleUploadError(response, file, fileList) {
+      this.$message.error("上传失败");
+    },
+    handleUploadSuccess(response, file, fileList) {
+      this.formData.receipt_file = fileList;
+    },
+    handleRemoveImg(file, fileList) {
+      this.formData.receipt_file = fileList;
+    },
+    beforeRemoveImg(file) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
     openPlanDialog() {
       this.planDialogData = [...this.planOptions];
       this.planDialogVisible = true;
@@ -635,6 +670,9 @@ export default {
           ? [...union_staff_id].join(",")
           : union_staff_id,
         type: this.formData.type,
+        receipt_file: this.formData.receipt_file.map(
+          (item) => item.response.data.data.url
+        ),
       };
       // 学历报名参数
       if (this.formData.type === 1) {
@@ -736,6 +774,7 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
+      this.formData.receipt_file = [];
       this.formData.type = 0;
       this.projectData = [];
       this.majorData = [];
@@ -767,6 +806,15 @@ export default {
   /deep/.el-form-item__content {
     width: 80%;
   }
+}
+/deep/.el-upload-list--picture-card .el-upload-list__item {
+  width: 60px;
+  height: 60px;
+}
+/deep/.el-upload--picture-card {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
 }
 </style>
 <style lang="scss">
