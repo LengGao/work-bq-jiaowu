@@ -181,6 +181,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -203,6 +204,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       orderActionDialog: false,
       institutionOptions: [],
@@ -304,10 +306,16 @@ export default {
       this.pageNum = val;
       this.getProjectOrder();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getProjectOrder();
+    },
     async getProjectOrder() {
       this.selection = [];
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         institution_id: this.formData.from_organization_id,
         project_id: this.formData.project_id,
       };
