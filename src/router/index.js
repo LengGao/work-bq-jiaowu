@@ -880,6 +880,12 @@ export const asyncRouter = [
     name: 'channel',
     children: [
       {
+        path: 'distributeEducation',
+        name: 'distributeEducation',
+        component: () => import('@/views/crm/distributeEducation/index.vue'),
+        meta: { title: '分发机构学历' },
+      },
+      {
         path: 'resetProjectPrice',
         name: 'resetProjectPrice',
         component: () => import('@/views/crm/resetProjectPrice/index.vue'),

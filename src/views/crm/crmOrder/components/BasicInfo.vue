@@ -69,6 +69,28 @@
         </div>
       </template>
       <div class="info-item">
+        <span class="info-item__name">回款凭证：</span>
+        <span class="info-item__value">
+          <template v-if="data.receipt_file && data.receipt_file.length">
+            <img
+              :src="item"
+              alt=""
+              title="点击预览大图"
+              style="
+                width: 60px;
+                height: 40px;
+                cursor: pointer;
+                margin-right: 10px;
+              "
+              v-for="(item, index) in data.receipt_file"
+              :key="index"
+              @click="handlePreview(item)"
+            />
+          </template>
+          <span v-else>--</span>
+        </span>
+      </div>
+      <div class="info-item">
         <span class="info-item__name">订单备注：</span>
         <span class="info-item__value">{{ data.tips || "--" }}</span>
       </div>
@@ -229,6 +251,7 @@
         </el-table-column>
       </el-table>
     </template>
+    <PreviewImg ref="view" />
   </div>
 </template>
 <script>
@@ -251,6 +274,9 @@ export default {
     },
   },
   methods: {
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
     // 开课
     eduOpenCourseConfirm(id) {
       this.$confirm("是否确定一键开通课程和题库？", "开课提醒", {

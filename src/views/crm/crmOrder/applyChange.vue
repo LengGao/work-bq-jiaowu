@@ -98,6 +98,23 @@
           placeholder="请输入内容"
         />
       </el-form-item>
+      <el-form-item label="回款凭证" style="width: 90%">
+        <el-upload
+          :headers="headers"
+          :action="uploadImageUrl"
+          :on-remove="handleRemoveImg"
+          :before-remove="beforeRemoveImg"
+          :on-success="handleUploadSuccess"
+          :on-error="handleUploadError"
+          multiple
+          list-type="picture-card"
+          name="image"
+          accept="image/*"
+          :file-list="formData.receipt_file"
+        >
+          <i class="el-icon-plus" style="font-size: 14px"></i>
+        </el-upload>
+      </el-form-item>
       <template v-if="detailData.type === 1">
         <el-table
           key="1"
@@ -459,6 +476,7 @@ import {
 import { getStaffList } from "@/api/set";
 import SetCollectionRecord from "./components/SetCollectionRecord.vue";
 import SetCollectionPlan from "./components/SetCollectionPlan.vue";
+import { uploadImageUrl } from "@/api/educational";
 export default {
   name: "applyChange",
   components: {
@@ -467,6 +485,10 @@ export default {
   },
   data() {
     return {
+      uploadImageUrl,
+      headers: {
+        token: this.$store.state.user.token,
+      },
       detailData: {
         pay_plan: [],
         pay_log: [],
@@ -480,6 +502,7 @@ export default {
         union_staff_id: "",
         tips: "",
         reason: "",
+        receipt_file: [],
       },
       rules: {
         order_money: [{ required: true, message: "请输入", trigger: "blur" }],
@@ -514,6 +537,19 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    handleUploadError(response, file, fileList) {
+      this.$message.error("上传失败");
+    },
+    handleUploadSuccess(response, file, fileList) {
+      console.log(fileList);
+      this.formData.receipt_file = fileList;
+    },
+    handleRemoveImg(file, fileList) {
+      this.formData.receipt_file = fileList;
+    },
+    beforeRemoveImg(file) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
     hanldeCancel() {
       this.$router.back();
     },
@@ -527,6 +563,12 @@ export default {
     async orderReshuffle() {
       const data = {
         ...this.formData,
+        receipt_file: this.formData.receipt_file.map((item) => {
+          if (item.url && !item.url.includes("blob:")) {
+            return item.url;
+          }
+          return item.response.data.data.url;
+        }),
         union_staff_id: (this.formData.union_staff_id || []).join(","),
         pay_plan: this.detailData.pay_plan,
         pay_log: this.detailData.pay_log,
@@ -595,6 +637,12 @@ export default {
         this.formData.reduction = res.data.reduction;
         this.formData.order_money = res.data.order_money;
         this.formData.tips = res.data.tips;
+        this.formData.receipt_file = res.data.receipt_file.map(
+          (item, index) => ({
+            name: "回款凭证" + (index + 1),
+            url: item,
+          })
+        );
       }
     },
   },
@@ -639,5 +687,14 @@ export default {
       text-align: center;
     }
   }
+}
+/deep/.el-upload-list--picture-card .el-upload-list__item {
+  width: 60px;
+  height: 60px;
+}
+/deep/.el-upload--picture-card {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
 }
 </style>
