@@ -97,7 +97,12 @@
           :cell-style="{ 'text-align': 'center' }"
           @selection-change="handleSelection"
         >
-          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            :selectable="(row) => row.ban_selected !== 1"
+            type="selection"
+            width="55"
+          >
+          </el-table-column>
           <el-table-column
             prop="order_id"
             label="订单ID"
