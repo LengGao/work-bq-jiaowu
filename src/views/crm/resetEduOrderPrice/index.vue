@@ -135,6 +135,11 @@
             >
           </el-form-item>
         </el-form>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
       </header>
       <!--列表-->
       <div class="userTable">
@@ -324,12 +329,30 @@ export default {
       },
       restLoading: false,
       selection: [],
+      searchData: {
+        from_org: "",
+      },
+      searchOptions: [
+        {
+          key: "str_user_name",
+          attrs: {
+            placeholder: "客户姓名",
+          },
+        },
+      ],
     };
   },
   created() {
     this.switchList();
   },
   methods: {
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+      };
+      this.getDegreeOrder();
+    },
     handleSelection(selection) {
       this.selection = selection;
     },
@@ -512,6 +535,7 @@ export default {
         level_id: this.formData.level_id,
         major_id: this.formData.major_id,
         project_id: this.formData.project_id,
+        str_user_name: this.searchData.str_user_name,
       };
       this.listLoading = true;
       const res = await getDegreeOrder(data).catch(() => {});
