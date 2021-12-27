@@ -1304,3 +1304,11 @@ export function cancelCloseCourse(data) {
     data,
   })
 }
+// 作废关课
+export function changeOrderOrgId(data) {
+  return request({
+    url: 'Crm/changeOrderOrgId',
+    method: 'post',
+    data,
+  })
+}

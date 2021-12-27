@@ -58,7 +58,7 @@
           align="center"
         >
           <template slot-scope="{ row }">
-            <PartiallyHidden :value="row.mobile" />
+            <PartiallyHidden :value="row.mobile || ''" />
           </template>
         </el-table-column>
         <el-table-column
@@ -120,6 +120,7 @@
       <div class="table_bottom">
         <div>
           <el-button @click="openStaffDialog">更改业绩归属人</el-button>
+          <el-button @click="openOrderFromDialog">更换订单所属机构</el-button>
         </div>
         <page
           :data="listTotal"
@@ -133,6 +134,11 @@
       :orderIds="checkedIds"
       @on-success="studentsOrder"
     />
+    <UpdateInstitutionOrder
+      v-model="orderFromDialog"
+      :orderIds="checkedIds"
+      @on-success="studentsOrder"
+    />
   </div>
 </template>
 
@@ -141,11 +147,13 @@ import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { studentsOrder } from "@/api/institution";
 import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
+import UpdateInstitutionOrder from "@/views/eda/components/UpdateInstitutionOrder";
 export default {
   name: "StudentOrder",
   components: {
     PartiallyHidden,
     UpdatePerformanceAttribution,
+    UpdateInstitutionOrder,
   },
   data() {
     return {
@@ -220,6 +228,7 @@ export default {
       ],
       checkedIds: [],
       staffDialog: false,
+      orderFromDialog: false,
     };
   },
 
@@ -227,6 +236,13 @@ export default {
     this.studentsOrder();
   },
   methods: {
+    openOrderFromDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择订单");
+        return;
+      }
+      this.orderFromDialog = true;
+    },
     openStaffDialog() {
       if (!this.checkedIds.length) {
         this.$message.warning("请选择订单");
