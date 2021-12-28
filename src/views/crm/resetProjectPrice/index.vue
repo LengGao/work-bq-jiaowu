@@ -83,6 +83,11 @@
             >
           </el-form-item>
         </el-form>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
       </header>
       <!--列表-->
       <div class="userTable">
@@ -181,6 +186,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -203,6 +209,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       orderActionDialog: false,
       institutionOptions: [],
@@ -224,6 +231,17 @@ export default {
       },
       restLoading: false,
       selection: [],
+      searchData: {
+        str_user_name: "",
+      },
+      searchOptions: [
+        {
+          key: "str_user_name",
+          attrs: {
+            placeholder: "客户姓名",
+          },
+        },
+      ],
     };
   },
   created() {
@@ -300,16 +318,30 @@ export default {
       const res = await switchList();
       this.institutionOptions = res.data.list;
     },
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+      };
+      this.getProjectOrder();
+    },
     handlePageChange(val) {
       this.pageNum = val;
+      this.getProjectOrder();
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
       this.getProjectOrder();
     },
     async getProjectOrder() {
       this.selection = [];
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         institution_id: this.formData.from_organization_id,
         project_id: this.formData.project_id,
+        str_user_name: this.searchData.str_user_name,
       };
       this.listLoading = true;
       const res = await getProjectOrder(data).catch(() => {});
