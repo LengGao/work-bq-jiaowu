@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="更换所属机构"
+    title="更换订单所属机构"
     :visible.sync="visible"
     width="450px"
     :close-on-click-modal="false"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { updateUserFromOrgId } from "@/api/eda";
+import { changeOrderOrgId } from "@/api/eda";
 import { switchList } from "@/api/crm";
 export default {
   props: {
@@ -52,7 +52,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    ids: {
+    orderIds: {
       type: Array,
       default: () => [],
     },
@@ -87,18 +87,18 @@ export default {
       this.institutionOptions = [
         {
           institution_id: 0,
-          institution_name: "清除所属机构",
+          institution_name: "清除为非机构订单",
         },
       ].concat(res.data.list);
     },
     async submit() {
-      const institution_id = this.formData.institution_id;
+      const from_organization_id = this.formData.institution_id;
       const data = {
-        institution_id,
-        uid_arr: this.ids,
+        from_organization_id,
+        order_id_arr: this.orderIds,
       };
       this.addLoading = true;
-      const res = await updateUserFromOrgId(data).catch(() => {
+      const res = await changeOrderOrgId(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;

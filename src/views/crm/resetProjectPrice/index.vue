@@ -28,6 +28,16 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="项目类型" prop="type">
+            <el-select
+              v-model="formData.type"
+              placeholder="请选择项目"
+              @change="onOrgChange"
+            >
+              <el-option label="单项目" value="1"> </el-option>
+              <el-option label="多项目" value="2"> </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="项目名称" prop="project_id">
             <el-select
               v-model="formData.project_id"
@@ -38,14 +48,14 @@
             >
               <el-option
                 v-for="item in projectOptions"
-                :key="item.project_id"
+                :key="item.project_ids"
                 :label="item.project_name"
-                :value="item.project_id"
+                :value="item.project_ids"
               >
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="项目价格" prop="price">
+          <el-form-item v-if="formData.type == 1" label="项目价格" prop="price">
             <el-select
               v-model="formData.price"
               filterable
@@ -60,6 +70,9 @@
               >
               </el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item v-else label="项目价格" prop="price">
+            <el-input v-model="formData.price" placeholder="请输入价格" />
           </el-form-item>
           <el-form-item>
             <el-button
@@ -84,12 +97,24 @@
           :cell-style="{ 'text-align': 'center' }"
           @selection-change="handleSelection"
         >
-          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            :selectable="(row) => row.ban_selected !== 1"
+            type="selection"
+            width="55"
+          >
+          </el-table-column>
           <el-table-column
             prop="order_id"
             label="订单ID"
             show-overflow-tooltip
             min-width="70"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="user_name"
+            label="客户姓名"
+            min-width="100"
+            show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
@@ -105,6 +130,9 @@
             min-width="100"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="pay_money"
@@ -126,12 +154,34 @@
               {{ row.overdue_money | moneyFormat }}
             </template>
           </el-table-column>
+          <el-table-column
+            prop="receivable_num"
+            label="回款总数"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="booked_num"
+            label="入账总数"
+            min-width="90"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="160"
+            show-overflow-tooltip
+          >
+          </el-table-column>
         </el-table>
         <div class="table_bottom">
           <page
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -145,8 +195,8 @@ import {
   switchList,
   getOrgClassType,
   modifyProjectOrder,
+  getOrderProject,
 } from "@/api/crm";
-import { getOrgProjectr } from "@/api/institution";
 export default {
   name: "resetProjectPrice",
   data() {
@@ -154,6 +204,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       orderActionDialog: false,
       institutionOptions: [],
@@ -163,6 +214,7 @@ export default {
         project_id: "",
         from_organization_id: "",
         price: "",
+        type: "1",
       },
       rules: {
         price: [{ required: true, message: "请选择", trigger: "change" }],
@@ -215,7 +267,7 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.pageNum = 1;
-      this.getOrgProjectr();
+      this.getOrderProject();
     },
     onProjectChange() {
       this.formData.price = "";
@@ -223,17 +275,19 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.getProjectOrder();
-      this.getOrgClassType();
+      if (this.formData.type == 1) {
+        this.getOrgClassType();
+      }
     },
     // 获取列表
-    async getOrgProjectr() {
+    async getOrderProject() {
       const data = {
-        limit: 99999,
-        from_organization_id: this.formData.from_organization_id,
+        institution_id: this.formData.from_organization_id,
+        type: this.formData.type,
       };
-      const res = await getOrgProjectr(data);
+      const res = await getOrderProject(data);
       if (res.code === 0) {
-        this.projectOptions = res.data.list;
+        this.projectOptions = res.data;
       }
     },
     async getOrgClassType() {
@@ -252,10 +306,16 @@ export default {
       this.pageNum = val;
       this.getProjectOrder();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getProjectOrder();
+    },
     async getProjectOrder() {
       this.selection = [];
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         institution_id: this.formData.from_organization_id,
         project_id: this.formData.project_id,
       };

@@ -44,6 +44,13 @@
         >
         </el-table-column>
         <el-table-column
+          prop="from_institution_name"
+          label="推荐机构"
+          min-width="110"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="project_name"
           label="项目名称"
           min-width="130"
@@ -148,6 +155,7 @@
       </el-table>
       <div class="footer">
         <el-button @click="openStaffDialog">更改业绩归属人</el-button>
+        <el-button @click="openOrderFromDialog">更换订单所属机构</el-button>
       </div>
     </div>
     <CollectionOrder
@@ -161,12 +169,18 @@
       :orderIds="checkedIds"
       @on-success="getCrmOrderList"
     />
+    <UpdateInstitutionOrder
+      v-model="orderFromDialog"
+      :orderIds="checkedIds"
+      @on-success="getCrmOrderList"
+    />
   </div>
 </template>
 
 <script>
 import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
+import UpdateInstitutionOrder from "@/views/eda/components/UpdateInstitutionOrder";
 import { getCrmOrderList } from "@/api/crm";
 export default {
   name: "OrderRecords",
@@ -179,6 +193,7 @@ export default {
   components: {
     CollectionOrder,
     UpdatePerformanceAttribution,
+    UpdateInstitutionOrder,
   },
   data() {
     return {
@@ -233,6 +248,7 @@ export default {
       orderActionType: null,
       checkedIds: [],
       staffDialog: false,
+      orderFromDialog: false,
     };
   },
   activated() {
@@ -242,6 +258,13 @@ export default {
     this.getCrmOrderList();
   },
   methods: {
+    openOrderFromDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择订单");
+        return;
+      }
+      this.orderFromDialog = true;
+    },
     openStaffDialog() {
       if (!this.checkedIds.length) {
         this.$message.warning("请选择订单");

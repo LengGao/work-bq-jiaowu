@@ -6,7 +6,7 @@ console.log('当前环境：', process.env.NODE_ENV)
 console.log('当前baseUrl：', process.env.VUE_APP_LOACTION)
 const isProduction = process.env.NODE_ENV === 'production'
 // 是否使用cdn
-const openCdn = isProduction && false
+const openCdn = isProduction
 // CDN外链，会插入到index.html中  
 const cdn = {
   css: [
@@ -36,9 +36,9 @@ module.exports = {
     proxy: {
       '/ai': {
         // target: 'http://dongpei.kaifa',
-        target: 'http://sc.dp.com', //超
+        // target: 'http://sc.dp.com', //超
         // target: 'http://thing.com',
-        // target: 'http://testadmin.beiqujy.com/apidata', //测试
+        target: 'http://testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
         // target: 'http://192.168.8.100', //权
         // target: 'http://dpadmin.beiqujy.com/apidata', //生产

@@ -251,8 +251,14 @@ export default {
       this.receivablePlan();
     },
     handlePlanClick(row) {
-      this.recordData = row;
-      this.recordDialog = true;
+      // this.recordData = row;
+      // this.recordDialog = true;
+      this.$router.push({
+        name: "crmOrderDetail",
+        query: {
+          id: row.order_id,
+        },
+      });
     },
     handleStaffFollowClick(row) {
       this.$router.push({
@@ -416,6 +422,10 @@ export default {
     .money {
       color: #999;
       padding-top: 6px;
+      span {
+        display: inline-block;
+        min-width: 140px;
+      }
     }
     .msg-title {
       padding: 10px 0;

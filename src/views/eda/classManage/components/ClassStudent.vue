@@ -116,7 +116,6 @@
     <UpdateInstitution
       v-model="updateInstitutionDialog"
       :ids="selectionIds"
-      :institutionData="institutionData"
       @on-success="classroomUserList"
     />
   </div>

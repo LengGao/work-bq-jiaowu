@@ -220,7 +220,9 @@ export default {
           name: router,
           query: {
             date: dateMap[this.salesDateType],
-            uid: this.userIds.join(","),
+            staff_id:
+              this.userIds.join(",") ||
+              this.$store.getters.userInfo.staff_id + "",
           },
         });
     },

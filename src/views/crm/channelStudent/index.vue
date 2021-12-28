@@ -158,7 +158,9 @@ export default {
         project_id: [],
         from_org: "",
         keyword: "",
-        staff_id: this.$route.query.uid || "",
+        staff_id: this.$route.query.staff_id
+          ? this.$route.query.staff_id.split(",").map((item) => +item)
+          : [],
       },
       searchOptions: [
         {
@@ -188,7 +190,7 @@ export default {
         {
           key: "staff_id",
           type: "select",
-          width: 140,
+          width: 220,
           options: [],
           optionValue: "staff_id",
           optionLabel: "staff_name",
@@ -196,6 +198,8 @@ export default {
             placeholder: "所属老师",
             clearable: true,
             filterable: true,
+            multiple: true,
+            "collapse-tags": true,
           },
         },
         {
@@ -303,6 +307,9 @@ export default {
           : "",
         from_org: Array.isArray(this.searchData.from_org)
           ? [...this.searchData.from_org].pop()
+          : "",
+        staff_id: Array.isArray(this.searchData.staff_id)
+          ? this.searchData.staff_id.join(",")
           : "",
       };
       this.listLoading = true;

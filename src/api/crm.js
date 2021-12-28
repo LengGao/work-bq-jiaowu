@@ -573,3 +573,99 @@ export function modifyProjectOrder(data) {
         data
     })
 }
+// 项目列表
+export function getOrderProject(params) {
+    return request({
+        url: '/project/getOrderProject',
+        method: 'get',
+        params
+    })
+}
+// 分发学历-分类
+export function universityTypeSelect(params) {
+    return request({
+        url: 'Crm/universityTypeSelect',
+        method: 'get',
+        params
+    })
+}
+// 分发学历-学校列表
+export function universityMajorDetailList(params) {
+    return request({
+        url: 'Crm/universityMajorDetailList',
+        method: 'get',
+        params
+    })
+}
+// 分发学历-分发
+export function assignUniversity(data) {
+    return request({
+        url: 'Crm/assignUniversity',
+        method: 'post',
+        data
+    })
+}
+// 学历类型
+export function getDegreeType(params) {
+    return request({
+        url: 'project/getDegreeType',
+        method: 'get',
+        params
+    })
+}
+// 学校列表
+export function getUniversity(params) {
+    return request({
+        url: 'project/getUniversity',
+        method: 'get',
+        params
+    })
+}
+// 专业列表
+export function getProfessional(params) {
+    return request({
+        url: 'project/getProfessional',
+        method: 'get',
+        params
+    })
+}
+// 层次列表
+export function getAcademicLevel(params) {
+    return request({
+        url: 'project/getAcademicLevel',
+        method: 'get',
+        params
+    })
+}
+// 层次列表
+export function getDegreeProject(params) {
+    return request({
+        url: 'project/getDegreeProject',
+        method: 'get',
+        params
+    })
+}
+// 层次列表
+export function getDegreePrice(params) {
+    return request({
+        url: 'project/getDegreePrice',
+        method: 'get',
+        params
+    })
+}
+// 学历订单列表
+export function getDegreeOrder(params) {
+    return request({
+        url: 'project/getDegreeOrder',
+        method: 'get',
+        params
+    })
+}
+// 重设学历订单价格
+export function resetDegreeOrder(data) {
+    return request({
+        url: 'project/resetDegreeOrder',
+        method: 'post',
+        data
+    })
+}

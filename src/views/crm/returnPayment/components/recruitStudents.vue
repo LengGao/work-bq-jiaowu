@@ -130,6 +130,18 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="pay_status"
+          label="支付状态"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-tag size="small" :type="row.pay_status | orderTagType">{{
+              row.pay_status | orderStatus
+            }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="verify_status"
           label="入账状态"
           min-width="90"
@@ -150,7 +162,7 @@
               >已驳回 <i class="el-icon-question" :title="row.tips"></i>
             </span>
             <span v-if="row.verify_status == 3" class="approve-status--wait"
-              >多级审批中
+              >确认入账中
             </span>
           </template>
         </el-table-column>
