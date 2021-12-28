@@ -330,7 +330,7 @@ export default {
       restLoading: false,
       selection: [],
       searchData: {
-        from_org: "",
+        str_user_name: "",
       },
       searchOptions: [
         {
