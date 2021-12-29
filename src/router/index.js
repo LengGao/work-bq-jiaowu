@@ -909,6 +909,7 @@ export const asyncRouter = [
         component: () => import('@/views/crm/institutionalCollection/detail.vue'),
         meta: { title: '机构回款详情' },
       },
+     
       {
         path: 'channelStudent',
         name: 'channelStudent',
@@ -1079,6 +1080,19 @@ export const asyncRouter = [
         component: () => import('@/views/institution/institutionDetails/index.vue'),
         meta: { title: '机构详情', icon: 'product-add' },
       },
+      {
+        path: 'institutionalRebate',
+        name: 'institutionalRebate',
+        component: () => import('@/views/institution/institutionalRebate/index.vue'),
+        meta: { title: '机构返点' },
+      },
+      {
+        path: 'institutionalRebateDetail',
+        name: 'institutionalRebateDetail',
+        component: () => import('@/views/institution/institutionalRebate/detail.vue'),
+        meta: { title: '返点详情' },
+      },
+
     ]
   },
   {

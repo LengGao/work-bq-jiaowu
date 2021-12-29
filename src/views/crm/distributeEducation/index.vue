@@ -34,7 +34,7 @@
             <el-table-column
               label="院校名称"
               show-overflow-tooltip
-              min-width="120"
+              min-width="100"
               align="center"
               prop="university_title"
             >
@@ -42,7 +42,7 @@
             <el-table-column
               label="学历形式"
               show-overflow-tooltip
-              min-width="80"
+              min-width="70"
               align="center"
               prop="type_title"
             >
@@ -50,7 +50,7 @@
             <el-table-column
               label="层次名称"
               show-overflow-tooltip
-              min-width="80"
+              min-width="70"
               align="center"
               prop="level_title"
             >
@@ -74,7 +74,7 @@
             <el-table-column
               prop="apply_price"
               label="报考费"
-              min-width="100"
+              min-width="90"
               align="center"
               show-overflow-tooltip
             >
@@ -91,7 +91,7 @@
             <el-table-column
               prop="year_limit"
               label="收费年限"
-              min-width="100"
+              min-width="90"
               align="center"
               show-overflow-tooltip
             >
@@ -108,7 +108,7 @@
             <el-table-column
               prop="price"
               label="分发价格"
-              min-width="100"
+              min-width="90"
               align="center"
               show-overflow-tooltip
             >
@@ -121,6 +121,27 @@
                 >
                 </el-input>
               </template>
+            </el-table-column>
+            <el-table-column
+              prop="year_limit"
+              label="返点比例"
+              min-width="100"
+              align="center"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <div class="percen">
+                <el-input
+                  type="number"
+                  size="small"
+                  v-model="row.year_limit"
+                  placeholder="请输入"
+                >
+                </el-input>
+                <span class="percentage"> % </span>
+                </div>
+              </template>
+           
             </el-table-column>
           </el-table>
           <div class="table_bottom">
@@ -407,11 +428,11 @@ export default {
         align-items: center;
       }
       .table-left {
-        width: 70%;
+        width: 75%;
         flex-shrink: 0;
       }
       .table-right {
-        width: 28%;
+        width: 23%;
         flex-shrink: 0;
       }
     }
@@ -426,4 +447,14 @@ export default {
     }
   }
 }
+.percen{
+  display: flex;
+  .percentage{
+  margin-right: 3px;
+  margin-left: 3px;
+  line-height: 30px;
+  display: block;
+}
+}
+
 </style>
