@@ -92,6 +92,7 @@
           filterable
           clearable
           placeholder="请选择机构"
+          @change="resetCheckedParams"
         >
           <el-option
             v-for="item in institutionOptions"
@@ -103,7 +104,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="报名类型" prop="type">
-        <el-radio-group class="input" v-model="formData.type">
+        <el-radio-group
+          class="input"
+          v-model="formData.type"
+          @change="resetCheckedParams"
+        >
           <el-radio :label="0">职业教育</el-radio>
           <el-radio :label="1">学历教育</el-radio>
         </el-radio-group>
@@ -116,7 +121,7 @@
       >
         <el-cascader
           :disabled="!formData.from_organization_id"
-          :key="formData.type"
+          :key="`${formData.from_organization_id}-${formData.type}`"
           popper-class="select-project"
           placeholder="请选择项目"
           v-model="formData.selectProject"
@@ -127,10 +132,10 @@
           collapse-tags
         ></el-cascader>
       </el-form-item>
-      <el-form-item prop="selectMajor" v-else>
+      <el-form-item prop="selectMajor" label="报名专业" v-else>
         <el-cascader
           :disabled="!formData.from_organization_id"
-          :key="formData.type"
+          :key="`${formData.from_organization_id}-${formData.type}`"
           ref="cascaderMajor"
           popper-class="select-project"
           placeholder="请选择报名专业"
@@ -248,12 +253,13 @@
           </el-table-column>
           <el-table-column
             prop="price"
-            label="项目班型"
+            label="价格"
             min-width="110"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <el-select
+              <span>{{ row.price | moneyFormat }}</span>
+              <!-- <el-select
                 v-model="row.checked"
                 filterable
                 clearable
@@ -266,7 +272,7 @@
                   :value="index"
                 >
                 </el-option>
-              </el-select>
+              </el-select> -->
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
@@ -479,7 +485,11 @@ export default {
           let idStr = tableData.map(({ project_id }) => project_id).join(",");
           this.getTeachingMaterial(idStr);
           console.log(tableData);
-          this.getInstitutionClassType(idStr, tableData);
+          this.majorData = tableData.map((item) => ({
+            ...item,
+            checked: "",
+          }));
+          // this.getInstitutionClassType(idStr, tableData);
         });
     },
   },
@@ -525,6 +535,14 @@ export default {
         });
       }
     },
+    // 当前机构或者学历类型改变是重置学历选项参数
+    resetCheckedParams() {
+      this.type_id = "";
+      this.school_id = "";
+      this.level_id = "";
+      this.formData.selectMajor = [];
+      this.formData.selectProject = [];
+    },
     // 学历报名的级联选项
     async getUniversityMajorDetailList() {
       const data = {
@@ -533,6 +551,7 @@ export default {
         type_id: this.type_id || 0,
         school_id: this.school_id || 0,
         level_id: this.level_id || 0,
+        from_organization_id: this.formData.from_organization_id || 0,
       };
       const res = await getUniversityMajorDetailList(data);
       return res.data.list;
@@ -583,12 +602,11 @@ export default {
       } else {
         data.project = JSON.stringify(
           this.majorData.map((item) => {
-            if (item.checked === "") {
-              this.$message.warning("请选择班型");
-              throw new Error("请选择班型");
-            }
+            // if (item.checked === "") {
+            //   this.$message.warning("请选择班型");
+            //   throw new Error("请选择班型");
+            // }
             return {
-              // id: item.id,
               type: {
                 id: item.type_id,
                 value: item.type_name,
@@ -609,11 +627,13 @@ export default {
                 id: item.project_id,
                 value: item.project_name,
               },
-              class_type: {
-                value: item.classTypes[item.checked].title,
-                price: item.classTypes[item.checked].price,
-                id: item.classTypes[item.checked].id,
-              },
+              org_university_id: item.org_university_id,
+              price: item.price,
+              // class_type: {
+              //   value: item.classTypes[item.checked].title,
+              //   price: item.classTypes[item.checked].price,
+              //   id: item.classTypes[item.checked].id,
+              // },
             };
           })
         );
