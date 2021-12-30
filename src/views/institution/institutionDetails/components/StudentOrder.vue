@@ -97,7 +97,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="overdue_money"
+          prop="order_money"
           label="订单金额"
           min-width="140"
           align="center"
