@@ -145,6 +145,12 @@
           collapse-tags
         ></el-cascader>
       </el-form-item>
+      <el-form-item label="开通网课" prop="open_course">
+        <el-radio-group class="input" v-model="formData.open_course">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <div class="table">
         <el-table
           v-if="formData.type === 0"
@@ -359,8 +365,12 @@ export default {
         from_organization_id: "",
         selectMajor: [],
         selectProject: [],
+        open_course:''
       },
       rules: {
+        open_course: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
         selectProject: [
           { required: true, message: "请选择", trigger: "change" },
         ],
@@ -578,6 +588,7 @@ export default {
       const data = {
         student: JSON.stringify(this.formData.student),
         type: this.formData.type,
+        open_course: this.formData.open_course,
         from_organization_id: this.formData.from_organization_id,
       };
       if (this.formData.type === 0) {
