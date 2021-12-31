@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="head_remind">*本模块用来重置学历订单价格。</div>
     <section>
       <!--搜索模块-->
       <header>
@@ -289,7 +288,7 @@ import {
   getDegreePrice,
 } from "@/api/crm";
 export default {
-  name: "resetProjectPrice",
+  name: "resetEduOrderPrice",
   data() {
     return {
       listData: [],
@@ -548,9 +547,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-section {
-  padding: 16px;
-}
 .approve-status {
   &::before {
     display: inline-block;

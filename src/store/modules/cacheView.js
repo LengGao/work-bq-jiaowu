@@ -40,7 +40,7 @@ const searchCache = {
             classDetail: ['learningDetails', 'studentDetail', 'studentChapter'],
             projectStatistics: ['studentDetail'],
             projectManage: ['projectStatistics'],
-            institutionAccount: ['institutionConfig', 'institutionUser', 'institutionDetails', 'collectionDetail'],
+            institutionAccount: ['institutionConfig', 'institutionUser', 'institutionDetails', 'collectionDetail', 'institutionProject', 'institutionalCollection'],
             customerProject: ['orderdetail', 'cusdetail'],
             eduOrder: ['orderdetail', 'cusdetail'],
             crmCustomer: ['cusdetail'],

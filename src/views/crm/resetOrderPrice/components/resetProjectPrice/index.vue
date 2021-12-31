@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="head_remind">*本模块用来重置项目订单价格。</div>
     <section>
       <!--搜索模块-->
       <header>
@@ -354,9 +353,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-section {
-  padding: 16px;
-}
 .approve-status {
   &::before {
     display: inline-block;

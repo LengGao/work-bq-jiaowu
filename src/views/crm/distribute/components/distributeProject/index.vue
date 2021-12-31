@@ -1,147 +1,142 @@
 <template>
   <div class="distribute-courses">
-    <div class="head_remind">*将项目批量分发给入驻机构</div>
-    <div class="container">
-      <div class="container-table">
-        <div class="table-left">
-          <Title text="分发项目" />
-          <div class="tab-search">
-            <SearchList
-              :options="searchLeftOptions"
-              :data="searchLeftData"
-              @on-search="handleLeftSearch"
-            />
-            <p class="tips">
-              *注意：价格为0表示该班型免费，价格为-1表示该班型不能报名;
-              双击班级类型快速输入-1
-            </p>
-          </div>
-
-          <el-table
-            ref="multipleTable"
-            :data="listLeftData"
-            style="width: 100%"
-            v-loading="listLeftLoading"
-            element-loading-text="loading"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="#fff"
-            class="table"
-            :header-cell-style="{
-              'text-align': 'center',
-              background: '#f8f8f8',
-            }"
-            @selection-change="handleLeftSelection"
-            height="520"
-          >
-            <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column
-              label="项目名称"
-              show-overflow-tooltip
-              min-width="240"
-              align="left"
-              prop="project_name"
-            >
-            </el-table-column>
-            <el-table-column
-              label="所属分类"
-              show-overflow-tooltip
-              min-width="120"
-              align="center"
-              prop="category_name"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="title"
-              :label="item.title"
-              min-width="100"
-              align="center"
-              show-overflow-tooltip
-              v-for="(item, index) in classTypes"
-              :key="index"
-            >
-              <template slot="header">
-                <span @dblclick="handleColumnClick(index)">{{
-                  item.title
-                }}</span>
-              </template>
-              <template slot-scope="{ row }">
-                <el-input
-                  type="number"
-                  size="small"
-                  v-model="row[row.id][index].price"
-                  placeholder="请输入"
-                >
-                </el-input>
-              </template>
-            </el-table-column>
-          </el-table>
-          <div class="table_bottom">
-            <page
-              :data="listLeftTotal"
-              :curpage="pageLeftNum"
-              @pageChange="handleLeftPageChange"
-              @pageSizeChange="handleLeftSizeChange"
-            />
-          </div>
-        </div>
-        <div class="table-right">
-          <Title text="分发机构" />
+    <div class="container-table">
+      <div class="table-left">
+        <Title text="分发项目" />
+        <div class="tab-search">
           <SearchList
-            :options="searchRightOptions"
-            :data="searchRightData"
-            @on-search="handleRightSearch"
+            :options="searchLeftOptions"
+            :data="searchLeftData"
+            @on-search="handleLeftSearch"
           />
-          <el-table
-            ref="multipleTable"
-            :data="listRightData"
-            style="width: 100%"
-            class="table"
-            v-loading="listRightLoading"
-            element-loading-text="loading"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="#fff"
-            :header-cell-style="{
-              'text-align': 'center',
-              background: '#f8f8f8',
-            }"
-            height="520"
-            @selection-change="handleRightSelection"
+          <p class="tips">
+            *注意：价格为0表示该班型免费，价格为-1表示该班型不能报名;
+            双击班级类型快速输入-1
+          </p>
+        </div>
+
+        <el-table
+          ref="multipleTable"
+          :data="listLeftData"
+          style="width: 100%"
+          v-loading="listLeftLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          class="table"
+          :header-cell-style="{
+            'text-align': 'center',
+            background: '#f8f8f8',
+          }"
+          @selection-change="handleLeftSelection"
+          height="520"
+        >
+          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            label="项目名称"
+            show-overflow-tooltip
+            min-width="240"
+            align="left"
+            prop="project_name"
           >
-            <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column
-              label="机构名称"
-              show-overflow-tooltip
-              min-width="70"
-              align="left"
-              prop="institution_name"
-            >
-            </el-table-column>
-          </el-table>
-          <div class="table_bottom">
-            <page
-              :data="listRightTotal"
-              :curpage="pageRightNum"
-              @pageChange="handleRightPageChange"
-              @pageSizeChange="handleRightSizeChange"
-            />
-          </div>
+          </el-table-column>
+          <el-table-column
+            label="所属分类"
+            show-overflow-tooltip
+            min-width="120"
+            align="center"
+            prop="category_name"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="title"
+            :label="item.title"
+            min-width="100"
+            align="center"
+            show-overflow-tooltip
+            v-for="(item, index) in classTypes"
+            :key="index"
+          >
+            <template slot="header">
+              <span @dblclick="handleColumnClick(index)">{{ item.title }}</span>
+            </template>
+            <template slot-scope="{ row }">
+              <el-input
+                type="number"
+                size="small"
+                v-model="row[row.id][index].price"
+                placeholder="请输入"
+              >
+              </el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listLeftTotal"
+            :curpage="pageLeftNum"
+            @pageChange="handleLeftPageChange"
+            @pageSizeChange="handleLeftSizeChange"
+          />
         </div>
       </div>
-      <div class="container-actions">
-        <Title text="分发小结" />
-        <p class="tips">
-          分发项目数量：<span>{{ leftSelection.length }}</span>
-          个，分发机构数量：<span>{{ rightSelection.length }}</span> 个
-        </p>
-        <div>
-          <el-button @click="handleReset">取消</el-button>
-          <el-button
-            type="primary"
-            :loading="submitLoading"
-            @click="sendClassType"
-            >确定分发</el-button
+      <div class="table-right">
+        <Title text="分发机构" />
+        <SearchList
+          :options="searchRightOptions"
+          :data="searchRightData"
+          @on-search="handleRightSearch"
+        />
+        <el-table
+          ref="multipleTable"
+          :data="listRightData"
+          style="width: 100%"
+          class="table"
+          v-loading="listRightLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          :header-cell-style="{
+            'text-align': 'center',
+            background: '#f8f8f8',
+          }"
+          height="520"
+          @selection-change="handleRightSelection"
+        >
+          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            label="机构名称"
+            show-overflow-tooltip
+            min-width="70"
+            align="left"
+            prop="institution_name"
           >
+          </el-table-column>
+        </el-table>
+        <div class="table_bottom">
+          <page
+            :data="listRightTotal"
+            :curpage="pageRightNum"
+            @pageChange="handleRightPageChange"
+            @pageSizeChange="handleRightSizeChange"
+          />
         </div>
+      </div>
+    </div>
+    <div class="container-actions">
+      <Title text="分发小结" />
+      <p class="tips">
+        分发项目数量：<span>{{ leftSelection.length }}</span>
+        个，分发机构数量：<span>{{ rightSelection.length }}</span> 个
+      </p>
+      <div>
+        <el-button @click="handleReset">取消</el-button>
+        <el-button
+          type="primary"
+          :loading="submitLoading"
+          @click="sendClassType"
+          >确定分发</el-button
+        >
       </div>
     </div>
   </div>
@@ -380,42 +375,39 @@ export default {
 }
 
 .distribute-courses {
-  .container {
-    padding: 20px;
-    &-table {
+  .container-table {
+    display: flex;
+    justify-content: space-between;
+    .table_bottom {
+      padding-bottom: 0;
+    }
+    .tips {
+      color: #606266;
+    }
+    .table {
+      border: 1px solid #ebeef5;
+      border-bottom: none;
+    }
+    .tab-search {
       display: flex;
       justify-content: space-between;
-      .table_bottom {
-        padding-bottom: 0;
-      }
-      .tips {
-        color: #606266;
-      }
-      .table {
-        border: 1px solid #ebeef5;
-        border-bottom: none;
-      }
-      .tab-search {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .table-left {
-        width: 70%;
-        flex-shrink: 0;
-      }
-      .table-right {
-        width: 28%;
-        flex-shrink: 0;
-      }
+      align-items: center;
     }
-    &-actions {
-      .tips {
-        color: #606266;
-        margin-bottom: 16px;
-        span {
-          color: #196ff1;
-        }
+    .table-left {
+      width: 70%;
+      flex-shrink: 0;
+    }
+    .table-right {
+      width: 28%;
+      flex-shrink: 0;
+    }
+  }
+  .container-actions {
+    .tips {
+      color: #606266;
+      margin-bottom: 16px;
+      span {
+        color: #196ff1;
       }
     }
   }
