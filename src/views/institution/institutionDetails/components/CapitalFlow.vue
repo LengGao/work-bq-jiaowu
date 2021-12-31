@@ -10,8 +10,9 @@
       <div>
         <span style="color: #999; font-size: 15px; padding-right: 15px"
           >当前账户余额：<span style="color: #ee4e00"
-            >¥ {{this.$route.query.balance}}
-          </span></span>
+            >¥ {{ this.$route.query.balance }}
+          </span></span
+        >
         <el-button type="primary" style="height: 40px" @click="openRecharge">
           充值</el-button
         >
@@ -54,12 +55,12 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <span>
-            {{ statusMap[row.order_type || 0].text }}
-          </span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <span>
+              {{ statusMap[row.order_type || 0].text }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="amount"
           label="变更金额"
@@ -67,10 +68,10 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <span style="color: orangered;">￥{{row.amount}}</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <span style="color: orangered">￥{{ row.amount }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="before_blance"
           label="变更前余额"
@@ -78,10 +79,10 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <span>￥{{row.before_blance}}</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <span>￥{{ row.before_blance }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="balance"
           label="变更后余额"
@@ -89,38 +90,37 @@
           align="center"
           show-overflow-tooltip
         >
-        <template slot-scope="{ row }">
-          <span>￥{{row.balance}}</span>
-        </template>
-      </el-table-column>
+          <template slot-scope="{ row }">
+            <span>￥{{ row.balance }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
-        prop="staff_name"
-        label="操作用户"
-        min-width="140"
-        align="center"
-        show-overflow-tooltip
-      ></el-table-column>
-      <el-table-column
-      prop="dec"
-      label="备注信息"
-      min-width="140"
-      align="center"
-      show-overflow-tooltip
-    ></el-table-column>
-
+          prop="staff_name"
+          label="操作用户"
+          min-width="140"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
+          prop="dec"
+          label="备注信息"
+          min-width="140"
+          align="center"
+          show-overflow-tooltip
+        ></el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
 
     <RechargeDialogcon
       v-model="rechargeDialogVisible"
-    
       @on-success="moneyFlowing"
     />
   </div>
@@ -129,40 +129,37 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import {moneyFlowing} from "@/api/institution";
+import { moneyFlowing } from "@/api/institution";
 import RechargeDialogcon from "./rechargeDialogcon";
 
 export default {
   name: "CapitalFlow",
   components: {
     PartiallyHidden,
-    RechargeDialogcon
+    RechargeDialogcon,
   },
   data() {
     return {
       rechargeDialogVisible: false,
       currentData: {},
       statusMap: {
-            1: {
-                text: "后台充值",
-                
-            },
-            2: {
-                text: "机构充值",
-                
-            },
-            3: {
-                text: "订单支付",
-                
-            },
-            4: {
-                text: "订单作废退款",
-                
-            },
-            },
+        1: {
+          text: "后台充值",
+        },
+        2: {
+          text: "机构充值",
+        },
+        3: {
+          text: "订单支付",
+        },
+        4: {
+          text: "订单作废退款",
+        },
+      },
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
@@ -185,32 +182,32 @@ export default {
           },
         },
         {
-            key: "order_type",
-            type: "select",
-            width: 120,
-            options: [
-              {
-                value: 1,
-                label: "总台充值",
-              },
-              {
-                value: 2,
-                label: "机构充值",
-              },
-              {
-                value: 3,
-                label: "订单支付",
-              },
-              {
-                value: 4,
-                label: "订单作废退款",
-              },
-            ],
-            attrs: {
-              clearable: true,
-              placeholder: "订单类型",
+          key: "order_type",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "总台充值",
             },
+            {
+              value: 2,
+              label: "机构充值",
+            },
+            {
+              value: 3,
+              label: "订单支付",
+            },
+            {
+              value: 4,
+              label: "订单作废退款",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "订单类型",
           },
+        },
         {
           key: "keyword",
           attrs: {
@@ -226,26 +223,32 @@ export default {
   },
   methods: {
     handleSearch(data) {
-        const times = data.date || ["", ""];
-        console.log(times);
-        delete data.date;
-        this.pageNum = 1;
-        this.searchData = {
-          ...data,
-          start_time: times[0],
-          end_time: times[1],
-        };
-        console.log(this.searchData);
-        this.moneyFlowing();
-      },
+      const times = data.date || ["", ""];
+      console.log(times);
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+      };
+      console.log(this.searchData);
+      this.moneyFlowing();
+    },
     handlePageChange(val) {
       this.pageNum = val;
+      this.moneyFlowing();
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
       this.moneyFlowing();
     },
     // 资金流水
     async moneyFlowing() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         org_id: this.$route.query?.institution_id || "",
       };
@@ -259,9 +262,8 @@ export default {
     openRecharge() {
       // this.currentData = row;
       this.rechargeDialogVisible = true;
-      console.log(this.currentData)
+      console.log(this.currentData);
     },
-
   },
 };
 </script>
@@ -281,11 +283,11 @@ export default {
   align-items: center;
   margin-bottom: 16px;
 }
-.college-student-search{
+.college-student-search {
   display: flex;
   justify-content: space-between;
 }
-.institution-user-manage[data-v-491856be]{
+.institution-user-manage[data-v-491856be] {
   padding: 10px 20px 20px 0;
 }
 </style>
