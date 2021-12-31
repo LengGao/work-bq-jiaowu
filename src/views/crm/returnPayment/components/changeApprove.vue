@@ -126,6 +126,7 @@
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -152,6 +153,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
@@ -317,9 +319,15 @@ export default {
       this.pageNum = val;
       this.getOrgReceivableList();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getOrgReceivableList();
+    },
     async getOrgReceivableList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         state: 1,
         ...this.searchData,
       };

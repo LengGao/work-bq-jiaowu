@@ -131,6 +131,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -210,6 +211,7 @@ export default {
       },
       listTotal: 0,
       pageNum: 1,
+      pageSize: 20,
       listData: [],
     };
   },
@@ -239,10 +241,16 @@ export default {
       this.pageNum = val;
       this.auditlist();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.auditlist();
+    },
     // 合同审核列表接口
     async auditlist() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
       };
       const res = await auditlist(data);
