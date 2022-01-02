@@ -38,13 +38,13 @@
         <div class="info-item">
         <span class="info-item__name">应返点金额：</span>
         <span class="info-item__value">{{
-          rebateData.standard_rebate_price
+          rebateData.standard_rebate_price | moneyFormat
         }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">申请返点金额：</span>
         <span class="info-item__value">{{
-          rebateData.apply_rebate_price
+          rebateData.apply_rebate_price | moneyFormat
         }}</span>
       </div>
       <div class="info-item">
@@ -157,11 +157,11 @@
         label="返点金额"
         align="center"
         min-width="100"
-        prop="pay_money"
+        prop="apply_rebate_price"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> {{ row.pay_money | moneyFormat }} </span>
+          <span> {{ row.apply_rebate_price | moneyFormat }} </span>
         </template>
       </el-table-column>
       <el-table-column

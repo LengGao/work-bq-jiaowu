@@ -87,7 +87,7 @@
               >
               <span v-if="row.status == 2" class="approve-status"
                 >已驳回
-                <i class="el-icon-question" :title="row.rejected_note"></i>
+                <i class="el-icon-question" :title="row.reason"></i>
               </span>
             </template>
           </el-table-column>
@@ -97,6 +97,9 @@
             min-width="160"
             show-overflow-tooltip
           >
+          <template slot-scope="{ row }">
+              ￥{{ row.real_rebate_price || 0 }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="approve_staff_name"
