@@ -275,8 +275,8 @@
               :data="listTotal"
               :curpage="pageNum"
               @pageChange="handlePageChange"
+              @pageSizeChange="handleSizeChange"
             />
-            <!-- @pageSizeChange="handleSizeChange" -->
           </div>
         </div>
         <div class="checked-table">
