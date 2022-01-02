@@ -26,7 +26,7 @@
           clearable
           placeholder="机构名称"
           @change="onOrgChange"
-     
+          :disabled="!!id"
         >
           <el-option
             v-for="item in institutionOptions"
@@ -413,7 +413,9 @@ export default {
         limit: this.pageSize,
         ...this.searchData,
         from_organization_id: this.formData.from_organization_id,
+        order_id:0,
       };
+
       this.listLoading = true;
       const res = await getEduList(data);
       this.listLoading = false;
@@ -423,6 +425,10 @@ export default {
           currentMoney:'',
         }));
         this.listTotal = res.data.total;
+      }
+      if(this.formData.from_organization_id === ''){
+        this.listData = [];
+        this.listTotal = 0
       }
     },
 
@@ -522,11 +528,12 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
+      this.listData = [];
+      this.listTotal = 0;
       this.$emit("input", false);
     },
     hanldeCancel() {
       this.visible = false;
-      this.getEduList();
     },
   },
 };
