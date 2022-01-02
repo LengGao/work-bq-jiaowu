@@ -1033,22 +1033,10 @@ export const asyncRouter = [
         meta: { title: '草稿箱', icon: 'product-add' },
       },
       {
-        path: 'distributeQuestionBak',
-        name: 'distributeQuestionBak',
-        component: () => import('@/views/institution/distributeQuestionBak/index.vue'),
-        meta: { title: '分发题库', icon: 'product-add' },
-      },
-      {
-        path: 'distributeCourses',
-        name: 'distributeCourses',
-        component: () => import('@/views/institution/distributeCourses/index.vue'),
-        meta: { title: '分发课程', icon: 'product-add' },
-      },
-      {
-        path: 'classType',
-        name: 'classType',
-        component: () => import('@/views/institution/classType/index.vue'),
-        meta: { title: '班型管理', icon: 'product-add' },
+        path: 'distributeCoursesOrQuestion',
+        name: 'distributeCoursesOrQuestion',
+        component: () => import('@/views/institution/distributeCoursesOrQuestion/index.vue'),
+        meta: { title: '分发课程/题库', icon: 'product-add' },
       },
       {
         path: 'institutionConfig',

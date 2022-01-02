@@ -9,6 +9,11 @@
           :data="searchData"
           @on-search="handleSearch"
         />
+        <div>
+          <el-button type="primary" @click="toInstitutionalCollection"
+            >机构回款</el-button
+          >
+        </div>
       </header>
       <!--列表-->
       <div class="userTable">
@@ -223,6 +228,11 @@ export default {
     this.getInstitutionSelectData();
   },
   methods: {
+    toInstitutionalCollection() {
+      this.$router.push({
+        name: "institutionalCollection",
+      });
+    },
     toDetail(id) {
       this.$router.push({
         name: "studentOrderDetail",

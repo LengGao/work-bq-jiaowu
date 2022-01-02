@@ -10,11 +10,9 @@
           @on-search="handleSearch"
         />
         <div>
+          <el-button @click="openDockingDialog">学生对接</el-button>
           <el-button @click="linkTo('institutionProject')"
             >机构对接人</el-button
-          >
-          <el-button @click="linkTo('institutionalCollection')"
-            >机构回款</el-button
           >
           <el-button type="primary" @click="handleAdd">添加机构</el-button>
         </div>
@@ -217,9 +215,6 @@
           </el-table-column>
         </el-table>
         <div class="table_bottom">
-          <div>
-            <el-button @click="openDockingDialog">学生对接</el-button>
-          </div>
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -440,9 +435,5 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
-}
-.table_bottom {
-  display: flex;
-  justify-content: space-between;
 }
 </style>

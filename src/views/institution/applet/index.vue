@@ -10,6 +10,7 @@
           @on-search="handleSearch"
         />
         <div>
+          <el-button type="primary" @click="toAppletDrafts">草稿箱</el-button>
           <el-button type="primary" @click="handleAdd">上传新版本</el-button>
           <el-button
             type="primary"
@@ -248,6 +249,9 @@ export default {
     this.templateSelect();
   },
   methods: {
+    toAppletDrafts() {
+      this.$router.push({ name: "appletDrafts" });
+    },
     async getInstitutionToken(institution_id) {
       const data = { institution_id };
       const res = await getInstitutionToken(data);
