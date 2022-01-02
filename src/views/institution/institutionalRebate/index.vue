@@ -92,7 +92,7 @@
               >
               <span v-if="row.status == 2" class="approve-status"
                 >已驳回
-                <i class="el-icon-question" :title="row.rejected_note"></i>
+                <i class="el-icon-question" :title="row.reason"></i>
               </span>
             </template>
           </el-table-column>
