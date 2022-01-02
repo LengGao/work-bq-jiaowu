@@ -123,7 +123,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="year_limit"
+              prop="rebate_rate"
               label="返点比例"
               min-width="100"
               align="center"
@@ -134,7 +134,7 @@
                 <el-input
                   type="number"
                   size="small"
-                  v-model="row.year_limit"
+                  v-model="row.rebate_rate"
                   placeholder="请输入"
                 >
                 </el-input>
@@ -297,11 +297,12 @@ export default {
         return;
       }
       const id_arr = {};
-      this.leftSelection.forEach(({ price, year_limit, apply_price, id }) => {
+      this.leftSelection.forEach(({ price, year_limit, apply_price,rebate_rate, id }) => {
         id_arr[id] = {
           price,
           year_limit,
           apply_price,
+          rebate_rate,
         };
       });
       const data = {
@@ -353,6 +354,7 @@ export default {
         ...item,
         apply_price: "",
         year_limit: "",
+        rebate_rate:"",
       }));
     },
     handleRightSearch(data) {

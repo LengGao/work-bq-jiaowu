@@ -955,6 +955,12 @@ export const asyncRouter = [
         component: () => import('@/views/crm/approveManage/index.vue'),
         meta: { title: '审批管理' },
       },
+      {
+        path: 'approvalRebate',
+        name: 'approvalRebate',
+        component: () => import('@/views/crm/approvalRebate/index.vue'),
+        meta: { title: '返点审批' },
+      },
 
     ]
   },

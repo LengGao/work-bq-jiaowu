@@ -1,66 +1,59 @@
-d<template>
+<template>
   <div class="institutional-collection">
-    <!-- <div class="head_remind">*管理机构返点数据</div> -->
     <div class="student-order-title">
-      <h3>{{ orderData.org_name }}-返点{{ orderData.receivable_money }}元</h3>
+      <h3>{{ rebateData.institution_name }}-返点{{ rebateData.standard_rebate_price }}元</h3>
       <span class="student-order-status">机构返点订单</span>
       <div class="actions">
         <el-button
-          type="primary"
-          v-if="$route.query.isFromList && orderData.check_state == 2"
-          @click="addCollectionVisible = true"
-          >再次回款</el-button
-        >
-        <el-button
           type="danger"
-          v-if="$route.query.isFromApproval && orderData.check_state == 0"
-          @click="rejectConfirm"
-          >驳 回</el-button
+          plain
+          v-if="rebateData.status == 0"
+          >待审批</el-button
         >
         <el-button
           type="primary"
-          v-if="$route.query.isFromApproval && orderData.check_state == 0"
-          @click="approveConfirm"
-          >入 账</el-button
+          plain
+          v-if="rebateData.status == 1"
+          >已通过</el-button
         >
         <el-tag
-          type="success"
-          v-if="$route.query.isFromApproval && orderData.check_state == 2"
-          >已入账</el-tag
+          type="danger"
+          plain
+          v-if="rebateData.status == 2"
+          >已驳回</el-tag
         >
-        <el-tag type="danger" v-if="orderData.check_state == -1">已驳回</el-tag>
       </div> 
     
     </div>
     <Title text="返点信息"></Title>
     <div class="info-block">
       <div class="info-item">
-        <span class="info-item__name">机构名称</span>
-        <span class="info-item__value">{{ orderData.pay_date }}广东北区教育科技有限公司</span>
+        <span class="info-item__name">机构名称：</span>
+        <span class="info-item__value">{{ rebateData.institution_name }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">关联订单数：</span>
-        <span class="info-item__value">{{ orderData.org_name }}</span>
+        <span class="info-item__value">{{ rebateData.order_count }}</span>
       </div>
         <div class="info-item">
         <span class="info-item__name">应返点金额：</span>
         <span class="info-item__value">{{
-          orderData.receivable_money | moneyFormat
+          rebateData.standard_rebate_price
         }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">申请返点金额：</span>
         <span class="info-item__value">{{
-          orderData.receivable_money | moneyFormat
+          rebateData.apply_rebate_price
         }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">支付方式：</span>
-        <span class="info-item__value">{{ orderData.staff_name }}</span>
+        <span class="info-item__value">{{ rebateData.pay_type }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">订单备注：</span>
-        <span class="info-item__value">{{ orderData.note || "--" }}</span>
+        <span class="info-item__value">{{ rebateData.remark || "--" }}</span>
       </div>
     </div>
     <Title text="关联订单"></Title>
@@ -78,7 +71,7 @@ d<template>
     >
       <el-table-column
         label="订单编号"
-        min-width="100"
+        min-width="140"
         align="center"
         prop="order_no"
       >
@@ -97,7 +90,7 @@ d<template>
       >
       </el-table-column>
       <el-table-column
-        prop="user_name"
+        prop="user_realname"
         label="客户姓名"
         min-width="80"
         align="center"
@@ -105,7 +98,7 @@ d<template>
       >
       </el-table-column>
        <el-table-column
-        prop="user_name"
+        prop="type_name"
         label="学历形式"
         min-width="80"
         align="center"
@@ -113,7 +106,7 @@ d<template>
       >
       </el-table-column>
        <el-table-column
-        prop="user_name"
+        prop="university_name"
         label="院校名称"
         min-width="80"
         align="center"
@@ -121,7 +114,7 @@ d<template>
       >
       </el-table-column>
       <el-table-column
-        prop="user_name"
+        prop="level_name"
         label="层次名称"
         min-width="80"
         align="center"
@@ -129,7 +122,7 @@ d<template>
       >
       </el-table-column>
       <el-table-column
-        prop="user_name"
+        prop="major_name"
         label="专业名称"
         min-width="80"
         align="center"
@@ -151,20 +144,14 @@ d<template>
         prop="order_money"
         show-overflow-tooltip
       >
-        <template slot-scope="{ row }">
-          <span> {{ row.order_money | moneyFormat }} </span>
-        </template>
       </el-table-column>
       <el-table-column
         label="返点比例"
         align="center"
         min-width="100"
-        prop="pay_money"
+        prop="rebate_rate"
         show-overflow-tooltip
       >
-        <template slot-scope="{ row }">
-          <span> {{ row.receivable_money | moneyFormat }} </span>
-        </template>
       </el-table-column>
       <el-table-column
         label="返点金额"
@@ -178,17 +165,24 @@ d<template>
         </template>
       </el-table-column>
       <el-table-column
-        prop="pay_status"
+        prop="status"
         label="返点状态"
         min-width="100"
         align="center"
         show-overflow-tooltip
       >
-        <template slot-scope="{ row }">
-          <el-tag size="small" :type="row.pay_status | orderTagType">{{
-            row.pay_status | orderStatus
-          }}</el-tag>
-        </template>
+      <template slot-scope="{ row }">
+              <span
+                v-if="row.status == 0"
+                >待审批</span>
+              <span
+                v-if="row.status == 1"
+                >已通过</span
+              >
+              <span v-if="row.status == 2" 
+                >已驳回
+              </span>
+            </template>
       </el-table-column>
       <el-table-column
         label="操作"
@@ -207,52 +201,39 @@ d<template>
 </template>
 
 <script>
-import { getReceivableInfo, reviewReceivableOrder } from "@/api/crm";
+import { rebateDetail } from "@/api/rebate";
 export default {
   name: "institutionalRebateDetail",
   data() {
     return {
       addRebateVisible:false,
       currentId:"",
-      orderData:{},
+      rebateData:{},
       listData:[],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-
     };
   },
   created() {
-
+    this.rebateDetail()
   },
   methods: {
     handlePageChange(val) {
       this.pageNum = val;
       // this.getOrgReceivableList();
     },
-    async reviewReceivableOrder(check_state, rejected_note) {
+
+    async rebateDetail() {
       const data = {
-        log_id: this.$route.query.id,
-        rejected_note,
-        check_state,
-      };
-      const res = await reviewReceivableOrder(data);
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.getReceivableInfo();
-        check_state === 2 && this.$router.back();
-      }
-    },
-    async getReceivableInfo() {
-      const data = {
-        log_id: this.$route.query.id,
+        id: this.$route.query.id,
       };
       this.loading = true;
-      const res = await getReceivableInfo(data).catch(() => {});
+      const res = await rebateDetail(data);
       this.loading = false;
       if (res.code === 0) {
-        this.orderData = res.data.data;
-        this.listData = res.data.list;
+        this.rebateData = res.data;
+        this.listData = res.data.order_list;
       }
     },
      toStudentOrderDetail(id) {

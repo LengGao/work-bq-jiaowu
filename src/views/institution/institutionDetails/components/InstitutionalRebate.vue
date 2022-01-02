@@ -1,6 +1,5 @@
 <template>
   <div class="institutional-collection">
-    <div class="head_remind">*管理机构返点数据</div>
     <section>
       <!--搜索模块-->
       <header>
@@ -9,11 +8,6 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div class="actions">
-          <el-button type="primary" @click="openAddRebateDialog('')"
-            >添加返点</el-button
-          >
-        </div>
       </header>
       <!--列表-->
       <div class="userTable">
@@ -37,17 +31,17 @@
           <el-table-column
             prop="institution_name"
             label="机构名称"
-            min-width="120"
+            min-width="130"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="apply_rebate_price"
             label="申请返点金额"
-            min-width="150"
+            min-width="120"
             show-overflow-tooltip
           >
-           <template slot-scope="{ row }">
+            <template slot-scope="{ row }">
               ￥{{ row.apply_rebate_price || 0 }}
             </template>
           </el-table-column>
@@ -58,6 +52,7 @@
             show-overflow-tooltip
           >
           </el-table-column>
+
           <el-table-column
             prop="apply_staff_name"
             label="创建人"
@@ -65,11 +60,11 @@
             min-width="100"
           >
           </el-table-column>
-          <el-table-column
+             <el-table-column
             prop="apply_time"
             label="创建时间"
+            min-width="100"
             show-overflow-tooltip
-            min-width="160"
           >
           </el-table-column>
          
@@ -96,27 +91,24 @@
               </span>
             </template>
           </el-table-column>
-           <el-table-column
+          <el-table-column
             prop="real_rebate_price"
             label="实际返点金额"
-            min-width="120"
+            min-width="160"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
-              ￥{{ row.real_rebate_price || 0 }}
-            </template>
           </el-table-column>
           <el-table-column
             prop="approve_staff_name"
             label="操作人"
-            min-width="100"
+            min-width="160"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="operate_time"
-            label="操作时间"
-            min-width="120"
+            prop="apply_time"
+            label="创建时间"
+            min-width="160"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -133,44 +125,28 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
-            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
     </section>
-    <AddRebate
-        v-model="addRebateVisible"
-        :id="currentId"
-         @on-success="rebateList"
-      />
   </div>
 </template>
 
 <script>
-import { rebateList,getStaffSelect } from "@/api/rebate";
 import { getShortcuts } from "@/utils/date";
-import AddRebate from "./components/AddRebate";
-import { getInstitutionSelectData } from "@/api/sou";
-import { cloneOptions } from "@/utils/index";
+import { rebateList } from "@/api/rebate";
 export default {
-  name: "institutionalRebate",
-  components: {
-    AddRebate,
-  },
+  name: "InstitutionalRebate",
+
   data() {
     return {
-      addRebateVisible:false,
-      currentId:"",
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-      pageSize: 20,
       searchData: {
-        apply_staff_id:"",
-        status:"",
-        from_organization_id:"",
         date: "",
+        status:"",
       },
       searchOptions: [
         {
@@ -189,29 +165,6 @@ export default {
             },
           },
         },
-         {
-          key: "from_organization_id",
-          type: "cascader",
-          attrs: {
-            placeholder: "机构名称",
-            filterable: true,
-            clearable: true,
-            options: [],
-          },
-        },
-        {
-          key: "apply_staff_id",
-          type: "select",
-          options: [],
-          optionValue: "staff_id",
-          optionLabel: "staff_name",
-          attrs: {
-            placeholder: "创建人",
-            clearable: true,
-            filterable: true,
-          },
-        },
-
         {
           key: "status",
           type: "select",
@@ -235,39 +188,14 @@ export default {
             placeholder: "返点状态",
           },
         },
-
       ],
-
     };
   },
   created() {
     this.rebateList();
-    this.getInstitutionSelectData();
-    this.getStaffSelect();
   },
   methods: {
-   // 获取机构
-    async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
-      if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
-          res.data,
-          "institution_name",
-          "institution_id",
-          "children"
-        );
-      }
-    },
-      // 获取创建人
-    async getStaffSelect() {
-      const data = {
-        limit: 99999,
-      };
-      const res = await getStaffSelect(data);
-      this.searchOptions[2].options = res.data;
-    },
-     handleSearch(data) {
+    handleSearch(data) {
       this.pageNum = 1;
       const date = data.date || ["", ""];
       delete data.date;
@@ -275,13 +203,9 @@ export default {
         ...data,
         start_time: date[0],
         end_time: date[1],
-        from_organization_id: Array.isArray(data.from_organization_id)
-          ? data.from_organization_id.pop()
-          : data.from_organization_id,
       };
-      this.rebateList();
+      this.rebateList(data);
     },
-
     handlePageChange(val) {
       this.pageNum = val;
       this.rebateList();
@@ -299,11 +223,6 @@ export default {
       this.listData = res.data.list;
       console.log(this.listData);
     },
-
-    openAddRebateDialog(id) {
-      this.currentId = id;
-      this.addRebateVisible = true;
-    },
     toDetail(id){
       this.$router.push({
         name: "institutionalRebateDetail",
@@ -311,12 +230,8 @@ export default {
         id,
         },
       })
-    },
-     handleSizeChange(size) {
-      this.pageNum = 1;
-      this.pageSize = size;
-      this.rebateList();
-    },
+    }
+
   },
 };
 </script>
