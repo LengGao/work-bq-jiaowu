@@ -113,6 +113,7 @@
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -143,6 +144,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         search_box: "",
@@ -216,9 +218,15 @@ export default {
       this.pageNum = val;
       this.getInstitutionUserList();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getInstitutionUserList();
+    },
     async getInstitutionUserList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         institution_id: this.$route.query.institution_id || "",
         ...this.searchData,
       };

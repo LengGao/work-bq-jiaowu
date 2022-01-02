@@ -137,6 +137,7 @@
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -174,6 +175,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
@@ -250,11 +252,15 @@ export default {
         start_time: times[0],
         end_time: times[1],
       };
-      console.log(this.searchData);
       this.Organizationstudents();
     },
     handlePageChange(val) {
       this.pageNum = val;
+      this.Organizationstudents();
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
       this.Organizationstudents();
     },
     // 学生列表
@@ -262,8 +268,9 @@ export default {
       this.checkedIds = [];
       const data = {
         page: this.pageNum,
-        ...this.searchData,
+        limit: this.pageSize,
         org_id: this.$route.query?.institution_id || "",
+        ...this.searchData,
       };
       this.listLoading = true;
       const res = await Organizationstudents(data);

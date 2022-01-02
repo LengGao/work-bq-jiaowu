@@ -104,7 +104,7 @@
           >
 
           <el-button
-            v-if="detailData.verify_status === 2"
+            v-if="detailData.verify_status < 3"
             type="primary"
             @click="hurryUp"
             >催办</el-button

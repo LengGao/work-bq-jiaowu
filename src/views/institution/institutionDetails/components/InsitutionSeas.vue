@@ -40,13 +40,13 @@
         </el-table-column> -->
 
         <el-table-column
-        prop="nickname"
-        label="微信昵称"
-        min-width="160"
-        align="center"
-        show-overflow-tooltip
-      >
-      </el-table-column>
+          prop="nickname"
+          label="微信昵称"
+          min-width="160"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
         <el-table-column
           prop="mobile"
           label="手机号码"
@@ -72,13 +72,13 @@
           align="center"
           show-overflow-tooltip
         ></el-table-column>
-
       </el-table>
       <div class="table_bottom">
         <page
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -88,7 +88,7 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import {highSeasStudent} from "@/api/institution";
+import { highSeasStudent } from "@/api/institution";
 export default {
   name: "InsitutionSeas",
   components: {
@@ -99,6 +99,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
@@ -133,28 +134,33 @@ export default {
     this.highSeasStudent();
   },
   methods: {
-  
     handleSearch(data) {
-        const times = data.date || ["", ""];
-        console.log(times);
-        delete data.date;
-        this.pageNum = 1;
-        this.searchData = {
-          ...data,
-          start_time: times[0],
-          end_time: times[1],
-        };
-        console.log(this.searchData);
-        this.highSeasStudent();
-      },
+      const times = data.date || ["", ""];
+      console.log(times);
+      delete data.date;
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        start_time: times[0],
+        end_time: times[1],
+      };
+      console.log(this.searchData);
+      this.highSeasStudent();
+    },
     handlePageChange(val) {
       this.pageNum = val;
+      this.highSeasStudent();
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
       this.highSeasStudent();
     },
     // 公海学员
     async highSeasStudent() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         org_id: this.$route.query?.institution_id || "",
       };
@@ -164,7 +170,6 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
-
   },
 };
 </script>
@@ -184,7 +189,7 @@ export default {
   align-items: center;
   margin-bottom: 16px;
 }
-.institution-user-manage[data-v-667f4a99]{
+.institution-user-manage[data-v-667f4a99] {
   padding: 10px 20px 20px 0;
 }
 </style>

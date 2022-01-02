@@ -188,6 +188,7 @@
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -214,6 +215,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         date: "",
@@ -436,9 +438,15 @@ export default {
       this.pageNum = val;
       this.getReturnPaymentList();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getReturnPaymentList();
+    },
     async getReturnPaymentList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")

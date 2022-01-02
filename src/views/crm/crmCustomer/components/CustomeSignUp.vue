@@ -40,15 +40,20 @@
         />
       </el-form-item>
       <el-form-item label="报名类型" prop="type">
-        <el-radio-group class="input" v-model="formData.type">
+        <el-radio-group
+          class="input"
+          @change="resetCheckedParams"
+          v-model="formData.type"
+        >
           <el-radio :label="0">职业教育</el-radio>
           <el-radio :label="1">学历教育</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item
         v-if="formData.type === 1"
-        label="报名项目"
+        label="报名专业"
         prop="selectMajor"
+        key="1"
       >
         <el-cascader
           ref="cascaderMajor"
@@ -61,7 +66,7 @@
           collapse-tags
         ></el-cascader>
       </el-form-item>
-      <el-form-item v-else label="报名项目" prop="selectProject">
+      <el-form-item v-else key="2" label="报名项目" prop="selectProject">
         <el-cascader
           class="input"
           popper-class="select-project"
@@ -642,6 +647,13 @@ export default {
       };
       const res = await getStaffList(data);
       this.staffOptions = res.data.list;
+    },
+    resetCheckedParams() {
+      this.type_id = "";
+      this.school_id = "";
+      this.level_id = "";
+      this.formData.selectMajor = [];
+      this.formData.selectProject = [];
     },
     // 学历报名的级联选项
     async getUniversityMajorDetailList() {

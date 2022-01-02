@@ -880,22 +880,10 @@ export const asyncRouter = [
     name: 'channel',
     children: [
       {
-        path: 'resetEduOrderPrice',
-        name: 'resetEduOrderPrice',
-        component: () => import('@/views/crm/resetEduOrderPrice/index.vue'),
-        meta: { title: '重设学历订单价格' },
-      },
-      {
-        path: 'distributeEducation',
-        name: 'distributeEducation',
-        component: () => import('@/views/crm/distributeEducation/index.vue'),
-        meta: { title: '分发机构学历' },
-      },
-      {
-        path: 'resetProjectPrice',
-        name: 'resetProjectPrice',
-        component: () => import('@/views/crm/resetProjectPrice/index.vue'),
-        meta: { title: '重设项目价格' },
+        path: 'resetOrderPrice',
+        name: 'resetOrderPrice',
+        component: () => import('@/views/crm/resetOrderPrice/index.vue'),
+        meta: { title: '重设订单价格' },
       },
       {
         path: 'institutionalCollection',
@@ -931,7 +919,7 @@ export const asyncRouter = [
       {
         path: 'distributeProject',
         name: 'distributeProject',
-        component: () => import('@/views/crm/distributeProject/index.vue'),
+        component: () => import('@/views/crm/distribute/index.vue'),
         meta: { title: '分发项目' },
       },
     ]

@@ -27,19 +27,19 @@
           label="订单编号"
           show-overflow-tooltip
           min-width="180"
-          align="center"
+          align="left"
           prop="order_no"
         >
-          <template slot-scope="scope">
-            <div class="link" @click="orderDetail(scope.row)">
-              {{ scope.row.order_no }}
-            </div>
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toDetail(row.order_id)">
+              {{ row.order_no }}
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column
           prop="create_time"
           label="订单时间"
-          min-width="100"
+          min-width="160"
           align="center"
           show-overflow-tooltip
         >
@@ -97,7 +97,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="overdue_money"
+          prop="order_money"
           label="订单金额"
           min-width="140"
           align="center"
@@ -126,6 +126,7 @@
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -162,19 +163,10 @@ export default {
         1: "已退款",
         2: "待退款",
       },
-      // statusMap: {
-      //       0: {
-      //           text: "已成交",
-
-      //       },
-      //       1: {
-      //           text: "未成交",
-
-      //       },
-      //       },
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
@@ -236,6 +228,14 @@ export default {
     this.studentsOrder();
   },
   methods: {
+    toDetail(id) {
+      this.$router.push({
+        name: "studentOrderDetail",
+        query: {
+          id,
+        },
+      });
+    },
     openOrderFromDialog() {
       if (!this.checkedIds.length) {
         this.$message.warning("请选择订单");
@@ -264,13 +264,19 @@ export default {
       this.pageNum = val;
       this.studentsOrder();
     },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.studentsOrder();
+    },
     // 学生订单
     async studentsOrder() {
       this.checkedIds = [];
       const data = {
         page: this.pageNum,
-        ...this.searchData,
+        limit: this.pageSize,
         org_id: this.$route.query?.institution_id || "",
+        ...this.searchData,
       };
       this.listLoading = true;
       const res = await studentsOrder(data);
@@ -278,23 +284,6 @@ export default {
       this.listData = res.data.list;
       this.listTotal = res.data.total;
     },
-    orderDetail(ab) {
-      this.$router.push({
-        name: "orderdetail",
-        query: {
-          order_id: ab.order_id,
-        },
-      });
-    },
-    orderDetail(row) {
-      this.$router.push({
-        name: "orderdetail",
-        query: {
-          order_id: row.order_id,
-        },
-      });
-    },
-    orderDetail(name, query) {},
   },
 };
 </script>
