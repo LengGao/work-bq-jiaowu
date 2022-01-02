@@ -137,6 +137,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -327,7 +328,12 @@ export default {
     toReject(row){
        this.contractInfo = row;
       this.rejectVisible = true
-    }
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.rebateList();
+    },
   },
 };
 </script>

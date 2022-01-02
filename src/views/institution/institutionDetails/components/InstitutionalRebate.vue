@@ -125,6 +125,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -193,6 +194,7 @@ export default {
   },
   created() {
     this.rebateList();
+    // console.log(this.$route.query.institution_id)
   },
   methods: {
     handleSearch(data) {
@@ -215,6 +217,7 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
+        from_organization_id:this.$route.query.institution_id,
       };
       this.listLoading = true;
       const res = await rebateList(data);
@@ -230,7 +233,12 @@ export default {
         id,
         },
       })
-    }
+    },
+     handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.rebateList();
+    },
 
   },
 };

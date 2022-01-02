@@ -26,7 +26,7 @@
           clearable
           placeholder="机构名称"
           @change="onOrgChange"
-          :disabled="!!id"
+     
         >
           <el-option
             v-for="item in institutionOptions"
@@ -379,7 +379,6 @@ export default {
     totalInputMoney() {
       return this.listData.reduce((p, c) => p + c.currentMoney * 1, 0);
     },
-
   },
 
   methods: {
@@ -395,7 +394,6 @@ export default {
        this.getEduList();
        this.handlePageChange(1);
     },
-
   onInput(val) {
       this.totalMoney = val;
     },
@@ -414,8 +412,7 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
-        from_organization_id: this.formData.from_organization_id || 0,
-        order_id:0
+        from_organization_id: this.formData.from_organization_id,
       };
       this.listLoading = true;
       const res = await getEduList(data);
@@ -423,10 +420,9 @@ export default {
       if (res.code === 0) {
         this.listData = res.data.list.map(item=>({
           ...item,
-          currentMoney:''
+          currentMoney:'',
         }));
         this.listTotal = res.data.total;
-
       }
     },
 
@@ -491,7 +487,6 @@ export default {
       }
     },
 
-
     async submit() {
       const data = {
         ...this.formData,
@@ -513,7 +508,6 @@ export default {
         this.$emit("on-success");
       }
     },
-
       submitForm(formName) {
       console.log(this.formData);
       this.$refs[formName].validate((valid) => {
@@ -523,23 +517,12 @@ export default {
       });
     },
 
-
     resetForm(formName) {
       this.$refs[formName].resetFields();
       for (const k in this.formData) {
         this.formData[k] = "";
       }
       this.$emit("input", false);
-      if (this.id) {
-        this.againListData = [];
-      } else {
-        this.hadleResetOrder();
-        this.pageNum = 1;
-        this.pageSize = 20;
-        this.totalMoney = "";
-        this.$refs.searchList.handleReset();
-        this.listData = [];
-      }
     },
     hanldeCancel() {
       this.visible = false;
