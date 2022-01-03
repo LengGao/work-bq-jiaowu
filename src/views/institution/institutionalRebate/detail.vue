@@ -56,6 +56,48 @@
         <span class="info-item__value">{{ rebateData.remark || "--" }}</span>
       </div>
     </div>
+
+    <Title text="操作记录"></Title>
+    <div class="tab_record">
+      <div class="title">
+        <span class="el-col-3">返点状态</span>
+        <span class="el-col-3">返点日期</span>
+        <span class="el-col-3">实际返点金额</span>
+        <span class="el-col-6">备注信息</span>
+        <span class="el-col-3">操作人</span>
+        <span class="el-col-6">操作时间</span>
+      </div>
+      <div class="content">
+        <span class="el-col-3">
+          <span
+           v-if="rebateData.status == 0"
+          >待审批</span>
+           <span
+           v-if="rebateData.status == 1"
+          >已通过</span>
+           <span
+           v-if="rebateData.status == 2"
+          >已驳回</span>
+          </span>
+        <span class="el-col-3">
+          {{rebateData.rebate_time}}
+        </span>
+        <span class="el-col-3">
+          {{rebateData.real_rebate_price}}
+        </span>
+        <span class="el-col-6">
+          {{rebateData.reason}}
+        </span>
+        <span class="el-col-3">
+          {{rebateData.approve_staff_name}}
+        </span>
+        <span class="el-col-6">
+          {{rebateData.operate_time}}
+        </span>
+      </div>
+  
+    </div>
+<div>
     <Title text="关联订单"></Title>
     <el-table
       :data="listData"
@@ -198,6 +240,7 @@
       </el-table-column>
     </el-table>
   </div>
+  </div>
 </template>
 
 <script>
@@ -291,5 +334,49 @@ export default {
       }
     }
   }
+}
+.tab_record{
+  .title{
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #f1f1f1;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    span{
+      font-size: 14px;
+      font-weight: bold;
+      display: block;
+
+      text-align: center;
+      line-height: 50px;
+      color: #888;
+    }
+    .el-col-3{
+      width:14%;
+    }
+    .el-col-6{
+      width: 28%;
+    }
+  }
+  .content{
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #f1f1f1;
+    margin-bottom: 30px;
+     span{
+      font-size: 14px;
+      display: block;
+      text-align: center;
+      line-height: 50px;
+      color: #666;
+    }
+     .el-col-3{
+      width:14%;
+    }
+    .el-col-6{
+      width: 28%;
+  }
+}
 }
 </style>

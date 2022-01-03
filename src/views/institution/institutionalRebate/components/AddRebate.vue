@@ -640,7 +640,7 @@ export default {
   width: 91%;
 }
 .el-title[data-v-6f792258]{
-  margin-bottom: 2px ;
+  margin-bottom: 6px ;
 }
 .distance{
   height: 10px;

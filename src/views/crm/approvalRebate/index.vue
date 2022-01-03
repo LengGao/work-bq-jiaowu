@@ -42,6 +42,9 @@
             min-width="150"
             show-overflow-tooltip
           >
+           <template slot-scope="{ row }">
+              ￥{{ row.apply_rebate_price || 0 }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="order_count"

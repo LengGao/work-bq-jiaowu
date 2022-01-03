@@ -148,6 +148,7 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      recordData:[],
       searchData: {
         date: "",
         status:"",
