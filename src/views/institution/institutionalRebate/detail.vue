@@ -57,6 +57,7 @@
       </div>
     </div>
 
+  <div v-if="rebateData.status !== ''">
     <Title text="操作记录"></Title>
     <div class="tab_record">
       <div class="title">
@@ -97,6 +98,7 @@
       </div>
   
     </div>
+  </div>
 <div>
     <Title text="关联订单"></Title>
     <el-table
