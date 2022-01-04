@@ -175,10 +175,12 @@
                 <div class="header-money">
                   <el-input
                     v-model="totalMoney"
+                    class="input"
                     size="mini"
                     type="number"
                     placeholder="申请返点金额"
                     style="padding: 0"
+                    @input="onInputs"
                   />
                   <div class="header-money-actions">
                     <span
@@ -246,7 +248,7 @@
           v-model="formData.apply_rebate_price"
           type="number"
           placeholder="申请返点金额"
-           @input="onInput"
+          @input="onInput"
         />
       </el-form-item>
       <el-form-item label="支付方式" prop="pay_type">
@@ -395,8 +397,11 @@ export default {
        this.getEduList();
        this.handlePageChange(1);
     },
-  onInput(val) {
+    onInput(val) {
       this.totalMoney = val;
+    },
+    onInputs(val) {
+      this.formData.apply_rebate_price = val;
     },
 
     async getInstitutionSelectData() {
@@ -429,7 +434,8 @@ export default {
       }
       if(this.formData.from_organization_id === ''){
         this.listData = [];
-        this.listTotal = 0
+        this.listTotal = 0;
+        this.checkedOrderData = [];
       }
     },
 
@@ -531,6 +537,8 @@ export default {
       }
       this.listData = [];
       this.listTotal = 0;
+      this.checkedOrderData = [];
+      this.totalMoney = "";
       this.$emit("input", false);
     },
     hanldeCancel() {
