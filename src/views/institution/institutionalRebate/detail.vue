@@ -186,6 +186,9 @@
         prop="order_money"
         show-overflow-tooltip
       >
+      <template slot-scope="{ row }">
+          <span> {{ row.order_money | moneyFormat }} </span>
+        </template>
       </el-table-column>
       <el-table-column
         label="返点比例"
