@@ -23,7 +23,6 @@
           >已驳回</el-tag
         >
       </div> 
-    
     </div>
     <Title text="返点信息"></Title>
     <div class="info-block">
@@ -84,7 +83,7 @@
           {{rebateData.rebate_time}}
         </span>
         <span class="el-col-3">
-          {{rebateData.real_rebate_price}}
+          {{rebateData.real_rebate_price | moneyFormat}}
         </span>
         <span class="el-col-6">
           {{rebateData.reason}}
@@ -96,10 +95,9 @@
           {{rebateData.operate_time}}
         </span>
       </div>
-  
     </div>
   </div>
-<div>
+  <div>
     <Title text="关联订单"></Title>
     <el-table
       :data="listData"
@@ -113,7 +111,7 @@
         'background-color': '#f8f8f8',
       }"
     >
-      <el-table-column
+    <el-table-column
         label="订单编号"
         min-width="140"
         align="center"
@@ -268,7 +266,6 @@ export default {
       this.pageNum = val;
       // this.getOrgReceivableList();
     },
-
     async rebateDetail() {
       const data = {
         id: this.$route.query.id,
@@ -281,7 +278,7 @@ export default {
         this.listData = res.data.order_list;
       }
     },
-     toStudentOrderDetail(id) {
+    toStudentOrderDetail(id) {
       this.$router.push({
         name: "studentOrderDetail",
         query: {
@@ -289,7 +286,6 @@ export default {
         },
       });
     },
-
   },
 };
 </script>
