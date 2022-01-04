@@ -32,7 +32,7 @@
           <el-table-column
             label="院校名称"
             show-overflow-tooltip
-            min-width="120"
+            min-width="100"
             align="center"
             prop="university_title"
           >
@@ -72,7 +72,7 @@
           <el-table-column
             prop="apply_price"
             label="报考费"
-            min-width="100"
+            min-width="90"
             align="center"
             show-overflow-tooltip
           >
@@ -89,7 +89,7 @@
           <el-table-column
             prop="year_limit"
             label="收费年限"
-            min-width="100"
+            min-width="90"
             align="center"
             show-overflow-tooltip
           >
@@ -118,6 +118,26 @@
                 placeholder="请输入"
               >
               </el-input>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="rebate_rate"
+            label="返点比例"
+            min-width="90"
+            align="center"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <div class="percentage">
+              <el-input
+                type="number"
+                size="small"
+                v-model="row.rebate_rate"
+                placeholder="请输入"
+              >
+              </el-input>
+              <span> %</span>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -273,11 +293,12 @@ export default {
         return;
       }
       const id_arr = {};
-      this.leftSelection.forEach(({ price, year_limit, apply_price, id }) => {
+      this.leftSelection.forEach(({ rebate_rate,price, year_limit, apply_price, id }) => {
         id_arr[id] = {
           price,
           year_limit,
           apply_price,
+          rebate_rate,
         };
       });
       const data = {
@@ -329,6 +350,7 @@ export default {
         ...item,
         apply_price: "",
         year_limit: "",
+        rebate_rate:"",
       }));
     },
     handleRightSearch(data) {
@@ -419,5 +441,8 @@ export default {
       }
     }
   }
+}
+.percentage{
+  padding-right: 8px;
 }
 </style>
