@@ -1,5 +1,5 @@
 <template>
-  <div class="institutional-collection">
+  <div class="institutional-collection" v-loading="loading">
     <div class="student-order-title">
       <h3>{{ rebateData.institution_name }}-返点{{ rebateData.standard_rebate_price }}元</h3>
       <span class="student-order-status">机构返点订单</span>
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-  <div v-if="rebateData.status !== ''">
+  <div v-if="rebateData.status !== 0 ">
     <Title text="操作记录"></Title>
     <div class="tab_record">
       <div class="title">
@@ -188,7 +188,7 @@
       >
       <template slot-scope="{ row }">
           <span> {{ row.order_money | moneyFormat }} </span>
-        </template>
+      </template>
       </el-table-column>
       <el-table-column
         label="返点比例"
@@ -247,11 +247,13 @@
 </template>
 
 <script>
+
 import { rebateDetail } from "@/api/rebate";
 export default {
   name: "institutionalRebateDetail",
   data() {
     return {
+      loading: false,
       addRebateVisible:false,
       currentId:"",
       rebateData:{},
