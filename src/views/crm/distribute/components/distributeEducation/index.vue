@@ -123,7 +123,7 @@
           <el-table-column
             prop="rebate_rate"
             label="返点比例"
-            min-width="90"
+            min-width="110"
             align="center"
             show-overflow-tooltip
           >
@@ -133,10 +133,9 @@
                 type="number"
                 size="small"
                 v-model="row.rebate_rate"
-                placeholder="请输入"
+                placeholder="请输入0~1"
               >
               </el-input>
-              <span> %</span>
               </div>
             </template>
           </el-table-column>

@@ -1074,6 +1074,12 @@ export const asyncRouter = [
         component: () => import('@/views/institution/institutionalRebate/detail.vue'),
         meta: { title: '返点详情' },
       },
+      {
+        path: 'paymentRebate',
+        name: 'paymentRebate',
+        component: () => import('@/views/institution/paymentRebate/index.vue'),
+        meta: { title: '回款返点' },
+      },
 
     ]
   },
