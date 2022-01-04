@@ -102,7 +102,7 @@
             min-width="120"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
+          <template slot-scope="{ row }">
               ￥{{ row.real_rebate_price || 0 }}
             </template>
           </el-table-column>
@@ -112,6 +112,12 @@
             min-width="100"
             show-overflow-tooltip
           >
+          <template slot-scope="{ row }">
+            <span v-if="row.approve_staff_name">
+              {{ row.approve_staff_name}}
+            </span>
+              <span v-else>--</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="operate_time"
@@ -119,6 +125,12 @@
             min-width="120"
             show-overflow-tooltip
           >
+          <template slot-scope="{ row }">
+            <span v-if="row.operate_time">
+              {{ row.operate_time}}
+            </span>
+              <span v-else>--</span>
+            </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
