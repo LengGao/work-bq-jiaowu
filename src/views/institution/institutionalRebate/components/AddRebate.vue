@@ -246,6 +246,7 @@
           v-model="formData.apply_rebate_price"
           type="number"
           placeholder="申请返点金额"
+           @input="onInput"
         />
       </el-form-item>
       <el-form-item label="支付方式" prop="pay_type">
