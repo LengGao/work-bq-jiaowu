@@ -122,7 +122,7 @@
           <el-table-column
             prop="operate_time"
             label="操作时间"
-            min-width="120"
+            min-width="150"
             show-overflow-tooltip
           >
           <template slot-scope="{ row }">

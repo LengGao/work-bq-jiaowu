@@ -179,3 +179,13 @@ export function switchGroupList(params) {
     params,
   })
 }
+
+
+// 清空小程序绑定
+export function clearAppletOpenid(params) {
+  return request({
+    url: 'staff/clearAppletOpenid',
+    method: 'get',
+    params,
+  })
+}
