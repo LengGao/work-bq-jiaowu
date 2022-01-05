@@ -235,7 +235,6 @@ export default {
       searchLeftData: {
         search_box: "",
         type_id: "",
-        level_id:"",
       },
       searchLeftOptions: [
         {
