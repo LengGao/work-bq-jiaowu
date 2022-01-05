@@ -74,10 +74,26 @@
           <el-table-column
             prop="scope"
             label="客户数据查看范围"
-            min-width="140"
+            min-width="100"
             align="center"
             show-overflow-tooltip
           ></el-table-column>
+           <el-table-column
+            prop="applet_openid"
+            label="小程序绑定状态"
+            min-width="140"
+            align="center"
+            show-overflow-tooltip
+          >
+           <template slot-scope="{ row }">
+            <span
+              v-if="row.applet_openid == ''"
+              >未绑定</span
+            >
+            <span v-else>已绑定</span>
+          </template>
+          </el-table-column>
+          
           <el-table-column
             prop="scope"
             label="客户数量"
@@ -146,6 +162,9 @@
             min-width="160"
           >
             <template slot-scope="{ row }">
+              <el-button type="text" @click="deleteBinding(row.staff_id)"
+                >清空绑定</el-button
+              >
               <el-button type="text" @click="handleEdit(row.staff_id)"
                 >编辑</el-button
               >
@@ -190,6 +209,7 @@ import {
   updateStaffStatus,
   getDepartmentlists,
   delDepartment,
+  clearAppletOpenid,
 } from "@/api/set";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
@@ -207,8 +227,28 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
+        applet_bound_status:"",
       },
       searchOptions: [
+        {
+          key: "applet_bound_status",
+          type: "select",
+          width: 150,
+          options: [
+            {
+              value: 1,
+              label: "已绑定",
+            },
+            {
+              value: 2,
+              label: "未绑定",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "小程序绑定状态",
+          },
+        },
         {
           key: "keyword",
           attrs: {
@@ -326,6 +366,24 @@ export default {
       this.pageNum = 1;
       this.getStaffList();
     },
+    // 清空小程序绑定
+    deleteBinding(staff_id) {
+      this.$confirm("确定要清空小程序绑定吗?", { type: "warning" })
+        .then(() => {
+          this.clearAppletOpenid(staff_id);
+        })
+        .catch(() => {});
+    },
+    async clearAppletOpenid(id) {
+      const data = { id };
+      const res = await clearAppletOpenid(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getStaffList();
+      }
+    },
+
+
     // 删除员工
     deleteConfirm(...params) {
       this.$confirm("确定要删除此员工吗?", { type: "warning" })

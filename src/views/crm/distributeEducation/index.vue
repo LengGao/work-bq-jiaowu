@@ -138,7 +138,6 @@
                   placeholder="请输入"
                 >
                 </el-input>
-                <span class="percentage"> % </span>
                 </div>
               </template>
            
@@ -449,14 +448,14 @@ export default {
     }
   }
 }
-.percen{
-  display: flex;
-  .percentage{
-  margin-right: 3px;
-  margin-left: 3px;
-  line-height: 30px;
-  display: block;
-}
-}
+// .percen{
+//   display: flex;
+//   .percentage{
+//   margin-right: 3px;
+//   margin-left: 3px;
+//   line-height: 30px;
+//   display: block;
+// }
+// }
 
 </style>

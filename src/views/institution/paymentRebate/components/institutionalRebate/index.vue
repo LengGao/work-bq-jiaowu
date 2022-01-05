@@ -1,6 +1,6 @@
 <template>
   <div class="institutional-collection">
-    <div class="head_remind">*审批机构返点数据</div>
+    <!-- <div class="head_remind">*管理机构返点数据</div> -->
     <section>
       <!--搜索模块-->
       <header>
@@ -9,6 +9,11 @@
           :data="searchData"
           @on-search="handleSearch"
         />
+        <div class="actions">
+          <el-button type="primary" @click="openAddRebateDialog('')"
+            >添加返点</el-button
+          >
+        </div>
       </header>
       <!--列表-->
       <div class="userTable">
@@ -97,7 +102,7 @@
             min-width="120"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }">
+          <template slot-scope="{ row }">
               ￥{{ row.real_rebate_price || 0 }}
             </template>
           </el-table-column>
@@ -108,7 +113,10 @@
             show-overflow-tooltip
           >
           <template slot-scope="{ row }">
-              {{ row.approve_staff_name || '--' }}
+            <span v-if="row.approve_staff_name">
+              {{ row.approve_staff_name}}
+            </span>
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -118,17 +126,14 @@
             show-overflow-tooltip
           >
           <template slot-scope="{ row }">
-              {{ row.operate_time || '--' }}
+            <span v-if="row.operate_time">
+              {{ row.operate_time}}
+            </span>
+              <span v-else>--</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toAdopt(row)" v-if="row.status == 0"
-                >通过</el-button
-              >
-              <el-button type="text" @click="toReject(row)" v-if="row.status == 0"
-                >驳回</el-button
-              >
               <el-button type="text" @click="toDetail(row.id)"
                 >返点详情</el-button
               >
@@ -145,45 +150,34 @@
         </div>
       </div>
     </section>
-    <AdoptRebate
+    <AddRebate
         v-model="addRebateVisible"
         :id="currentId"
-        :contractInfo="contractInfo"
-        @on-success="rebateList"
-    />
-    <RejectRebate
-        v-model="rejectVisible"
-        :id="currentId"
-        :contractInfo="contractInfo"
-        @on-success="rebateList"
-    />
-
+         @on-success="rebateList"
+      />
   </div>
 </template>
 
 <script>
 import { rebateList,getStaffSelect } from "@/api/rebate";
 import { getShortcuts } from "@/utils/date";
-import AdoptRebate from "./components/AdoptRebate";
-import RejectRebate from "./components/RejectRebate";
+import AddRebate from "./components/AddRebate";
 import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
-  name: "approvalRebate",
+  name: "institutionalRebate",
   components: {
-    AdoptRebate,
-    RejectRebate
+    AddRebate,
   },
   data() {
     return {
       addRebateVisible:false,
-      rejectVisible:false,
       currentId:"",
-      contractInfo: {},
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      pageSize: 20,
       searchData: {
         apply_staff_id:"",
         status:"",
@@ -264,7 +258,7 @@ export default {
     this.getStaffSelect();
   },
   methods: {
-     // 获取机构
+   // 获取机构
     async getInstitutionSelectData() {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
@@ -285,20 +279,7 @@ export default {
       const res = await getStaffSelect(data);
       this.searchOptions[2].options = res.data;
     },
-    async rebateList() {
-      const data = {
-        page: this.pageNum,
-        limit: this.pageSize,
-        ...this.searchData,
-      };
-      this.listLoading = true;
-      const res = await rebateList(data);
-      this.listLoading = false;
-      this.listTotal = res.data.total;
-      this.listData = res.data.list;
-      console.log(this.listData);
-    },
-   handleSearch(data) {
+     handleSearch(data) {
       this.pageNum = 1;
       const date = data.date || ["", ""];
       delete data.date;
@@ -312,9 +293,28 @@ export default {
       };
       this.rebateList();
     },
+
     handlePageChange(val) {
       this.pageNum = val;
       this.rebateList();
+    },
+    async rebateList() {
+      const data = {
+        page: this.pageNum,
+        limit: this.pageSize,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await rebateList(data);
+      this.listLoading = false;
+      this.listTotal = res.data.total;
+      this.listData = res.data.list;
+      console.log(this.listData);
+    },
+
+    openAddRebateDialog(id) {
+      this.currentId = id;
+      this.addRebateVisible = true;
     },
     toDetail(id){
       this.$router.push({
@@ -324,15 +324,7 @@ export default {
         },
       })
     },
-    toAdopt(row){
-      this.contractInfo = row;
-      this.addRebateVisible = true
-    },
-    toReject(row){
-       this.contractInfo = row;
-      this.rejectVisible = true
-    },
-    handleSizeChange(size) {
+     handleSizeChange(size) {
       this.pageNum = 1;
       this.pageSize = size;
       this.rebateList();
