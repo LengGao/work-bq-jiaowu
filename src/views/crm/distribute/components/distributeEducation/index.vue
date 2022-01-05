@@ -213,6 +213,12 @@
 <script>
 import { getOrgList } from "@/api/institution";
 import {
+  getUniversityTypeOptions,
+  getUniversityOptions,
+  getUniversityLevelOptions,
+  getUniversityMajorOptions,
+} from "@/api/sou";
+import {
   universityMajorDetailList,
   assignUniversity,
   universityTypeSelect,
@@ -229,6 +235,7 @@ export default {
       searchLeftData: {
         search_box: "",
         type_id: "",
+        level_id:"",
       },
       searchLeftOptions: [
         {
@@ -243,12 +250,49 @@ export default {
             filterable: true,
           },
         },
+         {
+          key: "school_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "院校名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "level_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "层次名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "major_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "专业名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
         {
           key: "search_box",
           attrs: {
             placeholder: "学校名称",
           },
         },
+
       ],
       listRightData: [],
       listRightLoading: false,
@@ -275,6 +319,9 @@ export default {
     this.universityMajorDetailList();
     this.getOrgList();
     this.universityTypeSelect();
+    this.getUniversityOptions();
+    this.getUniversityLevelOptions();
+    this.getUniversityMajorOptions();
   },
   methods: {
     handleReset() {
@@ -386,6 +433,27 @@ export default {
       const res = await universityTypeSelect();
       if (res.code === 0) {
         this.searchLeftOptions[0].options = res.data;
+      }
+    },
+    // 获取院校
+    async getUniversityOptions() {
+      const res = await getUniversityOptions();
+      if (res.code === 0) {
+        this.searchLeftOptions[1].options = res.data;
+      }
+    },
+    // 获取层次
+    async getUniversityLevelOptions() {
+      const res = await getUniversityLevelOptions();
+      if (res.code === 0) {
+        this.searchLeftOptions[2].options = res.data;
+      }
+    },
+    // 获取专业
+    async getUniversityMajorOptions() {
+      const res = await getUniversityMajorOptions();
+      if (res.code === 0) {
+        this.searchLeftOptions[3].options = res.data;
       }
     },
   },
