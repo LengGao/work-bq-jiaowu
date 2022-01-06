@@ -245,7 +245,7 @@
       <el-form-item label="申请返点金额" prop="apply_rebate_price">
         <el-input
           class="input"
-          v-model="formData.apply_rebate_price"
+          v-model="totalInputMoney"
           type="number"
           placeholder="申请返点金额"
           @input="onInput"
