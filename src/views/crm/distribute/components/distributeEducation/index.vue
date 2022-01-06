@@ -129,26 +129,25 @@
           >
             <template slot-scope="{ row }">
               <div class="percentage">
-                 <el-autocomplete
-                  class="inline-input"
-                  v-model="row.rebate_rate"
-                  :fetch-suggestions="querySearch"
-                  placeholder="请输入"
-                  @select="handleSelect"
-                ></el-autocomplete>
-                <div class="tages">%</div>
-              <!-- <el-input
+                <el-autocomplete
+                class="inline-input"
+                v-model="row.rebate_rate"
+                :fetch-suggestions="querySearch"
+                placeholder="请输入"
+                @select="handleSelect"
+                >
+                </el-autocomplete>
+                <div class="tages"> %</div>
+                <!-- <el-input
                 type="number"
                 size="small"
                 v-model="row.rebate_rate"
-                placeholder="请输入"
-              >
+                placeholder="请输入">
               </el-input>
               <span>0-100,可保留两位小数点</span> -->
               </div>
             </template>
           </el-table-column>
-          
         </el-table>
         <div class="table_bottom">
           <page
@@ -169,7 +168,6 @@
           :data="searchRightData"
           @on-search="handleRightSearch"
         />
-        
         <el-table
           ref="multipleTable"
           :data="listRightData"
@@ -218,8 +216,7 @@
           type="primary"
           :loading="submitLoading"
           @click="assignUniversity"
-          >确定分发</el-button
-        >
+          >确定分发</el-button>
       </div>
     </div>
   </div>
@@ -227,7 +224,6 @@
 <script>
 import { getOrgList } from "@/api/institution";
 import {
-  getUniversityTypeOptions,
   getUniversityOptions,
   getUniversityLevelOptions,
   getUniversityMajorOptions,
@@ -263,7 +259,7 @@ export default {
             filterable: true,
           },
         },
-         {
+        {
           key: "school_id",
           type: "select",
           options: [],
@@ -305,7 +301,6 @@ export default {
             placeholder: "学校名称",
           },
         },
-
       ],
       listRightData: [],
       listRightLoading: false,
