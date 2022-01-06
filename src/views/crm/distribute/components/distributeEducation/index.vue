@@ -48,7 +48,7 @@
           <el-table-column
             label="层次名称"
             show-overflow-tooltip
-            min-width="80"
+            min-width="75"
             align="center"
             prop="level_title"
           >
@@ -129,13 +129,22 @@
           >
             <template slot-scope="{ row }">
               <div class="percentage">
-              <el-input
+                <el-autocomplete
+                class="inline-input"
+                v-model="row.rebate_rate"
+                :fetch-suggestions="querySearch"
+                placeholder="请输入"
+                @select="handleSelect"
+                >
+                </el-autocomplete>
+                <div class="tages"> %</div>
+                <!-- <el-input
                 type="number"
                 size="small"
                 v-model="row.rebate_rate"
-                placeholder="请输入0~1"
-              >
+                placeholder="请输入">
               </el-input>
+              <span>0-100,可保留两位小数点</span> -->
               </div>
             </template>
           </el-table-column>
@@ -150,7 +159,10 @@
         </div>
       </div>
       <div class="table-right">
+        <div class="distributeTitle">
         <Title text="分发机构" />
+        <span class="text"><i>*</i>多机构搜索可用空格隔开</span>
+        </div>
         <SearchList
           :options="searchRightOptions"
           :data="searchRightData"
@@ -204,8 +216,7 @@
           type="primary"
           :loading="submitLoading"
           @click="assignUniversity"
-          >确定分发</el-button
-        >
+          >确定分发</el-button>
       </div>
     </div>
   </div>
@@ -213,7 +224,6 @@
 <script>
 import { getOrgList } from "@/api/institution";
 import {
-  getUniversityTypeOptions,
   getUniversityOptions,
   getUniversityLevelOptions,
   getUniversityMajorOptions,
@@ -249,7 +259,7 @@ export default {
             filterable: true,
           },
         },
-         {
+        {
           key: "school_id",
           type: "select",
           options: [],
@@ -291,7 +301,6 @@ export default {
             placeholder: "学校名称",
           },
         },
-
       ],
       listRightData: [],
       listRightLoading: false,
@@ -322,6 +331,9 @@ export default {
     this.getUniversityLevelOptions();
     this.getUniversityMajorOptions();
   },
+  mounted() {
+      this.restaurants = this.loadAll();
+    },
   methods: {
     handleReset() {
       this.getOrgList();
@@ -455,10 +467,35 @@ export default {
         this.searchLeftOptions[3].options = res.data;
       }
     },
+    querySearch(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+       loadAll() {
+        return [
+          { "value": "0-100"},
+        ];
+      },
+      handleSelect(item) {
+        console.log(item);
+      }
+
   },
 };
 </script>
 <style lang="less" scoped>
+/deep/.el-autocomplete-suggestion li{
+  padding: 0 2px 0 5px;
+  text-align: center;
+  line-height: 24px;
+}
 /* 去掉number样式 */
 /deep/.el-input {
   input::-webkit-outer-spin-button,
@@ -509,6 +546,27 @@ export default {
   }
 }
 .percentage{
-  padding-right: 8px;
+  display: flex;
+  /deep/.el-input__inner{
+    height: 32px;
+  }
+  .tages{
+    line-height: 30px;
+    margin-left: 2px;
+  }
 }
+.distributeTitle{
+  display: flex;
+  .text{
+    color: #999;
+    font-size: 14px;
+    line-height: 24px;
+    i{
+      color: rgba(245, 48, 48, 0.924);
+      padding: 0 5px 0 10px;
+      font-size: 16px;
+    }
+  }
+}
+
 </style>
