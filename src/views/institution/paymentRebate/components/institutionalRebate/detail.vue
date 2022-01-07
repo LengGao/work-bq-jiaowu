@@ -166,7 +166,7 @@
       <el-table-column
         prop="major_name"
         label="专业名称"
-        min-width="80"
+        min-width="100"
         align="center"
         show-overflow-tooltip
       >
