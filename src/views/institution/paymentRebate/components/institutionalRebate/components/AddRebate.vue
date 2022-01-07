@@ -126,6 +126,7 @@
           />
           </div>
         </div>
+
         <div class="checked-table">
             <el-table
             :data="checkedOrderData"
@@ -206,7 +207,6 @@
             <el-table-column
               show-overflow-tooltip
               min-width="100"
-
             >
               <template slot="header">
                 <el-button type="text" @click="hadleResetOrder"
@@ -419,7 +419,7 @@ export default {
         limit: this.pageSize,
         ...this.searchData,
         from_organization_id: this.formData.from_organization_id,
-        order_id:0,
+        rebate_detail_id: 0 ,
       };
 
       this.listLoading = true;
@@ -582,7 +582,7 @@ export default {
     margin-bottom: 20px;
     .money-total {
       text-align: right;
-      padding: 16px 0;
+      padding: 5px 0;
       & > span {
         margin-left: 40px;
         .price {
@@ -590,10 +590,14 @@ export default {
         }
       }
     }
+    .el-table th{
+      padding: 0;
+    }
     .header-money {
       display: flex;
       align-items: center;
       padding: 0;
+      height: 40px;
       &-actions {
         width: 40px;
         flex-shrink: 0;
@@ -601,7 +605,7 @@ export default {
         font-weight: normal;
         display: flex;
         flex-direction: column;
-        line-height: 1.5;
+        line-height: 1;
         padding: 0;
         .btn-fill {
           color: #fcc850;
@@ -653,5 +657,11 @@ export default {
 }
 .distance{
   height: 10px;
+}
+ .checked-table .el-table th, .el-table td{
+  padding:5px 0 !important;
+}
+.order-table .el-table--enable-row-transition .el-table__body td{
+  padding: 14px 0 !important;
 }
 </style>
