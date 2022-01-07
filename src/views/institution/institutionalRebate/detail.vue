@@ -60,24 +60,32 @@
     <Title text="操作记录"></Title>
     <div class="tab_record">
       <div class="title">
-        <span class="el-col-3">返点状态</span>
+        <span class="el-col-2">返点状态</span>
         <span class="el-col-3">返点日期</span>
         <span class="el-col-3">实际返点金额</span>
         <span class="el-col-6">备注信息</span>
         <span class="el-col-3">操作人</span>
+        <span class="el-col-6">支付凭证</span>
         <span class="el-col-6">操作时间</span>
       </div>
       <div class="content">
-        <span class="el-col-3">
-          <span
+        <span class="el-col-2">
+          <el-tag
            v-if="rebateData.status == 0"
-          >待审批</span>
-           <span
+           type="success"
+           size="small"
+           class="tag-margin">
+            待审批</el-tag>
+           <el-tag
            v-if="rebateData.status == 1"
-          >已通过</span>
-           <span
+           class="tag-margin">
+             已通过</el-tag>
+          <el-tag
            v-if="rebateData.status == 2"
-          >已驳回</span>
+           type="danger"
+           class="tag-margin">
+             已驳回</el-tag>
+
           </span>
         <span class="el-col-3">
           {{rebateData.rebate_time}}
@@ -91,10 +99,33 @@
         <span class="el-col-3">
           {{rebateData.approve_staff_name}}
         </span>
+
+        <span class="el-col-6">
+
+          <div class="list-img" v-if="rebateData.pay_proof_arr && rebateData.pay_proof_arr.length">
+              <img
+              :src="item"
+              alt=""
+              title="点击预览大图"
+              style="
+                width: 60px;
+                height: 50px;
+                cursor: pointer;
+                margin-right: 10px;
+              "
+              v-for="(item, index) in rebateData.pay_proof_arr"
+              :key="index"
+              @click="handlePreview(item)"
+            />
+              </div>
+              <span v-else>--</span>
+        </span>
+
         <span class="el-col-6">
           {{rebateData.operate_time}}
         </span>
       </div>
+       <PreviewImg ref="view" />
     </div>
   </div>
   <div>
@@ -132,6 +163,14 @@
       >
       </el-table-column>
       <el-table-column
+        prop="project_name"
+        label="项目名称"
+        min-width="220"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
         prop="user_realname"
         label="客户姓名"
         min-width="80"
@@ -166,19 +205,12 @@
       <el-table-column
         prop="major_name"
         label="专业名称"
-        min-width="80"
+        min-width="100"
         align="center"
         show-overflow-tooltip
       >
       </el-table-column>
-      <el-table-column
-        prop="project_name"
-        label="项目名称"
-        min-width="220"
-        align="center"
-        show-overflow-tooltip
-      >
-      </el-table-column>
+      
       <el-table-column
         label="订单总金额"
         align="center"
@@ -199,7 +231,18 @@
       >
       </el-table-column>
       <el-table-column
-        label="返点金额"
+        label="应返点金额"
+        align="center"
+        min-width="100"
+        prop="order_standard_rebate_price"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span> {{ row.order_standard_rebate_price | moneyFormat }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="请求返点金额"
         align="center"
         min-width="100"
         prop="apply_rebate_price"
@@ -219,12 +262,15 @@
       <template slot-scope="{ row }">
               <span
                 v-if="row.status == 0"
+                class="approve-status approve-status--none"
                 >待审批</span>
               <span
                 v-if="row.status == 1"
+                class="approve-status approve-status--wait"
                 >已通过</span
               >
               <span v-if="row.status == 2" 
+              class="approve-status"
                 >已驳回
               </span>
             </template>
@@ -261,6 +307,7 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
+      pay_proof_arr:[],
     };
   },
   created() {
@@ -281,6 +328,7 @@ export default {
       if (res.code === 0) {
         this.rebateData = res.data;
         this.listData = res.data.order_list;
+
       }
     },
     toStudentOrderDetail(id) {
@@ -290,6 +338,9 @@ export default {
           id,
         },
       });
+    },
+    handlePreview(src) {
+      this.$refs.view.show(src);
     },
   },
 };
@@ -349,10 +400,12 @@ export default {
       font-size: 14px;
       font-weight: bold;
       display: block;
-
       text-align: center;
       line-height: 50px;
       color: #888;
+    }
+    .el-col-2{
+      width:10%;
     }
     .el-col-3{
       width:14%;
@@ -362,17 +415,23 @@ export default {
     }
   }
   .content{
-    height: 50px;
+    padding: 10px 0;
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #f1f1f1;
     margin-bottom: 30px;
+    line-height: 50px;
+    color: #666;
      span{
       font-size: 14px;
       display: block;
       text-align: center;
-      line-height: 50px;
-      color: #666;
+    }
+    img{
+      width: 60px;
+      height: 50px;
+      border: 1px solid #ddd;
+      vertical-align: middle;
     }
      .el-col-3{
       width:14%;
@@ -381,5 +440,29 @@ export default {
       width: 28%;
   }
 }
+}
+.approve-status {
+  &::before {
+    display: inline-block;
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #fd6500;
+    vertical-align: middle;
+    margin-right: 2px;
+  }
+  &--success::before {
+    background-color: #43d100;
+  }
+  &--wait::before {
+    background-color: #199fff;
+  }
+  &--none::before {
+    background-color: #999;
+  }
+}
+.tag-margin{
+  margin: 8px 5px 5px 10px;
 }
 </style>

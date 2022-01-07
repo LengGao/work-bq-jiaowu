@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="返点提醒"
+    title="返点审批"
     :visible.sync="visible"
     width="790px"
     @open="handleOpen"
@@ -62,13 +62,30 @@
           }"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="备注信息" prop="reason" class="block">
+      <el-form-item label="审批理由" prop="reason" class="block">
         <el-input
           class="remark"
           type="textarea"
           v-model="formData.reason"
           placeholder="请输入内容"
         />
+      </el-form-item>
+       <el-form-item label="支付凭证" class="block">
+        <el-upload
+            :headers="headers"
+            :action="uploadImageUrl"
+            :on-remove="handleRemoveImg"
+            :before-remove="beforeRemoveImg"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            multiple
+            name="image"
+            accept="image/*"
+            list-type="picture-card"
+            :file-list="formData.pay_proof"
+          >
+            <i class="el-icon-plus" style="font-size: 14px"></i>
+          </el-upload>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -85,6 +102,7 @@
 
 <script>
 import { approveRebate } from "@/api/rebate";
+import { uploadImageUrl } from "@/api/educational";
 export default {
   name: "AdoptRebate",
   props: {
@@ -102,6 +120,13 @@ export default {
   },
   data() {
     return {
+      uploadImageUrl,
+      headers: {
+        token: this.$store.state.user.token,
+      },
+      addLoading: false,
+      uploadLoading: false,
+      detailLoading: false,
       visible: this.value,
       addLoading: false,
       formData: {
@@ -112,6 +137,7 @@ export default {
         apply_rebate_price:"",
         rebate_time:"",
         reason:"",
+        pay_proof:[],
       },
       rules: {
         real_rebate_price: [{ required: true, message: "请选择", trigger: "change" },],
@@ -132,13 +158,13 @@ export default {
     handleOpen() {
      if (this.contractInfo.id) {
         for (var i in this.formData) {
-          console.log(i)
+          if(i !== 'pay_proof'){
           this.formData[i] = this.contractInfo[i] || '';
+          }
         }
      }
      console.log(this.formData.id)
     },
-
     //审核返点
     async approveRebate() {
       const data = {
@@ -148,13 +174,30 @@ export default {
         rebate_time: this.formData.rebate_time,
         reason: this.formData.reason,
         status:1,
+        
+        pay_proof: this.formData.pay_proof.map(
+          (item) => item.response.data.data.url
+        ),
       };
+
       const res = await approveRebate(data);
       if (res.code == 0) {
         this.$message.success(res.message);
         this.$emit("on-success");
         this.visible = false;
       }
+    },
+     handleUploadError(response, file, fileList) {
+      this.$message.error("上传失败");
+    },
+    handleUploadSuccess(response, file, fileList) {
+      this.formData.pay_proof = fileList;
+    },
+    handleRemoveImg(file, fileList) {
+      this.formData.pay_proof = fileList;
+    },
+    beforeRemoveImg(file) {
+      return this.$confirm(`确定移除 ${file.name}？`);
     },
     submitForm(formName) {
       console.log(this.ruleForm);
@@ -169,8 +212,8 @@ export default {
       for (const k in this.formData) {
         this.formData[k] = "";
       }
+      this.formData.pay_proof = [];
       this.$emit("input", false);
-  
     },
     hanldeCancel() {
       this.visible = false;
@@ -281,5 +324,14 @@ export default {
 .el-form--inline .el-form-item{
   margin-top: 15px;
   margin-bottom: 20px;
+}
+.el-upload-list--picture-card .el-upload-list__item {
+  width: 80px !important;
+  height: 80px !important;
+}
+.el-upload--picture-card {
+  width: 80px !important;
+  height: 80px !important;
+  line-height: 80px;
 }
 </style>
