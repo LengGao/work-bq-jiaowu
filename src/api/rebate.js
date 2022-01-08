@@ -39,8 +39,17 @@ export function getEduList(params) {
   })
 }
 
-// 审核返点
+// 审核返点-拒绝
 export function approveRebate(data) {
+  return request({
+    url: '/Crm/approveRebate',
+    method: 'post',
+    data: data
+  })
+}
+
+// 审核返点-同意
+export function approveRebateadopt(data) {
   return request({
     url: '/Crm/approveRebate',
     method: 'post',

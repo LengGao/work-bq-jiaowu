@@ -408,6 +408,7 @@ export default {
         apply_price: "",
         year_limit: "",
         rebate_rate:"",
+        price:"",
       }));
     },
     handleRightSearch(data) {
