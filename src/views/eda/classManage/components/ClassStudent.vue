@@ -64,6 +64,13 @@
           show-overflow-tooltip
         >
         </el-table-column>
+         <el-table-column
+          prop="department_name"
+          label="部门"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
         <el-table-column
           prop="project_str"
           label="报读项目"

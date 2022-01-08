@@ -85,20 +85,12 @@
           }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column
-        label="创建时间"
+       <el-table-column
+        label="创建时间1"
         show-overflow-tooltip
         min-width="160"
         align="center"
         prop="create_time"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="user_name"
-        label="客户姓名"
-        min-width="80"
-        align="center"
-        show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
@@ -109,6 +101,76 @@
         show-overflow-tooltip
       >
       </el-table-column>
+      <el-table-column
+        prop="class_type_name"
+        label="班型"
+        min-width="100"
+        align="center"
+        show-overflow-tooltip
+      >
+      <template slot-scope="{ row }">
+        <span v-if="row.class_type_name">{{row.class_type_name}}</span>
+        <span v-else>--</span>
+      </template>
+      </el-table-column>
+      <el-table-column
+        prop="level"
+        label="层次"
+        min-width="80"
+        align="center"
+        show-overflow-tooltip
+      >
+      <template slot-scope="{ row }">
+        <span v-if="row.level"> {{row.level}}</span>
+        <span v-else>--</span>
+      </template>
+      </el-table-column>
+      <el-table-column
+        prop="major"
+        label="专业"
+        min-width="120"
+        align="center"
+        show-overflow-tooltip
+      >
+      <template slot-scope="{ row }">
+        <span v-if="row.major"> {{row.major}}</span>
+        <span v-else>--</span>
+      </template>
+      </el-table-column>
+       <el-table-column
+        prop="type"
+        label="类型"
+        min-width="80"
+        align="center"
+        show-overflow-tooltip
+      >
+      <template slot-scope="{ row }">
+        <span v-if="row.type"> {{row.type}}</span>
+        <span v-else>--</span>
+      </template>
+      </el-table-column>
+       <el-table-column
+        prop="university"
+        label="大学"
+        min-width="140"
+        align="center"
+        show-overflow-tooltip
+      >
+      <template slot-scope="{ row }">
+        <span v-if="row.university"> {{row.university}}</span>
+        <span v-else>--</span>
+      </template>
+      </el-table-column>
+     
+      <el-table-column
+        prop="user_name"
+        label="客户姓名"
+        min-width="80"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      
       <el-table-column
         label="订单总金额"
         align="center"

@@ -942,6 +942,12 @@ export const asyncRouter = [
         component: () => import('@/views/crm/approveManage/index.vue'),
         meta: { title: '审批管理' },
       },
+      {
+        path: 'approvalRebate',
+        name: 'approvalRebate',
+        component: () => import('@/views/crm/approvalRebate/index.vue'),
+        meta: { title: '返点审批' },
+      },
 
     ]
   },
@@ -1055,6 +1061,25 @@ export const asyncRouter = [
         component: () => import('@/views/institution/institutionDetails/index.vue'),
         meta: { title: '机构详情', icon: 'product-add' },
       },
+      {
+        path: 'institutionalRebate',
+        name: 'institutionalRebate',
+        component: () => import('@/views/institution/institutionalRebate/index.vue'),
+        meta: { title: '机构返点' },
+      },
+      {
+        path: 'institutionalRebateDetail',
+        name: 'institutionalRebateDetail',
+        component: () => import('@/views/institution/institutionalRebate/detail.vue'),
+        meta: { title: '返点详情' },
+      },
+      {
+        path: 'paymentRebate',
+        name: 'paymentRebate',
+        component: () => import('@/views/institution/paymentRebate/index.vue'),
+        meta: { title: '回款返点' },
+      },
+
     ]
   },
   {
