@@ -897,7 +897,6 @@ export const asyncRouter = [
         component: () => import('@/views/crm/institutionalCollection/detail.vue'),
         meta: { title: '机构回款详情' },
       },
-     
       {
         path: 'channelStudent',
         name: 'channelStudent',
