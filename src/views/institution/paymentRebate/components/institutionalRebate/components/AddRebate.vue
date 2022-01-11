@@ -247,6 +247,7 @@
           class="input"
           v-model="totalInputMoney"
           type="number"
+          disabled
           placeholder="申请返点金额"
           @input="onInput"
         />
@@ -420,6 +421,7 @@ export default {
         ...this.searchData,
         from_organization_id: this.formData.from_organization_id,
         rebate_detail_id: 0 ,
+
       };
 
       this.listLoading = true;
@@ -471,6 +473,17 @@ export default {
     handleOrderTableChange(selection) {
       this.checkedOrderData = [...selection];
     },
+
+    // handleSearch(data){
+    //   this.pageNum = 1;
+    //   const date = data.date || ["",""];
+    //   this.searchData = {
+    //     start_time:date[0],
+    //     end_time:date[1],
+    //   },
+    //   this.getEduList();
+    // },
+
    handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
@@ -478,6 +491,7 @@ export default {
         date: data.date.length ? data.date.join(" - ") : "",
       };
       this.getEduList();
+      this.searchData={};
     },
     handleSizeChange(size) {
       this.pageNum = 1;
