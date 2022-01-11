@@ -110,8 +110,8 @@
 import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
 import { getStaffList } from "@/api/set";
-import { getCrmOrderList } from "@/api/crm";
-import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { getCrmOrderList, getOrgName } from "@/api/crm";
+import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "studentOrder",
@@ -225,7 +225,7 @@ export default {
     this.getStaffList();
     this.getproject();
     this.getCateList();
-    this.getInstitutionSelectData();
+    this.getOrgName();
   },
   methods: {
     toInstitutionalCollection() {
@@ -242,14 +242,14 @@ export default {
       });
     },
     // 获取机构
-    async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
+    async getOrgName() {
+      const data = { state: 0 };
+      const res = await getOrgName(data);
       if (res.code === 0) {
         this.searchOptions[4].attrs.options = cloneOptions(
           res.data,
           "institution_name",
-          "institution_id",
+          "from_organization_id",
           "children"
         );
       }

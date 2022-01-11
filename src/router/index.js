@@ -886,18 +886,12 @@ export const asyncRouter = [
         meta: { title: '重设订单价格' },
       },
       {
-        path: 'institutionalCollection',
-        name: 'institutionalCollection',
-        component: () => import('@/views/crm/institutionalCollection/index.vue'),
-        meta: { title: '机构回款' },
-      },
-      {
         path: 'institutionalCollectionDetail',
         name: 'institutionalCollectionDetail',
-        component: () => import('@/views/crm/institutionalCollection/detail.vue'),
+        component: () => import('@/views/institution/paymentRebate/components/institutionalCollection/detail.vue'),
         meta: { title: '机构回款详情' },
       },
-     
+
       {
         path: 'channelStudent',
         name: 'channelStudent',
