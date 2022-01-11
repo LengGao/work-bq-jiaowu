@@ -32,18 +32,15 @@
             placeholder="请输入客户姓名"
           />
         </el-form-item>
-
-        <el-form-item
-          label="手机号码"
-          :prop="`student[${index}].mobile`"
+        <!-- :prop="`student[${index}].mobile`"
           :rules="[
-            { required: true, message: `请输入`, trigger: 'blur' },
+            { required: false, message: `请输入`, trigger: 'blur' },
             {
               validator: validatorPhone,
               trigger: `change`,
             },
-          ]"
-        >
+          ]" -->
+        <el-form-item label="手机号码">
           <el-input
             :disabled="!!userInfo.surname"
             class="input"
@@ -52,19 +49,17 @@
             placeholder="请输入手机号码"
           />
         </el-form-item>
-        <el-form-item
-          label="身份证号"
-          :prop="`student[${index}].id_card_number`"
+        <!-- :prop="`student[${index}].id_card_number`"
           :rules="[
-            { required: true, message: `请输入`, trigger: 'blur' },
+            { required: false, message: `请输入`, trigger: 'blur' },
             {
               min: 18,
               max: 18,
               message: `请输入18位身份证号码`,
               trigger: `change`,
             },
-          ]"
-        >
+          ]" -->
+        <el-form-item label="身份证号">
           <el-input
             :disabled="!!userInfo.surname"
             class="input"
@@ -365,12 +360,10 @@ export default {
         from_organization_id: "",
         selectMajor: [],
         selectProject: [],
-        open_course:''
+        open_course: "",
       },
       rules: {
-        open_course: [
-          { required: true, message: "请选择", trigger: "change" },
-        ],
+        open_course: [{ required: true, message: "请选择", trigger: "change" }],
         selectProject: [
           { required: true, message: "请选择", trigger: "change" },
         ],
