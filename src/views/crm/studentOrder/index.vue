@@ -104,7 +104,7 @@
 <script>
 import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
-import { getStaffList } from "@/api/set";
+import { getStaffList, getDepartmentlists } from "@/api/set";
 import { getCrmOrderList, getOrgName } from "@/api/crm";
 import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
@@ -197,6 +197,22 @@ export default {
           },
         },
         {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,
@@ -220,6 +236,7 @@ export default {
     this.getStaffList();
     this.getproject();
     this.getCateList();
+    this.getDepartmentlists();
     this.getOrgName();
   },
   methods: {
@@ -235,6 +252,18 @@ export default {
           id,
         },
       });
+    },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[5].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
     },
     // 获取机构
     async getOrgName() {
@@ -279,8 +308,10 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
+      data.department_id = data.department_id || [];
       this.searchData = {
         ...data,
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getCrmOrderList(data);
     },

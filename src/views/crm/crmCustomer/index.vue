@@ -212,6 +212,8 @@ import CustomeSignUp from "./components/CustomeSignUp";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect } from "@/api/eda";
+import { getDepartmentlists } from "@/api/set";
+import { cloneOptions } from "@/utils/index";
 import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import {
   getCrmCustomerList,
@@ -363,6 +365,22 @@ export default {
           },
         },
         {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "学生姓名/手机号码",
@@ -380,10 +398,23 @@ export default {
   created() {
     this.getCrmCustomerList();
     this.getAdminSelect();
+    this.getDepartmentlists();
     this.getCrmTags();
     this.getCustomfieldOptions();
   },
   methods: {
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[6].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
+    },
     async batchRemove() {
       if (!this.checkedIds.length) {
         this.$message.warning("请先选择学生！");
@@ -451,8 +482,10 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
+      data.department_id = data.department_id || [];
       this.searchData = {
         ...data,
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getCrmCustomerList(data);
     },

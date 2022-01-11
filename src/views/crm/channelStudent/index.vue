@@ -138,6 +138,7 @@ import { cloneOptions } from "@/utils/index";
 import { getproject, getAdminSelect } from "@/api/eda";
 import { getChannelStudentList, getOrgName } from "@/api/crm";
 import { getCateList } from "@/api/sou";
+import { getDepartmentlists } from "@/api/set";
 export default {
   name: "channelStudent",
   components: {
@@ -226,7 +227,22 @@ export default {
             multiple: true,
           },
         },
-
+        {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
         {
           key: "keyword",
           attrs: {
@@ -244,6 +260,7 @@ export default {
     this.getOrgName();
     this.getproject();
     this.getCateList();
+    this.getDepartmentlists();
     this.getAdminSelect();
   },
 
@@ -257,6 +274,18 @@ export default {
         return;
       }
       this.ResetDialogflag = true;
+    },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[5].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
     },
     // 获取项目下拉
     async getproject() {
@@ -275,8 +304,10 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
+      data.department_id = data.department_id || [];
       this.searchData = {
         ...data,
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getChannelStudentList();
     },
