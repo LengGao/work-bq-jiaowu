@@ -11,9 +11,7 @@
         />
         <div>
           <el-button @click="openDockingDialog">学生对接</el-button>
-          <el-button @click="linkTo('institutionProject')"
-            >机构对接人</el-button
-          >
+
           <el-button type="primary" @click="handleAdd">添加机构</el-button>
         </div>
       </div>

@@ -20,9 +20,9 @@
             >
               <el-option
                 v-for="item in institutionOptions"
-                :key="item.institution_id"
+                :key="item.from_organization_id"
                 :label="item.institution_name"
-                :value="item.institution_id"
+                :value="item.from_organization_id"
               >
               </el-option>
             </el-select>
@@ -196,7 +196,7 @@
 <script>
 import {
   getProjectOrder,
-  switchList,
+  getOrgName,
   getOrgClassType,
   modifyProjectOrder,
   getOrderProject,
@@ -244,7 +244,7 @@ export default {
     };
   },
   created() {
-    this.switchList();
+    this.getOrgName();
   },
   methods: {
     handleSelection(selection) {
@@ -313,9 +313,10 @@ export default {
       const res = await getOrgClassType(data);
       this.classTypeOptions = res.data;
     },
-    async switchList() {
-      const res = await switchList();
-      this.institutionOptions = res.data.list;
+    async getOrgName() {
+      const data = { state: 0 };
+      const res = await getOrgName(data);
+      this.institutionOptions = res.data;
     },
     handleSearch(data) {
       this.pageNum = 1;

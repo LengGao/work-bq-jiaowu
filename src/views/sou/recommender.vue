@@ -7,7 +7,12 @@
         @getTable="getTableList"
         inputText="机构名称"
       ></search2>
-      <el-button type="primary" @click="toEditOrgan">添加机构</el-button>
+      <div>
+        <el-button @click="$router.push({ name: 'institutionProject' })"
+          >机构对接人</el-button
+        >
+        <el-button type="primary" @click="toEditOrgan">添加机构</el-button>
+      </div>
     </div>
     <!--表格-->
     <div class="userTable">
