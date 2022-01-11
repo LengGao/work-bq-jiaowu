@@ -9,11 +9,6 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div>
-          <el-button type="primary" @click="toInstitutionalCollection"
-            >机构回款</el-button
-          >
-        </div>
       </header>
       <!--列表-->
       <div class="userTable">
