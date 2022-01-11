@@ -1,6 +1,6 @@
 <template>
   <div class="institutional-collection">
-    <div class="head_remind">*管理机构回款数据</div>
+    <!-- <div class="head_remind">*管理机构回款数据</div> -->
     <section>
       <!--搜索模块-->
       <header>
