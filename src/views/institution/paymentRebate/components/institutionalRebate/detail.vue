@@ -569,8 +569,9 @@ export default {
         if (valid) {
           this.approveRebate();
         }
-        this.rebateDetail();
+          this.rebateDetail();
       });
+     
     },
       resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -578,7 +579,6 @@ export default {
         this.rejectData[k] = "";
       }
       this.dialogVisible = false;
-      this.rebateDetail();
     },
 
     adoptsubmitForm(formName) {
@@ -596,7 +596,7 @@ export default {
         this.rejectData[k] = "";
       }
       this.dialogVisible = false;
-      this.rebateDetail();
+      // this.rebateDetail();
     },
 
     dialogadopt () {
