@@ -6,7 +6,6 @@
         <el-tree
           :data="treeData"
           :props="defaultProps"
-          default-expand-all
           ref="tree"
           highlight-current
           @node-click="onNodeClick"
@@ -41,7 +40,6 @@
             }"
             :cell-style="{ 'text-align': 'center' }"
             height="690"
-            :key="isActiveAll"
           >
             <el-table-column
               prop="surname"
@@ -78,28 +76,24 @@
               min-width="130"
             ></el-table-column>
             <el-table-column
-              v-if="isActiveAll"
               prop="type_name"
               label="学历形式"
               show-overflow-tooltip
               min-width="100"
             ></el-table-column>
             <el-table-column
-              v-if="isActiveAll"
               prop="university_name"
               label="院校名称"
               show-overflow-tooltip
               min-width="180"
             ></el-table-column>
             <el-table-column
-              v-if="isActiveAll"
               prop="level_name"
               label="层次名称"
               show-overflow-tooltip
               min-width="100"
             ></el-table-column>
             <el-table-column
-              v-if="isActiveAll"
               prop="major_name"
               label="专业名称"
               show-overflow-tooltip
@@ -111,44 +105,7 @@
               show-overflow-tooltip
               min-width="100"
             ></el-table-column>
-            <el-table-column
-              prop="pay_type"
-              label="支付方式"
-              show-overflow-tooltip
-              min-width="100"
-            ></el-table-column>
-            <el-table-column
-              prop="pay_money"
-              label="支付金额"
-              show-overflow-tooltip
-              min-width="100"
-            >
-              <template slot-scope="{ row }">
-                <span> ￥{{ row.pay_money }} </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="order_money"
-              label="订单金额"
-              show-overflow-tooltip
-              min-width="100"
-            >
-              <template slot-scope="{ row }">
-                <span> ￥{{ row.order_money }} </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="pay_status"
-              label="订单状态"
-              min-width="100"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <el-tag size="small" :type="row.pay_status | orderTagType">{{
-                  row.pay_status | orderStatus
-                }}</el-tag>
-              </template>
-            </el-table-column>
+
             <el-table-column label="操作" fixed="right" min-width="100">
               <template slot-scope="{ row }">
                 <el-button type="text" @click="toOrderDetail(row.order_id)">
@@ -261,7 +218,6 @@ export default {
       treeData: [],
       treeParams: {},
       exportLoading: false,
-      isActiveAll: true,
     };
   },
   created() {
@@ -295,7 +251,6 @@ export default {
         title,
       } = data;
       this.treeParams = { type_id, university_id, level_id, major_id };
-      this.isActiveAll = title === "全部";
       this.getEduList();
     },
     async getTreeCategory() {

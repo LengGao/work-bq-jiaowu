@@ -296,7 +296,7 @@
 <script>
 import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
-import { getStaffList } from "@/api/set";
+import { getStaffList, getDepartmentlists } from "@/api/set";
 import { getCrmOrderList, getCustomfieldOptions } from "@/api/crm";
 import { templatelist } from "@/api/system";
 import { generate } from "@/api/fina";
@@ -319,6 +319,7 @@ export default {
           ? this.$route.query.staff_id.split(",").map((item) => +item)
           : [],
         pay_status: "",
+        department_id: "",
       },
       searchOptions: [
         {
@@ -465,6 +466,22 @@ export default {
           },
         },
         {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,
@@ -560,6 +577,7 @@ export default {
     this.getStaffList();
     this.getproject();
     this.getCateList();
+    this.getDepartmentlists();
     this.getCustomfieldOptions();
   },
   methods: {
@@ -618,6 +636,18 @@ export default {
       this.orderId = row.order_id;
       this.dialogVisible = true;
     },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[7].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
+    },
     // 获取客户来源
     async getCustomfieldOptions() {
       const data = {
@@ -668,9 +698,11 @@ export default {
       }
     },
     handleSearch(data) {
+      data.department_id = data.department_id || [];
       this.pageNum = 1;
       this.searchData = {
         ...data,
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getCrmOrderList(data);
     },

@@ -19,7 +19,6 @@ export default {
     value: {
       type: [Number, String],
       default: "",
-      required: true,
     },
     type: {
       type: String,

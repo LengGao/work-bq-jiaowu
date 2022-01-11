@@ -336,12 +336,11 @@ export default {
       this.searchOptions[3].options = res.data.list;
     },
     handleSearch(data) {
+      data.department_id = data.department_id || [];
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        department_id: Array.isArray(data.department_id)
-          ? data.department_id.join(",")
-          : "",
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getReturnPaymentList(data);
     },

@@ -136,8 +136,9 @@ import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
 import { getproject, getAdminSelect } from "@/api/eda";
-import { getChannelStudentList } from "@/api/crm";
-import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { getChannelStudentList, getOrgName } from "@/api/crm";
+import { getCateList } from "@/api/sou";
+import { getDepartmentlists } from "@/api/set";
 export default {
   name: "channelStudent",
   components: {
@@ -226,7 +227,22 @@ export default {
             multiple: true,
           },
         },
-
+        {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
         {
           key: "keyword",
           attrs: {
@@ -241,9 +257,10 @@ export default {
 
   created() {
     this.getChannelStudentList();
-    this.getInstitutionSelectData();
+    this.getOrgName();
     this.getproject();
     this.getCateList();
+    this.getDepartmentlists();
     this.getAdminSelect();
   },
 
@@ -257,6 +274,18 @@ export default {
         return;
       }
       this.ResetDialogflag = true;
+    },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[5].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
     },
     // 获取项目下拉
     async getproject() {
@@ -275,8 +304,10 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
+      data.department_id = data.department_id || [];
       this.searchData = {
         ...data,
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getChannelStudentList();
     },
@@ -332,14 +363,14 @@ export default {
       }
     },
     // 获取机构
-    async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
+    async getOrgName() {
+      const data = { state: 0 };
+      const res = await getOrgName(data);
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
           "institution_name",
-          "institution_id",
+          "from_organization_id",
           "children"
         );
       }

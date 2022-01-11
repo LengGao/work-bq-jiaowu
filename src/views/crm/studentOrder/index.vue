@@ -9,11 +9,6 @@
           :data="searchData"
           @on-search="handleSearch"
         />
-        <div>
-          <el-button type="primary" @click="toInstitutionalCollection"
-            >机构回款</el-button
-          >
-        </div>
       </header>
       <!--列表-->
       <div class="userTable">
@@ -109,9 +104,9 @@
 <script>
 import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
-import { getStaffList } from "@/api/set";
-import { getCrmOrderList } from "@/api/crm";
-import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { getStaffList, getDepartmentlists } from "@/api/set";
+import { getCrmOrderList, getOrgName } from "@/api/crm";
+import { getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "studentOrder",
@@ -202,6 +197,22 @@ export default {
           },
         },
         {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,
@@ -225,7 +236,8 @@ export default {
     this.getStaffList();
     this.getproject();
     this.getCateList();
-    this.getInstitutionSelectData();
+    this.getDepartmentlists();
+    this.getOrgName();
   },
   methods: {
     toInstitutionalCollection() {
@@ -241,15 +253,27 @@ export default {
         },
       });
     },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[5].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
+    },
     // 获取机构
-    async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
+    async getOrgName() {
+      const data = { state: 0 };
+      const res = await getOrgName(data);
       if (res.code === 0) {
         this.searchOptions[4].attrs.options = cloneOptions(
           res.data,
           "institution_name",
-          "institution_id",
+          "from_organization_id",
           "children"
         );
       }
@@ -284,8 +308,10 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
+      data.department_id = data.department_id || [];
       this.searchData = {
         ...data,
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getCrmOrderList(data);
     },

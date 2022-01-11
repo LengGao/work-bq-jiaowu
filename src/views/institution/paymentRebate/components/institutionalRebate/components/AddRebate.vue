@@ -474,15 +474,6 @@ export default {
       this.checkedOrderData = [...selection];
     },
 
-    // handleSearch(data){
-    //   this.pageNum = 1;
-    //   const date = data.date || ["",""];
-    //   this.searchData = {
-    //     start_time:date[0],
-    //     end_time:date[1],
-    //   },
-    //   this.getEduList();
-    // },
 
    handleSearch(data) {
       this.pageNum = 1;

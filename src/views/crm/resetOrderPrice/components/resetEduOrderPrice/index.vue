@@ -20,9 +20,9 @@
             >
               <el-option
                 v-for="item in institutionOptions"
-                :key="item.institution_id"
+                :key="item.from_organization_id"
                 :label="item.institution_name"
-                :value="item.institution_id"
+                :value="item.from_organization_id"
               >
               </el-option>
             </el-select>
@@ -277,7 +277,7 @@
 <script>
 import {
   getDegreeOrder,
-  switchList,
+  getOrgName,
   resetDegreeOrder,
   //--
   getDegreeType,
@@ -342,7 +342,7 @@ export default {
     };
   },
   created() {
-    this.switchList();
+    this.getOrgName();
   },
   methods: {
     handleSearch(data) {
@@ -389,9 +389,10 @@ export default {
     },
 
     // 机构列表
-    async switchList() {
-      const res = await switchList();
-      this.institutionOptions = res.data.list;
+    async getOrgName() {
+      const data = { state: 0 };
+      const res = await getOrgName(data);
+      this.institutionOptions = res.data;
     },
     onOrgChange() {
       this.formData.type_id = "";

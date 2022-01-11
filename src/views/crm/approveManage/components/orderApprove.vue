@@ -144,6 +144,7 @@ import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { getCateList } from "@/api/sou";
+import { getDepartmentlists } from "@/api/set";
 import { getCrmApproveOrder, crmOrderApprove } from "@/api/crm";
 import { cloneOptions } from "@/utils/index";
 export default {
@@ -226,6 +227,22 @@ export default {
             placeholder: "业绩归属",
             clearable: true,
             filterable: true,
+          },
+        },
+        {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
           },
         },
         {
@@ -327,6 +344,7 @@ export default {
   created() {
     this.getCrmApproveOrder();
     this.getCateList();
+    this.getDepartmentlists();
     this.getAdminSelect();
     this.getproject();
   },
@@ -351,6 +369,18 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getCrmApproveOrder();
+      }
+    },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[4].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
       }
     },
     // 获取所属分类
@@ -385,8 +415,10 @@ export default {
 
     handleSearch(data) {
       this.pageNum = 1;
+      data.department_id = data.department_id || [];
       this.searchData = {
         ...data,
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.getCrmApproveOrder(data);
     },

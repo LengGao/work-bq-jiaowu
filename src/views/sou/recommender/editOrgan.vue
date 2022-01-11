@@ -50,48 +50,48 @@
 
 <script>
 export default {
-  name: 'editOrgan',
+  name: "editOrgan",
   data() {
     return {
       institution_id: 0,
       passYalid: false,
-      password: '',
+      password: "",
       ruleForm: {
-        institution_name: '',
-        host_man: '',
-        telephone: '',
-        account: '',
+        institution_name: "",
+        host_man: "",
+        telephone: "",
+        account: "",
       },
       rules: {
         institution_name: [
-          { required: true, message: '请输入机构名称', trigger: 'blur' },
+          { required: true, message: "请输入机构名称", trigger: "blur" },
           {
             min: 2,
             max: 80,
-            message: '长度在 1 到 80 个字符',
-            trigger: 'blur',
+            message: "长度在 1 到 80 个字符",
+            trigger: "blur",
           },
         ],
         host_man: [
-          { required: true, message: '请输入负责人的姓名', trigger: 'blur' },
+          { required: true, message: "请输入负责人的姓名", trigger: "blur" },
           {
             min: 1,
             max: 20,
-            message: '长度在 1 到 20 个字符',
-            trigger: 'blur',
+            message: "长度在 1 到 20 个字符",
+            trigger: "blur",
           },
         ],
         telephone: [
-          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          { required: true, message: "请输入手机号码", trigger: "blur" },
           {
-            validator: function(rule, value, callback) {
-              if (/^1[34578]\d{9}$/.test(value) == false) {
-                callback(new Error('请输入正确的手机号'))
+            validator: function (rule, value, callback) {
+              if (/^1[3-9]\d{9}$/.test(value) == false) {
+                callback(new Error("请输入正确的手机号"));
               } else {
-                callback()
+                callback();
               }
             },
-            trigger: 'blur',
+            trigger: "blur",
           },
         ],
         // account: [
@@ -112,19 +112,19 @@ export default {
         //   },
         // ],
       },
-    }
+    };
   },
   created() {
-    this.list = JSON.parse(localStorage.getItem('schoolData'))
-    console.log(this.list, 489666)
+    this.list = JSON.parse(localStorage.getItem("schoolData"));
+    console.log(this.list, 489666);
   },
   mounted() {
-    this.institution_id = this.$route.query.institution_id
-    console.log(this.institution_id)
-    this.$route.meta.title = '添加机构'
+    this.institution_id = this.$route.query.institution_id;
+    console.log(this.institution_id);
+    this.$route.meta.title = "添加机构";
     if (this.institution_id != undefined) {
-      this.$route.meta.title = '编辑机构'
-      this.$api.organizationDetail(this, this.institution_id)
+      this.$route.meta.title = "编辑机构";
+      this.$api.organizationDetail(this, this.institution_id);
     }
   },
   // watch: {
@@ -143,10 +143,10 @@ export default {
   // },
   methods: {
     cancel() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     preserve(formName) {
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // this.$confirm('是否提交数据', '提示', {
@@ -155,26 +155,26 @@ export default {
           //   type: 'warning',
           // }).then(() => {
           if (this.institution_id != undefined) {
-            this.$api.modifyOrganization(this, this.ruleForm)
+            this.$api.modifyOrganization(this, this.ruleForm);
           } else {
-            this.$api.addorGanization(this, this.ruleForm)
+            this.$api.addorGanization(this, this.ruleForm);
           }
           // })
         } else {
           this.$message({
-            message: '验证失败',
-            type: 'error',
+            message: "验证失败",
+            type: "error",
             duration: 1000,
-          })
-          return false
+          });
+          return false;
         }
-      })
+      });
       // this.$router.push({
       //   path: '/eda/recommender',
       // })
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
