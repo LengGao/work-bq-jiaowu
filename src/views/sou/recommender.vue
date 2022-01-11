@@ -71,35 +71,43 @@
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
             <div style="display: flex; justify-content: center">
-              <el-button
-                type="text"
-                @click="handleEdit(scope.row)"
-                style="padding-right: 20px"
+              <el-button type="text" @click="handleEdit(scope.row)"
                 >编辑</el-button
               >
-              <el-button
+              <!-- <el-button
                 type="text"
                 v-if="scope.row.parent_id == '0'"
                 @click="addCampus(scope.row)"
                 style="padding-right: 20px"
                 >添加校区</el-button
+              > -->
+              <el-button
+                type="text"
+                @click="
+                  $router.push({ name: 'institutionDetails', query: scope.row })
+                "
+                >详情</el-button
               >
+
               <el-button
                 type="text"
                 v-if="scope.row.account && scope.row.parent_id == '0'"
                 @click="addAccount(scope.row)"
-                style="padding-right: 20px; color: green"
                 >修改账号</el-button
               >
               <el-button
                 type="text"
                 v-if="!scope.row.account && scope.row.parent_id == '0'"
                 @click="addAccount(scope.row)"
-                style="padding-right: 20px"
                 >添加账号</el-button
               >
               <el-button type="text" @click="handleDelete(scope.row)"
                 >删除</el-button
+              >
+              <el-button
+                type="text"
+                @click="getInstitutionToken(scope.row.institution_id)"
+                >登录后台</el-button
               >
             </div>
           </template>
@@ -169,6 +177,7 @@
 </template>
 
 <script>
+import { getInstitutionToken } from "@/api/institution";
 export default {
   name: "agency",
   data() {
@@ -228,6 +237,18 @@ export default {
     this.$api.getRecommender(this, "schoolData");
   },
   methods: {
+    async getInstitutionToken(institution_id) {
+      const data = { institution_id };
+      const res = await getInstitutionToken(data);
+      if (res.code === 0) {
+        let params = "";
+        for (const key in res.data) {
+          params += `${key}=${res.data[key]}&`;
+        }
+        const url = `https://store.beiqujy.com/#/?${params.slice(0, -1)}`;
+        window.open(url);
+      }
+    },
     getTableList(state, val, datas) {
       console.log(state, val);
       if (state == "page") {
