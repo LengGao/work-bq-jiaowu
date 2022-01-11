@@ -136,8 +136,8 @@ import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
 import { getproject, getAdminSelect } from "@/api/eda";
-import { getChannelStudentList } from "@/api/crm";
-import { getCateList, getInstitutionSelectData } from "@/api/sou";
+import { getChannelStudentList, getOrgName } from "@/api/crm";
+import { getCateList } from "@/api/sou";
 export default {
   name: "channelStudent",
   components: {
@@ -241,7 +241,7 @@ export default {
 
   created() {
     this.getChannelStudentList();
-    this.getInstitutionSelectData();
+    this.getOrgName();
     this.getproject();
     this.getCateList();
     this.getAdminSelect();
@@ -332,14 +332,14 @@ export default {
       }
     },
     // 获取机构
-    async getInstitutionSelectData() {
-      const data = { list: true };
-      const res = await getInstitutionSelectData(data);
+    async getOrgName() {
+      const data = { state: 0 };
+      const res = await getOrgName(data);
       if (res.code === 0) {
         this.searchOptions[1].attrs.options = cloneOptions(
           res.data,
           "institution_name",
-          "institution_id",
+          "from_organization_id",
           "children"
         );
       }

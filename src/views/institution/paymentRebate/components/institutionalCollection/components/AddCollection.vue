@@ -712,7 +712,7 @@ export default {
     },
     // 获取机构
     async getOrgName() {
-      const res = await getOrgName();
+      const res = await getOrgName({ state: 0 });
       this.institutionOptions = res.data;
     },
     async submit() {

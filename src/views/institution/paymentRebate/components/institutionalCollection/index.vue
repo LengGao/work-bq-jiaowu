@@ -1,6 +1,6 @@
 <template>
   <div class="institutional-collection">
-    <!-- <div class="head_remind">*管理机构回款数据</div> -->
+    <div class="head_remind">*管理机构回款数据</div>
     <section>
       <!--搜索模块-->
       <header>
@@ -308,7 +308,7 @@ export default {
     },
     // 获取机构
     async getOrgName() {
-      const res = await getOrgName();
+      const res = await getOrgName({ state: 0 });
       if (res.code === 0) {
         this.searchOptions[1].options = res.data;
       }
