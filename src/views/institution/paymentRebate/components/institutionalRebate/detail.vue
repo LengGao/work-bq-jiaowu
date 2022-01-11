@@ -569,8 +569,9 @@ export default {
         if (valid) {
           this.approveRebate();
         }
+          this.rebateDetail();
       });
-       this.rebateDetail();
+     
     },
       resetForm(formName) {
       this.$refs[formName].resetFields();
