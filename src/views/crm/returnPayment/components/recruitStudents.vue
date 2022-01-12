@@ -171,7 +171,7 @@
             <el-button
               v-if="!row.verify_status"
               type="text"
-              @click="approveConfirm(row.id, 1)"
+              @click="openEntryDialog(row.id, 1)"
               >入账</el-button
             >
             <el-button
@@ -192,6 +192,44 @@
         />
       </div>
     </div>
+    <el-dialog
+      title="入帐"
+      width="400px"
+      center
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form :model="formData" :rules="rules" ref="formData">
+        <el-form-item label="入账时间" prop="pay_date">
+          <el-date-picker
+            class="input"
+            type="date"
+            placeholder="选择日期"
+            v-model="formData.pay_date"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="支付方式" prop="pay_type">
+          <el-select
+            v-model="formData.pay_type"
+            placeholder="请选择支付方式"
+            class="input"
+            filterable
+          >
+            <el-option
+              v-for="item in payMethodOptions"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleEntryCancel">取 消</el-button>
+        <el-button type="primary" @click="handleEntryConfirm">确 定</el-button>
+      </div>
+    </el-dialog>
   </section>
 </template>
 
@@ -348,7 +386,18 @@ export default {
           type: "danger",
         },
       },
-      orderActionDialog: false,
+      dialogFormVisible: false,
+      payMethodOptions: [],
+      rules: {
+        pay_date: [{ required: true, message: "请选择", trigger: "change" }],
+        pay_type: [{ required: true, message: "请选择", trigger: "change" }],
+      },
+      formData: {
+        pay_type: "",
+        pay_date: "",
+        id: "",
+        verify_status: 1,
+      },
     };
   },
   created() {
@@ -377,6 +426,7 @@ export default {
       };
       const res = await getCustomfieldOptions(data);
       if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
         this.searchOptions[1].options = res.data.field_content.map((item) => ({
           title: item,
         }));
@@ -402,14 +452,31 @@ export default {
         .catch(() => {});
     },
     // 入账
-    approveConfirm(id, verify_status) {
-      this.$confirm(`是否确定该笔回款入账？`, "提示", {
-        type: "warning",
-      })
-        .then(() => {
-          this.entryLog(id, verify_status);
-        })
-        .catch(() => {});
+    handleEntryCancel() {
+      this.formData = {
+        pay_type: "",
+        pay_date: "",
+        id: "",
+        verify_status: 1,
+      };
+      this.$refs.formData.resetFields();
+      this.dialogFormVisible = false;
+    },
+    handleEntryConfirm() {
+      this.$refs.formData.validate(async (valid) => {
+        if (valid) {
+          const res = await entryLog(this.formData);
+          if (res.code === 0) {
+            this.dialogFormVisible = false;
+            this.$message.success(res.message);
+            this.getReturnPaymentList();
+          }
+        }
+      });
+    },
+    openEntryDialog(id) {
+      this.formData.id = id;
+      this.dialogFormVisible = true;
     },
     async entryLog(id, verify_status, tips) {
       const data = {
@@ -419,6 +486,7 @@ export default {
       };
       const res = await entryLog(data);
       if (res.code === 0) {
+        this.dialogFormVisible = false;
         this.$message.success(res.message);
         this.getReturnPaymentList();
       }

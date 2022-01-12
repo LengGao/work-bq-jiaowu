@@ -60,10 +60,10 @@
           filterable
         >
           <el-option
-            v-for="item in payWays"
-            :key="item.value"
-            :label="item.label"
-            :value="item.label"
+            v-for="item in payMethodOptions"
+            :key="item"
+            :label="item"
+            :value="item"
           >
           </el-option>
         </el-select>
@@ -90,8 +90,7 @@
 </template>
 
 <script>
-import { payLogCreate } from "@/api/crm";
-import { payWays } from "@/utils";
+import { payLogCreate, getCustomfieldOptions } from "@/api/crm";
 export default {
   name: "AddCollectionRecord",
   props: {
@@ -115,7 +114,7 @@ export default {
   data() {
     return {
       visible: this.value,
-      payWays,
+      payMethodOptions: [],
       formData: {
         plan_id: "",
         tips: "",
@@ -137,8 +136,20 @@ export default {
     },
   },
   methods: {
-    handleOpen() {},
-      disabledDate(e) {
+    handleOpen() {
+      this.getCustomfieldOptions();
+    },
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
+      }
+    },
+    disabledDate(e) {
       return e.getTime() > Date.now();
     },
     async submit() {
