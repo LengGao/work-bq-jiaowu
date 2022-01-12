@@ -171,7 +171,7 @@
             <el-button
               v-if="!row.verify_status"
               type="text"
-              @click="openEntryDialog(row.id, 1)"
+              @click="openEntryDialog(row)"
               >入账</el-button
             >
             <el-button
@@ -474,8 +474,10 @@ export default {
         }
       });
     },
-    openEntryDialog(id) {
-      this.formData.id = id;
+    openEntryDialog(row) {
+      this.formData.id = row.id;
+      this.formData.pay_type = row.pay_type;
+      this.formData.pay_date = row.pay_date;
       this.dialogFormVisible = true;
     },
     async entryLog(id, verify_status, tips) {
