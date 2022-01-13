@@ -367,6 +367,7 @@
         </el-form-item>
         <el-form-item label="回款凭证" style="margin-left: 40px">
           <el-upload
+            class="upload"
             :headers="headers"
             :action="uploadImageUrl"
             :on-remove="handleRemoveImg"
@@ -819,14 +820,16 @@ export default {
     width: 80%;
   }
 }
-/deep/.el-upload-list--picture-card .el-upload-list__item {
-  width: 60px;
-  height: 60px;
-}
-/deep/.el-upload--picture-card {
-  width: 60px;
-  height: 60px;
-  line-height: 60px;
+.upload {
+  /deep/.el-upload-list--picture-card .el-upload-list__item {
+    width: 60px;
+    height: 60px;
+  }
+  /deep/.el-upload--picture-card {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+  }
 }
 </style>
 <style lang="scss">
