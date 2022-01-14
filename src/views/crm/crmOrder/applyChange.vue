@@ -687,14 +687,14 @@ export default {
       text-align: center;
     }
   }
-}
-/deep/.el-upload-list--picture-card .el-upload-list__item {
-  width: 60px;
-  height: 60px;
-}
-/deep/.el-upload--picture-card {
-  width: 60px;
-  height: 60px;
-  line-height: 60px;
+  /deep/.el-upload-list--picture-card .el-upload-list__item {
+    width: 60px;
+    height: 60px;
+  }
+  /deep/.el-upload--picture-card {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+  }
 }
 </style>

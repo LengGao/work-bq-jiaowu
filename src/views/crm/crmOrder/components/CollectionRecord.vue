@@ -78,6 +78,26 @@
       >
       </el-table-column>
       <el-table-column
+        label="回款凭证"
+        align="center"
+        prop="admin_name"
+        min-width="100"
+      >
+        <template slot-scope="{ row }">
+          <template v-if="row.receipt_file && row.receipt_file.length">
+            <img
+              :src="src"
+              @click="handlePreview(src)"
+              style="height: 40px; cursor: pointer; margin-left: 10px"
+              v-for="(src, index) in row.receipt_file"
+              :key="index"
+              alt=""
+            />
+          </template>
+          <span v-else>无</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         label="备注信息"
         align="center"
         min-width="100"
@@ -228,6 +248,7 @@
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
     />
+    <PreviewImg ref="view" />
   </div>
 </template>
 
@@ -265,6 +286,9 @@ export default {
     };
   },
   methods: {
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
     handleAddPlan() {
       this.currentId = "";
       this.planDialogTitle = "配置回款计划";
