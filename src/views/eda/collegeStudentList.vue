@@ -175,6 +175,7 @@ export default {
         {
           key: "from_organization_id",
           type: "cascader",
+          width:160,
           attrs: {
             placeholder: "推荐机构",
             filterable: true,
@@ -185,6 +186,7 @@ export default {
         {
           key: "admin_id",
           type: "select",
+           width:140,
           options: [],
           optionValue: "staff_id",
           optionLabel: "staff_name",
@@ -192,6 +194,120 @@ export default {
             placeholder: "所属老师",
             clearable: true,
             filterable: true,
+          },
+        },
+        {
+          key: "applet_bound_status",
+          type: "select",
+          width: 100,
+          options: [
+            {
+              value: 1,
+              label: "已缴",
+            },
+            {
+              value: 2,
+              label: "未缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "教材费",
+          },
+        },
+        {
+          key: "applet_bound_status",
+          type: "select",
+          width: 100,
+          options: [
+            {
+              value: 1,
+              label: "已缴",
+            },
+            {
+              value: 2,
+              label: "未缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "平台费",
+          },
+        },
+        {
+          key: "applet_bound_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "已缴",
+            },
+            {
+              value: 2,
+              label: "未缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "教务服务费",
+          },
+        },
+        {
+          key: "applet_bound_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "已缴",
+            },
+            {
+              value: 2,
+              label: "未缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "论文指导费",
+          },
+        },
+        {
+          key: "applet_bound_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "已缴",
+            },
+            {
+              value: 2,
+              label: "未缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "论文答辩费",
+          },
+        },
+        {
+          key: "applet_bound_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "已缴",
+            },
+            {
+              value: 2,
+              label: "未缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "论文处理费",
           },
         },
         {
@@ -327,16 +443,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .college-student {
   &-container {
     padding: 20px;
     display: flex;
     .tree-list {
-      width: 300px;
+      width: 260px;
       flex-shrink: 0;
       border-right: 1px solid #eee;
       margin-right: 20px;
-      height: 80vh;
+      height: 85vh;
       overflow-y: auto;
     }
     .table-list {
