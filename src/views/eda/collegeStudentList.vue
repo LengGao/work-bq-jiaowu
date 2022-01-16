@@ -122,10 +122,10 @@
               min-width="80"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.book_fee_status" class="green">
+              <el-button type="text" v-if="row.book_fee_status == 1" class="green">
                   已缴
                 </el-button>
-              <el-button type="text" v-else class="red">
+              <el-button type="text" v-if="row.book_fee_status == 0" class="red">
                   未缴
                 </el-button>
             </template>
@@ -137,10 +137,10 @@
               min-width="80"
             >
            <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.platform_fee_status" class="green">
+              <el-button type="text" v-if="row.platform_fee_status == 1" class="green">
                   已缴
                 </el-button>
-              <el-button type="text" v-else class="red">
+              <el-button type="text" v-if="row.platform_fee_status == 0" class="red">
                   未缴
                 </el-button>
             </template>
@@ -152,12 +152,12 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.service_fee_status" class="green">
+              <el-button type="text" v-if="row.service_fee_status == 1" class="green">
                   已缴
                 </el-button>
-              <el-button type="text" v-else class="red">
+              <el-button type="text" v-if="row.service_fee_status == 0" class="red">
                   未缴
-                </el-button>
+              </el-button>
             </template>
             </el-table-column>
              <el-table-column
@@ -167,10 +167,10 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_teach_fee_status" class="green">
+              <el-button type="text" v-if="row.paper_teach_fee_status == 1" class="green">
                   已缴
                 </el-button>
-              <el-button type="text" v-else class="red">
+              <el-button type="text" v-if="row.paper_teach_fee_status == 0" class="red">
                   未缴
                 </el-button>
             </template>
@@ -182,10 +182,10 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_reply_fee_status" class="green">
+              <el-button type="text" v-if="row.paper_reply_fee_status == 1" class="green">
                   已缴
                 </el-button>
-              <el-button type="text" v-else class="red">
+              <el-button type="text" class="red" v-if="row.paper_reply_fee_status == 0">
                   未缴
                 </el-button>
             </template>
@@ -197,10 +197,10 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_handle_fee_status" class="green">
+              <el-button type="text" v-if="row.paper_handle_fee_status == 1" class="green">
                   已缴
                 </el-button>
-              <el-button type="text" v-else class="red">
+              <el-button type="text" class="red" v-if="row.paper_handle_fee_status == 0">
                   未缴
                 </el-button>
             </template>
@@ -211,7 +211,6 @@
               show-overflow-tooltip
               min-width="160"
             ></el-table-column>
-
             <el-table-column label="操作" fixed="right" min-width="100">
               <template slot-scope="{ row }">
                 <el-button type="text" @click="toOrderDetail(row.order_id)">
@@ -259,6 +258,7 @@ import {
 import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions, download } from "@/utils/index";
 import { getShortcuts } from "@/utils/date";
+import { batchUpdateFee } from "@/api/eda";
 export default {
   name: "collegeStudentList",
   components: {
@@ -574,24 +574,68 @@ export default {
         this.listTotal = res.data.total;
       }
     },
-    // 已缴变未缴
-    //  alreadyOpen(id) {
-    //   this.$confirm("您确定要修改该状态为未缴吗?", { type: "warning" })
-    //     .then(() => {
-    //       this.batchUpdateFee(id);
-    //     })
-    //     .catch(() => {});
-    // },
-    //   async batchUpdateFee(id) {
+    // 缴费变化
+     alreadyOpenone(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+      this.$confirm("您确定要修改该状态吗?", { type: "warning" })
+        .then(() => {
+          this.batchUpdateFee(
+            id,
+            book_fee_status = !book_fee_status,
+            platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status
+            );
+        })
+        .catch(() => {});
+    },
+
+    alreadyOpentwo(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+      this.$confirm("您确定要修改该状态吗?", { type: "warning" })
+        .then(() => {
+          this.batchUpdateFee(
+            id,
+            platform_fee_status == !platform_fee_status,
+            book_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status
+            );
+        })
+        .catch(() => {});
+    },
+
+      async batchUpdateFee(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+      const data = { 
+        id_arr:[id],
+        book_fee_status,
+        platform_fee_status,
+        service_fee_status,
+        paper_teach_fee_status,
+        paper_reply_fee_status,
+        paper_handle_fee_status,
+       };
+       console.log(data);
+      const res = await batchUpdateFee(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getEduList();
+      }
+    },
+
+    //  async batchUpdateFee() {
     //   const data = { 
-    //     id,
-    //    };
+    //     id_arr:this.ids,
+    //     book_fee_status:+this.formData.items.includes(1),
+    //     paper_teach_fee_status:+this.formData.items.includes(2),
+    //     platform_fee_status:+this.formData.items.includes(3),
+    //     paper_reply_fee_status:+this.formData.items.includes(4),
+    //     service_fee_status:+this.formData.items.includes(5),
+    //     paper_handle_fee_status:+this.formData.items.includes(6),
+    //     };
+    //   console.log(data);
     //   const res = await batchUpdateFee(data);
     //   if (res.code === 0) {
     //     this.$message.success(res.message);
-    //     this.getEduList();
+    //     this.$emit("on-success");
+    //     this.visible = false;
     //   }
     // },
+
   },
 };
 </script>

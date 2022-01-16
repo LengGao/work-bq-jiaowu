@@ -5,14 +5,12 @@
     width="400px"
     @open="handleOpen"
     :close-on-click-modal="false"
-    @closed="resetForm('formData')"
-  >
+    @closed="resetForm('formData')">
     <el-form
       label-width="20px"
       :model="formData"
       ref="formData"
-      v-loading="detaiLoading"
-    >
+      v-loading="detaiLoading">
     <el-form-item>
     <el-checkbox-group v-model="formData.items">
           <el-checkbox :label="1">教材费</el-checkbox>
@@ -21,9 +19,8 @@
           <el-checkbox :label="4">论文答辩费</el-checkbox>
           <el-checkbox :label="5">教务服务费</el-checkbox>
           <el-checkbox :label="6">论文处理费</el-checkbox>
-        </el-checkbox-group>
+    </el-checkbox-group>
    </el-form-item>
-    
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
@@ -31,8 +28,7 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >确 定</el-button
-      >
+        >确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -51,7 +47,6 @@ export default {
       default: () => [],
     },
   },
-
   data() {
     return {
       visible: this.value,
@@ -70,7 +65,7 @@ export default {
 
   methods: {
     handleOpen() {
-     this.formData.items = []
+     this.formData.items = [];
     },
     async batchUpdateFee() {
       const data = { 
@@ -88,7 +83,6 @@ export default {
         this.$message.success(res.message);
         this.$emit("on-success");
         this.visible = false;
-
       }
     },
    submitForm(formName) {
@@ -108,6 +102,10 @@ export default {
     },
   },
 };
+// 2.20:10000，3.20:10000,4.20:10000,5.20:10000,6.20:10000,7.20:10000
+// 
+// 18号1点30的车，那么12点半到达隆回，11点要去花桥坐到车，11点之前赶往花桥。
+
 </script>
 
 <style lang="scss" scoped>
