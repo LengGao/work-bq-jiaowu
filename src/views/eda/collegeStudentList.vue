@@ -616,26 +616,6 @@ export default {
         this.getEduList();
       }
     },
-
-    //  async batchUpdateFee() {
-    //   const data = { 
-    //     id_arr:this.ids,
-    //     book_fee_status:+this.formData.items.includes(1),
-    //     paper_teach_fee_status:+this.formData.items.includes(2),
-    //     platform_fee_status:+this.formData.items.includes(3),
-    //     paper_reply_fee_status:+this.formData.items.includes(4),
-    //     service_fee_status:+this.formData.items.includes(5),
-    //     paper_handle_fee_status:+this.formData.items.includes(6),
-    //     };
-    //   console.log(data);
-    //   const res = await batchUpdateFee(data);
-    //   if (res.code === 0) {
-    //     this.$message.success(res.message);
-    //     this.$emit("on-success");
-    //     this.visible = false;
-    //   }
-    // },
-
   },
 };
 </script>
