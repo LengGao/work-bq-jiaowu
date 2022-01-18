@@ -83,11 +83,11 @@ export function getAdminSelect(params) {
   })
 }
 // 更换所属老师
-export function changeUserAdminId(params) {
+export function changeUserAdminId(data) {
   return request({
     url: '/classstudents/changeUserAdminId',
-    method: 'get',
-    params,
+    method: 'post',
+    data,
   })
 }
 // 将一个账号下的学生数据迁移至另一个账号下
@@ -977,6 +977,14 @@ export function getEduList(params) {
     url: '/EduOrder/order',
     method: 'get',
     params,
+  })
+}
+// 补齐费用
+export function batchUpdateFee(data) {
+  return request({
+    url: '/Crm/batchUpdateFee',
+    method: 'post',
+    data,
   })
 }
 // 班级视频-章节列表

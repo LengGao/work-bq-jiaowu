@@ -39,8 +39,10 @@
               background: '#f8f8f8',
             }"
             :cell-style="{ 'text-align': 'center' }"
-            height="690"
+            height="640"
+            @selection-change="handleSeletChange"
           >
+          <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column
               prop="surname"
               label="学生姓名"
@@ -63,17 +65,24 @@
                 <PartiallyHidden :value="row.mobile" />
               </template>
             </el-table-column>
+
             <el-table-column
-              prop="project_name"
-              label="项目名称"
+              prop="staff_name"
+              label="所属老师"
               show-overflow-tooltip
-              min-width="220"
+              min-width="100"
             ></el-table-column>
             <el-table-column
               prop="from_institution_name"
               label="推荐机构"
               show-overflow-tooltip
               min-width="130"
+            ></el-table-column>
+              <el-table-column
+              prop="staff_name"
+              label="所属老师"
+              show-overflow-tooltip
+              min-width="100"
             ></el-table-column>
             <el-table-column
               prop="type_name"
@@ -106,6 +115,102 @@
               min-width="100"
             ></el-table-column>
 
+            <el-table-column
+              prop="book_fee_status"
+              label="教材费"
+              show-overflow-tooltip
+              min-width="80"
+            >
+            <template slot-scope=" { row } ">
+              <el-button type="text" v-if="row.book_fee_status == 1" class="green">
+                  已缴
+                </el-button>
+              <el-button type="text" v-if="row.book_fee_status == 0" class="red">
+                  未缴
+                </el-button>
+            </template>
+            </el-table-column>
+            <el-table-column
+              prop="platform_fee_status"
+              label="平台费"
+              show-overflow-tooltip
+              min-width="80"
+            >
+           <template slot-scope=" { row } ">
+              <el-button type="text" v-if="row.platform_fee_status == 1" class="green">
+                  已缴
+                </el-button>
+              <el-button type="text" v-if="row.platform_fee_status == 0" class="red">
+                  未缴
+                </el-button>
+            </template>
+            </el-table-column>
+            <el-table-column
+              prop="service_fee_status"
+              label="教务服务费"
+              show-overflow-tooltip
+              min-width="90"
+            >
+            <template slot-scope=" { row } ">
+              <el-button type="text" v-if="row.service_fee_status == 1" class="green">
+                  已缴
+                </el-button>
+              <el-button type="text" v-if="row.service_fee_status == 0" class="red">
+                  未缴
+              </el-button>
+            </template>
+            </el-table-column>
+             <el-table-column
+              prop="paper_teach_fee_status"
+              label="论文指导费"
+              show-overflow-tooltip
+              min-width="90"
+            >
+            <template slot-scope=" { row } ">
+              <el-button type="text" v-if="row.paper_teach_fee_status == 1" class="green">
+                  已缴
+                </el-button>
+              <el-button type="text" v-if="row.paper_teach_fee_status == 0" class="red">
+                  未缴
+                </el-button>
+            </template>
+            </el-table-column>
+            <el-table-column
+              prop="paper_reply_fee_status"
+              label="论文答辩费"
+              show-overflow-tooltip
+              min-width="90"
+            >
+            <template slot-scope=" { row } ">
+              <el-button type="text" v-if="row.paper_reply_fee_status == 1" class="green">
+                  已缴
+                </el-button>
+              <el-button type="text" class="red" v-if="row.paper_reply_fee_status == 0">
+                  未缴
+                </el-button>
+            </template>
+            </el-table-column>
+            <el-table-column
+              prop="paper_handle_fee_status"
+              label="论文处理费"
+              show-overflow-tooltip
+              min-width="90"
+            >
+            <template slot-scope=" { row } ">
+              <el-button type="text" v-if="row.paper_handle_fee_status == 1" class="green">
+                  已缴
+                </el-button>
+              <el-button type="text" class="red" v-if="row.paper_handle_fee_status == 0">
+                  未缴
+                </el-button>
+            </template>
+            </el-table-column>
+              <el-table-column
+              prop="create_time"
+              label="创建时间"
+              show-overflow-tooltip
+              min-width="160"
+            ></el-table-column>
             <el-table-column label="操作" fixed="right" min-width="100">
               <template slot-scope="{ row }">
                 <el-button type="text" @click="toOrderDetail(row.order_id)">
@@ -117,6 +222,9 @@
         </div>
         <div class="table_bottom">
           <div>
+            <el-button @click="openResetDialog">
+              补齐费用
+            </el-button>
             <el-button @click="exportEduList" :loading="exportLoading">
               导出数据
             </el-button>
@@ -130,11 +238,17 @@
         </div>
       </div>
     </div>
+     <PayDialog
+        v-model="ResetDialogflag"
+        :ids="checkedIds"
+        @on-success="getEduList"
+    />
   </div>
 </template>
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
+import PayDialog from "./components/PayDialog";
 import {
   getEduList,
   getAdminSelect,
@@ -144,18 +258,27 @@ import {
 import { getInstitutionSelectData } from "@/api/sou";
 import { cloneOptions, download } from "@/utils/index";
 import { getShortcuts } from "@/utils/date";
+import { batchUpdateFee } from "@/api/eda";
 export default {
   name: "collegeStudentList",
   components: {
     PartiallyHidden,
+    PayDialog,
   },
   data() {
     return {
+      ResetDialogflag:false,
       searchData: {
         keyword: "",
         from_organization_id: "",
         admin_id: "",
         date: "",
+        book_fee_status:"",
+        platform_fee_status:"",
+        service_fee_status:"",
+        paper_teach_fee_status:"",
+        paper_reply_fee_status:"",
+        paper_handle_fee_status:"",
       },
       searchOptions: [
         {
@@ -175,6 +298,7 @@ export default {
         {
           key: "from_organization_id",
           type: "cascader",
+          width:150,
           attrs: {
             placeholder: "推荐机构",
             filterable: true,
@@ -185,6 +309,7 @@ export default {
         {
           key: "admin_id",
           type: "select",
+          width:120,
           options: [],
           optionValue: "staff_id",
           optionLabel: "staff_name",
@@ -195,13 +320,128 @@ export default {
           },
         },
         {
+          key: "book_fee_status",
+          type: "select",
+          width: 110,
+          options: [
+            {
+              value: 0,
+              label: "未缴",
+            },
+            {
+              value: 1,
+              label: "已缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "教材费",
+          },
+        },
+        {
+          key: "platform_fee_status",
+          type: "select",
+          width: 110,
+          options: [
+            {
+              value: 0,
+              label: "未缴",
+            },
+            {
+              value: 1,
+              label: "已缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "平台费",
+          },
+        },
+        {
+          key: "service_fee_status",
+          type: "select",
+          width: 130,
+          options: [
+            {
+              value: 0,
+              label: "未缴",
+            },
+            {
+              value: 1,
+              label: "已缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "教务服务费",
+          },
+        },
+        {
+          key: "paper_teach_fee_status",
+          type: "select",
+          width: 130,
+          options: [
+            {
+              value: 0,
+              label: "未缴",
+            },
+            {
+              value: 1,
+              label: "已缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "论文指导费",
+          },
+        },
+        {
+          key: "paper_reply_fee_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "未缴",
+            },
+            {
+              value: 1,
+              label: "已缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "论文答辩费",
+          },
+        },
+        {
+          key: "paper_handle_fee_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "未缴",
+            },
+            {
+              value: 1,
+              label: "已缴",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "论文处理费",
+          },
+        },
+
+
+        {
           key: "keyword",
           attrs: {
             placeholder: "学生姓名",
           },
         },
       ],
-
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -227,6 +467,17 @@ export default {
     this.getAdminSelect();
   },
   methods: {
+    handleSeletChange(selection) {
+      this.checkedIds = selection.map((item) => item.id);
+    },
+    openResetDialog() {
+      if (!this.checkedIds.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      this.ResetDialogflag = true;
+    },
+
     async exportEduList() {
       const data = {
         ...this.searchData,
@@ -308,6 +559,7 @@ export default {
     },
     // 获取列表
     async getEduList() {
+      this.checkedIds = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
@@ -322,6 +574,48 @@ export default {
         this.listTotal = res.data.total;
       }
     },
+    // 缴费变化
+     alreadyOpenone(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+      this.$confirm("您确定要修改该状态吗?", { type: "warning" })
+        .then(() => {
+          this.batchUpdateFee(
+            id,
+            book_fee_status = !book_fee_status,
+            platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status
+            );
+        })
+        .catch(() => {});
+    },
+
+    alreadyOpentwo(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+      this.$confirm("您确定要修改该状态吗?", { type: "warning" })
+        .then(() => {
+          this.batchUpdateFee(
+            id,
+            platform_fee_status == !platform_fee_status,
+            book_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status
+            );
+        })
+        .catch(() => {});
+    },
+
+      async batchUpdateFee(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+      const data = { 
+        id_arr:[id],
+        book_fee_status,
+        platform_fee_status,
+        service_fee_status,
+        paper_teach_fee_status,
+        paper_reply_fee_status,
+        paper_handle_fee_status,
+       };
+       console.log(data);
+      const res = await batchUpdateFee(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getEduList();
+      }
+    },
   },
 };
 </script>
@@ -332,7 +626,7 @@ export default {
     padding: 20px;
     display: flex;
     .tree-list {
-      width: 300px;
+      width: 260px;
       flex-shrink: 0;
       border-right: 1px solid #eee;
       margin-right: 20px;
@@ -354,5 +648,11 @@ export default {
     justify-content: space-between;
     padding-bottom: 0;
   }
+}
+.green{
+  color: #41cb00;
+}
+.red{
+  color: #ee5f00;
 }
 </style>
