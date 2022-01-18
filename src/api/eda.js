@@ -979,6 +979,14 @@ export function getEduList(params) {
     params,
   })
 }
+// 补齐费用
+export function batchUpdateFee(data) {
+  return request({
+    url: '/Crm/batchUpdateFee',
+    method: 'post',
+    data,
+  })
+}
 // 班级视频-章节列表
 export function getChapterList(data) {
   return request({

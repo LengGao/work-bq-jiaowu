@@ -399,6 +399,7 @@ export default {
       this.pageSize = size;
       this.getInstitutionList();
     },
+
     async getInstitutionList() {
       this.checkedIds = [];
       const data = {
