@@ -61,15 +61,43 @@
         v-model="customerRankMonth"
         @date-change="getCustomerRankData"
       >
-        <Title slot="header-title" text="录入客户排行榜"></Title>
+        <Title slot="header-title" text="客户分析"></Title>
+        <div class="tab" slot="header-center">
+          <span
+            class="tab-item"
+            @click="handleCustomerChange(0)"
+            :class="{ 'tab-item--active': customerState === 0 }"
+            >客户来源</span
+          >
+          <span
+            class="tab-item"
+            :class="{ 'tab-item--active': customerState === 1 }"
+            @click="handleCustomerChange(1)"
+            >客户拥有量</span
+          >
+        </div>
         <RankBar
+          v-if="customerState === 1"
           bar-color="#24A3FF"
           bar-id="bar2"
           type="2"
-          :data="customerRankData"
+          :data="customerRankData.chart"
           series-name="客户数量"
           v-loading="customerRankLoading"
         />
+        <Pie
+          v-else
+          v-loading="customerRankLoading"
+          :data="customerRankData.cake"
+        />
+      </Block>
+      <Block
+        date-type="4"
+        v-model="customerRankMonth"
+        @date-change="getCustomerRankData"
+      >
+        <Title slot="header-title" text="职业教育数据"></Title>
+        <VocationalEducation />
       </Block>
       <Block class="online" @date-change="getOnlineStatistics">
         <Title slot="header-title" text="在线人数"></Title>
@@ -108,6 +136,8 @@ import GaugeChart from "./components/GaugeChart";
 import TrendBar from "./components/TrendBar";
 import RankBar from "./components/RankBar";
 import OnlineChart from "./components/OnlineChart";
+import Pie from "./components/Pie";
+import VocationalEducation from "./components/VocationalEducation";
 export default {
   name: "Administrators",
   components: {
@@ -117,6 +147,8 @@ export default {
     TrendBar,
     RankBar,
     OnlineChart,
+    Pie,
+    VocationalEducation,
   },
   props: {
     userIds: {
@@ -154,6 +186,7 @@ export default {
       customerRankLoading: false,
       customerRankMonth:
         new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
+      customerState: 0,
       // 在线人数
       onlineData: {
         list: {
@@ -255,6 +288,9 @@ export default {
       if (res.code === 0) {
         this.onlineData = res.data;
       }
+    },
+    handleCustomerChange(state) {
+      this.customerState = state;
     },
     // 录入客户排行榜
     async getCustomerRankData() {
