@@ -81,13 +81,25 @@
           </div>
         </el-popover>
       </div>
+      <div class="returned-type">
+        <span class="returned-type-title">回款统计方式</span>
+        <el-radio-group v-model="returnedType">
+          <el-radio :label="1">按申请入账时间</el-radio>
+          <el-radio :label="2">按订单创建时间</el-radio>
+        </el-radio-group>
+      </div>
     </div>
     <el-tabs v-model="activeName" class="workbench-tab">
       <el-tab-pane label="工作提醒" name="WorkReminder"> </el-tab-pane>
       <el-tab-pane label="数据看板" name="DataStatistics"></el-tab-pane>
     </el-tabs>
+
     <template v-if="activeName">
-      <component :is="getComponent" :user-ids="userIds" />
+      <component
+        :is="getComponent"
+        :user-ids="userIds"
+        :returned-type="returnedType"
+      />
     </template>
   </div>
 </template>
@@ -105,6 +117,7 @@ export default {
       checkedData: [],
       userPopver: false,
       userIds: [],
+      returnedType: 1,
     };
   },
   computed: {
@@ -225,9 +238,18 @@ export default {
         background-color: #e4e7ed;
       }
     }
+    .returned-type {
+      margin-left: auto;
+      &-title {
+        margin-right: 10px;
+      }
+    }
   }
-  .workbench-tab /deep/.el-tabs__item {
-    font-size: 16px;
+  .workbench-tab {
+    position: relative;
+    /deep/.el-tabs__item {
+      font-size: 16px;
+    }
   }
 }
 </style>

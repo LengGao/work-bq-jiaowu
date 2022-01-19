@@ -7,29 +7,38 @@
     @open="handleOpen"
     @close="handleClose"
   >
-    <div class="card">
-      <div class="card-item">
-        <div class="card-item-title">订单数量</div>
-        <div class="card-item-value">1322</div>
+    <div v-loading="loading">
+      <div class="card">
+        <div class="card-item">
+          <div class="card-item-title">订单数量</div>
+          <div class="card-item-value">{{ data.order_count }}</div>
+        </div>
+        <div class="card-item">
+          <div class="card-item-title">订单金额</div>
+          <div class="card-item-value">
+            {{ data.order_money | moneyFormat }}
+          </div>
+        </div>
+        <div class="card-item">
+          <div class="card-item-title">回款金额</div>
+          <div class="card-item-value">
+            {{ data.order_returned_money_this_month | moneyFormat }}
+          </div>
+        </div>
+        <div class="card-item">
+          <div class="card-item-title">退款金额</div>
+          <div class="card-item-value">
+            {{ data.order_refund_money | moneyFormat }}
+          </div>
+        </div>
       </div>
-      <div class="card-item">
-        <div class="card-item-title">订单金额</div>
-        <div class="card-item-value">155445</div>
-      </div>
-      <div class="card-item">
-        <div class="card-item-title">回款金额</div>
-        <div class="card-item-value">11122</div>
-      </div>
-      <div class="card-item">
-        <div class="card-item-title">退款金额</div>
-        <div class="card-item-value">245454</div>
-      </div>
+      <div id="dialog-chart" ref="chart"></div>
     </div>
-    <div id="dialog-chart"></div>
   </el-dialog>
 </template>
 
 <script>
+import { getJobTitleDetail } from "@/api/workbench.js";
 export default {
   props: {
     value: {
@@ -40,21 +49,62 @@ export default {
       type: String,
       default: "",
     },
+    month: {
+      type: String,
+      default: "",
+    },
+    userIds: {
+      type: Array,
+      default: () => [],
+    },
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
       chartInstance: null,
+      loading: false,
     };
   },
   methods: {
     handleOpen() {
-      this.$nextTick(this.chartInit);
+      this.getJobTitleDetail();
     },
-    chartInit() {
+    async getJobTitleDetail() {
+      const data = {
+        category_id: this.data.category_id,
+        month: this.month,
+        arr_uid: this.userIds,
+        returned_type: 1,
+      };
+      this.loading = true;
+      const res = await getJobTitleDetail(data);
+      this.loading = false;
+      if (res.code === 0) {
+        this.chartInit(res.data);
+      }
+    },
+    chartInit(data) {
+      const orderMoneyData = [];
+      const orderRefundMoneyData = [];
+      const orderReturnedMoneyData = [];
+      const yAxisData = [];
+      if (data.length > 8) {
+        this.$refs.chart.style.height = data.length * 60 + "px";
+      } else {
+        this.$refs.chart.style.height = 400 + "px";
+      }
+      data.forEach((item) => {
+        orderMoneyData.push(item.order_money);
+        orderRefundMoneyData.push(item.order_refund_money);
+        orderReturnedMoneyData.push(item.order_returned_money);
+        yAxisData.push(item.name);
+      });
       this.chartInstance = this.$echarts.init(
         document.getElementById("dialog-chart")
       );
-      console.log(this.chartInstance);
       this.chartInstance.setOption({
         tooltip: {
           trigger: "axis",
@@ -74,11 +124,11 @@ export default {
         },
         yAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: yAxisData,
         },
         series: [
           {
-            name: "Direct",
+            name: "订单金额",
             type: "bar",
             stack: "total",
             label: {
@@ -88,10 +138,10 @@ export default {
             emphasis: {
               focus: "series",
             },
-            data: [320, 302, 301, 334, 390, 330, 320],
+            data: orderMoneyData,
           },
           {
-            name: "Mail Ad",
+            name: "回款金额",
             type: "bar",
             stack: "total",
             label: {
@@ -100,10 +150,10 @@ export default {
             emphasis: {
               focus: "series",
             },
-            data: [120, 132, 101, 134, 90, 230, 210],
+            data: orderRefundMoneyData,
           },
           {
-            name: "Affiliate Ad",
+            name: "退款金额",
             type: "bar",
             stack: "total",
             label: {
@@ -112,31 +162,7 @@ export default {
             emphasis: {
               focus: "series",
             },
-            data: [220, 182, 191, 234, 290, 330, 310],
-          },
-          {
-            name: "Video Ad",
-            type: "bar",
-            stack: "total",
-            label: {
-              show: true,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: [150, 212, 201, 154, 190, 330, 410],
-          },
-          {
-            name: "Search Engine",
-            type: "bar",
-            stack: "total",
-            label: {
-              show: true,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: [820, 832, 901, 934, 1290, 1330, 1320],
+            data: orderReturnedMoneyData,
           },
         ],
       });

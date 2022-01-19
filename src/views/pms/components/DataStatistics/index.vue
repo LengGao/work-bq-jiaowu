@@ -91,13 +91,14 @@
           :data="customerRankData.cake"
         />
       </Block>
-      <Block
-        date-type="4"
-        v-model="customerRankMonth"
-        @date-change="getCustomerRankData"
-      >
+      <Block date-type="4" v-model="jobMonth" @date-change="getJobTitleList">
         <Title slot="header-title" text="职业教育数据"></Title>
-        <VocationalEducation />
+        <VocationalEducation
+          v-loading="jobLoading"
+          :data="jobData"
+          :userIds="userIds"
+          :month="jobMonth"
+        />
       </Block>
       <Block class="online" @date-change="getOnlineStatistics">
         <Title slot="header-title" text="在线人数"></Title>
@@ -128,6 +129,7 @@ import {
   getCustomerRankData,
   getOnlineStatistics,
   getBriefing,
+  getJobTitleList,
 } from "@/api/workbench.js";
 import { dateMap } from "@/utils/date";
 import Block from "./components/Block";
@@ -154,6 +156,10 @@ export default {
     userIds: {
       type: Array,
       default: () => [],
+    },
+    returnedType: {
+      type: [Number, String],
+      default: "",
     },
   },
   data() {
@@ -203,37 +209,52 @@ export default {
       onlineState: 0,
       onlineType: 0,
       onlineLoading: false,
+      //职业教育数据
+      jobMonth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
+      jobData: [],
+      jobLoading: false,
     };
   },
   watch: {
-    userIds: {
-      handler() {
-        this.performanceIndicators();
-        this.getTrendData();
-        this.getSalesRankData();
-        this.getCustomerRankData();
-        this.getBriefing();
-      },
-      deep: true,
+    userIds() {
+      this.getAllData();
+    },
+    returnedType() {
+      this.getAllData();
     },
   },
   activated() {
-    this.performanceIndicators();
-    this.getTrendData();
-    this.getSalesRankData();
-    this.getCustomerRankData();
-    this.getOnlineStatistics();
-    this.getBriefing();
+    this.getAllData();
   },
   created() {
-    this.performanceIndicators();
-    this.getTrendData();
-    this.getSalesRankData();
-    this.getCustomerRankData();
-    this.getOnlineStatistics();
-    this.getBriefing();
+    this.getAllData();
   },
   methods: {
+    getAllData() {
+      this.performanceIndicators();
+      this.getTrendData();
+      this.getSalesRankData();
+      this.getCustomerRankData();
+      this.getOnlineStatistics();
+      this.getBriefing();
+      this.getJobTitleList();
+    },
+    // 职业教务数据
+    async getJobTitleList() {
+      const data = {
+        returned_type: this.returnedType,
+        month: this.jobMonth,
+        arr_uid: this.userIds,
+      };
+      this.jobLoading = true;
+      const res = await getJobTitleList(data).catch(() => {
+        this.jobData = [];
+      });
+      this.jobLoading = false;
+      if (res.code === 0) {
+        this.jobData = res.data;
+      }
+    },
     // 销售简报
     handleItemClick(type) {
       let router = "";
@@ -263,6 +284,7 @@ export default {
       const data = {
         type: this.salesDateType,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.salesLoading = true;
       const res = await getBriefing(data).catch(() => {});
@@ -297,6 +319,7 @@ export default {
       const data = {
         month: this.customerRankMonth,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.customerRankLoading = true;
       const res = await getCustomerRankData(data).catch(() => {});
@@ -325,6 +348,7 @@ export default {
       const data = {
         month: this.salesRankMonth,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.salesRankLoading = true;
       const res = await getSalesRankData(data).catch(() => {});
@@ -347,6 +371,7 @@ export default {
         year: this.trendYear,
         type: this.trendType,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.trendLoading = true;
       const res = await getTrendData(data).catch(() => {});
@@ -360,6 +385,7 @@ export default {
       const data = {
         type: this.performanceType,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.performanceLoading = true;
       const res = await performanceIndicators(data).catch(() => {});
