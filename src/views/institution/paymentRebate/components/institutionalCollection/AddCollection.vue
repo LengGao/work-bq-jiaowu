@@ -1,14 +1,5 @@
 <template>
-  <el-dialog
-    title="添加机构回款"
-    :visible.sync="visible"
-    width="90%"
-    @open="handleOpen"
-    :close-on-click-modal="false"
-    @closed="resetForm('formData')"
-    top="3vh"
-    class="add-collection"
-  >
+  <div class="add-collection">
     <el-form
       label-width="100px"
       :model="formData"
@@ -234,9 +225,15 @@
             row-key="order_id"
             ref="multipleTable"
             height="470"
-            @row-click="toggleSelection"
           >
-            <el-table-column type="selection" width="45" reserve-selection>
+            <!-- @row-click="toggleSelection" -->
+
+            <el-table-column
+              type="selection"
+              width="45"
+              fixed="left"
+              reserve-selection
+            >
             </el-table-column>
             <el-table-column
               label="创建时间"
@@ -248,7 +245,7 @@
             <el-table-column
               prop="user_name"
               label="客户姓名"
-              min-width="110"
+              min-width="80"
               show-overflow-tooltip
             >
             </el-table-column>
@@ -260,13 +257,91 @@
             >
             </el-table-column>
             <el-table-column
-              label="未回款金额"
+              label="订单金额"
               show-overflow-tooltip
-              min-width="100"
-              prop="project_name"
+              min-width="90"
+              prop="order_money"
+              fixed="right"
             >
               <template slot-scope="{ row }">
-                <span>{{ row.outstanding_amount | moneyFormat }} </span>
+                <el-input
+                  size="small"
+                  v-if="row.edit"
+                  v-model="row.resetOrderMoney"
+                  type="number"
+                  placeholder="请输入订单金额"
+                />
+                <span v-else>{{ row.order_money | moneyFormat }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="已回款金额"
+              show-overflow-tooltip
+              min-width="140"
+              fixed="right"
+              prop="pay_money"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.pay_money | moneyFormat }} </span>
+                <el-button type="text" @click.stop="clearPayLog(row.order_id)"
+                  >清除</el-button
+                >
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="未回款金额"
+              fixed="right"
+              show-overflow-tooltip
+              min-width="90"
+              prop="outstanding_amount"
+            >
+              <template slot-scope="{ row }">
+                <el-input
+                  v-if="row.edit"
+                  size="small"
+                  v-model="row.resetOrderOverdueMoney"
+                  type="number"
+                  placeholder="请输入"
+                />
+                <span v-else>{{ row.outstanding_amount | moneyFormat }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="优惠金额"
+              show-overflow-tooltip
+              min-width="90"
+              fixed="right"
+              prop="reduction"
+            >
+              <template slot-scope="{ row }">
+                <el-input
+                  v-if="row.edit"
+                  size="small"
+                  v-model="row.resetOrderReductionMoney"
+                  type="number"
+                  placeholder="请输入"
+                />
+                <span v-else>{{ row.reduction | moneyFormat }} </span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" fixed="right" min-width="90">
+              <template slot-scope="{ row }">
+                <template v-if="row.edit">
+                  <el-button
+                    type="text"
+                    @click.stop="handleCancelResetMoney(row)"
+                    >取消</el-button
+                  >
+                  <el-button
+                    type="text"
+                    :loading="row.loading"
+                    @click.stop="changeOrderMoney(row)"
+                    >保存</el-button
+                  >
+                </template>
+                <el-button v-else type="text" @click.stop="row.edit = true"
+                  >编辑</el-button
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -308,19 +383,12 @@
           >
             <el-table-column
               show-overflow-tooltip
-              min-width="100"
+              min-width="80"
               prop="user_name"
             >
               <template slot="header">
                 <span>已选学生：{{ checkedOrderData.length }}</span>
               </template>
-            </el-table-column>
-            <el-table-column
-              label="订单编号"
-              show-overflow-tooltip
-              min-width="200"
-              prop="order_no"
-            >
             </el-table-column>
             <el-table-column
               label="订单金额"
@@ -355,7 +423,7 @@
             <el-table-column
               label="本次回款金额"
               show-overflow-tooltip
-              min-width="180"
+              min-width="120"
               prop="project_name"
               fixed="right"
             >
@@ -389,11 +457,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column
-              show-overflow-tooltip
-              min-width="100"
-              fixed="right"
-            >
+            <el-table-column show-overflow-tooltip min-width="80" fixed="right">
               <template slot="header">
                 <el-button type="text" @click="hadleResetOrder"
                   >批量删除</el-button
@@ -409,7 +473,7 @@
         </div>
       </div>
     </el-form>
-    <span slot="footer" class="dialog-footer">
+    <div class="footer">
       <el-button @click="hanldeCancel">取 消</el-button>
       <el-button
         type="primary"
@@ -417,8 +481,8 @@
         @click="submitForm('formData')"
         >确 定</el-button
       >
-    </span>
-  </el-dialog>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -431,25 +495,17 @@ import {
   getProject,
   getReceivableInfo,
   getExcelOrgReceivable,
+  clearPayLog,
+  changeOrderMoney,
 } from "@/api/crm";
 import { getShortcuts } from "@/utils/date";
 import { accSub, download } from "@/utils";
 export default {
-  name: "AddCustomeDialog",
-  props: {
-    value: {
-      type: Boolean,
-      default: false,
-    },
-    id: {
-      type: [String, Number],
-      default: "",
-    },
-  },
+  name: "AddCollection",
   data() {
     return {
+      id: this.$route.query.id,
       accSub,
-      visible: this.value,
       addLoading: false,
       formData: {
         from_organization_id: "",
@@ -515,7 +571,6 @@ export default {
           options: [],
           optionValue: "project_id",
           optionLabel: "project_name",
-          width: 150,
           attrs: {
             placeholder: "所属项目（多选）",
             clearable: true,
@@ -540,11 +595,6 @@ export default {
       againData: {},
     };
   },
-  watch: {
-    value(val) {
-      this.visible = val;
-    },
-  },
   computed: {
     totalInputMoney() {
       if (this.id) {
@@ -553,12 +603,45 @@ export default {
       return this.checkedOrderData.reduce((p, c) => p + c.currentMoney * 1, 0);
     },
   },
+  created() {
+    this.getCustomfieldOptions();
+    this.getOrgName();
+    if (this.id) {
+      this.getReceivableInfo();
+    }
+  },
   methods: {
-    handleOpen() {
-      this.getCustomfieldOptions();
-      this.getOrgName();
-      if (this.id) {
-        this.getReceivableInfo();
+    handleCancelResetMoney(row) {
+      row.resetOrderMoney = row.order_money;
+      row.resetOrderOverdueMoney = row.outstanding_amount;
+      row.resetOrderReductionMoney = row.reduction;
+      row.edit = false;
+    },
+    async changeOrderMoney(row) {
+      const data = {
+        order_id: row.order_id,
+        money: row.resetOrderMoney,
+        overdue_money: row.resetOrderOverdueMoney,
+        reduction: row.resetOrderReductionMoney,
+      };
+      row.loading = true;
+      const res = await changeOrderMoney(data).catch(() => {});
+      row.loading = false;
+      if (res.code === 0) {
+        row.order_money = row.resetOrderMoney;
+        row.outstanding_amount = res.data.overdue_money;
+        row.reduction = res.data.reduction;
+        row.pay_money = res.data.pay_money;
+        row.edit = false;
+        this.$message.success(res.message);
+      }
+    },
+    // 清除回款
+    async clearPayLog(order_id) {
+      const data = { order_id };
+      const res = await clearPayLog(data);
+      if (res.code === 0) {
+        this.getOrder();
       }
     },
     handleExport() {
@@ -583,8 +666,6 @@ export default {
       this.downloadLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.visible = false;
-        this.$emit("on-success");
         download(res.data.url);
       }
     },
@@ -680,6 +761,11 @@ export default {
       this.listData = res.data.list.map((item) => ({
         ...item,
         currentMoney: 0,
+        edit: false,
+        loading: false,
+        resetOrderMoney: item.order_money,
+        resetOrderOverdueMoney: item.outstanding_amount,
+        resetOrderReductionMoney: item.reduction,
       }));
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
@@ -744,8 +830,6 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.visible = false;
-        this.$emit("on-success");
       }
     },
     submitForm(formName) {
@@ -773,72 +857,83 @@ export default {
       }
     },
     hanldeCancel() {
-      this.visible = false;
+      this.$router.back();
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.input {
-  width: 217px;
-}
-.block {
-  width: 100%;
-  /deep/.el-form-item__content {
-    width: 80%;
+.add-collection {
+  padding: 16px;
+
+  .input {
+    width: 217px;
   }
-}
-.tables {
-  display: flex;
-  justify-content: space-between;
-  /deep/.el-table {
-    border: 1px solid #efefef;
-    border-bottom: none;
-  }
-  .again-table {
-    flex: 1;
-  }
-  .order-table {
-    width: 44%;
-    .table_bottom {
-      padding-bottom: 0;
+  .block {
+    width: 100%;
+    /deep/.el-form-item__content {
+      width: 80%;
     }
   }
-  .checked-table {
-    width: 55%;
-    .money-total {
-      text-align: right;
-      padding: 16px 0;
-      & > span {
-        margin-left: 40px;
-        .price {
-          color: #fd6552;
-        }
+  .tables {
+    display: flex;
+    justify-content: space-between;
+    /deep/.el-table {
+      border: 1px solid #efefef;
+      border-bottom: none;
+    }
+    .again-table {
+      flex: 1;
+    }
+    .order-table {
+      width: 60%;
+      .table_bottom {
+        padding-bottom: 0;
       }
     }
-    .header-money {
-      display: flex;
-      align-items: center;
-      padding: 0;
-      &-actions {
-        width: 40px;
-        flex-shrink: 0;
-        font-size: 12px;
-        font-weight: normal;
+    .checked-table {
+      width: 39%;
+      .money-total {
+        text-align: right;
+        padding: 16px 0;
+        & > span {
+          margin-left: 40px;
+          .price {
+            color: #fd6552;
+          }
+        }
+      }
+      .header-money {
         display: flex;
-        flex-direction: column;
-        line-height: 1.5;
+        align-items: center;
         padding: 0;
-        .btn-fill {
-          color: #fcc850;
-          cursor: pointer;
-        }
-        .btn-distribution {
-          color: #43d100;
-          cursor: pointer;
+        &-actions {
+          width: 40px;
+          flex-shrink: 0;
+          font-size: 12px;
+          font-weight: normal;
+          display: flex;
+          flex-direction: column;
+          line-height: 1.5;
+          padding: 0;
+          .btn-fill {
+            color: #fcc850;
+            cursor: pointer;
+          }
+          .btn-distribution {
+            color: #43d100;
+            cursor: pointer;
+          }
         }
       }
+    }
+  }
+  .footer {
+    padding: 30px 0;
+    text-align: center;
+    button {
+      margin-left: 30px;
     }
   }
 }
@@ -859,11 +954,6 @@ export default {
         }
       }
     }
-  }
-}
-.add-collection {
-  .el-dialog__body {
-    padding: 10px 16px 0;
   }
 }
 </style>

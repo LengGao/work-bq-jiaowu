@@ -269,6 +269,17 @@
                 <span>{{ row.outstanding_amount | moneyFormat }} </span>
               </template>
             </el-table-column>
+            <el-table-column
+              label="已回款金额"
+              show-overflow-tooltip
+              min-width="100"
+              prop="project_name"
+            >
+              <template slot-scope="{ row }">
+                <span>{{ row.pay_money | moneyFormat }} </span>
+                <button type="text">清除</button>
+              </template>
+            </el-table-column>
           </el-table>
           <div class="table_bottom">
             <page

@@ -10,7 +10,7 @@
           @on-search="handleSearch"
         />
         <div class="actions">
-          <el-button type="primary" @click="openAddCollectionDialog('')"
+          <el-button type="primary" @click="toAddCollection('')"
             >添加回款</el-button
           >
           <el-upload
@@ -136,7 +136,7 @@
               <el-button
                 v-if="row.check_state == 2"
                 type="text"
-                @click="openAddCollectionDialog(row.log_id)"
+                @click="toAddCollection(row.log_id)"
                 >再次回款</el-button
               >
             </template>
@@ -152,11 +152,7 @@
         </div>
       </div>
     </section>
-    <AddCollection
-      v-model="addCollectionVisible"
-      :id="currentId"
-      @on-success="getOrgReceivableList"
-    />
+    
   </div>
 </template>
 
@@ -171,12 +167,10 @@ import {
   getBelongPeople,
   orgReceivableImportUrl,
 } from "@/api/crm";
-import AddCollection from "./components/AddCollection";
 export default {
   name: "institutionalCollection",
   components: {
     PartiallyHidden,
-    AddCollection,
   },
   data() {
     return {
@@ -264,8 +258,6 @@ export default {
         // },
       ],
 
-      addCollectionVisible: false,
-      currentId: "",
       uploadLoading: false,
     };
   },
@@ -295,9 +287,11 @@ export default {
       this.uploadLoading = false;
       this.$message.error("导入失败");
     },
-    openAddCollectionDialog(id) {
-      this.currentId = id;
-      this.addCollectionVisible = true;
+    toAddCollection(id) {
+      this.$router.push({
+        name: "addInstitutionalCollection",
+        query: { id },
+      });
     },
     // 获取入账状态
     async getReceivableStatus() {
