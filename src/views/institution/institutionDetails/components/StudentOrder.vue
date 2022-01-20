@@ -162,6 +162,7 @@ export default {
         0: "已成交",
         1: "已退款",
         2: "待退款",
+        4: "已作废",
       },
       listData: [],
       listLoading: false,
@@ -204,6 +205,10 @@ export default {
             {
               value: 2,
               label: "待退款",
+            },
+            {
+              value: 4,
+              label: "已作废",
             },
           ],
           attrs: {
