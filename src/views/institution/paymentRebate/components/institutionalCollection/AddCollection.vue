@@ -325,7 +325,7 @@
               </template>
             </el-table-column>
             <el-table-column label="操作" fixed="right" min-width="90">
-              <template slot-scope="{ row }">
+              <template slot-scope="{ row, $index: index }">
                 <template v-if="row.edit">
                   <el-button
                     type="text"
@@ -335,7 +335,7 @@
                   <el-button
                     type="text"
                     :loading="row.loading"
-                    @click.stop="changeOrderMoney(row)"
+                    @click.stop="changeOrderMoney(row, index)"
                     >保存</el-button
                   >
                 </template>
@@ -501,7 +501,7 @@ import {
 import { getShortcuts } from "@/utils/date";
 import { accSub, download } from "@/utils";
 export default {
-  name: "AddCollection",
+  name: "addInstitutionalCollection",
   data() {
     return {
       id: this.$route.query.id,
@@ -617,7 +617,7 @@ export default {
       row.resetOrderReductionMoney = row.reduction;
       row.edit = false;
     },
-    async changeOrderMoney(row) {
+    async changeOrderMoney(row, index) {
       const data = {
         order_id: row.order_id,
         money: row.resetOrderMoney,
@@ -628,10 +628,10 @@ export default {
       const res = await changeOrderMoney(data).catch(() => {});
       row.loading = false;
       if (res.code === 0) {
-        row.order_money = row.resetOrderMoney;
-        row.outstanding_amount = res.data.overdue_money;
-        row.reduction = res.data.reduction;
-        row.pay_money = res.data.pay_money;
+        this.listData[index].order_money = res.data.order_money;
+        this.listData[index].outstanding_amount = res.data.overdue_money;
+        this.listData[index].reduction = res.data.reduction;
+        this.listData[index].pay_money = res.data.pay_money;
         row.edit = false;
         this.$message.success(res.message);
       }
@@ -830,6 +830,7 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
+        this.hanldeCancel();
       }
     },
     submitForm(formName) {

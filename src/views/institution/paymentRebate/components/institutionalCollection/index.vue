@@ -152,7 +152,6 @@
         </div>
       </div>
     </section>
-    
   </div>
 </template>
 
@@ -260,6 +259,12 @@ export default {
 
       uploadLoading: false,
     };
+  },
+  activated() {
+    this.getOrgReceivableList();
+    this.getOrgName();
+    this.getBelongPeople();
+    this.getReceivableStatus();
   },
   created() {
     this.getOrgReceivableList();
