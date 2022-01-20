@@ -93,11 +93,23 @@
       </Block>
       <Block date-type="4" v-model="jobMonth" @date-change="getJobTitleList">
         <Title slot="header-title" text="职业教育数据"></Title>
-        <VocationalEducation
+        <OrderTable
           v-loading="jobLoading"
           :data="jobData"
           :userIds="userIds"
           :month="jobMonth"
+          :returned-type="returnedType"
+        />
+      </Block>
+      <Block date-type="4" v-model="eduMonth" @date-change="getEducationList">
+        <Title slot="header-title" text="学历教育数据"></Title>
+        <OrderTable
+          type="edu"
+          v-loading="eduLoading"
+          :data="eduData"
+          :userIds="userIds"
+          :month="eduMonth"
+          :returned-type="returnedType"
         />
       </Block>
       <Block class="online" @date-change="getOnlineStatistics">
@@ -130,6 +142,7 @@ import {
   getOnlineStatistics,
   getBriefing,
   getJobTitleList,
+  getEducationList,
 } from "@/api/workbench.js";
 import { dateMap } from "@/utils/date";
 import Block from "./components/Block";
@@ -139,7 +152,7 @@ import TrendBar from "./components/TrendBar";
 import RankBar from "./components/RankBar";
 import OnlineChart from "./components/OnlineChart";
 import Pie from "./components/Pie";
-import VocationalEducation from "./components/VocationalEducation";
+import OrderTable from "./components/OrderTable";
 export default {
   name: "Administrators",
   components: {
@@ -150,7 +163,7 @@ export default {
     RankBar,
     OnlineChart,
     Pie,
-    VocationalEducation,
+    OrderTable,
   },
   props: {
     userIds: {
@@ -213,6 +226,10 @@ export default {
       jobMonth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
       jobData: [],
       jobLoading: false,
+      //学历教育数据
+      eduMonth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
+      eduData: [],
+      eduLoading: false,
     };
   },
   watch: {
@@ -238,8 +255,25 @@ export default {
       this.getOnlineStatistics();
       this.getBriefing();
       this.getJobTitleList();
+      this.getEducationList();
     },
-    // 职业教务数据
+    // 学历教育数据
+    async getEducationList() {
+      const data = {
+        returned_type: this.returnedType,
+        month: this.eduMonth,
+        arr_uid: this.userIds,
+      };
+      this.eduLoading = true;
+      const res = await getEducationList(data).catch(() => {
+        this.eduData = [];
+      });
+      this.eduLoading = false;
+      if (res.code === 0) {
+        this.eduData = res.data;
+      }
+    },
+    // 职业教育数据
     async getJobTitleList() {
       const data = {
         returned_type: this.returnedType,

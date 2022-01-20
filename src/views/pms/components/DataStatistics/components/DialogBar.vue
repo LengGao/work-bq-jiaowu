@@ -32,13 +32,13 @@
           </div>
         </div>
       </div>
-      <div id="dialog-chart" ref="chart"></div>
+      <div class="dialog-chart" :id="`chart-${type}`" ref="chart"></div>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { getJobTitleDetail } from "@/api/workbench.js";
+import { getJobTitleDetail, getEducationDetail } from "@/api/workbench.js";
 export default {
   props: {
     value: {
@@ -47,6 +47,14 @@ export default {
     },
     title: {
       type: String,
+      default: "",
+    },
+    type: {
+      type: String,
+      default: "job",
+    },
+    returnedType: {
+      type: [Number, String],
       default: "",
     },
     month: {
@@ -70,14 +78,32 @@ export default {
   },
   methods: {
     handleOpen() {
-      this.getJobTitleDetail();
+      if (this.type === "edu") {
+        this.getEducationDetail();
+      } else {
+        this.getJobTitleDetail();
+      }
+    },
+    async getEducationDetail() {
+      const data = {
+        type_id: this.data.id,
+        month: this.month,
+        arr_uid: this.userIds,
+        returned_type: this.returnedType,
+      };
+      this.loading = true;
+      const res = await getEducationDetail(data);
+      this.loading = false;
+      if (res.code === 0) {
+        this.chartInit(res.data);
+      }
     },
     async getJobTitleDetail() {
       const data = {
         category_id: this.data.category_id,
         month: this.month,
         arr_uid: this.userIds,
-        returned_type: 1,
+        returned_type: this.returnedType,
       };
       this.loading = true;
       const res = await getJobTitleDetail(data);
@@ -96,14 +122,15 @@ export default {
       } else {
         this.$refs.chart.style.height = 400 + "px";
       }
-      data.forEach((item) => {
+      data.reverse().forEach((item) => {
         orderMoneyData.push(item.order_money);
         orderRefundMoneyData.push(item.order_refund_money);
         orderReturnedMoneyData.push(item.order_returned_money);
         yAxisData.push(item.name);
       });
+
       this.chartInstance = this.$echarts.init(
-        document.getElementById("dialog-chart")
+        document.getElementById(`chart-${this.type}`)
       );
       this.chartInstance.setOption({
         tooltip: {
@@ -193,7 +220,7 @@ export default {
     }
   }
 }
-#dialog-chart {
+.dialog-chart {
   width: 100%;
   height: 400px;
 }

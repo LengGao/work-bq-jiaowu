@@ -5,15 +5,18 @@
       <el-table-column
         label="分类名称"
         show-overflow-tooltip
-        min-width="100"
+        min-width="140"
         align="center"
         prop="category_name"
       >
+        <template slot-scope="{ row }">
+          {{ row.category_name || row.title || "" }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="order_count"
         label="订单数量"
-        min-width="100"
+        min-width="80"
         align="center"
         show-overflow-tooltip
       >
@@ -40,18 +43,23 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="order_refund_money"
+        label="退款金额"
+        min-width="100"
+        align="center"
+      >
+        <template slot-scope="{ row }">
+          <span>{{ row.order_refund_money | moneyFormat }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="ratio"
         label="回款环比"
-        min-width="100"
+        min-width="80"
         align="center"
       >
       </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        min-width="100"
-        align="center"
-      >
+      <el-table-column fixed="right" label="操作" min-width="80" align="center">
         <template slot-scope="{ row }">
           <el-button type="text" @click="openDetail(row)">查看详情</el-button>
         </template>
@@ -61,7 +69,7 @@
       v-model="show"
       v-bind="$attrs"
       :data="clickData"
-      :title="`${clickData.category_name}数据详情`"
+      :title="`${clickData.category_name || clickData.title || ''}数据详情`"
     />
   </div>
 </template>
@@ -69,7 +77,7 @@
 <script>
 import DialogBar from "./DialogBar";
 export default {
-  name: "VocationalEducation",
+  name: "OrderTable",
   props: {
     data: {
       type: Array,

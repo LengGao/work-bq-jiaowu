@@ -279,10 +279,26 @@ export function getJobTitleList(data) {
         data
     })
 }
-// 获取职业教育列表
+// 获取职业教育详情
 export function getJobTitleDetail(data) {
     return request({
         url: '/index/jobTitleDetail',
+        method: 'post',
+        data
+    })
+}
+// 获取学历教育列表
+export function getEducationList(data) {
+    return request({
+        url: '/index/educationList',
+        method: 'post',
+        data
+    })
+}
+// 获取学历教育详情
+export function getEducationDetail(data) {
+    return request({
+        url: '/index/educationDetail',
         method: 'post',
         data
     })
