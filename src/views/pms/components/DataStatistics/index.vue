@@ -297,10 +297,28 @@ export default {
           router = "crmCustomer";
           break;
         case 2:
-          router = "crmOrder";
+          router = "channelStudent";
           break;
         case 3:
-          router = "channelStudent";
+          router = "crmOrder";
+          break;
+        case 4:
+          router = "collectionList";
+          break;
+        case 5:
+          router = "collectionList";
+          break;
+        case 6:
+          router = "studentOrder";
+          break;
+        case 7:
+          router = "paymentRebate";
+          break;
+        case 8:
+          router = "paymentRebate";
+          break;
+        case 9:
+          router = "crmOrder";
           break;
       }
       router &&

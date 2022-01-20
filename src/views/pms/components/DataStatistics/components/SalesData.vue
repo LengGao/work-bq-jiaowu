@@ -1,50 +1,61 @@
 <template>
   <div class="sales-data">
     <div class="sales-data-item" @click="$emit('item-click', 1)">
-      <p class="sales-data-item-title">招生客户</p>
-      <p class="sales-data-item-value">{{ data.customerNum || 0 }}</p>
+      <p class="sales-data-item-title">招生客户数量</p>
+      <p class="sales-data-item-value">{{ data.zhaoShengRenShu || 0 }}</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 2)">
-      <p class="sales-data-item-title">招生订单</p>
-      <p class="sales-data-item-value">{{ data.orderNum || 0 }}</p>
+      <p class="sales-data-item-title">渠道学生数量</p>
+      <p class="sales-data-item-value">{{ data.quDaoRenShu || 0 }}</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 3)">
-      <p class="sales-data-item-title">渠道学生</p>
-      <p class="sales-data-item-value">{{ data.channelCustomers || 0 }}</p>
+      <p class="sales-data-item-title">招生订单金额</p>
+      <p class="sales-data-item-value">
+        {{ priceFormat(data.zhaoShengDingdan)
+        }}<span class="unit">{{ unitFormat(data.zhaoShengDingdan) }}</span>
+      </p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 4)">
-      <p class="sales-data-item-title">机构回款</p>
-      <p class="sales-data-item-value">{{ data.channelOrder || 0 }}</p>
+      <p class="sales-data-item-title">招生回款金额</p>
+      <p class="sales-data-item-value">
+        {{ priceFormat(data.zhaoShengHuiKuan)
+        }}<span class="unit">{{ unitFormat(data.zhaoShengHuiKuan) }}</span>
+      </p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 5)">
-      <p class="sales-data-item-title">订单金额</p>
+      <p class="sales-data-item-title">招生入账金额</p>
       <p class="sales-data-item-value">
-        {{ unitFormat(data.orderMoney)
-        }}<span class="unit">{{
-          data.orderMoney >= 10000 ? "万元" : "元"
-        }}</span>
+        {{ priceFormat(data.zhaoShengRuZhang)
+        }}<span class="unit">{{ unitFormat(data.zhaoShengRuZhang) }}</span>
       </p>
     </div>
-
-    <div class="sales-data-item">
-      <p class="sales-data-item-title">回款金额</p>
+    <div class="sales-data-item" @click="$emit('item-click', 6)">
+      <p class="sales-data-item-title">机构订单金额</p>
       <p class="sales-data-item-value">
-        {{ unitFormat(data.payMoney)
-        }}<span class="unit">{{ data.payMoney >= 10000 ? "万元" : "元" }}</span>
+        {{ priceFormat(data.jiGouDingdan)
+        }}<span class="unit">{{ unitFormat(data.jiGouDingdan) }}</span>
       </p>
     </div>
-    <div class="sales-data-item">
-      <p class="sales-data-item-title">退款金额</p>
+    <div class="sales-data-item" @click="$emit('item-click', 7)">
+      <p class="sales-data-item-title">机构回款金额</p>
       <p class="sales-data-item-value">
-        {{ unitFormat(Math.abs(data.refundAmount))
-        }}<span class="unit">{{
-          Math.abs(data.refundAmount) >= 10000 ? "万元" : "元"
-        }}</span>
+        {{ priceFormat(data.jiGouHuiKuan)
+        }}<span class="unit">{{ unitFormat(data.jiGouHuiKuan) }}</span>
       </p>
     </div>
-    <div class="sales-data-item" @click="$emit('item-click', 4)">
-      <p class="sales-data-item-title">退款订单</p>
-      <p class="sales-data-item-value">{{ data.refundOrderNum || 0 }}</p>
+    <div class="sales-data-item" @click="$emit('item-click', 8)">
+      <p class="sales-data-item-title">机构入账金额</p>
+      <p class="sales-data-item-value">
+        {{ priceFormat(data.jiGouRuZhang)
+        }}<span class="unit">{{ unitFormat(data.jiGouRuZhang) }}</span>
+      </p>
+    </div>
+    <div class="sales-data-item" @click="$emit('item-click', 9)">
+      <p class="sales-data-item-title">退款作废金额</p>
+      <p class="sales-data-item-value">
+        {{ priceFormat(data.zuoFei)
+        }}<span class="unit">{{ unitFormat(data.zuoFei) }}</span>
+      </p>
     </div>
   </div>
 </template>
@@ -59,6 +70,9 @@ export default {
   },
   methods: {
     unitFormat(val) {
+      return val >= 10000 ? "万元" : "元";
+    },
+    priceFormat(val) {
       if (!val) {
         return `0.00`;
       }
@@ -78,6 +92,12 @@ export default {
     flex: 1;
     flex-shrink: 0;
     text-align: center;
+    cursor: pointer;
+    &:hover {
+      .sales-data-item-value {
+        color: #199fff;
+      }
+    }
     &:not(:last-child) {
       border-right: 1px solid #f4f5f7;
     }
@@ -93,14 +113,6 @@ export default {
 
       span.unit {
         font-size: 14px;
-      }
-    }
-    &:nth-child(-n + 3) {
-      cursor: pointer;
-      &:hover {
-        .sales-data-item-value {
-          color: #199fff;
-        }
       }
     }
   }
