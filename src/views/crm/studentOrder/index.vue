@@ -118,11 +118,13 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: [today, today],
+        date: (this.$route.query.date || `${today},${today}`).split(","),
         from_org: [],
         keyword: "",
         project_id: "",
-        staff_id: "",
+        staff_id: this.$route.query.staff_id
+          ? this.$route.query.staff_id.split(",").map((item) => +item)
+          : [],
         pay_status: "",
       },
       searchOptions: [
@@ -176,7 +178,6 @@ export default {
         {
           key: "staff_id",
           type: "select",
-          width: 120,
           options: [],
           optionValue: "staff_id",
           optionLabel: "staff_name",
@@ -184,6 +185,8 @@ export default {
             placeholder: "业绩归属",
             clearable: true,
             filterable: true,
+            multiple: true,
+            "collapse-tags": true,
           },
         },
         {
@@ -341,6 +344,9 @@ export default {
           : "",
         from_org: Array.isArray(this.searchData.from_org)
           ? [...this.searchData.from_org].pop()
+          : "",
+        staff_id: Array.isArray(this.searchData.staff_id)
+          ? this.searchData.staff_id.join(",")
           : "",
       };
       this.listLoading = true;

@@ -61,14 +61,55 @@
         v-model="customerRankMonth"
         @date-change="getCustomerRankData"
       >
-        <Title slot="header-title" text="录入客户排行榜"></Title>
+        <Title slot="header-title" text="客户分析"></Title>
+        <div class="tab" slot="header-center">
+          <span
+            class="tab-item"
+            @click="handleCustomerChange(0)"
+            :class="{ 'tab-item--active': customerState === 0 }"
+            >客户来源</span
+          >
+          <span
+            class="tab-item"
+            :class="{ 'tab-item--active': customerState === 1 }"
+            @click="handleCustomerChange(1)"
+            >客户拥有量</span
+          >
+        </div>
         <RankBar
+          v-if="customerState === 1"
           bar-color="#24A3FF"
           bar-id="bar2"
           type="2"
-          :data="customerRankData"
+          :data="customerRankData.chart"
           series-name="客户数量"
           v-loading="customerRankLoading"
+        />
+        <Pie
+          v-else
+          v-loading="customerRankLoading"
+          :data="customerRankData.cake"
+        />
+      </Block>
+      <Block date-type="4" v-model="jobMonth" @date-change="getJobTitleList">
+        <Title slot="header-title" text="职业教育数据"></Title>
+        <OrderTable
+          v-loading="jobLoading"
+          :data="jobData"
+          :userIds="userIds"
+          :month="jobMonth"
+          :returned-type="returnedType"
+        />
+      </Block>
+      <Block date-type="4" v-model="eduMonth" @date-change="getEducationList">
+        <Title slot="header-title" text="学历教育数据"></Title>
+        <OrderTable
+          type="edu"
+          v-loading="eduLoading"
+          :data="eduData"
+          :userIds="userIds"
+          :month="eduMonth"
+          :returned-type="returnedType"
         />
       </Block>
       <Block class="online" @date-change="getOnlineStatistics">
@@ -100,6 +141,8 @@ import {
   getCustomerRankData,
   getOnlineStatistics,
   getBriefing,
+  getJobTitleList,
+  getEducationList,
 } from "@/api/workbench.js";
 import { dateMap } from "@/utils/date";
 import Block from "./components/Block";
@@ -108,6 +151,8 @@ import GaugeChart from "./components/GaugeChart";
 import TrendBar from "./components/TrendBar";
 import RankBar from "./components/RankBar";
 import OnlineChart from "./components/OnlineChart";
+import Pie from "./components/Pie";
+import OrderTable from "./components/OrderTable";
 export default {
   name: "Administrators",
   components: {
@@ -117,11 +162,17 @@ export default {
     TrendBar,
     RankBar,
     OnlineChart,
+    Pie,
+    OrderTable,
   },
   props: {
     userIds: {
       type: Array,
       default: () => [],
+    },
+    returnedType: {
+      type: [Number, String],
+      default: "",
     },
   },
   data() {
@@ -154,6 +205,7 @@ export default {
       customerRankLoading: false,
       customerRankMonth:
         new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
+      customerState: 0,
       // 在线人数
       onlineData: {
         list: {
@@ -170,37 +222,73 @@ export default {
       onlineState: 0,
       onlineType: 0,
       onlineLoading: false,
+      //职业教育数据
+      jobMonth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
+      jobData: [],
+      jobLoading: false,
+      //学历教育数据
+      eduMonth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
+      eduData: [],
+      eduLoading: false,
     };
   },
   watch: {
-    userIds: {
-      handler() {
-        this.performanceIndicators();
-        this.getTrendData();
-        this.getSalesRankData();
-        this.getCustomerRankData();
-        this.getBriefing();
-      },
-      deep: true,
+    userIds() {
+      this.getAllData();
+    },
+    returnedType() {
+      this.getAllData();
     },
   },
   activated() {
-    this.performanceIndicators();
-    this.getTrendData();
-    this.getSalesRankData();
-    this.getCustomerRankData();
-    this.getOnlineStatistics();
-    this.getBriefing();
+    this.getAllData();
   },
   created() {
-    this.performanceIndicators();
-    this.getTrendData();
-    this.getSalesRankData();
-    this.getCustomerRankData();
-    this.getOnlineStatistics();
-    this.getBriefing();
+    this.getAllData();
   },
   methods: {
+    getAllData() {
+      this.performanceIndicators();
+      this.getTrendData();
+      this.getSalesRankData();
+      this.getCustomerRankData();
+      this.getOnlineStatistics();
+      this.getBriefing();
+      this.getJobTitleList();
+      this.getEducationList();
+    },
+    // 学历教育数据
+    async getEducationList() {
+      const data = {
+        returned_type: this.returnedType,
+        month: this.eduMonth,
+        arr_uid: this.userIds,
+      };
+      this.eduLoading = true;
+      const res = await getEducationList(data).catch(() => {
+        this.eduData = [];
+      });
+      this.eduLoading = false;
+      if (res.code === 0) {
+        this.eduData = res.data;
+      }
+    },
+    // 职业教育数据
+    async getJobTitleList() {
+      const data = {
+        returned_type: this.returnedType,
+        month: this.jobMonth,
+        arr_uid: this.userIds,
+      };
+      this.jobLoading = true;
+      const res = await getJobTitleList(data).catch(() => {
+        this.jobData = [];
+      });
+      this.jobLoading = false;
+      if (res.code === 0) {
+        this.jobData = res.data;
+      }
+    },
     // 销售简报
     handleItemClick(type) {
       let router = "";
@@ -209,10 +297,28 @@ export default {
           router = "crmCustomer";
           break;
         case 2:
-          router = "crmOrder";
+          router = "channelStudent";
           break;
         case 3:
-          router = "channelStudent";
+          router = "crmOrder";
+          break;
+        case 4:
+          router = "collectionList";
+          break;
+        case 5:
+          router = "collectionList";
+          break;
+        case 6:
+          router = "studentOrder";
+          break;
+        case 7:
+          router = "paymentRebate";
+          break;
+        case 8:
+          router = "paymentRebate";
+          break;
+        case 9:
+          router = "crmOrder";
           break;
       }
       router &&
@@ -230,6 +336,7 @@ export default {
       const data = {
         type: this.salesDateType,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.salesLoading = true;
       const res = await getBriefing(data).catch(() => {});
@@ -256,11 +363,15 @@ export default {
         this.onlineData = res.data;
       }
     },
+    handleCustomerChange(state) {
+      this.customerState = state;
+    },
     // 录入客户排行榜
     async getCustomerRankData() {
       const data = {
         month: this.customerRankMonth,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.customerRankLoading = true;
       const res = await getCustomerRankData(data).catch(() => {});
@@ -289,6 +400,7 @@ export default {
       const data = {
         month: this.salesRankMonth,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.salesRankLoading = true;
       const res = await getSalesRankData(data).catch(() => {});
@@ -311,6 +423,7 @@ export default {
         year: this.trendYear,
         type: this.trendType,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.trendLoading = true;
       const res = await getTrendData(data).catch(() => {});
@@ -324,6 +437,7 @@ export default {
       const data = {
         type: this.performanceType,
         arr_uid: this.userIds,
+        returned_type: this.returnedType,
       };
       this.performanceLoading = true;
       const res = await performanceIndicators(data).catch(() => {});

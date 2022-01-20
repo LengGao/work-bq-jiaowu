@@ -184,7 +184,11 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
+        date: this.$route.query.date ? this.$route.query.date.split(",") : "",
         check_state: "-2",
+        staff_id: this.$route.query.staff_id
+          ? this.$route.query.staff_id.split(",").map((item) => +item)
+          : [],
       },
       searchOptions: [
         {
@@ -218,7 +222,6 @@ export default {
         {
           key: "staff_id",
           type: "select",
-          width: 120,
           options: [],
           optionValue: "staff_id",
           optionLabel: "staff_name",
@@ -226,6 +229,8 @@ export default {
             placeholder: "业绩归属",
             clearable: true,
             filterable: true,
+            multiple: true,
+            "collapse-tags": true,
           },
         },
         {
@@ -350,6 +355,9 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
+        staff_id: Array.isArray(this.searchData.staff_id)
+          ? this.searchData.staff_id.join(",")
+          : "",
       };
       this.listLoading = true;
       const res = await getOrgReceivableList(data).catch(() => {});

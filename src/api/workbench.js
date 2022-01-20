@@ -263,11 +263,43 @@ export function getUserId(data) {
         data
     })
 }
-// 根据数据范围选项查询用户ID
+// 通知
 export function getNoticeData(params) {
     return request({
         url: 'StaffNotice/notice',
         method: 'get',
         params
+    })
+}
+// 获取职业教育列表
+export function getJobTitleList(data) {
+    return request({
+        url: '/index/jobTitleList',
+        method: 'post',
+        data
+    })
+}
+// 获取职业教育详情
+export function getJobTitleDetail(data) {
+    return request({
+        url: '/index/jobTitleDetail',
+        method: 'post',
+        data
+    })
+}
+// 获取学历教育列表
+export function getEducationList(data) {
+    return request({
+        url: '/index/educationList',
+        method: 'post',
+        data
+    })
+}
+// 获取学历教育详情
+export function getEducationDetail(data) {
+    return request({
+        url: '/index/educationDetail',
+        method: 'post',
+        data
     })
 }
