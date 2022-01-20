@@ -32,7 +32,9 @@
           </div>
         </div>
       </div>
-      <div class="dialog-chart" :id="`chart-${type}`" ref="chart"></div>
+      <div class="dialog-content">
+        <div class="dialog-chart" :id="`chart-${type}`" ref="chart"></div>
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -128,7 +130,7 @@ export default {
         orderReturnedMoneyData.push(item.order_returned_money);
         yAxisData.push(item.name);
       });
-
+      this.chartInstance && this.chartInstance.resize();
       this.chartInstance = this.$echarts.init(
         document.getElementById(`chart-${this.type}`)
       );
@@ -210,7 +212,8 @@ export default {
     border: 1px solid #ddd;
     border-radius: 4px;
     text-align: center;
-    padding: 25px 70px;
+    padding: 25px 0;
+    width: 24%;
     &-title {
       margin-bottom: 8px;
     }
@@ -219,6 +222,10 @@ export default {
       color: #333;
     }
   }
+}
+.dialog-content {
+  height: 400px;
+  overflow-y: auto;
 }
 .dialog-chart {
   width: 100%;
