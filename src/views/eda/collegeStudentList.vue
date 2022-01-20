@@ -12,7 +12,6 @@
         >
         </el-tree>
       </div>
-
       <div class="table-list">
         <!--搜索模块-->
         <div class="college-student-search">
@@ -122,10 +121,12 @@
               min-width="80"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.book_fee_status == 1" class="green">
+              <el-button type="text" v-if="row.book_fee_status == 1" class="green" @click="alreadyOpenone(row,'book_fee_status',0
+              )">
                   已缴
-                </el-button>
-              <el-button type="text" v-if="row.book_fee_status == 0" class="red">
+              </el-button>
+              <el-button type="text" v-if="row.book_fee_status == 0" class="red" @click="alreadyOpenone(row,'book_fee_status',1
+              )">
                   未缴
                 </el-button>
             </template>
@@ -137,10 +138,12 @@
               min-width="80"
             >
            <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.platform_fee_status == 1" class="green">
+              <el-button type="text" v-if="row.platform_fee_status == 1" class="green" @click="alreadyOpentwo(row,'platform_fee_status',0
+              )">
                   已缴
                 </el-button>
-              <el-button type="text" v-if="row.platform_fee_status == 0" class="red">
+              <el-button type="text" v-if="row.platform_fee_status == 0" class="red" @click="alreadyOpentwo(row,'platform_fee_status',1
+              )">
                   未缴
                 </el-button>
             </template>
@@ -152,10 +155,12 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.service_fee_status == 1" class="green">
+              <el-button type="text" v-if="row.service_fee_status == 1" class="green" @click="alreadyOpenthree(row,'service_fee_status',0
+              )">
                   已缴
                 </el-button>
-              <el-button type="text" v-if="row.service_fee_status == 0" class="red">
+              <el-button type="text" v-if="row.service_fee_status == 0" class="red" @click="alreadyOpenthree(row,'service_fee_status',1
+              )">
                   未缴
               </el-button>
             </template>
@@ -167,10 +172,12 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_teach_fee_status == 1" class="green">
+              <el-button type="text" v-if="row.paper_teach_fee_status == 1" class="green" @click="alreadyOpenfour(row,'paper_teach_fee_status',0
+              )">
                   已缴
                 </el-button>
-              <el-button type="text" v-if="row.paper_teach_fee_status == 0" class="red">
+              <el-button type="text" v-if="row.paper_teach_fee_status == 0" class="red" @click="alreadyOpenfour(row,'paper_teach_fee_status',1
+              )">
                   未缴
                 </el-button>
             </template>
@@ -182,10 +189,12 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_reply_fee_status == 1" class="green">
+              <el-button type="text" v-if="row.paper_reply_fee_status == 1" class="green" @click="alreadyOpenfive(row,'paper_reply_fee_status',
+              0)">
                   已缴
                 </el-button>
-              <el-button type="text" class="red" v-if="row.paper_reply_fee_status == 0">
+              <el-button type="text" class="red" v-if="row.paper_reply_fee_status == 0" @click="alreadyOpenfive(row,'paper_reply_fee_status',
+              1)">
                   未缴
                 </el-button>
             </template>
@@ -197,12 +206,14 @@
               min-width="90"
             >
             <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_handle_fee_status == 1" class="green">
+              <el-button type="text" v-if="row.paper_handle_fee_status == 1" class="green" @click="alreadyOpensix(row,'paper_handle_fee_status',
+              0)">
                   已缴
-                </el-button>
-              <el-button type="text" class="red" v-if="row.paper_handle_fee_status == 0">
+              </el-button>
+              <el-button type="text" class="red" v-if="row.paper_handle_fee_status == 0" @click="alreadyOpensix(row,'paper_handle_fee_status',
+              1)">
                   未缴
-                </el-button>
+              </el-button>
             </template>
             </el-table-column>
               <el-table-column
@@ -238,14 +249,13 @@
         </div>
       </div>
     </div>
-     <PayDialog
+    <PayDialog
         v-model="ResetDialogflag"
         :ids="checkedIds"
         @on-success="getEduList"
     />
   </div>
 </template>
-
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import PayDialog from "./components/PayDialog";
@@ -574,32 +584,56 @@ export default {
         this.listTotal = res.data.total;
       }
     },
+
     // 缴费变化
-     alreadyOpenone(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+    alreadyOpenone(row,key,status) {
       this.$confirm("您确定要修改该状态吗?", { type: "warning" })
         .then(() => {
-          this.batchUpdateFee(
-            id,
-            book_fee_status = !book_fee_status,
-            platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status
-            );
+          row[key] = status;
+          this.batchUpdateFee(row);
+        })
+        .catch(() => {});
+    },
+    alreadyOpentwo(row,key,status){
+      this.$confirm("您确定要修改该状态吗？",{type:"warning"})
+      .then(()=>{
+        row[key] = status;
+        this.batchUpdateFee(row);
+      })
+    },
+    alreadyOpenthree(row,key,status){
+      this.$confirm("您确定要修改该状态吗？",{type:"warning"})
+      .then(()=>{
+        row[key] = status;
+        this.batchUpdateFee(row);
+      })
+    },
+    alreadyOpenfour(row,key,status){
+      this.$confirm("您确定要修改该状态吗？",{type:"warning"})
+      .then(()=>{
+        row[key] = status;
+        this.batchUpdateFee(row);
+      })
+    },
+    alreadyOpenfive(row,key,status){
+        this.$confirm("您确定要修改该状态吗?", { type: "warning" })
+        .then(() => {
+          row[key] = status;
+          this.batchUpdateFee(row);
+        })
+        .catch(() => {});
+    },
+    alreadyOpensix(row,key,status) {
+      this.$confirm("您确定要修改该状态吗?", { type: "warning" })
+        .then(() => {
+          row[key] = status;
+          this.batchUpdateFee(row);
         })
         .catch(() => {});
     },
 
-    alreadyOpentwo(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
-      this.$confirm("您确定要修改该状态吗?", { type: "warning" })
-        .then(() => {
-          this.batchUpdateFee(
-            id,
-            platform_fee_status == !platform_fee_status,
-            book_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status
-            );
-        })
-        .catch(() => {});
-    },
-
-      async batchUpdateFee(id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status) {
+      async batchUpdateFee(row) {
+      const {id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status} = row
       const data = { 
         id_arr:[id],
         book_fee_status,
