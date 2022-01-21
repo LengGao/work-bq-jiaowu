@@ -7,7 +7,7 @@
       inline
       ref="formData"
     >
-      <Title text="开课信息"></Title>
+      <Title text="回款信息"></Title>
       <el-form-item label="机构名称" prop="from_organization_id">
         <el-select
           v-model="formData.from_organization_id"

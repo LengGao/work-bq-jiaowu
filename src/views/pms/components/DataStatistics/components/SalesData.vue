@@ -29,6 +29,13 @@
         }}<span class="unit">{{ unitFormat(data.zhaoShengRuZhang) }}</span>
       </p>
     </div>
+    <div class="sales-data-item" @click="$emit('item-click', 9)">
+      <p class="sales-data-item-title">招生退款/作废金额</p>
+      <p class="sales-data-item-value">
+        {{ priceFormat(data.zuoFei)
+        }}<span class="unit">{{ unitFormat(data.zuoFei) }}</span>
+      </p>
+    </div>
     <div class="sales-data-item" @click="$emit('item-click', 6)">
       <p class="sales-data-item-title">机构订单金额</p>
       <p class="sales-data-item-value">
@@ -48,13 +55,6 @@
       <p class="sales-data-item-value">
         {{ priceFormat(data.jiGouRuZhang)
         }}<span class="unit">{{ unitFormat(data.jiGouRuZhang) }}</span>
-      </p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 9)">
-      <p class="sales-data-item-title">退款作废金额</p>
-      <p class="sales-data-item-value">
-        {{ priceFormat(data.zuoFei)
-        }}<span class="unit">{{ unitFormat(data.zuoFei) }}</span>
       </p>
     </div>
   </div>

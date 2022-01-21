@@ -84,8 +84,8 @@
       <div class="returned-type">
         <span class="returned-type-title">回款统计方式</span>
         <el-radio-group v-model="returnedType">
-          <el-radio :label="1">按申请入账时间</el-radio>
-          <el-radio :label="2">按订单创建时间</el-radio>
+          <el-radio :label="1">按回款创建时间</el-radio>
+          <el-radio :label="2">按申请入账时间</el-radio>
         </el-radio-group>
       </div>
     </div>

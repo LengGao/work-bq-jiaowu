@@ -453,7 +453,6 @@ export default {
 .admin {
   &-container {
     display: flex;
-    align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     .block {
