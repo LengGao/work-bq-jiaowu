@@ -669,3 +669,19 @@ export function resetDegreeOrder(data) {
         data
     })
 }
+// 清除机构订单回款记录
+export function clearPayLog(data) {
+    return request({
+        url: '/OrgReceivable/clearPayLog',
+        method: 'post',
+        data
+    })
+}
+// 修改机构订单金额
+export function changeOrderMoney(data) {
+    return request({
+        url: '/OrgReceivable/changeOrderMoney',
+        method: 'post',
+        data
+    })
+}
