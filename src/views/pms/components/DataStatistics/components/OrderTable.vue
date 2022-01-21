@@ -15,8 +15,8 @@
       </el-table-column>
       <el-table-column
         prop="order_count"
-        label="订单数量"
-        min-width="80"
+        label="订单数"
+        min-width="70"
         align="center"
         show-overflow-tooltip
       >
@@ -24,7 +24,7 @@
       <el-table-column
         prop="order_money"
         label="订单金额"
-        min-width="100"
+        min-width="120"
         align="center"
         show-overflow-tooltip
       >
@@ -35,7 +35,7 @@
       <el-table-column
         prop="order_returned_money_this_month"
         label="回款金额"
-        min-width="100"
+        min-width="120"
         align="center"
       >
         <template slot-scope="{ row }">
@@ -45,7 +45,7 @@
       <el-table-column
         prop="order_refund_money"
         label="退款金额"
-        min-width="100"
+        min-width="80"
         align="center"
       >
         <template slot-scope="{ row }">
@@ -58,10 +58,17 @@
         min-width="80"
         align="center"
       >
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" min-width="80" align="center">
         <template slot-scope="{ row }">
-          <el-button type="text" @click="openDetail(row)">查看详情</el-button>
+          <span :class="`ratio${isDown(row.ratio) ? '--down' : ''}`">
+            <span class="ratio-value">{{ row.ratio }}</span>
+            <i class="el-icon-bottom" v-if="isDown(row.ratio)"></i>
+            <i class="el-icon-top" v-else></i>
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" min-width="50" align="center">
+        <template slot-scope="{ row }">
+          <el-button type="text" @click="openDetail(row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,7 +100,11 @@ export default {
       clickData: {},
     };
   },
+
   methods: {
+    isDown(val) {
+      return val.includes("-");
+    },
     openDetail(row) {
       this.show = true;
       this.clickData = row;
@@ -102,5 +113,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.ratio {
+  color: #43d100;
+  &--down {
+    color: #fd6500;
+  }
+}
 </style>

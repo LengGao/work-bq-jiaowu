@@ -37,7 +37,7 @@ export default {
         },
         legend: {
           orient: "vertical",
-          left: "left",
+          left: "right",
         },
         series: [
           {
