@@ -9,6 +9,11 @@
           :data="searchData"
           @on-search="handleSearch"
         />
+        <div class="actions">
+          <el-button type="primary" :loading="exportLoading" @click="exportList"
+            >导 出</el-button
+          >
+        </div>
       </header>
       <!--列表-->
       <div class="userTable">
@@ -84,7 +89,7 @@
           >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-                {{ row.project_name }}
+                {{ row.title }}
               </el-button>
             </template>
           </el-table-column>
@@ -138,6 +143,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -150,7 +156,7 @@ import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getReturnPaymentList, getCustomfieldOptions } from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
-import { cloneOptions } from "@/utils/index";
+import { cloneOptions, download } from "@/utils";
 export default {
   name: "collectionList",
   components: {
@@ -160,7 +166,9 @@ export default {
     return {
       listData: [],
       listLoading: false,
+      exportLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         date: this.$route.query.date ? this.$route.query.date.split(",") : "",
@@ -347,6 +355,10 @@ export default {
       };
       this.getReturnPaymentList(data);
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getReturnPaymentList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getReturnPaymentList();
@@ -354,6 +366,7 @@ export default {
     async getReturnPaymentList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
@@ -367,6 +380,24 @@ export default {
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
+    },
+    async exportList() {
+      const data = {
+        page: this.pageNum,
+        export: 1,
+        limit: this.pageSize,
+        ...this.searchData,
+        date: Array.isArray(this.searchData.date)
+          ? this.searchData.date.join(" - ")
+          : "",
+        staff_id: Array.isArray(this.searchData.staff_id)
+          ? this.searchData.staff_id.join(",")
+          : "",
+      };
+      this.exportLoading = true;
+      const res = await getReturnPaymentList(data).catch(() => {});
+      this.exportLoading = false;
+      download(URL.createObjectURL(res), "回款入帐");
     },
     coursDetail(uid) {
       this.$router.push({
@@ -388,9 +419,13 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 section {
   padding: 16px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
 }
 .approve-status {
   &::before {

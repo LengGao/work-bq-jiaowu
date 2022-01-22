@@ -300,6 +300,7 @@ export function getReturnPaymentList(data) {
     return request({
         url: 'CrmOrder/log',
         method: 'post',
+        responseType: data.export ? 'blob' : 'json',
         data
     })
 }
