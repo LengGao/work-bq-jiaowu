@@ -181,7 +181,7 @@
 
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, today } from "@/utils/date";
 import { getReturnPaymentList, getCustomfieldOptions } from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions } from "@/utils";
@@ -199,7 +199,7 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: this.$route.query.date ? this.$route.query.date.split(",") : "",
+        date: (this.$route.query.date || `${today},${today}`).split(","),
         keyword: "",
         department_id: "",
         staff_id: this.$route.query.staff_id
