@@ -146,6 +146,13 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="order_create_time"
+          label="订单创建日期"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="order_verify_status"
           label="订单状态"
           min-width="100"
