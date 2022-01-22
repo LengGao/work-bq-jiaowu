@@ -16,19 +16,19 @@
         <li class="panel-item">
           <span>订单金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.order_money || 0 }}</span>
+            <span>{{ panelData.order_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>回款金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.pay_money || 0 }}</span>
+            <span>{{ panelData.pay_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>未回款金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.overdue_money || 0 }}</span>
+            <span>{{ panelData.overdue_money | moneyFormat }}</span>
           </div>
         </li>
       </ul>
