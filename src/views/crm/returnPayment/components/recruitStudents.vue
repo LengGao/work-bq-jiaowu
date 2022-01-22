@@ -95,7 +95,7 @@
         >
           <template slot-scope="{ row }">
             <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-              {{ row.project_name }}
+              {{ row.title }}
             </el-button>
           </template>
         </el-table-column>
