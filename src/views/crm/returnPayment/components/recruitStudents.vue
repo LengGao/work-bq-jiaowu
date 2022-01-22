@@ -7,6 +7,11 @@
         :data="searchData"
         @on-search="handleSearch"
       />
+      <div class="actions">
+        <el-button type="primary" :loading="exportLoading" @click="exportList"
+          >导 出</el-button
+        >
+      </div>
     </header>
     <!--列表-->
     <div class="userTable">
@@ -242,7 +247,7 @@ import {
   getCustomfieldOptions,
 } from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
-import { cloneOptions } from "@/utils/index";
+import { cloneOptions, download } from "@/utils";
 export default {
   name: "recruitStudents",
   components: {
@@ -252,11 +257,13 @@ export default {
     return {
       listData: [],
       listLoading: false,
+      exportLoading: false,
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
       searchData: {
         date: "",
+        pay_date: "",
         keyword: "",
         department_id: "",
         staff_id: "",
@@ -344,6 +351,22 @@ export default {
           attrs: {
             clearable: true,
             placeholder: "入账状态",
+          },
+        },
+        {
+          key: "pay_date",
+          type: "datePicker",
+          attrs: {
+            value: "",
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "回款日期起",
+            "end-placeholder": "回款日期止",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
           },
         },
         {
@@ -521,12 +544,33 @@ export default {
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
           : "",
+        pay_date: Array.isArray(this.searchData.pay_date)
+          ? this.searchData.pay_date.join(" - ")
+          : "",
       };
       this.listLoading = true;
       const res = await getReturnPaymentList(data).catch(() => {});
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
+    },
+    async exportList() {
+      const data = {
+        page: this.pageNum,
+        export: 1,
+        limit: this.pageSize,
+        ...this.searchData,
+        date: Array.isArray(this.searchData.date)
+          ? this.searchData.date.join(" - ")
+          : "",
+        pay_date: Array.isArray(this.searchData.pay_date)
+          ? this.searchData.pay_date.join(" - ")
+          : "",
+      };
+      this.exportLoading = true;
+      const res = await getReturnPaymentList(data).catch(() => {});
+      this.exportLoading = false;
+      download(URL.createObjectURL(res), "回款入帐");
     },
     coursDetail(uid) {
       this.$router.push({
@@ -548,7 +592,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
+header {
+  display: flex;
+  justify-content: space-between;
+}
 .approve-status {
   &::before {
     display: inline-block;
