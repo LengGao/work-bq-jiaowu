@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import { getRuleDetail } from "@/api/exa";
 export default {
   name: "LiveStatisticsDialog",
   props: {

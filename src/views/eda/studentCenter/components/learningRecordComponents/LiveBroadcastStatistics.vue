@@ -87,6 +87,16 @@
             <span>{{ row.progress || 0 }}%</span>
           </template>
         </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          fixed="right"
+          min-width="100"
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="openDetail(row)">详情</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div class="table_bottom">
         <page
@@ -97,11 +107,13 @@
         />
       </div>
     </div>
+    <LiveStatisticsDialog v-model="dialogVisible" :datas="currentData" />
   </div>
 </template>
 
 <script>
 import { userCenterLiveList, userCenterLiveData } from "@/api/eda";
+import LiveStatisticsDialog from "@/views/eda/liveDetails/components/LiveStatisticsDialog";
 export default {
   name: "LiveBroadcastStatistics",
   props: {
@@ -109,6 +121,9 @@ export default {
       type: [String, Number],
       default: "",
     },
+  },
+  components: {
+    LiveStatisticsDialog,
   },
   data() {
     return {
@@ -118,6 +133,8 @@ export default {
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
+      currentData: [],
+      dialogVisible: false,
     };
   },
   created() {
@@ -125,6 +142,10 @@ export default {
     this.userCenterLiveData();
   },
   methods: {
+    openDetail(row) {
+      this.currentData = row.detail;
+      this.dialogVisible = true;
+    },
     handleSizeChange(size) {
       this.pageSize = size;
       this.userCenterLiveList();
