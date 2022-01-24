@@ -179,7 +179,7 @@ export default {
             emphasis: {
               focus: "series",
             },
-            data: orderRefundMoneyData,
+            data: orderReturnedMoneyData,
           },
           {
             name: "退款金额",
@@ -191,7 +191,7 @@ export default {
             emphasis: {
               focus: "series",
             },
-            data: orderReturnedMoneyData,
+            data: orderRefundMoneyData,
           },
         ],
       });
