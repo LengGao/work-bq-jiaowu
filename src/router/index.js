@@ -68,10 +68,16 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'gradeManage',
+        name: 'gradeManage',
+        component: () => import('@/views/sou/gradeManage/index.vue'),
+        meta: { title: '项目统计' },
+      },
+      {
         path: 'projectStatistics',
         name: 'projectStatistics',
         component: () => import('@/views/sou/projectStatistics.vue'),
-        meta: { title: '项目统计', icon: 'product-add' },
+        meta: { title: '项目统计' },
       },
       {
         path: 'questionStatistics',

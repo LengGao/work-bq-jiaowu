@@ -1441,3 +1441,35 @@ export function getSingleVideoStatisticsList(params) {
     params,
   })
 }
+// 添加届别
+export function addGrade(data) {
+  return request({
+    url: '/Crm/tianJiaJieBie',
+    method: 'post',
+    data,
+  })
+}
+// 删除届别
+export function delGrade(data) {
+  return request({
+    url: '/Crm/shanChuJieBie',
+    method: 'post',
+    data,
+  })
+}
+// 修改届别
+export function updateGrade(data) {
+  return request({
+    url: '/Crm/xiuGaiJieBie',
+    method: 'post',
+    data,
+  })
+}
+// 获取届别列表
+export function getGradeList(params) {
+  return request({
+    url: '/Crm/jieBieLieBiao',
+    method: 'get',
+    params,
+  })
+}
