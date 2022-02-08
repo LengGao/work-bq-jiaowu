@@ -1465,10 +1465,26 @@ export function updateGrade(data) {
     data,
   })
 }
+// 批量修改订单届别
+export function updateBatchOrderGrade(data) {
+  return request({
+    url: '/Crm/piLiangXiuGaiDingDanJieBie',
+    method: 'post',
+    data,
+  })
+}
 // 获取届别列表
 export function getGradeList(params) {
   return request({
     url: '/Crm/jieBieLieBiao',
+    method: 'get',
+    params,
+  })
+}
+// 获取届别下拉选项
+export function getGradeOptions(params) {
+  return request({
+    url: '/Crm/jieBieXiaLaLieBiao',
     method: 'get',
     params,
   })

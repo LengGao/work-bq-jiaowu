@@ -41,7 +41,7 @@
             height="640"
             @selection-change="handleSeletChange"
           >
-          <el-table-column type="selection" width="55"> </el-table-column>
+            <el-table-column type="selection" width="55"> </el-table-column>
             <el-table-column
               prop="surname"
               label="学生姓名"
@@ -66,20 +66,20 @@
             </el-table-column>
 
             <el-table-column
+              prop="from_institution_name"
+              label="推荐机构"
+              show-overflow-tooltip
+              min-width="130"
+            ></el-table-column>
+            <el-table-column
               prop="staff_name"
               label="所属老师"
               show-overflow-tooltip
               min-width="100"
             ></el-table-column>
             <el-table-column
-              prop="from_institution_name"
-              label="推荐机构"
-              show-overflow-tooltip
-              min-width="130"
-            ></el-table-column>
-              <el-table-column
-              prop="staff_name"
-              label="所属老师"
+              prop="jiebie_name"
+              label="届别名称"
               show-overflow-tooltip
               min-width="100"
             ></el-table-column>
@@ -120,16 +120,24 @@
               show-overflow-tooltip
               min-width="80"
             >
-            <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.book_fee_status == 1" class="green" @click="alreadyOpenone(row,'book_fee_status',0
-              )">
+              <template slot-scope="{ row }">
+                <el-button
+                  type="text"
+                  v-if="row.book_fee_status == 1"
+                  class="green"
+                  @click="alreadyOpenone(row, 'book_fee_status', 0)"
+                >
                   已缴
-              </el-button>
-              <el-button type="text" v-if="row.book_fee_status == 0" class="red" @click="alreadyOpenone(row,'book_fee_status',1
-              )">
+                </el-button>
+                <el-button
+                  type="text"
+                  v-if="row.book_fee_status == 0"
+                  class="red"
+                  @click="alreadyOpenone(row, 'book_fee_status', 1)"
+                >
                   未缴
                 </el-button>
-            </template>
+              </template>
             </el-table-column>
             <el-table-column
               prop="platform_fee_status"
@@ -137,16 +145,24 @@
               show-overflow-tooltip
               min-width="80"
             >
-           <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.platform_fee_status == 1" class="green" @click="alreadyOpentwo(row,'platform_fee_status',0
-              )">
+              <template slot-scope="{ row }">
+                <el-button
+                  type="text"
+                  v-if="row.platform_fee_status == 1"
+                  class="green"
+                  @click="alreadyOpentwo(row, 'platform_fee_status', 0)"
+                >
                   已缴
                 </el-button>
-              <el-button type="text" v-if="row.platform_fee_status == 0" class="red" @click="alreadyOpentwo(row,'platform_fee_status',1
-              )">
+                <el-button
+                  type="text"
+                  v-if="row.platform_fee_status == 0"
+                  class="red"
+                  @click="alreadyOpentwo(row, 'platform_fee_status', 1)"
+                >
                   未缴
                 </el-button>
-            </template>
+              </template>
             </el-table-column>
             <el-table-column
               prop="service_fee_status"
@@ -154,33 +170,49 @@
               show-overflow-tooltip
               min-width="90"
             >
-            <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.service_fee_status == 1" class="green" @click="alreadyOpenthree(row,'service_fee_status',0
-              )">
+              <template slot-scope="{ row }">
+                <el-button
+                  type="text"
+                  v-if="row.service_fee_status == 1"
+                  class="green"
+                  @click="alreadyOpenthree(row, 'service_fee_status', 0)"
+                >
                   已缴
                 </el-button>
-              <el-button type="text" v-if="row.service_fee_status == 0" class="red" @click="alreadyOpenthree(row,'service_fee_status',1
-              )">
+                <el-button
+                  type="text"
+                  v-if="row.service_fee_status == 0"
+                  class="red"
+                  @click="alreadyOpenthree(row, 'service_fee_status', 1)"
+                >
                   未缴
-              </el-button>
-            </template>
+                </el-button>
+              </template>
             </el-table-column>
-             <el-table-column
+            <el-table-column
               prop="paper_teach_fee_status"
               label="论文指导费"
               show-overflow-tooltip
               min-width="90"
             >
-            <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_teach_fee_status == 1" class="green" @click="alreadyOpenfour(row,'paper_teach_fee_status',0
-              )">
+              <template slot-scope="{ row }">
+                <el-button
+                  type="text"
+                  v-if="row.paper_teach_fee_status == 1"
+                  class="green"
+                  @click="alreadyOpenfour(row, 'paper_teach_fee_status', 0)"
+                >
                   已缴
                 </el-button>
-              <el-button type="text" v-if="row.paper_teach_fee_status == 0" class="red" @click="alreadyOpenfour(row,'paper_teach_fee_status',1
-              )">
+                <el-button
+                  type="text"
+                  v-if="row.paper_teach_fee_status == 0"
+                  class="red"
+                  @click="alreadyOpenfour(row, 'paper_teach_fee_status', 1)"
+                >
                   未缴
                 </el-button>
-            </template>
+              </template>
             </el-table-column>
             <el-table-column
               prop="paper_reply_fee_status"
@@ -188,16 +220,24 @@
               show-overflow-tooltip
               min-width="90"
             >
-            <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_reply_fee_status == 1" class="green" @click="alreadyOpenfive(row,'paper_reply_fee_status',
-              0)">
+              <template slot-scope="{ row }">
+                <el-button
+                  type="text"
+                  v-if="row.paper_reply_fee_status == 1"
+                  class="green"
+                  @click="alreadyOpenfive(row, 'paper_reply_fee_status', 0)"
+                >
                   已缴
                 </el-button>
-              <el-button type="text" class="red" v-if="row.paper_reply_fee_status == 0" @click="alreadyOpenfive(row,'paper_reply_fee_status',
-              1)">
+                <el-button
+                  type="text"
+                  class="red"
+                  v-if="row.paper_reply_fee_status == 0"
+                  @click="alreadyOpenfive(row, 'paper_reply_fee_status', 1)"
+                >
                   未缴
                 </el-button>
-            </template>
+              </template>
             </el-table-column>
             <el-table-column
               prop="paper_handle_fee_status"
@@ -205,18 +245,26 @@
               show-overflow-tooltip
               min-width="90"
             >
-            <template slot-scope=" { row } ">
-              <el-button type="text" v-if="row.paper_handle_fee_status == 1" class="green" @click="alreadyOpensix(row,'paper_handle_fee_status',
-              0)">
+              <template slot-scope="{ row }">
+                <el-button
+                  type="text"
+                  v-if="row.paper_handle_fee_status == 1"
+                  class="green"
+                  @click="alreadyOpensix(row, 'paper_handle_fee_status', 0)"
+                >
                   已缴
-              </el-button>
-              <el-button type="text" class="red" v-if="row.paper_handle_fee_status == 0" @click="alreadyOpensix(row,'paper_handle_fee_status',
-              1)">
+                </el-button>
+                <el-button
+                  type="text"
+                  class="red"
+                  v-if="row.paper_handle_fee_status == 0"
+                  @click="alreadyOpensix(row, 'paper_handle_fee_status', 1)"
+                >
                   未缴
-              </el-button>
-            </template>
+                </el-button>
+              </template>
             </el-table-column>
-              <el-table-column
+            <el-table-column
               prop="create_time"
               label="创建时间"
               show-overflow-tooltip
@@ -233,9 +281,8 @@
         </div>
         <div class="table_bottom">
           <div>
-            <el-button @click="openResetDialog">
-              补齐费用
-            </el-button>
+            <el-button @click="openGradeDialog">修改届别</el-button>
+            <el-button @click="openResetDialog">补齐费用</el-button>
             <el-button @click="exportEduList" :loading="exportLoading">
               导出数据
             </el-button>
@@ -250,22 +297,28 @@
       </div>
     </div>
     <PayDialog
-        v-model="ResetDialogflag"
-        :ids="checkedIds"
-        @on-success="getEduList"
+      v-model="ResetDialogflag"
+      :ids="checkedIds"
+      @on-success="getEduList"
+    />
+    <UpdateOrderGrade
+      v-model="gradeDialogflag"
+      :order-ids="checkedOrderIds"
+      @on-success="getEduList"
     />
   </div>
 </template>
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import PayDialog from "./components/PayDialog";
+import UpdateOrderGrade from "./components/UpdateOrderGrade";
 import {
   getEduList,
   getAdminSelect,
   getTreeCategory,
   exportEduList,
 } from "@/api/eda";
-import { getInstitutionSelectData } from "@/api/sou";
+import { getInstitutionSelectData, getGradeOptions } from "@/api/sou";
 import { cloneOptions, download } from "@/utils/index";
 import { getShortcuts } from "@/utils/date";
 import { batchUpdateFee } from "@/api/eda";
@@ -274,21 +327,23 @@ export default {
   components: {
     PartiallyHidden,
     PayDialog,
+    UpdateOrderGrade,
   },
   data() {
     return {
-      ResetDialogflag:false,
+      ResetDialogflag: false,
       searchData: {
         keyword: "",
         from_organization_id: "",
         admin_id: "",
         date: "",
-        book_fee_status:"",
-        platform_fee_status:"",
-        service_fee_status:"",
-        paper_teach_fee_status:"",
-        paper_reply_fee_status:"",
-        paper_handle_fee_status:"",
+        book_fee_status: "",
+        platform_fee_status: "",
+        service_fee_status: "",
+        paper_teach_fee_status: "",
+        paper_reply_fee_status: "",
+        paper_handle_fee_status: "",
+        jiebie_id: "",
       },
       searchOptions: [
         {
@@ -308,7 +363,7 @@ export default {
         {
           key: "from_organization_id",
           type: "cascader",
-          width:150,
+          width: 150,
           attrs: {
             placeholder: "推荐机构",
             filterable: true,
@@ -319,12 +374,25 @@ export default {
         {
           key: "admin_id",
           type: "select",
-          width:120,
+          width: 120,
           options: [],
           optionValue: "staff_id",
           optionLabel: "staff_name",
           attrs: {
             placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "jiebie_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "届别名称",
             clearable: true,
             filterable: true,
           },
@@ -444,7 +512,6 @@ export default {
           },
         },
 
-
         {
           key: "keyword",
           attrs: {
@@ -468,6 +535,9 @@ export default {
       treeData: [],
       treeParams: {},
       exportLoading: false,
+      gradeDialogflag: false,
+      checkedOrderIds: [],
+      checkedIds: [],
     };
   },
   created() {
@@ -475,10 +545,23 @@ export default {
     this.getEduList();
     this.getInstitutionSelectData();
     this.getAdminSelect();
+    this.getGradeOptions();
   },
   methods: {
+    openGradeDialog() {
+      if (!this.checkedOrderIds.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      this.gradeDialogflag = true;
+    },
     handleSeletChange(selection) {
-      this.checkedIds = selection.map((item) => item.id);
+      this.checkedIds = [];
+      this.checkedOrderIds = [];
+      selection.forEach((item) => {
+        this.checkedIds.push(item.id);
+        this.checkedOrderIds.push(item.order_id);
+      });
     },
     openResetDialog() {
       if (!this.checkedIds.length) {
@@ -524,13 +607,16 @@ export default {
         ].concat(res.data);
       }
     },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.searchOptions[3].options = res.data;
+      }
+    },
     // 获取所属老师
     async getAdminSelect() {
-      this.detaiLoading = true;
-      const res = await getAdminSelect().catch(() => {
-        this.detaiLoading = false;
-      });
-      this.detaiLoading = false;
+      const res = await getAdminSelect();
       if (res.code === 0) {
         this.searchOptions[2].options = res.data;
       }
@@ -570,6 +656,7 @@ export default {
     // 获取列表
     async getEduList() {
       this.checkedIds = [];
+      this.checkedOrderIds = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
@@ -586,7 +673,7 @@ export default {
     },
 
     // 缴费变化
-    alreadyOpenone(row,key,status) {
+    alreadyOpenone(row, key, status) {
       this.$confirm("您确定要修改该状态吗?", { type: "warning" })
         .then(() => {
           row[key] = status;
@@ -594,36 +681,33 @@ export default {
         })
         .catch(() => {});
     },
-    alreadyOpentwo(row,key,status){
-      this.$confirm("您确定要修改该状态吗？",{type:"warning"})
-      .then(()=>{
+    alreadyOpentwo(row, key, status) {
+      this.$confirm("您确定要修改该状态吗？", { type: "warning" }).then(() => {
         row[key] = status;
         this.batchUpdateFee(row);
-      })
+      });
     },
-    alreadyOpenthree(row,key,status){
-      this.$confirm("您确定要修改该状态吗？",{type:"warning"})
-      .then(()=>{
+    alreadyOpenthree(row, key, status) {
+      this.$confirm("您确定要修改该状态吗？", { type: "warning" }).then(() => {
         row[key] = status;
         this.batchUpdateFee(row);
-      })
+      });
     },
-    alreadyOpenfour(row,key,status){
-      this.$confirm("您确定要修改该状态吗？",{type:"warning"})
-      .then(()=>{
+    alreadyOpenfour(row, key, status) {
+      this.$confirm("您确定要修改该状态吗？", { type: "warning" }).then(() => {
         row[key] = status;
         this.batchUpdateFee(row);
-      })
+      });
     },
-    alreadyOpenfive(row,key,status){
-        this.$confirm("您确定要修改该状态吗?", { type: "warning" })
+    alreadyOpenfive(row, key, status) {
+      this.$confirm("您确定要修改该状态吗?", { type: "warning" })
         .then(() => {
           row[key] = status;
           this.batchUpdateFee(row);
         })
         .catch(() => {});
     },
-    alreadyOpensix(row,key,status) {
+    alreadyOpensix(row, key, status) {
       this.$confirm("您确定要修改该状态吗?", { type: "warning" })
         .then(() => {
           row[key] = status;
@@ -632,18 +716,26 @@ export default {
         .catch(() => {});
     },
 
-      async batchUpdateFee(row) {
-      const {id,book_fee_status,platform_fee_status,service_fee_status,paper_teach_fee_status,paper_reply_fee_status,paper_handle_fee_status} = row
-      const data = { 
-        id_arr:[id],
+    async batchUpdateFee(row) {
+      const {
+        id,
         book_fee_status,
         platform_fee_status,
         service_fee_status,
         paper_teach_fee_status,
         paper_reply_fee_status,
         paper_handle_fee_status,
-       };
-       console.log(data);
+      } = row;
+      const data = {
+        id_arr: [id],
+        book_fee_status,
+        platform_fee_status,
+        service_fee_status,
+        paper_teach_fee_status,
+        paper_reply_fee_status,
+        paper_handle_fee_status,
+      };
+      console.log(data);
       const res = await batchUpdateFee(data);
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -683,10 +775,10 @@ export default {
     padding-bottom: 0;
   }
 }
-.green{
+.green {
   color: #41cb00;
 }
-.red{
+.red {
   color: #ee5f00;
 }
 </style>

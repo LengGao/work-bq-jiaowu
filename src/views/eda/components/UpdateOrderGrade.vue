@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="`${isEdit ? '编辑' : '添加'}届别`"
+    title="修改届别"
     :visible="value"
     width="400px"
     @open="handleOpen"
@@ -15,12 +15,16 @@
       inline
       ref="formData"
     >
-      <el-form-item label="届别名称" prop="title">
-        <el-input
-          v-model="formData.title"
-          class="input"
-          placeholder="请输入届别名称"
-        />
+      <el-form-item label="届别名称" prop="jiebie_id">
+        <el-select v-model="formData.jiebie_id" placeholder="请选届别">
+          <el-option
+            v-for="item in gradeOptions"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -29,66 +33,63 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >保 存</el-button
+        >确 定</el-button
       >
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { addGrade, updateGrade } from "@/api/sou";
+import { getGradeOptions, updateBatchOrderGrade } from "@/api/sou";
 export default {
-  name: "AddGrade",
+  name: "UpdateOrderGrade",
   props: {
     value: {
       type: Boolean,
       default: false,
     },
-    editData: {
-      type: Object,
-      default: () => ({}),
+    orderIds: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
     return {
       addLoading: false,
+      gradeOptions: [],
       formData: {
-        title: "",
+        jiebie_id: "",
       },
       rules: {
-        title: [{ required: true, message: "请输入", trigger: "blur" }],
+        jiebie_id: [{ required: true, message: "请选择", trigger: "change" }],
       },
     };
   },
-  computed: {
-    isEdit() {
-      return !!this.editData.id;
-    },
-  },
+
   methods: {
     handleOpen() {
-      if (this.isEdit) {
-        this.formData.title = this.editData.title;
+      this.getGradeOptions();
+    },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.gradeOptions = res.data;
       }
     },
-
     async submit() {
       const data = {
         ...this.formData,
+        order_id_arr: this.orderIds,
       };
-      let requestApi = addGrade;
-      if (this.isEdit) {
-        data.id = this.editData.id;
-        requestApi = updateGrade;
-      }
       this.addLoading = true;
-      const res = await requestApi(data).catch(() => {
+      const res = await updateBatchOrderGrade(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("success");
+        this.$emit("on-success");
         this.hanldeClose();
       }
     },

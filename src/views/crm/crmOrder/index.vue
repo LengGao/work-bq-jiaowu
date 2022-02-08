@@ -44,9 +44,9 @@
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
           :cell-style="{ 'text-align': 'center' }"
-          all="1"
+          @selection-change="handleSeletChange"
         >
-          <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
+          <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
             prop="order_id"
             label="订单编号"
@@ -80,6 +80,13 @@
                 {{ scope.row.surname }}
               </el-button>
             </template>
+          </el-table-column>
+          <el-table-column
+            prop="jiebie_name"
+            label="届别名称"
+            min-width="100"
+            show-overflow-tooltip
+          >
           </el-table-column>
           <el-table-column
             prop="from"
@@ -217,6 +224,9 @@
           </el-table-column>
         </el-table>
         <div class="table_bottom">
+          <div>
+            <el-button @click="openGradeDialog">修改届别</el-button>
+          </div>
           <page
             :data="listTotal"
             :curpage="pageNum"
@@ -290,6 +300,11 @@
         />
       </div>
     </el-dialog>
+    <UpdateOrderGrade
+      v-model="gradeDialogflag"
+      :order-ids="checkedOrderIds"
+      @on-success="getCrmOrderList"
+    />
   </section>
 </template>
 
@@ -300,10 +315,14 @@ import { getStaffList, getDepartmentlists } from "@/api/set";
 import { getCrmOrderList, getCustomfieldOptions } from "@/api/crm";
 import { templatelist } from "@/api/system";
 import { generate } from "@/api/fina";
-import { getCateList } from "@/api/sou";
+import { getCateList, getGradeOptions } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
+import UpdateOrderGrade from "@/views/eda/components/UpdateOrderGrade";
 export default {
   name: "crmOrder",
+  components: {
+    UpdateOrderGrade,
+  },
   data() {
     return {
       listData: [],
@@ -482,6 +501,19 @@ export default {
           },
         },
         {
+          key: "jiebie_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "届别名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,
@@ -568,6 +600,8 @@ export default {
           type: "danger",
         },
       },
+      gradeDialogflag: false,
+      checkedOrderIds: [],
     };
   },
   activated() {
@@ -579,8 +613,26 @@ export default {
     this.getCateList();
     this.getDepartmentlists();
     this.getCustomfieldOptions();
+    this.getGradeOptions();
   },
   methods: {
+    handleSeletChange(selection) {
+      this.checkedOrderIds = selection.map((item) => item.order_id);
+    },
+    openGradeDialog() {
+      if (!this.checkedOrderIds.length) {
+        this.$message.warning("请选择订单");
+        return;
+      }
+      this.gradeDialogflag = true;
+    },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.searchOptions[8].options = res.data;
+      }
+    },
     toCrmOrderDetail(id) {
       this.$router.push({
         name: "crmOrderDetail",
@@ -716,6 +768,7 @@ export default {
       this.getCrmOrderList();
     },
     async getCrmOrderList() {
+      this.checkedOrderIds = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
@@ -805,6 +858,7 @@ header {
   margin-top: 20px;
 }
 .table_bottom {
-  text-align: right;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

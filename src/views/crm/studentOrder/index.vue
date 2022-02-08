@@ -51,6 +51,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="jiebie_name"
+            label="届别名称"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="project_name"
             label="项目名称"
             min-width="130"
@@ -106,7 +113,7 @@ import { getShortcuts, today } from "@/utils/date";
 import { getproject } from "@/api/eda";
 import { getStaffList, getDepartmentlists } from "@/api/set";
 import { getCrmOrderList, getOrgName } from "@/api/crm";
-import { getCateList } from "@/api/sou";
+import { getCateList, getGradeOptions } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "studentOrder",
@@ -216,6 +223,19 @@ export default {
           },
         },
         {
+          key: "jiebie_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "届别名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,
@@ -241,6 +261,7 @@ export default {
     this.getCateList();
     this.getDepartmentlists();
     this.getOrgName();
+    this.getGradeOptions();
   },
   methods: {
     toInstitutionalCollection() {
@@ -255,6 +276,13 @@ export default {
           id,
         },
       });
+    },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.searchOptions[6].options = res.data;
+      }
     },
     // 获取部门
     async getDepartmentlists() {
