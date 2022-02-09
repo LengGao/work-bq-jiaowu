@@ -221,6 +221,12 @@
               @click="removeConfirm(row.classroom_id)"
               >移除</el-button
             >
+            <el-button
+              type="text"
+              style="padding: 0"
+              @click="removeClass(row.course_id)"
+              >关课</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -322,6 +328,12 @@
               "
               >加入班级</el-button
             >
+            <el-button
+              type="text"
+              style="padding: 0"
+              @click="removeClass(row.course_id)"
+              >关课</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -337,6 +349,7 @@ import {
   classstudentsBatchRemove,
   graduateCloseCourse,
   cancelCloseCourse,
+  removeCourse,
 } from "@/api/eda";
 export default {
   name: "class",
@@ -436,6 +449,30 @@ export default {
         this.getstudendclass();
       }
     },
+    // 关课
+    removeClass(course_id) {
+      this.$confirm(`关闭课程后该学员将不能在东培学堂等小程序学习该课程，是否关闭课程?`, {
+        type: "warning",
+      })
+        .then(() => {
+          this.removeCourse(course_id);
+          
+        })
+        .catch(() => {});
+    },
+    async removeCourse(course_id) {
+      const data = {
+        uid: this.uid,
+        course_id,
+      };
+      const res = await removeCourse(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getstudendclass();
+        this.unClassCourse();
+      }
+    },
+
     // 未分班课程列表
     async unClassCourse() {
       const data = {

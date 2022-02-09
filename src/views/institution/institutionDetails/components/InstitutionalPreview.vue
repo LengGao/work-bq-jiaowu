@@ -13,13 +13,13 @@
         <li class="panel-item">
           <span>机构人数</span>
           <div class="time_num">
-            <span>￥{{ panelData.order_money || 0 }}</span>
+            <span>{{ panelData.order_money || 0 }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>订单数</span>
           <div class="time_num">
-            <span>￥{{ panelData.pay_money || 0 }}</span>
+            <span>{{ panelData.pay_money || 0 }}</span>
           </div>
         </li>
         <li class="panel-item">
