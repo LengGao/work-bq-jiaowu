@@ -2,7 +2,12 @@
   <div class="college-student">
     <div class="head_remind">*本模块主要展示最近学历报名的学生。</div>
     <div class="college-student-container">
-      <div class="tree-list">
+      <div
+        class="tree-list"
+        :style="{
+          width: isTreeOpen ? '280px' : '0px',
+        }"
+      >
         <el-tree
           :data="treeData"
           :props="defaultProps"
@@ -11,6 +16,9 @@
           @node-click="onNodeClick"
         >
         </el-tree>
+        <div class="tree-list-toggle" @click="handleToggle">
+          <i :class="`el-icon-caret-${isTreeOpen ? 'left' : 'right'}`"></i>
+        </div>
       </div>
       <div class="table-list">
         <!--搜索模块-->
@@ -538,6 +546,7 @@ export default {
       gradeDialogflag: false,
       checkedOrderIds: [],
       checkedIds: [],
+      isTreeOpen: true,
     };
   },
   created() {
@@ -548,6 +557,9 @@ export default {
     this.getGradeOptions();
   },
   methods: {
+    handleToggle() {
+      this.isTreeOpen = !this.isTreeOpen;
+    },
     openGradeDialog() {
       if (!this.checkedOrderIds.length) {
         this.$message.warning("请选择学生");
@@ -752,16 +764,34 @@ export default {
     padding: 20px;
     display: flex;
     .tree-list {
-      width: 260px;
       flex-shrink: 0;
       border-right: 1px solid #eee;
-      margin-right: 20px;
-      height: 80vh;
-      overflow-y: auto;
+      position: relative;
+      transition: width 0.3s;
+      &-toggle {
+        position: absolute;
+        overflow: hidden;
+        right: 0;
+        top: 50%;
+        line-height: 80px;
+        transform: translateY(-50%);
+        width: 12px;
+        background-color: #e4e7ed;
+        cursor: pointer;
+        z-index: 10px;
+        i {
+          transform: translateX(-1px);
+          color: #c0c4cc;
+        }
+      }
     }
     .table-list {
       flex: 1;
       overflow: hidden;
+      position: relative;
+      z-index: 10;
+      padding-left: 20px;
+      background-color: #fff;
     }
   }
   .copy-number {
