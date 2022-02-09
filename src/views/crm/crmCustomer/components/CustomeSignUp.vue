@@ -87,6 +87,23 @@
           placeholder="请输入订单金额"
         />
       </el-form-item>
+      <el-form-item label="届别名称">
+        <el-select
+          class="input"
+          v-model="formData.jiebie_id"
+          placeholder="请选择届别"
+          clearable
+          filterable
+        >
+          <el-option
+            v-for="item in gradeOptions"
+            :key="item.id"
+            :value="item.id"
+            :label="item.title"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="共享业绩" prop="union_staff_id">
         <el-select
           class="input"
@@ -408,7 +425,7 @@
 import { uploadImageUrl } from "@/api/educational";
 import { createCrmOrder, getCustomfieldOptions } from "@/api/crm";
 import { getStaffList } from "@/api/set";
-import { getUniversityMajorDetailList } from "@/api/sou";
+import { getUniversityMajorDetailList, getGradeOptions } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 import AddCollectionPlan from "@/views/crm/crmOrder/components/AddCollectionPlan";
 import { today } from "@/utils/date";
@@ -448,6 +465,7 @@ export default {
         pay_money: "",
         pay_type: "",
         planIndex: "",
+        jiebie_id: "",
         receipt_file: [],
       },
       rules: {
@@ -543,6 +561,7 @@ export default {
       planDialogData: [],
       planOptions: [],
       payMethodOptions: [],
+      gradeOptions: [],
     };
   },
   watch: {
@@ -570,11 +589,19 @@ export default {
     handleOpen() {
       this.getCateProjectOption();
       this.getStaffList();
+      this.getGradeOptions();
       this.getCustomfieldOptions();
       this.formData.surname = this.userInfo.name || this.userInfo.surname;
       this.formData.mobile = this.userInfo.mobile;
       this.formData.id_card_number = this.userInfo.id_card_number || "";
       this.formData.pay_day = today;
+    },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.gradeOptions = res.data;
+      }
     },
     handleUploadError(response, file, fileList) {
       this.$message.error("上传失败");
@@ -674,6 +701,7 @@ export default {
       let data = {
         order_token: Date.now(),
         id: this.userInfo.id,
+        jiebie_id: this.formData.jiebie_id,
         order_money: this.formData.order_money,
         surname: this.formData.surname,
         mobile: this.formData.mobile,

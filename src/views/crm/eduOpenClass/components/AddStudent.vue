@@ -108,7 +108,23 @@
           <el-radio :label="1">学历教育</el-radio>
         </el-radio-group>
       </el-form-item>
-
+      <el-form-item label="届别名称">
+        <el-select
+          class="input"
+          v-model="formData.jiebie_id"
+          placeholder="请选择届别"
+          clearable
+          filterable
+        >
+          <el-option
+            v-for="item in gradeOptions"
+            :key="item.id"
+            :value="item.id"
+            :label="item.title"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item
         prop="selectProject"
         label="报名项目"
@@ -336,7 +352,7 @@
 
 <script>
 import { orderOpen, getInstitutionClassType, switchList } from "@/api/crm";
-import { getUniversityMajorDetailList } from "@/api/sou";
+import { getUniversityMajorDetailList, getGradeOptions } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 export default {
   name: "AddCustomeDialog",
@@ -361,6 +377,7 @@ export default {
         selectMajor: [],
         selectProject: [],
         open_course: "",
+        jiebie_id: "",
       },
       rules: {
         open_course: [{ required: true, message: "请选择", trigger: "change" }],
@@ -428,6 +445,7 @@ export default {
       projectData: [],
       majorProject: [],
       institutionOptions: [],
+      gradeOptions: [],
     };
   },
   computed: {
@@ -499,6 +517,7 @@ export default {
   methods: {
     handleOpen() {
       this.getCateProjectOption();
+      this.getGradeOptions();
       this.switchList();
       if (this.userInfo.surname) {
         this.formData.student = [
@@ -509,6 +528,13 @@ export default {
             id: 1,
           },
         ];
+      }
+    },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.gradeOptions = res.data;
       }
     },
     async switchList() {
@@ -583,6 +609,7 @@ export default {
         type: this.formData.type,
         open_course: this.formData.open_course,
         from_organization_id: this.formData.from_organization_id,
+        jiebie_id: this.formData.jiebie_id,
       };
       if (this.formData.type === 0) {
         data.project = JSON.stringify(

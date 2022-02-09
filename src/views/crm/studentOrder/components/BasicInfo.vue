@@ -31,6 +31,10 @@
         <span class="info-item__value">￥{{ data.overdue_money || 0 }}</span>
       </div>
       <div class="info-item">
+        <span class="info-item__name">届别名称：</span>
+        <span class="info-item__value">{{ data.jiebie_name }}</span>
+      </div>
+      <div class="info-item">
         <span class="info-item__name">报名类型：</span>
         <span class="info-item__value">{{
           data.type === 1 ? "学历教育" : "职业教育"
