@@ -129,22 +129,14 @@
           >
             <template slot-scope="{ row }">
               <div class="percentage">
-                <el-autocomplete
-                class="inline-input"
-                v-model="row.rebate_rate"
-                :fetch-suggestions="querySearch"
-                placeholder="请输入"
-                @select="handleSelect"
+                <el-input
+                  type="number"
+                  size="small"
+                  v-model="row.rebate_rate"
+                  placeholder="0-100"
                 >
-                </el-autocomplete>
-                <div class="tages"> %</div>
-                <!-- <el-input
-                type="number"
-                size="small"
-                v-model="row.rebate_rate"
-                placeholder="请输入">
-              </el-input>
-              <span>0-100,可保留两位小数点</span> -->
+                  <template slot="append">%</template>
+                </el-input>
               </div>
             </template>
           </el-table-column>
@@ -160,8 +152,8 @@
       </div>
       <div class="table-right">
         <div class="distributeTitle">
-        <Title text="分发机构" />
-        <span class="text"><i>*</i>多机构搜索可用空格隔开</span>
+          <Title text="分发机构" />
+          <span class="text"><i>*</i>多机构搜索可用空格隔开</span>
         </div>
         <SearchList
           :options="searchRightOptions"
@@ -216,7 +208,8 @@
           type="primary"
           :loading="submitLoading"
           @click="assignUniversity"
-          >确定分发</el-button>
+          >确定分发</el-button
+        >
       </div>
     </div>
   </div>
@@ -331,9 +324,6 @@ export default {
     this.getUniversityLevelOptions();
     this.getUniversityMajorOptions();
   },
-  mounted() {
-      this.restaurants = this.loadAll();
-    },
   methods: {
     handleReset() {
       this.getOrgList();
@@ -350,18 +340,21 @@ export default {
         return;
       }
       const id_arr = {};
-      this.leftSelection.forEach(({ rebate_rate,price, year_limit, apply_price, id }) => {
-        id_arr[id] = {
-          price,
-          year_limit,
-          apply_price,
-          rebate_rate,
-        };
-      });
+      this.leftSelection.forEach(
+        ({ rebate_rate, price, year_limit, apply_price, id }) => {
+          id_arr[id] = {
+            price,
+            year_limit,
+            apply_price,
+            rebate_rate,
+          };
+        }
+      );
       const data = {
         org_arr: this.rightSelection,
         id_arr,
       };
+      localStorage.setItem("majorPrice", JSON.stringify(id_arr));
       this.submitLoading = true;
       const res = await assignUniversity(data).catch(() => {});
       this.submitLoading = false;
@@ -403,12 +396,13 @@ export default {
       const res = await universityMajorDetailList(data);
       this.listLeftLoading = false;
       this.listLeftTotal = res.data.total;
+      const majorPrice = JSON.parse(localStorage.getItem("majorPrice") || "{}");
       this.listLeftData = res.data.list.map((item) => ({
         ...item,
-        apply_price: "",
-        year_limit: "",
-        rebate_rate:"",
-        price:"",
+        apply_price: majorPrice[item.id]?.apply_price || "",
+        year_limit: majorPrice[item.id]?.year_limit || "",
+        rebate_rate: majorPrice[item.id]?.rebate_rate || "",
+        price: majorPrice[item.id]?.price || "",
       }));
     },
     handleRightSearch(data) {
@@ -468,31 +462,11 @@ export default {
         this.searchLeftOptions[3].options = res.data;
       }
     },
-    querySearch(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      createFilter(queryString) {
-        return (restaurant) => {
-          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-       loadAll() {
-        return [
-          { "value": "0-100"},
-        ];
-      },
-      handleSelect(item) {
-        console.log(item);
-      }
-
   },
 };
 </script>
 <style lang="less" scoped>
-/deep/.el-autocomplete-suggestion li{
+/deep/.el-autocomplete-suggestion li {
   padding: 0 2px 0 5px;
   text-align: center;
   line-height: 24px;
@@ -546,28 +520,22 @@ export default {
     }
   }
 }
-.percentage{
-  display: flex;
-  /deep/.el-input__inner{
-    height: 32px;
-  }
-  .tages{
-    line-height: 30px;
-    margin-left: 2px;
+.percentage {
+  /deep/.el-input-group__append {
+    padding: 0 5px;
   }
 }
-.distributeTitle{
+.distributeTitle {
   display: flex;
-  .text{
+  .text {
     color: #999;
     font-size: 14px;
     line-height: 24px;
-    i{
+    i {
       color: rgba(245, 48, 48, 0.924);
       padding: 0 5px 0 10px;
       font-size: 16px;
     }
   }
 }
-
 </style>
