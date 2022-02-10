@@ -619,7 +619,14 @@ export function topicStatisticshistory(params) {
 
 
 
-
+// 关课
+export function removeCourse(data) {
+  return request({
+    url: 'User/removeCourse',
+    method: 'post',
+    data,
+  })
+}
 
 
 // 移除班级学生
