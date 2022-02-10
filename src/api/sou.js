@@ -1489,3 +1489,35 @@ export function getGradeOptions(params) {
     params,
   })
 }
+// 获取学籍异动列表
+export function getTransactionList(params) {
+  return request({
+    url: '/Crm/getTransactionList',
+    method: 'get',
+    params,
+  })
+}
+// 申请学籍异动
+export function applyTransaction(data) {
+  return request({
+    url: '/Crm/applyTransaction',
+    method: 'post',
+    data,
+  })
+}
+// 学籍异动提交办理
+export function transactTransaction(data) {
+  return request({
+    url: '/Crm/transactTransaction',
+    method: 'post',
+    data,
+  })
+}
+// 学籍异动学校审批
+export function approveTransaction(data) {
+  return request({
+    url: '/Crm/approveTransaction',
+    method: 'post',
+    data,
+  })
+}

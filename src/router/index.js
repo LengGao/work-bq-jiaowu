@@ -433,6 +433,12 @@ export const asyncRouter = [
     meta: { title: '教务管理', icon: 'zhaoshengguanli' },
     name: 'eda',
     children: [
+      {
+        path: 'studentStatusChangeList',
+        name: 'studentStatusChangeList',
+        component: () => import('@/views/eda/studentStatusChangeList/index.vue'),
+        meta: { title: '学籍异动', icon: 'product-cate' },
+      },
 
       {
         path: 'courseNotes',

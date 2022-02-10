@@ -686,3 +686,11 @@ export function changeOrderMoney(data) {
         data
     })
 }
+// 根据订单id获取学籍异动详情
+export function getOrderTransactionList(params) {
+    return request({
+        url: '/Crm/getOrderTransactionList',
+        method: 'get',
+        params
+    })
+}

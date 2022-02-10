@@ -1,9 +1,8 @@
 <template>
   <el-dialog
-    title="修改届别"
+    title="提交办理"
     :visible="value"
     width="400px"
-    @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
     @close="hanldeClose"
@@ -15,16 +14,14 @@
       inline
       ref="formData"
     >
-      <el-form-item label="届别名称" prop="jiebie_id">
-        <el-select v-model="formData.jiebie_id" placeholder="请选届别">
-          <el-option
-            v-for="item in gradeOptions"
-            :key="item.id"
-            :label="item.title"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
+      <el-form-item label="办理日期" prop="transact_time">
+        <el-date-picker
+          value-format="yyyy-MM-dd"
+          v-model="formData.transact_time"
+          type="date"
+          placeholder="选择日期"
+        >
+        </el-date-picker>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -33,63 +30,53 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >确 定</el-button
+        >保 存</el-button
       >
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { getGradeOptions, updateBatchOrderGrade } from "@/api/sou";
+import { transactTransaction } from "@/api/sou";
 export default {
-  name: "UpdateOrderGrade",
+  name: "SubmitHandle",
   props: {
     value: {
       type: Boolean,
       default: false,
     },
-    orderIds: {
-      type: Array,
-      default: () => [],
+    id: {
+      type: [Number, String],
+      default: "",
     },
   },
   data() {
     return {
       addLoading: false,
-      gradeOptions: [],
       formData: {
-        jiebie_id: "",
+        transact_time: "",
       },
       rules: {
-        jiebie_id: [{ required: true, message: "请选择", trigger: "change" }],
+        transact_time: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
       },
     };
   },
-
   methods: {
-    handleOpen() {
-      this.getGradeOptions();
-    },
-    // 获取届别选项
-    async getGradeOptions() {
-      const res = await getGradeOptions();
-      if (res.code === 0) {
-        this.gradeOptions = res.data;
-      }
-    },
     async submit() {
       const data = {
+        id: this.id,
         ...this.formData,
-        order_id_arr: this.orderIds,
       };
       this.addLoading = true;
-      const res = await updateBatchOrderGrade(data).catch(() => {
+      const res = await transactTransaction(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("on-success");
+        this.$emit("success");
         this.hanldeClose();
       }
     },

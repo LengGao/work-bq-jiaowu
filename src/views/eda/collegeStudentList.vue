@@ -273,15 +273,44 @@
               </template>
             </el-table-column>
             <el-table-column
+              prop="transaction_type_name"
+              label="异动类型"
+              show-overflow-tooltip
+              min-width="100"
+            ></el-table-column>
+            <el-table-column
+              prop="transaction_status_name"
+              label="办理状态"
+              show-overflow-tooltip
+              min-width="100"
+            >
+              <template slot-scope="{ row }">
+                <el-tag
+                  v-if="row.transaction_status_id"
+                  :type="statusMap[row.transaction_status_id]"
+                  size="small"
+                  >{{ row.transaction_status_name }}</el-tag
+                >
+                <span v-else>{{ row.transaction_status_name }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
               prop="create_time"
               label="创建时间"
               show-overflow-tooltip
               min-width="160"
             ></el-table-column>
-            <el-table-column label="操作" fixed="right" min-width="100">
+            <el-table-column label="操作" fixed="right" min-width="160">
               <template slot-scope="{ row }">
                 <el-button type="text" @click="toOrderDetail(row.order_id)">
                   订单详情
+                </el-button>
+                <el-button
+                  type="text"
+                  v-if="[0, 3, 4].includes(row.transaction_status_id)"
+                  @click="openChangeDialog(row)"
+                >
+                  学籍异动
                 </el-button>
               </template>
             </el-table-column>
@@ -314,12 +343,18 @@
       :order-ids="checkedOrderIds"
       @on-success="getEduList"
     />
+    <StudentStatusChange
+      v-model="changeDialogflag"
+      :data="checkedOrder"
+      @on-success="getEduList"
+    />
   </div>
 </template>
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import PayDialog from "./components/PayDialog";
 import UpdateOrderGrade from "./components/UpdateOrderGrade";
+import StudentStatusChange from "./components/StudentStatusChange";
 import {
   getEduList,
   getAdminSelect,
@@ -336,6 +371,7 @@ export default {
     PartiallyHidden,
     PayDialog,
     UpdateOrderGrade,
+    StudentStatusChange,
   },
   data() {
     return {
@@ -547,6 +583,14 @@ export default {
       checkedOrderIds: [],
       checkedIds: [],
       isTreeOpen: true,
+      checkedOrder: {},
+      changeDialogflag: false,
+      statusMap: {
+        1: "info",
+        2: "warning",
+        3: "success",
+        4: "danger",
+      },
     };
   },
   created() {
@@ -559,6 +603,10 @@ export default {
   methods: {
     handleToggle() {
       this.isTreeOpen = !this.isTreeOpen;
+    },
+    openChangeDialog(row) {
+      this.checkedOrder = row;
+      this.changeDialogflag = true;
     },
     openGradeDialog() {
       if (!this.checkedOrderIds.length) {

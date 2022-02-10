@@ -134,6 +134,11 @@
       <el-tab-pane label="回款记录" name="CollectionRecord"></el-tab-pane>
       <el-tab-pane label="审批记录" name="ApproveRecord"></el-tab-pane>
       <el-tab-pane
+        v-if="orderTransactionData.length"
+        label="学籍异动"
+        name="StudentStatusChangeRecord"
+      ></el-tab-pane>
+      <el-tab-pane
         :label="`${unusualLabelName}-${index + 1}`"
         :name="`${unusualLabelName}-${index + 1}`"
         v-for="(item, index) in detailData.reshuffle_list"
@@ -162,6 +167,7 @@
     </p> -->
     <component
       :is="getComponent"
+      :list-data="orderTransactionData"
       :data="
         activeName.includes(unusualLabelName)
           ? detailData.reshuffle_list[unusualIndex].new_detail
@@ -177,6 +183,7 @@ import {
   crmOrderApprove,
   hurryUp,
   orderUnusualApprove,
+  getOrderTransactionList,
 } from "@/api/crm";
 export default {
   name: "crmOrderDetail",
@@ -247,6 +254,7 @@ export default {
       },
       unusualIndex: 0,
       unusualLabelName: "异动记录",
+      orderTransactionData: [],
     };
   },
   computed: {
@@ -261,8 +269,16 @@ export default {
   },
   created() {
     this.getCrmOrderDetail();
+    this.getOrderTransactionList();
   },
   methods: {
+    async getOrderTransactionList() {
+      const data = { order_id: this.$route.query.id };
+      const res = await getOrderTransactionList(data);
+      if (res.code === 0) {
+        this.orderTransactionData = res.data;
+      }
+    },
     handleTabClick(e) {
       const label = e.label;
       if (label.includes(this.unusualLabelName)) {

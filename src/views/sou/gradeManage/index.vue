@@ -27,7 +27,6 @@
           :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
           :cell-style="{ 'text-align': 'center' }"
         >
-          <el-table-column type="selection" width="45"> </el-table-column>
           <el-table-column
             prop="id"
             label="ID"
