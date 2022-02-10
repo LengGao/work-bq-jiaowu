@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="head_remind">*本模块主要是招生老师用来查看回款记录。</div>
+    <div class="head_remind">
+      *本页的订单统计数据是根据回款创建时间进行统计的，所以列出的订单金额不局限于您选择的日期所限定的订单金额。
+    </div>
     <section>
       <!--搜索模块-->
       <header>
@@ -64,6 +66,16 @@
           >
           </el-table-column>
           <el-table-column
+            prop="order_money"
+            label="订单金额"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="pay_date"
             label="回款日期"
             min-width="100"
@@ -77,7 +89,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              ￥{{ row.pay_money || 0 }}
+              {{ row.pay_money | moneyFormat }}
             </template>
           </el-table-column>
 
@@ -129,7 +141,7 @@
           >
             <template slot-scope="{ row }">
               <span v-if="row.plan_pay_money">
-                ￥{{ row.plan_pay_money || 0 }}
+                {{ row.plan_pay_money | moneyFormat }}
               </span>
             </template>
           </el-table-column>
