@@ -1521,3 +1521,11 @@ export function approveTransaction(data) {
     data,
   })
 }
+// 学籍异动-取消
+export function cancelTransaction(data) {
+  return request({
+    url: '/Crm/cancelTransaction',
+    method: 'post',
+    data,
+  })
+}

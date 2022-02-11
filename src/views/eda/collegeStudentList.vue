@@ -307,6 +307,13 @@
                 </el-button>
                 <el-button
                   type="text"
+                  v-if="row.transaction_status_id === 1"
+                  @click="cancelTransaction(row.transaction_id)"
+                >
+                  撤回异动
+                </el-button>
+                <el-button
+                  type="text"
                   v-if="[0, 3, 4].includes(row.transaction_status_id)"
                   @click="openChangeDialog(row)"
                 >
@@ -361,7 +368,11 @@ import {
   getTreeCategory,
   exportEduList,
 } from "@/api/eda";
-import { getInstitutionSelectData, getGradeOptions } from "@/api/sou";
+import {
+  getInstitutionSelectData,
+  getGradeOptions,
+  cancelTransaction,
+} from "@/api/sou";
 import { cloneOptions, download } from "@/utils/index";
 import { getShortcuts } from "@/utils/date";
 import { batchUpdateFee } from "@/api/eda";
@@ -601,6 +612,14 @@ export default {
     this.getGradeOptions();
   },
   methods: {
+    async cancelTransaction(id) {
+      const data = { id };
+      const res = await cancelTransaction(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getEduList();
+      }
+    },
     handleToggle() {
       this.isTreeOpen = !this.isTreeOpen;
     },

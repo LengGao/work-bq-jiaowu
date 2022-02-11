@@ -7,12 +7,7 @@
     @close="hanldeClose"
     @closed="resetForm('formData')"
   >
-    <el-form
-      label-width="100px"
-      :model="formData"
-      ref="formData"
-      v-loading="detaiLoading"
-    >
+    <el-form label-width="100px" :model="formData" ref="formData">
       <el-form-item label="教材费">
         <el-radio-group v-model="formData.book_fee_status">
           <el-radio :label="1">已缴</el-radio>
@@ -60,7 +55,7 @@
       <el-button @click="hanldeClose">取 消</el-button>
       <el-button
         type="primary"
-        :loading="addLoading"
+        :loading="submitLoading"
         @click="submitForm('formData')"
         >确 定</el-button
       >
@@ -84,7 +79,6 @@ export default {
   },
   data() {
     return {
-      visible: this.value,
       formData: {
         book_fee_status: -1,
         paper_teach_fee_status: -1,
@@ -93,8 +87,7 @@ export default {
         service_fee_status: -1,
         paper_handle_fee_status: -1,
       },
-      addLoading: false,
-      detaiLoading: false,
+      submitLoading: false,
     };
   },
   methods: {
@@ -103,12 +96,13 @@ export default {
         id_arr: this.ids,
         ...this.formData,
       };
-      console.log(data);
-      const res = await batchUpdateFee(data);
+      this.submitLoading = true;
+      const res = await batchUpdateFee(data).catch(() => {});
+      this.submitLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
         this.$emit("on-success");
-        this.visible = false;
+        this.hanldeClose();
       }
     },
     submitForm(formName) {
