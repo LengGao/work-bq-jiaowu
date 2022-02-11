@@ -80,6 +80,7 @@
               size="small"
               v-model="row.apply_price"
               placeholder="请输入"
+              @blur="orgUniversityModify(row)"
             >
             </el-input>
           </template>
@@ -97,6 +98,7 @@
               size="small"
               v-model="row.year_limit"
               placeholder="请输入"
+              @blur="orgUniversityModify(row)"
             >
             </el-input>
           </template>
@@ -114,6 +116,7 @@
               size="small"
               v-model="row.price"
               placeholder="请输入"
+              @blur="orgUniversityModify(row)"
             >
             </el-input>
           </template>
@@ -132,6 +135,7 @@
                 size="small"
                 v-model="row.rebate_rate"
                 placeholder="0-100"
+                @blur="orgUniversityModify(row)"
               >
                 <template slot="append">%</template>
               </el-input>
@@ -140,7 +144,7 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="100">
           <template slot-scope="{ row }">
-            <el-button type="text" @click="delConfirm(row.id)">移除</el-button>
+            <el-button type="text" @click="delConfirm(row, 1)">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -166,7 +170,7 @@
 
 <script>
 import AddMajor from "./AddMajor";
-import { getInstitutionMajor } from "@/api/institution";
+import { getInstitutionMajor, orgUniversityModify } from "@/api/institution";
 import {
   getUniversityOptions,
   getUniversityLevelOptions,
@@ -248,9 +252,6 @@ export default {
       dialogVisible: false,
     };
   },
-  activated() {
-    this.getInstitutionMajor();
-  },
   created() {
     this.getInstitutionMajor();
     this.universityTypeSelect();
@@ -259,12 +260,32 @@ export default {
     this.getUniversityMajorOptions();
   },
   methods: {
+    // 删除，修改
+    async orgUniversityModify(
+      { price, apply_price, year_limit, rebate_rate, id },
+      del = 0
+    ) {
+      const data = {
+        price,
+        apply_price,
+        year_limit,
+        rebate_rate,
+        id,
+        del,
+      };
+      const res = await orgUniversityModify(data);
+      if (res.code === 0) {
+        this.getInstitutionMajor();
+      }
+    },
     // 删除
-    delConfirm(id) {
+    delConfirm(row, del) {
       this.$confirm("确定要移除该专业吗？", "提醒", {
         type: "warning",
       })
-        .then(() => {})
+        .then(() => {
+          this.orgUniversityModify(row, del);
+        })
         .catch(() => {});
     },
     // 获取分类

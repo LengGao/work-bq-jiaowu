@@ -489,3 +489,11 @@ export function getInstitutionMajor(data) {
         data
     })
 }
+// 机构详情-院校专业列表-修改，删除
+export function orgUniversityModify(data) {
+    return request({
+        url: '/ProjectOrg/orgUniversityModify',
+        method: 'post',
+        data
+    })
+}
