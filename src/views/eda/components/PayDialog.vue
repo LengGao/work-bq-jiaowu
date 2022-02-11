@@ -15,13 +15,6 @@
           <el-radio :label="-1">不处理</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="论文指导费">
-        <el-radio-group v-model="formData.paper_teach_fee_status">
-          <el-radio :label="1">已缴</el-radio>
-          <el-radio :label="0">未缴</el-radio>
-          <el-radio :label="-1">不处理</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="平台费">
         <el-radio-group v-model="formData.platform_fee_status">
           <el-radio :label="1">已缴</el-radio>
@@ -29,15 +22,22 @@
           <el-radio :label="-1">不处理</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="论文答辩费">
-        <el-radio-group v-model="formData.paper_reply_fee_status">
+      <el-form-item label="教务服务费">
+        <el-radio-group v-model="formData.service_fee_status">
           <el-radio :label="1">已缴</el-radio>
           <el-radio :label="0">未缴</el-radio>
           <el-radio :label="-1">不处理</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="教务服务费">
-        <el-radio-group v-model="formData.service_fee_status">
+      <el-form-item label="论文指导费">
+        <el-radio-group v-model="formData.paper_teach_fee_status">
+          <el-radio :label="1">已缴</el-radio>
+          <el-radio :label="0">未缴</el-radio>
+          <el-radio :label="-1">不处理</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="论文答辩费">
+        <el-radio-group v-model="formData.paper_reply_fee_status">
           <el-radio :label="1">已缴</el-radio>
           <el-radio :label="0">未缴</el-radio>
           <el-radio :label="-1">不处理</el-radio>
