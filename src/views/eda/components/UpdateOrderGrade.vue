@@ -74,7 +74,7 @@ export default {
     async getGradeOptions() {
       const res = await getGradeOptions();
       if (res.code === 0) {
-        this.gradeOptions = res.data;
+        this.gradeOptions = [{ id: 0, title: "移除届别" }].concat(res.data);
       }
     },
     async submit() {
