@@ -90,7 +90,7 @@
 import AddGrade from "./components/AddGrade";
 import { getGradeList, delGrade, updateGrade } from "@/api/sou";
 export default {
-  name: "eduOpenClass",
+  name: "gradeManage",
   components: {
     AddGrade,
   },
@@ -198,21 +198,6 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 10px 0;
-}
-.approve-status {
-  &::before {
-    display: inline-block;
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: #fd6500;
-    vertical-align: middle;
-    margin-right: 2px;
-  }
-  &--success::before {
-    background-color: #43d100;
-  }
 }
 </style>
 

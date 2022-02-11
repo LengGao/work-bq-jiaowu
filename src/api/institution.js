@@ -481,3 +481,11 @@ export function modifyProjectEdu(data) {
         data
     })
 }
+// 机构详情-院校专业列表
+export function getInstitutionMajor(data) {
+    return request({
+        url: '/ProjectOrg/myMajor',
+        method: 'post',
+        data
+    })
+}
