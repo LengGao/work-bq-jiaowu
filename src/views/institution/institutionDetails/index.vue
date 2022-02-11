@@ -1,5 +1,6 @@
 <template>
   <div class="institution-detail">
+    <h4>{{ $route.query.institution_name }}</h4>
     <el-tabs v-model="activeName">
       <el-tab-pane label="机构课程" name="InsitutionCourse"></el-tab-pane>
       <!-- <el-tab-pane label="机构课程" name="BasicInfo"></el-tab-pane> -->
