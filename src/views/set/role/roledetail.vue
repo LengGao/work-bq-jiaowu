@@ -30,24 +30,20 @@
         <span class="authority">功能权限</span>
 
         <div class="tree">
-          <div class="tree-container">
-            <el-tree
-              ref="trees"
-              v-for="(item, index) in roleData"
-              :key="index"
-              :data="item"
-              show-checkbox
-              :props="{
-                label: 'title',
-              }"
-              :expand-on-click-node="false"
-              check-on-click-node
-              default-expand-all
-              node-key="node_id"
-              class="configure"
-            >
-            </el-tree>
-          </div>
+          <el-tree
+            ref="trees"
+            v-for="(item, index) in roleData"
+            :key="index"
+            :data="item"
+            show-checkbox
+            :render-content="renderContent"
+            :expand-on-click-node="false"
+            check-on-click-node
+            default-expand-all
+            node-key="node_id"
+            class="configure"
+          >
+          </el-tree>
         </div>
         <div class="tree-footer">
           <el-button @click="handleCancel">取 消</el-button>
@@ -82,6 +78,13 @@ export default {
   methods: {
     handleCancel() {
       this.$router.back();
+    },
+    renderContent(h, { node, data, store }) {
+      return (
+        <span class="custom-tree-node" title={data.node}>
+          {data.title}
+        </span>
+      );
     },
     handleSubmit() {
       const trees = this.$refs.trees;
@@ -184,10 +187,12 @@ export default {
 }
 .tree {
   height: 690px;
-  overflow-y: auto;
+  overflow: auto;
   border: 1px solid #ccc;
-  &-container {
-    display: flex;
+  display: flex;
+  align-items: flex-start;
+  /deep/.custom-tree-node {
+    font-size: 14px;
   }
 }
 .add-role {
@@ -195,9 +200,7 @@ export default {
   margin-bottom: 20px;
 }
 .el-tree {
-  width: 17%;
   border-right: 1px solid #ccc;
-  // height: 480px;
   padding: 20px;
 }
 .authority {
