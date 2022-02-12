@@ -210,6 +210,8 @@ export default {
   display: block;
 }
 .configure {
+  flex: 1;
+  min-height: 100%;
   text-align: center;
 }
 .tree-footer {
