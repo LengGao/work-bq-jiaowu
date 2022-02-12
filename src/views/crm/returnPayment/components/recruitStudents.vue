@@ -296,7 +296,7 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: "",
+        verify_time: "",
         pay_date: "",
         keyword: "",
         department_id: "",
@@ -306,14 +306,14 @@ export default {
       },
       searchOptions: [
         {
-          key: "date",
+          key: "pay_date",
           type: "datePicker",
           attrs: {
             value: "",
             type: "daterange",
             "range-separator": "至",
-            "start-placeholder": "开始日期",
-            "end-placeholder": "结束日期",
+            "start-placeholder": "回款日期起",
+            "end-placeholder": "回款日期止",
             format: "yyyy-MM-dd",
             "value-format": "yyyy-MM-dd",
             pickerOptions: {
@@ -321,7 +321,6 @@ export default {
             },
           },
         },
-
         {
           key: "pay_type",
           type: "select",
@@ -388,14 +387,14 @@ export default {
           },
         },
         {
-          key: "pay_date",
+          key: "verify_time",
           type: "datePicker",
           attrs: {
             value: "",
             type: "daterange",
             "range-separator": "至",
-            "start-placeholder": "回款日期起",
-            "end-placeholder": "回款日期止",
+            "start-placeholder": "入账日期起",
+            "end-placeholder": "入账日期止",
             format: "yyyy-MM-dd",
             "value-format": "yyyy-MM-dd",
             pickerOptions: {
@@ -575,8 +574,8 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         ...this.searchData,
-        date: Array.isArray(this.searchData.date)
-          ? this.searchData.date.join(" - ")
+        verify_time: Array.isArray(this.searchData.verify_time)
+          ? this.searchData.verify_time.join(" - ")
           : "",
         pay_date: Array.isArray(this.searchData.pay_date)
           ? this.searchData.pay_date.join(" - ")
