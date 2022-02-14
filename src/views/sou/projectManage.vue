@@ -95,21 +95,11 @@
           >
             <template slot-scope="{ row }">
               <el-switch
-                v-if="row.isChild"
                 active-color="#13ce66"
                 v-model="row.status"
                 :active-value="1"
                 :inactive-value="2"
-                @change="updateChildProjectStatus(row)"
-              >
-              </el-switch>
-              <el-switch
-                v-else
-                active-color="#13ce66"
-                v-model="row.project_status"
-                :active-value="1"
-                :inactive-value="2"
-                @change="changeSwitch(row)"
+                @change="updateProjectStatus(row)"
               >
               </el-switch>
             </template>
@@ -467,7 +457,7 @@ import {
   getChildSubList,
   getProjectList,
   deleteSubProject,
-  updateChildProjectStatus,
+  updateProjectStatus,
 } from "@/api/sou";
 import CourseDialog from "./components/courseDialog";
 import MaterialDialog from "./components/materialDialog";
@@ -630,12 +620,12 @@ export default {
       this.project_id = row.project_id;
       this.moveDialogVisible = true;
     },
-    async updateChildProjectStatus(row) {
+    async updateProjectStatus(row) {
       const data = {
         status: row.status,
         project_id: row.project_id,
       };
-      const res = await updateChildProjectStatus(data).catch(() => {
+      const res = await updateProjectStatus(data).catch(() => {
         row.status = row.status === 2 ? 1 : 2;
       });
       if (res.code === 0) {
@@ -765,17 +755,6 @@ export default {
       this.showCourse = true;
 
       // this.courseTag  = courseTag
-    },
-    changeSwitch(ab) {
-      let formData = {
-        project_id: ab.project_id,
-        project_name: ab.project_name,
-        category_id: ab.category_id,
-        price: ab.project_price,
-        lowest_price: ab.lowest_price,
-        status: ab.project_status,
-      };
-      this.$api.editProject(this, formData, "POST");
     },
     handlePageChange(val) {
       this.pageNum = val;

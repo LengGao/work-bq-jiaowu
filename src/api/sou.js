@@ -1529,3 +1529,11 @@ export function cancelTransaction(data) {
     data,
   })
 }
+// 项目开关
+export function updateProjectStatus(data) {
+  return request({
+    url: '/project/status',
+    method: 'post',
+    data,
+  })
+}
