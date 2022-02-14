@@ -232,7 +232,6 @@
         </el-table>
         <div class="frame_bottom">
           <div class="frame_bottom_btn">
-        <el-button size="medium">一键优惠</el-button>
         </div>
         <div class="table_bottom">
           <page
@@ -317,7 +316,7 @@ export default {
         reduction: 0,
       },
       searchData: {
-        date: (this.$route.query.date || `${today},${today}`).split(","),
+        // date: (this.$route.query.date || `${today},${today}`).split(","),
         status:"",
       },
       searchOptions: [
