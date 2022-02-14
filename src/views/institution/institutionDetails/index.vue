@@ -17,12 +17,8 @@
         name="InstitutionalCollection"
       ></el-tab-pane>
       <el-tab-pane label="机构返点" name="InstitutionalRebate"></el-tab-pane>
-<<<<<<< HEAD
       <!-- <el-tab-pane label="机构概览" name="InstitutionalPreview"></el-tab-pane> -->
 
-=======
-      <el-tab-pane label="机构概览" name="InstitutionalPreview"></el-tab-pane>
->>>>>>> dev
     </el-tabs>
     <component :is="getComponent" />
   </div>
