@@ -6,7 +6,7 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="基本信息" name="Information"></el-tab-pane>
           <el-tab-pane label="通用设置" name="General"></el-tab-pane>
-          <el-tab-pane label="接口设置" name="Interface"></el-tab-pane>
+          <!-- <el-tab-pane label="接口设置" name="Interface"></el-tab-pane> -->
           <el-tab-pane label="模板消息" name="Template"></el-tab-pane>
           <el-tab-pane label="分享设置" name="Sharing"></el-tab-pane>
         </el-tabs>

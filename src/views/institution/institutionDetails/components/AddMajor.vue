@@ -1,0 +1,345 @@
+<template>
+  <el-dialog
+    title="添加专业"
+    :visible="value"
+    width="1200px"
+    @open="handleOpen"
+    :close-on-click-modal="false"
+    @close="hanldeClose"
+  >
+    <SearchList
+      :options="searchOptions"
+      :data="searchData"
+      @on-search="handleSearch"
+    />
+    <el-table
+      ref="multipleTable"
+      :data="listData"
+      style="width: 100%"
+      v-loading="listLoading"
+      element-loading-text="loading"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="#fff"
+      class="table"
+      :header-cell-style="{
+        'text-align': 'center',
+        background: '#f8f8f8',
+      }"
+      @selection-change="handleSelection"
+      height="520"
+    >
+      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column
+        label="院校名称"
+        show-overflow-tooltip
+        min-width="100"
+        align="center"
+        prop="university_title"
+      >
+      </el-table-column>
+      <el-table-column
+        label="学历形式"
+        show-overflow-tooltip
+        min-width="80"
+        align="center"
+        prop="type_title"
+      >
+      </el-table-column>
+      <el-table-column
+        label="层次名称"
+        show-overflow-tooltip
+        min-width="75"
+        align="center"
+        prop="level_title"
+      >
+      </el-table-column>
+      <el-table-column
+        label="专业名称"
+        show-overflow-tooltip
+        min-width="120"
+        align="center"
+        prop="major_title"
+      >
+      </el-table-column>
+      <el-table-column
+        label="项目名称"
+        show-overflow-tooltip
+        min-width="240"
+        align="left"
+        prop="project_name"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="apply_price"
+        label="报考费"
+        min-width="90"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-input
+            type="number"
+            size="small"
+            v-model="row.apply_price"
+            placeholder="请输入"
+          >
+          </el-input>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="year_limit"
+        label="收费年限"
+        min-width="90"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-input
+            type="number"
+            size="small"
+            v-model="row.year_limit"
+            placeholder="请输入"
+          >
+          </el-input>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="price"
+        label="分发价格"
+        min-width="100"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-input
+            type="number"
+            size="small"
+            v-model="row.price"
+            placeholder="请输入"
+          >
+          </el-input>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="rebate_rate"
+        label="返点比例"
+        min-width="100"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <div class="percentage">
+            <el-input
+              type="number"
+              size="small"
+              v-model="row.rebate_rate"
+              placeholder="0-100"
+            >
+              <template slot="append">%</template>
+            </el-input>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="table_bottom">
+      <page
+        :data="listTotal"
+        :curpage="pageNum"
+        @pageChange="handlePageChange"
+        @pageSizeChange="handleSizeChange"
+      />
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="hanldeClose">取 消</el-button>
+      <el-button type="primary" :loading="addLoading" @click="assignUniversity"
+        >添 加</el-button
+      >
+    </span>
+  </el-dialog>
+</template>
+
+<script>
+import { universityMajorDetailList, assignUniversity } from "@/api/crm";
+export default {
+  name: "AddMajor",
+  props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
+    universityMajorOptions: {
+      type: Array,
+      default: () => [],
+    },
+    universityLevelOptions: {
+      type: Array,
+      default: () => [],
+    },
+    universityOptions: {
+      type: Array,
+      default: () => [],
+    },
+    typeOptions: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      addLoading: false,
+      listData: [],
+      listLoading: false,
+      listTotal: 0,
+      pageNum: 1,
+      pageSize: 20,
+      searchData: {
+        search_box: "",
+        type_id: "",
+      },
+      searchOptions: [
+        {
+          key: "type_id",
+          type: "select",
+          options: this.typeOptions,
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "学历形式",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "school_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "院校名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "level_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "层次名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "major_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "专业名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+      ],
+      selection: [],
+    };
+  },
+  methods: {
+    handleOpen() {
+      this.searchOptions[0].options = this.typeOptions;
+      this.searchOptions[1].options = this.universityOptions;
+      this.searchOptions[2].options = this.universityLevelOptions;
+      this.searchOptions[3].options = this.universityMajorOptions;
+      this.universityMajorDetailList();
+    },
+    handleSelection(selection) {
+      this.selection = selection;
+    },
+    handleSearch(data) {
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+      };
+      this.universityMajorDetailList();
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.universityMajorDetailList();
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.universityMajorDetailList();
+    },
+    // 学校列表
+    async universityMajorDetailList() {
+      const data = {
+        page: this.pageNum,
+        limit: this.pageSize,
+        ...this.searchData,
+      };
+      this.listLoading = true;
+      const res = await universityMajorDetailList(data);
+      this.listLoading = false;
+      this.listTotal = res.data.total;
+      const majorPrice = JSON.parse(localStorage.getItem("majorPrice") || "{}");
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        apply_price: majorPrice[item.id]?.apply_price || "",
+        year_limit: majorPrice[item.id]?.year_limit || "",
+        rebate_rate: majorPrice[item.id]?.rebate_rate || "",
+        price: majorPrice[item.id]?.price || "",
+      }));
+    },
+    // 分发
+    async assignUniversity() {
+      if (!this.selection.length) {
+        this.$message.warning("请选择院校专业");
+        return;
+      }
+
+      const id_arr = {};
+      this.selection.forEach(
+        ({ rebate_rate, price, year_limit, apply_price, id }) => {
+          id_arr[id] = {
+            price,
+            year_limit,
+            apply_price,
+            rebate_rate,
+          };
+        }
+      );
+      const data = {
+        org_arr: [this.$route.query.institution_id],
+        id_arr,
+      };
+      localStorage.setItem("majorPrice", JSON.stringify(id_arr));
+      this.addLoading = true;
+      const res = await assignUniversity(data).catch(() => {});
+      this.addLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.$emit("success");
+        this.hanldeClose();
+      }
+    },
+    hanldeClose() {
+      this.$emit("input", false);
+    },
+  },
+};
+</script>
+<style lang="less" scoped>
+.percentage {
+  /deep/.el-input-group__append {
+    padding: 0 5px;
+  }
+}
+</style>
+
+

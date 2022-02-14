@@ -18,11 +18,11 @@ const mixin = {
             });
         },
         // 跳转到订单详情
-        toOrderDetail(order_id) {
+        toOrderDetail(id) {
             this.$router.push({
-                name: "orderdetail",
+                name: "crmOrderDetail",
                 query: {
-                    order_id,
+                    id,
                 },
             });
         },

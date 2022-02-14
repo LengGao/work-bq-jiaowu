@@ -81,7 +81,7 @@ export default {
     },
     deepClone(data, newData) {
       for (const key in data) {
-        if (typeof data[key] === "object") {
+        if (typeof data[key] === "object" && data[key] !== null) {
           newData[key] = Array.isArray(data[key]) ? [] : {};
           this.deepClone(data[key], newData[key]);
         } else {

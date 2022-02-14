@@ -16,11 +16,7 @@
       ref="formData"
     >
       <el-form-item label="届别名称" prop="title">
-        <el-input
-          v-model="formData.title"
-          class="input"
-          placeholder="请输入届别名称"
-        />
+        <el-input v-model="formData.title" placeholder="请输入届别名称" />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -112,68 +108,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.input {
-  width: 217px;
-}
-.user-form {
-  display: flex;
-  align-items: center;
-  margin-bottom: 22px;
-  .el-form-item {
-    margin-bottom: 0;
-  }
-  .from-actions {
-    i {
-      font-size: 24px;
-      margin-left: 10px;
-      cursor: pointer;
-      &.add {
-        color: #199fff;
-      }
-      &.del {
-        color: #ff4e00;
-      }
-    }
-  }
-}
 
-.block {
-  width: 100%;
-  /deep/.el-form-item__content {
-    width: 80%;
-  }
-}
-.info {
-  padding-top: 10px;
-  &-item {
-    display: flex;
-    padding: 6px 0;
-    &-name {
-      flex-shrink: 0;
-    }
-    &-value {
-      color: #199fff;
-    }
-  }
-}
-</style>
-<style lang="scss">
-.select-project {
-  .el-cascader-panel {
-    & > .el-scrollbar:first-child {
-      .el-checkbox {
-        display: none;
-      }
-    }
-    .el-cascader-node[aria-owns] {
-      .el-checkbox {
-        width: 14px;
-        span {
-          display: none;
-        }
-      }
-    }
-  }
-}
-</style>

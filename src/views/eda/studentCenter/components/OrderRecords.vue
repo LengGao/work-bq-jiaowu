@@ -64,6 +64,7 @@
           show-overflow-tooltip
         >
         </el-table-column>
+
         <el-table-column
           prop="order_money"
           label="订单总金额"
@@ -139,6 +140,28 @@
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="transaction_type_name"
+          label="异动类型"
+          show-overflow-tooltip
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="transaction_status_name"
+          label="办理状态"
+          show-overflow-tooltip
+          min-width="100"
+        >
+          <template slot-scope="{ row }">
+            <el-tag
+              v-if="row.transaction_status_id"
+              :type="changeStatusMap[row.transaction_status_id]"
+              size="small"
+              >{{ row.transaction_status_name }}</el-tag
+            >
+            <span v-else>{{ row.transaction_status_name }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
             <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
@@ -199,6 +222,12 @@ export default {
     return {
       listData: [],
       listLoading: false,
+      changeStatusMap: {
+        1: "info",
+        2: "warning",
+        3: "success",
+        4: "danger",
+      },
       statusMap: {
         0: {
           text: "未生成",

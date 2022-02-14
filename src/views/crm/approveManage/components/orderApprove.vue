@@ -98,7 +98,7 @@
           min-width="100"
           show-overflow-tooltip
         >
-          <template slot-scope="{ row }">
+          <template slot-scope="{ row }" v-if="row.verify_status !== 8">
             <span
               v-if="row.finish_staff_id"
               class="approve-status approve-status--success"

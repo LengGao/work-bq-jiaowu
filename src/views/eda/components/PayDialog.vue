@@ -1,34 +1,64 @@
 <template>
   <el-dialog
     title="补齐费用"
-    :visible.sync="visible"
+    :visible="value"
     width="400px"
-    @open="handleOpen"
     :close-on-click-modal="false"
-    @closed="resetForm('formData')">
-    <el-form
-      label-width="20px"
-      :model="formData"
-      ref="formData"
-      v-loading="detaiLoading">
-    <el-form-item>
-    <el-checkbox-group v-model="formData.items">
-          <el-checkbox :label="1">教材费</el-checkbox>
-          <el-checkbox :label="2">论文指导费</el-checkbox>
-          <el-checkbox :label="3">平台费</el-checkbox>
-          <el-checkbox :label="4">论文答辩费</el-checkbox>
-          <el-checkbox :label="5">教务服务费</el-checkbox>
-          <el-checkbox :label="6">论文处理费</el-checkbox>
-    </el-checkbox-group>
-   </el-form-item>
+    @close="hanldeClose"
+    @closed="resetForm('formData')"
+  >
+    <el-form label-width="100px" :model="formData" ref="formData">
+      <el-form-item label="教材费">
+        <el-radio-group v-model="formData.book_fee_status">
+          <el-radio :label="1">已缴</el-radio>
+          <el-radio :label="0">未缴</el-radio>
+          <el-radio :label="-1">不处理</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="平台费">
+        <el-radio-group v-model="formData.platform_fee_status">
+          <el-radio :label="1">已缴</el-radio>
+          <el-radio :label="0">未缴</el-radio>
+          <el-radio :label="-1">不处理</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="教务服务费">
+        <el-radio-group v-model="formData.service_fee_status">
+          <el-radio :label="1">已缴</el-radio>
+          <el-radio :label="0">未缴</el-radio>
+          <el-radio :label="-1">不处理</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="论文指导费">
+        <el-radio-group v-model="formData.paper_teach_fee_status">
+          <el-radio :label="1">已缴</el-radio>
+          <el-radio :label="0">未缴</el-radio>
+          <el-radio :label="-1">不处理</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="论文答辩费">
+        <el-radio-group v-model="formData.paper_reply_fee_status">
+          <el-radio :label="1">已缴</el-radio>
+          <el-radio :label="0">未缴</el-radio>
+          <el-radio :label="-1">不处理</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="论文处理费">
+        <el-radio-group v-model="formData.paper_handle_fee_status">
+          <el-radio :label="1">已缴</el-radio>
+          <el-radio :label="0">未缴</el-radio>
+          <el-radio :label="-1">不处理</el-radio>
+        </el-radio-group>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="hanldeCancel">取 消</el-button>
+      <el-button @click="hanldeClose">取 消</el-button>
       <el-button
         type="primary"
-        :loading="addLoading"
+        :loading="submitLoading"
         @click="submitForm('formData')"
-        >确 定</el-button>
+        >确 定</el-button
+      >
     </span>
   </el-dialog>
 </template>
@@ -49,43 +79,33 @@ export default {
   },
   data() {
     return {
-      visible: this.value,
       formData: {
-        items:[],
+        book_fee_status: -1,
+        paper_teach_fee_status: -1,
+        platform_fee_status: -1,
+        paper_reply_fee_status: -1,
+        service_fee_status: -1,
+        paper_handle_fee_status: -1,
       },
-      addLoading: false,
-      detaiLoading: false,
+      submitLoading: false,
     };
   },
-  watch: {
-    value(val) {
-      this.visible = val;
-    },
-  },
-
   methods: {
-    handleOpen() {
-     this.formData.items = [];
-    },
     async batchUpdateFee() {
-      const data = { 
-        id_arr:this.ids,
-        book_fee_status:+this.formData.items.includes(1),
-        paper_teach_fee_status:+this.formData.items.includes(2),
-        platform_fee_status:+this.formData.items.includes(3),
-        paper_reply_fee_status:+this.formData.items.includes(4),
-        service_fee_status:+this.formData.items.includes(5),
-        paper_handle_fee_status:+this.formData.items.includes(6),
-        };
-      console.log(data);
-      const res = await batchUpdateFee(data);
+      const data = {
+        id_arr: this.ids,
+        ...this.formData,
+      };
+      this.submitLoading = true;
+      const res = await batchUpdateFee(data).catch(() => {});
+      this.submitLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
         this.$emit("on-success");
-        this.visible = false;
+        this.hanldeClose();
       }
     },
-   submitForm(formName) {
+    submitForm(formName) {
       console.log(this.formData);
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -95,21 +115,22 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      this.hanldeCancel();
+      for (const k in this.formData) {
+        this.formData[k] = -1;
+      }
     },
-    hanldeCancel() {
+    hanldeClose() {
       this.$emit("input", false);
     },
   },
 };
 // 2.20:10000，3.20:10000,4.20:10000,5.20:10000,6.20:10000,7.20:10000
-// 
+//
 // 18号1点30的车，那么12点半到达隆回，11点要去花桥坐到车，11点之前赶往花桥。
-
 </script>
 
 <style lang="scss" scoped>
-.el-checkbox{
+.el-checkbox {
   width: 130px;
   height: 40px;
 }

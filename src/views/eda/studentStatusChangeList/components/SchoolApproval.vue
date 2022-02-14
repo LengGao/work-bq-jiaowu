@@ -1,9 +1,8 @@
 <template>
   <el-dialog
-    title="修改届别"
+    title="学校审批"
     :visible="value"
-    width="400px"
-    @open="handleOpen"
+    width="450px"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
     @close="hanldeClose"
@@ -15,16 +14,28 @@
       inline
       ref="formData"
     >
-      <el-form-item label="届别名称" prop="jiebie_id">
-        <el-select v-model="formData.jiebie_id" placeholder="请选届别">
-          <el-option
-            v-for="item in gradeOptions"
-            :key="item.id"
-            :label="item.title"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
+      <el-form-item label="审批日期" prop="approve_time">
+        <el-date-picker
+          value-format="yyyy-MM-dd"
+          v-model="formData.approve_time"
+          type="date"
+          class="input"
+          placeholder="选择日期"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="审批意见" prop="status">
+        <el-radio-group v-model="formData.status">
+          <el-radio label="3">通过</el-radio>
+          <el-radio label="4">不通过</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="备注信息" prop="remark">
+        <el-input
+          type="textarea"
+          class="input"
+          v-model="formData.remark"
+        ></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -33,63 +44,56 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >确 定</el-button
+        >保 存</el-button
       >
     </span>
   </el-dialog>
 </template>
 
 <script>
-import { getGradeOptions, updateBatchOrderGrade } from "@/api/sou";
+import { approveTransaction } from "@/api/sou";
 export default {
-  name: "UpdateOrderGrade",
+  name: "SchoolApproval",
   props: {
     value: {
       type: Boolean,
       default: false,
     },
-    orderIds: {
-      type: Array,
-      default: () => [],
+    id: {
+      type: [Number, String],
+      default: "",
     },
   },
   data() {
     return {
       addLoading: false,
-      gradeOptions: [],
       formData: {
-        jiebie_id: "",
+        approve_time: "",
+        status: "",
+        remark: "",
       },
       rules: {
-        jiebie_id: [{ required: true, message: "请选择", trigger: "change" }],
+        approve_time: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
+        status: [{ required: true, message: "请选择", trigger: "change" }],
       },
     };
   },
-
   methods: {
-    handleOpen() {
-      this.getGradeOptions();
-    },
-    // 获取届别选项
-    async getGradeOptions() {
-      const res = await getGradeOptions();
-      if (res.code === 0) {
-        this.gradeOptions = [{ id: 0, title: "移除届别" }].concat(res.data);
-      }
-    },
     async submit() {
       const data = {
+        id: this.id,
         ...this.formData,
-        order_id_arr: this.orderIds,
       };
       this.addLoading = true;
-      const res = await updateBatchOrderGrade(data).catch(() => {
+      const res = await approveTransaction(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("on-success");
+        this.$emit("success");
         this.hanldeClose();
       }
     },
@@ -112,3 +116,8 @@ export default {
   },
 };
 </script>
+<style lang="less" scoped>
+.input {
+  width: 237px;
+}
+</style>
