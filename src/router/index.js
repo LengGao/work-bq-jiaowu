@@ -326,6 +326,7 @@ export const asyncRouter = [
     children: [
       // ==== 新
 
+
       {
         path: 'collectionList',
         name: 'collectionList',
@@ -1101,6 +1102,18 @@ export const asyncRouter = [
     meta: { title: '系统设置', icon: 'zhaoshengguanli' },
     name: 'set',
     children: [
+      {
+        path: 'workOrderManage',
+        name: 'workOrderManage',
+        component: () => import('@/views/set/workOrderManage/index.vue'),
+        meta: { title: '工单管理' },
+      },
+      {
+        path: 'workOrderDetail',
+        name: 'workOrderDetail',
+        component: () => import('@/views/set/workOrderManage/detail.vue'),
+        meta: { title: '工单详情' },
+      },
       {
         path: 'contracttemp',
         name: 'contracttemp',
