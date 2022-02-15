@@ -1,9 +1,11 @@
 <template>
-  <div class="work-order-detail">
+  <div class="work-order-detail" v-loading="detailLoading">
     <div class="work-order-detail-header">
       <div class="header-left">
-        <h4>工单标题</h4>
-        <span class="status status-success">状态</span>
+        <h4>{{ detailData.title }}</h4>
+        <span :class="`status status-${detailData.status}`">{{
+          detailData.status_name
+        }}</span>
       </div>
       <div class="header-right">
         <el-button>转交工单</el-button>
@@ -15,14 +17,59 @@
           <div class="panel-title">基本信息</div>
           <div class="info-content">
             <div class="info-content-item">
-              <span>工单编号</span>
-              <span class="info-content-item-value">6454545454</span>
+              <span class="info-content-item-name">工单编号</span>
+              <span class="info-content-item-value">{{ detailData.id }}</span>
             </div>
+            <div class="info-content-item">
+              <span class="info-content-item-name">提交时间</span>
+              <span class="info-content-item-value">{{
+                detailData.submit_time
+              }}</span>
+            </div>
+            <div class="info-content-item">
+              <span class="info-content-item-name">提交人员</span>
+              <span class="info-content-item-value">{{
+                detailData.submitter_name
+              }}</span>
+            </div>
+            <template v-for="(item, index) in detailData.uid_order">
+              <div class="info-content-item" :key="index">
+                <span class="info-content-item-name">关联学生</span>
+                <span
+                  class="info-content-item-value link"
+                  @click="toStudentDetail(item.uid)"
+                >
+                  {{ item.user_realname }}
+                </span>
+              </div>
+              <div class="info-content-item" :key="item.uid">
+                <span class="info-content-item-name">关联订单</span>
+                <span class="info-content-item-value link">
+                  <p
+                    type="text"
+                    v-for="order in item.order"
+                    :key="order.order_id"
+                    @click="toOrderDetail(order.order_id)"
+                  >
+                    {{ order.order_name }}
+                  </p>
+                </span>
+              </div>
+            </template>
           </div>
         </div>
         <div class="container-desc panel">
           <div class="panel-title">问题描述</div>
-          <div class="desc-content"></div>
+          <div class="desc-content">
+            <p>{{ detailData.description }}</p>
+            <img
+              :src="url"
+              @click="handlePreview(url)"
+              v-for="(url, index) in detailData.images"
+              :key="index"
+              title="查看大图"
+            />
+          </div>
         </div>
       </div>
       <div class="container-record panel">
@@ -72,6 +119,7 @@
         </div>
       </div>
     </div>
+    <PreviewImg ref="view" />
   </div>
 </template>
 
@@ -81,6 +129,7 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import baisicOption from "@/utils/quill-config";
+import { getWorkorderDetail } from "@/api/set";
 export default {
   name: "workOrderDetail",
   components: {
@@ -103,9 +152,28 @@ export default {
         },
       },
       msgValue: "",
+      detailLoading: false,
+      detailData: {},
     };
   },
+  created() {
+    this.getWorkorderDetail();
+  },
   methods: {
+    handlePreview(url) {
+      this.$refs.view.show(url);
+    },
+    async getWorkorderDetail() {
+      const data = {
+        id: this.$route.query.id,
+      };
+      this.detailLoading = true;
+      const res = await getWorkorderDetail(data);
+      this.detailLoading = false;
+      if (res.code === 0) {
+        this.detailData = res.data;
+      }
+    },
     onEnter() {
       console.log(this.msgValue);
       this.msgValue = "";
@@ -146,25 +214,25 @@ export default {
           height: 6px;
           border-radius: 50%;
         }
-        &-info {
+        &-1 {
           color: #c0c4cc;
           &::before {
             background-color: #c0c4cc;
           }
         }
-        &-wait {
+        &-2 {
           color: #fdc400;
           &::before {
             background-color: #fdc400;
           }
         }
-        &-danger {
+        &-3 {
           color: #fd6500;
           &::before {
             background-color: #fd6500;
           }
         }
-        &-success {
+        &-4 {
           color: #43d100;
           &::before {
             background-color: #43d100;
@@ -180,18 +248,47 @@ export default {
       width: 400px;
       .container-info {
         width: 100%;
-        height: 400px;
+        height: 500px;
         margin-bottom: 20px;
+        overflow-y: auto;
         .info-content {
           padding: 10px;
           .info-content-item {
             padding: 10px 0;
+            display: flex;
+            &-name {
+              flex-shrink: 0;
+              width: 80px;
+            }
+            &-value {
+              align-self: flex-end;
+              &.link {
+                color: #199fff;
+                cursor: pointer;
+                p {
+                  margin-bottom: 16px;
+                }
+              }
+            }
           }
         }
       }
       .container-desc {
         .desc-content {
           padding: 10px;
+          height: calc(100vh - 703px);
+          min-height: 150px;
+          overflow-y: auto;
+          p {
+            line-height: 1.5;
+          }
+          img {
+            height: 60px;
+            width: 60px;
+            vertical-align: top;
+            margin: 16px 16px 0 0;
+            cursor: pointer;
+          }
         }
       }
     }

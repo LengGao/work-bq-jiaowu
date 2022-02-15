@@ -10,14 +10,14 @@
           @on-search="handleSearch"
         />
         <div>
-          <el-button type="primary" @click="openAddDialog()"
-            >添加届别</el-button
+          <el-button type="primary" @click="dialogVisible = true"
+            >提交工单</el-button
           >
         </div>
       </header>
       <!--列表-->
       <div class="userTable">
-        <el-tabs v-model="listType" @tab-click="getGradeList">
+        <el-tabs v-model="listType" @tab-click="getWorkorderList">
           <el-tab-pane label="全部工单" name="1"></el-tab-pane>
           <el-tab-pane label="我提交的" name="2"></el-tab-pane>
           <el-tab-pane label="我处理的" name="3"></el-tab-pane>
@@ -47,55 +47,60 @@
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="submitter_name"
             label="提交人"
             min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="submit_time"
             label="提交时间"
             min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="last_handler_name"
             label="处理人"
             min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="last_handle_time"
             label="最后处理时间"
             min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="total_consuming_time"
             label="工单耗时"
-            min-width="100"
+            min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="status_name"
             label="工单状态"
             min-width="100"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <span class="status" :class="`status-${row.status}`">{{
+                row.status_name
+              }}</span>
+            </template>
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="160">
+          <el-table-column label="操作" fixed="right" min-width="120">
             <template slot-scope="{ row }">
               <el-button type="text" @click="toDetail(row.id)">详情</el-button>
-              <el-button type="text" @click="openAddDialog(row)"
-                >修改</el-button
-              >
-              <el-button type="text" @click="delConfirm(row.id)"
+              <el-button
+                type="text"
+                v-if="row.status === 1"
+                @click="delConfirm(row.id)"
                 >删除</el-button
               >
             </template>
@@ -111,22 +116,18 @@
         </div>
       </div>
     </div>
-    <AddGrade
-      v-model="dialogVisible"
-      :edit-data="editData"
-      @success="getGradeList"
-    />
+    <AddWorkOrder v-model="dialogVisible" @success="getWorkorderList" />
   </section>
 </template>
 
 <script>
-import AddGrade from "./components/AddGrade";
-import { getGradeList, delGrade, updateGrade } from "@/api/sou";
+import AddWorkOrder from "./components/AddWorkOrder";
+import { getWorkorderList, deleteWorkorder } from "@/api/set";
 import { getShortcuts } from "@/utils/date";
 export default {
-  name: "gradeManage",
+  name: "workOrderManage",
   components: {
-    AddGrade,
+    AddWorkOrder,
   },
   data() {
     return {
@@ -155,7 +156,7 @@ export default {
           },
         },
         {
-          key: "type",
+          key: "status",
           type: "select",
           options: [
             {
@@ -188,14 +189,13 @@ export default {
         },
       ],
       dialogVisible: false,
-      editData: {},
     };
   },
   activated() {
-    this.getGradeList();
+    this.getWorkorderList();
   },
   created() {
-    this.getGradeList();
+    this.getWorkorderList();
   },
   methods: {
     toDetail(id) {
@@ -204,65 +204,53 @@ export default {
         query: { id },
       });
     },
-    // 添加，编辑
-    openAddDialog(row = {}) {
-      this.editData = row;
-      this.dialogVisible = true;
-    },
     // 删除
     delConfirm(id) {
-      this.$confirm("确定要删除该届别吗？", "提醒", {
+      this.$confirm("确定要删除该工单吗？", "提醒", {
         type: "warning",
       })
         .then(() => {
-          this.delGrade(id);
+          this.deleteWorkorder(id);
         })
         .catch(() => {});
     },
-    async delGrade(id) {
+    async deleteWorkorder(id) {
       const data = { id };
-      const res = await delGrade(data);
+      const res = await deleteWorkorder(data);
       if (res.code === 0) {
-        this.getGradeList();
+        this.getWorkorderList();
       }
     },
-    // 修改排序
-    async handleUpdateSort({ id, title, sort }) {
-      const data = {
-        id,
-        title,
-        sort,
-      };
-      const res = await updateGrade(data);
-      if (res.code === 0) {
-        this.$message.success(res.message);
-        this.getGradeList();
-      }
-    },
+
     handleSearch(data) {
       this.pageNum = 1;
+      const [start_time, end_time] = data.date || ["", ""];
+      delete data.date;
       this.searchData = {
         ...data,
+        start_time,
+        end_time,
       };
-      this.getGradeList();
+      this.getWorkorderList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
       this.pageNum = 1;
-      this.getGradeList();
+      this.getWorkorderList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getGradeList();
+      this.getWorkorderList();
     },
-    async getGradeList() {
+    async getWorkorderList() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        type: this.listType,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getGradeList(data);
+      const res = await getWorkorderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -279,6 +267,41 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 10px 0;
+}
+.status {
+  &::before {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  &-1 {
+    color: #c0c4cc;
+    &::before {
+      background-color: #c0c4cc;
+    }
+  }
+  &-2 {
+    color: #fdc400;
+    &::before {
+      background-color: #fdc400;
+    }
+  }
+  &-3 {
+    color: #fd6500;
+    &::before {
+      background-color: #fd6500;
+    }
+  }
+  &-4 {
+    color: #43d100;
+    &::before {
+      background-color: #43d100;
+    }
+  }
 }
 </style>
 

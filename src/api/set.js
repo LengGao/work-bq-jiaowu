@@ -189,3 +189,59 @@ export function clearAppletOpenid(params) {
     params,
   })
 }
+// 获取工单列表
+export function getWorkorderList(params) {
+  return request({
+    url: '/Workorder/getWorkorderList',
+    method: 'get',
+    params,
+  })
+}
+// 工单列表-删除
+export function deleteWorkorder(data) {
+  return request({
+    url: '/Workorder/deleteWorkorder',
+    method: 'post',
+    data,
+  })
+}
+// 工单列表-选择学生
+export function getUserSelect(params) {
+  return request({
+    url: '/Workorder/userSelect',
+    method: 'get',
+    params,
+  })
+}
+// 工单列表-选择订单
+export function getOrderSelect(params) {
+  return request({
+    url: '/Workorder/orderSelect',
+    method: 'get',
+    params,
+  })
+}
+// 工单列表-提交工单
+export function submitWorkorder(data) {
+  return request({
+    url: '/Workorder/submitWorkorder',
+    method: 'post',
+    data,
+  })
+}
+// 工单列表-修改工单
+export function updateWorkorder(data) {
+  return request({
+    url: '/Workorder/updateWorkorder',
+    method: 'post',
+    data,
+  })
+}
+// 工单详情
+export function getWorkorderDetail(params) {
+  return request({
+    url: '/Workorder/workorderDetail',
+    method: 'get',
+    params,
+  })
+}
