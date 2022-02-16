@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { getClassList, batchchangestudents } from "@/api/eda";
+import { getClassList, batchchangestudents, exchangestudents } from "@/api/eda";
 export default {
   data() {
     return {
@@ -135,7 +135,11 @@ export default {
         ...query,
         new_classroom_id,
       };
-      const res = await batchchangestudents(data);
+      let requestApi =
+        this.$route.query.isSingle == 1
+          ? exchangestudents
+          : batchchangestudents;
+      const res = await requestApi(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.$router.back();

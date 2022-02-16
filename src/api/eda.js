@@ -645,6 +645,14 @@ export function batchchangestudents(data) {
     data,
   })
 }
+// 学生转班
+export function exchangestudents(data) {
+  return request({
+    url: '/classstudents/exchangestudents',
+    method: 'post',
+    data,
+  })
+}
 // 获取未分班的学生
 export function getbycoursestudet(params) {
   return request({

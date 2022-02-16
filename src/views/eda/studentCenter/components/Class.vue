@@ -324,6 +324,7 @@
                   course_student_id: row.id,
                   old_classroom_id: 0,
                   course_id: row.course_id,
+                  isSingle: true,
                 })
               "
               >加入班级</el-button
@@ -421,11 +422,15 @@ export default {
       const query = {
         uid: [this.uid],
         course_students_id: [row.course_student_id],
-        old_classroom_id: row.classroom_id,
+        old_classroom_id: row.classroom_id || 0,
       };
       this.$router.push({
         name: "shift",
-        query: { json: JSON.stringify(query), course_id: row.course_id },
+        query: {
+          json: JSON.stringify(query),
+          isSingle: row.isSingle ? 1 : 0,
+          course_id: row.course_id,
+        },
       });
     },
     // 移除学生
@@ -451,12 +456,14 @@ export default {
     },
     // 关课
     removeClass(course_id) {
-      this.$confirm(`关闭课程后该学员将不能在东培学堂等小程序学习该课程，是否关闭课程?`, {
-        type: "warning",
-      })
+      this.$confirm(
+        `关闭课程后该学员将不能在东培学堂等小程序学习该课程，是否关闭课程?`,
+        {
+          type: "warning",
+        }
+      )
         .then(() => {
           this.removeCourse(course_id);
-          
         })
         .catch(() => {});
     },
