@@ -15,11 +15,16 @@
       </el-table-column>
       <el-table-column
         prop="order_count"
-        label="订单数"
-        min-width="70"
+        label="招生/机构订单数"
+        min-width="90"
         align="center"
         show-overflow-tooltip
       >
+        <template slot-scope="{ row }">
+          <span>{{
+            `${row.zhaosheng_order_count} / ${row.jigou_order_count}`
+          }}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="order_money"
