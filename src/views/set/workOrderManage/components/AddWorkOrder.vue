@@ -73,7 +73,7 @@
           class="remark"
           type="textarea"
           v-model="formData.description"
-          placeholder="请输入内容"
+          placeholder="请输入问题描述"
         />
       </el-form-item>
       <el-form-item label="问题截图">
@@ -202,7 +202,7 @@ export default {
       });
       const data = {
         ...rest,
-        uid_order,
+        uid_order: uid_order[0]?.uid ? uid_order : [],
         images: images.map((item) => item.response.data.data.url),
       };
       this.addLoading = true;

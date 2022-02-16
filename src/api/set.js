@@ -245,3 +245,51 @@ export function getWorkorderDetail(params) {
     params,
   })
 }
+// 工单详情-消息列表
+export function workorderMessageList(params) {
+  return request({
+    url: '/Workorder/workorderMessageList',
+    method: 'get',
+    params,
+  })
+}
+// 工单详情-消息发送
+export function replyWorkorder(data) {
+  return request({
+    url: '/Workorder/replyWorkorder',
+    method: 'post',
+    data,
+  })
+}
+// 工单详情-获取转交人
+export function getStaffSelect(params) {
+  return request({
+    url: '/Workorder/staffSelect',
+    method: 'get',
+    params,
+  })
+}
+// 工单详情-转交工单
+export function deliverWorkorder(data) {
+  return request({
+    url: '/Workorder/deliverWorkorder',
+    method: 'post',
+    data,
+  })
+}
+// 工单详情-关闭工单
+export function finishWorkorder(data) {
+  return request({
+    url: '/Workorder/finishWorkorder',
+    method: 'post',
+    data,
+  })
+}
+// 工单详情-重启工单
+export function restartWorkorder(data) {
+  return request({
+    url: '/Workorder/restartWorkorder',
+    method: 'post',
+    data,
+  })
+}

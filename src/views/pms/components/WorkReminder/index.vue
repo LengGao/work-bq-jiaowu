@@ -38,8 +38,7 @@
           <div
             class="avatar"
             :style="{
-              backgroundColor:
-                '#' + Math.random().toString(16).substr(2, 6).toUpperCase(),
+              backgroundColor: getColor(row.from_staff_id),
             }"
           >
             <img :src="row.head_photo" alt="" v-if="row.head_photo" />
@@ -216,6 +215,8 @@ export default {
       // 添加回款记录
       recordDialog: false,
       recordData: {},
+      //颜色缓存
+      colorCache: {},
     };
   },
   watch: {
@@ -246,6 +247,13 @@ export default {
     this.getStaffNotice();
   },
   methods: {
+    getColor(id) {
+      return (
+        this.colorCache[id] ||
+        (this.colorCache[id] =
+          "#" + Math.random().toString(16).substr(2, 6).toUpperCase())
+      );
+    },
     handleAddRecordSuccess() {
       this.returnPaymentPage = 1;
       this.receivablePlan();

@@ -8,7 +8,15 @@
         }}</span>
       </div>
       <div class="header-right">
-        <el-button>转交工单</el-button>
+        <template v-if="detailData.status !== 4">
+          <el-button @click="dialogVisible = true">转交工单</el-button>
+          <el-button @click="finishWorkorder" :loading="closeLoading"
+            >关闭工单</el-button
+          >
+        </template>
+        <el-button v-else @click="restartWorkorder" :loading="restartLoading"
+          >重启工单</el-button
+        >
       </div>
     </div>
     <div class="work-order-detail-container">
@@ -74,37 +82,33 @@
       </div>
       <div class="container-record panel">
         <div class="panel-title">处理记录</div>
-        <div class="record-content">
-          <div class="record-item">
-            <div class="record-item-avatar">头像</div>
-            <div class="record-item-body">
-              <div class="user-info">
-                <span class="user-info-name">傻乎乎</span>
-                <span class="user-info-other">2021-20-20</span>
-              </div>
-              <div class="user-msg" @click="handleMsgClick">
-                <p>文峰街道卡萨丽枫酒店撒狂蜂浪蝶交三方都第十卡逻辑</p>
-                <img
-                  src="https://img2.baidu.com/it/u=2927586094,212838758&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500"
-                  alt=""
-                />
-              </div>
+        <div class="record-content" ref="msgContaienr">
+          <div class="record-item" v-for="item in msgList" :key="item.id">
+            <div
+              class="record-item-avatar"
+              :style="{
+                backgroundColor: getColor(item.admin_id),
+              }"
+            >
+              <span>
+                {{
+                  (item.staff_name && item.staff_name.substr(-2)) ||
+                  item.staff_name
+                }}</span
+              >
             </div>
-          </div>
-          <div class="record-item">
-            <div class="record-item-avatar">头像</div>
             <div class="record-item-body">
               <div class="user-info">
-                <span class="user-info-name">傻乎乎</span>
-                <span class="user-info-other">2021-20-20</span>
+                <span class="user-info-name">{{ item.staff_name }}</span>
+                <span class="user-info-other"
+                  >{{ item.department_name }} {{ item.create_time }}</span
+                >
               </div>
-              <div class="user-msg" @click="handleMsgClick">
-                <p>文峰街道卡萨丽枫酒店撒狂蜂浪蝶交三方都第十卡逻辑</p>
-                <img
-                  src="https://img2.baidu.com/it/u=2927586094,212838758&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500"
-                  alt=""
-                />
-              </div>
+              <div
+                class="user-msg"
+                @click="handleMsgClick"
+                v-html="item.message"
+              ></div>
             </div>
           </div>
         </div>
@@ -120,6 +124,7 @@
       </div>
     </div>
     <PreviewImg ref="view" />
+    <TransferWorkOrder v-model="dialogVisible" @success="getWorkorderDetail" />
   </div>
 </template>
 
@@ -129,11 +134,19 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import baisicOption from "@/utils/quill-config";
-import { getWorkorderDetail } from "@/api/set";
+import {
+  getWorkorderDetail,
+  workorderMessageList,
+  replyWorkorder,
+  finishWorkorder,
+  restartWorkorder,
+} from "@/api/set";
+import TransferWorkOrder from "./components/TransferWorkOrder";
 export default {
   name: "workOrderDetail",
   components: {
     quillEditor,
+    TransferWorkOrder,
   },
   data() {
     return {
@@ -145,7 +158,7 @@ export default {
             bindings: {
               enter: {
                 key: 13,
-                handler: this.onEnter,
+                handler: this.replyWorkorder,
               },
             },
           },
@@ -154,15 +167,130 @@ export default {
       msgValue: "",
       detailLoading: false,
       detailData: {},
+      dialogVisible: false,
+      msgList: [],
+      timer: null,
+      timeCount: 1,
+      timeLevel: 1,
+      timeLevelMap: {
+        1: 5,
+        2: 10,
+        3: 30,
+        4: 60,
+      },
+      prevListLength: 0,
+      closeLoading: false,
+      restartLoading: false,
+      colorCache: {},
     };
   },
   created() {
     this.getWorkorderDetail();
+    this.handleInterval();
+  },
+  beforeDestroy() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
   },
   methods: {
+    getColor(id) {
+      return (
+        this.colorCache[id] ||
+        (this.colorCache[id] =
+          "#" + Math.random().toString(16).substr(2, 6).toUpperCase())
+      );
+    },
+    async restartWorkorder() {
+      const data = {
+        id: this.$route.query.id,
+      };
+      this.restartLoading = true;
+      const res = await restartWorkorder(data);
+      this.restartLoading = false;
+      if (res.code === 0) {
+        this.getWorkorderDetail().then(this.handleInterval);
+      }
+    },
+    async finishWorkorder() {
+      const data = {
+        id: this.$route.query.id,
+      };
+      this.closeLoading = true;
+      const res = await finishWorkorder(data);
+      this.closeLoading = false;
+      if (res.code === 0) {
+        this.getWorkorderDetail().then(this.handleInterval);
+      }
+    },
+    handleInterval() {
+      if (this.timer) {
+        clearTimeout(this.timer);
+        this.timer = null;
+      }
+      this.workorderMessageList().then(() => {
+        if (this.detailData.status === 4) {
+          return;
+        }
+        if (this.prevListLength !== this.msgList.length) {
+          this.timeCount = 1;
+          this.timeLevel = 1;
+        } else {
+          this.timeCount++;
+        }
+        if (this.timeCount > 3 && this.timeLevel < 4) {
+          this.timeCount = 1;
+          this.timeLevel++;
+        }
+        this.timer = setTimeout(() => {
+          this.handleInterval();
+        }, 1000 * this.timeLevelMap[this.timeLevel]);
+      });
+    },
     handlePreview(url) {
       this.$refs.view.show(url);
     },
+    handleMsgClick(e) {
+      console.log(e.srcElement.currentSrc);
+      e.srcElement &&
+        e.srcElement.currentSrc &&
+        this.handlePreview(e.srcElement.currentSrc);
+    },
+    // 消息发送
+    async replyWorkorder() {
+      if (!this.msgValue) {
+        return;
+      }
+      const data = {
+        id: this.$route.query.id,
+        message: this.msgValue,
+      };
+      this.msgValue = "";
+      const res = await replyWorkorder(data);
+      if (res.code === 0) {
+        this.handleInterval();
+      }
+    },
+    // 消息列表
+    async workorderMessageList() {
+      const data = {
+        id: this.$route.query.id,
+        limit: 99999,
+      };
+      this.prevListLength = this.msgList.length;
+      const res = await workorderMessageList(data);
+      if (res.code === 0) {
+        this.msgList = res.data.list.reverse();
+        if (this.prevListLength !== this.msgList.length) {
+          this.$nextTick(() => {
+            const { scrollHeight, offsetHeight } = this.$refs.msgContaienr;
+            this.$refs.msgContaienr.scrollTop = scrollHeight - offsetHeight;
+          });
+        }
+      }
+    },
+    // 工单详情
     async getWorkorderDetail() {
       const data = {
         id: this.$route.query.id,
@@ -173,13 +301,6 @@ export default {
       if (res.code === 0) {
         this.detailData = res.data;
       }
-    },
-    onEnter() {
-      console.log(this.msgValue);
-      this.msgValue = "";
-    },
-    handleMsgClick(e) {
-      console.log(e.srcElement.currentSrc);
     },
   },
 };
@@ -297,13 +418,18 @@ export default {
       margin-left: 20px;
       display: flex;
       flex-direction: column;
+
       .record-content {
         padding: 10px 20px;
-
+        height: 100%;
+        overflow-y: auto;
         .record-item {
           padding: 10px 0;
           border-bottom: 1px solid #ddd;
           display: flex;
+          &:last-child {
+            border-bottom: none;
+          }
           &-avatar {
             width: 30px;
             height: 30px;
@@ -319,6 +445,7 @@ export default {
           &-body {
             .user-info {
               font-size: 14px;
+              margin-bottom: 10px;
               &-name {
                 color: #199fff;
                 margin-right: 16px;
@@ -329,8 +456,10 @@ export default {
             }
             .user-msg {
               line-height: 1.5;
-              img {
-                width: 60px;
+              /deep/img {
+                height: 60px;
+                width: 80px;
+                margin: 0 6px;
                 cursor: pointer;
               }
             }
