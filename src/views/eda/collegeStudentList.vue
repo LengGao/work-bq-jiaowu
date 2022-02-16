@@ -398,7 +398,7 @@ export default {
         paper_teach_fee_status: "",
         paper_reply_fee_status: "",
         paper_handle_fee_status: "",
-        jiebie_id: "",
+        // jiebie_id: "",
       },
       searchOptions: [
         {
@@ -439,19 +439,19 @@ export default {
             filterable: true,
           },
         },
-        {
-          key: "jiebie_id",
-          type: "select",
-          width: 120,
-          options: [],
-          optionValue: "id",
-          optionLabel: "title",
-          attrs: {
-            placeholder: "届别名称",
-            clearable: true,
-            filterable: true,
-          },
-        },
+        // {
+        //   key: "jiebie_id",
+        //   type: "select",
+        //   width: 120,
+        //   options: [],
+        //   optionValue: "id",
+        //   optionLabel: "title",
+        //   attrs: {
+        //     placeholder: "届别名称",
+        //     clearable: true,
+        //     filterable: true,
+        //   },
+        // },
         {
           key: "book_fee_status",
           type: "select",
@@ -665,15 +665,20 @@ export default {
       }
     },
     onNodeClick(data) {
-      console.log(data);
       const {
         type_id = "",
         university_id = "",
         level_id = "",
         major_id = "",
-        title,
+        jiebie_id = "",
       } = data;
-      this.treeParams = { type_id, university_id, level_id, major_id };
+      this.treeParams = {
+        jiebie_id,
+        type_id,
+        university_id,
+        level_id,
+        major_id,
+      };
       this.getEduList();
     },
     async getTreeCategory() {
@@ -686,13 +691,13 @@ export default {
         ].concat(res.data);
       }
     },
-    // 获取届别选项
-    async getGradeOptions() {
-      const res = await getGradeOptions();
-      if (res.code === 0) {
-        this.searchOptions[3].options = res.data;
-      }
-    },
+    // // 获取届别选项
+    // async getGradeOptions() {
+    //   const res = await getGradeOptions();
+    //   if (res.code === 0) {
+    //     this.searchOptions[3].options = res.data;
+    //   }
+    // },
     // 获取所属老师
     async getAdminSelect() {
       const res = await getAdminSelect();

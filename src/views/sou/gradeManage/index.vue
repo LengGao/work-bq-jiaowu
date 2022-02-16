@@ -42,6 +42,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="order_count"
+            label="关联订单数"
+            min-width="200"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="sort"
             label="排序"
             width="200"
