@@ -252,7 +252,6 @@ export default {
       this.$refs.view.show(url);
     },
     handleMsgClick(e) {
-      console.log(e.srcElement.currentSrc);
       e.srcElement &&
         e.srcElement.currentSrc &&
         this.handlePreview(e.srcElement.currentSrc);
