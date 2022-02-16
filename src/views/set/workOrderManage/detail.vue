@@ -207,7 +207,7 @@ export default {
         id: this.$route.query.id,
       };
       this.restartLoading = true;
-      const res = await restartWorkorder(data);
+      const res = await restartWorkorder(data).catch(() => {});
       this.restartLoading = false;
       if (res.code === 0) {
         this.getWorkorderDetail().then(this.handleInterval);
@@ -218,7 +218,7 @@ export default {
         id: this.$route.query.id,
       };
       this.closeLoading = true;
-      const res = await finishWorkorder(data);
+      const res = await finishWorkorder(data).catch(() => {});
       this.closeLoading = false;
       if (res.code === 0) {
         this.getWorkorderDetail().then(this.handleInterval);

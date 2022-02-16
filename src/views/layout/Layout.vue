@@ -68,6 +68,12 @@ export default {
           });
         }
         //设置菜单徽标数量
+        // 工单管理
+        this.setMenuBadge(
+          this.menus,
+          "workOrderManage",
+          res.data.workorderCount || 0
+        );
         // 教务开课
         this.setMenuBadge(this.menus, "eduOpenClass", res.data.openCourse || 0);
         // 订单审批
