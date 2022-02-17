@@ -179,6 +179,7 @@ export default {
           this.$emit("on-success", {
             ...this.formData,
             verify_status: 0,
+            pay_status: 1,
             receipt_file: this.formData.receipt_file.map((item) => {
               if (item.url && !item.url.includes("blob:")) {
                 return item.url;
