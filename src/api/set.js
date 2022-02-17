@@ -163,6 +163,14 @@ export function updateStaffStatus(data) {
     data,
   })
 }
+// 员工列表--修改员工班主任
+export function updateMaster(data) {
+  return request({
+    url: '/staff/updateMaster',
+    method: 'post',
+    data,
+  })
+}
 // 员工新增--获取角色
 export function getRoleSelectData(params) {
   return request({

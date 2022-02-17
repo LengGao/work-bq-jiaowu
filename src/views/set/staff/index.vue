@@ -42,7 +42,7 @@
           <el-table-column
             prop="staff_name"
             label="员工姓名"
-            min-width="120"
+            min-width="100"
             align="center"
             show-overflow-tooltip
           >
@@ -60,7 +60,7 @@
           <el-table-column
             prop="role_name"
             label="角色"
-            min-width="120"
+            min-width="100"
             align="center"
             show-overflow-tooltip
           ></el-table-column>
@@ -78,29 +78,25 @@
             align="center"
             show-overflow-tooltip
           ></el-table-column>
-           <el-table-column
+          <el-table-column
             prop="applet_openid"
             label="小程序绑定状态"
-            min-width="140"
+            min-width="100"
             align="center"
             show-overflow-tooltip
           >
-           <template slot-scope="{ row }">
-            <span
-              v-if="row.applet_openid == ''"
-              >未绑定</span
-            >
-            <span v-else>已绑定</span>
-          </template>
+            <template slot-scope="{ row }">
+              <span v-if="row.applet_openid == ''">未绑定</span>
+              <span v-else>已绑定</span>
+            </template>
           </el-table-column>
-          
-          <el-table-column
+          <!-- <el-table-column
             prop="scope"
             label="客户数量"
             min-width="100"
             align="center"
             show-overflow-tooltip
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column
             label="超管"
             align="center"
@@ -133,6 +129,24 @@
                 :active-value="1"
                 :inactive-value="0"
                 @change="updateStaffStatus(row, 'is_director')"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="班主任"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-switch
+                v-model="row.as_headmaster"
+                active-color="#2798ee"
+                inactive-color="#eaeefb"
+                :active-value="1"
+                :inactive-value="2"
+                @change="updateMaster(row)"
               >
               </el-switch>
             </template>
@@ -210,6 +224,7 @@ import {
   getDepartmentlists,
   delDepartment,
   clearAppletOpenid,
+  updateMaster,
 } from "@/api/set";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
@@ -227,7 +242,7 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
-        applet_bound_status:"",
+        applet_bound_status: "",
       },
       searchOptions: [
         {
@@ -383,7 +398,6 @@ export default {
       }
     },
 
-
     // 删除员工
     deleteConfirm(...params) {
       this.$confirm("确定要删除此员工吗?", { type: "warning" })
@@ -404,6 +418,18 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         type === "is_deleted" && this.getStaffList();
+      }
+    },
+    async updateMaster(row) {
+      const data = {
+        as_headmaster: row.as_headmaster,
+        id: row.staff_id,
+      };
+      const res = await updateMaster(data).catch(() => {
+        row.as_headmaster = row.as_headmaster === 1 ? 0 : 1;
+      });
+      if (res.code === 0) {
+        this.$message.success(res.message);
       }
     },
     handleEdit(id) {
