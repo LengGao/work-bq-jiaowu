@@ -1,10 +1,11 @@
 <template>
   <el-dialog
     :title="title"
-    :visible.sync="visible"
+    :visible="value"
     width="750px"
     @open="handleOpen"
     :close-on-click-modal="false"
+    @close="handleClose"
     @closed="resetForm('formData')"
   >
     <el-form
@@ -43,13 +44,30 @@
           filterable
         >
           <el-option
-            v-for="item in payWays"
-            :key="item.value"
-            :label="item.label"
-            :value="item.label"
+            v-for="item in payMethodOptions"
+            :key="item"
+            :label="item"
+            :value="item"
           >
           </el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="回款凭证">
+        <el-upload
+          :headers="headers"
+          :action="uploadImageUrl"
+          :on-remove="handleRemoveImg"
+          :before-remove="beforeRemoveImg"
+          :on-success="handleUploadSuccess"
+          :on-error="handleUploadError"
+          multiple
+          list-type="picture-card"
+          name="image"
+          accept="image/*"
+          :file-list="formData.receipt_file"
+        >
+          <i class="el-icon-plus" style="font-size: 14px"></i>
+        </el-upload>
       </el-form-item>
       <el-form-item label="备注" prop="tips">
         <el-input
@@ -61,7 +79,7 @@
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="hanldeCancel">取 消</el-button>
+      <el-button @click="handleClose">取 消</el-button>
       <el-button
         type="primary"
         :loading="addLoading"
@@ -73,7 +91,8 @@
 </template>
 
 <script>
-import { payWays } from "@/utils";
+import { getCustomfieldOptions } from "@/api/crm";
+import { uploadImageUrl } from "@/api/educational";
 export default {
   name: "SetCollectionRecord",
   props: {
@@ -96,13 +115,16 @@ export default {
   },
   data() {
     return {
-      visible: this.value,
-      payWays,
+      uploadImageUrl,
+      headers: {
+        token: this.$store.state.user.token,
+      },
       formData: {
         tips: "",
         pay_date: "",
         pay_money: "",
         pay_type: "",
+        receipt_file: [],
       },
       rules: {
         pay_money: [{ required: true, message: "请输入", trigger: "blur" }],
@@ -110,17 +132,42 @@ export default {
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
       },
       addLoading: false,
+      payMethodOptions: [],
     };
-  },
-  watch: {
-    value(val) {
-      this.visible = val;
-    },
   },
   methods: {
     handleOpen() {
+      this.getCustomfieldOptions();
       if ("pay_date" in this.data) {
         this.formData = { ...this.data };
+        if (this.data.receipt_file) {
+          this.formData.receipt_file = this.data.receipt_file.map((item) => ({
+            url: item,
+          }));
+        }
+      }
+    },
+    handleUploadError(response, file, fileList) {
+      this.$message.error("上传失败");
+    },
+    handleUploadSuccess(response, file, fileList) {
+      console.log(fileList);
+      this.formData.receipt_file = fileList;
+    },
+    handleRemoveImg(file, fileList) {
+      this.formData.receipt_file = fileList;
+    },
+    beforeRemoveImg(file) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
       }
     },
     disabledDate(e) {
@@ -129,27 +176,48 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$emit("on-success", { ...this.formData, pay_status: 1 });
-          this.hanldeCancel();
+          this.$emit("on-success", {
+            ...this.formData,
+            verify_status: 0,
+            receipt_file: this.formData.receipt_file.map((item) => {
+              if (item.url && !item.url.includes("blob:")) {
+                return item.url;
+              }
+              return item.response.data.data.url;
+            }),
+          });
+          this.handleClose();
         }
       });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      for (const k in this.formData) {
-        this.formData[k] = "";
-      }
-      this.$emit("input", false);
+      this.formData = {
+        tips: "",
+        pay_date: "",
+        pay_money: "",
+        pay_type: "",
+        receipt_file: [],
+      };
     },
-    hanldeCancel() {
-      this.visible = false;
+    handleClose() {
+      this.$emit("input", false);
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .input {
   width: 217px;
+}
+/deep/.el-upload-list--picture-card .el-upload-list__item {
+  width: 60px;
+  height: 60px;
+}
+/deep/.el-upload--picture-card {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
 }
 </style>
