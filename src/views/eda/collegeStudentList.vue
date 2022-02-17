@@ -609,7 +609,7 @@ export default {
     this.getEduList();
     this.getInstitutionSelectData();
     this.getAdminSelect();
-    this.getGradeOptions();
+    // this.getGradeOptions();
   },
   methods: {
     async cancelTransaction(id) {
