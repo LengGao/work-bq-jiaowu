@@ -2,7 +2,7 @@
   <div class="app-wrapper" :class="classObj">
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
-      <navbar></navbar>
+      <navbar :work-order-count="workorderCount"></navbar>
       <app-main></app-main>
     </div>
   </div>
@@ -23,6 +23,7 @@ export default {
   data() {
     return {
       timerId: null,
+      workorderCount:0,
     };
   },
   computed: {
@@ -74,6 +75,7 @@ export default {
           "workOrderManage",
           res.data.workorderCount || 0
         );
+        this.workorderCount = res.data.workorderCount || 0;
         // 教务开课
         this.setMenuBadge(this.menus, "eduOpenClass", res.data.openCourse || 0);
         // 订单审批

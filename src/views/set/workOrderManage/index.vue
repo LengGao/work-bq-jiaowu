@@ -88,9 +88,9 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span class="status" :class="`status-${row.status}`">{{
+              <el-tag size="small" :type="statusMap[row.status]">{{
                 row.status_name
-              }}</span>
+              }}</el-tag>
             </template>
           </el-table-column>
 
@@ -189,6 +189,12 @@ export default {
         },
       ],
       dialogVisible: false,
+      statusMap: {
+        1: "info",
+        2: "warning",
+        3: "danger",
+        4: "success",
+      },
     };
   },
   activated() {
@@ -267,41 +273,6 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 10px 0;
-}
-.status {
-  &::before {
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 4px;
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-  &-1 {
-    color: #c0c4cc;
-    &::before {
-      background-color: #c0c4cc;
-    }
-  }
-  &-2 {
-    color: #fdc400;
-    &::before {
-      background-color: #fdc400;
-    }
-  }
-  &-3 {
-    color: #fd6500;
-    &::before {
-      background-color: #fd6500;
-    }
-  }
-  &-4 {
-    color: #43d100;
-    &::before {
-      background-color: #43d100;
-    }
-  }
 }
 </style>
 

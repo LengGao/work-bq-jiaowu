@@ -3,9 +3,9 @@
     <div class="work-order-detail-header">
       <div class="header-left">
         <h4>{{ detailData.title }}</h4>
-        <span :class="`status status-${detailData.status}`">{{
+        <el-tag size="small" :type="statusMap[detailData.status]">{{
           detailData.status_name
-        }}</span>
+        }}</el-tag>
       </div>
       <div class="header-right">
         <template v-if="detailData.status !== 4">
@@ -22,7 +22,9 @@
     <div class="work-order-detail-container">
       <div class="container-left">
         <div class="container-info panel">
-          <div class="panel-title">基本信息</div>
+          <div class="panel-title">
+            <i class="el-icon-s-marketing"></i> 基本信息
+          </div>
           <div class="info-content">
             <div class="info-content-item">
               <span class="info-content-item-name">工单编号</span>
@@ -67,7 +69,7 @@
           </div>
         </div>
         <div class="container-desc panel">
-          <div class="panel-title">问题描述</div>
+          <div class="panel-title"><i class="el-icon-s-flag"></i> 问题描述</div>
           <div class="desc-content">
             <p>{{ detailData.description }}</p>
             <img
@@ -81,9 +83,16 @@
         </div>
       </div>
       <div class="container-record panel">
-        <div class="panel-title">处理记录</div>
+        <div class="panel-title">
+          <i class="el-icon-s-comment"></i> 处理记录
+        </div>
         <div class="record-content" ref="msgContaienr">
-          <div class="record-item" v-for="item in msgList" :key="item.id">
+          <div
+            class="record-item"
+            :class="{ right: item.me === 1 }"
+            v-for="item in msgList"
+            :key="item.id"
+          >
             <div
               class="record-item-avatar"
               :style="{
@@ -100,9 +109,8 @@
             <div class="record-item-body">
               <div class="user-info">
                 <span class="user-info-name">{{ item.staff_name }}</span>
-                <span class="user-info-other"
-                  >{{ item.department_name }} {{ item.create_time }}</span
-                >
+                <span class="user-info-other">{{ item.department_name }}</span>
+                <span class="user-info-time">{{ item.create_time }} </span>
               </div>
               <div
                 class="user-msg"
@@ -182,6 +190,12 @@ export default {
       closeLoading: false,
       restartLoading: false,
       colorCache: {},
+      statusMap: {
+        1: "info",
+        2: "warning",
+        3: "danger",
+        4: "success",
+      },
     };
   },
   created() {
@@ -314,6 +328,7 @@ export default {
       color: #199fff;
       padding: 10px;
       border-bottom: 1px solid #ddd;
+      background-color: #f5f7fa;
     }
   }
   &-header {
@@ -323,41 +338,8 @@ export default {
     margin-bottom: 16px;
     .header-left {
       display: flex;
-      .status {
-        margin-left: 10px;
-        &::before {
-          display: inline-block;
-          vertical-align: middle;
-          margin-right: 4px;
-          content: "";
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-        }
-        &-1 {
-          color: #c0c4cc;
-          &::before {
-            background-color: #c0c4cc;
-          }
-        }
-        &-2 {
-          color: #fdc400;
-          &::before {
-            background-color: #fdc400;
-          }
-        }
-        &-3 {
-          color: #fd6500;
-          &::before {
-            background-color: #fd6500;
-          }
-        }
-        &-4 {
-          color: #43d100;
-          &::before {
-            background-color: #43d100;
-          }
-        }
+      h4 {
+        margin-right: 10px;
       }
     }
   }
@@ -371,6 +353,7 @@ export default {
         height: 500px;
         margin-bottom: 20px;
         overflow-y: auto;
+        background-color: #fbfcfd;
         .info-content {
           padding: 10px;
           .info-content-item {
@@ -399,12 +382,12 @@ export default {
           height: calc(100vh - 703px);
           min-height: 150px;
           overflow-y: auto;
+          background-color: #fbfcfd;
           p {
             line-height: 1.5;
           }
           img {
             height: 60px;
-            width: 60px;
             vertical-align: top;
             margin: 16px 16px 0 0;
             cursor: pointer;
@@ -424,8 +407,9 @@ export default {
         overflow-y: auto;
         .record-item {
           padding: 10px 0;
-          border-bottom: 1px solid #ddd;
+          border-bottom: 1px solid #eee;
           display: flex;
+
           &:last-child {
             border-bottom: none;
           }
@@ -445,21 +429,44 @@ export default {
             .user-info {
               font-size: 14px;
               margin-bottom: 10px;
+              color: #999;
               &-name {
                 color: #199fff;
                 margin-right: 16px;
               }
-              &-other {
-                color: #999;
+              &-time {
+                margin: 0 4px;
               }
             }
             .user-msg {
               line-height: 1.5;
               /deep/img {
                 height: 60px;
-                width: 80px;
-                margin: 0 6px;
+                margin: 2px 6px;
                 cursor: pointer;
+              }
+            }
+          }
+          &.right {
+            flex-direction: row-reverse;
+            .record-item-avatar {
+              margin-left: 10px;
+              margin-right: 0;
+            }
+            .user-info {
+              display: flex;
+              flex-direction: row-reverse;
+              align-items: center;
+              &-name {
+                margin-right: 0;
+                margin-left: 16px;
+              }
+            }
+            .user-msg {
+              float: right;
+              /deep/p {
+                display: flex;
+                flex-direction: row-reverse;
               }
             }
           }

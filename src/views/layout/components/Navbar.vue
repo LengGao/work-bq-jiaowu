@@ -12,6 +12,14 @@
       <!-- <div class="top-function-wrapper">
         <span style="color: #199fff" @click="huanfu('theme1')">换肤</span>
       </div> -->
+      <div class="btn-new-msg" @click="toWorkOrder">
+        我的工单
+        <img
+          v-if="workOrderCount"
+          src="https://oss-file.beiqujy.com/wangzhan1607926239/new.gif"
+          alt=""
+        />
+      </div>
       <!-- 返回 -->
       <div class="btn-share" title="营销管理后台" @click="handleLink">
         <i class="iconfont iconfenxiang3"></i>
@@ -163,6 +171,12 @@ import { getAdminQueueList, baseUrl } from "@/api/login";
 import { thirdSign } from "@/api/workbench";
 import { mapGetters, mapActions } from "vuex";
 export default {
+  props: {
+    workOrderCount: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     const validatePass = (rule, value, callback) => {
       if (value.length < 3) {
@@ -221,6 +235,11 @@ export default {
     this.getUnreadCount();
   },
   methods: {
+    toWorkOrder() {
+      this.$router.push({
+        name: "workOrderManage",
+      });
+    },
     async handleLink() {
       const res = await thirdSign();
       if (res.code === 0) {
@@ -364,6 +383,15 @@ export default {
     }
     i {
       font-size: 30px;
+    }
+  }
+  .btn-new-msg {
+    cursor: pointer;
+    margin-right: 10px;
+    padding: 0 10px;
+    font-size: 14px;
+    &:hover {
+      color: #2798ee;
     }
   }
   .btn-share {
