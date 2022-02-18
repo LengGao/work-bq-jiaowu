@@ -30,13 +30,13 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
-          :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
             prop="id"
             label="ID"
             show-overflow-tooltip
             width="70"
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -51,6 +51,7 @@
             label="提交人"
             min-width="100"
             show-overflow-tooltip
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -58,6 +59,7 @@
             label="提交时间"
             min-width="140"
             show-overflow-tooltip
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -65,6 +67,7 @@
             label="处理人"
             min-width="100"
             show-overflow-tooltip
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -72,6 +75,7 @@
             label="最后处理时间"
             min-width="140"
             show-overflow-tooltip
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -79,6 +83,7 @@
             label="工单耗时"
             min-width="140"
             show-overflow-tooltip
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -86,6 +91,7 @@
             label="工单状态"
             min-width="100"
             show-overflow-tooltip
+            align="center"
           >
             <template slot-scope="{ row }">
               <el-tag size="small" :type="statusMap[row.status]">{{
@@ -94,7 +100,12 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="120">
+          <el-table-column
+            label="操作"
+            align="center"
+            fixed="right"
+            min-width="120"
+          >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toDetail(row.id)">详情</el-button>
               <el-button

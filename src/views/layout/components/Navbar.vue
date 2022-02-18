@@ -390,6 +390,9 @@ export default {
     margin-right: 10px;
     padding: 0 10px;
     font-size: 14px;
+    img {
+      vertical-align: sub;
+    }
     &:hover {
       color: #2798ee;
     }
