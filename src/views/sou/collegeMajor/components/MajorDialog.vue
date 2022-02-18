@@ -92,12 +92,30 @@
           placeholder="请输入"
         />
       </el-form-item>
-      <el-form-item label="最低学费" prop="lowest_price">
+      <el-form-item label="合作价格" prop="lowest_price">
         <el-input
           class="w-217"
           type="number"
           v-model="formData.lowest_price"
           placeholder="请输入"
+          maxlength="20"
+        />
+      </el-form-item>
+      <el-form-item label="报考费">
+        <el-input
+          class="w-217"
+          type="number"
+          v-model="formData.apply_price"
+          placeholder="请输入"
+          maxlength="20"
+        />
+      </el-form-item>
+      <el-form-item label="返点">
+        <el-input
+          class="w-217"
+          type="number"
+          v-model="formData.rebate_rate"
+          placeholder="0-100"
           maxlength="20"
         />
       </el-form-item>
@@ -175,6 +193,8 @@ export default {
         sort: "",
         price: "",
         lowest_price: "",
+        rebate_rate: "",
+        apply_price: "",
       },
       rules: {
         type_id: [{ required: true, message: "请选择", trigger: "change" }],

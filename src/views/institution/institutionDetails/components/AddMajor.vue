@@ -290,10 +290,10 @@ export default {
       const majorPrice = JSON.parse(localStorage.getItem("majorPrice") || "{}");
       this.listData = res.data.list.map((item) => ({
         ...item,
-        apply_price: majorPrice[item.id]?.apply_price || "",
-        year_limit: majorPrice[item.id]?.year_limit || "",
-        rebate_rate: majorPrice[item.id]?.rebate_rate || "",
-        price: majorPrice[item.id]?.price || "",
+        apply_price: majorPrice[item.id]?.apply_price || item.apply_price || "",
+        year_limit: majorPrice[item.id]?.year_limit || item.year_limit || "",
+        rebate_rate: majorPrice[item.id]?.rebate_rate || item.rebate_rate || "",
+        price: majorPrice[item.id]?.price || item.price || "",
       }));
     },
     // 分发
