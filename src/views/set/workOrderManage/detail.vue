@@ -350,7 +350,7 @@ export default {
       width: 400px;
       .container-info {
         width: 100%;
-        height: 500px;
+        height: 400px;
         margin-bottom: 20px;
         overflow-y: auto;
         background-color: #fbfcfd;
@@ -379,7 +379,7 @@ export default {
       .container-desc {
         .desc-content {
           padding: 10px;
-          height: calc(100vh - 703px);
+          height: calc(100vh - 603px);
           min-height: 150px;
           overflow-y: auto;
           background-color: #fbfcfd;
