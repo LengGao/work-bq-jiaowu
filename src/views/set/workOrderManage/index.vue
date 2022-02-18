@@ -18,9 +18,27 @@
       <!--列表-->
       <div class="userTable">
         <el-tabs v-model="listType" @tab-click="getWorkorderList">
-          <el-tab-pane label="全部工单" name="1"></el-tab-pane>
-          <el-tab-pane label="我提交的" name="2"></el-tab-pane>
-          <el-tab-pane label="我处理的" name="3"></el-tab-pane>
+          <el-tab-pane name="1">
+            <span slot="label"
+              ><el-badge :value="count1" :hidden="!count1"
+                >全部工单</el-badge
+              ></span
+            >
+          </el-tab-pane>
+          <el-tab-pane name="2">
+            <span slot="label"
+              ><el-badge :value="count2" :hidden="!count2"
+                >我提交的</el-badge
+              ></span
+            >
+          </el-tab-pane>
+          <el-tab-pane name="3">
+            <span slot="label"
+              ><el-badge :value="count3" :hidden="!count3"
+                >我处理的</el-badge
+              ></span
+            >
+          </el-tab-pane>
         </el-tabs>
         <el-table
           ref="multipleTable"
@@ -142,6 +160,9 @@ export default {
   },
   data() {
     return {
+      count1: 0,
+      count2: 0,
+      count3: 0,
       listType: "1",
       listData: [],
       listLoading: false,
@@ -270,6 +291,9 @@ export default {
       const res = await getWorkorderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
+      this.count1 = res.data.count1;
+      this.count2 = res.data.count2;
+      this.count3 = res.data.count3;
       this.listTotal = res.data.total;
     },
   },
@@ -284,6 +308,15 @@ header {
   display: flex;
   justify-content: space-between;
   margin: 10px 0;
+}
+/deep/.el-tabs__nav-wrap {
+  overflow: initial;
+  .el-tabs__nav-scroll {
+    overflow: initial;
+    .el-tabs__nav {
+      float: initial;
+    }
+  }
 }
 </style>
 

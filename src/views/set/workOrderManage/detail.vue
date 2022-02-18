@@ -140,7 +140,7 @@
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-import { quillEditor } from "vue-quill-editor";
+import { quillEditor, Quill } from "vue-quill-editor";
 import baisicOption from "@/utils/quill-config";
 import {
   getWorkorderDetail,
@@ -150,6 +150,10 @@ import {
   restartWorkorder,
 } from "@/api/set";
 import TransferWorkOrder from "./components/TransferWorkOrder";
+import { uploadImageUrl } from "@/api/educational";
+// 粘贴图片上传
+import { ImageExtend } from "quill-image-paste-module";
+Quill.register("modules/ImageExtend", ImageExtend);
 export default {
   name: "workOrderDetail",
   components: {
@@ -162,6 +166,18 @@ export default {
         placeholder: "请输入...（按enter发送，shift+enter换行）",
         modules: {
           ...baisicOption.modules,
+          ImageExtend: {
+            loading: true,
+            name: "image",
+            action: uploadImageUrl,
+            response: (res) => {
+              return res.data.data.url;
+            },
+          },
+          clipboard: {
+            // 粘贴过滤
+            matchers: [[Node.ELEMENT_NODE, this.handleCustomMatcher]],
+          },
           keyboard: {
             bindings: {
               enter: {
@@ -209,6 +225,27 @@ export default {
     }
   },
   methods: {
+    // 粘贴过滤
+    handleCustomMatcher(node, Delta) {
+      if (node.src && node.src.indexOf("data:image/png") > -1) {
+        Delta.ops = [];
+        return Delta;
+      }
+      let ops = [];
+      Delta.ops.forEach((op) => {
+        if (op.insert && typeof op.insert === "string") {
+          ops.push({
+            insert: op.insert,
+          });
+        } else if (op.insert && typeof op.insert.image === "string") {
+          ops.push({
+            insert: op.insert,
+          });
+        }
+      });
+      Delta.ops = ops;
+      return Delta;
+    },
     getColor(id) {
       return (
         this.colorCache[id] ||
