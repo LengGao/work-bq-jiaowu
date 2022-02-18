@@ -20,21 +20,21 @@
         <el-tabs v-model="listType" @tab-click="getWorkorderList">
           <el-tab-pane name="1">
             <span slot="label"
-              ><el-badge :value="count1" :hidden="!count1"
+              ><el-badge :value="count1" :max="99" :hidden="!count1"
                 >全部工单</el-badge
               ></span
             >
           </el-tab-pane>
           <el-tab-pane name="2">
             <span slot="label"
-              ><el-badge :value="count2" :hidden="!count2"
+              ><el-badge :value="count2" :max="99" :hidden="!count2"
                 >我提交的</el-badge
               ></span
             >
           </el-tab-pane>
           <el-tab-pane name="3">
             <span slot="label"
-              ><el-badge :value="count3" :hidden="!count3"
+              ><el-badge :value="count3" :max="99" :hidden="!count3"
                 >我处理的</el-badge
               ></span
             >
@@ -205,7 +205,7 @@ export default {
             },
             {
               value: 4,
-              label: "待关闭",
+              label: "已关闭",
             },
           ],
           attrs: {
@@ -316,6 +316,10 @@ header {
     .el-tabs__nav {
       float: initial;
     }
+  }
+  .el-badge__content.is-fixed {
+    right: -2px;
+    top: 20px;
   }
 }
 </style>

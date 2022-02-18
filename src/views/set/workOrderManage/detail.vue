@@ -9,7 +9,9 @@
       </div>
       <div class="header-right">
         <template v-if="detailData.status !== 4">
-          <el-button @click="dialogVisible = true">转交工单</el-button>
+          <el-button @click="dialogVisible = true" type="primary"
+            >转交工单</el-button
+          >
           <el-button @click="finishWorkorder" :loading="closeLoading"
             >关闭工单</el-button
           >
