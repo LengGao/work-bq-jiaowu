@@ -68,7 +68,7 @@ export function getShortcuts(types) {
         const end = new Date();
         const start = new Date();
         start.setTime(
-          start.getTime() - 3600 * 1000 * 24 * (end.getDay() - 1)
+          start.getTime() - 3600 * 1000 * 24 * ((end.getDay() || 7) - 1)
         );
         picker.$emit("pick", [start, end]);
       },
@@ -78,7 +78,7 @@ export function getShortcuts(types) {
       onClick(picker) {
         const end = new Date();
         const start = new Date();
-        const currentDay = end.getDay();
+        const currentDay = end.getDay() || 7;
         end.setTime(end.getTime() - 3600 * 1000 * 24 * currentDay);
         start.setTime(
           start.getTime() - 3600 * 1000 * 24 * (currentDay + 6)
