@@ -68,6 +68,12 @@ export const asyncRouter = [
     name: 'sou',
     children: [
       {
+        path: 'costManage',
+        name: 'costManage',
+        component: () => import('@/views/sou/costManage/index.vue'),
+        meta: { title: '费用管理' },
+      },
+      {
         path: 'gradeManage',
         name: 'gradeManage',
         component: () => import('@/views/sou/gradeManage/index.vue'),
@@ -435,12 +441,17 @@ export const asyncRouter = [
     name: 'eda',
     children: [
       {
+        path: 'expireManage',
+        name: 'expireManage',
+        component: () => import('@/views/eda/expireManage/index.vue'),
+        meta: { title: '到期管理', icon: 'product-cate' },
+      },
+      {
         path: 'studentStatusChangeList',
         name: 'studentStatusChangeList',
         component: () => import('@/views/eda/studentStatusChangeList/index.vue'),
         meta: { title: '学籍异动', icon: 'product-cate' },
       },
-
       {
         path: 'courseNotes',
         name: 'courseNotes',
