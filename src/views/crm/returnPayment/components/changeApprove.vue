@@ -222,12 +222,12 @@ export default {
             endPlaceholde: "回款金额止",
           },
         },
-        // {
-        //   key: "keyword",
-        //   attrs: {
-        //     placeholder: "订单名称",
-        //   },
-        // },
+        {
+          key: "keyword",
+          attrs: {
+            placeholder: "姓名/手机号码",
+          },
+        },
       ],
     };
   },
