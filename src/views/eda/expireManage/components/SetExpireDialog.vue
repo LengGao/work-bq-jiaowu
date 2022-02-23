@@ -15,16 +15,16 @@
       inline
       ref="formData"
     >
-      <el-form-item label="到期日期" prop="dateType">
+      <el-form-item label="到期类型" prop="dateType">
         <el-radio-group v-model="formData.dateType">
           <el-radio label="1">选择周期</el-radio>
           <el-radio label="2">指定日期</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label=" ">
+      <el-form-item label="到期日期" prop="expire_time">
         <el-select
           v-if="formData.dateType == 1"
-          v-model="formData.dateRange"
+          v-model="formData.expire_time"
           placeholder="请选择周期"
         >
           <el-option
@@ -38,7 +38,7 @@
           v-else
           type="date"
           placeholder="选择日期"
-          v-model="formData.date"
+          v-model="formData.expire_time"
           value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { addGrade, updateGrade } from "@/api/sou";
+import { updateProjectUserExpireTime } from "@/api/eda";
 export default {
   name: "SetExpireDialog",
   props: {
@@ -90,17 +90,21 @@ export default {
           value: 4,
         },
         {
-          label: "永久",
+          label: "五年",
           value: 5,
+        },
+        {
+          label: "永久",
+          value: "-1",
         },
       ],
       formData: {
         dateType: "1",
-        dateRange: "",
-        date: "",
+        expire_time: "",
       },
       rules: {
         dateType: [{ required: true, message: "请选择", trigger: "change" }],
+        expire_time: [{ required: true, message: "请选择", trigger: "change" }],
       },
     };
   },
@@ -109,11 +113,13 @@ export default {
     handleOpen() {},
 
     async submit() {
+      const { expire_time } = this.formData;
       const data = {
-        ...this.formData,
+        expire_time,
+        id_arr: this.ids,
       };
       this.addLoading = true;
-      const res = await addGrade(data).catch(() => {
+      const res = await updateProjectUserExpireTime(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -132,9 +138,10 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      for (const k in this.formData) {
-        this.formData[k] = "";
-      }
+      this.formData = {
+        dateType: "1",
+        expire_time: "",
+      };
     },
     hanldeClose() {
       this.$emit("input", false);

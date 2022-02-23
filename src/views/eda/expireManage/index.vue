@@ -10,7 +10,7 @@
           @on-search="handleSearch"
         />
       </header>
-      <el-tabs v-model="listType" @tab-click="getGradeList">
+      <el-tabs v-model="listType" @tab-click="getProjectUserList">
         <el-tab-pane label="全部" name="1"></el-tab-pane>
         <el-tab-pane label="未设置到期" name="2"></el-tab-pane>
         <el-tab-pane label="未来7天到期" name="3"></el-tab-pane>
@@ -27,80 +27,95 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
-          :cell-style="{ 'text-align': 'center' }"
           @selection-change="handleSeletChange"
         >
           <el-table-column type="selection" width="55"> </el-table-column>
           <el-table-column
-            prop="surname"
+            prop="user_realname"
             label="学生姓名"
             min-width="90"
             show-overflow-tooltip
+            align="center"
           >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toStudentDetail(row.uid)">
-                {{ row.surname }}
+                {{ row.user_realname }}
               </el-button>
             </template>
           </el-table-column>
           <el-table-column
-            prop="mobile"
+            prop="telphone"
             label="手机号码"
             min-width="130"
+            align="center"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <PartiallyHidden :value="row.mobile" />
+              <PartiallyHidden :value="row.telphone" />
             </template>
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="staff_name"
             label="所属老师"
             min-width="100"
+            align="center"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="project_name"
             label="项目名称"
             min-width="200"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="category_name"
             label="所属分类"
+            align="center"
             min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="create_time"
             label="报读时间"
+            align="center"
             min-width="160"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="title"
+            prop="expire_time"
             label="到期日期"
             min-width="100"
+            align="center"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
-            prop="order_count"
+            prop="status"
             label="到期状态"
             min-width="100"
+            align="center"
             show-overflow-tooltip
           >
-          </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
-              <el-button type="text" @click="openSetDialog([row.id])"
-                >设置到期</el-button
+              <el-tag size="small" :type="statusMap[row.status]">{{
+                row.status_name
+              }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            align="center"
+            fixed="right"
+            min-width="160"
+          >
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="openSetDialog(false, row.id)"
+                >设置日期</el-button
               >
-              <el-button type="text">设置延期</el-button>
               <el-button type="text" @click="toOrderDetail(row.order_id)"
                 >订单详情</el-button
               >
@@ -109,7 +124,7 @@
         </el-table>
         <div class="table_bottom">
           <div>
-            <el-button @click="openSetDialog(checkedIds)">设置到期</el-button>
+            <el-button @click="openSetDialog(true)">设置到期</el-button>
           </div>
           <page
             :data="listTotal"
@@ -123,7 +138,7 @@
     <SetExpireDialog
       v-model="dialogVisible"
       :ids="checkedIds"
-      @success="getGradeList"
+      @success="getProjectUserList"
     />
   </section>
 </template>
@@ -133,7 +148,7 @@ import PartiallyHidden from "@/components/PartiallyHidden/index";
 import SetExpireDialog from "./components/SetExpireDialog";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils";
-import { getGradeList } from "@/api/sou";
+import { getProjectUserList } from "@/api/eda";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { getCateList } from "@/api/sou";
 export default {
@@ -144,6 +159,11 @@ export default {
   },
   data() {
     return {
+      statusMap: {
+        1: "info",
+        2: "success",
+        3: "danger",
+      },
       listType: "1",
       listData: [],
       listLoading: false,
@@ -152,6 +172,11 @@ export default {
       listTotal: 0,
       searchData: {
         search_box: "",
+        admin_id: "",
+        category_id: "",
+        project_id: "",
+        status: "",
+        date: "",
       },
       searchOptions: [
         {
@@ -160,8 +185,8 @@ export default {
           attrs: {
             type: "daterange",
             "range-separator": "至",
-            "start-placeholder": "开始日期",
-            "end-placeholder": "结束日期",
+            "start-placeholder": "报读开始日期",
+            "end-placeholder": "报读结束日期",
             "value-format": "yyyy-MM-dd",
             pickerOptions: {
               shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
@@ -182,7 +207,7 @@ export default {
           },
         },
         {
-          key: "course_category_id",
+          key: "category_id",
           type: "cascader",
           events: {
             change: this.handleTypeChange,
@@ -208,20 +233,20 @@ export default {
           },
         },
         {
-          key: "book_fee_status",
+          key: "status",
           type: "select",
           width: 110,
           options: [
             {
-              value: 0,
+              value: 1,
               label: "未设置",
             },
             {
-              value: 1,
+              value: 2,
               label: "未到期",
             },
             {
-              value: 2,
+              value: 3,
               label: "已到期",
             },
           ],
@@ -239,30 +264,30 @@ export default {
       ],
       dialogVisible: false,
       checkedIds: [],
+      selection: [],
     };
   },
   activated() {
-    this.getGradeList();
+    this.getProjectUserList();
   },
   created() {
-    this.getGradeList();
+    this.getProjectUserList();
     this.getAdminSelect();
     this.getCateList();
     this.getproject();
   },
   methods: {
     // 打开设置弹窗
-    openSetDialog(ids) {
-      if (!ids || !ids.length) {
+    openSetDialog(isBatch, id) {
+      if (isBatch && !this.selection.length) {
         this.$message.warning("请先选择订单！");
         return;
       }
-      console.log(ids);
-      this.checkedIds = ids;
+      this.checkedIds = isBatch ? this.selection.map((item) => item.id) : [id];
       this.dialogVisible = true;
     },
     handleSeletChange(selection) {
-      this.checkedIds = selection.map((item) => item.order_id);
+      this.selection = selection || [];
     },
     // 当分类选择时
     handleTypeChange(ids) {
@@ -302,28 +327,35 @@ export default {
 
     handleSearch(data) {
       this.pageNum = 1;
+      const [start_time, end_time] = data.date || ["", ""];
+      delete data.date;
       this.searchData = {
         ...data,
+        start_time,
+        end_time,
+        category_id: data.category_id ? [...data.category_id].pop() : "",
       };
-      this.getGradeList();
+      this.getProjectUserList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
       this.pageNum = 1;
-      this.getGradeList();
+      this.getProjectUserList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getGradeList();
+      this.getProjectUserList();
     },
-    async getGradeList() {
+    async getProjectUserList() {
+      this.selection = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        type: this.listType,
         ...this.searchData,
       };
       this.listLoading = true;
-      const res = await getGradeList(data);
+      const res = await getProjectUserList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

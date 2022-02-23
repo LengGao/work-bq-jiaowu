@@ -1335,3 +1335,19 @@ export function changeOrderOrgId(data) {
     data,
   })
 }
+// 到期管理列表
+export function getProjectUserList(params) {
+  return request({
+    url: '/Crm/getProjectUserList',
+    method: 'get',
+    params,
+  })
+}
+// 到期管理列表-设置到期日期
+export function updateProjectUserExpireTime(data) {
+  return request({
+    url: '/Crm/updateProjectUserExpireTime',
+    method: 'post',
+    data,
+  })
+}

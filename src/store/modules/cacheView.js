@@ -53,6 +53,7 @@ const searchCache = {
             studentOrder: ['studentOrderDetail'],
             collectionList: ['crmOrderDetail'],
             studentStatusChangeList: ['crmOrderDetail', 'studentDetail'],
+            expireManage: ['crmOrderDetail'],
             institutionProject: ['institutionDetails'],
             institutionDetails: ['collectionDetail', 'studentDetail', 'studentOrderDetail'],
             paymentRebate: ['institutionalCollectionDetail', 'institutionalRebateDetail', 'studentOrderDetail', 'addInstitutionalCollection']
