@@ -85,7 +85,7 @@
           }}</el-button>
         </template>
       </el-table-column>
-       <el-table-column
+      <el-table-column
         label="创建时间1"
         show-overflow-tooltip
         min-width="160"
@@ -108,10 +108,11 @@
         align="center"
         show-overflow-tooltip
       >
-      <template slot-scope="{ row }">
-        <span v-if="row.class_type_name">{{row.class_type_name}}</span>
-        <span v-else>--</span>
-      </template>
+        <template slot-scope="{ row }">
+                 
+          <span v-if="row.class_type_name">{{ row.class_type_name }}</span>    
+              <span v-else>--</span>      
+        </template>
       </el-table-column>
       <el-table-column
         prop="level"
@@ -120,10 +121,10 @@
         align="center"
         show-overflow-tooltip
       >
-      <template slot-scope="{ row }">
-        <span v-if="row.level"> {{row.level}}</span>
-        <span v-else>--</span>
-      </template>
+        <template slot-scope="{ row }">
+                  <span v-if="row.level"> {{ row.level }}</span>        
+          <span v-else>--</span>      
+        </template>
       </el-table-column>
       <el-table-column
         prop="major"
@@ -132,36 +133,36 @@
         align="center"
         show-overflow-tooltip
       >
-      <template slot-scope="{ row }">
-        <span v-if="row.major"> {{row.major}}</span>
-        <span v-else>--</span>
-      </template>
+        <template slot-scope="{ row }">
+                  <span v-if="row.major"> {{ row.major }}</span>        
+          <span v-else>--</span>      
+        </template>
       </el-table-column>
-       <el-table-column
+      <el-table-column
         prop="type"
         label="类型"
         min-width="80"
         align="center"
         show-overflow-tooltip
       >
-      <template slot-scope="{ row }">
-        <span v-if="row.type"> {{row.type}}</span>
-        <span v-else>--</span>
-      </template>
+        <template slot-scope="{ row }">
+                  <span v-if="row.type"> {{ row.type }}</span>        
+          <span v-else>--</span>      
+        </template>
       </el-table-column>
-       <el-table-column
+      <el-table-column
         prop="university"
         label="大学"
         min-width="140"
         align="center"
         show-overflow-tooltip
       >
-      <template slot-scope="{ row }">
-        <span v-if="row.university"> {{row.university}}</span>
-        <span v-else>--</span>
-      </template>
+        <template slot-scope="{ row }">
+                  <span v-if="row.university"> {{ row.university }}</span>      
+            <span v-else>--</span>      
+        </template>
       </el-table-column>
-     
+
       <el-table-column
         prop="user_name"
         label="客户姓名"
@@ -170,7 +171,7 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      
+
       <el-table-column
         label="订单总金额"
         align="center"
@@ -274,6 +275,9 @@ export default {
   components: {
     AddCollection,
   },
+  props: {
+    logId: "",
+  },
   data() {
     return {
       loading: false,
@@ -309,7 +313,7 @@ export default {
     },
     async reviewReceivableOrder(check_state, rejected_note) {
       const data = {
-        log_id: this.$route.query.id,
+        log_id: this.logId || this.$route.query.id,
         rejected_note,
         check_state,
       };
@@ -322,7 +326,7 @@ export default {
     },
     async getReceivableInfo() {
       const data = {
-        log_id: this.$route.query.id,
+        log_id: this.logId || this.$route.query.id,
       };
       this.loading = true;
       const res = await getReceivableInfo(data).catch(() => {});
@@ -333,6 +337,7 @@ export default {
       }
     },
     toStudentOrderDetail(id) {
+      this.$parent.close && this.$parent.close();
       this.$router.push({
         name: "studentOrderDetail",
         query: {

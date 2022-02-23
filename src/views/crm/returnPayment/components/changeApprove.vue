@@ -115,7 +115,7 @@
               @click="rejectConfirm(row.log_id, -1)"
               >驳回</el-button
             >
-            <el-button type="text" @click="toDetail(row.log_id)"
+            <el-button type="text" @click="optenDialog(row.log_id)"
               >回款详情</el-button
             >
           </template>
@@ -130,10 +130,20 @@
         />
       </div>
     </div>
+    <el-dialog title="回款详情" :visible.sync="dialogVisible" width="80%">
+      <Detail :logId="logId" :key="logId" />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import Detail from "@/views/institution/paymentRebate/components/institutionalCollection/detail.vue";
 import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import {
@@ -147,6 +157,7 @@ export default {
   name: "changeApprove",
   components: {
     PartiallyHidden,
+    Detail,
   },
   data() {
     return {
@@ -229,6 +240,8 @@ export default {
           },
         },
       ],
+      dialogVisible: false,
+      logId: "",
     };
   },
   activated() {
@@ -241,6 +254,10 @@ export default {
     this.getReceivableStatus();
   },
   methods: {
+    optenDialog(logId) {
+      this.logId = logId;
+      this.dialogVisible = true;
+    },
     // 驳回
     rejectConfirm(log_id, check_state) {
       this.$prompt("请输入驳回原因", "入账驳回", {
