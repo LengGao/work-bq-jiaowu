@@ -65,7 +65,7 @@ export default {
     getComponent() {
       if (this.activeName) {
         return () =>
-          import(`../../eda/studentCenter/components/${this.activeName}.vue`);
+          import(`../../eda/studentDetail/components/${this.activeName}.vue`);
       }
     },
   },

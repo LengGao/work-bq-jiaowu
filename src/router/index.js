@@ -473,7 +473,7 @@ export const asyncRouter = [
       {
         path: 'studentCenter',
         name: 'studentCenter',
-        component: () => import('@/views/eda/studentCenter.vue'),
+        component: () => import('@/views/eda/studentCenter/index.vue'),
         meta: { title: '学生中心', icon: 'product-cate' },
       },
       {
@@ -482,11 +482,10 @@ export const asyncRouter = [
         component: () => import('@/views/eda/collegeStudentList.vue'),
         meta: { title: '学历列表', icon: 'product-cate' },
       },
-      //学生中心组件开始
       {
         path: 'studentDetail',
         name: 'studentDetail',
-        component: () => import('@/views/eda/studentCenter/index.vue'),
+        component: () => import('@/views/eda/studentDetail/index.vue'),
         meta: { title: '学生详情', icon: 'product-cate' },
         hidden: true,
       },

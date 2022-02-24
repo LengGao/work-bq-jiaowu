@@ -1351,3 +1351,19 @@ export function updateProjectUserExpireTime(data) {
     data,
   })
 }
+// 用户中心列表
+export function getStudentUsersList(params) {
+  return request({
+    url: 'StudentUsers/index',
+    method: 'get',
+    params,
+  })
+}
+// 用户中心列表-清除学生信息
+export function clearStudentInfo(data) {
+  return request({
+    url: 'StudentUsers/clear',
+    method: 'post',
+    data,
+  })
+}
