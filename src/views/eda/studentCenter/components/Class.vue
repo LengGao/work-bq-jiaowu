@@ -120,7 +120,7 @@
           <template slot-scope="{ row }">
             <el-button
               @click="closeCourseConfirm(row.project_id, 1)"
-              v-if="row.open_course !== 2"
+              v-if="row.open_course"
               type="text"
               style="padding: 0"
               >毕业关课</el-button
@@ -128,6 +128,7 @@
             <el-button
               type="text"
               style="padding: 0"
+              v-if="row.open_course"
               @click="closeCourseConfirm(row.project_id, 2)"
               >作废关课</el-button
             >
@@ -371,7 +372,7 @@ export default {
       openCourseMap: {
         0: {
           text: "未开课",
-          type: "info",
+          type: "danger",
         },
         1: {
           text: "已开课",

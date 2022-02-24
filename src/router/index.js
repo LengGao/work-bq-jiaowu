@@ -490,14 +490,6 @@ export const asyncRouter = [
         meta: { title: '学生详情', icon: 'product-cate' },
         hidden: true,
       },
-
-      {
-        path: 'orderManage',
-        name: 'orderManage',
-        component: () => import('@/views/eda/studentCenter/orderManage.vue'),
-        meta: { title: '订单管理', icon: 'product-cate' },
-        hidden: true,
-      },
       {
         path: 'classVideo',
         name: 'classVideo',
