@@ -127,7 +127,7 @@
           <template slot-scope="{ row }">
             <el-button
               @click="closeCourseConfirm(row.project_id, 1)"
-              v-if="row.open_course"
+              v-if="row.open_course === 1"
               type="text"
               style="padding: 0"
               >毕业关课</el-button
