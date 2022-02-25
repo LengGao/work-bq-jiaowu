@@ -45,7 +45,12 @@
             prop="institution_id"
           >
             <template slot-scope="{ row }">
-              <img v-if="row.logo" :src="row.logo" alt="" />
+              <img
+                v-if="row.logo"
+                :src="row.logo"
+                alt=""
+                style="height: 30px"
+              />
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -106,7 +111,7 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             label="授权小程序"
             show-overflow-tooltip
             min-width="100"
@@ -135,7 +140,7 @@
                 >{{ row.wechat_config_status ? "是" : "否" }}</el-tag
               >
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             prop="account_num"
             label="账号数量"
@@ -200,9 +205,9 @@
               <el-button type="text" @click="handleEdit(row.institution_id)"
                 >编辑</el-button
               >
-              <el-button type="text" @click="deleteConfirm(row.institution_id)"
+              <!-- <el-button type="text" @click="deleteConfirm(row.institution_id)"
                 >删除</el-button
-              >
+              > -->
               <el-button
                 type="text"
                 @click="getInstitutionToken(row.institution_id)"
