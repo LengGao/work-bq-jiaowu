@@ -1,6 +1,8 @@
 <template>
   <section>
-    <div class="head_remind">*统一管理报名项目的到期时间</div>
+    <div class="head_remind">
+      *设置到期后，将于次日凌晨2点统一定时关闭对应的课程，用户将不能通过东培学堂访问该课程。
+    </div>
     <div class="mainPart">
       <!--搜索模块-->
       <header>
