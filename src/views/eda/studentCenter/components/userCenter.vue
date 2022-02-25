@@ -32,10 +32,16 @@
           <el-table-column
             prop="user_realname"
             label="学生姓名"
-            min-width="100"
+            min-width="120"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
+              <img
+                class="avatar"
+                v-if="row.user_img"
+                :src="row.user_img"
+                alt=""
+              />
               <el-button type="text" @click="toStudentDetail(row.uid)">
                 {{ row.user_realname }}
               </el-button>
@@ -51,7 +57,7 @@
           <el-table-column
             prop="sex"
             label="性别"
-            min-width="100"
+            min-width="80"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -73,21 +79,21 @@
           <el-table-column
             prop="order_count"
             label="订单数"
-            min-width="100"
+            min-width="70"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="course_count"
             label="开课数"
-            min-width="100"
+            min-width="70"
             show-overflow-tooltip
           >
           </el-table-column>
           <el-table-column
             prop="class_count"
             label="班级数"
-            min-width="100"
+            min-width="70"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -126,6 +132,13 @@
           <el-table-column
             prop="from_organization_name"
             label="所属机构"
+            min-width="140"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="staff_name"
+            label="归属人"
             min-width="100"
             show-overflow-tooltip
           >
@@ -133,7 +146,7 @@
           <el-table-column
             prop="state"
             label="状态"
-            min-width="100"
+            min-width="80"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -151,7 +164,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="100">
+          <el-table-column label="操作" fixed="right" min-width="80">
             <template slot-scope="{ row }">
               <el-button type="text" @click="toStudentDetail(row.uid)"
                 >学生详情</el-button
@@ -254,6 +267,12 @@ export default {
 }
 .head_remind {
   padding: 0 20px 20px 20px;
+}
+.avatar {
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 </style>
 
