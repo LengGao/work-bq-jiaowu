@@ -1367,3 +1367,19 @@ export function clearStudentInfo(data) {
     data,
   })
 }
+// 学生课程列表
+export function getUserCourseList(params) {
+  return request({
+    url: '/Crm/userCourseList',
+    method: 'get',
+    params,
+  })
+}
+// 学生课程列表-恢复开课
+export function restartCourse(data) {
+  return request({
+    url: '/Crm/restartCourse',
+    method: 'post',
+    data,
+  })
+}

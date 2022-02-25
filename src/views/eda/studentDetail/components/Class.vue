@@ -21,7 +21,7 @@
           align="center"
           label="项目编号"
           prop="project_id"
-          min-width="90"
+          min-width="70"
         ></el-table-column>
         <el-table-column
           align="left"
@@ -63,7 +63,7 @@
           align="center"
           prop="classroom_id"
           label="题库"
-          min-width="140"
+          min-width="200"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
@@ -112,10 +112,17 @@
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
+          prop="expire_time"
+          label="到期日期"
+          min-width="100"
+          show-overflow-tooltip
+        ></el-table-column>
+        <el-table-column
           label="操作"
           align="center"
           fixed="right"
-          min-width="160"
+          min-width="80"
         >
           <template slot-scope="{ row }">
             <el-button
@@ -125,13 +132,13 @@
               style="padding: 0"
               >毕业关课</el-button
             >
-            <el-button
+            <!-- <el-button
               type="text"
               style="padding: 0"
               v-if="row.open_course"
               @click="closeCourseConfirm(row.project_id, 2)"
               >作废关课</el-button
-            >
+            > -->
           </template>
         </el-table-column>
       </el-table>
@@ -232,7 +239,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <h4 class="table-title">未分班课程</h4>
+    <h4 class="table-title">学生课程</h4>
     <div class="userTable">
       <el-table
         ref="multipleTable"
@@ -249,9 +256,16 @@
         :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
       >
         <el-table-column
+          prop="course_students_id"
+          label="学生课程ID"
+          min-width="70"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="course_name"
           label="课程名称"
-          min-width="220"
+          min-width="180"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -263,8 +277,8 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
-          prop="total_lesson_count"
-          label="总课时"
+          prop="add_time"
+          label="报名时间"
           min-width="100"
           align="center"
           show-overflow-tooltip
@@ -272,42 +286,48 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="first_time"
-          label="首次学习时间"
-          min-width="100"
+          prop="join_class"
+          label="是否加入班级"
+          min-width="70"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <span>
+              {{ row.join_class === 1 ? "是" : "否" }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
-          align="center"
-          prop="last_time"
-          label="最后学习时间"
-          min-width="100"
+          prop="classroom_name"
+          label="班级名称"
+          min-width="200"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
           align="center"
           prop="duration"
-          label="学习时长"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          align="center"
-          prop="finish_lesson_count"
-          label="完成课时"
-          min-width="100"
-          show-overflow-tooltip
-        ></el-table-column>
-        <el-table-column
-          align="center"
-          prop="progress"
-          label="课程进度"
-          min-width="100"
+          label="是否毕业"
+          min-width="70"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>{{ row.progress || 0 }}%</span>
+            <span>
+              {{ row.is_graduate === 1 ? "是" : "否" }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="status_name"
+          label="状态"
+          min-width="140"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-tag size="small" :type="statusMap[row.status]">{{
+              row.status_name
+            }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -318,24 +338,33 @@
         >
           <template slot-scope="{ row }">
             <el-button
+              v-if="row.status === 3"
               type="text"
               style="padding: 0"
-              @click="
-                linkTo({
-                  course_student_id: row.id,
-                  old_classroom_id: 0,
-                  course_id: row.course_id,
-                  isSingle: true,
-                })
-              "
-              >加入班级</el-button
+              @click="restartCourse(row.course_id)"
+              >恢复开课</el-button
             >
-            <el-button
-              type="text"
-              style="padding: 0"
-              @click="removeClass(row.course_id)"
-              >关课</el-button
-            >
+            <template v-else>
+              <el-button
+                type="text"
+                style="padding: 0"
+                @click="
+                  linkTo({
+                    course_student_id: row.course_students_id,
+                    old_classroom_id: row.class_id,
+                    course_id: row.course_id,
+                    isSingle: true,
+                  })
+                "
+                >加入班级</el-button
+              >
+              <el-button
+                type="text"
+                style="padding: 0"
+                @click="removeClass(row.course_id)"
+                >关课</el-button
+              >
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -347,11 +376,12 @@
 import {
   getstudendclass,
   getuserproject,
-  unClassCourse,
+  getUserCourseList,
   classstudentsBatchRemove,
   graduateCloseCourse,
   cancelCloseCourse,
   removeCourse,
+  restartCourse,
 } from "@/api/eda";
 export default {
   name: "class",
@@ -383,17 +413,22 @@ export default {
           type: "",
         },
       },
+      statusMap: {
+        1: "success",
+        2: "warning",
+        3: "danger",
+      },
     };
   },
   activated() {
     this.getstudendclass();
     this.getuserproject();
-    this.unClassCourse();
+    this.getUserCourseList();
   },
   created() {
     this.getstudendclass();
     this.getuserproject();
-    this.unClassCourse();
+    this.getUserCourseList();
   },
   methods: {
     // 毕业,作废关课
@@ -416,6 +451,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getuserproject();
+        this.getUserCourseList();
       }
     },
     // 去转班
@@ -477,20 +513,31 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getstudendclass();
-        this.unClassCourse();
+        this.getUserCourseList();
       }
     },
 
-    // 未分班课程列表
-    async unClassCourse() {
+    // 学生课程列表
+    async getUserCourseList() {
       const data = {
         uid: this.uid,
       };
       this.unClassLoading = true;
-      const res = await unClassCourse(data);
+      const res = await getUserCourseList(data);
       this.unClassLoading = false;
       if (res.code === 0) {
         this.unClassData = res.data;
+      }
+    },
+    // 学生课程-恢复开课
+    async restartCourse(course_id) {
+      const data = {
+        uid: this.uid,
+        course_id,
+      };
+      const res = await restartCourse(data);
+      if (res.code === 0) {
+        this.getUserCourseList();
       }
     },
     //学生所在项目列表
