@@ -320,7 +320,7 @@
         <el-table-column
           align="center"
           prop="status_name"
-          label="状态"
+          label="课程视频/直播（回放）"
           min-width="140"
           show-overflow-tooltip
         >
@@ -348,6 +348,7 @@
               <el-button
                 type="text"
                 style="padding: 0"
+                v-if="row.join_class !== 1"
                 @click="
                   linkTo({
                     course_student_id: row.course_students_id,

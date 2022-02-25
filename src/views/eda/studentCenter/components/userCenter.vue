@@ -1,6 +1,13 @@
 <template>
   <section>
-    <div class="head_remind">*用户中心</div>
+    <div class="head_remind">
+      *用户中心用来显示访问过东培学堂的所有用户，当出现修改手机号提示<span
+        style="color: #f56c6c"
+        >“
+        该用户已经使用了您要修改的新手机号（uid）访问过小程序，系统有了这个手机用户记录，无法直接改成该手机号。
+        ”</span
+      >可在本页面禁用该用户。
+    </div>
     <div class="mainPart">
       <!--搜索模块-->
       <header>
@@ -20,13 +27,13 @@
           element-loading-spinner="el-icon-loading"
           element-loading-background="#fff"
           :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
-          :cell-style="{ 'text-align': 'center' }"
         >
           <el-table-column
             prop="uid"
             label="uid"
             show-overflow-tooltip
             width="70"
+            align="center"
           >
           </el-table-column>
           <el-table-column
@@ -55,6 +62,7 @@
           >
           </el-table-column>
           <el-table-column
+            align="center"
             prop="sex"
             label="性别"
             min-width="80"
@@ -67,6 +75,7 @@
             </template>
           </el-table-column>
           <el-table-column
+            align="center"
             prop="telphone"
             label="手机号码"
             min-width="130"
@@ -78,6 +87,7 @@
           </el-table-column>
           <el-table-column
             prop="order_count"
+            align="center"
             label="订单数"
             min-width="70"
             show-overflow-tooltip
@@ -86,6 +96,7 @@
           <el-table-column
             prop="course_count"
             label="开课数"
+            align="center"
             min-width="70"
             show-overflow-tooltip
           >
@@ -93,6 +104,7 @@
           <el-table-column
             prop="class_count"
             label="班级数"
+            align="center"
             min-width="70"
             show-overflow-tooltip
           >
@@ -101,6 +113,7 @@
             prop="pc_openid"
             label="PC端"
             min-width="100"
+            align="center"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -117,6 +130,7 @@
             prop="apple_openid"
             label="小程序端"
             min-width="100"
+            align="center"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -132,6 +146,7 @@
           <el-table-column
             prop="from_organization_name"
             label="所属机构"
+            align="center"
             min-width="140"
             show-overflow-tooltip
           >
@@ -139,6 +154,7 @@
           <el-table-column
             prop="staff_name"
             label="归属人"
+            align="center"
             min-width="100"
             show-overflow-tooltip
           >
@@ -146,6 +162,7 @@
           <el-table-column
             prop="state"
             label="状态"
+            align="center"
             min-width="80"
             show-overflow-tooltip
           >
@@ -164,7 +181,12 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" fixed="right" min-width="80">
+          <el-table-column
+            label="操作"
+            align="center"
+            fixed="right"
+            min-width="80"
+          >
             <template slot-scope="{ row }">
               <el-button type="text" @click="toStudentDetail(row.uid)"
                 >学生详情</el-button
