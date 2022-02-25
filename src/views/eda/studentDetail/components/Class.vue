@@ -117,7 +117,17 @@
           label="到期日期"
           min-width="100"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <el-tag
+              size="small"
+              v-if="row.expire_time === '已到期'"
+              type="danger"
+              >已到期</el-tag
+            >
+            <span v-else>{{ row.expire_time }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           align="center"
@@ -278,7 +288,7 @@
         ></el-table-column>
         <el-table-column
           prop="add_time"
-          label="报名时间"
+          label="开课时间"
           min-width="100"
           align="center"
           show-overflow-tooltip
@@ -292,9 +302,10 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>
-              {{ row.join_class === 1 ? "是" : "否" }}
-            </span>
+            <el-tag size="small" v-if="row.join_class === 1" type="success"
+              >是</el-tag
+            >
+            <el-tag size="small" v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -312,9 +323,10 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>
-              {{ row.is_graduate === 1 ? "是" : "否" }}
-            </span>
+            <el-tag size="small" v-if="row.is_graduate === 1" type="success"
+              >是</el-tag
+            >
+            <el-tag size="small" v-else type="danger">否</el-tag>
           </template>
         </el-table-column>
         <el-table-column
