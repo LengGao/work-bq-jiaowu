@@ -40,9 +40,14 @@
             align="center"
           >
             <template slot-scope="{ row }">
-              <el-button type="text" @click="toStudentDetail(row.uid)">
+              <el-button
+                v-if="row.aid"
+                type="text"
+                @click="toStudentDetail(row.uid)"
+              >
                 {{ row.user_realname }}
               </el-button>
+              <span v-else> {{ row.user_realname }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -118,7 +123,10 @@
               <el-button type="text" @click="openSetDialog(false, row.id)"
                 >设置日期</el-button
               >
-              <el-button type="text" @click="toOrderDetail(row.order_id)"
+              <el-button
+                v-if="row.aid"
+                type="text"
+                @click="toOrderDetail(row.order_id)"
                 >订单详情</el-button
               >
             </template>
