@@ -357,10 +357,10 @@
               >恢复开课</el-button
             >
             <template v-else>
+              <!-- v-if="row.join_class !== 1" -->
               <el-button
                 type="text"
                 style="padding: 0"
-                v-if="row.join_class !== 1"
                 @click="
                   linkTo({
                     course_student_id: row.course_students_id,
