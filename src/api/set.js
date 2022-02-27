@@ -163,6 +163,14 @@ export function updateStaffStatus(data) {
     data,
   })
 }
+// 员工列表--一键离职
+export function oneKeyEnd(data) {
+  return request({
+    url: 'staff/oneKeyEnd',
+    method: 'post',
+    data,
+  })
+}
 // 员工列表--修改员工班主任
 export function updateMaster(data) {
   return request({

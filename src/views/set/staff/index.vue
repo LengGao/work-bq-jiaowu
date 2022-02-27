@@ -151,7 +151,7 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             label="账号状态"
             align="center"
             min-width="80"
@@ -168,6 +168,22 @@
               >
               </el-switch>
             </template>
+          </el-table-column> -->
+          <el-table-column
+            label="账号状态"
+            align="center"
+            min-width="80"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-tag
+                size="small"
+                v-if="row.account_status === 1"
+                type="success"
+                >在职</el-tag
+              >
+              <el-tag size="small" v-else type="info">已离职</el-tag>
+            </template>
           </el-table-column>
           <el-table-column
             label="操作"
@@ -176,6 +192,9 @@
             min-width="160"
           >
             <template slot-scope="{ row }">
+              <el-button type="text" @click="openQuitDialog(row.staff_id)"
+                >一键离职</el-button
+              >
               <el-button type="text" @click="deleteBinding(row.staff_id)"
                 >清空绑定</el-button
               >
@@ -211,6 +230,11 @@
         :options="departMentData"
         @on-success="getDepartmentlists"
       />
+      <SetQuitDialog
+        v-model="quitVisible"
+        :staffId="currentId"
+        @on-success="getStaffList"
+      />
     </div>
   </div>
 </template>
@@ -218,6 +242,7 @@
 <script>
 import AddStaffDialog from "./components/AddStaffDialog";
 import AddDepartmentDialog from "./components/AddDepartmentDialog";
+import SetQuitDialog from "./components/SetQuitDialog";
 import {
   getStaffList,
   updateStaffStatus,
@@ -233,6 +258,7 @@ export default {
     PartiallyHidden,
     AddStaffDialog,
     AddDepartmentDialog,
+    SetQuitDialog,
   },
   data() {
     return {
@@ -282,6 +308,7 @@ export default {
       dialogDepartmentVisible: false,
       dialogDepartmentTitle: "",
       departmentId: "",
+      quitVisible: false,
     };
   },
 
@@ -290,6 +317,10 @@ export default {
     this.getStaffList();
   },
   methods: {
+    openQuitDialog(id) {
+      this.currentId = id;
+      this.quitVisible = true;
+    },
     tpl(node) {
       return (
         <span
