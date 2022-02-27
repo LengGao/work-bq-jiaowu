@@ -1383,3 +1383,19 @@ export function restartCourse(data) {
     data,
   })
 }
+// 职称届别选项
+export function getJiebieSelect(params) {
+  return request({
+    url: '/Crm/jiebieSelect',
+    method: 'get',
+    params,
+  })
+}
+// 职称报名列表
+export function getOrderListForNot6(params) {
+  return request({
+    url: '/Crm/orderListForNot6',
+    method: 'get',
+    params,
+  })
+}

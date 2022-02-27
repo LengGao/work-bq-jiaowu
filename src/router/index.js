@@ -477,10 +477,10 @@ export const asyncRouter = [
         meta: { title: '学生中心', icon: 'product-cate' },
       },
       {
-        path: 'collegeStudentList',
-        name: 'collegeStudentList',
-        component: () => import('@/views/eda/collegeStudentList.vue'),
-        meta: { title: '学历列表', icon: 'product-cate' },
+        path: 'sessionStatistics',
+        name: 'sessionStatistics',
+        component: () => import('@/views/eda/sessionStatistics/index.vue'),
+        meta: { title: '届别统计', icon: 'product-cate' },
       },
       {
         path: 'studentDetail',

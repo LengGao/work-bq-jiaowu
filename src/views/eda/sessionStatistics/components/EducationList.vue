@@ -116,13 +116,6 @@
               min-width="150"
             ></el-table-column>
             <el-table-column
-              prop="staff_name"
-              label="所属老师"
-              show-overflow-tooltip
-              min-width="100"
-            ></el-table-column>
-
-            <el-table-column
               prop="book_fee_status"
               label="教材费"
               show-overflow-tooltip
@@ -359,25 +352,21 @@
 </template>
 <script>
 import PartiallyHidden from "@/components/PartiallyHidden/index";
-import PayDialog from "./components/PayDialog";
-import UpdateOrderGrade from "./components/UpdateOrderGrade";
-import StudentStatusChange from "./components/StudentStatusChange";
+import PayDialog from "@/views/eda/components/PayDialog";
+import UpdateOrderGrade from "@/views/eda/components/UpdateOrderGrade";
+import StudentStatusChange from "@/views/eda/components/StudentStatusChange";
 import {
   getEduList,
   getAdminSelect,
   getTreeCategory,
   exportEduList,
 } from "@/api/eda";
-import {
-  getInstitutionSelectData,
-  getGradeOptions,
-  cancelTransaction,
-} from "@/api/sou";
+import { getInstitutionSelectData, cancelTransaction } from "@/api/sou";
 import { cloneOptions, download } from "@/utils/index";
 import { getShortcuts } from "@/utils/date";
 import { batchUpdateFee } from "@/api/eda";
 export default {
-  name: "collegeStudentList",
+  name: "EducationList",
   components: {
     PartiallyHidden,
     PayDialog,
@@ -609,7 +598,6 @@ export default {
     this.getEduList();
     this.getInstitutionSelectData();
     this.getAdminSelect();
-    // this.getGradeOptions();
   },
   methods: {
     async cancelTransaction(id) {
@@ -672,6 +660,7 @@ export default {
         major_id = "",
         jiebie_id = "",
       } = data;
+      console.log(jiebie_id);
       this.treeParams = {
         jiebie_id,
         type_id,
@@ -691,13 +680,6 @@ export default {
         ].concat(res.data);
       }
     },
-    // // 获取届别选项
-    // async getGradeOptions() {
-    //   const res = await getGradeOptions();
-    //   if (res.code === 0) {
-    //     this.searchOptions[3].options = res.data;
-    //   }
-    // },
     // 获取所属老师
     async getAdminSelect() {
       const res = await getAdminSelect();
@@ -832,6 +814,15 @@ export default {
 
 <style lang="scss" scoped>
 .college-student {
+  .head_remind {
+    padding: 0 20px 20px 20px;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    color: #909399;
+    width: 100%;
+    border-bottom: 15px solid #f2f6fc;
+  }
   &-container {
     padding: 20px;
     display: flex;
