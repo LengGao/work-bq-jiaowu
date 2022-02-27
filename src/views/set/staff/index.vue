@@ -189,7 +189,7 @@
             label="操作"
             fixed="right"
             align="center"
-            min-width="160"
+            min-width="200"
           >
             <template slot-scope="{ row }">
               <el-button type="text" @click="openQuitDialog(row.staff_id)"
