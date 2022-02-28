@@ -4,6 +4,11 @@
       *本模块主要是招生老师用来进行日常客户数据的跟进管理。
     </div>
     <div class="mainPart">
+      <el-tabs v-model="activeName" @tab-click="handleTabsClick">
+        <el-tab-pane label="我的客户" name="1"></el-tab-pane>
+        <el-tab-pane label="全部客户" name="2"></el-tab-pane>
+        <el-tab-pane label="共享客户" name="3"></el-tab-pane>
+      </el-tabs>
       <!--搜索模块-->
       <header>
         <SearchList
@@ -231,6 +236,7 @@ export default {
   },
   data() {
     return {
+      activeName: this.$route.query.type || "1",
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -264,7 +270,8 @@ export default {
         day: (this.$route.query.date || "").split(","),
         staff_id: this.$route.query.staff_id
           ? this.$route.query.staff_id.split(",").map((item) => +item)
-          : [],
+          : [this.$store.getters.userInfo.staff_id],
+        type: "",
       },
       searchOptions: [
         {
@@ -403,6 +410,22 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    handleTabsClick() {
+      if (this.activeName === "1") {
+        this.searchData.staff_id = [this.$store.getters.userInfo.staff_id];
+        this.searchData.type = "";
+      }
+      if (this.activeName === "2") {
+        this.searchData.staff_id = [];
+        this.searchData.type = "";
+      }
+
+      if (this.activeName === "3") {
+        this.searchData.staff_id = [];
+        this.searchData.type = 2;
+      }
+      this.getCrmCustomerList();
+    },
     // 获取部门
     async getDepartmentlists() {
       const res = await getDepartmentlists();
@@ -487,7 +510,7 @@ export default {
         ...data,
         department_id: data.department_id.map((item) => item.pop()).join(","),
       };
-      this.getCrmCustomerList(data);
+      this.getCrmCustomerList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
@@ -503,6 +526,7 @@ export default {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        channel: 0,
         ...this.searchData,
         day: Array.isArray(this.searchData.day)
           ? this.searchData.day.join(" - ")

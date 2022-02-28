@@ -326,6 +326,7 @@ export default {
           name: router,
           query: {
             date: dateMap[this.salesDateType],
+            type: "2",
             staff_id:
               this.userIds.join(",") ||
               this.$store.getters.userInfo.staff_id + "",
