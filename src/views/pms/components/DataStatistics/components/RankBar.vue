@@ -47,8 +47,8 @@ export default {
   },
   methods: {
     handleDataChange() {
-      if (this.data.length > 15) {
-        this.$refs.barEl.style.height = this.data.length * 40 + "px";
+      if (this.data.length > 10) {
+        this.$refs.barEl.style.height = this.data.length * 45 + "px";
       } else {
         this.$refs.barEl.style.height = 400 + "px";
       }
@@ -121,7 +121,7 @@ export default {
             type: "bar",
             color: this.barColor,
             data: seriesData,
-            barWidth: 30,
+            barWidth: 25,
             label: {
               show: true,
               precision: 1,
