@@ -11,6 +11,11 @@
           :data="searchData"
           @on-search="handleSearch"
         />
+        <div class="actions">
+          <el-button type="primary" :loading="exportLoading" @click="exportList"
+            >导 出</el-button
+          >
+        </div>
       </header>
       <ul class="panel-list">
         <li class="panel-item">
@@ -213,6 +218,7 @@ export default {
       panelData: {},
       listData: [],
       listLoading: false,
+      exportLoading: false,
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
@@ -374,6 +380,25 @@ export default {
     this.getDepartmentlists();
   },
   methods: {
+    async exportList() {
+      const data = {
+        page: this.pageNum,
+        limit: this.pageSize,
+        export: 1,
+
+        ...this.searchData,
+        date: Array.isArray(this.searchData.date)
+          ? this.searchData.date.join(" - ")
+          : "",
+        staff_id: Array.isArray(this.searchData.staff_id)
+          ? this.searchData.staff_id.join(",")
+          : "",
+      };
+      this.exportLoading = true;
+      const res = await getReturnPaymentList(data).catch(() => {});
+      this.exportLoading = false;
+      download(URL.createObjectURL(res), "回款入帐");
+    },
     // 获取客户来源
     async getCustomFromOptions() {
       const data = {
@@ -478,6 +503,10 @@ export default {
 <style lang="less" scoped>
 section {
   padding: 16px;
+  header {
+    display: flex;
+    justify-content: space-between;
+  }
   .panel-list {
     display: flex;
     align-items: center;
