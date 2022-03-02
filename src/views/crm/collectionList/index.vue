@@ -210,7 +210,7 @@
 import { getShortcuts, today } from "@/utils/date";
 import { getReturnPaymentList, getCustomfieldOptions } from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
-import { cloneOptions } from "@/utils";
+import { cloneOptions, download } from "@/utils";
 export default {
   name: "collectionList",
   data() {
@@ -296,7 +296,7 @@ export default {
         {
           key: "sources",
           type: "select",
-          width: 140,
+          width: 200,
           options: [],
           optionValue: "title",
           optionLabel: "title",
@@ -304,6 +304,8 @@ export default {
             placeholder: "客户来源",
             clearable: true,
             filterable: true,
+            multiple: true,
+            "collapse-tags": true,
           },
         },
         {
@@ -393,6 +395,9 @@ export default {
         staff_id: Array.isArray(this.searchData.staff_id)
           ? this.searchData.staff_id.join(",")
           : "",
+        sources: Array.isArray(this.searchData.sources)
+          ? this.searchData.sources.join(",")
+          : "",
       };
       this.exportLoading = true;
       const res = await getReturnPaymentList(data).catch(() => {});
@@ -470,6 +475,9 @@ export default {
           : "",
         staff_id: Array.isArray(this.searchData.staff_id)
           ? this.searchData.staff_id.join(",")
+          : "",
+        sources: Array.isArray(this.searchData.sources)
+          ? this.searchData.sources.join(",")
           : "",
       };
       this.listLoading = true;
