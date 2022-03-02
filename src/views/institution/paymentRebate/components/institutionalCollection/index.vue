@@ -77,11 +77,14 @@
           >
           </el-table-column>
           <el-table-column
-            prop="order_num"
+            prop="order_money"
             label="订单总金额"
             show-overflow-tooltip
             min-width="100"
           >
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="receivable_money"
@@ -90,7 +93,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              ￥{{ row.receivable_money || 0 }}
+              {{ row.receivable_money | moneyFormat }}
             </template>
           </el-table-column>
           <el-table-column
