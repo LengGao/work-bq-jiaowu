@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="招生公海" name="CRM"></el-tab-pane>
+        <!-- <el-tab-pane label="招生公海" name="CRM"></el-tab-pane> -->
         <el-tab-pane label="东培公海" name="Dongpei"></el-tab-pane>
         <el-tab-pane label="机构公海" name="Institution"></el-tab-pane>
       </el-tabs>
@@ -19,7 +19,7 @@ export default {
   name: "internationalWaters",
   data() {
     return {
-      activeName: "CRM",
+      activeName: "Dongpei",
     };
   },
   computed: {
