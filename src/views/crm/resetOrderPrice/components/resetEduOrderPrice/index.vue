@@ -34,8 +34,9 @@
               clearable
               placeholder="请选择学历形式"
               @change="eduTypeChange"
-              :disabled="!formData.from_organization_id"
             >
+              <!-- :disabled="!formData.from_organization_id" -->
+
               <el-option
                 v-for="item in eduTypeOptions"
                 :key="item.type_id"
@@ -52,8 +53,9 @@
               clearable
               placeholder="请选择院校"
               @change="eduSchoolChange"
-              :disabled="!formData.type_id"
             >
+              <!-- :disabled="!formData.type_id" -->
+
               <el-option
                 v-for="item in eduScholOptions"
                 :key="item.university_id"
@@ -70,8 +72,9 @@
               clearable
               placeholder="请选择层次"
               @change="eduAcademicChange"
-              :disabled="!formData.university_id"
             >
+              <!-- :disabled="!formData.university_id" -->
+
               <el-option
                 v-for="item in eduAcademicOptions"
                 :key="item.level_id"
@@ -88,8 +91,9 @@
               clearable
               placeholder="请选择专业"
               @change="eduMajorChange"
-              :disabled="!formData.level_id"
             >
+              <!-- :disabled="!formData.level_id" -->
+
               <el-option
                 v-for="item in eduMajorOptions"
                 :key="item.major_id"
@@ -106,8 +110,9 @@
               clearable
               placeholder="请选择项目"
               @change="onProjectChange"
-              :disabled="!formData.major_id"
             >
+              <!-- :disabled="!formData.major_id" -->
+
               <el-option
                 v-for="item in eduProjectOptions"
                 :key="item.project_id"
@@ -119,11 +124,9 @@
           </el-form-item>
 
           <el-form-item label="价格" prop="price">
-            <el-input
-              :disabled="!formData.project_id"
-              v-model="formData.price"
-              placeholder="请输入价格"
-            />
+            <!-- :disabled="!formData.project_id" -->
+
+            <el-input v-model="formData.price" placeholder="请输入价格" />
           </el-form-item>
           <el-form-item>
             <el-button
@@ -334,8 +337,11 @@ export default {
       searchOptions: [
         {
           key: "str_user_name",
+          width: 600,
           attrs: {
-            placeholder: "客户姓名",
+            placeholder: "输入多个姓名时，可用空格隔开",
+            type: "textarea",
+            autosize: { minRows: 1, maxRows: 4 },
           },
         },
       ],
@@ -404,6 +410,7 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.pageNum = 1;
+      this.getDegreeOrder();
       this.getDegreeType();
     },
     // 学历形式列表
@@ -423,6 +430,7 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.pageNum = 1;
+      this.getDegreeOrder();
       this.getUniversity();
     },
     // 院校列表
@@ -442,6 +450,7 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.pageNum = 1;
+      this.getDegreeOrder();
       this.getAcademicLevel();
     },
     // 层次列表
@@ -461,6 +470,7 @@ export default {
       this.listData = [];
       this.listTotal = 0;
       this.pageNum = 1;
+      this.getDegreeOrder();
       this.getProfessional();
     },
     // 专业列表

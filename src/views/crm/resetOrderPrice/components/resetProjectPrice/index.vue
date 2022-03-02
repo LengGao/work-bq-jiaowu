@@ -59,6 +59,7 @@
               v-model="formData.price"
               filterable
               clearable
+              allow-create
               placeholder="请选择价格"
             >
               <el-option
@@ -236,8 +237,11 @@ export default {
       searchOptions: [
         {
           key: "str_user_name",
+          width: 600,
           attrs: {
-            placeholder: "客户姓名",
+            placeholder: "输入多个姓名时，可用空格隔开",
+            type: "textarea",
+            autosize: { minRows: 1, maxRows: 4 },
           },
         },
       ],
@@ -276,13 +280,16 @@ export default {
         }
       });
     },
-    onOrgChange() {
+    onOrgChange(orgId) {
       this.formData.project_id = "";
       this.formData.price = "";
       this.listData = [];
       this.listTotal = 0;
       this.pageNum = 1;
-      this.getOrderProject();
+      if (orgId) {
+        this.getOrderProject();
+        this.getProjectOrder();
+      }
     },
     onProjectChange() {
       this.formData.price = "";
@@ -294,7 +301,7 @@ export default {
         this.getOrgClassType();
       }
     },
-    // 获取列表
+    // 获取项目选项
     async getOrderProject() {
       const data = {
         institution_id: this.formData.from_organization_id,

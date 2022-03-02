@@ -2,7 +2,9 @@
   <div class="search-lise">
     <div v-for="(item, index) in options" :key="index">
       <component
-        :style="item.width ? { width: item.width + 'px' } : ''"
+        :style="{
+          width: computeWidth(item.width, item.type === 'datePicker'),
+        }"
         v-model="searchData[item.key]"
         :is="allComponents[item.type || 'input']"
         v-bind="item.attrs"
@@ -65,6 +67,12 @@ export default {
     this.initData();
   },
   methods: {
+    computeWidth(width, isDate) {
+      if (width) {
+        return typeof width === "number" ? width + "px" : width;
+      }
+      return isDate ? "300px" : "200px";
+    },
     initData() {
       // this.searchData = { ...this.data };
       this.searchData = this.data;
@@ -104,11 +112,7 @@ export default {
   align-items: center;
   flex-wrap: wrap;
   .search-item {
-    width: 200px;
     margin: 0 10px 10px 0;
-    &.search-item-date {
-      width: 300px;
-    }
   }
   .search-btns {
     margin: 0 10px 10px 0;
