@@ -54,6 +54,17 @@
           <el-option label="按季度" value="2"> </el-option>
         </el-select>
       </div>
+      <el-date-picker
+        v-if="dateType == 5"
+        v-model="date"
+        @change="handleDateSelectChange"
+        type="daterange"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        value-format="yyyy-MM-dd"
+      >
+      </el-date-picker>
     </div>
     <div class="block-container">
       <slot> </slot>
@@ -61,6 +72,7 @@
   </div>
 </template>
 <script >
+import { getShortcuts } from "@/utils/date";
 export default {
   name: "Block",
   props: {
@@ -69,16 +81,19 @@ export default {
       default: "1",
     },
     value: {
-      type: [Number, String, Date],
       default: 0,
     },
   },
   data() {
     return {
+      pickerOptions: {
+        shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+      },
       dateSlect: this.value,
       yearType: "1",
       year: this.value,
       mounth: this.value,
+      date: this.value,
       dateTypeMap: {
         1: [
           {

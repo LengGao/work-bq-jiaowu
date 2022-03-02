@@ -1,6 +1,6 @@
 <template>
   <div class="admin" v-loading="loading">
-    <Block date-type="1" v-model="salesDateType" @date-change="getBriefing">
+    <Block date-type="5" v-model="salesDate" @date-change="getBriefing">
       <Title slot="header-title" text="销售简报"></Title>
       <SalesData
         @item-click="handleItemClick"
@@ -10,8 +10,8 @@
     </Block>
     <div class="admin-container">
       <Block
-        date-type="2"
-        v-model="performanceType"
+        date-type="5"
+        v-model="performanceDate"
         @date-change="performanceIndicators"
       >
         <Title slot="header-title" text="业绩指标"></Title>
@@ -144,7 +144,7 @@ import {
   getJobTitleList,
   getEducationList,
 } from "@/api/workbench.js";
-import { dateMap } from "@/utils/date";
+import { today, thisMonth } from "@/utils/date";
 import Block from "./components/Block";
 import SalesData from "./components/SalesData";
 import GaugeChart from "./components/GaugeChart";
@@ -182,11 +182,12 @@ export default {
       // 销售简报
       salesData: {},
       salesLoading: false,
-      salesDateType: 6,
+      salesDate: [today, today],
       // 业绩目标
       performanceData: {},
       performanceLoading: false,
-      performanceType: 0,
+      // performanceType: 0,
+      performanceDate: [thisMonth, today],
       // 销售趋势
       trendData: [],
       trendLoading: false,
@@ -325,7 +326,7 @@ export default {
         this.$router.push({
           name: router,
           query: {
-            date: dateMap[this.salesDateType],
+            date: (this.salesDate || []).join(","),
             type: "2",
             staff_id:
               this.userIds.join(",") ||
@@ -334,8 +335,10 @@ export default {
         });
     },
     async getBriefing() {
+      const [start_date, end_date] = this.salesDate || ["", ""];
       const data = {
-        type: this.salesDateType,
+        start_date,
+        end_date,
         arr_uid: this.userIds,
         returned_type: this.returnedType,
       };
@@ -435,8 +438,10 @@ export default {
     },
     // 业绩指标
     async performanceIndicators() {
+      const [start_date, end_date] = this.performanceDate || ["", ""];
       const data = {
-        type: this.performanceType,
+        start_date,
+        end_date,
         arr_uid: this.userIds,
         returned_type: this.returnedType,
       };

@@ -198,7 +198,7 @@ export const today = moment().format("YYYY-MM-DD");
 // 昨天
 const yesterday = moment().subtract(1, "day").format("YYYY-MM-DD");
 // 这个月
-const thisMonth = moment().startOf("month").format("YYYY-MM-DD");
+export const thisMonth = moment().startOf("month").format("YYYY-MM-DD");
 // 上月
 const lastMonthStart = moment()
   .subtract(1, "month")
