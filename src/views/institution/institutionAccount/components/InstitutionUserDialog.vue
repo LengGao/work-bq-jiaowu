@@ -91,6 +91,10 @@ export default {
       type: [String, Number],
       default: "",
     },
+    institutionId: {
+      type: [String, Number],
+      default: "",
+    },
   },
   data() {
     return {
@@ -156,7 +160,8 @@ export default {
       if (this.id) {
         data.id = this.id;
       } else {
-        data.institution_id = this.$route.query.institution_id;
+        data.institution_id =
+          this.institutionId || this.$route.query.institution_id;
       }
       const api = this.id ? modifyInstitutionUser : createInstitutionUser;
       this.addLoading = true;

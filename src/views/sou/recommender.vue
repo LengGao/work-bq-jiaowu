@@ -92,13 +92,13 @@
               <el-button
                 type="text"
                 v-if="scope.row.account && scope.row.parent_id == '0'"
-                @click="addAccount(scope.row)"
+                @click="handleEditAccount(scope.row.account)"
                 >修改账号</el-button
               >
               <el-button
                 type="text"
                 v-if="!scope.row.account && scope.row.parent_id == '0'"
-                @click="addAccount(scope.row)"
+                @click="handleAddAccount(scope.row.institution_id)"
                 >添加账号</el-button
               >
               <el-button type="text" @click="handleDelete(scope.row)"
@@ -149,37 +149,25 @@
           >
         </span>
       </el-dialog>
-      <!--添加机构账号弹框-->
-      <el-dialog title="添加机构账号" :visible.sync="organVisible" width="30%">
-        <el-form
-          :model="accountForm"
-          :rules="accountRules"
-          ref="accountForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="机构账号" prop="account">
-            <el-input v-model="accountForm.account"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="accountForm.password"></el-input>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="organVisible = false">取 消</el-button>
-          <el-button type="primary" @click="accountConserve('accountForm')"
-            >保 存</el-button
-          >
-        </span>
-      </el-dialog>
     </div>
+    <InstitutionUserDialog
+      v-model="dialogAccountVisible"
+      :title="dialogAccountTitle"
+      :id="currentId"
+      :institutionId="institutionId"
+      @on-success="getList"
+    />
   </section>
 </template>
 
 <script>
+import InstitutionUserDialog from "@/views/institution/institutionAccount/components/InstitutionUserDialog";
 import { getInstitutionToken } from "@/api/institution";
 export default {
   name: "agency",
+  components: {
+    InstitutionUserDialog,
+  },
   data() {
     return {
       input2: "",
@@ -195,31 +183,7 @@ export default {
         institution_name: "",
         organizationName: "",
       },
-      accountForm: {
-        institution_id: "",
-        account: "",
-        password: "",
-      },
-      //创建/修改机构账号校验
-      accountRules: {
-        account: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 2, max: 36, message: "长度在 2 到 36 个字符" },
-          // { pattern: /^[\u4E00-\u9FA5]+$/, message: '用户名只能为中文' },
-          // {
-          //   pattern: /^[a-zA-Z]w{1,4}$/,
-          //   message: '以字母开头，长度在2-36之间， 只能包含字符、数字和下划线',
-          // },
-        ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 5, max: 25, message: "长度在 5 到 25个字符" },
-          // {
-          //   pattern: /^(\w){5,25}$/,
-          //   message: '只能输入5-25个字母、数字、下划线',
-          // },
-        ],
-      },
+
       rules: {
         institution_name: [
           { required: true, message: "请输入校区名称", trigger: "blur" },
@@ -231,12 +195,30 @@ export default {
           },
         ],
       },
+      dialogAccountVisible: false,
+      dialogAccountTitle: "",
+      currentId: "",
+      institutionId: "",
     };
   },
   created() {
-    this.$api.getRecommender(this, "schoolData");
+    this.getList();
   },
   methods: {
+    handleEditAccount(id) {
+      this.currentId = id;
+      this.dialogAccountTitle = "编辑账号";
+      this.dialogAccountVisible = true;
+    },
+    handleAddAccount(institutionId) {
+      this.institutionId = institutionId;
+      this.currentId = "";
+      this.dialogAccountTitle = "添加账号";
+      this.dialogAccountVisible = true;
+    },
+    getList() {
+      this.$api.getRecommender(this, "schoolData");
+    },
     async getInstitutionToken(institution_id) {
       const data = { institution_id };
       const res = await getInstitutionToken(data);
@@ -302,18 +284,6 @@ export default {
       this.dialogVisible = true;
     },
 
-    addAccount(zx) {
-      this.accountForm = {
-        institution_id: "",
-        account: "",
-        password: "",
-      };
-      if (zx.account) {
-        this.accountForm.account = zx.account;
-      }
-      this.organVisible = true;
-      this.accountForm.institution_id = zx.institution_id;
-    },
     toEditOrgan() {
       this.$router.push({
         path: "/sou/editOrgan",
