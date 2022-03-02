@@ -106,12 +106,8 @@ import {
   classroomVideoStatisticsList,
   exportClassroomVideoStatistics,
 } from "@/api/eda";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "videoPlaybackStatistics",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

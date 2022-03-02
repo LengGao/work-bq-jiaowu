@@ -142,13 +142,9 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getFaceDetectListForVideo, deleteFaceRecord } from "@/api/sou";
 export default {
   name: "videoFaceRecord",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

@@ -132,7 +132,6 @@
 
 <script>
 import ResetDialog from "./components/ResetDialog";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
 import { getproject, getAdminSelect } from "@/api/eda";
@@ -142,7 +141,6 @@ import { getDepartmentlists } from "@/api/set";
 export default {
   name: "channelStudent",
   components: {
-    PartiallyHidden,
     ResetDialog,
   },
   data() {

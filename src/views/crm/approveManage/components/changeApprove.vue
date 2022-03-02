@@ -175,7 +175,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import {
   getUnusualList,
   orderUnusualApprove,
@@ -183,9 +182,6 @@ import {
 } from "@/api/crm";
 export default {
   name: "changeApprove",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

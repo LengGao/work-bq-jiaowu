@@ -351,7 +351,6 @@
   </div>
 </template>
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import PayDialog from "@/views/eda/components/PayDialog";
 import UpdateOrderGrade from "@/views/eda/components/UpdateOrderGrade";
 import StudentStatusChange from "@/views/eda/components/StudentStatusChange";
@@ -368,7 +367,6 @@ import { batchUpdateFee } from "@/api/eda";
 export default {
   name: "EducationList",
   components: {
-    PartiallyHidden,
     PayDialog,
     UpdateOrderGrade,
     StudentStatusChange,

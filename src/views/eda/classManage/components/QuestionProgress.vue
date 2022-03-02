@@ -114,7 +114,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getClassQuestionStatistics } from "@/api/eda";
 export default {
   name: "QuestionProgress",
@@ -137,9 +136,6 @@ export default {
         },
       ],
     };
-  },
-  components: {
-    PartiallyHidden,
   },
   created() {
     this.getClassQuestionStatistics();

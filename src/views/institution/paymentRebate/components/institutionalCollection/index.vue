@@ -77,6 +77,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="order_num"
+            label="订单总金额"
+            show-overflow-tooltip
+            min-width="100"
+          >
+          </el-table-column>
+          <el-table-column
             prop="receivable_money"
             label="回款总金额"
             min-width="120"
@@ -156,7 +163,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { download } from "@/utils";
 import {
@@ -168,9 +174,6 @@ import {
 } from "@/api/crm";
 export default {
   name: "institutionalCollection",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       orgReceivableImportUrl,

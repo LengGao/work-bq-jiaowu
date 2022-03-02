@@ -154,7 +154,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import SetExpireDialog from "./components/SetExpireDialog";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils";
@@ -165,7 +164,6 @@ export default {
   name: "expireManage",
   components: {
     SetExpireDialog,
-    PartiallyHidden,
   },
   data() {
     return {

@@ -272,7 +272,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import {
   getReturnPaymentList,
@@ -283,9 +282,6 @@ import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions, download } from "@/utils";
 export default {
   name: "recruitStudents",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       panelData: {},

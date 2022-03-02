@@ -169,12 +169,8 @@ import {
   courseUserVideoStatisticsData,
   exportCourseUserVideoStatisticsList,
 } from "@/api/sou";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "studentList",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

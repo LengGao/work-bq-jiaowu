@@ -17,33 +17,37 @@
       ref="formData"
     >
       <Title text="关联订单"></Title>
-      <div style="display:flex;">
-      <div>
-      <el-form-item label="请选择机构" prop="from_organization_id" style="margin-top:10px;">
-        <el-select
-          v-model="formData.from_organization_id"
-          filterable
-          clearable
-          placeholder="机构名称"
-          @change="onOrgChange"
-          :disabled="!!id"
-        >
-          <el-option
-            v-for="item in institutionOptions"
-            :key="item.institution_id"
-            :label="item.institution_name"
-            :value="item.institution_id"
+      <div style="display: flex">
+        <div>
+          <el-form-item
+            label="请选择机构"
+            prop="from_organization_id"
+            style="margin-top: 10px"
           >
-          </el-option>
-        </el-select>  
-      </el-form-item>
-      </div>
-       <SearchList
-            :options="searchOptions"
-            :data="searchData"
-            @on-search="handleSearch"
-            ref="searchList"
-          />
+            <el-select
+              v-model="formData.from_organization_id"
+              filterable
+              clearable
+              placeholder="机构名称"
+              @change="onOrgChange"
+              :disabled="!!id"
+            >
+              <el-option
+                v-for="item in institutionOptions"
+                :key="item.institution_id"
+                :label="item.institution_name"
+                :value="item.institution_id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+          ref="searchList"
+        />
       </div>
       <div class="tables">
         <div class="order-table">
@@ -95,21 +99,28 @@
               prop="university_name"
             >
             </el-table-column>
-             <el-table-column
+            <el-table-column
               label="层次名称"
               show-overflow-tooltip
               min-width="80"
               prop="level_name"
             >
             </el-table-column>
-             <el-table-column
+            <el-table-column
               label="专业名称"
               show-overflow-tooltip
               min-width="120"
               prop="major_name"
             >
             </el-table-column>
-             <el-table-column
+            <el-table-column
+              prop="jiebie_name"
+              label="届别名称"
+              min-width="100"
+              show-overflow-tooltip
+            >
+            </el-table-column>
+            <el-table-column
               label="创建时间"
               show-overflow-tooltip
               min-width="140"
@@ -119,16 +130,16 @@
           </el-table>
           <div class="table_bottom">
             <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageSizeChange="handleSizeChange"
-            @pageChange="handlePageChange"
-          />
+              :data="listTotal"
+              :curpage="pageNum"
+              @pageSizeChange="handleSizeChange"
+              @pageChange="handlePageChange"
+            />
           </div>
         </div>
 
         <div class="checked-table">
-            <el-table
+          <el-table
             :data="checkedOrderData"
             :header-cell-style="{
               'text-align': 'center',
@@ -162,7 +173,7 @@
               min-width="100"
               prop="rebate_price"
             >
-             <template slot-scope="{ row }">
+              <template slot-scope="{ row }">
                 <span>{{ row.rebate_price | moneyFormat }} </span>
               </template>
             </el-table-column>
@@ -204,10 +215,7 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column
-              show-overflow-tooltip
-              min-width="100"
-            >
+            <el-table-column show-overflow-tooltip min-width="100">
               <template slot="header">
                 <el-button type="text" @click="hadleResetOrder"
                   >批量删除</el-button
@@ -223,8 +231,8 @@
         </div>
       </div>
 
-     <Title text="返点信息"></Title>
-     <div class="distance"></div>
+      <Title text="返点信息"></Title>
+      <div class="distance"></div>
       <el-form-item label="机构名称" prop="institution_name">
         <el-input
           class="input"
@@ -277,7 +285,6 @@
           placeholder="请输入内容"
         />
       </el-form-item>
-
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeCancel">取 消</el-button>
@@ -285,18 +292,17 @@
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >确 定</el-button>
+        >确 定</el-button
+      >
     </span>
   </el-dialog>
 </template>
 
 <script>
-import {
-  getCustomfieldOptions,
-} from "@/api/crm";
+import { getCustomfieldOptions } from "@/api/crm";
 import { getShortcuts } from "@/utils/date";
-import { getEduList,applyRebate } from "@/api/rebate";
-import { getInstitutionSelectData } from "@/api/sou";
+import { getEduList, applyRebate } from "@/api/rebate";
+import { getInstitutionSelectData, getGradeOptions } from "@/api/sou";
 export default {
   name: "AddCustomeDialog",
   props: {
@@ -313,19 +319,23 @@ export default {
     return {
       visible: this.value,
       addLoading: false,
-       totalMoney: "",
-       payMethodOptions:[],
-       xinxiOptions:{},
-       institutionOptions: [],
+      totalMoney: "",
+      payMethodOptions: [],
+      xinxiOptions: {},
+      institutionOptions: [],
       formData: {
         from_organization_id: "",
         pay_type: "",
         remark: "",
-        apply_rebate_price:"",
+        apply_rebate_price: "",
       },
       rules: {
-        from_organization_id:[{ required: true, message: "请输入", trigger: "blur" }],
-        apply_rebate_price: [{ required: true, message: "请输入", trigger: "blur" }],
+        from_organization_id: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
+        apply_rebate_price: [
+          { required: true, message: "请输入", trigger: "blur" },
+        ],
         pay_date: [{ required: true, message: "请选择", trigger: "change" }],
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
       },
@@ -333,7 +343,7 @@ export default {
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-       searchData: {
+      searchData: {
         keyword: "",
         from_organization_id: "",
         admin_id: "",
@@ -355,6 +365,19 @@ export default {
           },
         },
         {
+          key: "jiebie_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "届别名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "学生姓名",
@@ -370,15 +393,20 @@ export default {
     },
   },
   computed: {
-    totalPrice(){
-     return this.checkedOrderData.reduce((pre,item)=>pre+(+item.rebate_price || 0),0)
+    totalPrice() {
+      return this.checkedOrderData.reduce(
+        (pre, item) => pre + (+item.rebate_price || 0),
+        0
+      );
     },
-    institutionName(){
-     let result = this.institutionOptions.filter(item=>item.institution_id === this.formData.from_organization_id)
-    if(result.length){
-      return result[0].institution_name
-    }
-    return ''
+    institutionName() {
+      let result = this.institutionOptions.filter(
+        (item) => item.institution_id === this.formData.from_organization_id
+      );
+      if (result.length) {
+        return result[0].institution_name;
+      }
+      return "";
     },
     totalInputMoney() {
       return this.listData.reduce((p, c) => p + c.currentMoney * 1, 0);
@@ -387,16 +415,25 @@ export default {
 
   methods: {
     handleOpen() {
-       this.getInstitutionSelectData();
-       this.getCustomfieldOptions();
-       if (this.id) {
+      this.getInstitutionSelectData();
+      this.getCustomfieldOptions();
+      this.getGradeOptions();
+
+      if (this.id) {
         this.getEduList();
       }
     },
-     onOrgChange() {
-       this.hadleResetOrder();
-       this.getEduList();
-       this.handlePageChange(1);
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
+      }
+    },
+    onOrgChange() {
+      this.hadleResetOrder();
+      this.getEduList();
+      this.handlePageChange(1);
     },
     onInput(val) {
       this.totalMoney = val;
@@ -420,21 +457,20 @@ export default {
         limit: this.pageSize,
         ...this.searchData,
         from_organization_id: this.formData.from_organization_id,
-        rebate_detail_id: 0 ,
-
+        rebate_detail_id: 0,
       };
 
       this.listLoading = true;
       const res = await getEduList(data);
       this.listLoading = false;
       if (res.code === 0) {
-        this.listData = res.data.list.map(item=>({
+        this.listData = res.data.list.map((item) => ({
           ...item,
-          currentMoney:'',
+          currentMoney: "",
         }));
         this.listTotal = res.data.total;
       }
-      if(this.formData.from_organization_id === ''){
+      if (this.formData.from_organization_id === "") {
         this.listData = [];
         this.listTotal = 0;
         this.checkedOrderData = [];
@@ -449,7 +485,7 @@ export default {
         let value = totalMoney;
         if (isDistribution) {
           value = (totalMoney / leng + "").split(".")[0];
-          console.log(totalMoney / leng)
+          console.log(totalMoney / leng);
         }
         data.forEach((item) => {
           item.currentMoney = value;
@@ -474,15 +510,14 @@ export default {
       this.checkedOrderData = [...selection];
     },
 
-
-   handleSearch(data) {
+    handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
         date: data.date.length ? data.date.join(" - ") : "",
       };
       this.getEduList();
-      this.searchData={};
+      this.searchData = {};
     },
     handleSizeChange(size) {
       this.pageNum = 1;
@@ -510,14 +545,14 @@ export default {
         ...this.formData,
       };
       data.order_data = this.checkedOrderData.map((item) => {
-          return {
-            order_id: item.order_id,
-            rebate_price:item.currentMoney,
-          };
+        return {
+          order_id: item.order_id,
+          rebate_price: item.currentMoney,
+        };
       });
       this.addLoading = true;
       const res = await applyRebate(data).catch(() => {
-      this.addLoading = false;
+        this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
@@ -526,7 +561,7 @@ export default {
         this.$emit("on-success");
       }
     },
-      submitForm(formName) {
+    submitForm(formName) {
       console.log(this.formData);
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -595,7 +630,7 @@ export default {
         }
       }
     }
-    .el-table th{
+    .el-table th {
       padding: 0;
     }
     .header-money {
@@ -648,25 +683,26 @@ export default {
     padding: 10px 16px 0;
   }
 }
-.el-dialog__footer{
+.el-dialog__footer {
   padding-top: 0;
 }
-.el-pagination{
+.el-pagination {
   padding: 0 5px 10px 0;
 }
-.el-textarea{
+.el-textarea {
   width: 91%;
 }
-.el-title[data-v-6f792258]{
-  margin-bottom: 6px ;
+.el-title[data-v-6f792258] {
+  margin-bottom: 6px;
 }
-.distance{
+.distance {
   height: 10px;
 }
- .checked-table .el-table th, .el-table td{
-  padding:5px 0 !important;
+.checked-table .el-table th,
+.el-table td {
+  padding: 5px 0 !important;
 }
-.order-table .el-table--enable-row-transition .el-table__body td{
+.order-table .el-table--enable-row-transition .el-table__body td {
   padding: 14px 0 !important;
 }
 </style>

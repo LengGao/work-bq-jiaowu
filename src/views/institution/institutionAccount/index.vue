@@ -253,14 +253,12 @@ import {
   getInstitutionToken,
 } from "@/api/institution";
 import { getShortcuts } from "@/utils/date";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import InstitutionDialog from "./components/InstitutionDialog";
 import DockingDialog from "./components/DockingDialog";
 import RechargeDialog from "./components/RechargeDialog";
 export default {
   name: "institutionAccount",
   components: {
-    PartiallyHidden,
     InstitutionDialog,
     RechargeDialog,
     DockingDialog,

@@ -132,11 +132,9 @@ import {
   getInstitutionUserList,
   modifyInstitutionUserOther,
 } from "@/api/institution";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "institutionUser",
   components: {
-    PartiallyHidden,
     InstitutionUserDialog,
   },
   data() {

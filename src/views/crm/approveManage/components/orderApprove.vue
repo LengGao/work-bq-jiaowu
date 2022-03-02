@@ -140,7 +140,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { getCateList } from "@/api/sou";
@@ -149,9 +148,6 @@ import { getCrmApproveOrder, crmOrderApprove } from "@/api/crm";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "orderApprove",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

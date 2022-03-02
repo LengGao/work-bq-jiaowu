@@ -144,7 +144,6 @@
 
 <script>
 import Detail from "@/views/institution/paymentRebate/components/institutionalCollection/detail.vue";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import {
   getOrgReceivableList,
@@ -156,7 +155,6 @@ import {
 export default {
   name: "changeApprove",
   components: {
-    PartiallyHidden,
     Detail,
   },
   data() {

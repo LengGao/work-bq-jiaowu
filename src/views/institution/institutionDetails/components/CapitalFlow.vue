@@ -128,14 +128,12 @@
 
 <script>
 import { getShortcuts } from "@/utils/date";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { moneyFlowing } from "@/api/institution";
 import RechargeDialogcon from "./rechargeDialogcon";
 
 export default {
   name: "CapitalFlow",
   components: {
-    PartiallyHidden,
     RechargeDialogcon,
   },
   data() {

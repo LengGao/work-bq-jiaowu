@@ -104,12 +104,8 @@
 <script>
 import { getCrmList, receive } from "@/api/crm";
 import { getShortcuts } from "@/utils/date";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "Dongpei",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

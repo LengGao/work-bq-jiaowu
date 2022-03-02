@@ -117,12 +117,12 @@
           <el-table-column fixed="right" label="操作" width="80">
             <template slot-scope="{ row }">
               <el-button
-              v-if="row.status === 1"
-              type="text"
-              @click="deleteConfirm(row.id)"
-              >删除</el-button
-            >
-            <span v-else>--</span>
+                v-if="row.status === 1"
+                type="text"
+                @click="deleteConfirm(row.id)"
+                >删除</el-button
+              >
+              <span v-else>--</span>
             </template>
           </el-table-column>
         </el-table>
@@ -140,15 +140,11 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getFaceDetectList, getFaceCourseSelect } from "@/api/eda";
 import { deleteFaceRecord } from "@/api/sou";
 export default {
   name: "faceScanningRecord",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

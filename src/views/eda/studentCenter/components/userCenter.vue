@@ -208,13 +208,9 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getStudentUsersList, clearStudentInfo } from "@/api/eda";
 export default {
   name: "userCenter",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

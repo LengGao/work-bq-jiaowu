@@ -127,12 +127,8 @@ import {
   courseVideoStatisticsList,
   exportCourseVideoStatistics,
 } from "@/api/sou";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "videoPlayStatistics",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

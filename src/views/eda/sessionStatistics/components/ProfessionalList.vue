@@ -138,13 +138,9 @@
   </div>
 </template>
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getOrderListForNot6, getproject, getJiebieSelect } from "@/api/eda";
 export default {
   name: "ProfessionalList",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       ResetDialogflag: false,

@@ -20,6 +20,8 @@ import smallEachert from '@/components/smallEachert.vue'
 import smallbar from '@/components/smallbar.vue' //dynamicLine
 import dynamicLine from '@/components/dynamicLine.vue'
 import PreviewImg from '@/components/PreviewImg/index'
+import PartiallyHidden from "@/components/PartiallyHidden/index";
+Vue.component('PartiallyHidden', PartiallyHidden)
 Vue.component('PreviewImg', PreviewImg)
 Vue.component('Breadcrumb', Breadcrumb)
 Vue.component('Eachertline', Eachertline)

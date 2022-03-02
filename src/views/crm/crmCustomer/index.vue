@@ -214,7 +214,6 @@
 <script>
 import AddCustomeDialog from "./components/AddCustomeDialog";
 import CustomeSignUp from "./components/CustomeSignUp";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect } from "@/api/eda";
 import { getDepartmentlists } from "@/api/set";
@@ -229,7 +228,6 @@ import {
 export default {
   name: "crmCustomer",
   components: {
-    PartiallyHidden,
     AddCustomeDialog,
     CustomeSignUp,
     UpdateTeacher,

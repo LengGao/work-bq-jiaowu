@@ -163,7 +163,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import SubmitHandle from "./components/SubmitHandle";
 import SchoolApproval from "./components/SchoolApproval";
@@ -173,7 +172,6 @@ export default {
   components: {
     SubmitHandle,
     SchoolApproval,
-    PartiallyHidden,
   },
   data() {
     return {

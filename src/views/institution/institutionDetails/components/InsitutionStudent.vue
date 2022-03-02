@@ -152,12 +152,10 @@
 <script>
 import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import { getShortcuts } from "@/utils/date";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { Organizationstudents } from "@/api/institution";
 export default {
   name: "InsitutionStudent",
   components: {
-    PartiallyHidden,
     UpdateTeacher,
   },
   data() {

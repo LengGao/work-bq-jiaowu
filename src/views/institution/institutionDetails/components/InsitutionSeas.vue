@@ -87,13 +87,9 @@
 
 <script>
 import { getShortcuts } from "@/utils/date";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { highSeasStudent } from "@/api/institution";
 export default {
   name: "InsitutionSeas",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

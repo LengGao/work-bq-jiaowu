@@ -66,6 +66,16 @@
           >
           </el-table-column>
           <el-table-column
+            prop="mobile"
+            label="手机号码"
+            min-width="130"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <PartiallyHidden :value="row.mobile" />
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="order_money"
             label="订单金额"
             min-width="100"
@@ -192,16 +202,12 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts, today } from "@/utils/date";
 import { getReturnPaymentList, getCustomfieldOptions } from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions } from "@/utils";
 export default {
   name: "collectionList",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       panelData: {},
@@ -282,6 +288,19 @@ export default {
           },
         },
         {
+          key: "sources",
+          type: "select",
+          width: 140,
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "客户来源",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "verify_status",
           type: "select",
           width: 120,
@@ -350,10 +369,23 @@ export default {
   created() {
     this.getReturnPaymentList();
     this.getCustomfieldOptions();
+    this.getCustomFromOptions();
     this.getStaffList();
     this.getDepartmentlists();
   },
   methods: {
+    // 获取客户来源
+    async getCustomFromOptions() {
+      const data = {
+        field_name: "customer_source",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.searchOptions[4].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
+      }
+    },
     // 获取部门
     async getDepartmentlists() {
       const res = await getDepartmentlists();

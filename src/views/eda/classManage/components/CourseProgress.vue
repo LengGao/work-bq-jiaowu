@@ -126,12 +126,8 @@ import {
   courseUserVideoStatisticsList,
   exportCourseUserVideoStatisticsList,
 } from "@/api/eda";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "studentList",
-  components: {
-    PartiallyHidden,
-  },
   props: {
     classData: {
       type: Object,

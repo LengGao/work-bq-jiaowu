@@ -130,7 +130,6 @@
 
 <script>
 import UpdateInstitution from "../../components/UpdateInstitution.vue";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { cloneOptions } from "@/utils/index";
 import { getInstitutionSelectData } from "@/api/sou";
 import {
@@ -147,7 +146,6 @@ export default {
     },
   },
   components: {
-    PartiallyHidden,
     UpdateInstitution,
   },
   data() {

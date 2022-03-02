@@ -257,6 +257,13 @@
             >
             </el-table-column>
             <el-table-column
+              prop="jiebie_name"
+              label="届别名称"
+              min-width="100"
+              show-overflow-tooltip
+            >
+            </el-table-column>
+            <el-table-column
               label="订单金额"
               show-overflow-tooltip
               min-width="90"
@@ -498,6 +505,7 @@ import {
   clearPayLog,
   changeOrderMoney,
 } from "@/api/crm";
+import { getGradeOptions } from "@/api/sou";
 import { getShortcuts } from "@/utils/date";
 import { accSub, download } from "@/utils";
 export default {
@@ -580,6 +588,19 @@ export default {
           },
         },
         {
+          key: "jiebie_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "届别名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "user_name",
           attrs: {
             placeholder: "客户姓名",
@@ -606,11 +627,19 @@ export default {
   created() {
     this.getCustomfieldOptions();
     this.getOrgName();
+    this.getGradeOptions();
     if (this.id) {
       this.getReceivableInfo();
     }
   },
   methods: {
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.searchOptions[3].options = res.data;
+      }
+    },
     handleCancelResetMoney(row) {
       row.resetOrderMoney = row.order_money;
       row.resetOrderOverdueMoney = row.outstanding_amount;

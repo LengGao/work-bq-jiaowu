@@ -148,12 +148,8 @@
 
 <script>
 import { questionStatisticsList, questionStatisticsData } from "@/api/sou";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "questionStatistics",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

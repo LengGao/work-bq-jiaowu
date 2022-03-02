@@ -225,7 +225,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts, today } from "@/utils/date";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
@@ -238,7 +237,6 @@ export default {
   components: {
     ImportOrder,
     CollectionOrder,
-    PartiallyHidden,
   },
   data() {
     return {

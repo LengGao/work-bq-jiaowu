@@ -137,15 +137,11 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { getOrgName, getReceivableStatus, getBelongPeople } from "@/api/crm";
 import { getReceivableList } from "@/api/institution";
 export default {
   name: "institutionalCollection",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

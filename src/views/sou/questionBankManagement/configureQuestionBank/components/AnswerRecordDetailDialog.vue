@@ -192,7 +192,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getResultsDetail } from "@/api/sou";
 export default {
   name: "AnswerRecordDetailDialog",
@@ -205,9 +204,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  components: {
-    PartiallyHidden,
   },
   data() {
     return {

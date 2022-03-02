@@ -145,14 +145,12 @@
 
 <script>
 import { getShortcuts } from "@/utils/date";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { studentsOrder } from "@/api/institution";
 import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
 import UpdateInstitutionOrder from "@/views/eda/components/UpdateInstitutionOrder";
 export default {
   name: "StudentOrder",
   components: {
-    PartiallyHidden,
     UpdatePerformanceAttribution,
     UpdateInstitutionOrder,
   },

@@ -109,12 +109,8 @@
 
 <script>
 import { getSingleVideoStatisticsList } from "@/api/sou";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "microVideoStatistics",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

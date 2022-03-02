@@ -126,12 +126,8 @@
 import { getProjectStatisticsList, getInstitutionSelectData } from "@/api/sou";
 import { getAdminSelect } from "@/api/eda";
 import { cloneOptions } from "@/utils/index";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "projectStatistics",
-  components: {
-    PartiallyHidden,
-  },
   data() {
     return {
       listData: [],

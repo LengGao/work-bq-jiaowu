@@ -147,7 +147,6 @@
 
 <script>
 import AddStudent from "./components/AddStudent";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
@@ -156,7 +155,6 @@ import { projectUser, eduOpenCourse } from "@/api/crm";
 export default {
   name: "eduOpenClass",
   components: {
-    PartiallyHidden,
     AddStudent,
   },
   data() {

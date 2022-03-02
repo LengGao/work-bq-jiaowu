@@ -251,11 +251,9 @@ import {
   clearAppletOpenid,
   updateMaster,
 } from "@/api/set";
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 export default {
   name: "UserManage",
   components: {
-    PartiallyHidden,
     AddStaffDialog,
     AddDepartmentDialog,
     SetQuitDialog,

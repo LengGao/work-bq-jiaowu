@@ -93,7 +93,6 @@
 </template>
 
 <script>
-import PartiallyHidden from "@/components/PartiallyHidden/index";
 import { exportQuestion, getResults } from "@/api/sou";
 import AnswerRecordDetailDialog from "./AnswerRecordDetailDialog";
 export default {
@@ -109,7 +108,6 @@ export default {
     },
   },
   components: {
-    PartiallyHidden,
     AnswerRecordDetailDialog,
   },
   data() {
