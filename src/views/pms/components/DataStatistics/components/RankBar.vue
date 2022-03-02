@@ -36,8 +36,10 @@ export default {
   watch: {
     data: {
       handler() {
-        this.handleDataChange();
-        this.chartInstance && this.chartInstance.resize();
+        this.$nextTick(() => {
+          this.handleDataChange();
+          this.chartInstance && this.chartInstance.resize();
+        });
       },
       deep: true,
     },

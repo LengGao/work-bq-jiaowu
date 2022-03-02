@@ -20,7 +20,9 @@ export default {
   watch: {
     data: {
       handler() {
-        this.chartInit();
+        this.$nextTick(() => {
+          this.chartInit();
+        });
       },
       deep: true,
     },

@@ -50,7 +50,9 @@ export default {
   },
   watch: {
     "data.completion"(val) {
-      this.chartInit(val);
+      this.$nextTick(() => {
+        this.chartInit(val);
+      });
     },
   },
   mounted() {
