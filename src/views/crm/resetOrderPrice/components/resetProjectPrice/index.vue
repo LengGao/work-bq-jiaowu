@@ -55,21 +55,13 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="formData.type == 1" label="项目价格" prop="price">
-            <el-select
+            <el-autocomplete
+              class="inline-input"
               v-model="formData.price"
-              filterable
-              clearable
-              allow-create
-              placeholder="请选择价格"
-            >
-              <el-option
-                v-for="item in classTypeOptions"
-                :key="item.id"
-                :label="`${item.title}：￥${item.price}`"
-                :value="item.price"
-              >
-              </el-option>
-            </el-select>
+              :fetch-suggestions="querySearch"
+              @select="(item) => (formData.price = item.price)"
+              placeholder="请选择或输入价格"
+            ></el-autocomplete>
           </el-form-item>
           <el-form-item v-else label="项目价格" prop="price">
             <el-input v-model="formData.price" placeholder="请输入价格" />
@@ -222,7 +214,7 @@ export default {
         type: "1",
       },
       rules: {
-        price: [{ required: true, message: "请选择", trigger: "change" }],
+        price: [{ required: true, message: "价格不能为空", trigger: "change" }],
         project_id: [{ required: true, message: "请选择", trigger: "change" }],
         from_organization_id: [
           { required: true, message: "请选择", trigger: "change" },
@@ -251,6 +243,19 @@ export default {
     this.getOrgName();
   },
   methods: {
+    querySearch(queryString, cb) {
+      // 调用 callback 返回建议列表的数据
+      const options = this.classTypeOptions;
+      const res = queryString
+        ? options.filter((item) => (item.price + "").includes(queryString))
+        : options;
+      cb(
+        res.map((item) => ({
+          value: `${item.title}：￥${item.price}`,
+          price: item.price,
+        }))
+      );
+    },
     handleSelection(selection) {
       this.selection = selection;
     },
