@@ -120,6 +120,7 @@ export default {
       listTotal: 0,
       searchData: {
         search_box: "",
+        category_id: [],
       },
       searchOptions: [
         {
