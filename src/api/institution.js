@@ -497,3 +497,11 @@ export function orgUniversityModify(data) {
         data
     })
 }
+// 机构详情-机构概览
+export function getInstitutionOverviewList(params) {
+    return request({
+        url: '/Organization/overview',
+        method: 'get',
+        params
+    })
+}

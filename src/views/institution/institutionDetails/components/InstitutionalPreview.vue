@@ -13,41 +13,41 @@
         <li class="panel-item">
           <span>机构人数</span>
           <div class="time_num">
-            <span>{{ panelData.order_money || 0 }}</span>
+            <span>{{ panelData.memNum || 0 }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>订单数</span>
           <div class="time_num">
-            <span>{{ panelData.pay_money || 0 }}</span>
+            <span>{{ panelData.orderNum || 0 }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>订单总金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.overdue_money || 0 }}</span>
+            <span>{{ panelData.orderMoney | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>已回款金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.overdue_money || 0 }}</span>
+            <span>{{ panelData.paidMoney | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>未回款金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.overdue_money || 0 }}</span>
+            <span>{{ panelData.unpaidMoney | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>豁免金额</span>
           <div class="time_num">
-            <span>￥{{ panelData.overdue_money || 0 }}</span>
+            <span>{{ panelData.reductionMoney | moneyFormat }}</span>
           </div>
         </li>
       </ul>
-       <!--列表-->
+      <!--列表-->
       <div class="userTable">
         <el-table
           ref="multipleTable"
@@ -60,22 +60,6 @@
           :cell-style="{ 'text-align': 'center' }"
           all="1"
         >
-          <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
-          <el-table-column
-            prop="order_id"
-            label="订单编号"
-            show-overflow-tooltip
-            min-width="160"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="text"
-                @click="toCrmOrderDetail(scope.row.order_id)"
-              >
-                {{ scope.row.order_no }}
-              </el-button>
-            </template>
-          </el-table-column>
           <el-table-column
             prop="create_time"
             label="创建时间"
@@ -85,7 +69,7 @@
           </el-table-column>
           <el-table-column
             prop="surname"
-            label="客户姓名"
+            label="学生姓名"
             min-width="90"
             show-overflow-tooltip
           >
@@ -96,7 +80,17 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="from"
+            prop="mobile"
+            label="手机号码"
+            min-width="130"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <PartiallyHidden :value="row.mobile" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="sources"
             label="客户来源"
             min-width="100"
             show-overflow-tooltip
@@ -106,6 +100,13 @@
             prop="project_name"
             label="项目名称"
             min-width="220"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="jiebie_name"
+            label="届别名称"
+            min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -122,7 +123,9 @@
             min-width="90"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -132,7 +135,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>￥{{ row.pay_money }}</span>
+              <span>{{ row.pay_money | moneyFormat }}</span>
             </template>
           </el-table-column>
 
@@ -160,87 +163,25 @@
               }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="verify_status"
-            label="审批状态"
-            min-width="100"
-            style="overflow: auto"
-            class-name="badge"
-          >
+
+          <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
-              <el-badge :value="row.reshuffle ? '异' : ''" class="item">
-                <el-tag
-                  size="small"
-                  :type="verifyStatusMap[row.verify_status || 0].type"
-                >
-                  {{ verifyStatusMap[row.verify_status || 0].text }}
-                </el-tag>
-              </el-badge>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="contract_status"
-            label="合同状态"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <el-tag
-                v-if="row.order_id"
-                size="small"
-                :type="statusMap[row.contract_status || 0].type"
+              <el-button type="text" @click="toOrderDetail(row.order_id)"
+                >订单详情</el-button
               >
-                {{ statusMap[row.contract_status || 0].text }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200">
-            <template slot-scope="{ row }">
-              <div style="display: flex; justify-content: center">
-                <el-button
-                  type="text"
-                  @click="seebtn(row)"
-                  v-if="
-                    !row.contract_status &&
-                    row.project_ids &&
-                    !row.sign_url &&
-                    row.verify_status === 3
-                  "
-                  >生成合同</el-button
-                >
-                <el-button
-                  type="text"
-                  @click="seeview(row)"
-                  v-if="row.sign_url && row.contract_status"
-                  >查看合同</el-button
-                >
-                <el-button
-                  type="text"
-                  @click="handleCopy(row.sign_url)"
-                  v-if="
-                    row.sign_url &&
-                    (row.contract_status === 2 || row.contract_status === 4)
-                  "
-                  >复制签名链接</el-button
-                >
-                <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
-                  >订单详情</el-button
-                >
-              </div>
             </template>
           </el-table-column>
         </el-table>
         <div class="frame_bottom">
-          <div class="frame_bottom_btn">
-        </div>
-        <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="handlePageChange"
-            @pageSizeChange="handleSizeChange"
-          />
-        </div>
+          <div class="frame_bottom_btn"></div>
+          <div class="table_bottom">
+            <page
+              :data="listTotal"
+              :curpage="pageNum"
+              @pageChange="handlePageChange"
+              @pageSizeChange="handleSizeChange"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -248,76 +189,31 @@
 </template>
 
 <script>
-import { getShortcuts, today } from "@/utils/date";
-import { rebateList } from "@/api/rebate";
-import { getCrmOrderList } from "@/api/crm";
-import { getCateList } from "@/api/sou";
+import { getShortcuts } from "@/utils/date";
+import { getInstitutionOverviewList } from "@/api/institution";
+import { getCateList, getGradeOptions } from "@/api/sou";
+import { getproject } from "@/api/eda";
+import { getStaffList } from "@/api/set";
+import { getCustomfieldOptions } from "@/api/crm";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "InstitutionalPreview",
-
   data() {
     return {
-      listData: [],
-      statusMap: {
-        0: {
-          text: "未生成",
-          type: "info",
-        },
-        1: {
-          text: "未审核",
-          type: "primary",
-        },
-        2: {
-          text: "已审核",
-          type: "success",
-        },
-        3: {
-          text: "已驳回",
-          type: "danger",
-        },
-        4: {
-          text: "签署完成",
-          type: "success",
-        },
-      },
-      verifyStatusMap: {
-        1: {
-          text: "待审核",
-          type: "info",
-        },
-        2: {
-          text: "（多人）审核中",
-          type: "primary",
-        },
-        3: {
-          text: "审核通过",
-          type: "success",
-        },
-        8: {
-          text: "已撤销审核",
-          type: "info",
-        },
-        9: {
-          text: "驳回不通过",
-          type: "danger",
-        },
-      },
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
-      // recordData:[],
+      listData: [],
       panelData: {
-        total: "",
-        order_money: 0,
-        pay_money: "",
-        overdue_money: "",
-        money: "",
-        reduction: 0,
+        memNum: "",
+        orderNum: 0,
+        orderMoney: "",
+        paidMoney: "",
+        reductionMoney: "",
+        unpaidMoney: 0,
       },
       searchData: {
-        // date: (this.$route.query.date || `${today},${today}`).split(","),
-        status:"",
+        date: "",
       },
       searchOptions: [
         {
@@ -337,44 +233,194 @@ export default {
           },
         },
         {
+          key: "sources",
+          type: "select",
+          width: 140,
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "客户来源",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
           key: "category_id",
           type: "cascader",
           width: 240,
           attrs: {
-            placeholder: "所属分类",
+            placeholder: "所属分类（多选）",
             clearable: true,
-            // props: {
-            //   multiple: true,
-            //   checkStrictly: true,
-            // },
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
             "collapse-tags": true,
             filterable: true,
             options: [],
           },
         },
         {
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
+          width: 280,
+          attrs: {
+            placeholder: "所属项目（多选）",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
+          key: "jiebie_id",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "届别名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "staff_id",
+          type: "select",
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          width: 220,
+          attrs: {
+            placeholder: "业绩归属",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
+          key: "pay_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "未付款",
+            },
+            {
+              value: 1,
+              label: "新订单",
+            },
+            {
+              value: 2,
+              label: "部分付款",
+            },
+            {
+              value: 3,
+              label: "已付款",
+            },
+            {
+              value: 4,
+              label: "已作废",
+            },
+            {
+              value: 5,
+              label: "已退款",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "支付状态",
+          },
+        },
+        {
+          key: "order_money",
+          type: "numberRange",
+          width: 280,
+          attrs: {
+            startPlaceholde: "订单金额起",
+            endPlaceholde: "订单金额止",
+            valueFormat: " - ",
+          },
+        },
+        {
+          key: "pay_money",
+          type: "numberRange",
+          width: 280,
+          attrs: {
+            startPlaceholde: "回款金额起",
+            endPlaceholde: "回款金额止",
+            valueFormat: " - ",
+          },
+        },
+        {
           key: "keyword",
           attrs: {
-            placeholder: "订单金额",
+            placeholder: "学生姓名/手机号码",
             clearable: true,
           },
         },
       ],
     };
   },
-  activated() {
-    this.getCrmOrderList();
-  },
   created() {
+    this.getInstitutionOverviewList();
+    this.getproject();
     this.getCateList();
+    this.getCustomfieldOptions();
+    this.getGradeOptions();
+    this.getStaffList();
   },
   methods: {
+    // 业绩归属
+    async getStaffList() {
+      const data = {
+        limit: 99999,
+      };
+      const res = await getStaffList(data);
+      this.searchOptions[5].options = res.data.list;
+    },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.searchOptions[4].options = res.data;
+      }
+    },
+    // 获取项目下拉
+    async getproject() {
+      const res = await getproject();
+      if (res.code === 0) {
+        this.searchOptions[3].options = res.data;
+      }
+    },
+    // 获取客户来源
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "customer_source",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.coustomFrom = res.data.field_content;
+        this.searchOptions[1].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
+      }
+    },
     // 获取所属分类
     async getCateList() {
       const data = { list: true };
       const res = await getCateList(data);
       if (res.code === 0) {
-        this.searchOptions[1].attrs.options = cloneOptions(
+        this.searchOptions[2].attrs.options = cloneOptions(
           res.data,
           "category_name",
           "category_id",
@@ -384,52 +430,30 @@ export default {
     },
     handleSearch(data) {
       this.pageNum = 1;
-      const date = data.date || ["", ""];
+      const [start_date, end_date] = data.date || ["", ""];
       delete data.date;
       this.searchData = {
         ...data,
-        start_time: date[0],
-        end_time: date[1],
+        start_date,
+        end_date,
       };
-      this.getCrmOrderList(data);
+      this.getInstitutionOverviewList(data);
+    },
+    handleSizeChange(size) {
+      this.pageNum = 1;
+      this.pageSize = size;
+      this.getInstitutionOverviewList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.rebateList();
-    },
-    async rebateList() {
-      const data = {
-        page: this.pageNum,
-        limit: this.pageSize,
-        ...this.searchData,
-        from_organization_id:this.$route.query.institution_id,
-      };
-      this.listLoading = true;
-      const res = await rebateList(data);
-      this.listLoading = false;
-      this.listTotal = res.data.total;
-      this.listData = res.data.list;
-      console.log(this.listData);
-    },
-    toDetail(id){
-      this.$router.push({
-        name: "institutionalRebateDetail",
-        query: {
-        id,
-        },
-      })
-    },
-     handleSizeChange(size) {
-      this.pageNum = 1;
-      this.pageSize = size;
-      this.rebateList();
+      this.getInstitutionOverviewList();
     },
 
-     async getCrmOrderList() {
+    async getInstitutionOverviewList() {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
-        channel: 2,
+        org_id: this.$route.query.institution_id,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
@@ -448,13 +472,12 @@ export default {
           : "",
       };
       this.listLoading = true;
-      const res = await getCrmOrderList(data);
+      const res = await getInstitutionOverviewList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
-      this.panelData = res.data.count || {};
+      this.panelData = res.data.statistics || {};
     },
-
   },
 };
 </script>
@@ -498,13 +521,13 @@ export default {
     }
   }
 }
-.userTable{
+.userTable {
   margin-top: 20px;
 }
-.frame_bottom{
+.frame_bottom {
   display: flex;
   justify-content: space-between;
-  .frame_bottom_btn{
+  .frame_bottom_btn {
     margin-top: 20px;
   }
 }
