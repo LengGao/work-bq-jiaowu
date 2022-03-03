@@ -27,6 +27,24 @@
               style="width: 340px"
             ></el-input>
           </el-form-item>
+          <el-form-item label="所属部门" prop="department_id">
+            <el-select
+              style="width: 340px"
+              v-model="ruleForm.department_id"
+              filterable
+              clearable
+              placeholder="请选择"
+              multiple
+            >
+              <el-option
+                v-for="item in departMentOptions"
+                :key="item.id"
+                :label="item.title"
+                :value="item.id + ''"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
 
           <el-form-item label="上传合同" prop="template_url">
             <el-upload
@@ -82,6 +100,10 @@ export default {
         return {};
       },
     },
+    departMentOptions: {
+      type: Array,
+      default: () => [],
+    },
     id: {
       type: [String, Number],
       default: "",
@@ -104,6 +126,7 @@ export default {
         template_name: "",
         template_url: "",
         template_code: "",
+        department_id: [],
       },
       rules: {
         template_name: [
@@ -111,6 +134,9 @@ export default {
         ],
         template_url: [
           { required: true, message: "请选择文件", trigger: "blur" },
+        ],
+        department_id: [
+          { required: true, message: "请选择", trigger: "change" },
         ],
       },
       headers: {
@@ -124,30 +150,37 @@ export default {
       this.visible = val;
     },
   },
-  created() {},
   methods: {
+    handleOpen() {
+      if (this.contractInfo.id) {
+        for (var i in this.ruleForm) {
+          this.ruleForm[i] = this.contractInfo[i];
+        }
+        this.ruleForm.department_id =
+          this.contractInfo.department_id?.split(",") || [];
+      }
+    },
+
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      for (var k in this.ruleForm) {
-        this.ruleForm[k] = "";
-      }
+      this.ruleForm = {
+        id: "",
+        template_name: "",
+        template_url: "",
+        template_code: "",
+        department_id: [],
+      };
       this.fileList = [];
       this.hanldeCancel();
     },
-    handleOpen() {
-      if (this.contractInfo.id) {
-        for (var i in this.contractInfo) {
-          this.ruleForm[i] = this.contractInfo[i];
-        }
-      }
-    },
+
     //添加模板接口
     async templateadd() {
       const data = {
-        id: this.ruleForm.id,
         template_name: this.ruleForm.template_name,
         template_url: this.ruleForm.template_url,
         template_code: this.ruleForm.template_code,
+        department_id: this.ruleForm.department_id.join(","),
       };
       const res = await templateadd(data);
       console.log(res.data.data);
@@ -179,6 +212,7 @@ export default {
         id: this.ruleForm.id,
         template_name: this.ruleForm.template_name,
         template_url: this.ruleForm.template_url,
+        department_id: this.ruleForm.department_id.join(","),
         template_code: this.ruleForm.template_code,
       };
       console.log(data);

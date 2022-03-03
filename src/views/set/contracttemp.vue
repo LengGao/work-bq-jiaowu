@@ -5,29 +5,84 @@
     </div>
     <section class="mainwrap">
       <div class="client_head">
-        <SearchList :options="searchOptions" :data="searchData" @on-search="handleSearch" />
+        <SearchList
+          :options="searchOptions"
+          :data="searchData"
+          @on-search="handleSearch"
+        />
         <el-button type="primary" @click="addTemplatebtn">添加模板</el-button>
       </div>
 
       <!--表格-->
       <div class="userTable">
-        <el-table ref="multipleTable" :data="listData" tooltip-effect="light" stripe style="width: 100%;" :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }" class="min_table">
-          <el-table-column prop="id" label="id" min-width="150" column-key="id" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="template_code" label="模板code" min-width="150" column-key="ID" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="template_name" label="合同名称" min-width="200" column-key="template_name" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="update_time" label="上传时间" min-width="200" column-key="update_time" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="template_url" label="合同模板" fixed="right" min-width="200">
-            <template slot-scope="{row}">
-              <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="seetemplate(row)">查看模板</el-button>
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%"
+          :header-cell-style="{ 'text-align': 'center' }"
+          :cell-style="{ 'text-align': 'center' }"
+          class="min_table"
+        >
+          <el-table-column
+            prop="id"
+            label="id"
+            min-width="150"
+            column-key="id"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="template_code"
+            label="模板code"
+            min-width="150"
+            column-key="ID"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="template_name"
+            label="合同名称"
+            min-width="200"
+            column-key="template_name"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="department_name"
+            label="所属部门"
+            min-width="200"
+            column-key="template_name"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="update_time"
+            label="上传时间"
+            min-width="200"
+            column-key="update_time"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="template_url"
+            label="合同模板"
+            fixed="right"
+            min-width="100"
+          >
+            <template slot-scope="{ row }">
+              <div style="display: flex; justify-content: center">
+                <el-button type="text" @click="seetemplate(row)"
+                  >查看模板</el-button
+                >
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="200">
+          <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
-              <div style="display: flex; justify-content:center;">
-                <el-button type="text" @click="edittemplate(row)">编辑</el-button>
-                <el-button type="text" @click="deleteConfirm(row.id)">删除</el-button>
+              <div style="display: flex; justify-content: center">
+                <el-button type="text" @click="edittemplate(row)"
+                  >编辑</el-button
+                >
+                <el-button type="text" @click="deleteConfirm(row.id)"
+                  >删除</el-button
+                >
               </div>
             </template>
           </el-table-column>
@@ -35,24 +90,39 @@
           </el-pagination>
         </el-table>
         <div class="table_bottom">
-          <page :data="listTotal" :curpage="pageNum" @pageChange="handlePageChange" />
+          <page
+            :data="listTotal"
+            :curpage="pageNum"
+            @pageChange="handlePageChange"
+          />
         </div>
       </div>
 
-      <Addtemplate v-model="addtempdialog" :id="currentId" :title="dialogTitle" @on-success="templatelist" :contractInfo="contractInfo" />
+      <Addtemplate
+        v-model="addtempdialog"
+        :id="currentId"
+        :title="dialogTitle"
+        @on-success="templatelist"
+        :contractInfo="contractInfo"
+        :departMentOptions="departMentOptions"
+      />
 
-      <Seetemplate v-model="seetempdialog" :id="currentId" :template_url="template_url" />
-
+      <Seetemplate
+        v-model="seetempdialog"
+        :id="currentId"
+        :template_url="template_url"
+      />
     </section>
   </section>
 </template>
 
 <script>
-import { templatelist, templateedit, templatedel } from '@/api/system'
-import Addtemplate from './components/addtemplate'
-import Seetemplate from './components/seetemplate'
+import { templatelist, templateedit, templatedel } from "@/api/system";
+import { getDepartmentlists } from "@/api/set";
+import Addtemplate from "./components/addtemplate";
+import Seetemplate from "./components/seetemplate";
 export default {
-  name: 'contracttemp',
+  name: "contracttemp",
   components: {
     Addtemplate,
     Seetemplate,
@@ -60,73 +130,100 @@ export default {
   data() {
     return {
       contractInfo: {},
-      template_url: '',
-      currentId: '',
-      dialogTitle: '',
+      template_url: "",
+      currentId: "",
+      dialogTitle: "",
       addtempdialog: false,
       seetempdialog: false,
-      id: '',
+      id: "",
       searchOptions: [
         {
-          key: 'keyword',
+          key: "department_id",
+          type: "select",
+          width: 220,
+          options: [],
+          optionValue: "id",
+          optionLabel: "title",
           attrs: {
-            placeholder: '请输入合同名称',
+            placeholder: "部门名称",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
+          key: "keyword",
+          attrs: {
+            placeholder: "请输入合同名称",
             clearable: true,
           },
         },
       ],
       options: [],
       searchData: {
-        id: [],
-        keyword: '',
+        keyword: "",
+        department_id: [],
       },
       listTotal: 0,
       pageNum: 1,
       listData: [],
-    }
+      departMentOptions: [],
+    };
   },
   created() {
-    this.templatelist()
+    this.templatelist();
+    this.getDepartmentlists();
   },
   methods: {
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[0].options = this.departMentOptions = res.data;
+      }
+    },
     //搜索功能
     handleSearch(data) {
-      this.pageNum = 1
-      this.searchData = data
-      this.templatelist()
+      console.log(data);
+      this.pageNum = 1;
+      this.searchData = {
+        ...data,
+        department_id: data.department_id?.join(",") || "",
+      };
+      this.templatelist();
     },
     handlePageChange(val) {
-      this.pageNum = val
-      this.templatelist()
+      this.pageNum = val;
+      this.templatelist();
     },
     addTemplatebtn() {
-      this.contractInfo = {}
-      this.dialogTitle = '添加模板'
-      this.addtempdialog = true
-      this.currentId = ''
+      this.contractInfo = {};
+      this.dialogTitle = "添加模板";
+      this.addtempdialog = true;
+      this.currentId = "";
     },
     seetemplate(row) {
-      console.log(row)
-      this.seetempdialog = true
-      this.template_url = row.template_url
+      console.log(row);
+      this.seetempdialog = true;
+      this.template_url = row.template_url;
     },
     // 合同模板列表接口
     async templatelist() {
       const data = {
         page: this.pageNum,
         ...this.searchData,
-      }
-      const res = await templatelist(data)
-      console.log(res.data.data)
-      this.listData = res.data.data
-      this.listTotal = res.data.total
+      };
+      const res = await templatelist(data);
+      console.log(res.data.data);
+      this.listData = res.data.data;
+      this.listTotal = res.data.total;
     },
 
     edittemplate(row) {
-      this.dialogTitle = '编辑模板'
-      this.addtempdialog = true
+      this.dialogTitle = "编辑模板";
+      this.addtempdialog = true;
       // this.currentId = id
-      this.contractInfo = row
+      this.contractInfo = row;
     },
 
     // seetemplate(id) {
@@ -135,30 +232,30 @@ export default {
     // },
 
     deleteConfirm(id) {
-      this.$confirm('此操作将永久删除该通知, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("此操作将永久删除该通知, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.templatedel(id)
+          this.templatedel(id);
         })
-        .catch(() => {})
+        .catch(() => {});
     },
 
     // 删除模板接口
     async templatedel(id) {
       const data = {
         id,
-      }
-      const res = await templatedel(data)
+      };
+      const res = await templatedel(data);
       if (res.code === 0) {
-        this.$message.success(res.message)
-        this.templatelist()
+        this.$message.success(res.message);
+        this.templatelist();
       }
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
