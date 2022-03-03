@@ -99,21 +99,7 @@
         />
       </el-form-item>
       <el-form-item label="回款凭证" style="width: 90%">
-        <el-upload
-          :headers="headers"
-          :action="uploadImageUrl"
-          :on-remove="handleRemoveImg"
-          :before-remove="beforeRemoveImg"
-          :on-success="handleUploadSuccess"
-          :on-error="handleUploadError"
-          multiple
-          list-type="picture-card"
-          name="image"
-          accept="image/*"
-          :file-list="formData.receipt_file"
-        >
-          <i class="el-icon-plus" style="font-size: 14px"></i>
-        </el-upload>
+        <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
       <template v-if="detailData.type === 1">
         <el-table
@@ -468,6 +454,7 @@
 </template>
 
 <script>
+import ImgListUpload from "@/components/imgListUpload";
 import {
   getCrmOrderDetail,
   getCustomfieldOptions,
@@ -476,19 +463,15 @@ import {
 import { getStaffList } from "@/api/set";
 import SetCollectionRecord from "./components/SetCollectionRecord.vue";
 import SetCollectionPlan from "./components/SetCollectionPlan.vue";
-import { uploadImageUrl } from "@/api/educational";
 export default {
   name: "applyChange",
   components: {
     SetCollectionRecord,
     SetCollectionPlan,
+    ImgListUpload,
   },
   data() {
     return {
-      uploadImageUrl,
-      headers: {
-        token: this.$store.state.user.token,
-      },
       detailData: {
         pay_plan: [],
         pay_log: [],
@@ -537,19 +520,6 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
-    handleUploadError(response, file, fileList) {
-      this.$message.error("上传失败");
-    },
-    handleUploadSuccess(response, file, fileList) {
-      console.log(fileList);
-      this.formData.receipt_file = fileList;
-    },
-    handleRemoveImg(file, fileList) {
-      this.formData.receipt_file = fileList;
-    },
-    beforeRemoveImg(file) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
     hanldeCancel() {
       this.$router.back();
     },
@@ -686,15 +656,6 @@ export default {
     .footer-submit {
       text-align: center;
     }
-  }
-  /deep/.el-upload-list--picture-card .el-upload-list__item {
-    width: 60px;
-    height: 60px;
-  }
-  /deep/.el-upload--picture-card {
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
   }
 }
 </style>

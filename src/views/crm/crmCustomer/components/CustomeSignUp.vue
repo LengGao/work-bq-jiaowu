@@ -383,22 +383,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="回款凭证" style="margin-left: 40px">
-          <el-upload
-            class="upload"
-            :headers="headers"
-            :action="uploadImageUrl"
-            :on-remove="handleRemoveImg"
-            :before-remove="beforeRemoveImg"
-            :on-success="handleUploadSuccess"
-            :on-error="handleUploadError"
-            multiple
-            name="image"
-            accept="image/*"
-            list-type="picture-card"
-            :file-list="formData.receipt_file"
-          >
-            <i class="el-icon-plus" style="font-size: 14px"></i>
-          </el-upload>
+          <ImgListUpload v-model="formData.receipt_file" />
         </el-form-item>
       </div>
     </el-form>
@@ -422,13 +407,13 @@
 </template>
 
 <script>
-import { uploadImageUrl } from "@/api/educational";
 import { createCrmOrder, getCustomfieldOptions } from "@/api/crm";
 import { getStaffList } from "@/api/set";
 import { getUniversityMajorDetailList, getGradeOptions } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 import AddCollectionPlan from "@/views/crm/crmOrder/components/AddCollectionPlan";
 import { today } from "@/utils/date";
+import ImgListUpload from "@/components/imgListUpload";
 export default {
   name: "CustomeSignUp",
   props: {
@@ -443,14 +428,11 @@ export default {
   },
   components: {
     AddCollectionPlan,
+    ImgListUpload,
   },
   data() {
     return {
       visible: this.value,
-      uploadImageUrl,
-      headers: {
-        token: this.$store.state.user.token,
-      },
       formData: {
         surname: "",
         mobile: "",
@@ -603,18 +585,7 @@ export default {
         this.gradeOptions = res.data;
       }
     },
-    handleUploadError(response, file, fileList) {
-      this.$message.error("上传失败");
-    },
-    handleUploadSuccess(response, file, fileList) {
-      this.formData.receipt_file = fileList;
-    },
-    handleRemoveImg(file, fileList) {
-      this.formData.receipt_file = fileList;
-    },
-    beforeRemoveImg(file) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
+
     openPlanDialog() {
       this.planDialogData = [...this.planOptions];
       this.planDialogVisible = true;
@@ -846,17 +817,6 @@ export default {
   width: 100%;
   /deep/.el-form-item__content {
     width: 80%;
-  }
-}
-.upload {
-  /deep/.el-upload-list--picture-card .el-upload-list__item {
-    width: 60px;
-    height: 60px;
-  }
-  /deep/.el-upload--picture-card {
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
   }
 }
 </style>

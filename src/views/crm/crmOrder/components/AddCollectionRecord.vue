@@ -70,21 +70,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="回款凭证">
-        <el-upload
-          :headers="headers"
-          :action="uploadImageUrl"
-          :on-remove="handleRemoveImg"
-          :before-remove="beforeRemoveImg"
-          :on-success="handleUploadSuccess"
-          :on-error="handleUploadError"
-          multiple
-          list-type="picture-card"
-          name="image"
-          accept="image/*"
-          :file-list="formData.receipt_file"
-        >
-          <i class="el-icon-plus" style="font-size: 14px"></i>
-        </el-upload>
+        <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
       <el-form-item label="备注" prop="tips">
         <el-input
@@ -109,9 +95,12 @@
 
 <script>
 import { payLogCreate, getCustomfieldOptions } from "@/api/crm";
-import { uploadImageUrl } from "@/api/educational";
+import ImgListUpload from "@/components/imgListUpload";
 export default {
   name: "AddCollectionRecord",
+  components: {
+    ImgListUpload,
+  },
   props: {
     value: {
       type: Boolean,
@@ -132,10 +121,6 @@ export default {
   },
   data() {
     return {
-      uploadImageUrl,
-      headers: {
-        token: this.$store.state.user.token,
-      },
       visible: this.value,
       payMethodOptions: [],
       formData: {
@@ -163,19 +148,7 @@ export default {
     handleOpen() {
       this.getCustomfieldOptions();
     },
-    handleUploadError(response, file, fileList) {
-      this.$message.error("上传失败");
-    },
-    handleUploadSuccess(response, file, fileList) {
-      console.log(fileList);
-      this.formData.receipt_file = fileList;
-    },
-    handleRemoveImg(file, fileList) {
-      this.formData.receipt_file = fileList;
-    },
-    beforeRemoveImg(file) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
+
     // 获取支付方式
     async getCustomfieldOptions() {
       const data = {
@@ -237,15 +210,6 @@ export default {
 .add-collection-dialog {
   .input {
     width: 217px;
-  }
-  /deep/.el-upload-list--picture-card .el-upload-list__item {
-    width: 60px;
-    height: 60px;
-  }
-  /deep/.el-upload--picture-card {
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
   }
 }
 </style>
