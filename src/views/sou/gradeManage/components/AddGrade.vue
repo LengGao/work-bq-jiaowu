@@ -16,7 +16,20 @@
       ref="formData"
     >
       <el-form-item label="届别名称" prop="title">
-        <el-input v-model="formData.title" placeholder="请输入届别名称" />
+        <el-input
+          style="width: 217px"
+          v-model="formData.title"
+          placeholder="请输入届别名称"
+        />
+      </el-form-item>
+      <el-form-item label="所属分类" prop="category_id">
+        <el-cascader
+          filterable
+          clearable
+          v-model="formData.category_id"
+          :options="categoryOptions"
+          :props="{ checkStrictly: true }"
+        ></el-cascader>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -40,6 +53,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    categoryOptions: {
+      type: Array,
+      default: () => [],
+    },
     editData: {
       type: Object,
       default: () => ({}),
@@ -50,9 +67,11 @@ export default {
       addLoading: false,
       formData: {
         title: "",
+        category_id: "",
       },
       rules: {
         title: [{ required: true, message: "请输入", trigger: "blur" }],
+        category_id: [{ required: true, message: "请选择", trigger: "change" }],
       },
     };
   },
@@ -65,12 +84,15 @@ export default {
     handleOpen() {
       if (this.isEdit) {
         this.formData.title = this.editData.title;
+        this.formData.category_id = [this.editData.category_id];
       }
     },
 
     async submit() {
+      const { category_id } = this.formData;
       const data = {
         ...this.formData,
+        category_id: [...category_id].pop(),
       };
       let requestApi = addGrade;
       if (this.isEdit) {

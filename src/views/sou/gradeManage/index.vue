@@ -34,9 +34,17 @@
             width="70"
           >
           </el-table-column>
+
           <el-table-column
             prop="title"
             label="届别名称"
+            min-width="200"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
             min-width="200"
             show-overflow-tooltip
           >
@@ -88,6 +96,7 @@
     <AddGrade
       v-model="dialogVisible"
       :edit-data="editData"
+      :category-options="categoryOptions"
       @success="getGradeList"
     />
   </section>
@@ -95,7 +104,8 @@
 
 <script>
 import AddGrade from "./components/AddGrade";
-import { getGradeList, delGrade, updateGrade } from "@/api/sou";
+import { getGradeList, delGrade, updateGrade, getCateList } from "@/api/sou";
+import { cloneOptions } from "@/utils/index";
 export default {
   name: "gradeManage",
   components: {
@@ -113,6 +123,17 @@ export default {
       },
       searchOptions: [
         {
+          key: "category_id",
+          type: "cascader",
+          attrs: {
+            placeholder: "所属分类",
+            props: { checkStrictly: true },
+            filterable: true,
+            clearable: true,
+            options: [],
+          },
+        },
+        {
           key: "search_box",
           attrs: {
             placeholder: "届别名称",
@@ -121,15 +142,23 @@ export default {
       ],
       dialogVisible: false,
       editData: {},
+      categoryOptions: [],
     };
-  },
-  activated() {
-    this.getGradeList();
   },
   created() {
     this.getGradeList();
+    this.getCateList();
   },
   methods: {
+    // 获取分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[0].attrs.options = this.categoryOptions =
+          cloneOptions(res.data, "category_name", "category_id", "son");
+      }
+    },
     // 添加，编辑
     openAddDialog(row = {}) {
       this.editData = row;
@@ -169,6 +198,7 @@ export default {
       this.pageNum = 1;
       this.searchData = {
         ...data,
+        category_id: data.category_id.pop(),
       };
       this.getGradeList();
     },
