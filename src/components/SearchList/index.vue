@@ -21,7 +21,7 @@
             v-for="(option, oIndex) in item.options"
             :key="oIndex"
             :value="option[item.optionValue || 'value']"
-            :label="option[item.optionLabel || 'label']"
+            :label="getLabel(option, item)"
           >
           </el-option>
         </template>
@@ -67,6 +67,17 @@ export default {
     this.initData();
   },
   methods: {
+    getLabel(option, item) {
+      if (item.optionLabel && ~item.optionLabel.indexOf(",")) {
+        const [k1, k2] = item.optionLabel.split(",");
+        const label1 = option[k1];
+        const label2 = option[k2];
+        if (label1 && label2) return `${label1} - ${label2}`;
+        if (label1) return label1;
+        return label2;
+      }
+      return option[item.optionLabel || "label"];
+    },
     computeWidth(width, isDate) {
       if (width) {
         return typeof width === "number" ? width + "px" : width;

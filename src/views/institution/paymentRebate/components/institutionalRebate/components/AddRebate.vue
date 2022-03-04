@@ -367,10 +367,9 @@ export default {
         {
           key: "jiebie_id",
           type: "select",
-          width: 120,
           options: [],
           optionValue: "id",
-          optionLabel: "title",
+          optionLabel: "category_name,title",
           attrs: {
             placeholder: "届别名称",
             clearable: true,
