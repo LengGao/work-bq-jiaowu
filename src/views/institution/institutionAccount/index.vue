@@ -11,7 +11,7 @@
         />
         <div>
           <el-button @click="openDockingDialog">学生对接</el-button>
-          <el-button type="primary" @click="handleAdd">添加机构</el-button>
+          <el-button type="primary" @click="handleStepAdd">添加机构</el-button>
         </div>
       </div>
       <!--表格-->
@@ -242,6 +242,10 @@
       :ids="checkedIds"
       @on-success="getInstitutionList"
     />
+    <AddInstitutionStepDialog
+      v-model="stepAddDialog"
+      @on-success="getInstitutionList"
+    />
   </div>
 </template>
 
@@ -256,12 +260,14 @@ import { getShortcuts } from "@/utils/date";
 import InstitutionDialog from "./components/InstitutionDialog";
 import DockingDialog from "./components/DockingDialog";
 import RechargeDialog from "./components/RechargeDialog";
+import AddInstitutionStepDialog from "./addInstitutionStep/index";
 export default {
   name: "institutionAccount",
   components: {
     InstitutionDialog,
     RechargeDialog,
     DockingDialog,
+    AddInstitutionStepDialog,
   },
   data() {
     return {
@@ -303,6 +309,7 @@ export default {
       currentData: {},
       checkedIds: [],
       dockingDialog: false,
+      stepAddDialog: false,
     };
   },
 
@@ -370,10 +377,8 @@ export default {
       this.dialogTitle = "编辑机构";
       this.dialogVisible = true;
     },
-    handleAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加机构";
-      this.dialogVisible = true;
+    handleStepAdd() {
+      this.stepAddDialog = true;
     },
     linkTo(name, query) {
       this.$router.push({
