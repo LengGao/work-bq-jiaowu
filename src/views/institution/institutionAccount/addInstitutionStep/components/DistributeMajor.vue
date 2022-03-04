@@ -19,7 +19,7 @@
         background: '#f8f8f8',
       }"
       @selection-change="handleSelection"
-      height="520"
+      height="428"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
       <el-table-column
@@ -146,7 +146,7 @@
       <el-button @click="handlePrev">上一步</el-button>
       <el-button class="cancel" @click="hanldeClose">取 消</el-button>
       <el-button type="primary" :loading="addLoading" @click="assignUniversity"
-        >添 加</el-button
+        >下一步</el-button
       >
     </div>
   </div>
@@ -154,9 +154,20 @@
 
 <script>
 import { universityMajorDetailList, assignUniversity } from "@/api/crm";
+import {
+  getUniversityOptions,
+  getUniversityLevelOptions,
+  getUniversityMajorOptions,
+} from "@/api/sou";
+import { universityTypeSelect } from "@/api/crm";
 export default {
   name: "DistributeMajor",
+
   props: {
+    institutionId: {
+      type: [String, Number],
+      default: "",
+    },
     value: {
       type: Boolean,
       default: false,
@@ -243,13 +254,41 @@ export default {
       selection: [],
     };
   },
+  created() {
+    this.universityMajorDetailList();
+    this.universityTypeSelect();
+    this.getUniversityOptions();
+    this.getUniversityLevelOptions();
+    this.getUniversityMajorOptions();
+  },
   methods: {
-    handleOpen() {
-      this.searchOptions[0].options = this.typeOptions;
-      this.searchOptions[1].options = this.universityOptions;
-      this.searchOptions[2].options = this.universityLevelOptions;
-      this.searchOptions[3].options = this.universityMajorOptions;
-      this.universityMajorDetailList();
+    // 获取分类
+    async universityTypeSelect() {
+      const res = await universityTypeSelect();
+      if (res.code === 0) {
+        this.searchOptions[0].options = res.data;
+      }
+    },
+    // 获取院校
+    async getUniversityOptions() {
+      const res = await getUniversityOptions();
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
+      }
+    },
+    // 获取层次
+    async getUniversityLevelOptions() {
+      const res = await getUniversityLevelOptions();
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data;
+      }
+    },
+    // 获取专业
+    async getUniversityMajorOptions() {
+      const res = await getUniversityMajorOptions();
+      if (res.code === 0) {
+        this.searchOptions[3].options = res.data;
+      }
     },
     handleSelection(selection) {
       this.selection = selection;
@@ -292,6 +331,8 @@ export default {
     },
     // 分发
     async assignUniversity() {
+      this.$emit("next");
+      return;
       if (!this.selection.length) {
         this.$message.warning("请选择院校专业");
         return;
@@ -309,7 +350,7 @@ export default {
         }
       );
       const data = {
-        org_arr: [this.$route.query.institution_id],
+        org_arr: [this.institutionId],
         id_arr,
       };
       localStorage.setItem("majorPrice", JSON.stringify(id_arr));

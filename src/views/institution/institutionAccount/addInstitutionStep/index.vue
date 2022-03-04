@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="`届别`"
+    title="添加机构"
     :visible="value"
     width="80%"
     @open="handleOpen"
@@ -15,14 +15,16 @@
       <el-step title="对接老师"></el-step>
       <el-step title="添加用户"></el-step>
     </el-steps>
-    <component
-      :is="getComponent"
-      :institutionId="institutionId"
-      @close="hanldeClose"
-      @next="handleNext"
-      @prev="handlePrev"
-      @id-change="handleIdChange"
-    />
+    <div class="component-wrap">
+      <component
+        :is="getComponent"
+        :institutionId="institutionId"
+        @close="hanldeClose"
+        @next="handleNext"
+        @prev="handlePrev"
+        @id-change="handleIdChange"
+      />
+    </div>
   </el-dialog>
 </template>
 
@@ -42,6 +44,8 @@ export default {
         0: "BasicInfo",
         1: "DistributeProject",
         2: "DistributeMajor",
+        3: "Counterpart",
+        4: "AddInstitutionUser",
       },
       institutionId: "",
     };
@@ -78,6 +82,9 @@ export default {
 <style lang="less" scoped>
 /deep/.el-steps {
   margin-bottom: 16px;
+}
+.component-wrap {
+  min-height: 590px;
 }
 </style>
 

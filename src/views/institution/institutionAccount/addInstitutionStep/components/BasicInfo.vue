@@ -1,6 +1,5 @@
 <template>
-  <!--添加编辑机构弹窗-->
-  <div>
+  <div class="basic-info">
     <el-form
       label-width="100px"
       :model="formData"
@@ -77,9 +76,9 @@ import {
   getInstitutionDetail,
 } from "@/api/institution";
 export default {
-  name: "institutionDialog",
+  name: "BasicInfo",
   props: {
-    id: {
+    institutionId: {
       type: [String, Number],
       default: "",
     },
@@ -111,13 +110,13 @@ export default {
       },
     };
   },
+  created() {
+    this.getRegionOptions();
+    this.institutionId && this.getInstitutionDetail();
+  },
   methods: {
-    handleOpen() {
-      this.getRegionOptions();
-      this.id && this.getInstitutionDetail();
-    },
     async getInstitutionDetail() {
-      const data = { institution_id: this.id };
+      const data = { institution_id: this.institutionId };
       const res = await getInstitutionDetail(data);
       if (res.code === 0) {
         this.formData.institution_name = res.data.institution_name;
@@ -149,10 +148,10 @@ export default {
         h5: +this.formData.items.includes(2),
         small_program: +this.formData.items.includes(1),
       };
-      if (this.id) {
-        data.institution_id = this.id;
+      if (this.institutionId) {
+        data.institution_id = this.institutionId;
       }
-      const api = this.id ? modifyInstitution : createInstitution;
+      const api = this.institutionId ? modifyInstitution : createInstitution;
       this.addLoading = true;
       const res = await api(data).catch(() => {
         this.addLoading = false;
@@ -160,13 +159,10 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.visible = false;
         this.$emit("next");
       }
     },
     submitForm(formName) {
-      this.$emit("next");
-      return;
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submit();
@@ -188,6 +184,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.basic-info {
+  .el-form {
+    width: 600px;
+    height: 550px;
+  }
+}
 .address {
   display: flex;
   .detailed {

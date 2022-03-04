@@ -27,7 +27,7 @@
           background: '#f8f8f8',
         }"
         @selection-change="handleSelection"
-        height="520"
+        height="399"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
@@ -93,7 +93,12 @@ import { getCateList } from "@/api/sou";
 import { getProjectOrgList, sendClassType } from "@/api/crm";
 export default {
   name: "DistributeProject",
-  props: {},
+  props: {
+    institutionId: {
+      type: [String, Number],
+      default: "",
+    },
+  },
   data() {
     return {
       listData: [],
@@ -159,9 +164,8 @@ export default {
       const arr = this.selection.map((item) => ({
         [item.id]: item[item.id],
       }));
-      console.log(arr);
       const data = {
-        from_organization_id: this.$route.query?.institution_id,
+        from_organization_id: this.institutionId,
         project: JSON.stringify(arr),
       };
       this.submitLoading = true;
@@ -199,7 +203,7 @@ export default {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
-        org_id: this.$route.query?.institution_id,
+        org_id: this.institutionId,
         ...this.searchData,
       };
       this.listLoading = true;
