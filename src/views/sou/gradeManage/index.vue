@@ -183,11 +183,12 @@ export default {
       }
     },
     // 修改排序
-    async handleUpdateSort({ id, title, sort }) {
+    async handleUpdateSort({ id, title, sort, category_id }) {
       const data = {
         id,
         title,
         sort,
+        category_id,
       };
       const res = await updateGrade(data);
       if (res.code === 0) {
