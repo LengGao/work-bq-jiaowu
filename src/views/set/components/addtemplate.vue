@@ -35,12 +35,15 @@
               clearable
               placeholder="请选择"
               multiple
+              @change="handleDepartmentChange"
             >
+              <el-option label="全部" value="0"> </el-option>
               <el-option
                 v-for="item in departMentOptions"
                 :key="item.id"
                 :label="item.title"
                 :value="item.id + ''"
+                :disabled="ruleForm.department_id.includes('0')"
               >
               </el-option>
             </el-select>
@@ -160,7 +163,15 @@ export default {
           this.contractInfo.department_id?.split(",") || [];
       }
     },
-
+    handleDepartmentChange() {
+      if (
+        this.ruleForm.department_id &&
+        this.ruleForm.department_id.includes("0") &&
+        this.ruleForm.department_id.length > 1
+      ) {
+        this.ruleForm.department_id = ["0"];
+      }
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.ruleForm = {
