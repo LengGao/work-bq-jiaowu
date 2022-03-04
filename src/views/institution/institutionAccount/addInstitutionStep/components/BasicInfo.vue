@@ -57,15 +57,15 @@
         />
       </el-form-item>
     </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="hanldeCancel">取 消</el-button>
+    <div class="actions">
+      <el-button class="cancel" @click="hanldeCancel">取 消</el-button>
       <el-button
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >确 定</el-button
+        >下一步</el-button
       >
-    </span>
+    </div>
   </div>
 </template>
 
@@ -161,10 +161,12 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.visible = false;
-        this.$emit("success");
+        this.$emit("next");
       }
     },
     submitForm(formName) {
+      this.$emit("next");
+      return;
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submit();
@@ -191,6 +193,12 @@ export default {
   .detailed {
     margin-left: 20px;
     flex: 1;
+  }
+}
+.actions {
+  display: flex;
+  .cancel {
+    margin-left: auto;
   }
 }
 </style>

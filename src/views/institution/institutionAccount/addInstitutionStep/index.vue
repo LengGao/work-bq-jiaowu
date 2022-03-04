@@ -2,10 +2,11 @@
   <el-dialog
     :title="`届别`"
     :visible="value"
-    width="800px"
+    width="80%"
     @open="handleOpen"
     :close-on-click-modal="false"
     @close="hanldeClose"
+    top="5vh"
   >
     <el-steps :active="activeStep" align-center>
       <el-step title="基本信息"></el-step>
@@ -18,6 +19,8 @@
       :is="getComponent"
       :institutionId="institutionId"
       @close="hanldeClose"
+      @next="handleNext"
+      @prev="handlePrev"
       @id-change="handleIdChange"
     />
   </el-dialog>
@@ -34,16 +37,18 @@ export default {
   },
   data() {
     return {
-      activeStep: 1,
+      activeStep: 0,
       componentNameMap: {
-        1: "BasicInfo",
+        0: "BasicInfo",
+        1: "DistributeProject",
+        2: "DistributeMajor",
       },
       institutionId: "",
     };
   },
   computed: {
     getComponent() {
-      if (this.activeStep) {
+      if (this.activeStep > -1) {
         return () =>
           import(`./components/${this.componentNameMap[this.activeStep]}.vue`);
       }
@@ -53,12 +58,18 @@ export default {
     handleIdChange(id) {
       this.institutionId = id;
     },
+    handleNext() {
+      this.activeStep < 4 && this.activeStep++;
+    },
+    handlePrev() {
+      this.activeStep > 0 && this.activeStep--;
+    },
     handleOpen() {},
     hanldeClose() {
       this.$emit("input", false);
-      this.activeStep = 0;
+      this.activeStep = -1;
       this.$nextTick(() => {
-        this.activeStep = 1;
+        this.activeStep = 0;
       });
     },
   },

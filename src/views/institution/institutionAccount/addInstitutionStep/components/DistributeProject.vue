@@ -1,14 +1,5 @@
 <template>
-  <el-dialog
-    class="distribute-project"
-    title="添加项目"
-    :visible.sync="visible"
-    :close-on-click-modal="false"
-    width="1200px"
-    @open="handleOpen"
-    @closed="handleColse"
-    top="5vh"
-  >
+  <div class="distribute-project">
     <div class="container">
       <div class="tab-search">
         <SearchList
@@ -88,25 +79,21 @@
       </div>
     </div>
     <div class="container-actions">
+      <el-button @click="handlePrev" class="prev">上一步</el-button>
       <el-button @click="handleColse">取消</el-button>
       <el-button type="primary" :loading="submitLoading" @click="sendClassType"
-        >添 加</el-button
+        >下一步</el-button
       >
     </div>
-  </el-dialog>
+  </div>
 </template>
 <script>
 import { cloneOptions } from "@/utils/index";
 import { getCateList } from "@/api/sou";
 import { getProjectOrgList, sendClassType } from "@/api/crm";
 export default {
-  name: "addProject",
-  props: {
-    value: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  name: "DistributeProject",
+  props: {},
   data() {
     return {
       listData: [],
@@ -140,13 +127,7 @@ export default {
       classTypes: [],
       selection: [],
       submitLoading: false,
-      visible: this.visible,
     };
-  },
-  watch: {
-    value(val) {
-      this.visible = val;
-    },
   },
   created() {
     this.getProjectOrgList();
@@ -162,13 +143,15 @@ export default {
       });
     },
     handleColse() {
-      this.$emit("input", false);
+      this.$emit("close");
     },
-    handleOpen() {
-      this.getProjectOrgList();
+    handlePrev() {
+      this.$emit("prev");
     },
     // 分发
     async sendClassType() {
+      this.$emit("next");
+      return;
       if (!this.selection.length) {
         this.$message.warning("请选择项目");
         return;
@@ -236,7 +219,6 @@ export default {
           ...item,
         };
       });
-      console.log(this.listData);
     },
     // 获取教材分类
     async getCateList() {
@@ -273,7 +255,10 @@ export default {
   }
   .container {
     &-actions {
-      text-align: right;
+      display: flex;
+      .prev {
+        margin-right: auto;
+      }
     }
   }
 }
