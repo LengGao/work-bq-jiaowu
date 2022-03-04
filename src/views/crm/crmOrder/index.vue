@@ -692,7 +692,7 @@ export default {
       this.sign_url = row.sign_url;
     },
     seebtn(row) {
-      this.templatelist();
+      this.templatelist(row.admin_id);
       this.templateId = "";
       this.orderId = row.order_id;
       this.dialogVisible = true;
@@ -736,8 +736,11 @@ export default {
       }
     },
     // 合同模板列表接口
-    async templatelist() {
-      const res = await templatelist();
+    async templatelist(admin_id) {
+      const data = {
+        admin_id,
+      };
+      const res = await templatelist(data);
       if (res.code == 0) {
         this.dictOptions = res.data.data;
         console.log(this.dictOptions);
