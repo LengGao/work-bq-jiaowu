@@ -104,7 +104,7 @@
 
 <script>
 import AddGrade from "./components/AddGrade";
-import { getGradeList, delGrade, updateGrade, getCateList } from "@/api/sou";
+import { getGradeList, delGrade, sessionSort, getCateList } from "@/api/sou";
 import { cloneOptions } from "@/utils/index";
 export default {
   name: "gradeManage",
@@ -183,14 +183,12 @@ export default {
       }
     },
     // 修改排序
-    async handleUpdateSort({ id, title, sort, category_id }) {
+    async handleUpdateSort({ id, sort }) {
       const data = {
         id,
-        title,
         sort,
-        category_id,
       };
-      const res = await updateGrade(data);
+      const res = await sessionSort(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getGradeList();

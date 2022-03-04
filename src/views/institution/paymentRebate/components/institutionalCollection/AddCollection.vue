@@ -602,8 +602,11 @@ export default {
         },
         {
           key: "user_name",
+          width: 600,
           attrs: {
-            placeholder: "客户姓名",
+            placeholder: "输入多个姓名时，可用空格隔开",
+            type: "textarea",
+            autosize: { minRows: 1, maxRows: 4 },
           },
         },
       ],

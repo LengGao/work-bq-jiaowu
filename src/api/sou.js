@@ -1537,3 +1537,11 @@ export function updateProjectStatus(data) {
     data,
   })
 }
+// 届别排序
+export function sessionSort(data) {
+  return request({
+    url: '/Crm/sessionSort',
+    method: 'post',
+    data,
+  })
+}
