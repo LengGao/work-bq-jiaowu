@@ -65,6 +65,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -86,6 +87,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         category_id: [],
@@ -125,6 +127,11 @@ export default {
       this.searchData = data;
       this.getstoragebook();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getstoragebook();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getstoragebook();
@@ -153,6 +160,7 @@ export default {
       const data = {
         storage_id: this.$route.query.id,
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
       };

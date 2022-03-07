@@ -35,7 +35,7 @@
         <el-table-column
           prop="book_name"
           label="教材名称"
-          min-width="110"
+          min-width="220"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column

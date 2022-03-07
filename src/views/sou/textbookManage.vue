@@ -106,6 +106,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -137,6 +138,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         category_id: [],
@@ -215,6 +217,11 @@ export default {
       this.searchData = data;
       this.getBookList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getBookList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getBookList();
@@ -222,6 +229,7 @@ export default {
     async getBookList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
       };

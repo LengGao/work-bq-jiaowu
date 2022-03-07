@@ -3,7 +3,7 @@
   <el-dialog
     title="调拨"
     :visible.sync="visible"
-    width="1000px"
+    width="80%"
     top="30px"
     class="allocation-storage"
     @open="handleOpen"
@@ -34,7 +34,7 @@
         <el-table-column
           prop="book_name"
           label="教材名称"
-          min-width="110"
+          min-width="200"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
@@ -118,10 +118,11 @@
       </div>
       <div class="table_bottom">
         <page
-          :pageSize="10"
+          :pageSize="pageSize"
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -182,6 +183,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         category_id: [],
@@ -294,6 +296,11 @@ export default {
       this.searchData = data;
       this.getstoragebook();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getstoragebook();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getstoragebook();
@@ -303,7 +310,7 @@ export default {
       const data = {
         storage_id: this.id,
         page: this.pageNum,
-        limit: 10,
+        limit: this.pageSize,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
       };

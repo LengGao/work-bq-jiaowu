@@ -78,6 +78,7 @@
         :data="listTotal"
         :curpage="pageNum"
         @pageChange="handlePageChange"
+        @pageSizeChange="handleSizeChange"
       />
     </div>
   </section>
@@ -96,6 +97,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
@@ -164,11 +166,17 @@ export default {
       this.pageNum = val;
       this.getstoragelog();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getstoragelog();
+    },
     async getstoragelog() {
       const date = this.searchData.date || [];
       const data = {
         storage_id: this.$route.query.id,
         page: this.pageNum,
+        limit: this.pageSize,
         keyword: this.searchData.keyword,
         type: this.searchData.type,
         start_time: date[0] || "",

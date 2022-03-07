@@ -88,6 +88,7 @@
             :data="listTotal"
             :curpage="pageNum"
             @pageChange="handlePageChange"
+            @pageSizeChange="handleSizeChange"
           />
         </div>
       </div>
@@ -139,6 +140,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         organization_id: [],
@@ -234,9 +236,15 @@ export default {
       this.pageNum = val;
       this.getStorageList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getStorageList();
+    },
     async getStorageList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
         organization_id: this.searchData.organization_id.pop(),
       };
