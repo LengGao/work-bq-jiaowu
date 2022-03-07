@@ -3,7 +3,7 @@
   <el-dialog
     title="入库"
     :visible.sync="visible"
-    width="1000px"
+    width="80%"
     top="30px"
     class="put-in-storage"
     @open="handleOpen"
@@ -29,6 +29,7 @@
         :header-cell-style="{ 'text-align': 'center' }"
         :cell-style="{ 'text-align': 'center' }"
         @selection-change="handleAllSelect"
+        height="550"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
@@ -97,6 +98,7 @@
           :data="listTotal"
           :curpage="pageNum"
           @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
         />
       </div>
     </div>
@@ -139,6 +141,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         category_id: [],
@@ -242,6 +245,11 @@ export default {
       this.searchData = data;
       this.getBookList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.pageNum = 1;
+      this.getBookList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getBookList();
@@ -250,7 +258,7 @@ export default {
       this.selection = [];
       const data = {
         page: this.pageNum,
-        limit: 10,
+        limit: this.pageSize,
         ...this.searchData,
         category_id: this.searchData.category_id.pop(),
       };
