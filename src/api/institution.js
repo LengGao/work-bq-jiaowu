@@ -73,6 +73,14 @@ export function createInstitutionUser(data) {
         data,
     })
 }
+// 机构用户批量添加
+export function batchCreateInstitutionUser(data) {
+    return request({
+        url: 'OrganizationAccount/addAccount',
+        method: 'post',
+        data,
+    })
+}
 // 机构用户列表-修改
 export function modifyInstitutionUser(data) {
     return request({
