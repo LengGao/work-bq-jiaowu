@@ -3,16 +3,13 @@
   <div class="student-docking">
     <!--表格-->
     <el-table
-      ref="multipleTable"
       :data="listData"
-      style="width: 100%"
-      class="min_table"
       v-loading="listLoading"
       element-loading-text="loading"
       element-loading-spinner="el-icon-loading"
       element-loading-background="#fff"
       :header-cell-style="{ 'text-align': 'center' }"
-      height="550"
+      max-height="534"
     >
       <el-table-column
         label="分类ID"
@@ -118,9 +115,11 @@ import {
 } from "@/api/institution";
 export default {
   name: "Counterpart",
-  institutionId: {
-    type: [String, Number],
-    default: "",
+  props: {
+    institutionId: {
+      type: [String, Number],
+      default: "",
+    },
   },
   data() {
     return {
@@ -198,16 +197,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-/deep/.el-table__header th,
-.el-table__header tr {
-  background-color: #f8f8f8;
-  color: #909399;
-}
-.institution-user-manage {
-  padding: 20px;
-}
+<style lang="less" scoped>
 .actions {
+  margin-top: 16px;
   display: flex;
   .cancel {
     margin-left: auto;

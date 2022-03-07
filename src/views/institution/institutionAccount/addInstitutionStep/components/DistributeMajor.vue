@@ -331,8 +331,6 @@ export default {
     },
     // 分发
     async assignUniversity() {
-      this.$emit("next");
-      return;
       if (!this.selection.length) {
         this.$message.warning("请选择院校专业");
         return;
@@ -359,8 +357,7 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("success");
-        this.hanldeClose();
+        this.$emit("next");
       }
     },
     handlePrev() {

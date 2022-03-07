@@ -159,6 +159,9 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
+        if (!this.institutionId) {
+          this.$emit("id-change", res.data.institution_id);
+        }
         this.$emit("next");
       }
     },

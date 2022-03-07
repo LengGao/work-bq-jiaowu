@@ -16,14 +16,16 @@
       <el-step title="添加用户"></el-step>
     </el-steps>
     <div class="component-wrap">
-      <component
-        :is="getComponent"
-        :institutionId="institutionId"
-        @close="hanldeClose"
-        @next="handleNext"
-        @prev="handlePrev"
-        @id-change="handleIdChange"
-      />
+      <keep-alive :include="cacheComponent">
+        <component
+          :is="getComponent"
+          :institutionId="institutionId"
+          @close="hanldeClose"
+          @next="handleNext"
+          @prev="handlePrev"
+          @id-change="handleIdChange"
+        />
+      </keep-alive>
     </div>
   </el-dialog>
 </template>
@@ -40,6 +42,7 @@ export default {
   data() {
     return {
       activeStep: 0,
+      cacheComponent: "AddInstitutionUser",
       componentNameMap: {
         0: "BasicInfo",
         1: "DistributeProject",
@@ -68,13 +71,15 @@ export default {
     handlePrev() {
       this.activeStep > 0 && this.activeStep--;
     },
-    handleOpen() {},
+    handleOpen() {
+      this.activeStep = 0;
+      this.cacheComponent = "AddInstitutionUser";
+    },
     hanldeClose() {
       this.$emit("input", false);
       this.activeStep = -1;
-      this.$nextTick(() => {
-        this.activeStep = 0;
-      });
+      this.cacheComponent = "";
+      this.institutionId = "";
     },
   },
 };

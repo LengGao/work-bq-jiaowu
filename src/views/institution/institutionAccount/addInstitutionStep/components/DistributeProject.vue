@@ -80,7 +80,7 @@
     </div>
     <div class="container-actions">
       <el-button @click="handlePrev" class="prev">上一步</el-button>
-      <el-button @click="handleColse">取消</el-button>
+      <el-button @click="handleColse">取 消</el-button>
       <el-button type="primary" :loading="submitLoading" @click="sendClassType"
         >下一步</el-button
       >
@@ -155,8 +155,6 @@ export default {
     },
     // 分发
     async sendClassType() {
-      this.$emit("next");
-      return;
       if (!this.selection.length) {
         this.$message.warning("请选择项目");
         return;
@@ -172,9 +170,8 @@ export default {
       const res = await sendClassType(data).catch(() => {});
       this.submitLoading = false;
       if (res.code === 0) {
-        this.visible = false;
         this.$message.success(res.message);
-        this.$emit("success");
+        this.$emit("next");
       }
     },
 

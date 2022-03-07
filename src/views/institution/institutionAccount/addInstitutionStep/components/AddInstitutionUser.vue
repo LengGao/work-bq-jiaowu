@@ -1,76 +1,111 @@
 <template>
   <div>
-    <el-table
-      ref="multipleTable"
-      :data="listData"
-      style="width: 100%"
-      class="min_table"
-      :header-cell-style="{ 'text-align': 'center' }"
-      :cell-style="{ 'text-align': 'center' }"
-      height="534"
-    >
-      <el-table-column label="序号" width="70" type="index"> </el-table-column>
-      <el-table-column label="用户名" min-width="140">
-        <template slot-scope="{ row }">
-          <el-input
-            v-model="row.nickname"
-            placeholder="请输入用户姓名"
-            maxlength="30"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="手机号码" min-width="140">
-        <template slot-scope="{ row }">
-          <el-input
-            v-model="row.mobile"
-            placeholder="请输入手机号码"
-            maxlength="30"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="登录密码" min-width="140">
-        <template slot-scope="{ row }">
-          <el-input
-            v-model="row.password"
-            placeholder="请输入登录密码"
-            maxlength="30"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="是否超管" min-width="100">
-        <template slot-scope="{ row }">
-          <el-switch
-            v-model="row.is_master"
-            active-color="#2798ee"
-            inactive-color="#eaeefb"
-            :active-value="1"
-            :inactive-value="0"
-          >
-          </el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" min-width="100">
-        <template slot-scope="{ $index: index }">
-          <el-button type="text" @click="handleAdd">添加</el-button>
-          <el-button
-            type="text"
-            @click="handleDel(index)"
-            :disabled="listData.length < 2"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-form label-width="0" :model="formData" ref="formData">
+      <el-table
+        ref="multipleTable"
+        :data="formData.users"
+        style="width: 100%"
+        :header-cell-style="{ 'text-align': 'center' }"
+        :cell-style="{ 'text-align': 'center' }"
+        height="534"
+      >
+        <el-table-column label="序号" width="70" type="index">
+        </el-table-column>
+        <el-table-column label="用户名" min-width="140">
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :prop="`users[${index}].nickname`"
+              :rules="[{ required: true, message: '请输入', trigger: 'blur' }]"
+            >
+              <el-input
+                v-model="row.nickname"
+                placeholder="请输入用户姓名"
+                maxlength="30"
+              />
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column label="手机号码" min-width="140">
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :prop="`users[${index}].mobile`"
+              :rules="[
+                { required: true, message: '请输入', trigger: 'blur' },
+                {
+                  validator: validataPhone,
+                },
+              ]"
+            >
+              <el-input
+                v-model="row.mobile"
+                placeholder="请输入手机号码"
+                maxlength="30"
+              />
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column label="登录密码" min-width="140">
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :prop="`users[${index}].password`"
+              :rules="[
+                { required: true, message: '请输入', trigger: 'blur' },
+                {
+                  min: 6,
+                  max: 20,
+                  message: '长度在 6 到 20 个字符',
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <el-input
+                v-model="row.password"
+                placeholder="请输入登录密码"
+                maxlength="30"
+              />
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否超管" min-width="100">
+          <template slot-scope="{ row }">
+            <el-switch
+              v-model="row.is_master"
+              active-color="#2798ee"
+              inactive-color="#eaeefb"
+              :active-value="1"
+              :inactive-value="0"
+            >
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" min-width="100">
+          <template slot-scope="{ $index: index }">
+            <el-button type="text" @click="handleAdd">添加</el-button>
+            <el-button
+              type="text"
+              @click="handleDel(index)"
+              :disabled="formData.users.length < 2"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-form>
     <div class="actions">
       <el-button @click="handlePrev">上一步</el-button>
       <el-button class="cancel" @click="hanldeClose">取 消</el-button>
-      <el-button type="primary">确 定</el-button>
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('formData')"
+        >保 存</el-button
+      >
     </div>
   </div>
 </template>
 
 <script>
-import { createInstitutionUser } from "@/api/institution";
+import { batchCreateInstitutionUser } from "@/api/institution";
 export default {
   name: "AddInstitutionUser",
   props: {
@@ -81,14 +116,26 @@ export default {
   },
   data() {
     return {
-      listData: [
-        {
-          nickname: "",
-          mobile: "",
-          password: "",
-          is_master: 0,
-        },
-      ],
+      formData: {
+        institution_id: this.institutionId,
+        users: [
+          {
+            nickname: "",
+            mobile: "",
+            password: "",
+            is_master: 0,
+          },
+        ],
+      },
+      rules: {
+        nickname: [{ required: true, message: "请输入", trigger: "blur" }],
+        mobile: [
+          { required: true, message: "请输入", trigger: "blur" },
+          {
+            validator: this.validataPhone,
+          },
+        ],
+      },
       addLoading: false,
     };
   },
@@ -99,7 +146,7 @@ export default {
   },
   methods: {
     handleAdd() {
-      this.listData.push({
+      this.formData.users.push({
         nickname: "",
         mobile: "",
         password: "",
@@ -107,7 +154,7 @@ export default {
       });
     },
     handleDel(index) {
-      this.listData.splice(index, 1);
+      this.formData.users.splice(index, 1);
     },
     hanldeClose() {
       this.$emit("close");
@@ -125,18 +172,24 @@ export default {
         callback();
       }
     },
-
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.submit();
+        }
+      });
+    },
     async submit() {
-      const data = {};
+      const data = { ...this.formData };
       this.addLoading = true;
-      const res = await createInstitutionUser(data).catch(() => {
+      const res = await batchCreateInstitutionUser(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
         this.visible = false;
-        this.$emit("on-success");
+        this.hanldeClose();
       }
     },
   },
@@ -150,6 +203,9 @@ export default {
     margin-left: 20px;
     flex: 1;
   }
+}
+/deep/.el-table td {
+  padding: 12px 0 0;
 }
 .actions {
   display: flex;
