@@ -132,7 +132,7 @@
           label="操作"
           align="center"
           fixed="right"
-          min-width="80"
+          min-width="160"
         >
           <template slot-scope="{ row }">
             <el-button
@@ -142,6 +142,10 @@
               style="padding: 0"
               >毕业关课</el-button
             >
+            <el-button type="text" @click="openDialog(row.project_id)"
+              >教材发放</el-button
+            >
+
             <!-- <el-button
               type="text"
               style="padding: 0"
@@ -382,6 +386,12 @@
         </el-table-column>
       </el-table>
     </div>
+    <!-- 发放教材 -->
+    <GrantTeachMaterials
+      v-model="dialogVisible"
+      :ids="[uid]"
+      :projectInfo="projectInfo"
+    />
   </div>
 </template>
 
@@ -396,6 +406,8 @@ import {
   removeCourse,
   restartCourse,
 } from "@/api/eda";
+import GrantTeachMaterials from "@/views/eda/components/GrantTeachMaterials";
+
 export default {
   name: "class",
   props: {
@@ -403,6 +415,9 @@ export default {
       type: [String, Number],
       default: "",
     },
+  },
+  components: {
+    GrantTeachMaterials,
   },
   data() {
     return {
@@ -431,6 +446,8 @@ export default {
         2: "warning",
         3: "danger",
       },
+      dialogVisible: false,
+      projectInfo: {},
     };
   },
   activated() {
@@ -444,6 +461,13 @@ export default {
     this.getUserCourseList();
   },
   methods: {
+    openDialog(project_id) {
+      this.projectInfo = {
+        uid: this.uid,
+        project_id,
+      };
+      this.dialogVisible = true;
+    },
     // 毕业,作废关课
     closeCourseConfirm(project_id, type) {
       this.$confirm(`确定要执行${type === 1 ? "毕业关课" : "作废关课"}吗?`, {

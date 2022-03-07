@@ -21,7 +21,6 @@
           录入日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
-          <el-button @click="dialogVisible = true">教材发放</el-button>
           <el-button
             type="primary"
             v-if="!detailData.from_organization_id"
@@ -55,17 +54,10 @@
     <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
     <!-- 开课 -->
     <AddStudent v-model="openCourseDialog" :user-info="detailData" />
-    <!-- 发放教材 -->
-    <GrantTeachMaterials
-      v-model="dialogVisible"
-      :ids="[detailData.uid]"
-      :projectInfo="projectInfo"
-    />
   </div>
 </template>
 
 <script>
-import GrantTeachMaterials from "@/views/eda/components/GrantTeachMaterials";
 import { getStudentBasicDetail } from "@/api/eda";
 import CustomeSignUp from "@/views/crm/crmCustomer/components/CustomeSignUp";
 import AddStudent from "@/views/crm/eduOpenClass/components/AddStudent";
@@ -74,7 +66,6 @@ export default {
   components: {
     AddStudent,
     CustomeSignUp,
-    GrantTeachMaterials,
   },
   data() {
     return {
@@ -84,7 +75,6 @@ export default {
       signUpDialog: false,
       dialogVisible: false,
       openCourseDialog: false,
-      projectInfo: {},
     };
   },
   computed: {
@@ -111,10 +101,6 @@ export default {
       this.detailLoading = false;
       if (res.code === 0) {
         this.detailData = res.data;
-        this.projectInfo = {
-          uid: res.data.uid,
-          project_id: res.data.project_id,
-        };
       }
     },
   },
