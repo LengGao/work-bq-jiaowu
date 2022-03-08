@@ -79,8 +79,7 @@
       </div>
     </div>
     <div class="container-actions">
-      <el-button @click="handlePrev" class="prev">上一步</el-button>
-      <el-button @click="handleColse">取 消</el-button>
+      <el-button @click="handleColse" class="cancel">取 消</el-button>
       <el-button type="primary" :loading="submitLoading" @click="sendClassType"
         >下一步</el-button
       >
@@ -257,8 +256,8 @@ export default {
   .container {
     &-actions {
       display: flex;
-      .prev {
-        margin-right: auto;
+      .cancel {
+        margin-left: auto;
       }
     }
   }

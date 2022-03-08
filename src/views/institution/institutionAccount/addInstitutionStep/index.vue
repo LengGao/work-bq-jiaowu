@@ -2,14 +2,14 @@
   <el-dialog
     title="添加机构"
     :visible="value"
-    width="80%"
+    :width="activeStep ? `80%` : '700px'"
     @open="handleOpen"
     :close-on-click-modal="false"
     @close="hanldeClose"
     top="5vh"
   >
-    <el-steps :active="activeStep" align-center>
-      <el-step title="基本信息"></el-step>
+    <el-steps v-if="activeStep" :active="activeStep" align-center>
+      <!-- <el-step title="基本信息"></el-step> -->
       <el-step title="分发项目"></el-step>
       <el-step title="分发专业"></el-step>
       <el-step title="对接老师"></el-step>

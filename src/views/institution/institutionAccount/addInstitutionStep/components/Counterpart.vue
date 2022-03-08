@@ -199,6 +199,11 @@ export default {
 
 <style lang="less" scoped>
 .actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 30px 20px;
   margin-top: 16px;
   display: flex;
   .cancel {

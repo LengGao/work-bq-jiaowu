@@ -59,6 +59,7 @@
               ]"
             >
               <el-input
+                show-password
                 v-model="row.password"
                 placeholder="请输入登录密码"
                 maxlength="30"

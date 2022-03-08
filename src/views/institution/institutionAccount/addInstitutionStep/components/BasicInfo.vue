@@ -41,14 +41,22 @@
           <el-checkbox :label="3" disabled>东培学堂</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="小程序名称" prop="app_name">
+      <el-form-item
+        label="小程序名称"
+        v-if="formData.items.includes(1)"
+        prop="app_name"
+      >
         <el-input
           v-model="formData.app_name"
           placeholder="请输入小程序名称"
           maxlength="30"
         />
       </el-form-item>
-      <el-form-item label="H5网校名称" prop="h5_name">
+      <el-form-item
+        label="H5网校名称"
+        v-if="formData.items.includes(2)"
+        prop="h5_name"
+      >
         <el-input
           v-model="formData.h5_name"
           placeholder="请输入H5网校名称"
