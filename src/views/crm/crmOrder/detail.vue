@@ -85,6 +85,7 @@
           </template>
         </template>
         <template v-else>
+          <el-button @click="dialogVisible = true">退款作废</el-button>
           <el-button
             type="primary"
             v-if="detailData.pay_status < 4 && !detailData.reshuffle"
@@ -174,6 +175,7 @@
           : detailData
       "
     />
+    <RefundDialog v-model="dialogVisible" />
   </div>
 </template>
 
@@ -185,8 +187,12 @@ import {
   orderUnusualApprove,
   getOrderTransactionList,
 } from "@/api/crm";
+import RefundDialog from "./components/RefundDialog";
 export default {
   name: "crmOrderDetail",
+  components: {
+    RefundDialog,
+  },
   data() {
     return {
       activeName: "BasicInfo",
@@ -255,6 +261,7 @@ export default {
       unusualIndex: 0,
       unusualLabelName: "异动记录",
       orderTransactionData: [],
+      dialogVisible: false,
     };
   },
   computed: {

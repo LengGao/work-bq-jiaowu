@@ -6,6 +6,7 @@
     width="900px"
     class="collect-dialog"
     :close-on-click-modal="false"
+    @open="handleOpen"
     @closed="resetForm('formData')"
   >
     <div class="order-info">
@@ -47,10 +48,10 @@
                 filterable
               >
                 <el-option
-                  v-for="(item, index) in payTypes"
+                  v-for="(item, index) in payMethodOptions"
                   :key="index"
-                  :label="item.label"
-                  :value="item.label"
+                  :label="item"
+                  :value="item"
                 >
                 </el-option>
               </el-select>
@@ -109,10 +110,10 @@
                 filterable
               >
                 <el-option
-                  v-for="(item, index) in payTypes"
+                  v-for="(item, index) in payMethodOptions"
                   :key="index"
-                  :label="item.label"
-                  :value="item.label"
+                  :label="item"
+                  :value="item"
                 >
                 </el-option>
               </el-select>
@@ -165,7 +166,7 @@
 <script>
 import { uploadImageUrl } from "@/api/educational";
 import { orderCollect, orderCancel } from "@/api/fina";
-import { payWays as payTypes } from "@/utils";
+import { getCustomfieldOptions } from "@/api/crm";
 export default {
   props: {
     value: {
@@ -193,7 +194,6 @@ export default {
         token: this.$store.state.user.token,
       },
       visible: this.value,
-      payTypes,
       formData: {
         pay_type: "",
         pay_money: "",
@@ -211,6 +211,7 @@ export default {
       uploadLoading: false,
       projectOptions: [],
       staffOptions: [],
+      payMethodOptions: [],
     };
   },
   watch: {
@@ -220,6 +221,19 @@ export default {
   },
 
   methods: {
+    handleOpen() {
+      this.type !== 3 && this.getCustomfieldOptions();
+    },
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
+      }
+    },
     async submit() {
       this.addLoading = true;
       const apiMap = {
