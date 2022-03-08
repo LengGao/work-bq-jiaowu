@@ -30,16 +30,16 @@
       :rules="rules"
       ref="formData"
     >
-      <el-form-item label="操作类型" prop="dateType">
-        <el-radio-group v-model="formData.dateType">
+      <el-form-item label="操作类型" prop="type">
+        <el-radio-group v-model="formData.type">
           <el-radio label="1">退款</el-radio>
           <el-radio label="2">作废</el-radio>
         </el-radio-group>
       </el-form-item>
-      <div class="in-line" v-if="formData.dateType === '1'">
-        <el-form-item label="退费方式" prop="pay_type">
+      <div class="in-line" v-if="formData.type === '1'">
+        <el-form-item label="退费方式" prop="refund_type">
           <el-select
-            v-model="formData.pay_type"
+            v-model="formData.refund_type"
             placeholder="请选择退费方式"
             class="input"
             filterable
@@ -53,25 +53,26 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="退款金额" prop="pay_money">
+        <el-form-item label="退款金额" prop="refund_money">
           <el-input
             class="input"
-            v-model="formData.pay_money"
+            v-model="formData.refund_money"
             type="number"
             placeholder="请输入退款金额"
           />
         </el-form-item>
       </div>
-      <el-form-item label="退款原因" prop="tips">
+      <el-form-item label="退款原因" prop="reason">
         <el-input
           style="width: 90%"
-          v-model="formData.tips"
+          v-model="formData.reason"
           type="textarea"
           placeholder="请输入原因"
         />
       </el-form-item>
-      <el-form-item label="回款凭证">
-        <ImgListUpload v-model="formData.receipt_file" />
+      <el-form-item label="回款凭证" prop="voucher">
+        <el-input v-if="false" v-model="formData.voucher" type="input" />
+        <ImgListUpload v-model="formData.voucher" />
       </el-form-item>
     </el-form>
 
@@ -88,8 +89,7 @@
 </template>
 
 <script>
-import { updateProjectUserExpireTime } from "@/api/eda";
-import { getCustomfieldOptions } from "@/api/crm";
+import { getCustomfieldOptions, refundTnvalid } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
 export default {
   name: "RefundDialog",
@@ -110,13 +110,18 @@ export default {
     return {
       addLoading: false,
       formData: {
-        dateType: "1",
-        expire_time: "",
-        receipt_file: [],
+        type: "1",
+        refund_money: "",
+        reason: "",
+        refund_type: "",
+        voucher: [],
       },
       rules: {
-        dateType: [{ required: true, message: "请选择", trigger: "change" }],
-        expire_time: [{ required: true, message: "请选择", trigger: "change" }],
+        reason: [{ required: true, message: "请输入", trigger: "blur" }],
+        refund_money: [{ required: true, message: "请输入", trigger: "blur" }],
+        type: [{ required: true, message: "请选择", trigger: "change" }],
+        voucher: [{ required: true, message: "请上传", trigger: "blur" }],
+        refund_type: [{ required: true, message: "请选择", trigger: "change" }],
       },
       payMethodOptions: [],
     };
@@ -137,12 +142,15 @@ export default {
       }
     },
     async submit() {
-      const { expire_time } = this.formData;
       const data = {
-        expire_time,
+        ...this.formData,
+        voucher: this.formData.voucher.map(
+          (item) => item.response.data.data.url
+        ),
+        order_id: this.orderInfo.order_id,
       };
       this.addLoading = true;
-      const res = await updateProjectUserExpireTime(data).catch(() => {
+      const res = await refundTnvalid(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;
@@ -162,8 +170,8 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.formData = {
-        dateType: "1",
-        expire_time: "",
+        type: "1",
+        refund_type: "",
       };
     },
     hanldeClose() {

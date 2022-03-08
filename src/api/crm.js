@@ -694,3 +694,11 @@ export function getOrderTransactionList(params) {
         params
     })
 }
+// 订单申请作废退款
+export function refundTnvalid(data) {
+    return request({
+        url: '/CrmOrder/refundTnvalid',
+        method: 'post',
+        data
+    })
+}

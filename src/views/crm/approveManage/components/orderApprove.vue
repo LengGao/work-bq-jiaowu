@@ -76,6 +76,19 @@
             {{ row.order_money | moneyFormat }}
           </template>
         </el-table-column>
+        <el-table-column prop="order_money" label="退款凭证" min-width="90">
+          <template slot-scope="{ row }">
+            <template v-if="row.voucher && row.voucher.length">
+              <img
+                class="img-voucher"
+                :src="row.voucher[0]"
+                alt=""
+                @click="handlePreview(row.voucher)"
+              />
+            </template>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="verify_type"
           label="审批类型"
@@ -150,6 +163,7 @@
         />
       </div>
     </div>
+    <PreviewImg ref="view" />
   </section>
 </template>
 
@@ -374,6 +388,9 @@ export default {
     this.getproject();
   },
   methods: {
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
     approveConfirm(row, action) {
       this.$prompt("请输入备注", action === 2 ? "驳回" : "通过", {
         confirmButtonText: "确定",
@@ -498,7 +515,12 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
+.img-voucher {
+  height: 30px;
+  vertical-align: middle;
+  cursor: pointer;
+}
 .approve-status {
   &::before {
     display: inline-block;
