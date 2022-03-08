@@ -142,9 +142,7 @@
               style="padding: 0"
               >毕业关课</el-button
             >
-            <el-button type="text" @click="openDialog(row.project_id)"
-              >教材发放</el-button
-            >
+            <el-button type="text" @click="openDialog(row)">教材发放</el-button>
 
             <!-- <el-button
               type="text"
@@ -389,7 +387,7 @@
     <!-- 发放教材 -->
     <GrantTeachMaterials
       v-model="dialogVisible"
-      :ids="[uid]"
+      :ids="[user_dispense_books_id]"
       :projectInfo="projectInfo"
     />
   </div>
@@ -448,6 +446,7 @@ export default {
       },
       dialogVisible: false,
       projectInfo: {},
+      user_dispense_books_id: "",
     };
   },
   activated() {
@@ -461,7 +460,8 @@ export default {
     this.getUserCourseList();
   },
   methods: {
-    openDialog(project_id) {
+    openDialog({ project_id, user_dispense_books_id }) {
+      this.user_dispense_books_id = user_dispense_books_id;
       this.projectInfo = {
         uid: this.uid,
         project_id,
