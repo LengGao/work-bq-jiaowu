@@ -73,10 +73,24 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            ￥{{ row.order_money || 0 }}
+            {{ row.order_money | moneyFormat }}
           </template>
         </el-table-column>
-
+        <el-table-column
+          prop="verify_type"
+          label="审批类型"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <el-tag
+              size="small"
+              :type="verifyTypeMap[row.verify_type || 0].type"
+            >
+              {{ verifyTypeMap[row.verify_type || 0].text }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="verify_status"
           label="审批状态"
@@ -308,6 +322,21 @@ export default {
           },
         },
       ],
+
+      verifyTypeMap: {
+        0: {
+          text: "新订单",
+          type: "success",
+        },
+        1: {
+          text: "退款订单",
+          type: "warning",
+        },
+        2: {
+          text: "作废订单",
+          type: "danger",
+        },
+      },
 
       verifyStatusMap: {
         1: {

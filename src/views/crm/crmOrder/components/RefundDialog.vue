@@ -2,7 +2,7 @@
   <el-dialog
     title="退款作废"
     :visible="value"
-    width="600px"
+    width="800px"
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
@@ -10,50 +10,78 @@
   >
     <Title text="订单信息"></Title>
     <div class="order-info">
-      <div class="order-info-item">订单编号：555555</div>
+      <div class="order-info-item">订单编号：{{ orderInfo.order_no }}</div>
+      <div class="order-info-item">订单时间：{{ orderInfo.create_time }}</div>
+      <div class="order-info-item">收费学生：{{ orderInfo.surname }}</div>
+      <div class="order-info-item">
+        应收金额：{{ orderInfo.order_money | moneyFormat }}
+      </div>
+      <div class="order-info-item">
+        已付金额：{{ orderInfo.pay_money | moneyFormat }}
+      </div>
+      <div class="order-info-item">
+        欠费金额：{{ orderInfo.overdue_money | moneyFormat }}
+      </div>
     </div>
+    <Title text="退款作废"></Title>
     <el-form
       label-width="100px"
       :model="formData"
       :rules="rules"
-      inline
       ref="formData"
     >
-      <el-form-item label="到期类型" prop="dateType">
+      <el-form-item label="操作类型" prop="dateType">
         <el-radio-group v-model="formData.dateType">
-          <el-radio label="1">选择周期</el-radio>
-          <el-radio label="2">指定日期</el-radio>
+          <el-radio label="1">退款</el-radio>
+          <el-radio label="2">作废</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="到期日期" prop="expire_time">
-        <el-select
-          v-if="formData.dateType == 1"
-          v-model="formData.expire_time"
-          placeholder="请选择周期"
-        >
-          <el-option
-            :label="item.label"
-            v-for="item in dateRangeOptions"
-            :key="item.value"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-        <el-date-picker
-          v-else
-          type="date"
-          placeholder="选择日期"
-          v-model="formData.expire_time"
-          value-format="yyyy-MM-dd"
-        ></el-date-picker>
+      <div class="in-line" v-if="formData.dateType === '1'">
+        <el-form-item label="退费方式" prop="pay_type">
+          <el-select
+            v-model="formData.pay_type"
+            placeholder="请选择退费方式"
+            class="input"
+            filterable
+          >
+            <el-option
+              v-for="item in payMethodOptions"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="退款金额" prop="pay_money">
+          <el-input
+            class="input"
+            v-model="formData.pay_money"
+            type="number"
+            placeholder="请输入退款金额"
+          />
+        </el-form-item>
+      </div>
+      <el-form-item label="退款原因" prop="tips">
+        <el-input
+          style="width: 90%"
+          v-model="formData.tips"
+          type="textarea"
+          placeholder="请输入原因"
+        />
+      </el-form-item>
+      <el-form-item label="回款凭证">
+        <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
     </el-form>
+
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeClose">取 消</el-button>
       <el-button
         type="primary"
         :loading="addLoading"
         @click="submitForm('formData')"
-        >保 存</el-button
+        >确 定</el-button
       >
     </span>
   </el-dialog>
@@ -61,66 +89,57 @@
 
 <script>
 import { updateProjectUserExpireTime } from "@/api/eda";
+import { getCustomfieldOptions } from "@/api/crm";
+import ImgListUpload from "@/components/imgListUpload";
 export default {
   name: "RefundDialog",
+  components: {
+    ImgListUpload,
+  },
   props: {
     value: {
       type: Boolean,
       default: false,
     },
-    ids: {
+    orderInfo: {
       type: Array,
-      default: () => [],
+      default: () => ({}),
     },
   },
   data() {
     return {
       addLoading: false,
-      dateRangeOptions: [
-        {
-          label: "一年",
-          value: 1,
-        },
-        {
-          label: "两年",
-          value: 2,
-        },
-        {
-          label: "三年",
-          value: 3,
-        },
-        {
-          label: "四年",
-          value: 4,
-        },
-        {
-          label: "五年",
-          value: 5,
-        },
-        {
-          label: "永久",
-          value: "-1",
-        },
-      ],
       formData: {
         dateType: "1",
         expire_time: "",
+        receipt_file: [],
       },
       rules: {
         dateType: [{ required: true, message: "请选择", trigger: "change" }],
         expire_time: [{ required: true, message: "请选择", trigger: "change" }],
       },
+      payMethodOptions: [],
     };
   },
 
   methods: {
-    handleOpen() {},
-
+    handleOpen() {
+      this.getCustomfieldOptions();
+    },
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
+      }
+    },
     async submit() {
       const { expire_time } = this.formData;
       const data = {
         expire_time,
-        id_arr: this.ids,
       };
       this.addLoading = true;
       const res = await updateProjectUserExpireTime(data).catch(() => {
@@ -153,5 +172,20 @@ export default {
   },
 };
 </script>
+<style lang="less" scoped>
+.order-info {
+  padding-left: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  &-item {
+    width: 33%;
+    margin-bottom: 16px;
+  }
+}
+.in-line {
+  display: flex;
+  justify-content: space-between;
+}
+</style>
 
 

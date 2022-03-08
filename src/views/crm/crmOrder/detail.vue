@@ -175,7 +175,7 @@
           : detailData
       "
     />
-    <RefundDialog v-model="dialogVisible" />
+    <RefundDialog v-model="dialogVisible" :order-info="detailData" />
   </div>
 </template>
 
