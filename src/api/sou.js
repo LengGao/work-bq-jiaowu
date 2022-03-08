@@ -271,6 +271,16 @@ export function getstoragebook(params) {
   })
 }
 /**
+ * 根据仓库/用户查教材
+ */
+export function getUserStorageBook(data) {
+  return request({
+    url: '/storage/getUserStorageBook',
+    method: 'post',
+    data,
+  })
+}
+/**
  * 库存调拨
  * @param {*} data
  */
