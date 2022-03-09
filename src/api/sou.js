@@ -66,7 +66,7 @@ export function deleteCategory(data) {
  */
 export function updateCategorySort(data) {
   return request({
-    url: '/courseCategory/updateCategorySort',
+    url: '/courseCategory/categorySort',
     method: 'post',
     data,
   })

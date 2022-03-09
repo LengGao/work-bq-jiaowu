@@ -14,7 +14,7 @@ export default {
   getfieldinfo: '/Customfield/getfieldinfo',
   //资源配置
   getCategoryList: '/courseCategory/getCategoryList',
-  updateCategorySort: '/courseCategory/updateCategorySort',
+  updateCategorySort: '/courseCategory/categorySort',
   insertCategory: '/courseCategory/insertCategory',
   getTeachBooksList: '/books/index',
   getRoomList: '/Schoolroom/roomList',
