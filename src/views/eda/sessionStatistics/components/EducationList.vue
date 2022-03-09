@@ -569,9 +569,7 @@ export default {
       defaultProps: {
         children: "child",
         label: (data) => {
-          return data.title === "全部"
-            ? data.title
-            : `${data.title} (${data.count})`;
+          return `${data.title} (${data.count})`;
         },
       },
       treeData: [],
@@ -645,7 +643,6 @@ export default {
       const res = await exportEduList(data).catch();
       this.exportLoading = false;
       if (res.code === 0) {
-        console.log(res);
         download(res.data.url, "学历列表");
         this.$message.success(res.message);
       }
@@ -658,7 +655,6 @@ export default {
         major_id = "",
         jiebie_id = "",
       } = data;
-      console.log(jiebie_id);
       this.treeParams = {
         jiebie_id,
         type_id,
@@ -674,8 +670,9 @@ export default {
         this.treeData = [
           {
             title: "全部",
+            count: res.data.total,
           },
-        ].concat(res.data);
+        ].concat(res.data.list);
       }
     },
     // 获取所属老师

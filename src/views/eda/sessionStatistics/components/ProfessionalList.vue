@@ -176,9 +176,7 @@ export default {
       defaultProps: {
         children: "child",
         label: (data) => {
-          return data.title === "全部"
-            ? data.title
-            : `${data.title} (${data.count})`;
+          return `${data.title} (${data.count})`;
         },
       },
       treeData: [],
@@ -197,7 +195,6 @@ export default {
     },
     onNodeClick(data) {
       const { category_id = "", jiebie_id = "" } = data;
-      console.log(jiebie_id);
       this.treeParams = {
         jiebie_id,
         category_id,
@@ -210,8 +207,9 @@ export default {
         this.treeData = [
           {
             title: "全部",
+            count: res.data.total,
           },
-        ].concat(res.data);
+        ].concat(res.data.list);
       }
     },
     // 获取项目下拉

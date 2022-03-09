@@ -85,7 +85,11 @@
           </template>
         </template>
         <template v-else>
-          <el-button @click="dialogVisible = true">退款作废</el-button>
+          <el-button
+            @click="dialogVisible = true"
+            v-if="detailData.refund_button"
+            >退款作废</el-button
+          >
           <el-button
             type="primary"
             v-if="detailData.pay_status < 4 && !detailData.reshuffle"
