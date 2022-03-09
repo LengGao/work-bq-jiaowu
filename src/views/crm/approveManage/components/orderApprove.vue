@@ -76,7 +76,7 @@
             {{ row.order_money | moneyFormat }}
           </template>
         </el-table-column>
-        <el-table-column prop="order_money" label="退款凭证" min-width="90">
+        <el-table-column prop="order_money" label="凭证" min-width="90">
           <template slot-scope="{ row }">
             <template v-if="row.voucher && row.voucher.length">
               <img
