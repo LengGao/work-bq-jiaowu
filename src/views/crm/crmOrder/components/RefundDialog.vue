@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="退款作废"
+    title="申请退款/作废订单"
     :visible="value"
     width="800px"
     @open="handleOpen"
