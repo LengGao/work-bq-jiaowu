@@ -37,7 +37,7 @@
               <el-option label="多项目" value="2"> </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="项目名称" prop="project_id">
+          <el-form-item label="项目名称">
             <el-select
               v-model="formData.project_id"
               filterable

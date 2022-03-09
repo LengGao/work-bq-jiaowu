@@ -27,7 +27,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="学历形式" prop="type_id">
+          <el-form-item label="学历形式">
             <el-select
               v-model="formData.type_id"
               filterable
@@ -35,8 +35,6 @@
               placeholder="请选择学历形式"
               @change="eduTypeChange"
             >
-              <!-- :disabled="!formData.from_organization_id" -->
-
               <el-option
                 v-for="item in eduTypeOptions"
                 :key="item.type_id"
@@ -46,7 +44,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="院校" prop="university_id">
+          <el-form-item label="院校">
             <el-select
               v-model="formData.university_id"
               filterable
@@ -54,8 +52,6 @@
               placeholder="请选择院校"
               @change="eduSchoolChange"
             >
-              <!-- :disabled="!formData.type_id" -->
-
               <el-option
                 v-for="item in eduScholOptions"
                 :key="item.university_id"
@@ -65,7 +61,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="层次" prop="level_id">
+          <el-form-item label="层次">
             <el-select
               v-model="formData.level_id"
               filterable
@@ -73,8 +69,6 @@
               placeholder="请选择层次"
               @change="eduAcademicChange"
             >
-              <!-- :disabled="!formData.university_id" -->
-
               <el-option
                 v-for="item in eduAcademicOptions"
                 :key="item.level_id"
@@ -84,7 +78,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="专业" prop="major_id">
+          <el-form-item label="专业">
             <el-select
               v-model="formData.major_id"
               filterable
@@ -92,8 +86,6 @@
               placeholder="请选择专业"
               @change="eduMajorChange"
             >
-              <!-- :disabled="!formData.level_id" -->
-
               <el-option
                 v-for="item in eduMajorOptions"
                 :key="item.major_id"
@@ -103,7 +95,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="项目名称" prop="project_id">
+          <el-form-item label="项目名称">
             <el-select
               v-model="formData.project_id"
               filterable
@@ -111,8 +103,6 @@
               placeholder="请选择项目"
               @change="onProjectChange"
             >
-              <!-- :disabled="!formData.major_id" -->
-
               <el-option
                 v-for="item in eduProjectOptions"
                 :key="item.project_id"
@@ -124,8 +114,6 @@
           </el-form-item>
 
           <el-form-item label="价格" prop="price">
-            <!-- :disabled="!formData.project_id" -->
-
             <el-input v-model="formData.price" placeholder="请输入价格" />
           </el-form-item>
           <el-form-item>
