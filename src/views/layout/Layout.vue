@@ -5,10 +5,11 @@
       <navbar :work-order-count="workorderCount"></navbar>
       <app-main></app-main>
     </div>
+    <Help :url="helpUrl" />
   </div>
 </template>
 <script>
-import { Navbar, Sidebar, AppMain } from "./components";
+import { Navbar, Sidebar, AppMain, Help } from "./components";
 import ResizeMixin from "./mixin/ResizeHandler";
 import { getNoticeData } from "@/api/workbench";
 import { mapGetters } from "vuex";
@@ -18,16 +19,17 @@ export default {
     Navbar,
     Sidebar,
     AppMain,
+    Help,
   },
   mixins: [ResizeMixin],
   data() {
     return {
       timerId: null,
-      workorderCount:0,
+      workorderCount: 0,
     };
   },
   computed: {
-    ...mapGetters(["menus"]),
+    ...mapGetters(["menus", "helpUrl"]),
     sidebar() {
       return this.$store.state.app.sidebar;
     },
@@ -39,6 +41,7 @@ export default {
         hideSidebar: !this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === "mobile",
+        "show-help": !!this.helpUrl,
       };
     },
   },
@@ -144,7 +147,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/mixin.scss";
 .app-wrapper {
-  @include clearfix;
+  // @include clearfix;
   position: relative;
   height: 100%;
   width: 100%;

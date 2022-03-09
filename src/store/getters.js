@@ -9,6 +9,7 @@ const getters = {
   identity: state => state.user.identity,
   menus: state => state.user.menus,
   msgCount: state => state.user.msgCount,
+  helpUrl: state => state.app.helpUrl,
   cacheArr: state => Array.from(state.cacheView.currentCache)
 }
 export default getters

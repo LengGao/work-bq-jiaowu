@@ -5,9 +5,13 @@ const app = {
       opened: !+Cookies.get('sidebarStatus'),
       withoutAnimation: false
     },
-    device: 'desktop'
+    device: 'desktop',
+    helpUrl: ''
   },
   mutations: {
+    SET_HELP_URL: (state, url) => {
+      state.helpUrl = url
+    },
     TOGGLE_SIDEBAR: state => {
       if (state.sidebar.opened) {
         Cookies.set('sidebarStatus', 1)

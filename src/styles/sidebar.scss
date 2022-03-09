@@ -44,6 +44,14 @@
       width: 100% !important;
     }
   }
+  .show-help{
+    .help{
+      width: 300px;
+    }
+    .main-container {
+      margin-right: 300px;
+    }
+  }
 
   .hideSidebar {
     .sidebar-container {
