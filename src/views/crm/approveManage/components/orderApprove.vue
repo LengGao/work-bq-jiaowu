@@ -320,6 +320,29 @@ export default {
           },
         },
         {
+          key: "verify_type",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 0,
+              label: "新订单",
+            },
+            {
+              value: 1,
+              label: "申请退款",
+            },
+            {
+              value: 2,
+              label: "申请作废",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "审批类型",
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,
@@ -343,11 +366,11 @@ export default {
           type: "success",
         },
         1: {
-          text: "退款订单",
+          text: "申请退款",
           type: "warning",
         },
         2: {
-          text: "作废订单",
+          text: "申请作废",
           type: "danger",
         },
       },

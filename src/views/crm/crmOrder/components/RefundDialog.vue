@@ -7,7 +7,12 @@
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
     @close="hanldeClose"
-  >
+    ><el-alert
+      title="您可以在此申请作废/退款订单，只有审批通过后才有效。订单作废/退款后将关闭学员的课程，不能再开课和计算业绩"
+      type="error"
+      style="margin-bottom: 10px"
+    >
+    </el-alert>
     <Title text="订单信息"></Title>
     <div class="order-info">
       <div class="order-info-item">订单编号：{{ orderInfo.order_no }}</div>
@@ -181,6 +186,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+/deep/.el-dialog__body {
+  padding: 10px 20px;
+}
 .order-info {
   padding-left: 20px;
   display: flex;
