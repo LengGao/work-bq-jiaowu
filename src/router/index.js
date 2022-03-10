@@ -77,7 +77,7 @@ export const asyncRouter = [
         path: 'gradeManage',
         name: 'gradeManage',
         component: () => import('@/views/sou/gradeManage/index.vue'),
-        meta: { title: '项目统计' },
+        meta: { title: '届别管理' },
       },
       {
         path: 'projectStatistics',
