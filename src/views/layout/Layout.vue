@@ -5,7 +5,7 @@
       <navbar :work-order-count="workorderCount"></navbar>
       <app-main></app-main>
     </div>
-    <Help :url="helpUrl" />
+    <Help :url="helpUrl" v-model="helpFullScreen" />
   </div>
 </template>
 <script>
@@ -26,6 +26,7 @@ export default {
     return {
       timerId: null,
       workorderCount: 0,
+      helpFullScreen: false,
     };
   },
   computed: {
@@ -42,6 +43,7 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === "mobile",
         "show-help": !!this.helpUrl,
+        "help-full-screen": this.helpFullScreen,
       };
     },
   },

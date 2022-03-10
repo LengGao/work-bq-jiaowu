@@ -4,7 +4,7 @@
       <i
         class="iconfont icontuichuquanping"
         @click="exitFullscreen"
-        v-if="isFullscreen"
+        v-if="value"
         title="关闭全屏"
       ></i>
       <i
@@ -27,80 +27,24 @@ export default {
       type: String,
       default: "",
     },
+    value: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
-    return {
-      isFullscreen: false,
-    };
-  },
-  mounted() {
-    document.addEventListener("fullscreenchange", () => {
-      this.getFullScreenStatus();
-    });
-
-    document.addEventListener("mozfullscreenchange", () => {
-      this.getFullScreenStatus();
-    });
-
-    document.addEventListener("webkitfullscreenchange", () => {
-      this.getFullScreenStatus();
-    });
-
-    document.addEventListener("msfullscreenchange", () => {
-      this.getFullScreenStatus();
-    });
+    return {};
   },
   methods: {
-    // 判断当前页面是否全屏
-    getFullScreenStatus() {
-      this.isFullscreen = !!(
-        document.fullscreen ||
-        document.mozFullScreen ||
-        document.webkitIsFullScreen ||
-        document.webkitFullScreen ||
-        document.msFullScreen
-      );
-    },
     enterFullscreen() {
-      var docElm = document.querySelector(".help");
-      //W3C
-      if (docElm.requestFullscreen) {
-        docElm.requestFullscreen();
-      }
-      //FireFox
-      else if (docElm.mozRequestFullScreen) {
-        docElm.mozRequestFullScreen();
-      }
-      //Chrome等
-      else if (docElm.webkitRequestFullScreen) {
-        docElm.webkitRequestFullScreen();
-      }
-      //IE11
-      else if (docElm.msRequestFullscreen) {
-        docElm.msRequestFullscreen();
-      }
+      this.$emit("input", true);
     },
     exitFullscreen() {
-      //W3C
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      }
-      //FireFox
-      else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      }
-      //Chrome等
-      else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen();
-      }
-      //IE11
-      else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
+      this.$emit("input", false);
     },
     handleClose() {
       this.$store.commit("SET_HELP_URL", "");
-      this.isFullscreen && this.exitFullscreen();
+      this.value && this.exitFullscreen();
     },
   },
 };
