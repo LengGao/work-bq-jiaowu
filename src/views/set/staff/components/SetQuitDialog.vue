@@ -107,7 +107,7 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("success");
+        this.$emit("on-success");
         this.hanldeClose();
       }
     },

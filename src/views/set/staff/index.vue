@@ -86,8 +86,10 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span v-if="row.applet_openid == ''">未绑定</span>
-              <span v-else>已绑定</span>
+              <el-tag size="small" v-if="row.applet_openid" type="success"
+                >已绑定</el-tag
+              >
+              <el-tag size="small" v-else type="info">未绑定</el-tag>
             </template>
           </el-table-column>
           <!-- <el-table-column
@@ -182,28 +184,56 @@
                 type="success"
                 >在职</el-tag
               >
-              <el-tag size="small" v-else type="info">已离职</el-tag>
+              <el-tag
+                size="small"
+                v-else
+                type="info"
+                @click="handleClickStatus(row)"
+                >已离职</el-tag
+              >
             </template>
+          </el-table-column>
+          <el-table-column
+            prop="leave_date"
+            label="离职日期"
+            align="center"
+            min-width="120"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="receive_staff_name"
+            label="数据接收人"
+            align="center"
+            min-width="90"
+            show-overflow-tooltip
+          >
           </el-table-column>
           <el-table-column
             label="操作"
             fixed="right"
             align="center"
-            min-width="220"
+            min-width="200"
           >
             <template slot-scope="{ row }">
-              <el-button type="text" @click="openQuitDialog(row.staff_id)"
+              <el-button
+                type="text"
+                v-if="row.account_status === 1"
+                @click="openQuitDialog(row.staff_id)"
                 >一键离职</el-button
               >
-              <el-button type="text" @click="deleteBinding(row.staff_id)"
+              <el-button
+                type="text"
+                v-if="row.applet_openid"
+                @click="deleteBinding(row.staff_id)"
                 >清空绑定</el-button
               >
               <el-button type="text" @click="handleEdit(row.staff_id)"
                 >编辑</el-button
               >
-              <el-button type="text" @click="deleteConfirm(row, 'is_deleted')"
+              <!-- <el-button type="text" @click="deleteConfirm(row, 'is_deleted')"
                 >删除</el-button
-              >
+              > -->
             </template>
           </el-table-column>
         </el-table>
@@ -289,6 +319,25 @@ export default {
           },
         },
         {
+          key: "account_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "在职",
+            },
+            {
+              value: 2,
+              label: "离职",
+            },
+          ],
+          attrs: {
+            clearable: true,
+            placeholder: "离职状态",
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "员工姓名",
@@ -315,6 +364,16 @@ export default {
     this.getStaffList();
   },
   methods: {
+    handleClickStatus(row) {
+      this.$confirm(`确定要恢复 ${row.staff_name} 为在职状态吗?`, {
+        type: "warning",
+      })
+        .then(() => {
+          row.account_status = 1;
+          this.updateStaffStatus(row, "account_status");
+        })
+        .catch(() => {});
+    },
     openQuitDialog(id) {
       this.currentId = id;
       this.quitVisible = true;
@@ -446,7 +505,7 @@ export default {
       });
       if (res.code === 0) {
         this.$message.success(res.message);
-        type === "is_deleted" && this.getStaffList();
+        ["is_deleted", "account_status"].includes(type) && this.getStaffList();
       }
     },
     async updateMaster(row) {
