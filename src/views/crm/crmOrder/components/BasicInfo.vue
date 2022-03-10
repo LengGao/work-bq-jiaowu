@@ -100,15 +100,19 @@
       </div>
       <div class="info-item">
         <span class="info-item__name">订单金额：</span>
-        <span class="info-item__value">￥{{ data.order_money || 0 }}</span>
+        <span class="info-item__value">{{
+          data.order_money | moneyFormat
+        }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">已回款金额：</span>
-        <span class="info-item__value">￥{{ data.pay_money || 0 }}</span>
+        <span class="info-item__value">{{ data.pay_money | moneyFormat }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">未回款金额：</span>
-        <span class="info-item__value">￥{{ data.overdue_money || 0 }}</span>
+        <span class="info-item__value">{{
+          data.overdue_money | moneyFormat
+        }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">届别名称：</span>
@@ -123,33 +127,43 @@
       <template v-if="data.type === 1">
         <div class="info-item">
           <span class="info-item__name">考前辅导费：</span>
-          <span class="info-item__value">￥{{ data.pre_tutor || 0 }}</span>
+          <span class="info-item__value">{{
+            data.pre_tutor | moneyFormat
+          }}</span>
         </div>
         <div class="info-item">
           <span class="info-item__name">报考费：</span>
-          <span class="info-item__value">￥{{ data.examination || 0 }}</span>
+          <span class="info-item__value">{{
+            data.examination | moneyFormat
+          }}</span>
         </div>
         <div class="info-item">
           <span class="info-item__name">教材费：</span>
-          <span class="info-item__value">￥{{ data.textbook || 0 }}</span>
+          <span class="info-item__value">{{
+            data.textbook | moneyFormat
+          }}</span>
         </div>
         <div class="info-item">
           <span class="info-item__name">毕设指导费：</span>
-          <span class="info-item__value"
-            >￥{{ data.graduation_guidance || 0 }}</span
-          >
+          <span class="info-item__value">{{
+            data.graduation_guidance | moneyFormat
+          }}</span>
         </div>
         <div class="info-item">
           <span class="info-item__name">论文答辩费：</span>
-          <span class="info-item__value">￥{{ data.thesis_defense || 0 }}</span>
+          <span class="info-item__value">{{
+            data.thesis_defense | moneyFormat
+          }}</span>
         </div>
         <div class="info-item">
           <span class="info-item__name">平台费：</span>
-          <span class="info-item__value">￥{{ data.platform_fee || 0 }}</span>
+          <span class="info-item__value">{{
+            data.platform_fee | moneyFormat
+          }}</span>
         </div>
         <div class="info-item">
           <span class="info-item__name">其他费用：</span>
-          <span class="info-item__value">￥{{ data.others || 0 }}</span>
+          <span class="info-item__value">{{ data.others | moneyFormat }}</span>
         </div>
       </template>
       <div class="info-item">
@@ -249,7 +263,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span> ￥{{ row.total_money }} </span>
+            <span> {{ row.total_money | moneyFormat }} </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -315,7 +329,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span> ￥{{ row.project_price }} </span>
+            <span> {{ row.project_price | moneyFormat }} </span>
           </template>
         </el-table-column>
         <el-table-column

@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { getCustomfieldOptions, refundTnvalid } from "@/api/crm";
+import { getCustomfieldOptions, refundInvalid } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
 export default {
   name: "RefundDialog",
@@ -161,7 +161,7 @@ export default {
         order_id: this.orderInfo.order_id,
       };
       this.addLoading = true;
-      const res = await refundTnvalid(data).catch(() => {
+      const res = await refundInvalid(data).catch(() => {
         this.addLoading = false;
       });
       this.addLoading = false;

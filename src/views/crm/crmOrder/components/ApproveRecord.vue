@@ -64,6 +64,10 @@ export default {
   data() {
     return {
       verifyStatusMap: {
+        0: {
+          text: "待审核",
+          type: "info",
+        },
         1: {
           text: "待审核",
           type: "info",
