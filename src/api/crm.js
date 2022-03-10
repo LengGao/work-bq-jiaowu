@@ -702,3 +702,38 @@ export function refundInvalid(data) {
         data
     })
 }
+// 届别列表-树形数据
+export function getTreeCategory(params) {
+    return request({
+        url: '/Crm/sessionLeftList',
+        method: 'get',
+        params,
+    })
+}
+// 届别-学生订单列表
+// 点击分类只传递 category_id 参数 
+// 点击 届别 只传递 jiebie_id 参数
+export function getGradeList(params) {
+    return request({
+        url: '/Crm/sessionRightList',
+        method: 'get',
+        params, 
+    })
+}
+// 届别排序
+export function posrtSessionSort(params) {
+    return request({
+        url: '/Crm/sessionSort',
+        method: 'post',
+        params,
+    })
+}
+// 届别编辑
+export function postXiuGaiJieBie(params) {
+    return request({
+        url: '/Crm/sessionLeftList',
+        method: 'post',
+        params,
+    })
+}
+
