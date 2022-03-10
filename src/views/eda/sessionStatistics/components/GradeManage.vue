@@ -214,7 +214,6 @@ export default {
         this.$set(data, 'show', true)
     },
     openEdit(data) {
-        console.log("data",data);
         const {count, jiebie_id, title, type_id } = data
         this.currentNode = {count, jiebie_id, title, type_id}
         this.dialogTitle = `编辑届别`
@@ -226,8 +225,7 @@ export default {
     handleToggle() {
       this.isTreeOpen = !this.isTreeOpen;
     },
-    onNodeClick(data) {
-      console.log(data);
+    onNodeClick(data) {;
       let   params = {}, 
             title = data.title || '', 
             jId = data.jiebie_id || '', 
@@ -252,7 +250,6 @@ export default {
             item.show = false
             return item
         })
-        console.log("list",list);
         this.treeData = [
           {
             title: "全部",
