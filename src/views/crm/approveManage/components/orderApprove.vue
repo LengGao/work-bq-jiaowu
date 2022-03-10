@@ -148,7 +148,7 @@
               @click="approveConfirm(row, 2)"
               >驳回</el-button
             >
-            <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
+            <el-button type="text" @click="toCrmOrderDetail(row)"
               >订单详情</el-button
             >
           </template>
@@ -525,12 +525,13 @@ export default {
         },
       });
     },
-    toCrmOrderDetail(id) {
+    toCrmOrderDetail({ order_id: id, id: verify_id }) {
       this.$router.push({
         name: "crmOrderDetail",
         query: {
           id,
           isFromApprove: 1,
+          verify_id,
         },
       });
     },

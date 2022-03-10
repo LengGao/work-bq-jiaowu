@@ -42,10 +42,10 @@
         </el-radio-group>
       </el-form-item>
       <div class="in-line" v-if="formData.type === '1'">
-        <el-form-item label="退费方式" prop="refund_type">
+        <el-form-item label="退款方式" prop="refund_type">
           <el-select
             v-model="formData.refund_type"
-            placeholder="请选择退费方式"
+            placeholder="请选择退款方式"
             class="input"
             filterable
           >
@@ -67,7 +67,10 @@
           />
         </el-form-item>
       </div>
-      <el-form-item label="退款原因" prop="reason">
+      <el-form-item
+        :label="`${formData.type === '1' ? '退款' : '作废'}原因`"
+        prop="reason"
+      >
         <el-input
           style="width: 90%"
           v-model="formData.reason"
@@ -75,7 +78,10 @@
           placeholder="请输入原因"
         />
       </el-form-item>
-      <el-form-item label="回款凭证" prop="voucher">
+      <el-form-item
+        :label="`${formData.type === '1' ? '退款' : '作废'}凭证`"
+        prop="voucher"
+      >
         <el-input v-if="false" v-model="formData.voucher" type="input" />
         <ImgListUpload v-model="formData.voucher" />
       </el-form-item>
@@ -107,7 +113,7 @@ export default {
       default: false,
     },
     orderInfo: {
-      type: Array,
+      type: Object,
       default: () => ({}),
     },
   },

@@ -2,6 +2,86 @@
   <div class="basic-info">
     <Title text="订单信息"></Title>
     <div class="info-block">
+      <template v-if="$route.query.verify_id">
+        <div class="info-item">
+          <span class="info-item__name">审批类型：</span>
+          <span class="info-item__value">
+            <el-tag
+              size="small"
+              :type="verifyTypeMap[data.verify_type || 0].type"
+            >
+              {{ verifyTypeMap[data.verify_type || 0].text }}
+            </el-tag></span
+          >
+        </div>
+        <template v-if="data.verify_type === 2">
+          <div class="info-item">
+            <span class="info-item__name">作废原因：</span>
+            <span class="info-item__value">{{
+              data.refund_invalid_reason
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item__name">作废凭证：</span>
+            <span class="info-item__value">
+              <img
+                :src="item"
+                alt=""
+                title="点击预览大图"
+                style="
+                  width: 40px;
+                  height: 30px;
+                  cursor: pointer;
+                  margin-right: 10px;
+                "
+                v-for="(item, index) in data.refund_invalid_voucher"
+                :key="index"
+                @click="handlePreview(item)"
+              />
+            </span>
+          </div>
+        </template>
+        <template v-if="data.verify_type === 1">
+          <div class="info-item">
+            <span class="info-item__name">退款金额：</span>
+            <span class="info-item__value">{{
+              data.refund_invalid_refund_money | moneyFormat
+            }}</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-item__name">退款方式：</span>
+            <span class="info-item__value">{{
+              data.refund_invalid_refund_type
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item__name">退款原因：</span>
+            <span class="info-item__value">{{
+              data.refund_invalid_reason
+            }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-item__name">退款凭证：</span>
+            <span class="info-item__value">
+              <img
+                :src="item"
+                alt=""
+                title="点击预览大图"
+                style="
+                  width: 40px;
+                  height: 30px;
+                  cursor: pointer;
+                  margin-right: 10px;
+                "
+                v-for="(item, index) in data.refund_invalid_voucher"
+                :key="index"
+                @click="handlePreview(item)"
+              />
+            </span>
+          </div>
+        </template>
+      </template>
       <div class="info-item">
         <span class="info-item__name">订单编号：</span>
         <span class="info-item__value">{{ data.order_no }}</span>
@@ -81,8 +161,8 @@
               alt=""
               title="点击预览大图"
               style="
-                width: 60px;
-                height: 40px;
+                width: 40px;
+                height: 30px;
                 cursor: pointer;
                 margin-right: 10px;
               "
@@ -269,7 +349,22 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      verifyTypeMap: {
+        0: {
+          text: "新订单",
+          type: "success",
+        },
+        1: {
+          text: "申请退款",
+          type: "warning",
+        },
+        2: {
+          text: "申请作废",
+          type: "danger",
+        },
+      },
+    };
   },
   computed: {
     getTableData() {

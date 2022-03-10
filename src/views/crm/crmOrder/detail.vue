@@ -377,8 +377,10 @@ export default {
       }
     },
     async getCrmOrderDetail() {
+      const verify_id = this.$route.query.verify_id;
       const data = {
         order_id: this.$route.query.id,
+        verify_id,
       };
       this.loading = true;
       const res = await getCrmOrderDetail(data).catch(() => {});
