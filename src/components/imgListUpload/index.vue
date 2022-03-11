@@ -10,6 +10,7 @@
       :on-error="handleUploadError"
       :on-preview="handlePictureCardPreview"
       multiple
+      drag
       name="image"
       accept="image/*"
       list-type="picture-card"
@@ -65,10 +66,15 @@ export default {
     width: 80px;
     height: 80px;
   }
+  /deep/.el-upload-dragger {
+    width: auto;
+    height: auto;
+  }
   /deep/.el-upload--picture-card {
     width: 80px;
     height: 80px;
     line-height: 80px;
+    border: none;
   }
 }
 </style>
