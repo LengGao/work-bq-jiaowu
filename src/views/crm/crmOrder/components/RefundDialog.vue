@@ -8,7 +8,7 @@
     @closed="resetForm('formData')"
     @close="hanldeClose"
     ><el-alert
-      title="您可以在此申请作废/退款订单，只有审批通过后才有效。订单作废/退款后将关闭学员的课程，不能再开课和计算业绩"
+      title="您可以在此申请作废/退款订单，只有审批通过后才有效。订单作废/退款后将关闭学员的课程，不能再开课和计算业绩。"
       type="error"
       style="margin-bottom: 10px"
     >
@@ -84,9 +84,9 @@
       >
         <el-input v-if="false" v-model="formData.voucher" type="input" />
         <ImgListUpload v-model="formData.voucher" />
+        <p style="color: red">请上传钉钉的退款/作废订单的审批凭证</p>
       </el-form-item>
     </el-form>
-
     <span slot="footer" class="dialog-footer">
       <el-button @click="hanldeClose">取 消</el-button>
       <el-button

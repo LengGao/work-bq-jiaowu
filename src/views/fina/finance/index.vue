@@ -90,7 +90,6 @@ export default {
       }
       const res = await getStudentBasicDetail(data);
       if (res.code === 0) {
-        console;
         this.detailData = res.data;
       }
     },

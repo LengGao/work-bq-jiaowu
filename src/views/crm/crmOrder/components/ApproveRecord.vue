@@ -25,6 +25,19 @@
       >
       </el-table-column>
       <el-table-column
+        prop="verify_type"
+        label="审批类型"
+        min-width="100"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-tag size="small" :type="verifyTypeMap[row.verify_type || 0].type">
+            {{ verifyTypeMap[row.verify_type || 0].text }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
         label="执行操作"
         align="center"
         min-width="100"
@@ -63,6 +76,20 @@ export default {
   },
   data() {
     return {
+      verifyTypeMap: {
+        0: {
+          text: "新订单",
+          type: "success",
+        },
+        1: {
+          text: "申请退款",
+          type: "warning",
+        },
+        2: {
+          text: "申请作废",
+          type: "danger",
+        },
+      },
       verifyStatusMap: {
         0: {
           text: "待审核",
