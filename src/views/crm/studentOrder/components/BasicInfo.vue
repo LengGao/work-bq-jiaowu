@@ -250,7 +250,8 @@ export default {
   },
   computed: {
     getTableData() {
-      const tableData = JSON.parse(this.data.project) || [];
+      const parseData = this.data.project ? JSON.parse(this.data.project) : [];
+      const tableData = Array.isArray(parseData) ? parseData : [];
       return tableData;
     },
   },
