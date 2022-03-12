@@ -28,7 +28,7 @@
           min-width="190"
         >
           <template slot-scope="{ row }">
-            <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
+            <el-button type="text" @click="toCrmOrderDetail(row)">
               {{ row.order_no }}
             </el-button>
           </template>
