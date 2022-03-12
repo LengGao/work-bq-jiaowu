@@ -721,7 +721,7 @@ export function getGradeList(params) {
     })
 }
 // 届别排序
-export function posrtSessionSort(params) {
+export function sessionSort(params) {
     return request({
         url: '/Crm/sessionSort',
         method: 'post',
@@ -729,9 +729,25 @@ export function posrtSessionSort(params) {
     })
 }
 // 届别编辑
-export function postXiuGaiJieBie(params) {
+export function xiuGaiJieBie(params) {
     return request({
-        url: '/Crm/sessionLeftList',
+        url: '/Crm/xiuGaiJieBie',
+        method: 'post',
+        params,
+    })
+}
+// 分类编辑
+export function updateCategory(params) {
+    return request({
+        url: '/courseCategory/updateCategory',
+        method: 'post',
+        params,
+    })
+}
+// 分类排序
+export function categorySort(params) {
+    return request({
+        url: '/courseCategory/categorySort',
         method: 'post',
         params,
     })
