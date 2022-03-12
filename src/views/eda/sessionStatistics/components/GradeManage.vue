@@ -12,11 +12,14 @@
         >
         <div class="custom-tree-node" slot-scope="{ node, data }"  @mouseover="onMouseover(data)" @mouseleave="onMouseleave(data)">
             <span class="row-node-label">{{ node.label }}</span>
-            <span v-show="data.show" class="tree-node-row-icons">
-                <i v-if="data.title !== '未分级'  && data.title !== '全部'" 
-                   class="el-icon-edit" 
+            <span v-if="data.jiebie_id" class="tree-node-row-icons">
+                <i class="el-icon-edit" 
                    title="编辑" 
                    @click.stop="openEdit(data)">
+                </i>
+                <i class="el-icon-sort"
+                   title="排序"
+                   @click.stop="openSort(data)">
                 </i>
             </span>
         </div>
@@ -143,17 +146,16 @@
     <EditGradeDialog
       v-model="dialogVisible"
       :title="dialogTitle"
+      :dialogType="dialogType"
       :currentNode="currentNode"
       @success="handleSuccess"
     />
-
   </div>
 </template>
 <script>
 
 import EditGradeDialog from '@/components/editGradeDialog/index.vue'
-import { updateCategorySort, updateCategory } from "@/api/sou";
-import { getTreeCategory, getGradeList, getSessionSort } from "@/api/crm";
+import { getTreeCategory, getGradeList } from "@/api/crm";
 import { getproject } from "@/api/eda";
 
 export default {
@@ -202,6 +204,7 @@ export default {
       isTreeOpen: true,
       dialogVisible: false,
       dialogTitle: '',
+      dialogType: '',
       currentNode: {}
     };
   },
@@ -221,14 +224,16 @@ export default {
         this.$set(data, 'show', true)
     },
     openEdit(data) {
-      console.log("openEdit",data);
-        const {count, jiebie_id, title, type_id } = data
-        this.currentNode = {count, jiebie_id, title, type_id}
-        this.dialogTitle = `编辑届别`
-        this.dialogVisible = true;
+      this.dialogTitle = data.jiebie_id ? `编辑届别` : '编辑分类'
+      this.dialogType = 'edit'
+      this.currentNode = data
+      this.dialogVisible = true
     },
-    handleSort(data) {
-        this.dialogTitle = `编辑届别`
+    openSort(data) {
+      this.dialogTitle = data.jiebie_id ? `排序排序` : '分类排序'
+      this.dialogType = 'sort'
+      this.currentNode = data
+      this.dialogVisible = true
     },
     handleToggle() {
       this.isTreeOpen = !this.isTreeOpen;

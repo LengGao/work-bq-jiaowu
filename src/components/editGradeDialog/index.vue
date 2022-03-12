@@ -15,27 +15,31 @@
       ref="formData"
       v-loading="detaiLoading"
     >
-      <el-form-item
-        label="届别分类"
-        prop="name"
-      >
-        <el-input
-          v-model="formData.title"
-          placeholder="请输入届别名称"
-          maxlength="100"
-        />
-      </el-form-item>
-      <el-form-item
-        label="`届别排序`"
-        prop="sort"
-      >
-        <el-input
-          type="number"
-          v-model="formData.count"
-          placeholder="请输入"
-          maxlength="10"
-        />
-      </el-form-item>
+      <template v-if="dialogType === 'edit'">
+        <el-form-item
+          label="届别名称"
+          prop="name"
+        >
+          <el-input
+            v-model="formData.title"
+            placeholder="请输入届别名称"
+            maxlength="100"
+          />
+        </el-form-item>
+      </template>
+      <template v-else>
+        <el-form-item
+          label="`届别排序`"
+          prop="sort"
+        >
+          <el-input
+            type="number"
+            v-model="formData.count"
+            placeholder="请输入"
+            maxlength="10"
+          />
+        </el-form-item>
+      </template>
     </el-form>
 
     <span slot="footer" class="dialog-footer">
@@ -51,7 +55,9 @@
 </template>
 
 <script>
-import { postXiuGaiJieBie } from "@/api/crm";
+
+import { xiuGaiJieBie, sessionSort } from "@/api/crm";
+
 export default {
   name: "editGradeDialog",
   props: {
@@ -70,6 +76,10 @@ export default {
     success: {
       type: Function,
       defaultL: () => {}
+    },
+    dialogType: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -77,12 +87,16 @@ export default {
       visible: this.value,
       formData: {
         title: "",
-        count: "",
+        count: '',
+        type_id: '',
+        jiebie_id: "",
+        category_id: ''
       },
       rules: {
         title: [{ required: true, message: "请输入分类名", trigger: "blur" }],
         count: [{ required: true, message: "请输入排序", trigger: "blur" }],
       },
+      selectData: [],
       addLoading: false,
       detaiLoading: false,
     };
@@ -91,21 +105,36 @@ export default {
     value(val) {
       this.visible = val;
     },
+    dialogType: {
+      immediate: true,
+      handler: function (val) {
+        this.dialogType = val
+      }
+    }
   },
-
+  created() {
+  },
   methods: {
     handleOpen() {
-      let target = Object.assign(this.formData, this.currentNode)
-      this.formData = target
+      this.formData = Object.assign({}, this.currentNode)
     },
     async submit() {
-      const data = this.formData,
-            api = postXiuGaiJieBie
+      let api = undefined, data = {}
+      if (this.dialogType === 'edit') {
+        api = xiuGaiJieBie
+        data.title = this.formData.title
+        data.category_id = this.formData.category_id
+      } else {
+        api = sessionSort
+        data.sort = this.formData.sort
+      }
+      data.id = this.formData.jiebie_id
+      
       const res = await api(data).catch(() => {})
       if (res.code === 0) {
         this.$message.success(res.message);
         this.resetForm("formData");
-        this.$emit("success", {})
+        this.$emit("success")
       }
     },
     submitForm(formName) {
