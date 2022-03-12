@@ -63,6 +63,7 @@
         end-placeholder="结束日期"
         :picker-options="pickerOptions"
         value-format="yyyy-MM-dd"
+        style="width: 240px"
       >
       </el-date-picker>
     </div>

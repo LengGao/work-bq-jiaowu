@@ -5,7 +5,7 @@
       <el-table-column
         label="分类名称"
         show-overflow-tooltip
-        min-width="140"
+        min-width="120"
         align="center"
         prop="category_name"
       >
@@ -50,7 +50,7 @@
       <el-table-column
         prop="order_refund_money"
         label="退款金额"
-        min-width="80"
+        min-width="100"
         align="center"
       >
         <template slot-scope="{ row }">
@@ -60,7 +60,7 @@
       <el-table-column
         prop="ratio"
         label="回款环比"
-        min-width="80"
+        min-width="100"
         align="center"
       >
         <template slot-scope="{ row }">
