@@ -67,6 +67,10 @@ export default {
       type: [String, Number, Object],
       default: "",
     },
+    success: {
+      type: Function,
+      defaultL: () => {}
+    }
   },
   data() {
     return {
@@ -101,6 +105,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.resetForm("formData");
+        this.$emit("success", {})
       }
     },
     submitForm(formName) {
