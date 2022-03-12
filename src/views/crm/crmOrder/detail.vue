@@ -39,8 +39,8 @@
         <span
           v-else
           class="change-status"
-          :type="verifyStatusMap[detailData.verify_status || 1].type"
-          >{{ verifyStatusMap[detailData.verify_status || 1].text }}</span
+          :type="verifyStatusMap[detailData.final_status || 1].type"
+          >{{ verifyStatusMap[detailData.final_status || 1].text }}</span
         >
       </template>
 
@@ -210,7 +210,9 @@ export default {
         pay_log: [],
         project: "[]",
         verify_step: [],
+        step_list: [],
         verify_status: 0,
+        final_status: 1,
       },
       approveStatuMap: {
         0: "wait",

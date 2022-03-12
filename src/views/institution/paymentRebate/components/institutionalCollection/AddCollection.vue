@@ -264,12 +264,21 @@
             >
             </el-table-column>
             <el-table-column
-              label="订单金额"
               show-overflow-tooltip
-              min-width="90"
+              min-width="100"
               prop="order_money"
               fixed="right"
             >
+              <template slot="header">
+                <div
+                  title="双击复制（同时编辑多个时有效）"
+                  class="header-copy"
+                  @dblclick="handleHeaderDblclick('resetOrderMoney')"
+                >
+                  <span>订单金额</span>
+                  <i class="el-icon-document-copy"></i>
+                </div>
+              </template>
               <template slot-scope="{ row }">
                 <el-input
                   size="small"
@@ -296,12 +305,21 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="未回款金额"
               fixed="right"
               show-overflow-tooltip
-              min-width="90"
+              min-width="110"
               prop="outstanding_amount"
             >
+              <template slot="header">
+                <div
+                  class="header-copy"
+                  title="双击复制（同时编辑多个时有效）"
+                  @dblclick="handleHeaderDblclick('resetOrderOverdueMoney')"
+                >
+                  <span>未回款金额</span>
+                  <i class="el-icon-document-copy"></i>
+                </div>
+              </template>
               <template slot-scope="{ row }">
                 <el-input
                   v-if="row.edit"
@@ -314,12 +332,21 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="优惠金额"
               show-overflow-tooltip
-              min-width="90"
+              min-width="100"
               fixed="right"
               prop="reduction"
             >
+              <template slot="header">
+                <div
+                  class="header-copy"
+                  title="双击复制（同时编辑多个时有效）"
+                  @dblclick="handleHeaderDblclick('resetOrderReductionMoney')"
+                >
+                  <span>优惠金额</span>
+                  <i class="el-icon-document-copy"></i>
+                </div>
+              </template>
               <template slot-scope="{ row }">
                 <el-input
                   v-if="row.edit"
@@ -332,6 +359,16 @@
               </template>
             </el-table-column>
             <el-table-column label="操作" fixed="right" min-width="90">
+              <template slot="header">
+                <div
+                  class="header-copy"
+                  title="双击全部保存（同时编辑多个时有效）"
+                  @dblclick="handleAllSave"
+                >
+                  <span>操作</span>
+                  <i class="el-icon-finished"></i>
+                </div>
+              </template>
               <template slot-scope="{ row, $index: index }">
                 <template v-if="row.edit">
                   <el-button
@@ -635,6 +672,28 @@ export default {
     }
   },
   methods: {
+    // 双击保存全部
+    handleAllSave() {
+      this.listData.forEach((item, index) => {
+        if (item.edit) {
+          this.changeOrderMoney(item, index);
+        }
+      });
+    },
+    // 双击表头复制指定金额
+    handleHeaderDblclick(field) {
+      let value = "";
+      console.log(field);
+      this.listData.forEach((item) => {
+        if (item.edit) {
+          if (value !== "") {
+            item[field] = value;
+          } else {
+            value = item[field];
+          }
+        }
+      });
+    },
     // 获取届别选项
     async getGradeOptions() {
       const res = await getGradeOptions();
@@ -914,6 +973,12 @@ export default {
     /deep/.el-table {
       border: 1px solid #efefef;
       border-bottom: none;
+    }
+    .header-copy {
+      cursor: pointer;
+      i {
+        margin-left: 2px;
+      }
     }
     .again-table {
       flex: 1;

@@ -1,7 +1,7 @@
 <template>
   <div class="approve-record">
     <el-table
-      :data="data.verify_step"
+      :data="data.step_list"
       style="width: 100%"
       :header-cell-style="{
         'text-align': 'center',
