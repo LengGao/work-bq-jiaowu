@@ -19,6 +19,13 @@
     </el-alert>
     <div class="change-title">
       <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
+      <el-tag
+        style="margin-left: 10px"
+        size="small"
+        :type="verifyTypeMap[detailData.final_type || 0].type"
+      >
+        {{ verifyTypeMap[detailData.final_type || 0].text }}
+      </el-tag>
       <template v-if="!detailData.is_deleted">
         <span
           v-if="
@@ -213,6 +220,20 @@ export default {
         step_list: [],
         verify_status: 0,
         final_status: 1,
+      },
+      verifyTypeMap: {
+        0: {
+          text: "新订单",
+          type: "success",
+        },
+        1: {
+          text: "申请退款",
+          type: "warning",
+        },
+        2: {
+          text: "申请作废",
+          type: "danger",
+        },
       },
       approveStatuMap: {
         0: "wait",
