@@ -13,7 +13,7 @@
         <div class="custom-tree-node" slot-scope="{ node, data }"  @mouseover="onMouseover(data)" @mouseleave="onMouseleave(data)">
             <span class="row-node-label">{{ node.label }}</span>
             <span v-if="data.jiebie_id" class="tree-node-row-icons">
-                <i class="el-icon-edit" 
+                <i class="el-icon-edit"
                    title="编辑" 
                    @click.stop="openEdit(data)">
                 </i>
@@ -365,6 +365,21 @@ export default {
     }
     .row-node-label {
       font-size: 14px;
+    }
+    .tree-node-row-icons {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 40px;
+      color: deepskyblue;
+      margin-right: 15px;
+    }
+    .el-icon-edit:hover {
+      color: red;
+    }
+    .el-icon-sort:hover {
+      color: red;
     }
   }
 }
