@@ -13,8 +13,11 @@
         <div class="custom-tree-node" slot-scope="{ node, data }"  @mouseover="onMouseover(data)" @mouseleave="onMouseleave(data)">
             <span class="row-node-label">{{ node.label }}</span>
             <span v-show="data.show" class="tree-node-row-icons">
-                <i class="el-icon-edit" title="编辑" @click.stop="openEdit(data)"></i>
-                <!-- <i class="el-icon-sort" title="排序" type="primary" @click.stop="handleSort(data)"></i> -->
+                <i v-if="data.title !== '未分级'  && data.title !== '全部'" 
+                   class="el-icon-edit" 
+                   title="编辑" 
+                   @click.stop="openEdit(data)">
+                </i>
             </span>
         </div>
         </el-tree>
@@ -141,6 +144,7 @@
       v-model="dialogVisible"
       :title="dialogTitle"
       :currentNode="currentNode"
+      @success="handleSuccess"
     />
 
   </div>
@@ -207,6 +211,9 @@ export default {
     this.getproject();
   },
   methods: {
+    handleSuccess() {
+      this.getTreeCategory();
+    },
     onMouseleave(data) {
         this.$set(data, 'show', false)
     },
@@ -214,6 +221,7 @@ export default {
         this.$set(data, 'show', true)
     },
     openEdit(data) {
+      console.log("openEdit",data);
         const {count, jiebie_id, title, type_id } = data
         this.currentNode = {count, jiebie_id, title, type_id}
         this.dialogTitle = `编辑届别`
@@ -232,7 +240,7 @@ export default {
             cId = data.category_id || ''
             
       if (title === '全部') {
-          return;
+          params = {}
       } else if (title === '未分级') {
           params = {category_id: cId, jiebie_id: jId}
       } else if (jId) {
@@ -349,6 +357,9 @@ export default {
         flex-direction: row;
         justify-content: space-between;
         width: 100%;
+    }
+    .row-node-label {
+      font-size: 14px;
     }
   }
 }
