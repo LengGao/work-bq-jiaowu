@@ -111,11 +111,8 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <el-tag
-              size="small"
-              :type="verifyStatusMap[row.verify_status || 1].type"
-            >
-              {{ verifyStatusMap[row.verify_status || 1].text }}
+            <el-tag size="small" :type="verifyStatusMap[row.status || 1].type">
+              {{ verifyStatusMap[row.status || 1].text }}
             </el-tag>
           </template>
         </el-table-column>
