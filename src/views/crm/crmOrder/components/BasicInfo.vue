@@ -41,7 +41,7 @@
             </span>
           </div>
         </template>
-        <template v-if="data.verify_type === 1">
+        <template v-if="[1, 3].includes(data.verify_type)">
           <div class="info-item">
             <span class="info-item__name">退款金额：</span>
             <span class="info-item__value">{{
@@ -376,6 +376,10 @@ export default {
         2: {
           text: "申请作废",
           type: "danger",
+        },
+        3: {
+          text: "申请退差价",
+          type: "warning",
         },
       },
     };

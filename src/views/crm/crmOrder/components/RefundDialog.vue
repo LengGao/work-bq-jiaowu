@@ -39,9 +39,10 @@
         <el-radio-group v-model="formData.type">
           <el-radio label="1">退款</el-radio>
           <el-radio label="2">作废</el-radio>
+          <el-radio label="3">退差价</el-radio>
         </el-radio-group>
       </el-form-item>
-      <div class="in-line" v-if="formData.type === '1'">
+      <div class="in-line" v-if="['1', '3'].includes(formData.type)">
         <el-form-item label="退款方式" prop="refund_type">
           <el-select
             v-model="formData.refund_type"
@@ -68,7 +69,7 @@
         </el-form-item>
       </div>
       <el-form-item
-        :label="`${formData.type === '1' ? '退款' : '作废'}原因`"
+        :label="`${['1', '3'].includes(formData.type) ? '退款' : '作废'}原因`"
         prop="reason"
       >
         <el-input
@@ -79,7 +80,7 @@
         />
       </el-form-item>
       <el-form-item
-        :label="`${formData.type === '1' ? '退款' : '作废'}凭证`"
+        :label="`${['1', '3'].includes(formData.type) ? '退款' : '作废'}凭证`"
         prop="voucher"
       >
         <el-input v-if="false" v-model="formData.voucher" type="input" />
