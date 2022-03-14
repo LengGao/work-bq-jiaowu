@@ -300,7 +300,6 @@ export function getReturnPaymentList(data) {
     return request({
         url: 'CrmOrder/log',
         method: 'post',
-        responseType: data.export ? 'blob' : 'json',
         data
     })
 }
@@ -717,7 +716,7 @@ export function getGradeList(params) {
     return request({
         url: '/Crm/sessionRightList',
         method: 'get',
-        params, 
+        params,
     })
 }
 // 届别排序
