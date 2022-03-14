@@ -402,7 +402,7 @@ export default {
       this.exportLoading = true;
       const res = await getReturnPaymentList(data).catch(() => {});
       this.exportLoading = false;
-      download(URL.createObjectURL(res), "回款入帐");
+      download(res.data.url, "回款入帐");
     },
     // 获取客户来源
     async getCustomFromOptions() {
