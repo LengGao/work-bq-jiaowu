@@ -371,6 +371,26 @@
         >
         </el-table-column>
         <el-table-column
+          label="回款凭证"
+          align="center"
+          prop="admin_name"
+          min-width="100"
+        >
+          <template slot-scope="{ row }">
+            <template v-if="row.receipt_file && row.receipt_file.length">
+              <img
+                :src="src"
+                @click="handlePreview(src)"
+                style="height: 40px; cursor: pointer; margin-left: 10px"
+                v-for="(src, index) in row.receipt_file"
+                :key="index"
+                alt=""
+              />
+            </template>
+            <span v-else>无</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="备注信息"
           align="center"
           min-width="100"
@@ -450,6 +470,7 @@
       @on-success="onSetPlanSuccess"
       :data="detailData.pay_plan"
     />
+    <PreviewImg ref="view" />
   </div>
 </template>
 
@@ -520,6 +541,9 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
     hanldeCancel() {
       this.$router.back();
     },
@@ -607,7 +631,7 @@ export default {
         this.formData.reduction = res.data.reduction;
         this.formData.order_money = res.data.order_money;
         this.formData.tips = res.data.tips;
-        this.formData.receipt_file = res.data.receipt_file.map(
+        this.formData.receipt_file = (res.data.receipt_file || []).map(
           (item, index) => ({
             name: "回款凭证" + (index + 1),
             url: item,
