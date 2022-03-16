@@ -29,7 +29,31 @@
       <el-form-item label="报名项目：">
         <span>{{ detailData.project_name }}</span>
       </el-form-item>
-
+      <el-form-item v-if="detailData.type === 1" label="修改项目" key="666">
+        <el-cascader
+          ref="cascaderMajor"
+          class="input"
+          popper-class="select-project"
+          placeholder="请选择项目"
+          v-model="selectMajor"
+          :props="majorProps"
+          :show-all-levels="false"
+          collapse-tags
+        ></el-cascader>
+      </el-form-item>
+      <el-form-item v-else key="777" label="修改项目">
+        <el-cascader
+          class="input"
+          popper-class="select-project"
+          placeholder="请选择项目"
+          v-model="selectProject"
+          :options="projectOptions"
+          :props="{ multiple: true }"
+          :show-all-levels="false"
+          filterable
+          collapse-tags
+        ></el-cascader>
+      </el-form-item>
       <el-form-item label="订单金额" prop="order_money">
         <el-input
           type="number"
@@ -37,6 +61,23 @@
           v-model="formData.order_money"
           placeholder="请输入订单金额"
         />
+      </el-form-item>
+      <el-form-item label="届别名称">
+        <el-select
+          class="input"
+          v-model="formData.jiebie_id"
+          placeholder="请选择届别"
+          clearable
+          filterable
+        >
+          <el-option
+            v-for="item in gradeOptions"
+            :key="item.id"
+            :value="item.id"
+            :label="item.title"
+          >
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="共享业绩" prop="union_staff_id">
         <el-select
@@ -104,7 +145,7 @@
       <template v-if="detailData.type === 1">
         <el-table
           key="1"
-          :data="getTableData"
+          :data="majorData"
           style="border: 1px solid #f1f1f1"
           :header-cell-style="{
             'text-align': 'center',
@@ -123,8 +164,13 @@
             show-overflow-tooltip
             min-width="160"
             align="center"
-            prop="type.value"
+            prop=""
           >
+            <template slot-scope="{ row }">
+              <span>
+                {{ row.type_name || row.type.value }}
+              </span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="university.value"
@@ -133,6 +179,11 @@
             align="center"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <span>
+                {{ row.school_name || row.university.value }}
+              </span>
+            </template>
           </el-table-column>
           <el-table-column
             label="层次名称"
@@ -141,6 +192,11 @@
             min-width="100"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <span>
+                {{ row.level_name || row.level.value }}
+              </span>
+            </template>
           </el-table-column>
           <el-table-column
             label="专业名称"
@@ -149,6 +205,11 @@
             min-width="100"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <span>
+                {{ row.major_name || row.major.value }}
+              </span>
+            </template>
           </el-table-column>
           <el-table-column
             label="关联项目"
@@ -166,7 +227,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span> ￥{{ row.total_money }} </span>
+              <span> ￥{{ row.total_money || row.price }} </span>
             </template>
           </el-table-column>
         </el-table>
@@ -174,7 +235,7 @@
       <template v-else>
         <el-table
           key="2"
-          :data="getTableData"
+          :data="projectData"
           style="border: 1px solid #f1f1f1"
           :header-cell-style="{
             'text-align': 'center',
@@ -212,7 +273,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span> ￥{{ row.project_price }} </span>
+              <span> ￥{{ row.project_price || row.price }} </span>
             </template>
           </el-table-column>
         </el-table>
@@ -484,6 +545,8 @@ import {
 import { getStaffList } from "@/api/set";
 import SetCollectionRecord from "./components/SetCollectionRecord.vue";
 import SetCollectionPlan from "./components/SetCollectionPlan.vue";
+import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
+import { getUniversityMajorDetailList, getGradeOptions } from "@/api/sou";
 export default {
   name: "applyChange",
   components: {
@@ -504,6 +567,7 @@ export default {
         reduction: "",
         order_money: "",
         union_staff_id: "",
+        jiebie_id: "",
         tips: "",
         reason: "",
         receipt_file: [],
@@ -527,20 +591,136 @@ export default {
         2: "已驳回",
         3: "确认入账中",
       },
+      selectProject: "",
+      selectMajor: "",
+      projectOptions: [],
+      type_id: "",
+      school_id: "",
+      level_id: "",
+      majorProps: {
+        multiple: true,
+        lazy: true,
+        lazyLoad: async (node, resolve) => {
+          const { level, value } = node;
+          let keyName = "";
+          let valName = "";
+          switch (level) {
+            case 0:
+              keyName = "type_name";
+              valName = "type_id";
+              break;
+            case 1:
+              this.type_id = value;
+              this.school_id = "";
+              this.level_id = "";
+              keyName = "school_name";
+              valName = "school_id";
+              break;
+            case 2:
+              this.school_id = value;
+              this.level_id = "";
+              keyName = "level_name";
+              valName = "level_id";
+              break;
+            case 3:
+              this.level_id = value;
+              keyName = "major_name";
+              valName = "id";
+              break;
+          }
+          if (level < 4) {
+            const children = await this.getUniversityMajorDetailList();
+            const nodes = children.map((item) => ({
+              ...item,
+              value: item[valName],
+              label: item[keyName],
+              leaf: level >= 3,
+            }));
+            // 通过调用resolve将子节点数据返回，通知组件数据加载完成
+            resolve(nodes);
+          } else {
+            resolve([]);
+          }
+        },
+      },
+      majorData: [],
+      projectData: [],
+      tableData: [],
+      gradeOptions: [],
     };
   },
-  computed: {
-    getTableData() {
-      const tableData = JSON.parse(this.detailData.project) || [];
-      return tableData;
+  watch: {
+    // 根据选中的项目获取项目详情
+    selectProject(newVal) {
+      this.getCateProjectDetail(newVal || []);
+    },
+    // 根据选中的专业获取相关数据
+    selectMajor(val) {
+      const el = this.$refs.cascaderMajor;
+      val &&
+        this.$nextTick(() => {
+          let checkNodes = el.getCheckedNodes(true);
+          this.majorData = checkNodes
+            .filter((item) => item.checked)
+            .map((item) => item.data);
+          if (!this.majorData.length) {
+            this.majorData = this.tableData;
+          }
+        });
     },
   },
   created() {
     this.getCrmOrderDetail();
     this.getStaffList();
     this.getCustomfieldOptions();
+    this.getCateProjectOption();
+    this.getGradeOptions();
   },
   methods: {
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.gradeOptions = res.data;
+      }
+    },
+    // 学历报名的级联选项
+    async getUniversityMajorDetailList() {
+      const data = {
+        limit: 9999,
+        status: 1,
+        type_id: this.type_id || 0,
+        school_id: this.school_id || 0,
+        level_id: this.level_id || 0,
+      };
+      const res = await getUniversityMajorDetailList(data);
+      return res.data.list;
+    },
+    // 已选项目详情
+    async getCateProjectDetail(arr) {
+      const idStr = arr.map((item) => [...item].pop()).join(",");
+      if (!idStr) {
+        this.projectData = this.tableData;
+        return;
+      }
+      const data = {
+        id: idStr,
+      };
+      const res = await getCateProjectDetail(data);
+      if (res.code === 0) {
+        this.projectData = res.data;
+      }
+    },
+    // 获取项目选项
+    async getCateProjectOption() {
+      const data = {
+        no_edu: 1,
+      };
+      const res = await getCateProjectOption(data);
+      if (res.code === 0) {
+        this.projectOptions = res.data || [];
+      }
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },
@@ -567,7 +747,53 @@ export default {
         pay_plan: this.detailData.pay_plan,
         pay_log: this.detailData.pay_log,
         order_id: this.detailData.order_id,
+        type: this.detailData.type,
       };
+      if (this.detailData.type === 1) {
+        data.project = JSON.stringify(
+          this.majorData.map((item) => ({
+            id: item.id,
+            type: {
+              id: item.type_id,
+              value: item.type_name,
+            },
+            university: {
+              id: item.school_id,
+              value: item.school_name,
+            },
+            level: {
+              id: item.level_id,
+              value: item.level_name,
+            },
+            major: {
+              id: item.major_id,
+              value: item.major_name,
+            },
+            total_money: item.price,
+            lower_price: item.lowest_price,
+            service_period: item.service_period,
+            service_type: item.service_type,
+            service_effective: item.service_effective,
+            project: {
+              id: item.project_id,
+              value: item.project_name,
+            },
+          }))
+        );
+      } else {
+        data.project = JSON.stringify(
+          this.projectData.map((item) => ({
+            id: item.id,
+            project_name: item.project_name,
+            project_price: item.price,
+            lower_price: item.lowest_price,
+            must_price: item.must_price,
+            service_effective: item.service_effective,
+            service_period: item.service_period,
+            service_type: item.service_type,
+          }))
+        );
+      }
       const res = await orderReshuffle(data);
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -631,12 +857,17 @@ export default {
         this.formData.reduction = res.data.reduction;
         this.formData.order_money = res.data.order_money;
         this.formData.tips = res.data.tips;
+        this.formData.jiebie_id = res.data.jiebie_id || "";
         this.formData.receipt_file = (res.data.receipt_file || []).map(
           (item, index) => ({
             name: "回款凭证" + (index + 1),
             url: item,
           })
         );
+        this.projectData =
+          this.majorData =
+          this.tableData =
+            JSON.parse(this.detailData.project) || [];
       }
     },
   },
@@ -679,6 +910,25 @@ export default {
     }
     .footer-submit {
       text-align: center;
+    }
+  }
+}
+</style>
+<style lang="scss">
+.select-project {
+  .el-cascader-panel {
+    & > .el-scrollbar:first-child {
+      .el-checkbox {
+        display: none;
+      }
+    }
+    .el-cascader-node[aria-owns] {
+      .el-checkbox {
+        width: 14px;
+        span {
+          display: none;
+        }
+      }
     }
   }
 }

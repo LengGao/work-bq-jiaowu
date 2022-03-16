@@ -1,25 +1,29 @@
 <template>
   <div class="refund-record">
     <div class="header">
-      <div>
+      <div class="item">
         <span class="title">异动后订单金额：</span>
         <span class="value">{{ data.order_money | moneyFormat }} </span>
       </div>
-      <div>
+      <div class="item">
         <span class="title">优惠金额：</span>
         <span class="value">{{ data.reduction | moneyFormat }} </span>
       </div>
-      <div>
+      <div class="item">
         <span class="title">已回款金额：</span>
         <span class="value">{{ data.pay_money | moneyFormat }} </span>
       </div>
-      <div>
+      <div class="item">
         <span class="title">未回款金额：</span>
         <span class="value">{{ data.overdue_money | moneyFormat }} </span>
       </div>
-      <div>
+      <div class="item">
         <span class="title">共享业绩：</span>
-        <span>{{ data.union_staff_name }} </span>
+        <span>{{ data.union_staff_name || "--" }} </span>
+      </div>
+      <div class="item">
+        <span class="title">届别名称：</span>
+        <span>{{ data.jiebie_name || "--" }} </span>
       </div>
     </div>
     <Title text="回款记录" style="margin-top: 20px"></Title>
@@ -107,6 +111,132 @@
       >
       </el-table-column>
     </el-table>
+    <template v-if="data.type === 1">
+      <Title text="学历信息" style="margin-top: 20px"></Title>
+      <el-table
+        :key="data.type"
+        :data="getTableData"
+        style="border: 1px solid #f1f1f1"
+        v-loading="false"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
+        :header-cell-style="{
+          'text-align': 'center',
+          'background-color': '#f8f8f8',
+        }"
+      >
+        <el-table-column
+          label="序号"
+          min-width="70"
+          align="center"
+          type="index"
+        >
+        </el-table-column>
+        <el-table-column
+          label="学历形式"
+          show-overflow-tooltip
+          min-width="160"
+          align="center"
+          prop="type.value"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="university.value"
+          label="院校名称"
+          min-width="80"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="层次名称"
+          align="center"
+          prop="level.value"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="专业名称"
+          align="center"
+          prop="major.value"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="关联项目"
+          align="center"
+          min-width="100"
+          prop="project_name"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="总学费"
+          align="center"
+          min-width="100"
+          prop="total_money"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span> {{ row.total_money | moneyFormat }} </span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template v-else>
+      <Title text="项目信息" style="margin-top: 20px"></Title>
+      <el-table
+        :key="data.type"
+        :data="getTableData"
+        style="border: 1px solid #f1f1f1"
+        v-loading="false"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
+        :header-cell-style="{
+          'text-align': 'center',
+          'background-color': '#f8f8f8',
+        }"
+      >
+        <el-table-column
+          label="序号"
+          min-width="70"
+          align="center"
+          type="index"
+        >
+        </el-table-column>
+        <el-table-column
+          label="项目名称"
+          show-overflow-tooltip
+          min-width="160"
+          align="center"
+          prop="project_name"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="category_name"
+          label="所属分类"
+          min-width="80"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="项目价格"
+          align="center"
+          min-width="100"
+          prop="project_price"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span> {{ row.project_price | moneyFormat }} </span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
     <Title text="回款计划" style="margin-top: 20px"></Title>
     <div class="term">
       <el-table
@@ -211,6 +341,12 @@ export default {
       },
     };
   },
+  computed: {
+    getTableData() {
+      const tableData = this.data.project || [];
+      return tableData;
+    },
+  },
   methods: {},
 };
 </script>
@@ -219,9 +355,11 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
+  .item {
+    margin-right: 20px;
+  }
   .value {
     color: #199fff;
-    margin-right: 20px;
   }
   .title {
     color: #333;

@@ -222,7 +222,7 @@
             label="所属分类"
             show-overflow-tooltip
             min-width="150"
-            prop="project_name"
+            prop="category_name"
           >
           </el-table-column>
           <el-table-column
@@ -260,7 +260,7 @@
             label="学历形式"
             show-overflow-tooltip
             min-width="150"
-            prop="project_name"
+            prop="type_name"
           >
           </el-table-column>
           <el-table-column
