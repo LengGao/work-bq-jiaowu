@@ -216,14 +216,14 @@
           prop="project_name"
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="category_name"
           label="所属分类"
           min-width="80"
           align="center"
           show-overflow-tooltip
         >
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           label="项目价格"
           align="center"

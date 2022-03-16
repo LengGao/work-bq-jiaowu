@@ -749,7 +749,8 @@ export default {
         order_id: this.detailData.order_id,
         type: this.detailData.type,
       };
-      if (this.detailData.type === 1) {
+
+      if (this.detailData.type === 1 && this.selectMajor) {
         data.project = JSON.stringify(
           this.majorData.map((item) => ({
             id: item.id,
@@ -780,7 +781,7 @@ export default {
             },
           }))
         );
-      } else {
+      } else if (this.detailData.type === 0 && this.selectProject) {
         data.project = JSON.stringify(
           this.projectData.map((item) => ({
             id: item.id,
