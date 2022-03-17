@@ -47,7 +47,7 @@
           <el-table-column
             prop="name"
             label="客户姓名"
-            min-width="90"
+            min-width="110"
             show-overflow-tooltip
             v-if="checkHeader.includes('客户姓名')"
           >
@@ -55,6 +55,13 @@
               <el-button type="text" @click="coustomDetail(row.uid, row.id)">
                 {{ row.name }}
               </el-button>
+              <el-tag
+                type="success"
+                size="mini"
+                style="margin-left: 4px"
+                v-if="row.is_new"
+                >新</el-tag
+              >
             </template>
           </el-table-column>
           <el-table-column

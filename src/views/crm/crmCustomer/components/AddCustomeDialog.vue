@@ -46,12 +46,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="客户性别" prop="sex">
-        <el-radio-group class="input" v-model="formData.sex">
-          <el-radio :label="1">男</el-radio>
-          <el-radio :label="2">女</el-radio>
-        </el-radio-group>
-      </el-form-item>
       <el-form-item label="客户地区">
         <el-cascader
           v-model="formData.address"
@@ -64,7 +58,18 @@
         >
         </el-cascader>
       </el-form-item>
-
+      <el-form-item label="客户性别" prop="sex">
+        <el-radio-group class="input" v-model="formData.sex">
+          <el-radio :label="1">男</el-radio>
+          <el-radio :label="2">女</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="新客户" prop="is_new">
+        <el-radio-group class="input" v-model="formData.is_new">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="2">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="文化程度" prop="education">
         <el-select
           v-model="formData.education"
@@ -190,7 +195,7 @@ export default {
       formData: {
         name: "",
         mobile: "",
-        sex: 1,
+        sex: "",
         education: "",
         tags: "",
         tips: "",
@@ -198,6 +203,7 @@ export default {
         province: "",
         city: "",
         district: "",
+        is_new: "",
         address: [],
       },
       rules: {
@@ -215,6 +221,8 @@ export default {
             trigger: "change",
           },
         ],
+        sex: [{ required: true, message: "请选择", trigger: "change" }],
+        is_new: [{ required: true, message: "请选择", trigger: "change" }],
         from: [{ required: true, message: "请选择", trigger: "change" }],
       },
       addLoading: false,
@@ -367,7 +375,6 @@ export default {
         this.formData[k] = "";
       }
       this.formData.address = [];
-      this.formData.sex = 1;
       this.$emit("input", false);
     },
     hanldeCancel() {

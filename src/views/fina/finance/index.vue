@@ -6,6 +6,13 @@
         <div class="header-item header-user">
           <el-avatar :size="50" icon="el-icon-user-solid"></el-avatar>
           <span class="name">{{ detailData.surname || "--" }}</span>
+          <el-tag
+            type="success"
+            v-if="detailData.is_new"
+            size="mini"
+            style="margin-left: 4px"
+            >新</el-tag
+          >
         </div>
         <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
         <div class="header-item">
