@@ -136,7 +136,6 @@ export default {
     return {
       visible: this.value,
       formData: {
-        pay_type: "",
         tableData: [
           {
             day: "",
@@ -145,12 +144,6 @@ export default {
         ],
       },
       addLoading: false,
-      tipOptions: [
-        {
-          label: "准时提醒",
-          value: "",
-        },
-      ],
     };
   },
   watch: {
@@ -178,15 +171,6 @@ export default {
           money,
         }));
       }
-    },
-    addOption() {
-      this.formData.options.push({
-        label: "",
-        id: Date.now(),
-      });
-    },
-    delOption(index) {
-      this.formData.options.splice(index, 1);
     },
     async submit() {
       const data = {

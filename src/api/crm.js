@@ -751,4 +751,12 @@ export function categorySort(params) {
         params,
     })
 }
+// 报名（创建订单）
+export function createOrder(data) {
+    return request({
+        url: '/CustomerOrder/Create',
+        method: 'post',
+        data,
+    })
+}
 

@@ -179,6 +179,9 @@
             </template>
             <template slot-scope="{ row }">
               <el-button type="text" @click="openSignUp(row)">报名</el-button>
+              <el-button type="text" @click="openCreateOrderDialog(row)"
+                >报名2</el-button
+              >
               <el-button type="text" @click="coustomDetail(row.uid, row.id)"
                 >客户详情</el-button
               >
@@ -215,12 +218,18 @@
       :is-crm="true"
       @on-success="getCrmCustomerList"
     />
+    <CreateOrderDialog
+      v-model="createOrderVisible"
+      :user-info="checkedUser"
+      @on-success="getCrmCustomerList"
+    />
   </section>
 </template>
 
 <script>
 import AddCustomeDialog from "./components/AddCustomeDialog";
 import CustomeSignUp from "./components/CustomeSignUp";
+import CreateOrderDialog from "./components/CreateOrderDialog";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect } from "@/api/eda";
 import { getDepartmentlists } from "@/api/set";
@@ -238,6 +247,7 @@ export default {
     AddCustomeDialog,
     CustomeSignUp,
     UpdateTeacher,
+    CreateOrderDialog,
   },
   data() {
     return {
@@ -405,6 +415,7 @@ export default {
       coustomFrom: [],
       checkedIds: [],
       updateTeacherDialog: false,
+      createOrderVisible: false,
     };
   },
   created() {
@@ -491,6 +502,10 @@ export default {
           title: item,
         }));
       }
+    },
+    openCreateOrderDialog(userInfo) {
+      this.checkedUser = userInfo;
+      this.createOrderVisible = true;
     },
     openSignUp(userInfo) {
       this.checkedUser = userInfo;
