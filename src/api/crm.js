@@ -754,7 +754,23 @@ export function categorySort(params) {
 // 报名（创建订单）
 export function createOrder(data) {
     return request({
-        url: '/CustomerOrder/Create',
+        url: '/CustomerOrder/create',
+        method: 'post',
+        data,
+    })
+}
+// 修改回款计划
+export function updateOrderPayPlan(data) {
+    return request({
+        url: '/CustomerOrder/payPlanSave',
+        method: 'post',
+        data,
+    })
+}
+// 获取预览合同
+export function getContractUrl(data) {
+    return request({
+        url: '/CustomerOrder/previewContract',
         method: 'post',
         data,
     })

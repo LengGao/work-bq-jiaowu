@@ -543,65 +543,70 @@ export default {
         this.formData;
       let params = {
         ...restParams,
-        order_token: Date.now(),
         id: this.userInfo.id,
         union_staff_id: (union_staff_id || []).join(","),
       };
       // 学历报名参数
       if (this.formData.type === 1) {
+        params.project_pay_money = {};
         params.project = this.majorData.map((item) => {
           if (!item.pay_money) {
             this.$message.error(`请输入 ${item.project_name} 的实收金额`);
             throw new Error("pay_money is null");
           }
-          return {
-            id: item.id,
-            type: {
-              id: item.type_id,
-              value: item.type_name,
-            },
-            university: {
-              id: item.school_id,
-              value: item.school_name,
-            },
-            level: {
-              id: item.level_id,
-              value: item.level_name,
-            },
-            major: {
-              id: item.major_id,
-              value: item.major_name,
-            },
-            pay_money: item.pay_money,
-            total_money: item.price,
-            lower_price: item.lowest_price,
-            service_period: item.service_period,
-            service_type: item.service_type,
-            service_effective: item.service_effective,
-            project: {
-              id: item.project_id,
-              value: item.project_name,
-            },
-          };
+          params.project_pay_money[item.id] = item.pay_money;
+          return item.id;
+          // return {
+          //   id: item.id,
+          //   type: {
+          //     id: item.type_id,
+          //     value: item.type_name,
+          //   },
+          //   university: {
+          //     id: item.school_id,
+          //     value: item.school_name,
+          //   },
+          //   level: {
+          //     id: item.level_id,
+          //     value: item.level_name,
+          //   },
+          //   major: {
+          //     id: item.major_id,
+          //     value: item.major_name,
+          //   },
+          //   pay_money: item.pay_money,
+          //   total_money: item.price,
+          //   lower_price: item.lowest_price,
+          //   service_period: item.service_period,
+          //   service_type: item.service_type,
+          //   service_effective: item.service_effective,
+          //   project: {
+          //     id: item.project_id,
+          //     value: item.project_name,
+          //   },
+          // };
         });
       } else {
         // 职业报名参数
+        params.project_pay_money = {};
         params.project = this.projectData.map((item) => {
           if (!item.pay_money) {
             this.$message.error(`请输入 ${item.project_name} 的实收金额`);
             throw new Error("pay_money is null");
           }
-          return {
-            id: item.id,
-            pay_money: item.pay_money,
-            project_name: item.project_name,
-            project_price: item.price,
-            lower_price: item.lowest_price,
-            must_price: item.must_price,
-            service_effective: item.service_effective,
-            service_period: item.service_period,
-            service_type: item.service_type,
-          };
+          params.project_pay_money[item.id] = item.pay_money;
+          return item.id;
+          // return {
+          //   id: item.id,
+          //   pay_money: item.pay_money,
+          //   project_name: item.project_name,
+          //   project_price: item.price,
+          //   lower_price: item.lowest_price,
+          //   must_price: item.must_price,
+          //   service_effective: item.service_effective,
+          //   service_period: item.service_period,
+          //   service_type: item.service_type,
+          // };
         });
       }
       this.$emit("next", { ...params });

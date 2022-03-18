@@ -8,7 +8,7 @@
       ref="formData"
     >
       <Title text="回款计划"></Title>
-      <el-form-item label="回款类型" prop="type" style="margin-bottom: 0">
+      <el-form-item label="回款类型" prop="type">
         <el-checkbox-group
           v-model="formData.type"
           @change="handleCheckboxChange"
@@ -176,12 +176,12 @@
           multiple
         >
           <el-option
-            v-for="(item, index) in formData.tableData"
-            :key="item.id"
+            v-for="item in formData.tableData"
+            :key="item.temp_id"
             :label="`${typeMap[item.type]} ${item.year} ￥${(
               +item.money || 0
             ).toFixed(2)}`"
-            :value="index"
+            :value="item.temp_id"
           >
           </el-option>
         </el-select>
@@ -221,6 +221,7 @@
         >*回款时必须保证回款金额等于所选回款计划的总金额，如不相等请先修改回款计划</span
       >
       <el-button @click="$emit('prev')">上一步</el-button>
+      <el-button @click="submitForm('formData', true)">预览合同</el-button>
       <el-button
         type="primary"
         :loading="addLoading"
@@ -228,6 +229,7 @@
         >提 交</el-button
       >
     </span>
+    <PreviewContract v-model="previewDialog" :data="previewContractData" />
   </div>
 </template>
 
@@ -235,6 +237,7 @@
 import { createOrder, getCustomfieldOptions } from "@/api/crm";
 import { today } from "@/utils/date";
 import ImgListUpload from "@/components/imgListUpload";
+import PreviewContract from "./PreviewContract";
 export default {
   name: "PaymentCollectionInfo",
   props: {
@@ -245,6 +248,7 @@ export default {
   },
   components: {
     ImgListUpload,
+    PreviewContract,
   },
   data() {
     return {
@@ -278,6 +282,8 @@ export default {
       planOptions: [],
       payMethodOptions: [],
       yearOptions: [],
+      previewDialog: false,
+      previewContractData: {},
     };
   },
   created() {
@@ -337,27 +343,34 @@ export default {
       }
     },
     // 报名缴费
-    async createOrder() {
+    async createOrder(isPreview) {
       const { tableData, type, pay_plan_ids, receipt_file, ...restParams } =
         this.formData;
 
       const data = {
         ...this.orderInfoParams,
         ...restParams,
+        order_token: Date.now(),
         pay_plan_ids: (pay_plan_ids || []).join(","),
         receipt_file: receipt_file.map((item) => item.response.data.data.url),
         pay_plan: tableData,
       };
+      if (isPreview) {
+        // 预览合同
+        this.previewContractData = data;
+        this.previewDialog = true;
+        return;
+      }
       const res = await createOrder(data);
       if (res.code === 0) {
         this.$message.success(res.message);
         this.hanldeCancel();
       }
     },
-    submitForm(formName) {
+    submitForm(formName, isPreview) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.createOrder();
+          this.createOrder(isPreview);
         }
       });
     },

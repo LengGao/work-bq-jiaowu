@@ -179,8 +179,11 @@
             </template>
             <template slot-scope="{ row }">
               <el-button type="text" @click="openSignUp(row)">报名</el-button>
-              <el-button type="text" @click="openCreateOrderDialog(row)"
-                >报名2</el-button
+              <el-button
+                type="text"
+                @dblclick="openSignUp(row)"
+                @click="openCreateOrderDialog(row)"
+                >新报名</el-button
               >
               <el-button type="text" @click="coustomDetail(row.uid, row.id)"
                 >客户详情</el-button

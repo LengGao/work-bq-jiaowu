@@ -226,8 +226,6 @@
             ref="multipleTable"
             height="470"
           >
-            <!-- @row-click="toggleSelection" -->
-
             <el-table-column
               type="selection"
               width="45"

@@ -38,15 +38,23 @@
       >
       </el-table-column>
       <el-table-column
-        prop="create_time"
-        label="创建时间"
-        min-width="140"
+        prop="pay_date"
+        label="回款日期"
+        min-width="100"
         align="center"
         show-overflow-tooltip
       >
       </el-table-column>
       <el-table-column
-        label="回款金额"
+        prop="relation_plan"
+        label="关联计划"
+        min-width="200"
+        align="left"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        label="回款总金额"
         prop="pay_money"
         align="center"
         min-width="100"
@@ -56,14 +64,6 @@
       <el-table-column
         prop="pay_type"
         label="支付方式"
-        align="center"
-        min-width="100"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-      <el-table-column
-        prop="pay_plan_sort"
-        label="关联期次"
         align="center"
         min-width="100"
         show-overflow-tooltip
@@ -167,14 +167,32 @@
         }"
       >
         <el-table-column
-          label="计划期次"
+          label="序号"
           show-overflow-tooltip
-          min-width="70"
+          min-width="50"
+          align="center"
+          type="index"
+        >
+        </el-table-column>
+        <el-table-column
+          label="回款类型"
+          show-overflow-tooltip
+          min-width="80"
           align="center"
         >
-          <template slot-scope="{ $index: index }">
-            <span>第{{ index + 1 }}期</span>
+          <template slot-scope="{ row }">
+            <span>
+              {{ typeMap[row.type] || "--" }}
+            </span>
           </template>
+        </el-table-column>
+        <el-table-column
+          prop="year"
+          label="所属年份"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        >
         </el-table-column>
         <el-table-column
           prop="day"
@@ -227,7 +245,7 @@
         </el-table-column>
         <el-table-column
           prop="pay_day"
-          label="回款时间"
+          label="实际回款时间"
           min-width="140"
           align="center"
           show-overflow-tooltip
@@ -235,16 +253,15 @@
         </el-table-column>
       </el-table>
     </div>
-    <AddCollectionRecord
+    <AddPaymentCollectionRecord
       v-model="dialogVisible"
-      :title="dialogTitle"
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
-      :plan-options="data.pay_plan"
+      :plan-data="data.pay_plan"
+      @refresh="$parent.getCrmOrderDetail"
     />
-    <AddCollectionPlan
+    <AddPaymentCollectionPlan
       v-model="planDialogVisible"
-      :title="planDialogTitle"
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
     />
@@ -253,13 +270,13 @@
 </template>
 
 <script>
-import AddCollectionRecord from "./AddCollectionRecord.vue";
-import AddCollectionPlan from "./AddCollectionPlan.vue";
+import AddPaymentCollectionRecord from "./AddPaymentCollectionRecord.vue";
+import AddPaymentCollectionPlan from "./AddPaymentCollectionPlan.vue";
 export default {
   name: "CollectionRecord",
   components: {
-    AddCollectionRecord,
-    AddCollectionPlan,
+    AddPaymentCollectionRecord,
+    AddPaymentCollectionPlan,
   },
   props: {
     data: {
@@ -272,16 +289,23 @@ export default {
   },
   data() {
     return {
-      currentId: "",
-      dialogTitle: "",
       dialogVisible: false,
       planDialogVisible: false,
-      planDialogTitle: "",
       payStatusMap: {
         0: "待入账",
         1: "已入账",
         2: "已驳回",
         3: "确认入账中",
+      },
+      typeMap: {
+        1: "学费",
+        2: "报考费",
+        3: "教材费",
+        4: "平台费",
+        5: "考前辅导费",
+        6: "教务服务费",
+        7: "论文指导费",
+        8: "论文答辩费",
       },
     };
   },
@@ -290,13 +314,9 @@ export default {
       this.$refs.view.show(src);
     },
     handleAddPlan() {
-      this.currentId = "";
-      this.planDialogTitle = "配置回款计划";
       this.planDialogVisible = true;
     },
     handleAdd() {
-      this.currentId = "";
-      this.dialogTitle = "添加回款记录";
       this.dialogVisible = true;
     },
   },
