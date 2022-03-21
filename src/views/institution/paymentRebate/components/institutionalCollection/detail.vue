@@ -42,9 +42,19 @@
         <span class="info-item__value">{{ orderData.org_name }}</span>
       </div>
       <div class="info-item">
+        <span class="info-item__name">回款类型：</span>
+        <span class="info-item__value">{{
+          planTypeMap[orderData.type] || "--"
+        }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">所属年份：</span>
+        <span class="info-item__value">{{ orderData.year || "--" }}</span>
+      </div>
+      <!-- <div class="info-item">
         <span class="info-item__name">业绩归属：</span>
         <span class="info-item__value">{{ orderData.staff_name }}</span>
-      </div>
+      </div> -->
       <div class="info-item">
         <span class="info-item__name">关联订单数：</span>
         <span class="info-item__value">{{ orderData.order_num }}</span>
@@ -54,6 +64,34 @@
         <span class="info-item__value">{{
           orderData.receivable_money | moneyFormat
         }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">支付方式：</span>
+        <span class="info-item__value">{{ orderData.pay_type }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">回款凭证：</span>
+        <span class="info-item__value">
+          <template
+            v-if="orderData.receipt_file && orderData.receipt_file.length"
+          >
+            <img
+              :src="item"
+              alt=""
+              title="点击预览大图"
+              style="
+                width: 40px;
+                height: 30px;
+                cursor: pointer;
+                margin-right: 10px;
+              "
+              v-for="(item, index) in orderData.receipt_file"
+              :key="index"
+              @click="handlePreview(item)"
+            />
+          </template>
+          <span v-else>--</span>
+        </span>
       </div>
       <div class="info-item">
         <span class="info-item__name">订单备注：</span>
@@ -86,7 +124,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="创建时间1"
+        label="创建时间"
         show-overflow-tooltip
         min-width="160"
         align="center"
@@ -95,11 +133,18 @@
       </el-table-column>
       <el-table-column
         prop="project_name"
-        label="项目名称"
+        label="订单名称"
         min-width="220"
         align="center"
         show-overflow-tooltip
       >
+        <template slot-scope="{ row }">
+          <span>{{ row.user_name }} </span>
+          <span>-{{ row.university }} </span>
+          <span>-{{ row.type }} </span>
+          <span>-{{ row.level }} </span>
+          <span>-{{ row.major }} </span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="class_type_name"
@@ -114,64 +159,6 @@
               <span v-else>--</span>      
         </template>
       </el-table-column>
-      <el-table-column
-        prop="level"
-        label="层次"
-        min-width="80"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-                  <span v-if="row.level"> {{ row.level }}</span>        
-          <span v-else>--</span>      
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="major"
-        label="专业"
-        min-width="120"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-                  <span v-if="row.major"> {{ row.major }}</span>        
-          <span v-else>--</span>      
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="type"
-        label="类型"
-        min-width="80"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-                  <span v-if="row.type"> {{ row.type }}</span>        
-          <span v-else>--</span>      
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="university"
-        label="大学"
-        min-width="140"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-                  <span v-if="row.university"> {{ row.university }}</span>      
-            <span v-else>--</span>      
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        prop="user_name"
-        label="客户姓名"
-        min-width="80"
-        align="center"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-
       <el-table-column
         label="订单总金额"
         align="center"
@@ -264,11 +251,16 @@
       :id="orderData.id"
       @on-success="$router.back()"
     />
+    <PreviewImg ref="view" />
   </div>
 </template>
 
 <script>
-import { getReceivableInfo, reviewReceivableOrder } from "@/api/crm";
+import {
+  getReceivableInfo,
+  reviewReceivableOrder,
+  getPlanTypeList,
+} from "@/api/crm";
 import AddCollection from "./components/AddCollection";
 export default {
   name: "institutionalCollectionDetail",
@@ -281,6 +273,7 @@ export default {
   data() {
     return {
       loading: false,
+      planTypeMap: {},
       orderData: {},
       listData: [],
       addCollectionVisible: false,
@@ -288,8 +281,18 @@ export default {
   },
   created() {
     this.getReceivableInfo();
+    this.getPlanTypeList();
   },
   methods: {
+    async getPlanTypeList() {
+      const res = await getPlanTypeList();
+      if (res.code === 0) {
+        this.planTypeMap = res.data;
+      }
+    },
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
     // 驳回
     rejectConfirm() {
       this.$prompt("请输入驳回原因", "入账驳回", {

@@ -49,6 +49,7 @@
       </el-form-item>
       <el-form-item label="回款类型" prop="type">
         <el-select
+          @change="handlePageChange(1)"
           v-model="formData.type"
           placeholder="请选择回款类型"
           class="input"
@@ -63,7 +64,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所属年份" prop="pay_type">
+      <el-form-item label="所属年份">
         <el-select v-model="formData.year" placeholder="请选择" filterable>
           <el-option
             v-for="item in yearOptions"
@@ -90,7 +91,12 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="回款凭证">
+      <el-form-item label="回款凭证" prop="receipt_file">
+        <el-select
+          v-show="false"
+          multiple
+          v-model="formData.receipt_file"
+        ></el-select>
         <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
       <el-button
@@ -597,6 +603,10 @@ export default {
       },
       rules: {
         total_money: [{ required: true, message: "请输入", trigger: "blur" }],
+        receipt_file: [
+          { required: true, message: "请上传", trigger: "change" },
+        ],
+        type: [{ required: true, message: "请选择", trigger: "change" }],
         pay_date: [{ required: true, message: "请选择", trigger: "change" }],
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
         from_organization_id: [
@@ -888,6 +898,7 @@ export default {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        type: this.formData.type,
         from_organization_id: this.formData.from_organization_id,
         ...this.searchData,
       };
@@ -963,9 +974,7 @@ export default {
         });
       }
       this.addLoading = true;
-      const res = await addReceivable(data).catch(() => {
-        this.addLoading = false;
-      });
+      const res = await addReceivable(data).catch(() => {});
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -1004,7 +1013,9 @@ export default {
       }
     },
     hanldeCancel() {
-      this.$router.back();
+      this.$router.replace({
+        name: "paymentRebate",
+      });
     },
   },
 };

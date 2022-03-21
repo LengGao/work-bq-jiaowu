@@ -48,13 +48,6 @@
           >
           </el-table-column>
           <el-table-column
-            prop="pay_date"
-            label="回款日期"
-            min-width="100"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
             prop="org_name"
             label="机构名称"
             min-width="130"
@@ -62,19 +55,35 @@
           >
           </el-table-column>
           <el-table-column
-            prop="staff_name"
-            label="业绩归属"
+            prop="pay_date"
+            label="回款日期"
             min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
-
           <el-table-column
-            prop="order_num"
-            label="关联订单数"
+            label="回款类型"
             show-overflow-tooltip
             min-width="100"
+            align="center"
           >
+            <template slot-scope="{ row }">
+              <span>
+                {{ planTypeMap[row.type] || "--" }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="year"
+            label="所属年份"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>
+                {{ row.year || "--" }}
+              </span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="order_money"
@@ -88,7 +97,7 @@
           </el-table-column>
           <el-table-column
             prop="receivable_money"
-            label="回款总金额"
+            label="回款金额"
             min-width="120"
             show-overflow-tooltip
           >
@@ -96,6 +105,35 @@
               {{ row.receivable_money | moneyFormat }}
             </template>
           </el-table-column>
+          <el-table-column
+            prop="pay_type"
+            label="支付方式"
+            show-overflow-tooltip
+            min-width="80"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="order_num"
+            label="关联订单数"
+            show-overflow-tooltip
+            min-width="100"
+          >
+          </el-table-column>
+          <el-table-column
+            prop="staff_name"
+            label="业绩归属"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="140"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+
           <el-table-column
             prop="check_state"
             label="入账状态"
@@ -124,20 +162,13 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="check_time"
             label="入账时间"
             min-width="160"
             show-overflow-tooltip
           >
-          </el-table-column>
-          <el-table-column
-            prop="create_time"
-            label="创建时间"
-            min-width="160"
-            show-overflow-tooltip
-          >
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="操作" fixed="right" min-width="160">
             <template slot-scope="{ row }">
               <el-button type="text" @click="toDetail(row.log_id)"
@@ -297,7 +328,7 @@ export default {
         //   },
         // },
       ],
-
+      planTypeMap: {},
       uploadLoading: false,
     };
   },
@@ -319,8 +350,7 @@ export default {
     async getPlanTypeList() {
       const res = await getPlanTypeList();
       if (res.code === 0) {
-        console.log(Object.entries(res.data));
-        // Object.entries
+        this.planTypeMap = res.data;
         this.searchOptions[4].options = Object.entries(res.data).map(
           (item) => ({
             label: item[1],

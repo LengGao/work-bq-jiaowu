@@ -15,19 +15,13 @@
     </header>
     <ul class="panel-list">
       <li class="panel-item">
-        <span>招生订单总金额</span>
-        <div class="time_num">
-          <span>{{ panelData.order_total_money | moneyFormat }}</span>
-        </div>
-      </li>
-      <li class="panel-item">
-        <span>招生回款总金额</span>
+        <span>回款总金额</span>
         <div class="time_num">
           <span>{{ panelData.pay_log_total | moneyFormat }}</span>
         </div>
       </li>
       <li class="panel-item">
-        <span>入账总金额</span>
+        <span>已入账总金额</span>
         <div class="time_num">
           <span>{{ panelData.verify_money | moneyFormat }}</span>
         </div>
@@ -66,50 +60,9 @@
         >
         </el-table-column>
         <el-table-column
-          prop="order_money"
-          label="订单金额"
-          min-width="100"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            {{ row.order_money | moneyFormat }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="pay_money"
-          label="回款金额"
-          min-width="90"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            {{ row.pay_money | moneyFormat }}
-          </template>
-        </el-table-column>
-        <el-table-column
           prop="pay_date"
           label="回款日期"
           min-width="100"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="pay_type"
-          label="支付方式"
-          min-width="90"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="group_name"
-          label="部门名称"
-          min-width="160"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
-          prop="staff_name"
-          label="业绩归属"
-          min-width="90"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -126,58 +79,69 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="plan_pay_day"
-          label="计划回款日期"
-          min-width="100"
+          prop="join_plan"
+          label="关联计划"
           show-overflow-tooltip
+          min-width="220"
         >
         </el-table-column>
+
         <el-table-column
-          prop="plan_pay_money"
-          label="计划回款金额"
+          prop="pay_money"
+          label="回款金额"
           min-width="90"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span v-if="row.plan_pay_money">
-              {{ row.plan_pay_money | moneyFormat }}
-            </span>
-            <span v-else>--</span>
+            {{ row.pay_money | moneyFormat }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="order_create_time"
-          label="订单创建日期"
-          min-width="100"
+          prop="pay_type"
+          label="支付方式"
+          min-width="90"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="order_verify_status"
-          label="订单状态"
+          label="回款凭证"
+          align="center"
+          prop="admin_name"
           min-width="100"
-          show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <el-tag
-              size="small"
-              :type="verifyStatusMap[row.order_verify_status || 0].type"
-            >
-              {{ verifyStatusMap[row.order_verify_status || 0].text }}
-            </el-tag>
+            <template v-if="row.receipt_file && row.receipt_file.length">
+              <img
+                :src="row.receipt_file[0]"
+                @click="handlePreview(row.receipt_file)"
+                style="height: 30px; cursor: pointer"
+                alt=""
+              />
+            </template>
+            <span v-else>无</span>
           </template>
         </el-table-column>
         <el-table-column
-          prop="pay_status"
-          label="支付状态"
+          label="备注信息"
+          align="center"
           min-width="100"
+          prop="tips"
           show-overflow-tooltip
         >
-          <template slot-scope="{ row }">
-            <el-tag size="small" :type="row.pay_status | orderTagType">{{
-              row.pay_status | orderStatus
-            }}</el-tag>
-          </template>
+        </el-table-column>
+        <el-table-column
+          prop="staff_name"
+          label="业绩归属"
+          min-width="90"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="group_name"
+          label="部门名称"
+          min-width="120"
+          show-overflow-tooltip
+        >
         </el-table-column>
         <el-table-column
           prop="verify_status"
@@ -268,6 +232,7 @@
         <el-button type="primary" @click="handleEntryConfirm">确 定</el-button>
       </div>
     </el-dialog>
+    <PreviewImg ref="view" />
   </section>
 </template>
 
@@ -459,6 +424,9 @@ export default {
     this.getDepartmentlists();
   },
   methods: {
+    handlePreview(imgs) {
+      this.$refs.view.show(imgs);
+    },
     // 获取部门
     async getDepartmentlists() {
       const res = await getDepartmentlists();
@@ -634,7 +602,7 @@ header {
   font-size: 14px;
   color: #606266;
   .panel-item {
-    width: calc(100% / 4);
+    width: calc(100% / 3);
     margin-left: 16px;
     border: 1px solid #e4e7ed;
     text-align: center;

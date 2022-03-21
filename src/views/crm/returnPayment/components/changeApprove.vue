@@ -28,6 +28,13 @@
         >
         </el-table-column>
         <el-table-column
+          prop="org_name"
+          label="机构名称"
+          min-width="130"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="pay_date"
           label="回款日期"
           min-width="100"
@@ -35,10 +42,61 @@
         >
         </el-table-column>
         <el-table-column
-          prop="org_name"
-          label="机构名称"
-          min-width="130"
+          label="回款类型"
           show-overflow-tooltip
+          min-width="100"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>
+              {{ planTypeMap[row.type] || "--" }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="year"
+          label="所属年份"
+          min-width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>
+              {{ row.year || "--" }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="订单总金额"
+          min-width="120"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.order_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="receivable_money"
+          label="回款金额"
+          min-width="120"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.receivable_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_type"
+          label="支付方式"
+          show-overflow-tooltip
+          min-width="80"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="order_num"
+          label="关联订单数"
+          show-overflow-tooltip
+          min-width="100"
         >
         </el-table-column>
         <el-table-column
@@ -48,24 +106,14 @@
           show-overflow-tooltip
         >
         </el-table-column>
+        <el-table-column
+          prop="create_time"
+          label="创建时间"
+          min-width="140"
+          show-overflow-tooltip
+        >
+        </el-table-column>
 
-        <el-table-column
-          prop="order_num"
-          label="关联订单数"
-          show-overflow-tooltip
-          min-width="100"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="receivable_money"
-          label="回款总金额"
-          min-width="120"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            ￥{{ row.receivable_money || 0 }}
-          </template>
-        </el-table-column>
         <el-table-column
           prop="check_state"
           label="入账状态"
@@ -93,13 +141,6 @@
               <i class="el-icon-question" :title="row.rejected_note"></i>
             </span>
           </template>
-        </el-table-column>
-        <el-table-column
-          prop="check_time"
-          label="入账时间"
-          min-width="160"
-          show-overflow-tooltip
-        >
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
@@ -144,12 +185,13 @@
 
 <script>
 import Detail from "@/views/institution/paymentRebate/components/institutionalCollection/detail.vue";
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, getPlanYearOptions } from "@/utils/date";
 import {
   getOrgReceivableList,
   getOrgName,
   getReceivableStatus,
   getBelongPeople,
+  getPlanTypeList,
   reviewReceivableOrder,
 } from "@/api/crm";
 export default {
@@ -223,6 +265,35 @@ export default {
           },
         },
         {
+          key: "type",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "value",
+          optionLabel: "label",
+          attrs: {
+            clearable: true,
+            filterable: true,
+            placeholder: "回款类型",
+          },
+        },
+        {
+          key: "year",
+          type: "select",
+          width: 120,
+          options: (getPlanYearOptions() || []).map((item) => ({
+            value: item,
+            lable: item,
+          })),
+          optionValue: "value",
+          optionLabel: "label",
+          attrs: {
+            clearable: true,
+            filterable: true,
+            placeholder: "所属年份",
+          },
+        },
+        {
           key: "money",
           type: "numberRange",
           width: 280,
@@ -240,6 +311,7 @@ export default {
       ],
       dialogVisible: false,
       logId: "",
+      planTypeMap: {},
     };
   },
   activated() {
@@ -248,10 +320,24 @@ export default {
   created() {
     this.getOrgReceivableList();
     this.getOrgName();
+    this.getPlanTypeList();
     this.getBelongPeople();
     this.getReceivableStatus();
   },
   methods: {
+    // 回款类型
+    async getPlanTypeList() {
+      const res = await getPlanTypeList();
+      if (res.code === 0) {
+        this.planTypeMap = res.data;
+        this.searchOptions[4].options = Object.entries(res.data).map(
+          (item) => ({
+            label: item[1],
+            value: item[0],
+          })
+        );
+      }
+    },
     optenDialog(logId) {
       this.logId = logId;
       this.dialogVisible = true;

@@ -19,19 +19,13 @@
       </header>
       <ul class="panel-list">
         <li class="panel-item">
-          <span>招生订单总金额</span>
-          <div class="time_num">
-            <span>{{ panelData.order_total_money | moneyFormat }}</span>
-          </div>
-        </li>
-        <li class="panel-item">
-          <span>招生回款总金额</span>
+          <span>回款总金额</span>
           <div class="time_num">
             <span>{{ panelData.pay_log_total | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
-          <span>入账总金额</span>
+          <span>已入账金额</span>
           <div class="time_num">
             <span>{{ panelData.verify_money | moneyFormat }}</span>
           </div>
@@ -71,32 +65,32 @@
           >
           </el-table-column>
           <el-table-column
-            prop="mobile"
-            label="手机号码"
-            min-width="130"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <PartiallyHidden :value="row.mobile" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="order_money"
-            label="订单金额"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              {{ row.order_money | moneyFormat }}
-            </template>
-          </el-table-column>
-          <el-table-column
             prop="pay_date"
             label="回款日期"
             min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
+          <el-table-column
+            prop="order_id"
+            label="关联订单"
+            show-overflow-tooltip
+            min-width="220"
+          >
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
+                {{ row.title }}
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="join_plan"
+            label="关联计划"
+            show-overflow-tooltip
+            min-width="220"
+          >
+          </el-table-column>
+
           <el-table-column
             prop="pay_money"
             label="回款金额"
@@ -116,13 +110,6 @@
           >
           </el-table-column>
           <el-table-column
-            prop="group_name"
-            label="部门名称"
-            min-width="160"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
             prop="staff_name"
             label="业绩归属"
             min-width="90"
@@ -130,40 +117,17 @@
           >
           </el-table-column>
           <el-table-column
-            prop="order_id"
-            label="关联订单"
-            show-overflow-tooltip
-            min-width="220"
-          >
-            <template slot-scope="{ row }">
-              <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-                {{ row.title }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="plan_pay_day"
-            label="计划回款日期"
-            min-width="100"
+            prop="group_name"
+            label="部门名称"
+            min-width="120"
             show-overflow-tooltip
           >
           </el-table-column>
+
           <el-table-column
-            prop="plan_pay_money"
-            label="计划回款金额"
-            min-width="90"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span v-if="row.plan_pay_money">
-                {{ row.plan_pay_money | moneyFormat }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="order_create_time"
-            label="订单创建日期"
-            min-width="100"
+            prop="create_time"
+            label="回款创建日期"
+            min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -191,6 +155,13 @@
                 >多级审批中
               </span>
             </template>
+          </el-table-column>
+          <el-table-column
+            prop="verify_time"
+            label="入账时间"
+            min-width="140"
+            show-overflow-tooltip
+          >
           </el-table-column>
         </el-table>
         <div class="table_bottom">
@@ -518,11 +489,11 @@ section {
   .panel-list {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     font-size: 14px;
     color: #606266;
     .panel-item {
-      width: calc(100% / 4);
+      width: calc(100% / 3);
       margin-left: 16px;
       border: 1px solid #e4e7ed;
       text-align: center;
