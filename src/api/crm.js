@@ -775,4 +775,12 @@ export function getContractUrl(data) {
         data,
     })
 }
+// 根据分类获取届别
+export function categoryGetSessionList(params) {
+    return request({
+        url: '/Crm/categoryGetSessionList',
+        method: 'get',
+        params,
+    })
+}
 

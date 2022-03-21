@@ -301,11 +301,10 @@
 </template>
 
 <script>
-import { getCustomfieldOptions } from "@/api/crm";
+import { categoryGetSessionList, getCustomfieldOptions } from "@/api/crm";
 import { getStaffList } from "@/api/set";
-import { getUniversityMajorDetailList, getGradeOptions } from "@/api/sou";
+import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
-import { today } from "@/utils/date";
 export default {
   name: "OrderInfo",
   props: {
@@ -426,13 +425,21 @@ export default {
     },
     // 根据选中的项目获取项目详情
     "formData.selectProject"(newVal) {
-      console.log(newVal);
-      this.getCateProjectDetail(newVal || []);
+      if (newVal && newVal.length) {
+        this.getCateProjectDetail(newVal || []);
+        // 根据选中的项目分类获取届别
+        const firstChildArr = newVal[0] || [];
+        const cateId = firstChildArr[0];
+        this.categoryGetSessionList(cateId);
+      } else {
+        this.projectData = [];
+        this.gradeOptions = [];
+      }
     },
     // 根据选中的专业获取相关数据
-    "formData.selectMajor"(val) {
+    "formData.selectMajor"() {
       const el = this.$refs.cascaderMajor;
-      val &&
+      el &&
         this.$nextTick(() => {
           let checkNodes = el.getCheckedNodes(true);
           this.majorData = checkNodes
@@ -444,7 +451,6 @@ export default {
   created() {
     this.getCateProjectOption();
     this.getStaffList();
-    this.getGradeOptions();
     this.getCustomfieldOptions();
     this.formData.surname = this.userInfo.name || this.userInfo.surname;
     this.formData.mobile = this.userInfo.mobile;
@@ -462,8 +468,9 @@ export default {
       }
     },
     // 获取届别选项
-    async getGradeOptions() {
-      const res = await getGradeOptions();
+    async categoryGetSessionList(category_id) {
+      const data = { category_id };
+      const res = await categoryGetSessionList(data);
       if (res.code === 0) {
         this.gradeOptions = res.data;
       }
@@ -486,10 +493,7 @@ export default {
     // 已选项目详情
     async getCateProjectDetail(arr) {
       const idStr = arr.map((item) => [...item].pop()).join(",");
-      if (!idStr) {
-        this.projectData = [];
-        return;
-      }
+
       const data = {
         id: idStr,
       };
@@ -518,12 +522,14 @@ export default {
       const res = await getStaffList(data);
       this.staffOptions = res.data.list;
     },
-    resetCheckedParams() {
+    resetCheckedParams(type) {
       this.type_id = "";
       this.school_id = "";
       this.level_id = "";
       this.formData.selectMajor = [];
       this.formData.selectProject = [];
+      // 获取学历类届别选项
+      type === 1 ? this.categoryGetSessionList(6) : (this.gradeOptions = []);
     },
     // 学历报名的级联选项
     async getUniversityMajorDetailList() {

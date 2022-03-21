@@ -234,3 +234,15 @@ export const dateMap = {
   6: `${today},${today}`,
   7: `${yesterday},${yesterday}`,
 };
+// 获取回款计划年份选项
+export function getPlanYearOptions() {
+  const currentYear = new Date().getFullYear();
+  const startYear = currentYear - 5;
+  let endYear = currentYear + 5;
+  const options = [];
+  options.push(endYear);
+  while (endYear-- > startYear) {
+    options.push(endYear);
+  }
+  return [...options];
+}

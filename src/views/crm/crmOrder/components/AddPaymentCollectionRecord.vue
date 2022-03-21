@@ -265,6 +265,7 @@ import {
   updateOrderPayPlan,
 } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
+import { getPlanYearOptions } from "@/utils/date";
 export default {
   name: "AddCollectionRecord",
   components: {
@@ -345,7 +346,7 @@ export default {
           label: "论文答辩费",
         },
       ],
-      yearOptions: [],
+      yearOptions: getPlanYearOptions(),
       planTableData: [],
     };
   },
@@ -451,16 +452,6 @@ export default {
     },
     handleOpen() {
       this.getCustomfieldOptions();
-      this.getYearOptions();
-    },
-    getYearOptions() {
-      let year = new Date().getFullYear();
-      const options = [];
-      options.push(year);
-      while (year-- > 2015) {
-        options.push(year);
-      }
-      this.yearOptions = [...options];
     },
     // 右侧已选删除
     handleRemoveOrder(index) {

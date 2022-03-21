@@ -163,6 +163,7 @@
 
 <script>
 import { createOrderPayPlan } from "@/api/crm";
+import { getPlanYearOptions } from "@/utils/date";
 export default {
   name: "AddCollectionPlan",
   props: {
@@ -188,7 +189,7 @@ export default {
         ],
       },
       addLoading: false,
-      yearOptions: [],
+      yearOptions: getPlanYearOptions(),
       typeOptions: [
         {
           value: 1,
@@ -226,18 +227,7 @@ export default {
     };
   },
   methods: {
-    handleOpen() {
-      this.getYearOptions();
-    },
-    getYearOptions() {
-      let year = new Date().getFullYear();
-      const options = [];
-      options.push(year);
-      while (year-- > 2015) {
-        options.push(year);
-      }
-      this.yearOptions = [...options];
-    },
+    handleOpen() {},
     disabledDate(e) {
       return Date.now() - 86400000 > e.getTime();
     },

@@ -235,7 +235,7 @@
 
 <script>
 import { createOrder, getCustomfieldOptions } from "@/api/crm";
-import { today } from "@/utils/date";
+import { getPlanYearOptions } from "@/utils/date";
 import ImgListUpload from "@/components/imgListUpload";
 import PreviewContract from "./PreviewContract";
 export default {
@@ -281,14 +281,13 @@ export default {
       addLoading: false,
       planOptions: [],
       payMethodOptions: [],
-      yearOptions: [],
+      yearOptions: getPlanYearOptions(),
       previewDialog: false,
       previewContractData: {},
     };
   },
   created() {
     this.getCustomfieldOptions();
-    this.getYearOptions();
   },
   methods: {
     handleCheckboxChange(checked) {
@@ -304,15 +303,6 @@ export default {
           this.handleAddRow(type);
         }
       });
-    },
-    getYearOptions() {
-      let year = new Date().getFullYear();
-      const options = [];
-      options.push(year);
-      while (year-- > 2015) {
-        options.push(year);
-      }
-      this.yearOptions = [...options];
     },
     disabledDate(e) {
       return Date.now() - 86400000 > e.getTime();

@@ -38,9 +38,9 @@
     <el-dialog
       title="预览合同"
       :visible.sync="contractDialog"
-      width="400px"
       :close-on-click-modal="false"
       append-to-body
+      width="900px"
     >
       <div style="height: 650px; width: 800px; overflow: hidden; margin-top: 0">
         <iframe
