@@ -45,10 +45,10 @@
             >
               <el-select v-model="row.type" placeholder="请选择" filterable>
                 <el-option
-                  v-for="item in typeOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="(label, value) in planTypeMap"
+                  :key="value"
+                  :label="label"
+                  :value="value"
                 >
                 </el-option>
               </el-select>
@@ -163,7 +163,7 @@
 
 <script>
 import { createOrderPayPlan } from "@/api/crm";
-import { getPlanYearOptions } from "@/utils/date";
+import { getPlanYearOptions, currentYear } from "@/utils/date";
 export default {
   name: "AddCollectionPlan",
   props: {
@@ -175,6 +175,10 @@ export default {
       type: [String, Number],
       default: "",
     },
+    planTypeMap: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -182,7 +186,7 @@ export default {
         tableData: [
           {
             type: "",
-            year: "",
+            year: currentYear,
             day: "",
             money: "",
           },
@@ -190,40 +194,6 @@ export default {
       },
       addLoading: false,
       yearOptions: getPlanYearOptions(),
-      typeOptions: [
-        {
-          value: 1,
-          label: "学费",
-        },
-        {
-          value: 2,
-          label: "报考费",
-        },
-        {
-          value: 3,
-          label: "教材费",
-        },
-        {
-          value: 4,
-          label: "平台费",
-        },
-        {
-          value: 5,
-          label: "考前辅导费",
-        },
-        {
-          value: 6,
-          label: "教务服务费",
-        },
-        {
-          value: 7,
-          label: "论文指导费",
-        },
-        {
-          value: 8,
-          label: "论文答辩费",
-        },
-      ],
     };
   },
   methods: {
@@ -237,7 +207,7 @@ export default {
     handleAddRow() {
       this.formData.tableData.push({
         type: "",
-        year: "",
+        year: currentYear,
         day: "",
         money: "",
       });
@@ -272,7 +242,7 @@ export default {
       this.formData.tableData = [
         {
           type: "",
-          year: "",
+          year: currentYear,
           day: "",
           money: "",
         },

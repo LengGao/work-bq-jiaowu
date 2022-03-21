@@ -49,14 +49,14 @@
                 filterable
               >
                 <el-option
-                  v-for="item in typeOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="(label, value) in planTypeMap"
+                  :key="value"
+                  :label="label"
+                  :value="value"
                 >
                 </el-option>
               </el-select>
-              <span v-else>{{ typeMap[row.type] || "" }}</span>
+              <span v-else>{{ planTypeMap[row.type] || "" }}</span>
             </template>
           </el-table-column>
           <el-table-column label="所属年份" min-width="120" align="center">
@@ -168,7 +168,7 @@
             </template>
             <template slot-scope="{ row }">
               <span
-                >{{ `${typeMap[row.type]} ${row.year}   `
+                >{{ `${planTypeMap[row.type]} ${row.year}   `
                 }}{{ row.money | moneyFormat }}
               </span>
             </template>
@@ -265,7 +265,7 @@ import {
   updateOrderPayPlan,
 } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
-import { getPlanYearOptions } from "@/utils/date";
+import { getPlanYearOptions, currentYear } from "@/utils/date";
 export default {
   name: "AddCollectionRecord",
   components: {
@@ -283,6 +283,10 @@ export default {
     planData: {
       type: Array,
       default: () => [],
+    },
+    planTypeMap: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
@@ -302,16 +306,6 @@ export default {
       },
       addLoading: false,
       checkedPlanData: [],
-      typeMap: {
-        1: "学费",
-        2: "报考费",
-        3: "教材费",
-        4: "平台费",
-        5: "考前辅导费",
-        6: "教务服务费",
-        7: "论文指导费",
-        8: "论文答辩费",
-      },
       typeOptions: [
         {
           value: 1,
@@ -432,7 +426,7 @@ export default {
     handleAddPlan() {
       this.planTableData.push({
         type: "",
-        year: "",
+        year: currentYear,
         day: "",
         money: "",
         add: true,

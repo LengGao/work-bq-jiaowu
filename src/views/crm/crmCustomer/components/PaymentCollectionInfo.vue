@@ -13,14 +13,13 @@
           v-model="formData.type"
           @change="handleCheckboxChange"
         >
-          <el-checkbox label="1" name="type">学费</el-checkbox>
-          <el-checkbox label="2" name="type">报考费</el-checkbox>
-          <el-checkbox label="3" name="type">教材费</el-checkbox>
-          <el-checkbox label="4" name="type">平台费</el-checkbox>
-          <el-checkbox label="5" name="type">考前辅导费</el-checkbox>
-          <el-checkbox label="6" name="type">教务服务费</el-checkbox>
-          <el-checkbox label="7" name="type">论文指导费</el-checkbox>
-          <el-checkbox label="8" name="type">论文答辩费</el-checkbox>
+          <el-checkbox
+            :label="value"
+            name="type"
+            v-for="(name, value) in planTypeMap"
+            :key="value"
+            >{{ name }}</el-checkbox
+          >
         </el-checkbox-group>
       </el-form-item>
       <el-table
@@ -47,7 +46,7 @@
         >
           <template slot-scope="{ row }">
             <span>
-              {{ typeMap[row.type] }}
+              {{ planTypeMap[row.type] }}
             </span>
           </template>
         </el-table-column>
@@ -178,7 +177,7 @@
           <el-option
             v-for="item in formData.tableData"
             :key="item.temp_id"
-            :label="`${typeMap[item.type]} ${item.year} ￥${(
+            :label="`${planTypeMap[item.type]} ${item.year} ￥${(
               +item.money || 0
             ).toFixed(2)}`"
             :value="item.temp_id"
@@ -234,8 +233,8 @@
 </template>
 
 <script>
-import { createOrder, getCustomfieldOptions } from "@/api/crm";
-import { getPlanYearOptions } from "@/utils/date";
+import { createOrder, getCustomfieldOptions, getPlanTypeList } from "@/api/crm";
+import { getPlanYearOptions, currentYear } from "@/utils/date";
 import ImgListUpload from "@/components/imgListUpload";
 import PreviewContract from "./PreviewContract";
 export default {
@@ -253,16 +252,6 @@ export default {
   data() {
     return {
       tempId: 1,
-      typeMap: {
-        1: "学费",
-        2: "报考费",
-        3: "教材费",
-        4: "平台费",
-        5: "考前辅导费",
-        6: "教务服务费",
-        7: "论文指导费",
-        8: "论文答辩费",
-      },
       formData: {
         type: [],
         tableData: [],
@@ -284,12 +273,20 @@ export default {
       yearOptions: getPlanYearOptions(),
       previewDialog: false,
       previewContractData: {},
+      planTypeMap: {},
     };
   },
   created() {
     this.getCustomfieldOptions();
+    this.getPlanTypeList();
   },
   methods: {
+    async getPlanTypeList() {
+      const res = await getPlanTypeList();
+      if (res.code === 0) {
+        this.planTypeMap = res.data;
+      }
+    },
     handleCheckboxChange(checked) {
       checked = checked || [];
       const types = this.formData.tableData.map((item) => item.type);
@@ -317,7 +314,7 @@ export default {
       this.formData.tableData.push({
         temp_id: this.getTempId(),
         type,
-        year: "",
+        year: currentYear,
         day: "",
         money: "",
       });

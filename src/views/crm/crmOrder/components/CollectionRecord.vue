@@ -182,7 +182,7 @@
         >
           <template slot-scope="{ row }">
             <span>
-              {{ typeMap[row.type] || "--" }}
+              {{ planTypeMap[row.type] || "--" }}
             </span>
           </template>
         </el-table-column>
@@ -258,9 +258,11 @@
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
       :plan-data="data.pay_plan"
+      :planTypeMap="planTypeMap"
       @refresh="$parent.getCrmOrderDetail"
     />
     <AddPaymentCollectionPlan
+      :planTypeMap="planTypeMap"
       v-model="planDialogVisible"
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
@@ -272,6 +274,7 @@
 <script>
 import AddPaymentCollectionRecord from "./AddPaymentCollectionRecord.vue";
 import AddPaymentCollectionPlan from "./AddPaymentCollectionPlan.vue";
+import { getPlanTypeList } from "@/api/crm";
 export default {
   name: "CollectionRecord",
   components: {
@@ -297,19 +300,19 @@ export default {
         2: "已驳回",
         3: "确认入账中",
       },
-      typeMap: {
-        1: "学费",
-        2: "报考费",
-        3: "教材费",
-        4: "平台费",
-        5: "考前辅导费",
-        6: "教务服务费",
-        7: "论文指导费",
-        8: "论文答辩费",
-      },
+      planTypeMap: {},
     };
   },
+  created() {
+    this.getPlanTypeList();
+  },
   methods: {
+    async getPlanTypeList() {
+      const res = await getPlanTypeList();
+      if (res.code === 0) {
+        this.planTypeMap = res.data;
+      }
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },

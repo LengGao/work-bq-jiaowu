@@ -47,6 +47,33 @@
           @input="onInput"
         />
       </el-form-item>
+      <el-form-item label="回款类型" prop="type">
+        <el-select
+          v-model="formData.type"
+          placeholder="请选择回款类型"
+          class="input"
+          filterable
+        >
+          <el-option
+            v-for="item in payMethodOptions"
+            :key="item"
+            :label="item"
+            :value="item"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="所属年份" prop="pay_type">
+        <el-select v-model="formData.year" placeholder="请选择" filterable>
+          <el-option
+            v-for="item in yearOptions"
+            :key="item"
+            :label="item"
+            :value="item"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="支付方式" prop="pay_type">
         <el-select
           v-model="formData.pay_type"
@@ -62,6 +89,9 @@
           >
           </el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="回款凭证">
+        <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
       <el-button
         type="primary"
@@ -541,10 +571,14 @@ import {
   changeOrderMoney,
 } from "@/api/crm";
 import { getGradeOptions } from "@/api/sou";
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, getPlanYearOptions } from "@/utils/date";
 import { accSub, download } from "@/utils";
+import ImgListUpload from "@/components/imgListUpload";
 export default {
   name: "addInstitutionalCollection",
+  components: {
+    ImgListUpload,
+  },
   data() {
     return {
       id: this.$route.query.id,
@@ -556,6 +590,9 @@ export default {
         pay_type: "",
         pay_date: "",
         note: "",
+        year: "",
+        type: "",
+        receipt_file: [],
       },
       rules: {
         total_money: [{ required: true, message: "请输入", trigger: "blur" }],
@@ -647,6 +684,7 @@ export default {
       checkedOrderData: [],
       totalMoney: "",
       downloadLoading: false,
+      yearOptions: getPlanYearOptions(),
       //再次回款
       againListData: [],
       againListLoading: false,
