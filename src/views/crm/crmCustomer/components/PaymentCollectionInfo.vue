@@ -134,11 +134,10 @@
               @click="handleDelRow(index)"
               class="btn"
               type="text"
-              :disabled="formData.tableData.length <= 1"
               icon="el-icon-remove-outline"
             ></el-button>
             <el-button
-              @click="handleAddRow(row.type)"
+              @click="handleAddRow(row.type, index)"
               class="btn"
               type="text"
               icon="el-icon-circle-plus-outline"
@@ -177,7 +176,7 @@
           <el-option
             v-for="item in formData.tableData"
             :key="item.temp_id"
-            :label="`${planTypeMap[item.type]} ${item.year} ￥${(
+            :label="`${item.year}年 ${planTypeMap[item.type]} ￥${(
               +item.money || 0
             ).toFixed(2)}`"
             :value="item.temp_id"
@@ -210,7 +209,12 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="回款凭证">
+      <el-form-item label="回款凭证" prop="receipt_file">
+        <el-select
+          v-show="false"
+          multiple
+          v-model="formData.receipt_file"
+        ></el-select>
         <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
     </el-form>
@@ -262,6 +266,9 @@ export default {
         receipt_file: [],
       },
       rules: {
+        receipt_file: [
+          { required: true, message: "请上传", trigger: "change" },
+        ],
         type: [{ required: true, message: "请选择", trigger: "change" }],
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
         pay_day: [{ required: true, message: "请选择", trigger: "change" }],
@@ -281,6 +288,12 @@ export default {
     this.getPlanTypeList();
   },
   methods: {
+    isDel(type) {
+      const currentTypeData = this.formData.tableData.filter(
+        (item) => item.type === type
+      );
+      return currentTypeData.length <= 1;
+    },
     async getPlanTypeList() {
       const res = await getPlanTypeList();
       if (res.code === 0) {
@@ -305,19 +318,37 @@ export default {
       return Date.now() - 86400000 > e.getTime();
     },
     handleDelRow(index) {
-      this.formData.tableData.splice(index, 1);
+      const [delItem] = this.formData.tableData.splice(index, 1);
+      // 删除之后已选的计划要清除
+      this.formData.pay_plan_ids = this.formData.pay_plan_ids.filter(
+        (item) => item != delItem.temp_id
+      );
+      // 已选的费用类型清除
+      const restData = this.formData.tableData.filter(
+        (item) => item.type === delItem.type
+      );
+      if (!restData.length) {
+        this.formData.type = this.formData.type.filter(
+          (item) => item != delItem.type
+        );
+      }
     },
     getTempId() {
       return this.tempId++;
     },
-    handleAddRow(type) {
-      this.formData.tableData.push({
+    handleAddRow(type, index) {
+      const item = {
         temp_id: this.getTempId(),
         type,
         year: currentYear,
         day: "",
         money: "",
-      });
+      };
+      if (index !== undefined) {
+        this.formData.tableData.splice(index + 1, 0, item);
+      } else {
+        this.formData.tableData.push(item);
+      }
     },
     // 获取支付方式
     async getCustomfieldOptions() {

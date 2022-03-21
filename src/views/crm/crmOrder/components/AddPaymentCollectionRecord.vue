@@ -168,7 +168,7 @@
             </template>
             <template slot-scope="{ row }">
               <span
-                >{{ `${planTypeMap[row.type]} ${row.year}   `
+                >{{ `${row.year}年 ${planTypeMap[row.type]} `
                 }}{{ row.money | moneyFormat }}
               </span>
             </template>
@@ -233,7 +233,12 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="回款凭证">
+      <el-form-item label="回款凭证" prop="receipt_file">
+        <el-select
+          v-show="false"
+          multiple
+          v-model="formData.receipt_file"
+        ></el-select>
         <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
       <el-form-item label="备注" prop="tips">
@@ -303,6 +308,9 @@ export default {
         pay_money: [{ required: true, message: "请输入", trigger: "blur" }],
         pay_date: [{ required: true, message: "请选择", trigger: "change" }],
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
+        receipt_file: [
+          { required: true, message: "请上传", trigger: "change" },
+        ],
       },
       addLoading: false,
       checkedPlanData: [],
