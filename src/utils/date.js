@@ -189,7 +189,6 @@ export function getShortcuts(types) {
     },
   }
   const shortcuts = types.map(item => dateMap[item]);
-  console.log(shortcuts)
   return shortcuts
 }
 

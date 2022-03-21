@@ -55,10 +55,10 @@
           filterable
         >
           <el-option
-            v-for="item in payMethodOptions"
-            :key="item"
-            :label="item"
-            :value="item"
+            v-for="(label, value) in planTypeMap"
+            :key="value"
+            :label="label"
+            :value="value"
           >
           </el-option>
         </el-select>
@@ -569,6 +569,7 @@ import {
   getExcelOrgReceivable,
   clearPayLog,
   changeOrderMoney,
+  getPlanTypeList,
 } from "@/api/crm";
 import { getGradeOptions } from "@/api/sou";
 import { getShortcuts, getPlanYearOptions } from "@/utils/date";
@@ -685,6 +686,7 @@ export default {
       totalMoney: "",
       downloadLoading: false,
       yearOptions: getPlanYearOptions(),
+      planTypeMap: {},
       //再次回款
       againListData: [],
       againListLoading: false,
@@ -702,12 +704,20 @@ export default {
   created() {
     this.getCustomfieldOptions();
     this.getOrgName();
+    this.getPlanTypeList();
     this.getGradeOptions();
     if (this.id) {
       this.getReceivableInfo();
     }
   },
   methods: {
+    // 回款类型
+    async getPlanTypeList() {
+      const res = await getPlanTypeList();
+      if (res.code === 0) {
+        this.planTypeMap = res.data;
+      }
+    },
     // 双击保存全部
     handleAllSave() {
       this.listData.forEach((item, index) => {
@@ -930,6 +940,9 @@ export default {
     async submit() {
       const data = {
         ...this.formData,
+        receipt_file: this.formData.receipt_file.map(
+          (item) => item.response.data.data.url
+        ),
       };
       if (this.id) {
         data.arr_receivable = this.againListData.map(
@@ -968,9 +981,16 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      for (const k in this.formData) {
-        this.formData[k] = "";
-      }
+      this.formData = {
+        from_organization_id: "",
+        total_money: "",
+        pay_type: "",
+        pay_date: "",
+        note: "",
+        year: "",
+        type: "",
+        receipt_file: [],
+      };
       this.$emit("input", false);
       if (this.id) {
         this.againListData = [];

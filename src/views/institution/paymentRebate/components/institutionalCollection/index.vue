@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, getPlanYearOptions } from "@/utils/date";
 import { download } from "@/utils";
 import {
   getOrgReceivableList,
@@ -174,6 +174,7 @@ import {
   getReceivableStatus,
   getBelongPeople,
   orgReceivableImportUrl,
+  getPlanTypeList,
 } from "@/api/crm";
 export default {
   name: "institutionalCollection",
@@ -252,6 +253,35 @@ export default {
           },
         },
         {
+          key: "type",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "value",
+          optionLabel: "label",
+          attrs: {
+            clearable: true,
+            filterable: true,
+            placeholder: "回款类型",
+          },
+        },
+        {
+          key: "year",
+          type: "select",
+          width: 120,
+          options: (getPlanYearOptions() || []).map((item) => ({
+            value: item,
+            lable: item,
+          })),
+          optionValue: "value",
+          optionLabel: "label",
+          attrs: {
+            clearable: true,
+            filterable: true,
+            placeholder: "所属年份",
+          },
+        },
+        {
           key: "money",
           type: "numberRange",
           width: 280,
@@ -278,12 +308,27 @@ export default {
     this.getReceivableStatus();
   },
   created() {
+    this.getPlanTypeList();
     this.getOrgReceivableList();
     this.getOrgName();
     this.getBelongPeople();
     this.getReceivableStatus();
   },
   methods: {
+    // 回款类型
+    async getPlanTypeList() {
+      const res = await getPlanTypeList();
+      if (res.code === 0) {
+        console.log(Object.entries(res.data));
+        // Object.entries
+        this.searchOptions[4].options = Object.entries(res.data).map(
+          (item) => ({
+            label: item[1],
+            value: item[0],
+          })
+        );
+      }
+    },
     handleBeforeUpload() {
       this.uploadLoading = true;
     },
