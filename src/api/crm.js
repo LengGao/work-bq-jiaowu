@@ -791,4 +791,12 @@ export function getPlanTypeList(params) {
         params,
     })
 }
+// 招生回款
+export function batchPayment(data) {
+    return request({
+        url: '/CrmOrder/batchPayment',
+        method: 'post',
+        data,
+    })
+}
 

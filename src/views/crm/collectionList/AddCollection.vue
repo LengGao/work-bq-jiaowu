@@ -24,9 +24,9 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="回款类型" prop="type">
+      <el-form-item label="回款类型" prop="plan_type">
         <el-select
-          v-model="formData.type"
+          v-model="formData.plan_type"
           placeholder="请选择回款类型"
           class="input"
           filterable
@@ -36,6 +36,7 @@
             :key="value"
             :label="label"
             :value="value"
+            :disabled="value == 1"
           >
           </el-option>
         </el-select>
@@ -116,10 +117,10 @@
               label="订单金额"
               show-overflow-tooltip
               min-width="120"
-              prop="order_money"
+              prop="total_money"
             >
               <template slot-scope="{ row }">
-                <span>{{ row.order_money | moneyFormat }} </span>
+                <span>{{ row.total_money | moneyFormat }} </span>
               </template>
             </el-table-column>
             <el-table-column
@@ -136,10 +137,10 @@
               label="其他金额"
               show-overflow-tooltip
               min-width="120"
-              prop="order_money"
+              prop="other_money"
             >
               <template slot-scope="{ row }">
-                <span>{{ row.order_money | moneyFormat }} </span>
+                <span>{{ row.other_money | moneyFormat }} </span>
               </template>
             </el-table-column>
           </el-table>
@@ -203,13 +204,13 @@
                   :rules="[
                     { required: true, message: `请选择`, trigger: 'change' },
                   ]"
-                  :prop="`checkedOrderData[${index}].pay_day`"
+                  :prop="`checkedOrderData[${index}].pay_date`"
                 >
                   <el-date-picker
                     style="width: 100%"
                     type="date"
                     placeholder="选择日期"
-                    v-model="row.pay_day"
+                    v-model="row.pay_date"
                     value-format="yyyy-MM-dd"
                     :picker-options="{
                       disabledDate: disabledDate,
@@ -297,7 +298,7 @@
 
 <script>
 import {
-  addReceivable,
+  batchPayment,
   getCustomfieldOptions,
   getCrmOrderList,
   getProject,
@@ -319,11 +320,11 @@ export default {
       formData: {
         staff_id: "",
         year: "",
-        type: "",
+        plan_type: "",
         checkedOrderData: [],
       },
       rules: {
-        type: [{ required: true, message: "请选择", trigger: "change" }],
+        plan_type: [{ required: true, message: "请选择", trigger: "change" }],
         year: [{ required: true, message: "请选择", trigger: "change" }],
         staff_id: [{ required: true, message: "请选择", trigger: "change" }],
       },
@@ -496,6 +497,7 @@ export default {
         limit: this.pageSize,
         staff_id: this.formData.staff_id,
         ...this.searchData,
+        verify_status: 3,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
           : "",
@@ -544,16 +546,11 @@ export default {
       }
     },
     async submit() {
+      const { checkedOrderData, staff_id, ...restData } = this.formData;
       const data = {
-        ...this.formData,
+        ...restData,
       };
-      data.arr_receivable = this.formData.checkedOrderData.map((item) => {
-        if (item.pay_money > item.order_money) {
-          this.$message.error(
-            `客户 ${item.user_name} 的本次回款金额大于订单金额`
-          );
-          throw new Error("error");
-        }
+      data.pay = this.formData.checkedOrderData.map((item) => {
         return {
           order_id: item.order_id,
           pay_money: item.pay_money,
@@ -565,7 +562,7 @@ export default {
         };
       });
       this.addLoading = true;
-      const res = await addReceivable(data).catch(() => {});
+      const res = await batchPayment(data).catch(() => {});
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -583,12 +580,8 @@ export default {
       this.$refs[formName].resetFields();
       this.formData = {
         staff_id: "",
-        total_money: "",
-        pay_type: "",
-        pay_date: "",
-        note: "",
         year: "",
-        type: "",
+        plan_type: "",
         receipt_file: [],
       };
       this.hadleResetOrder();
