@@ -309,7 +309,7 @@
                   class="header-copy"
                   @dblclick="handleHeaderDblclick('resetOrderMoney')"
                 >
-                  <span>订单金额</span>
+                  <span>学费金额</span>
                   <i class="el-icon-document-copy"></i>
                 </div>
               </template>
@@ -324,104 +324,121 @@
                 <span v-else>{{ row.order_money | moneyFormat }} </span>
               </template>
             </el-table-column>
-            <el-table-column
-              label="已回款金额"
-              show-overflow-tooltip
-              min-width="140"
-              fixed="right"
-              prop="pay_money"
-            >
-              <template slot-scope="{ row }">
-                <span>{{ row.pay_money | moneyFormat }} </span>
-                <el-button type="text" @click.stop="clearPayLog(row.order_id)"
-                  >清除</el-button
-                >
-              </template>
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              show-overflow-tooltip
-              min-width="110"
-              prop="outstanding_amount"
-            >
-              <template slot="header">
-                <div
-                  class="header-copy"
-                  title="双击复制（同时编辑多个时有效）"
-                  @dblclick="handleHeaderDblclick('resetOrderOverdueMoney')"
-                >
-                  <span>未回款金额</span>
-                  <i class="el-icon-document-copy"></i>
-                </div>
-              </template>
-              <template slot-scope="{ row }">
-                <el-input
-                  v-if="row.edit"
-                  size="small"
-                  v-model="row.resetOrderOverdueMoney"
-                  type="number"
-                  placeholder="请输入"
-                />
-                <span v-else>{{ row.outstanding_amount | moneyFormat }} </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              show-overflow-tooltip
-              min-width="100"
-              fixed="right"
-              prop="reduction"
-            >
-              <template slot="header">
-                <div
-                  class="header-copy"
-                  title="双击复制（同时编辑多个时有效）"
-                  @dblclick="handleHeaderDblclick('resetOrderReductionMoney')"
-                >
-                  <span>优惠金额</span>
-                  <i class="el-icon-document-copy"></i>
-                </div>
-              </template>
-              <template slot-scope="{ row }">
-                <el-input
-                  v-if="row.edit"
-                  size="small"
-                  v-model="row.resetOrderReductionMoney"
-                  type="number"
-                  placeholder="请输入"
-                />
-                <span v-else>{{ row.reduction | moneyFormat }} </span>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" fixed="right" min-width="90">
-              <template slot="header">
-                <div
-                  class="header-copy"
-                  title="双击全部保存（同时编辑多个时有效）"
-                  @dblclick="handleAllSave"
-                >
-                  <span>操作</span>
-                  <i class="el-icon-finished"></i>
-                </div>
-              </template>
-              <template slot-scope="{ row, $index: index }">
-                <template v-if="row.edit">
-                  <el-button
-                    type="text"
-                    @click.stop="handleCancelResetMoney(row)"
-                    >取消</el-button
-                  >
-                  <el-button
-                    type="text"
-                    :loading="row.loading"
-                    @click.stop="changeOrderMoney(row, index)"
-                    >保存</el-button
+            <template v-if="formData.type && formData.type != 1">
+              <el-table-column
+                label="其他金额"
+                show-overflow-tooltip
+                min-width="120"
+                prop="other_money"
+                fixed="right"
+              >
+                <template slot-scope="{ row }">
+                  <span>{{ row.other_money | moneyFormat }} </span>
+                </template>
+              </el-table-column>
+            </template>
+            <template v-else>
+              <el-table-column
+                label="已回款学费"
+                show-overflow-tooltip
+                min-width="140"
+                fixed="right"
+                prop="pay_money"
+              >
+                <template slot-scope="{ row }">
+                  <span>{{ row.pay_money | moneyFormat }} </span>
+                  <el-button type="text" @click.stop="clearPayLog(row.order_id)"
+                    >清除</el-button
                   >
                 </template>
-                <el-button v-else type="text" @click.stop="row.edit = true"
-                  >编辑</el-button
-                >
-              </template>
-            </el-table-column>
+              </el-table-column>
+              <el-table-column
+                fixed="right"
+                show-overflow-tooltip
+                min-width="110"
+                prop="outstanding_amount"
+              >
+                <template slot="header">
+                  <div
+                    class="header-copy"
+                    title="双击复制（同时编辑多个时有效）"
+                    @dblclick="handleHeaderDblclick('resetOrderOverdueMoney')"
+                  >
+                    <span>未回款学费</span>
+                    <i class="el-icon-document-copy"></i>
+                  </div>
+                </template>
+                <template slot-scope="{ row }">
+                  <el-input
+                    v-if="row.edit"
+                    size="small"
+                    v-model="row.resetOrderOverdueMoney"
+                    type="number"
+                    placeholder="请输入"
+                  />
+                  <span v-else
+                    >{{ row.outstanding_amount | moneyFormat }}
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                show-overflow-tooltip
+                min-width="100"
+                fixed="right"
+                prop="reduction"
+              >
+                <template slot="header">
+                  <div
+                    class="header-copy"
+                    title="双击复制（同时编辑多个时有效）"
+                    @dblclick="handleHeaderDblclick('resetOrderReductionMoney')"
+                  >
+                    <span>优惠金额</span>
+                    <i class="el-icon-document-copy"></i>
+                  </div>
+                </template>
+                <template slot-scope="{ row }">
+                  <el-input
+                    v-if="row.edit"
+                    size="small"
+                    v-model="row.resetOrderReductionMoney"
+                    type="number"
+                    placeholder="请输入"
+                  />
+                  <span v-else>{{ row.reduction | moneyFormat }} </span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" fixed="right" min-width="90">
+                <template slot="header">
+                  <div
+                    class="header-copy"
+                    title="双击全部保存（同时编辑多个时有效）"
+                    @dblclick="handleAllSave"
+                  >
+                    <span>操作</span>
+                    <i class="el-icon-finished"></i>
+                  </div>
+                </template>
+                <template slot-scope="{ row, $index: index }">
+                  <template v-if="row.edit">
+                    <el-button
+                      type="text"
+                      @click.stop="handleCancelResetMoney(row)"
+                      >取消</el-button
+                    >
+                    <el-button
+                      type="text"
+                      :loading="row.loading"
+                      @click.stop="changeOrderMoney(row, index)"
+                      >保存</el-button
+                    >
+                  </template>
+                  <el-button v-else type="text" @click.stop="row.edit = true"
+                    >编辑</el-button
+                  >
+                </template>
+              </el-table-column>
+            </template>
           </el-table>
           <div class="table_bottom">
             <page
