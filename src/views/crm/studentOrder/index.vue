@@ -10,6 +10,44 @@
           @on-search="handleSearch"
         />
       </header>
+      <ul class="panel-list">
+        <li class="panel-item">
+          <span
+            >订单金额
+            <el-tooltip
+              effect="dark"
+              content="该回款金额指按条件搜索的订单金额所涉及的回款金额，不包含实际时间期限内的回款金额。"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
+          <div class="time_num">
+            <span>{{ panelData.order_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>回款金额</span>
+          <div class="time_num">
+            <span>{{ panelData.pay_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span
+            >未回款金额
+            <el-tooltip
+              effect="dark"
+              content="订单金额减去已回款金额"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
+          <div class="time_num">
+            <span>{{ panelData.overdue_money | moneyFormat }}</span>
+          </div>
+        </li>
+      </ul>
       <!--列表-->
       <div class="userTable">
         <el-table
@@ -84,7 +122,45 @@
             min-width="90"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="pay_money"
+            label="已回款金额"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.pay_money | moneyFormat }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="pay_progress"
+            label="回款进度"
+            min-width="140"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-progress
+                :percentage="+(row.pay_progress || '').split('%')[0] || 0"
+              ></el-progress>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="pay_status"
+            label="支付状态"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-tag size="small" :type="row.pay_status | orderTagType">{{
+                row.pay_status | orderStatus
+              }}</el-tag>
+            </template>
           </el-table-column>
 
           <el-table-column label="操作" fixed="right" min-width="100">
@@ -119,6 +195,7 @@ export default {
   name: "studentOrder",
   data() {
     return {
+      panelData: {},
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -241,6 +318,16 @@ export default {
           attrs: {
             startPlaceholde: "订单金额起",
             endPlaceholde: "订单金额止",
+            valueFormat: " - ",
+          },
+        },
+        {
+          key: "pay_money",
+          type: "numberRange",
+          width: 280,
+          attrs: {
+            startPlaceholde: "回款金额起",
+            endPlaceholde: "回款金额止",
             valueFormat: " - ",
           },
         },

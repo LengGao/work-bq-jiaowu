@@ -124,48 +124,6 @@
           data.type === 1 ? "学历教育" : "职业教育"
         }}</span>
       </div>
-      <template v-if="data.type === 1">
-        <div class="info-item">
-          <span class="info-item__name">考前辅导费：</span>
-          <span class="info-item__value">{{
-            data.pre_tutor | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">报考费：</span>
-          <span class="info-item__value">{{
-            data.examination | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">教材费：</span>
-          <span class="info-item__value">{{
-            data.textbook | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">毕设指导费：</span>
-          <span class="info-item__value">{{
-            data.graduation_guidance | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">论文答辩费：</span>
-          <span class="info-item__value">{{
-            data.thesis_defense | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">平台费：</span>
-          <span class="info-item__value">{{
-            data.platform_fee | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">其他费用：</span>
-          <span class="info-item__value">{{ data.others | moneyFormat }}</span>
-        </div>
-      </template>
       <div class="info-item">
         <span class="info-item__name">回款凭证：</span>
         <span class="info-item__value">

@@ -14,7 +14,16 @@
       </header>
       <ul class="panel-list">
         <li class="panel-item">
-          <span>订单金额</span>
+          <span
+            >订单金额
+            <el-tooltip
+              effect="dark"
+              content="该回款金额指按条件搜索的订单金额所涉及的回款金额，不包含实际时间期限内的回款金额。"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
           <div class="time_num">
             <span>{{ panelData.order_money | moneyFormat }}</span>
           </div>
@@ -26,7 +35,16 @@
           </div>
         </li>
         <li class="panel-item">
-          <span>未回款金额</span>
+          <span
+            >未回款金额
+            <el-tooltip
+              effect="dark"
+              content="订单金额减去已回款金额"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
           <div class="time_num">
             <span>{{ panelData.overdue_money | moneyFormat }}</span>
           </div>
@@ -125,7 +143,9 @@
             min-width="90"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
           </el-table-column>
 
           <el-table-column
@@ -135,7 +155,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>￥{{ row.pay_money }}</span>
+              <span>{{ row.pay_money | moneyFormat }}</span>
             </template>
           </el-table-column>
 

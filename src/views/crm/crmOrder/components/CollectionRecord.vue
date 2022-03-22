@@ -2,16 +2,24 @@
   <div class="refund-record">
     <div class="header">
       <div>
-        <span class="title">订单总金额：</span>
-        <span class="value">￥{{ data.order_money }} </span>
+        <span class="title">订单金额：</span>
+        <span class="value">{{ data.total_money | moneyFormat }} </span>
+      </div>
+      <div>
+        <span class="title">学费金额：</span>
+        <span class="value">{{ data.order_money | moneyFormat }} </span>
+      </div>
+      <div>
+        <span class="title">其他金额：</span>
+        <span class="value">{{ data.other_money | moneyFormat }} </span>
       </div>
       <div>
         <span class="title">已回款金额：</span>
-        <span class="value">￥{{ data.pay_money }} </span>
+        <span class="value">{{ data.pay_money | moneyFormat }} </span>
       </div>
       <div>
         <span class="title">未回款金额：</span>
-        <span class="value">￥{{ data.overdue_money }} </span>
+        <span class="value">{{ data.overdue_money | moneyFormat }} </span>
       </div>
       <div class="actions" v-if="!$route.query.isFromApprove">
         <el-button type="primary" @click="handleAddPlan"
@@ -20,7 +28,7 @@
         <el-button type="primary" @click="handleAdd">添加回款记录</el-button>
       </div>
     </div>
-    <Title text="回款记录" style="margin-top: 20px"></Title>
+    <Title text="订单回款" style="margin-top: 20px"></Title>
     <el-table
       :data="data.pay_log"
       style="width: 100%; border: 1px solid #eee; border-bottom: none"
@@ -124,40 +132,9 @@
         show-overflow-tooltip
       >
       </el-table-column>
-      <!-- <el-table-column
-        label="操作"
-        fixed="right"
-        align="center"
-        min-width="160"
-      >
-        <template slot-scope="{ row }">
-          <el-button type="text">催办</el-button>
-          <el-button type="text">删除</el-button>
-        </template>
-      </el-table-column> -->
     </el-table>
-    <!-- <p class="placeholder">或</p> -->
     <Title text="回款计划" style="margin-top: 20px"></Title>
     <div class="term">
-      <!-- <div class="term-header">
-        <i class="el-icon-notebook-2"></i>
-        <div class="info-item">
-          <span>第1期回款计划：</span>
-          <span>2021-11-01 </span>
-        </div>
-        <div class="info-item">
-          <span>应收：</span>
-          <span>¥ 2500.00</span>
-        </div>
-        <div class="info-item">
-          <span>已收：</span>
-          <span> ¥ 2500.00</span>
-        </div>
-        <div class="info-item">
-          <span>进度：</span>
-          <span>100%</span>
-        </div>
-      </div> -->
       <el-table
         :data="data.pay_plan"
         style="width: 100%"
@@ -331,6 +308,7 @@ export default {
     font-weight: 550;
   }
   .actions {
+    flex-shrink: 0;
     margin-left: auto;
   }
 }
