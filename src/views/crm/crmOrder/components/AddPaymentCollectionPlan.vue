@@ -45,7 +45,7 @@
             >
               <el-select v-model="row.type" placeholder="请选择" filterable>
                 <el-option
-                  v-for="(label, value) in planTypeMap"
+                  v-for="(label, value) in expenseType"
                   :key="value"
                   :label="label"
                   :value="value"
@@ -164,6 +164,7 @@
 <script>
 import { createOrderPayPlan } from "@/api/crm";
 import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { mapGetters } from "vuex";
 export default {
   name: "AddCollectionPlan",
   props: {
@@ -174,10 +175,6 @@ export default {
     orderId: {
       type: [String, Number],
       default: "",
-    },
-    planTypeMap: {
-      type: Object,
-      default: () => ({}),
     },
   },
   data() {
@@ -195,6 +192,9 @@ export default {
       addLoading: false,
       yearOptions: getPlanYearOptions(),
     };
+  },
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
   methods: {
     handleOpen() {},

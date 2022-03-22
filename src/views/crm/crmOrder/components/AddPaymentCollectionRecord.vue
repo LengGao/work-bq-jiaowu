@@ -49,14 +49,14 @@
                 filterable
               >
                 <el-option
-                  v-for="(label, value) in planTypeMap"
+                  v-for="(label, value) in expenseType"
                   :key="value"
                   :label="label"
                   :value="value"
                 >
                 </el-option>
               </el-select>
-              <span v-else>{{ planTypeMap[row.type] || "" }}</span>
+              <span v-else>{{ expenseType[row.type] || "" }}</span>
             </template>
           </el-table-column>
           <el-table-column label="所属年份" min-width="120" align="center">
@@ -168,7 +168,7 @@
             </template>
             <template slot-scope="{ row }">
               <span
-                >{{ `${row.year}年 ${planTypeMap[row.type]} `
+                >{{ `${row.year}年 ${expenseType[row.type]} `
                 }}{{ row.money | moneyFormat }}
               </span>
             </template>
@@ -271,6 +271,7 @@ import {
 } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
 import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { mapGetters } from "vuex";
 export default {
   name: "AddCollectionRecord",
   components: {
@@ -289,10 +290,9 @@ export default {
       type: Array,
       default: () => [],
     },
-    planTypeMap: {
-      type: Object,
-      default: () => ({}),
-    },
+  },
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
   data() {
     return {

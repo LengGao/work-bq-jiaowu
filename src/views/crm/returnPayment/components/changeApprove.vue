@@ -49,7 +49,7 @@
         >
           <template slot-scope="{ row }">
             <span>
-              {{ planTypeMap[row.type] || "--" }}
+              {{ expenseTypeMap[row.type] || "--" }}
             </span>
           </template>
         </el-table-column>
@@ -186,12 +186,12 @@
 <script>
 import Detail from "@/views/institution/paymentRebate/components/institutionalCollection/detail.vue";
 import { getShortcuts, getPlanYearOptions } from "@/utils/date";
+import { mapGetters } from "vuex";
 import {
   getOrgReceivableList,
   getOrgName,
   getReceivableStatus,
   getBelongPeople,
-  getPlanTypeList,
   reviewReceivableOrder,
 } from "@/api/crm";
 export default {
@@ -311,8 +311,19 @@ export default {
       ],
       dialogVisible: false,
       logId: "",
-      planTypeMap: {},
     };
+  },
+  computed: {
+    ...mapGetters(["expenseType"]),
+    expenseTypeMap() {
+      this.searchOptions[4].options = Object.entries(this.expenseType).map(
+        (item) => ({
+          label: item[1],
+          value: item[0],
+        })
+      );
+      return this.expenseType;
+    },
   },
   activated() {
     this.getOrgReceivableList();
@@ -320,24 +331,11 @@ export default {
   created() {
     this.getOrgReceivableList();
     this.getOrgName();
-    this.getPlanTypeList();
     this.getBelongPeople();
     this.getReceivableStatus();
   },
+
   methods: {
-    // 回款类型
-    async getPlanTypeList() {
-      const res = await getPlanTypeList();
-      if (res.code === 0) {
-        this.planTypeMap = res.data;
-        this.searchOptions[4].options = Object.entries(res.data).map(
-          (item) => ({
-            label: item[1],
-            value: item[0],
-          })
-        );
-      }
-    },
     optenDialog(logId) {
       this.logId = logId;
       this.dialogVisible = true;

@@ -69,7 +69,7 @@
           >
             <template slot-scope="{ row }">
               <span>
-                {{ planTypeMap[row.type] || "--" }}
+                {{ expenseTypeMap[row.type] || "--" }}
               </span>
             </template>
           </el-table-column>
@@ -205,8 +205,8 @@ import {
   getReceivableStatus,
   getBelongPeople,
   orgReceivableImportUrl,
-  getPlanTypeList,
 } from "@/api/crm";
+import { mapGetters } from "vuex";
 export default {
   name: "institutionalCollection",
   data() {
@@ -328,9 +328,20 @@ export default {
         //   },
         // },
       ],
-      planTypeMap: {},
       uploadLoading: false,
     };
+  },
+  computed: {
+    ...mapGetters(["expenseType"]),
+    expenseTypeMap() {
+      this.searchOptions[4].options = Object.entries(this.expenseType).map(
+        (item) => ({
+          label: item[1],
+          value: item[0],
+        })
+      );
+      return this.expenseType;
+    },
   },
   activated() {
     this.getOrgReceivableList();
@@ -339,26 +350,12 @@ export default {
     this.getReceivableStatus();
   },
   created() {
-    this.getPlanTypeList();
     this.getOrgReceivableList();
     this.getOrgName();
     this.getBelongPeople();
     this.getReceivableStatus();
   },
   methods: {
-    // 回款类型
-    async getPlanTypeList() {
-      const res = await getPlanTypeList();
-      if (res.code === 0) {
-        this.planTypeMap = res.data;
-        this.searchOptions[4].options = Object.entries(res.data).map(
-          (item) => ({
-            label: item[1],
-            value: item[0],
-          })
-        );
-      }
-    },
     handleBeforeUpload() {
       this.uploadLoading = true;
     },

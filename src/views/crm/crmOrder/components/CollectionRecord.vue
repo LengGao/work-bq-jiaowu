@@ -182,7 +182,7 @@
         >
           <template slot-scope="{ row }">
             <span>
-              {{ planTypeMap[row.type] || "--" }}
+              {{ expenseType[row.type] || "--" }}
             </span>
           </template>
         </el-table-column>
@@ -258,11 +258,9 @@
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
       :plan-data="data.pay_plan"
-      :planTypeMap="planTypeMap"
       @refresh="$parent.getCrmOrderDetail"
     />
     <AddPaymentCollectionPlan
-      :planTypeMap="planTypeMap"
       v-model="planDialogVisible"
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
@@ -274,7 +272,7 @@
 <script>
 import AddPaymentCollectionRecord from "./AddPaymentCollectionRecord.vue";
 import AddPaymentCollectionPlan from "./AddPaymentCollectionPlan.vue";
-import { getPlanTypeList } from "@/api/crm";
+import { mapGetters } from "vuex";
 export default {
   name: "CollectionRecord",
   components: {
@@ -300,19 +298,13 @@ export default {
         2: "已驳回",
         3: "确认入账中",
       },
-      planTypeMap: {},
     };
   },
-  created() {
-    this.getPlanTypeList();
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
+  created() {},
   methods: {
-    async getPlanTypeList() {
-      const res = await getPlanTypeList();
-      if (res.code === 0) {
-        this.planTypeMap = res.data;
-      }
-    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },

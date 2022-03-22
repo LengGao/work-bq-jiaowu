@@ -44,7 +44,7 @@
       <div class="info-item">
         <span class="info-item__name">回款类型：</span>
         <span class="info-item__value">{{
-          planTypeMap[orderData.type] || "--"
+          expenseType[orderData.type] || "--"
         }}</span>
       </div>
       <div class="info-item">
@@ -256,12 +256,9 @@
 </template>
 
 <script>
-import {
-  getReceivableInfo,
-  reviewReceivableOrder,
-  getPlanTypeList,
-} from "@/api/crm";
+import { getReceivableInfo, reviewReceivableOrder } from "@/api/crm";
 import AddCollection from "./components/AddCollection";
+import { mapGetters } from "vuex";
 export default {
   name: "institutionalCollectionDetail",
   components: {
@@ -273,23 +270,18 @@ export default {
   data() {
     return {
       loading: false,
-      planTypeMap: {},
       orderData: {},
       listData: [],
       addCollectionVisible: false,
     };
   },
+  computed: {
+    ...mapGetters(["expenseType"]),
+  },
   created() {
     this.getReceivableInfo();
-    this.getPlanTypeList();
   },
   methods: {
-    async getPlanTypeList() {
-      const res = await getPlanTypeList();
-      if (res.code === 0) {
-        this.planTypeMap = res.data;
-      }
-    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },

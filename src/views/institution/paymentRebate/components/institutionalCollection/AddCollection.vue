@@ -56,7 +56,7 @@
           filterable
         >
           <el-option
-            v-for="(label, value) in planTypeMap"
+            v-for="(label, value) in expenseType"
             :key="value"
             :label="label"
             :value="value"
@@ -592,12 +592,12 @@ import {
   getExcelOrgReceivable,
   clearPayLog,
   changeOrderMoney,
-  getPlanTypeList,
 } from "@/api/crm";
 import { getGradeOptions } from "@/api/sou";
 import { getShortcuts, getPlanYearOptions } from "@/utils/date";
 import { accSub, download } from "@/utils";
 import ImgListUpload from "@/components/imgListUpload";
+import { mapGetters } from "vuex";
 export default {
   name: "addInstitutionalCollection",
   components: {
@@ -713,7 +713,6 @@ export default {
       totalMoney: "",
       downloadLoading: false,
       yearOptions: getPlanYearOptions(),
-      planTypeMap: {},
       //再次回款
       againListData: [],
       againListLoading: false,
@@ -721,6 +720,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["expenseType"]),
     totalInputMoney() {
       if (this.id) {
         return this.againListData.reduce((p, c) => p + c.currentMoney * 1, 0);
@@ -731,20 +731,12 @@ export default {
   created() {
     this.getCustomfieldOptions();
     this.getOrgName();
-    this.getPlanTypeList();
     this.getGradeOptions();
     if (this.id) {
       this.getReceivableInfo();
     }
   },
   methods: {
-    // 回款类型
-    async getPlanTypeList() {
-      const res = await getPlanTypeList();
-      if (res.code === 0) {
-        this.planTypeMap = res.data;
-      }
-    },
     // 双击保存全部
     handleAllSave() {
       this.listData.forEach((item, index) => {

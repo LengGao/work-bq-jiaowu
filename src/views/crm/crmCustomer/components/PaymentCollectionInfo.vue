@@ -16,7 +16,7 @@
           <el-checkbox
             :label="value"
             name="type"
-            v-for="(name, value) in planTypeMap"
+            v-for="(name, value) in expenseType"
             :key="value"
             >{{ name }}</el-checkbox
           >
@@ -46,7 +46,7 @@
         >
           <template slot-scope="{ row }">
             <span>
-              {{ planTypeMap[row.type] }}
+              {{ expenseType[row.type] }}
             </span>
           </template>
         </el-table-column>
@@ -176,7 +176,7 @@
           <el-option
             v-for="item in formData.tableData"
             :key="item.temp_id"
-            :label="`${item.year}年 ${planTypeMap[item.type]} ￥${(
+            :label="`${item.year}年 ${expenseType[item.type]} ￥${(
               +item.money || 0
             ).toFixed(2)}`"
             :value="item.temp_id"
@@ -237,10 +237,11 @@
 </template>
 
 <script>
-import { createOrder, getCustomfieldOptions, getPlanTypeList } from "@/api/crm";
+import { createOrder, getCustomfieldOptions } from "@/api/crm";
 import { getPlanYearOptions, currentYear } from "@/utils/date";
 import ImgListUpload from "@/components/imgListUpload";
 import PreviewContract from "./PreviewContract";
+import { mapGetters } from "vuex";
 export default {
   name: "PaymentCollectionInfo",
   props: {
@@ -280,12 +281,13 @@ export default {
       yearOptions: getPlanYearOptions(),
       previewDialog: false,
       previewContractData: {},
-      planTypeMap: {},
     };
+  },
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
   created() {
     this.getCustomfieldOptions();
-    this.getPlanTypeList();
   },
   methods: {
     isDel(type) {
@@ -294,12 +296,7 @@ export default {
       );
       return currentTypeData.length <= 1;
     },
-    async getPlanTypeList() {
-      const res = await getPlanTypeList();
-      if (res.code === 0) {
-        this.planTypeMap = res.data;
-      }
-    },
+
     handleCheckboxChange(checked) {
       checked = checked || [];
       const types = this.formData.tableData.map((item) => item.type);
