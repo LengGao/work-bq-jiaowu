@@ -334,6 +334,13 @@ export const asyncRouter = [
 
 
       {
+        path: 'AddCrmCollection',
+        name: 'AddCrmCollection',
+        component: () => import('@/views/crm/collectionList/AddCollection.vue'),
+        meta: { title: '添加回款' },
+      },
+
+      {
         path: 'collectionList',
         name: 'collectionList',
         component: () => import('@/views/crm/collectionList/index.vue'),

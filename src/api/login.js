@@ -108,7 +108,7 @@ export const baseUrl = process.env.VUE_APP_DOWNLOAD
 // 获取菜单
 export function getMenu(params) {
   return request({
-    url: '/staff/getMenu',
+    url: '/staff/getMenu/',
     method: 'get',
     params
   })

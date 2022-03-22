@@ -15,6 +15,9 @@
           <el-button type="primary" :loading="exportLoading" @click="exportList"
             >导 出</el-button
           >
+          <el-button type="primary" @click="toAddCollection"
+            >添加回款</el-button
+          >
         </div>
       </header>
       <ul class="panel-list">
@@ -353,6 +356,9 @@ export default {
     this.getDepartmentlists();
   },
   methods: {
+    toAddCollection() {
+      this.$router.push({ name: "AddCrmCollection" });
+    },
     async exportList() {
       const data = {
         page: this.pageNum,
@@ -485,6 +491,9 @@ section {
   header {
     display: flex;
     justify-content: space-between;
+    .actions {
+      flex-shrink: 0;
+    }
   }
   .panel-list {
     display: flex;
