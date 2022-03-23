@@ -165,14 +165,18 @@
           >
             <el-table-column
               show-overflow-tooltip
-              min-width="80"
+              min-width="100"
               prop="surname"
             >
               <template slot="header">
                 <span>已选（{{ formData.checkedOrderData.length }}）</span>
               </template>
             </el-table-column>
-            <el-table-column min-width="120" prop="pay_money">
+            <el-table-column
+              class-name="form-item"
+              min-width="120"
+              prop="pay_money"
+            >
               <template slot="header">
                 <div
                   title="双击复制（同时编辑多个时有效）"
@@ -198,7 +202,21 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="回款日期" min-width="120" align="center">
+            <el-table-column
+              class-name="form-item"
+              min-width="140"
+              align="center"
+            >
+              <template slot="header">
+                <div
+                  title="双击复制（同时编辑多个时有效）"
+                  class="header-copy"
+                  @dblclick="handleHeaderDblclick('pay_date')"
+                >
+                  <span>回款日期</span>
+                  <i class="el-icon-document-copy"></i>
+                </div>
+              </template>
               <template slot-scope="{ row, $index: index }">
                 <el-form-item
                   :rules="[
@@ -219,7 +237,21 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="支付方式" min-width="120" align="center">
+            <el-table-column
+              class-name="form-item"
+              min-width="120"
+              align="center"
+            >
+              <template slot="header">
+                <div
+                  title="双击复制（同时编辑多个时有效）"
+                  class="header-copy"
+                  @dblclick="handleHeaderDblclick('pay_type')"
+                >
+                  <span>支付方式</span>
+                  <i class="el-icon-document-copy"></i>
+                </div>
+              </template>
               <template slot-scope="{ row, $index: index }">
                 <el-form-item
                   :rules="[
@@ -244,7 +276,21 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="回款凭证" min-width="160" align="center">
+            <el-table-column
+              class-name="form-item"
+              min-width="160"
+              align="center"
+            >
+              <template slot="header">
+                <div
+                  title="双击复制（同时编辑多个时有效）"
+                  class="header-copy"
+                  @dblclick="handleHeaderDblclick('receipt_file')"
+                >
+                  <span>回款凭证</span>
+                  <i class="el-icon-document-copy"></i>
+                </div>
+              </template>
               <template slot-scope="{ row, $index: index }">
                 <el-form-item
                   :rules="[
@@ -265,11 +311,11 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column show-overflow-tooltip min-width="80" fixed="right">
+            <el-table-column show-overflow-tooltip min-width="70" fixed="right">
               <template slot="header">
                 <el-button
                   type="text"
-                  style="color: red"
+                  style="color: red; padding: 0"
                   @click="hadleResetOrder"
                   >清空</el-button
                 >
@@ -397,7 +443,7 @@ export default {
           },
         },
         {
-          key: "user_name",
+          key: "keyword",
           width: 600,
           attrs: {
             placeholder: "输入多个姓名时，可用空格隔开",
@@ -453,7 +499,6 @@ export default {
       return e.getTime() > Date.now();
     },
     onStaffChange() {
-      this.hadleResetOrder();
       this.handlePageChange(1);
       this.getProject();
       this.getGradeOptions();
@@ -492,12 +537,19 @@ export default {
       this.getCrmOrderList();
     },
     async getCrmOrderList() {
+      const { staff_id } = this.formData;
+      if (!staff_id) {
+        this.$message.error("请选择所属老师");
+        return;
+      }
+      this.hadleResetOrder();
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
-        staff_id: this.formData.staff_id,
+        staff_id,
         ...this.searchData,
         verify_status: 3,
+        channel: 2,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
           : "",
@@ -626,13 +678,12 @@ export default {
     }
     .checked-table {
       width: 50%;
-      .money-total {
-        text-align: right;
-        padding: 16px 0;
-        & > span {
-          margin-left: 40px;
-          .price {
-            color: #fd6552;
+      /deep/td.form-item {
+        padding-bottom: 0;
+        .el-form-item {
+          margin-bottom: 14px;
+          .el-form-item__error {
+            padding-top: 2px;
           }
         }
       }
