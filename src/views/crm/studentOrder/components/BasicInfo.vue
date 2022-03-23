@@ -209,7 +209,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span> {{ row.project_price | moneyFormat }} </span>
+            <span> {{ (row.project_price || row.price) | moneyFormat }} </span>
           </template>
         </el-table-column>
         <!-- <el-table-column
