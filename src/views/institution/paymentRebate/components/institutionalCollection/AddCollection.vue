@@ -284,13 +284,12 @@
             :key="key"
             show-overflow-tooltip
             min-width="120"
-            prop="project_name"
           >
             <template slot="header">
               <div
                 class="header-copy"
                 title="双击复制（同时编辑多个时有效）"
-                @dblclick="handleHeaderDblclick('moneys', `type${key}`)"
+                @dblclick="handleHeaderDblclick('moneys', key)"
               >
                 <span>{{ item }}</span>
                 <i class="el-icon-document-copy"></i>
@@ -298,7 +297,7 @@
             </template>
             <template slot-scope="{ row }">
               <el-input
-                v-model="row.moneys[`type${key}`]"
+                v-model="row.moneys[key]"
                 size="mini"
                 type="number"
                 :placeholder="`请输入${item}`"
@@ -362,13 +361,12 @@
             :key="key"
             show-overflow-tooltip
             min-width="120"
-            :prop="`moneys[type${key}]`"
           >
             <template slot="header">
               <div
                 class="header-copy"
                 title="双击复制（同时编辑多个时有效）"
-                @dblclick="handleHeaderDblclick('moneys', `type${key}`)"
+                @dblclick="handleHeaderDblclick('moneys', key)"
               >
                 <span>{{ item }}</span>
                 <i class="el-icon-document-copy"></i>
@@ -376,7 +374,7 @@
             </template>
             <template slot-scope="{ row }">
               <el-input
-                v-model="row.moneys[`type${key}`]"
+                v-model="row.moneys[key]"
                 size="mini"
                 type="number"
                 :placeholder="`请输入${item}`"
@@ -694,7 +692,6 @@ export default {
     }
   },
   methods: {
- 
     // 双击保存全部
     handleAllSave() {
       this.listData.forEach((item, index) => {
@@ -777,7 +774,7 @@ export default {
         const types = Object.keys(this.expenseType);
         const moneys = {};
         types.forEach((item) => {
-          moneys["type" + item] = "";
+          moneys[item] = "";
         });
         this.againListData = res.data.list.map((item) => ({
           ...item,
@@ -847,7 +844,7 @@ export default {
       const types = Object.keys(this.expenseType);
       const moneys = {};
       types.forEach((item) => {
-        moneys["type" + item] = "";
+        moneys[item] = "";
       });
       this.listData = res.data.list.map((item) => {
         return {
@@ -922,12 +919,13 @@ export default {
         receipt_file: this.formData.receipt_file.map(
           (item) => item.response.data.data.url
         ),
+        total_money: this.totalMoney,
       };
       if (this.id) {
         data.arr_receivable = this.againListData.map(
           ({ moneys, order_id }) => ({
             order_id,
-            pay_money: moneys["type1"] || "",
+            pay_money: moneys["1"] || "",
             moneys,
           })
         );
@@ -935,7 +933,7 @@ export default {
         data.arr_receivable = this.checkedOrderData.map((item) => {
           return {
             order_id: item.order_id,
-            pay_money: item.moneys["type1"] || "",
+            pay_money: item.moneys["1"] || "",
             moneys: item.moneys,
           };
         });

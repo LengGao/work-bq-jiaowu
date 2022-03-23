@@ -140,6 +140,17 @@
         label="订单金额"
         align="center"
         min-width="100"
+        prop="total_money"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span> {{ row.total_money | moneyFormat }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="学费金额"
+        align="center"
+        min-width="100"
         prop="order_money"
         show-overflow-tooltip
       >
@@ -148,28 +159,28 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="学费金额"
-        align="center"
-        min-width="100"
-        prop="pay_money"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-          <span> {{ row.receivable_money | moneyFormat }} </span>
-        </template>
-      </el-table-column>
-      <el-table-column
         label="其他金额"
         align="center"
         min-width="100"
-        prop="pay_money"
+        prop="other_money"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> {{ row.pay_money | moneyFormat }} </span>
+          <span> {{ row.other_money | moneyFormat }} </span>
         </template>
       </el-table-column>
-
+      <el-table-column
+        v-for="(item, key) in expenseType"
+        :key="key"
+        show-overflow-tooltip
+        min-width="100"
+        :label="item"
+        align="center"
+      >
+        <template slot-scope="{ row }">
+          <span> {{ row.moneys[key] | moneyFormat }} </span>
+        </template>
+      </el-table-column>
       <!-- <el-table-column
         prop="progress"
         label="已回款进度"
