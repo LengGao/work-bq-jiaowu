@@ -543,6 +543,26 @@ export default {
           },
         },
         {
+          key: "is_new",
+          type: "select",
+          width: 140,
+          options: [
+            {
+              value: 1,
+              label: "新客户",
+            },
+            {
+              value: 2,
+              label: "老客户",
+            },
+          ],
+          attrs: {
+            filterable: true,
+            clearable: true,
+            placeholder: "客户类型",
+          },
+        },
+        {
           key: "order_money",
           type: "numberRange",
           width: 280,

@@ -172,7 +172,12 @@
       </div>
     </div>
     <el-dialog title="回款详情" :visible.sync="dialogVisible" width="80%">
-      <Detail :logId="logId" :key="logId" />
+      <Detail
+        :logId="logId"
+        :key="logId"
+        :isFromApproval="true"
+        @success="getOrgReceivableList"
+      />
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false"

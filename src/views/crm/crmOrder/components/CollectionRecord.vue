@@ -329,15 +329,5 @@ export default {
   border: 1px solid #eee;
   border-bottom: none;
   margin-top: 20px;
-  &-header {
-    display: flex;
-    align-items: center;
-    color: #666;
-    padding: 16px;
-    background-color: #f2f6fc;
-    .info-item {
-      padding: 0 10px;
-    }
-  }
 }
 </style>

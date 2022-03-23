@@ -1,5 +1,12 @@
 <template>
   <div class="student-order-detail" v-loading="loading">
+    <el-alert
+      style="margin-bottom: 10px"
+      v-if="orderData.check_state == -1"
+      :title="'驳回原因：' + orderData.rejected_note"
+      type="error"
+    >
+    </el-alert>
     <div class="student-order-title">
       <h3>{{ orderData.org_name }}-回款{{ orderData.receivable_money }}元</h3>
       <span class="student-order-status">机构回款订单</span>
@@ -12,25 +19,31 @@
         >
         <el-button
           type="danger"
-          v-if="$route.query.isFromApproval && orderData.check_state == 0"
+          v-if="isFromApproval && orderData.check_state == 0"
           @click="rejectConfirm"
           >驳 回</el-button
         >
         <el-button
           type="primary"
-          v-if="$route.query.isFromApproval && orderData.check_state == 0"
+          v-if="isFromApproval && orderData.check_state == 0"
           @click="approveConfirm"
           >入 账</el-button
         >
 
         <el-tag
           type="success"
-          v-if="$route.query.isFromApproval && orderData.check_state == 2"
+          v-if="isFromApproval && orderData.check_state == 2"
           >已入账</el-tag
+        >
+        <el-tag
+          type="primary"
+          v-if="$route.query.isFromList && orderData.check_state == 0"
+          >待入账</el-tag
         >
         <el-tag type="danger" v-if="orderData.check_state == -1">已驳回</el-tag>
       </div>
     </div>
+
     <Title text="回款信息"></Title>
     <div class="info-block">
       <div class="info-item">
@@ -203,34 +216,6 @@
         </template>
       </el-table-column> -->
       <el-table-column
-        prop="check_state"
-        label="入账状态"
-        min-width="100"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-          <span
-            v-if="row.check_state == 0"
-            class="approve-status approve-status--none"
-            >待确认</span
-          >
-          <span
-            v-if="row.check_state == 1"
-            class="approve-status approve-status--wait"
-            >已确认</span
-          >
-          <span
-            v-if="row.check_state == 2"
-            class="approve-status approve-status--success"
-            >已入账
-          </span>
-          <span v-if="row.check_state == -1" class="approve-status"
-            >已驳回
-            <i class="el-icon-question" :title="row.rejected_note"></i>
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column
         label="操作"
         fixed="right"
         align="center"
@@ -263,6 +248,7 @@ export default {
   },
   props: {
     logId: "",
+    isFromApproval: "",
   },
   data() {
     return {
@@ -313,7 +299,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getReceivableInfo();
-        check_state === 2 && this.$router.back();
+        this.$emit("success");
       }
     },
     async getReceivableInfo() {

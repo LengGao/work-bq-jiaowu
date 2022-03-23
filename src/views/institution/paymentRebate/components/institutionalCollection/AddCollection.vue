@@ -703,7 +703,8 @@ export default {
     // 双击表头复制指定金额
     handleHeaderDblclick(field, field2) {
       let value = "";
-      this.listData.forEach((item) => {
+      const data = this.id ? this.againListData : this.listData;
+      data.forEach((item) => {
         if (field2) {
           if (value !== "") {
             item[field][field2] = value;

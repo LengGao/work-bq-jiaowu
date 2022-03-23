@@ -69,7 +69,7 @@
           >
             <template slot-scope="{ row }">
               <span>
-                {{ expenseTypeMap[row.type] || "--" }}
+                {{ getType(row.type) }}
               </span>
             </template>
           </el-table-column>
@@ -86,23 +86,33 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="order_money"
-            label="订单总金额"
+            prop="receivable_money"
+            label="回款总金额"
             show-overflow-tooltip
             min-width="100"
+          >
+            <template slot-scope="{ row }">
+              {{ row.receivable_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="order_money"
+            label="学费金额"
+            min-width="120"
+            show-overflow-tooltip
           >
             <template slot-scope="{ row }">
               {{ row.order_money | moneyFormat }}
             </template>
           </el-table-column>
           <el-table-column
-            prop="receivable_money"
-            label="回款金额"
+            prop="other_money"
+            label="其他金额"
             min-width="120"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              {{ row.receivable_money | moneyFormat }}
+              {{ row.other_money | moneyFormat }}
             </template>
           </el-table-column>
           <el-table-column
@@ -144,12 +154,7 @@
               <span
                 v-if="row.check_state == 0"
                 class="approve-status approve-status--none"
-                >待确认</span
-              >
-              <span
-                v-if="row.check_state == 1"
-                class="approve-status approve-status--wait"
-                >已确认</span
+                >待入帐</span
               >
               <span
                 v-if="row.check_state == 2"
@@ -356,6 +361,13 @@ export default {
     this.getReceivableStatus();
   },
   methods: {
+    getType(types) {
+      if (types && types.length) {
+        return types.map((type) => this.expenseTypeMap[type]).join(",");
+      } else {
+        return "--";
+      }
+    },
     handleBeforeUpload() {
       this.uploadLoading = true;
     },
