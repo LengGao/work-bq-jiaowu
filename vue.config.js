@@ -38,8 +38,8 @@ module.exports = {
         // target: 'http://dongpei.kaifa',
         // target: 'http://192.168.8.201', //陈
         // target: 'http://thing.com',
-        target: 'http://192.168.8.120:90', //蚁
-        // target: 'http://v2.testadmin.beiqujy.com/apidata', //测试
+        // target: 'http://192.168.8.120:90', //蚁
+        target: 'http://v2.testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
         // target: 'http://192.168.8.100', //权
         // target: 'http://dpadmin.beiqujy.com/apidata', //生产
