@@ -34,40 +34,16 @@
     <Title text="回款信息"></Title>
     <div class="info-block">
       <div class="info-item">
-        <span class="info-item__name">回款日期：</span>
-        <span class="info-item__value">{{ orderData.pay_date }}</span>
-      </div>
-      <div class="info-item">
         <span class="info-item__name">机构名称：</span>
         <span class="info-item__value">{{ orderData.org_name }}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-item__name">回款类型：</span>
-        <span class="info-item__value">{{
-          expenseType[orderData.type] || "--"
-        }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">所属年份：</span>
         <span class="info-item__value">{{ orderData.year || "--" }}</span>
       </div>
-      <!-- <div class="info-item">
-        <span class="info-item__name">业绩归属：</span>
-        <span class="info-item__value">{{ orderData.staff_name }}</span>
-      </div> -->
       <div class="info-item">
-        <span class="info-item__name">关联订单数：</span>
-        <span class="info-item__value">{{ orderData.order_num }}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-item__name">回款总金额：</span>
-        <span class="info-item__value">{{
-          orderData.receivable_money | moneyFormat
-        }}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-item__name">支付方式：</span>
-        <span class="info-item__value">{{ orderData.pay_type }}</span>
+        <span class="info-item__name">回款日期：</span>
+        <span class="info-item__value">{{ orderData.pay_date }}</span>
       </div>
       <div class="info-item">
         <span class="info-item__name">回款凭证：</span>
@@ -93,6 +69,25 @@
           <span v-else>--</span>
         </span>
       </div>
+      <!-- <div class="info-item">
+        <span class="info-item__name">业绩归属：</span>
+        <span class="info-item__value">{{ orderData.staff_name }}</span>
+      </div> -->
+      <div class="info-item">
+        <span class="info-item__name">关联订单数：</span>
+        <span class="info-item__value">{{ orderData.order_num }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">回款总金额：</span>
+        <span class="info-item__value">{{
+          orderData.receivable_money | moneyFormat
+        }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">支付方式：</span>
+        <span class="info-item__value">{{ orderData.pay_type }}</span>
+      </div>
+
       <div class="info-item">
         <span class="info-item__name">订单备注：</span>
         <span class="info-item__value">{{ orderData.note || "--" }}</span>
@@ -111,25 +106,7 @@
         'background-color': '#f8f8f8',
       }"
     >
-      <el-table-column
-        label="订单编号"
-        min-width="200"
-        align="center"
-        prop="order_no"
-      >
-        <template slot-scope="{ row }">
-          <el-button type="text" @click="toStudentOrderDetail(row.order_id)">{{
-            row.order_no
-          }}</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="创建时间"
-        show-overflow-tooltip
-        min-width="160"
-        align="center"
-        prop="create_time"
-      >
+      <el-table-column label="序号" width="50" type="index" align="center">
       </el-table-column>
       <el-table-column
         prop="project_name"
@@ -160,7 +137,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="订单总金额"
+        label="订单金额"
         align="center"
         min-width="100"
         prop="order_money"
@@ -171,7 +148,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="本次回款金额"
+        label="学费金额"
         align="center"
         min-width="100"
         prop="pay_money"
@@ -182,7 +159,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="已回款金额"
+        label="其他金额"
         align="center"
         min-width="100"
         prop="pay_money"
@@ -192,14 +169,8 @@
           <span> {{ row.pay_money | moneyFormat }} </span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="pay_type"
-        label="支付方式"
-        min-width="100"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-      <el-table-column
+
+      <!-- <el-table-column
         prop="progress"
         label="已回款进度"
         min-width="140"
@@ -219,18 +190,33 @@
         <template slot-scope="{ row }">
           <el-progress :percentage="+row.success_progress || 0"></el-progress>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
-        prop="pay_status"
-        label="支付状态"
+        prop="check_state"
+        label="入账状态"
         min-width="100"
-        align="center"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <el-tag size="small" :type="row.pay_status | orderTagType">{{
-            row.pay_status | orderStatus
-          }}</el-tag>
+          <span
+            v-if="row.check_state == 0"
+            class="approve-status approve-status--none"
+            >待确认</span
+          >
+          <span
+            v-if="row.check_state == 1"
+            class="approve-status approve-status--wait"
+            >已确认</span
+          >
+          <span
+            v-if="row.check_state == 2"
+            class="approve-status approve-status--success"
+            >已入账
+          </span>
+          <span v-if="row.check_state == -1" class="approve-status"
+            >已驳回
+            <i class="el-icon-question" :title="row.rejected_note"></i>
+          </span>
         </template>
       </el-table-column>
       <el-table-column
