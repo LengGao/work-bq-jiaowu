@@ -96,13 +96,13 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="order_money"
+            prop="pay_money"
             label="学费金额"
             min-width="120"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              {{ row.order_money | moneyFormat }}
+              {{ row.pay_money | moneyFormat }}
             </template>
           </el-table-column>
           <el-table-column

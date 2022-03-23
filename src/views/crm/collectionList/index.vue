@@ -166,6 +166,17 @@
             show-overflow-tooltip
           >
           </el-table-column>
+          <el-table-column label="操作" min-width="80" fixed="right">
+            <template slot-scope="{ row }">
+              <el-button
+                v-if="row.verify_status"
+                type="text"
+                :loading="row.loading"
+                @click="resetConfirm(row)"
+                >重置</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
         <div class="table_bottom">
           <page
@@ -182,7 +193,11 @@
 
 <script>
 import { getShortcuts, today } from "@/utils/date";
-import { getReturnPaymentList, getCustomfieldOptions } from "@/api/crm";
+import {
+  getReturnPaymentList,
+  getCustomfieldOptions,
+  resetLog,
+} from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions, download } from "@/utils";
 export default {
@@ -356,6 +371,26 @@ export default {
     this.getDepartmentlists();
   },
   methods: {
+    // 重置
+    resetConfirm(row) {
+      this.$confirm("确定要重置该入账审批吗？", "提醒", {
+        type: "warning",
+      })
+        .then(() => {
+          this.resetLog(row);
+        })
+        .catch(() => {});
+    },
+    async resetLog(row) {
+      const data = { id: row.id };
+      row.loading = true;
+      const res = await resetLog(data).catch(() => {});
+      row.loading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getReturnPaymentList();
+      }
+    },
     toAddCollection() {
       this.$router.push({ name: "AddCrmCollection" });
     },
@@ -460,7 +495,10 @@ export default {
       this.listLoading = true;
       const res = await getReturnPaymentList(data).catch(() => {});
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        loading: false,
+      }));
       this.panelData = res.data.count;
       this.listTotal = res.data.total;
     },

@@ -182,6 +182,13 @@
               @click="rejectConfirm(row.id, 2)"
               >驳回</el-button
             >
+            <el-button
+              v-if="row.verify_status"
+              type="text"
+              :loading="row.loading"
+              @click="resetConfirm(row)"
+              >重置</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -241,6 +248,7 @@ import { getShortcuts } from "@/utils/date";
 import {
   getReturnPaymentList,
   entryLog,
+  resetLog,
   getCustomfieldOptions,
 } from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
@@ -380,29 +388,6 @@ export default {
           },
         },
       ],
-
-      verifyStatusMap: {
-        1: {
-          text: "待审核",
-          type: "info",
-        },
-        2: {
-          text: "（多人）审核中",
-          type: "primary",
-        },
-        3: {
-          text: "审核通过",
-          type: "success",
-        },
-        8: {
-          text: "已撤销审核",
-          type: "info",
-        },
-        9: {
-          text: "驳回不通过",
-          type: "danger",
-        },
-      },
       dialogFormVisible: false,
       payMethodOptions: [],
       rules: {
@@ -424,6 +409,26 @@ export default {
     this.getDepartmentlists();
   },
   methods: {
+    // 重置
+    resetConfirm(row) {
+      this.$confirm("确定要重置该入账审批吗？", "提醒", {
+        type: "warning",
+      })
+        .then(() => {
+          this.resetLog(row);
+        })
+        .catch(() => {});
+    },
+    async resetLog(row) {
+      const data = { id: row.id };
+      row.loading = true;
+      const res = await resetLog(data).catch(() => {});
+      row.loading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getReturnPaymentList();
+      }
+    },
     handlePreview(imgs) {
       this.$refs.view.show(imgs);
     },

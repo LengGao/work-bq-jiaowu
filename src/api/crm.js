@@ -799,4 +799,12 @@ export function batchPayment(data) {
         data,
     })
 }
+// 招生回款-重置入账
+export function resetLog(data) {
+    return request({
+        url: '/CrmOrder/resetLog',
+        method: 'post',
+        data,
+    })
+}
 
