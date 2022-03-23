@@ -32,19 +32,19 @@
         <li class="panel-item">
           <span>回款总金额</span>
           <div class="time_num">
-            <span>{{ panelData.pay_log_total | moneyFormat }}</span>
+            <span>{{ panelData.total_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>学费回款金额</span>
           <div class="time_num">
-            <span>{{ panelData.verify_money | moneyFormat }}</span>
+            <span>{{ panelData.order_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
           <span>其他回款金额</span>
           <div class="time_num">
-            <span>{{ panelData.verify_money | moneyFormat }}</span>
+            <span>{{ panelData.other_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">

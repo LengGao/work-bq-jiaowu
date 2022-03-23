@@ -14,8 +14,14 @@
       </header>
       <ul class="panel-list">
         <li class="panel-item">
+          <span>订单金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.order_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
           <span
-            >订单金额
+            >回款金额
             <el-tooltip
               effect="dark"
               content="该回款金额指按条件搜索的订单金额所涉及的回款金额，不包含实际时间期限内的回款金额。"
@@ -24,12 +30,6 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
-          <div class="time_num">
-            <span>{{ panelData.order_money | moneyFormat }}</span>
-          </div>
-        </li>
-        <li class="panel-item">
-          <span>回款金额</span>
           <div class="time_num">
             <span>{{ panelData.pay_money | moneyFormat }}</span>
           </div>
