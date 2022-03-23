@@ -28,6 +28,38 @@
           </el-upload>
         </div>
       </header>
+      <ul class="panel-list">
+        <li class="panel-item">
+          <span>回款总金额</span>
+          <div class="time_num">
+            <span>{{ panelData.pay_log_total | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>学费回款金额</span>
+          <div class="time_num">
+            <span>{{ panelData.verify_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>其他回款金额</span>
+          <div class="time_num">
+            <span>{{ panelData.verify_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>入账总金额</span>
+          <div class="time_num">
+            <span>{{ panelData.verify_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>未入账金额</span>
+          <div class="time_num">
+            <span>{{ panelData.not_verify_money | moneyFormat }}</span>
+          </div>
+        </li>
+      </ul>
       <!--列表-->
       <div class="userTable">
         <el-table
@@ -220,6 +252,7 @@ export default {
       headers: {
         token: this.$store.state.user.token,
       },
+      panelData: {},
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -453,6 +486,7 @@ export default {
       const res = await getOrgReceivableList(data).catch(() => {});
       this.listLoading = false;
       this.listData = res.data.list;
+      this.panelData = res.data.count || {};
       this.listTotal = res.data.total;
     },
     toDetail(id) {
@@ -490,6 +524,28 @@ export default {
           margin-left: 10px;
         }
       }
+    }
+  }
+}
+.panel-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #606266;
+  .panel-item {
+    width: calc(100% / 5);
+    margin-left: 16px;
+    border: 1px solid #e4e7ed;
+    text-align: center;
+    padding: 16px;
+    margin-bottom: 16px;
+    .time_num {
+      margin-top: 6px;
+      font-size: 22px;
+    }
+    &:first-child {
+      margin-left: 0;
     }
   }
 }

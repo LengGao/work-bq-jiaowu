@@ -49,7 +49,7 @@
         >
           <template slot-scope="{ row }">
             <span>
-              {{ expenseTypeMap[row.type] || "--" }}
+              {{ getType(row.type) }}
             </span>
           </template>
         </el-table-column>
@@ -66,23 +66,33 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="order_money"
-          label="订单总金额"
-          min-width="120"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            {{ row.order_money | moneyFormat }}
-          </template>
-        </el-table-column>
-        <el-table-column
           prop="receivable_money"
-          label="回款金额"
-          min-width="120"
+          label="回款总金额"
           show-overflow-tooltip
+          min-width="100"
         >
           <template slot-scope="{ row }">
             {{ row.receivable_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_money"
+          label="学费金额"
+          min-width="120"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.pay_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="other_money"
+          label="其他金额"
+          min-width="120"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.other_money | moneyFormat }}
           </template>
         </el-table-column>
         <el-table-column
@@ -341,6 +351,13 @@ export default {
   },
 
   methods: {
+    getType(types) {
+      if (types && types.length) {
+        return types.map((type) => this.expenseTypeMap[type]).join(",");
+      } else {
+        return "--";
+      }
+    },
     optenDialog(logId) {
       this.logId = logId;
       this.dialogVisible = true;
