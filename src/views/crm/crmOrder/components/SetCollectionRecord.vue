@@ -27,7 +27,25 @@
           }"
         ></el-date-picker>
       </el-form-item>
-
+      <el-form-item label="回款计划" prop="pay_plan_id">
+        <el-select
+          v-model="formData.pay_plan_id"
+          placeholder="请选择回款计划"
+          class="input"
+          filterable
+          multiple
+        >
+          <el-option
+            v-for="item in planData"
+            :key="item.id"
+            :label="`${item.year}年 ${expenseType[item.type]} ￥${(
+              +item.money || 0
+            ).toFixed(2)}`"
+            :value="item.id + ''"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="回款金额" prop="pay_money">
         <el-input
           class="input"
@@ -52,7 +70,12 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="回款凭证">
+      <el-form-item label="回款凭证" prop="receipt_file">
+        <el-select
+          v-show="false"
+          multiple
+          v-model="formData.receipt_file"
+        ></el-select>
         <ImgListUpload v-model="formData.receipt_file" />
       </el-form-item>
       <el-form-item label="备注" prop="tips">
@@ -79,6 +102,7 @@
 <script>
 import { getCustomfieldOptions } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
+import { mapGetters } from "vuex";
 export default {
   name: "SetCollectionRecord",
   props: {
@@ -98,6 +122,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    planData: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     ImgListUpload,
@@ -110,21 +138,33 @@ export default {
         pay_money: "",
         pay_type: "",
         receipt_file: [],
+        pay_plan_id: [],
       },
       rules: {
         pay_money: [{ required: true, message: "请输入", trigger: "blur" }],
         pay_date: [{ required: true, message: "请选择", trigger: "change" }],
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
+        receipt_file: [
+          { required: true, message: "请上传", trigger: "change" },
+        ],
       },
       addLoading: false,
       payMethodOptions: [],
     };
+  },
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
   methods: {
     handleOpen() {
       this.getCustomfieldOptions();
       if ("pay_date" in this.data) {
         this.formData = { ...this.data };
+        const pay_plan_id = this.data.pay_plan_id;
+        if (pay_plan_id) {
+          this.formData.pay_plan_id = pay_plan_id.split(",");
+          console.log(this.formData.pay_plan_id);
+        }
         if (this.data.receipt_file) {
           this.formData.receipt_file = this.data.receipt_file.map((item) => ({
             url: item,
@@ -148,6 +188,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          const { pay_plan_id } = this.formData;
+          console.log(pay_plan_id);
           this.$emit("on-success", {
             ...this.formData,
             verify_status: 0,
@@ -158,6 +200,18 @@ export default {
               }
               return item.response.data.data.url;
             }),
+            pay_plan_id: Array.isArray(pay_plan_id)
+              ? pay_plan_id.join(",")
+              : pay_plan_id,
+            relation_plan: this.planData
+              .filter((item) => this.formData.pay_plan_id.includes(item.id))
+              .map(
+                (item) =>
+                  `${item.year}年 ${this.expenseType[item.type]} ￥${(
+                    +item.money || 0
+                  ).toFixed(2)}`
+              )
+              .join(","),
           });
           this.handleClose();
         }

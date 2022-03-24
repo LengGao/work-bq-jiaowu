@@ -129,11 +129,17 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span>{{ row.user_name }} </span>
-          <span>-{{ row.university }} </span>
-          <span>-{{ row.type }} </span>
-          <span>-{{ row.level }} </span>
-          <span>-{{ row.major }} </span>
+          <span v-if="row.project_type == 1">
+            <span>{{ row.user_name }} </span>
+            <span>-{{ row.university }} </span>
+            <span>-{{ row.type }} </span>
+            <span>-{{ row.level }} </span>
+            <span>-{{ row.major }} </span>
+          </span>
+          <span v-else>
+            <span>{{ row.user_name }} </span>
+            <span>-{{ row.project_name }} </span>
+          </span>
         </template>
       </el-table-column>
       <el-table-column
@@ -191,7 +197,10 @@
         align="center"
       >
         <template slot-scope="{ row }">
-          <span> {{ row.moneys[key] | moneyFormat }} </span>
+          <span v-if="+row.moneys[key]">
+            {{ row.moneys[key] | moneyFormat }}
+          </span>
+          <span v-else>-</span>
         </template>
       </el-table-column>
       <!-- <el-table-column

@@ -124,7 +124,13 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span>{{ payStatusMap[row.verify_status] || "--" }}</span>
+          <el-tag
+            v-if="payStatusMap[row.verify_status]"
+            size="small"
+            :type="payStatusMap[row.verify_status].type"
+            >{{ payStatusMap[row.verify_status].text }}</el-tag
+          >
+          <span v-else>--</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -280,10 +286,18 @@ export default {
       dialogVisible: false,
       planDialogVisible: false,
       payStatusMap: {
-        0: "待入账",
-        1: "已入账",
-        2: "已驳回",
-        3: "确认入账中",
+        0: {
+          type: "primary",
+          text: "待入账",
+        },
+        1: {
+          type: "success",
+          text: "已入账",
+        },
+        2: {
+          type: "danger",
+          text: "已驳回",
+        },
       },
       planEditData: {},
     };

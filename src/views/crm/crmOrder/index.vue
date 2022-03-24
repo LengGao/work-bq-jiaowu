@@ -16,7 +16,19 @@
         <li class="panel-item">
           <span>订单金额 </span>
           <div class="time_num">
+            <span>{{ panelData.total_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>学费金额 </span>
+          <div class="time_num">
             <span>{{ panelData.order_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>其他金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.other_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">

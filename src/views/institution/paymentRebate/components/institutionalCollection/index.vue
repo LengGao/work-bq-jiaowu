@@ -13,7 +13,7 @@
           <el-button type="primary" @click="toAddCollection('')"
             >添加回款</el-button
           >
-          <el-upload
+          <!-- <el-upload
             name="excel"
             :headers="headers"
             :action="orgReceivableImportUrl"
@@ -25,7 +25,7 @@
             <el-button type="primary" :loading="uploadLoading"
               >导入回款</el-button
             >
-          </el-upload>
+          </el-upload> -->
         </div>
       </header>
       <ul class="panel-list">

@@ -237,6 +237,17 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="实收金额"
+          align="center"
+          min-width="100"
+          prop="must_money"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span> {{ row.must_money | moneyFormat }} </span>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           align="center"
           fixed="right"

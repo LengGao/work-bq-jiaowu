@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :title="title"
-    :visible.sync="visible"
+    :visible="value"
     width="1000px"
     @open="handleOpen"
     :close-on-click-modal="false"
@@ -22,12 +22,62 @@
         }"
       >
         <el-table-column
-          label="回款期次"
+          label="序号"
           show-overflow-tooltip
-          min-width="100"
+          min-width="70"
           align="center"
           type="index"
         >
+        </el-table-column>
+        <el-table-column
+          label="回款类型"
+          show-overflow-tooltip
+          min-width="80"
+          align="center"
+        >
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :rules="[
+                { required: true, message: `请选择`, trigger: 'change' },
+              ]"
+              :prop="`tableData[${index}].type`"
+            >
+              <el-select v-model="row.type" placeholder="请选择" filterable>
+                <el-option
+                  v-for="(item, index) in expenseType"
+                  :key="index"
+                  :label="item"
+                  :value="+index"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="所属年份"
+          show-overflow-tooltip
+          min-width="120"
+          align="center"
+        >
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :rules="[
+                { required: true, message: `请选择`, trigger: 'change' },
+              ]"
+              :prop="`tableData[${index}].year`"
+            >
+              <el-select v-model="row.year" placeholder="请选择" filterable>
+                <el-option
+                  v-for="item in yearOptions"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </template>
         </el-table-column>
         <el-table-column
           label="计划回款时间"
@@ -111,6 +161,8 @@
 </template>
 
 <script>
+import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { mapGetters } from "vuex";
 export default {
   name: "SetCollectionPlan",
   props: {
@@ -129,22 +181,23 @@ export default {
   },
   data() {
     return {
-      visible: this.value,
+      yearOptions: getPlanYearOptions(),
       formData: {
         tableData: [
           {
             day: "",
             money: "",
+            type: "",
+            year: currentYear,
+            id: "n1",
           },
         ],
       },
       addLoading: false,
     };
   },
-  watch: {
-    value(val) {
-      this.visible = val;
-    },
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
   methods: {
     disabledDate(e) {
@@ -157,6 +210,9 @@ export default {
       this.formData.tableData.push({
         day: "",
         money: "",
+        type: "",
+        year: currentYear,
+        id: "n" + Date.now(),
       });
     },
     handleOpen() {
@@ -191,12 +247,13 @@ export default {
         {
           day: "",
           money: "",
+          type: "",
+          year: currentYear,
         },
       ];
-      this.$emit("input", false);
     },
     hanldeCancel() {
-      this.visible = false;
+      this.$emit("input", false);
     },
   },
 };
