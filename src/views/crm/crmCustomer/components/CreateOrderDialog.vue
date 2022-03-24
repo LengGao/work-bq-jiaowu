@@ -60,7 +60,6 @@ export default {
     },
     handleNext(params) {
       if (this.activeStep !== 1) {
-        console.log(params);
         this.orderInfoParams = params;
       }
       this.activeStep < 1 && this.activeStep++;

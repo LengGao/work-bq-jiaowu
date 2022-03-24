@@ -272,6 +272,7 @@ import {
 import ImgListUpload from "@/components/imgListUpload";
 import { getPlanYearOptions, currentYear } from "@/utils/date";
 import { mapGetters } from "vuex";
+import { accAdd } from "@/utils";
 export default {
   name: "AddCollectionRecord",
   components: {
@@ -356,6 +357,15 @@ export default {
     planData() {
       this.initPlanTableData();
     },
+    checkedPlanData(data) {
+      if (data) {
+        let totalMoney = 0;
+        data.forEach((item) => {
+          totalMoney = accAdd(totalMoney, item.money);
+        });
+        this.formData.pay_money = totalMoney;
+      }
+    },
   },
   created() {
     this.initPlanTableData();
@@ -379,7 +389,7 @@ export default {
         money,
       };
       row.loading = true;
-      const res = await updateOrderPayPlan(data);
+      const res = await updateOrderPayPlan(data).catch(() => {});
       row.loading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -394,7 +404,7 @@ export default {
         order_id: this.orderId,
       };
       row.loading = true;
-      const res = await createOrderPayPlan(data);
+      const res = await createOrderPayPlan(data).catch(() => {});
       row.loading = false;
       if (res.code === 0) {
         this.$message.success(res.message);

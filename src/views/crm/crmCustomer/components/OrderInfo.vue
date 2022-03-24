@@ -78,7 +78,12 @@
           </el-option>
         </el-select>
       </el-form-item>
-
+      <el-form-item label="开通网课" prop="online_course">
+        <el-radio-group class="input" v-model="formData.online_course">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="备注信息" prop="tips" class="block">
         <el-input
           class="remark"
@@ -319,6 +324,7 @@ export default {
       formData: {
         surname: "",
         mobile: "",
+        online_course: "",
         id_card_number: "",
         order_money: "",
         union_staff_id: [],
@@ -330,6 +336,7 @@ export default {
         source: "",
       },
       rules: {
+        online_course: [{ required: true, message: "请选择", trigger: "change" }],
         source: [{ required: true, message: "请选择", trigger: "change" }],
         type: [{ required: true, message: "请选择", trigger: "change" }],
         selectMajor: [{ required: true, message: "请选择", trigger: "change" }],
@@ -642,9 +649,9 @@ export default {
   margin-right: 30px;
 }
 .block {
-  width: 100%;
+  width: 60%;
   /deep/.el-form-item__content {
-    width: 80%;
+    width: calc(100% - 100px);
   }
 }
 .dialog-footer {

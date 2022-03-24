@@ -95,7 +95,7 @@
                 v-model="row.day"
                 value-format="yyyy-MM-dd"
                 :picker-options="{
-                  disabledDate: disabledDate,
+                  disabledDate: disabledPlanDate,
                 }"
               ></el-date-picker>
             </el-form-item>
@@ -149,6 +149,9 @@
           type="date"
           placeholder="选择日期"
           v-model="formData.pay_day"
+          :picker-options="{
+            disabledDate: disabledDate,
+          }"
           value-format="yyyy-MM-dd"
         ></el-date-picker>
       </el-form-item>
@@ -169,6 +172,7 @@
           placeholder="请选择回款计划"
           clearable
           multiple
+          @change="handleSelectPlan"
         >
           <el-option
             v-for="item in formData.tableData"
@@ -239,6 +243,7 @@ import { getPlanYearOptions, currentYear } from "@/utils/date";
 import ImgListUpload from "@/components/imgListUpload";
 import PreviewContract from "./PreviewContract";
 import { mapGetters } from "vuex";
+import { accAdd } from "@/utils";
 export default {
   name: "PaymentCollectionInfo",
   props: {
@@ -287,6 +292,17 @@ export default {
     this.getCustomfieldOptions();
   },
   methods: {
+    handleSelectPlan(checkedIds) {
+      if (checkedIds) {
+        let totalMoney = 0;
+        this.formData.tableData.forEach((item) => {
+          if (checkedIds.includes(item.temp_id)) {
+            totalMoney = accAdd(totalMoney, item.money);
+          }
+        });
+        this.formData.pay_money = totalMoney;
+      }
+    },
     isDel(type) {
       const currentTypeData = this.formData.tableData.filter(
         (item) => item.type === type
@@ -308,8 +324,11 @@ export default {
         }
       });
     },
-    disabledDate(e) {
+    disabledPlanDate(e) {
       return Date.now() - 86400000 > e.getTime();
+    },
+    disabledDate(e) {
+      return e.getTime() > Date.now();
     },
     handleDelRow(index) {
       const [delItem] = this.formData.tableData.splice(index, 1);
