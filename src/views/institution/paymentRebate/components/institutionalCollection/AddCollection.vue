@@ -218,7 +218,7 @@
         </div>
       </div>
       <Title text="回款信息"></Title>
-      <el-form-item label="回款类型" prop="type">
+      <el-form-item label="回款类型" prop="type" class="checkbox-type">
         <el-checkbox-group v-model="formData.type">
           <el-checkbox
             :label="value"
@@ -381,7 +381,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column show-overflow-tooltip min-width="80" fixed="right">
+          <el-table-column show-overflow-tooltip min-width="80">
             <template slot="header">
               <el-button type="text" @click="hadleResetOrder"
                 >清空学生</el-button
@@ -1023,6 +1023,18 @@ export default {
       p {
         color: #999;
         font-size: 14px;
+      }
+    }
+  }
+  .checkbox-type {
+    margin-bottom: 10px;
+    /deep/.el-form-item {
+      &__content,
+      &__label {
+        line-height: 20px;
+      }
+      &__error {
+        padding-top: 0px;
       }
     }
   }

@@ -18,7 +18,7 @@
       <li class="panel-item">
         <span>学费回款金额</span>
         <div class="time_num">
-          <span>{{ panelData.order_money | moneyFormat }}</span>
+          <span>{{ panelData.pay_money | moneyFormat }}</span>
         </div>
       </li>
       <li class="panel-item">

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="payment-collection-info">
     <el-form
       label-width="100px"
       :model="formData"
@@ -8,7 +8,7 @@
       ref="formData"
     >
       <Title text="回款计划"></Title>
-      <el-form-item label="回款类型" prop="type">
+      <el-form-item label="回款类型" prop="type" class="checkbox-type">
         <el-checkbox-group
           v-model="formData.type"
           @change="handleCheckboxChange"
@@ -58,7 +58,6 @@
         >
           <template slot-scope="{ row, $index: index }">
             <el-form-item
-              class="table-form-item"
               :rules="[
                 { required: true, message: `请选择`, trigger: 'change' },
               ]"
@@ -84,7 +83,6 @@
         >
           <template slot-scope="{ row, $index: index }">
             <el-form-item
-              class="table-form-item"
               :rules="[
                 { required: true, message: `请选择`, trigger: 'change' },
               ]"
@@ -111,7 +109,6 @@
         >
           <template slot-scope="{ row, $index: index }">
             <el-form-item
-              class="table-form-item"
               :rules="[{ required: true, message: `请输入`, trigger: 'blur' }]"
               :prop="`tableData[${index}].money`"
             >
@@ -396,38 +393,40 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.input {
-  width: 240px;
-}
-.plan-table {
-  margin-bottom: 20px;
-  border: 1px solid #ededed;
-  border-bottom: none;
-  .table-form-item {
-    // margin-bottom: 6px;
+<style lang="less" scoped>
+.payment-collection-info {
+  .input {
+    width: 240px;
   }
-  .btn {
-    margin-top: -10px;
-    padding: 6px 0;
-    font-size: 20px;
+  .plan-table {
+    margin-bottom: 20px;
+    border: 1px solid #ededed;
+    border-bottom: none;
+    .btn {
+      margin-top: -10px;
+      padding: 6px 0;
+      font-size: 20px;
+    }
   }
-}
-.dialog-footer {
-  display: flex;
-  align-items: center;
-  .tips {
-    color: red;
-    margin-right: auto;
+  .checkbox-type {
+    margin-bottom: 10px;
+    /deep/.el-form-item {
+      &__content,
+      &__label {
+        line-height: 20px;
+      }
+      &__error {
+        padding-top: 0px;
+      }
+    }
   }
-}
-/deep/.el-form-item {
-  margin-right: 30px;
-}
-.block {
-  width: 100%;
-  /deep/.el-form-item__content {
-    width: 80%;
+  /deep/.dialog-footer {
+    display: flex;
+    align-items: center;
+    .tips {
+      color: red;
+      margin-right: auto;
+    }
   }
 }
 </style>
