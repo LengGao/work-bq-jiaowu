@@ -219,7 +219,7 @@
       </div>
       <Title text="回款信息"></Title>
       <el-form-item label="回款类型" prop="type" class="checkbox-type">
-        <el-checkbox-group v-model="formData.type">
+        <el-checkbox-group v-model="formData.type" @change="handleTypeChange">
           <el-checkbox
             :label="value"
             name="type"
@@ -693,6 +693,17 @@ export default {
     }
   },
   methods: {
+    // 清空未选中的回款类型金额
+    handleTypeChange(e) {
+      const data = this.id ? this.againListData : this.listData;
+      data.forEach((item) => {
+        for (const k in item.moneys) {
+          if (!e.includes(k)) {
+            item.moneys[k] = "";
+          }
+        }
+      });
+    },
     // 双击保存全部
     handleAllSave() {
       this.listData.forEach((item, index) => {
