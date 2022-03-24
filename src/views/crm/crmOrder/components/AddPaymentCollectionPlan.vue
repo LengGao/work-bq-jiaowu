@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="添加回款计划"
+    :title="`${planEditData.id ? '编辑' : '配置'}回款计划`"
     :visible="value"
     width="1000px"
     @open="handleOpen"
@@ -48,7 +48,7 @@
                   v-for="(label, value) in expenseType"
                   :key="value"
                   :label="label"
-                  :value="value"
+                  :value="+value"
                 >
                 </el-option>
               </el-select>
@@ -130,6 +130,7 @@
           fixed="right"
           align="center"
           min-width="100"
+          v-if="!planEditData.id"
         >
           <template slot-scope="{ $index: index }">
             <el-button
@@ -162,7 +163,7 @@
 </template>
 
 <script>
-import { createOrderPayPlan } from "@/api/crm";
+import { createOrderPayPlan, updateOrderPayPlan } from "@/api/crm";
 import { getPlanYearOptions, currentYear } from "@/utils/date";
 import { mapGetters } from "vuex";
 export default {
@@ -175,6 +176,10 @@ export default {
     orderId: {
       type: [String, Number],
       default: "",
+    },
+    planEditData: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
@@ -197,7 +202,30 @@ export default {
     ...mapGetters(["expenseType"]),
   },
   methods: {
-    handleOpen() {},
+    handleOpen() {
+      if (this.planEditData.id) {
+        this.formData.tableData = [this.planEditData];
+      }
+    },
+    // 修改计划
+    async updateOrderPayPlan(row) {
+      const { id, type, year, day, money } = row;
+      const data = {
+        id,
+        type,
+        year,
+        day,
+        money,
+      };
+      this.addLoading = true;
+      const res = await updateOrderPayPlan(data).catch(() => {});
+      this.addLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.$emit("on-success");
+        this.handleClose();
+      }
+    },
     disabledDate(e) {
       return Date.now() - 86400000 > e.getTime();
     },
@@ -212,7 +240,7 @@ export default {
         money: "",
       });
     },
-    async submit() {
+    async createOrderPayPlan() {
       const data = {
         data: JSON.stringify(this.formData.tableData),
       };
@@ -220,20 +248,22 @@ export default {
         data.order_id = this.orderId;
       }
       this.addLoading = true;
-      const res = await createOrderPayPlan(data).catch(() => {
-        this.addLoading = false;
-      });
+      const res = await createOrderPayPlan(data).catch(() => {});
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.$emit("on-success", res.data);
+        this.$emit("on-success");
         this.handleClose();
       }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          if (this.planEditData.id) {
+            this.updateOrderPayPlan(this.formData.tableData[0]);
+          } else {
+            this.createOrderPayPlan();
+          }
         }
       });
     },

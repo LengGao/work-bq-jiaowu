@@ -231,6 +231,12 @@
           show-overflow-tooltip
         >
         </el-table-column>
+        <el-table-column label="操作" min-width="120" align="center">
+          <template v-if="!+row.pay_money" slot-scope="{ row }">
+            <el-button type="text" @click="handleEditPlan(row)">编辑</el-button>
+            <el-button type="text" @click="delPlanConfirm(row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <AddPaymentCollectionRecord
@@ -243,6 +249,7 @@
     <AddPaymentCollectionPlan
       v-model="planDialogVisible"
       :order-id="data.order_id"
+      :planEditData="planEditData"
       @on-success="$parent.getCrmOrderDetail"
     />
     <PreviewImg ref="view" />
@@ -278,6 +285,7 @@ export default {
         2: "已驳回",
         3: "确认入账中",
       },
+      planEditData: {},
     };
   },
   computed: {
@@ -285,10 +293,23 @@ export default {
   },
   created() {},
   methods: {
+    // 删除
+    delPlanConfirm(row) {
+      this.$confirm("确定要删除该计划吗？", "提醒", {
+        type: "warning",
+      })
+        .then(() => {})
+        .catch(() => {});
+    },
+    handleEditPlan(row) {
+      this.planEditData = { ...row };
+      this.planDialogVisible = true;
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },
     handleAddPlan() {
+      this.planEditData = {};
       this.planDialogVisible = true;
     },
     handleAdd() {

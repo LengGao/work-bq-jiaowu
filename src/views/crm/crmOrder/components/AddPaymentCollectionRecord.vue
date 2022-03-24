@@ -367,10 +367,10 @@ export default {
       }
     },
   },
-  created() {
-    this.initPlanTableData();
-  },
   methods: {
+    handleOpen() {
+      this.initPlanTableData();
+    },
     initPlanTableData() {
       this.planTableData = this.planData.map((item) => ({
         ...item,
@@ -462,9 +462,7 @@ export default {
     disableRow(row) {
       return !+row.pay_money && !row.add;
     },
-    handleOpen() {
-      this.getCustomfieldOptions();
-    },
+
     // 右侧已选删除
     handleRemoveOrder(index) {
       this.$refs.multipleTable.selection.splice(index, 1);
