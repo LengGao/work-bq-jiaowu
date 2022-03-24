@@ -10,12 +10,12 @@
         <span class="value">{{ data.order_money | moneyFormat }} </span>
       </div>
       <div>
-        <span class="title">其他金额：</span>
-        <span class="value">{{ data.other_money | moneyFormat }} </span>
+        <span class="title">已回款学费：</span>
+        <span class="value">{{ data.pay_money | moneyFormat }} </span>
       </div>
       <div>
-        <span class="title">已回款金额：</span>
-        <span class="value">{{ data.pay_money | moneyFormat }} </span>
+        <span class="title">已回款其他费用：</span>
+        <span class="value">{{ data.other_money | moneyFormat }} </span>
       </div>
       <div>
         <span class="title">未回款金额：</span>
@@ -62,6 +62,9 @@
         min-width="100"
         show-overflow-tooltip
       >
+        <template slot-scope="{ row }">
+          <span>{{ row.pay_money | moneyFormat }}</span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="pay_type"

@@ -138,20 +138,40 @@
           >
           </el-table-column>
           <el-table-column
-            prop="order_money"
+            prop="total_money"
             label="订单总金额"
-            min-width="90"
+            min-width="110"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.total_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="order_money"
+            label="学费金额"
+            min-width="110"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
               {{ row.order_money | moneyFormat }}
             </template>
           </el-table-column>
+          <el-table-column
+            prop="other_money"
+            label="其他金额"
+            min-width="110"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.other_money | moneyFormat }}
+            </template>
+          </el-table-column>
 
           <el-table-column
             prop="pay_money"
             label="已回款金额"
-            min-width="90"
+            min-width="110"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">

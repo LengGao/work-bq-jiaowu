@@ -207,7 +207,7 @@
             </el-table-column>
           </el-table>
           <div class="table_bottom">
-            <p>*未搜索到以下学生信息：</p>
+            <p>*未搜索到以下学生信息：{{ not_in_list }}</p>
             <page
               :data="listTotal"
               :curpage="pageNum"
@@ -657,6 +657,7 @@ export default {
       againListData: [],
       againListLoading: false,
       againData: {},
+      not_in_list: "",
     };
   },
   computed: {
@@ -860,6 +861,7 @@ export default {
       });
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
+      this.not_in_list = res.data.not_in_list;
     },
     // 获取项目下拉
     async getProject() {

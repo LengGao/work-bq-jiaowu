@@ -101,7 +101,19 @@
       <div class="info-item">
         <span class="info-item__name">订单金额：</span>
         <span class="info-item__value">{{
+          data.total_money | moneyFormat
+        }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">学费金额：</span>
+        <span class="info-item__value">{{
           data.order_money | moneyFormat
+        }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">其他金额：</span>
+        <span class="info-item__value">{{
+          data.other_money | moneyFormat
         }}</span>
       </div>
       <div class="info-item">
