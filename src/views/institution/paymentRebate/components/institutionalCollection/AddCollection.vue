@@ -327,30 +327,30 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="订单金额"
+            label="学费金额"
             show-overflow-tooltip
             min-width="100"
-            prop="project_name"
+            prop="order_money"
           >
             <template slot-scope="{ row }">
               <span>{{ row.order_money | moneyFormat }} </span>
             </template>
           </el-table-column>
           <el-table-column
-            label="已回款金额"
+            label="已回款学费"
             show-overflow-tooltip
             min-width="100"
-            prop="project_name"
+            prop="pay_money"
           >
             <template slot-scope="{ row }">
               <span>{{ row.pay_money | moneyFormat }} </span>
             </template>
           </el-table-column>
           <el-table-column
-            label="未回款金额"
+            label="未回款学费"
             show-overflow-tooltip
             min-width="100"
-            prop="project_name"
+            prop="outstanding_amount"
           >
             <template slot-scope="{ row }">
               <span>{{ row.outstanding_amount | moneyFormat }} </span>
