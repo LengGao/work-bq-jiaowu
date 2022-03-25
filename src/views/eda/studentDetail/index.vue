@@ -54,7 +54,7 @@
         :is="getComponent"
         @on-basic-success="getStudentBasicDetail"
         :datas="detailData"
-        :uid="$route.query.id"
+        :uid="$route.query.uid"
       />
     </section>
     <!-- 报名 -->
@@ -101,7 +101,7 @@ export default {
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {
-        uid: this.$route.query?.id || "",
+        uid: this.$route.query?.uid || "",
       };
       this.detailLoading = true;
       const res = await getStudentBasicDetail(data);

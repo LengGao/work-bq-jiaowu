@@ -34,6 +34,7 @@
           class="input"
           filterable
           multiple
+          @change="handlePlanChange"
         >
           <el-option
             v-for="item in planData"
@@ -103,6 +104,7 @@
 import { getCustomfieldOptions } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
 import { mapGetters } from "vuex";
+import { accAdd } from "@/utils";
 export default {
   name: "SetCollectionRecord",
   props: {
@@ -143,6 +145,7 @@ export default {
       rules: {
         pay_money: [{ required: true, message: "请输入", trigger: "blur" }],
         pay_date: [{ required: true, message: "请选择", trigger: "change" }],
+        pay_plan_id: [{ required: true, message: "请选择", trigger: "change" }],
         pay_type: [{ required: true, message: "请选择", trigger: "change" }],
         receipt_file: [
           { required: true, message: "请上传", trigger: "change" },
@@ -171,6 +174,18 @@ export default {
           }));
         }
       }
+    },
+    // 计算选中的计划金额
+    handlePlanChange(checkedIds) {
+      let totalMoney = 0;
+      if (checkedIds) {
+        this.planData.forEach((item) => {
+          if (checkedIds.includes(item.id + "")) {
+            totalMoney = accAdd(totalMoney, item.money);
+          }
+        });
+      }
+      this.formData.pay_money = totalMoney;
     },
     // 获取支付方式
     async getCustomfieldOptions() {
@@ -225,6 +240,7 @@ export default {
         pay_money: "",
         pay_type: "",
         receipt_file: [],
+        pay_plan_id: [],
       };
     },
     handleClose() {

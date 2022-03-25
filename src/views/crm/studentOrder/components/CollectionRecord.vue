@@ -27,7 +27,6 @@
       :data="data.pay_log"
       style="width: 100%; border: 1px solid #eee; border-bottom: none"
       :header-cell-style="{
-        'text-align': 'center',
         'background-color': '#f8f8f8',
       }"
     >
@@ -98,7 +97,13 @@
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span>{{ payStatusMap[row.verify_status] || "--" }}</span>
+          <el-tag
+            v-if="payStatusMap[row.verify_status]"
+            size="small"
+            :type="payStatusMap[row.verify_status].type"
+            >{{ payStatusMap[row.verify_status].text }}</el-tag
+          >
+          <span v-else>--</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -223,12 +228,19 @@ export default {
   },
   data() {
     return {
-      // 1：待入账，3、已入账 ，4、已作废， 5、已退款
       payStatusMap: {
-        1: "待入账",
-        3: "已入账",
-        4: "已作废",
-        5: "已退款",
+        0: {
+          type: "primary",
+          text: "待入账",
+        },
+        1: {
+          type: "success",
+          text: "已入账",
+        },
+        2: {
+          type: "danger",
+          text: "已驳回",
+        },
       },
     };
   },
@@ -249,6 +261,15 @@ export default {
   .title {
     color: #333;
     font-weight: 550;
+  }
+}
+.progress {
+  color: #999;
+  &--wait {
+    color: #fe7d00;
+  }
+  &--success {
+    color: #43d100;
   }
 }
 </style>

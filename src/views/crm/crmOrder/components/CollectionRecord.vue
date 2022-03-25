@@ -33,7 +33,6 @@
       :data="data.pay_log"
       style="width: 100%; border: 1px solid #eee; border-bottom: none"
       :header-cell-style="{
-        'text-align': 'center',
         'background-color': '#f8f8f8',
       }"
     >

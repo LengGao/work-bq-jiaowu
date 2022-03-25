@@ -92,7 +92,14 @@
       </div>
       <div class="info-item">
         <span class="info-item__name">客户姓名：</span>
-        <span class="info-item__value">{{ data.surname }}</span>
+        <span class="info-item__value"
+          ><el-button
+            type="text"
+            @click="coursDetail(data.uid)"
+            style="padding: 0"
+            >{{ data.surname }}</el-button
+          ></span
+        >
       </div>
       <div class="info-item">
         <span class="info-item__name">业绩归属：</span>
@@ -383,6 +390,14 @@ export default {
     },
   },
   methods: {
+    coursDetail(uid) {
+      this.$router.push({
+        name: "cusdetail",
+        query: {
+          uid,
+        },
+      });
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },

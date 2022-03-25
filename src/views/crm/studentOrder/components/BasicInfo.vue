@@ -12,7 +12,14 @@
       </div>
       <div class="info-item">
         <span class="info-item__name">客户姓名：</span>
-        <span class="info-item__value">{{ data.surname }}</span>
+        <span class="info-item__value"
+          ><el-button
+            type="text"
+            @click="toStudentDetail(data.uid)"
+            style="padding: 0"
+            >{{ data.surname }}</el-button
+          ></span
+        >
       </div>
       <div class="info-item">
         <span class="info-item__name">所属机构：</span>
@@ -185,14 +192,14 @@
           prop="project_name"
         >
         </el-table-column>
-        <!-- <el-table-column
+        <el-table-column
           prop="category_name"
           label="所属分类"
           min-width="80"
           align="center"
           show-overflow-tooltip
         >
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column
           prop="class_type_name"
           label="项目班型"
