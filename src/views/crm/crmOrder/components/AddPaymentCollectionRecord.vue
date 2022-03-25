@@ -52,7 +52,7 @@
                   v-for="(label, value) in expenseType"
                   :key="value"
                   :label="label"
-                  :value="value"
+                  :value="+value"
                 >
                 </el-option>
               </el-select>
