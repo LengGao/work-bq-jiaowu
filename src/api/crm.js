@@ -751,4 +751,68 @@ export function categorySort(params) {
         params,
     })
 }
+// 报名（创建订单）
+export function createOrder(data) {
+    return request({
+        url: '/CustomerOrder/create',
+        method: 'post',
+        data,
+    })
+}
+// 修改回款计划
+export function updateOrderPayPlan(data) {
+    return request({
+        url: '/CustomerOrder/payPlanSave',
+        method: 'post',
+        data,
+    })
+}
+// 获取预览合同
+export function getContractUrl(data) {
+    return request({
+        url: '/CustomerOrder/previewContract',
+        method: 'post',
+        data,
+    })
+}
+// 根据分类获取届别
+export function categoryGetSessionList(params) {
+    return request({
+        url: '/Crm/categoryGetSessionList',
+        method: 'get',
+        params,
+    })
+}
+// 获取计划费用类型
+export function getPlanTypeList(params) {
+    return request({
+        url: '/CustomerOrder/planTypeList',
+        method: 'get',
+        params,
+    })
+}
+// 招生回款
+export function batchPayment(data) {
+    return request({
+        url: '/CrmOrder/batchPayment',
+        method: 'post',
+        data,
+    })
+}
+// 招生回款-重置入账
+export function resetLog(data) {
+    return request({
+        url: '/CrmOrder/resetLog',
+        method: 'post',
+        data,
+    })
+}
+// 删除回款计划
+export function payPlanDelete(data) {
+    return request({
+        url: '/CustomerOrder/payPlanDelete',
+        method: 'post',
+        data,
+    })
+}
 

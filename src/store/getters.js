@@ -1,3 +1,4 @@
+import store from './index'
 const getters = {
   sidebar: state => state.app.sidebar,
   device: state => state.app.device,
@@ -10,6 +11,12 @@ const getters = {
   menus: state => state.user.menus,
   msgCount: state => state.user.msgCount,
   helpUrl: state => state.app.helpUrl,
-  cacheArr: state => Array.from(state.cacheView.currentCache)
+  cacheArr: state => Array.from(state.cacheView.currentCache),
+  expenseType: (state) => {
+    if (!state.options.expenseType) {
+      store.dispatch('getPlanTypeList')
+    }
+    return state.options.expenseType || {}
+  }
 }
 export default getters

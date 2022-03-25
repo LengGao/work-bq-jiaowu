@@ -189,7 +189,6 @@ export function getShortcuts(types) {
     },
   }
   const shortcuts = types.map(item => dateMap[item]);
-  console.log(shortcuts)
   return shortcuts
 }
 
@@ -234,3 +233,15 @@ export const dateMap = {
   6: `${today},${today}`,
   7: `${yesterday},${yesterday}`,
 };
+export const currentYear = new Date().getFullYear();
+// 获取回款计划年份选项
+export function getPlanYearOptions() {
+  const startYear = currentYear - 3;
+  let endYear = currentYear + 3;
+  const options = [];
+  options.push(endYear);
+  while (endYear-- > startYear) {
+    options.push(endYear);
+  }
+  return [...options];
+}

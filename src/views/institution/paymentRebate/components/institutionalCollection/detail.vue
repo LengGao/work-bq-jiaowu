@@ -1,5 +1,12 @@
 <template>
   <div class="student-order-detail" v-loading="loading">
+    <el-alert
+      style="margin-bottom: 10px"
+      v-if="orderData.check_state == -1"
+      :title="'驳回原因：' + orderData.rejected_note"
+      type="error"
+    >
+    </el-alert>
     <div class="student-order-title">
       <h3>{{ orderData.org_name }}-回款{{ orderData.receivable_money }}元</h3>
       <span class="student-order-status">机构回款订单</span>
@@ -7,44 +14,78 @@
         <el-button
           type="primary"
           v-if="$route.query.isFromList && orderData.check_state == 2"
-          @click="addCollectionVisible = true"
+          @click="toAddCollection"
           >再次回款</el-button
         >
         <el-button
           type="danger"
-          v-if="$route.query.isFromApproval && orderData.check_state == 0"
+          v-if="isFromApproval && orderData.check_state == 0"
           @click="rejectConfirm"
           >驳 回</el-button
         >
         <el-button
           type="primary"
-          v-if="$route.query.isFromApproval && orderData.check_state == 0"
+          v-if="isFromApproval && orderData.check_state == 0"
           @click="approveConfirm"
           >入 账</el-button
         >
 
         <el-tag
           type="success"
-          v-if="$route.query.isFromApproval && orderData.check_state == 2"
+          v-if="isFromApproval && orderData.check_state == 2"
           >已入账</el-tag
+        >
+        <el-tag
+          type="primary"
+          v-if="$route.query.isFromList && orderData.check_state == 0"
+          >待入账</el-tag
         >
         <el-tag type="danger" v-if="orderData.check_state == -1">已驳回</el-tag>
       </div>
     </div>
+
     <Title text="回款信息"></Title>
     <div class="info-block">
-      <div class="info-item">
-        <span class="info-item__name">回款日期：</span>
-        <span class="info-item__value">{{ orderData.pay_date }}</span>
-      </div>
       <div class="info-item">
         <span class="info-item__name">机构名称：</span>
         <span class="info-item__value">{{ orderData.org_name }}</span>
       </div>
       <div class="info-item">
+        <span class="info-item__name">所属年份：</span>
+        <span class="info-item__value">{{ orderData.year || "--" }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">回款日期：</span>
+        <span class="info-item__value">{{ orderData.pay_date }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">回款凭证：</span>
+        <span class="info-item__value">
+          <template
+            v-if="orderData.receipt_file && orderData.receipt_file.length"
+          >
+            <img
+              :src="item"
+              alt=""
+              title="点击预览大图"
+              style="
+                width: 40px;
+                height: 30px;
+                cursor: pointer;
+                margin-right: 10px;
+              "
+              v-for="(item, index) in orderData.receipt_file"
+              :key="index"
+              @click="handlePreview(item)"
+            />
+          </template>
+          <span v-else>--</span>
+        </span>
+      </div>
+      <!-- <div class="info-item">
         <span class="info-item__name">业绩归属：</span>
         <span class="info-item__value">{{ orderData.staff_name }}</span>
-      </div>
+      </div> -->
       <div class="info-item">
         <span class="info-item__name">关联订单数：</span>
         <span class="info-item__value">{{ orderData.order_num }}</span>
@@ -55,6 +96,11 @@
           orderData.receivable_money | moneyFormat
         }}</span>
       </div>
+      <div class="info-item">
+        <span class="info-item__name">支付方式：</span>
+        <span class="info-item__value">{{ orderData.pay_type }}</span>
+      </div>
+
       <div class="info-item">
         <span class="info-item__name">订单备注：</span>
         <span class="info-item__value">{{ orderData.note || "--" }}</span>
@@ -73,33 +119,28 @@
         'background-color': '#f8f8f8',
       }"
     >
-      <el-table-column
-        label="订单编号"
-        min-width="200"
-        align="center"
-        prop="order_no"
-      >
-        <template slot-scope="{ row }">
-          <el-button type="text" @click="toStudentOrderDetail(row.order_id)">{{
-            row.order_no
-          }}</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="创建时间1"
-        show-overflow-tooltip
-        min-width="160"
-        align="center"
-        prop="create_time"
-      >
+      <el-table-column label="序号" width="50" type="index" align="center">
       </el-table-column>
       <el-table-column
         prop="project_name"
-        label="项目名称"
+        label="订单名称"
         min-width="220"
         align="center"
         show-overflow-tooltip
       >
+        <template slot-scope="{ row }">
+          <span v-if="row.project_type == 1">
+            <span>{{ row.user_name }} </span>
+            <span>-{{ row.university }} </span>
+            <span>-{{ row.type }} </span>
+            <span>-{{ row.level }} </span>
+            <span>-{{ row.major }} </span>
+          </span>
+          <span v-else>
+            <span>{{ row.user_name }} </span>
+            <span>-{{ row.project_name }} </span>
+          </span>
+        </template>
       </el-table-column>
       <el-table-column
         prop="class_type_name"
@@ -115,65 +156,18 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="level"
-        label="层次"
-        min-width="80"
+        label="订单金额"
         align="center"
+        min-width="100"
+        prop="total_money"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-                  <span v-if="row.level"> {{ row.level }}</span>        
-          <span v-else>--</span>      
+          <span> {{ row.total_money | moneyFormat }} </span>
         </template>
       </el-table-column>
       <el-table-column
-        prop="major"
-        label="专业"
-        min-width="120"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-                  <span v-if="row.major"> {{ row.major }}</span>        
-          <span v-else>--</span>      
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="type"
-        label="类型"
-        min-width="80"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-                  <span v-if="row.type"> {{ row.type }}</span>        
-          <span v-else>--</span>      
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="university"
-        label="大学"
-        min-width="140"
-        align="center"
-        show-overflow-tooltip
-      >
-        <template slot-scope="{ row }">
-                  <span v-if="row.university"> {{ row.university }}</span>      
-            <span v-else>--</span>      
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        prop="user_name"
-        label="客户姓名"
-        min-width="80"
-        align="center"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-
-      <el-table-column
-        label="订单总金额"
+        label="学费金额"
         align="center"
         min-width="100"
         prop="order_money"
@@ -184,35 +178,32 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="本次回款金额"
+        label="其他金额"
         align="center"
         min-width="100"
-        prop="pay_money"
+        prop="other_money"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
-          <span> {{ row.receivable_money | moneyFormat }} </span>
+          <span> {{ row.other_money | moneyFormat }} </span>
         </template>
       </el-table-column>
       <el-table-column
-        label="已回款金额"
-        align="center"
-        min-width="100"
-        prop="pay_money"
+        v-for="(item, key) in expenseType"
+        :key="key"
         show-overflow-tooltip
+        min-width="100"
+        :label="item"
+        align="center"
       >
         <template slot-scope="{ row }">
-          <span> {{ row.pay_money | moneyFormat }} </span>
+          <span v-if="+row.moneys[key]">
+            {{ row.moneys[key] | moneyFormat }}
+          </span>
+          <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="pay_type"
-        label="支付方式"
-        min-width="100"
-        show-overflow-tooltip
-      >
-      </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         prop="progress"
         label="已回款进度"
         min-width="140"
@@ -232,19 +223,14 @@
         <template slot-scope="{ row }">
           <el-progress :percentage="+row.success_progress || 0"></el-progress>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
-        prop="pay_status"
-        label="支付状态"
-        min-width="100"
+        label="支付方式"
         align="center"
+        min-width="100"
+        prop="pay_type"
         show-overflow-tooltip
       >
-        <template slot-scope="{ row }">
-          <el-tag size="small" :type="row.pay_status | orderTagType">{{
-            row.pay_status | orderStatus
-          }}</el-tag>
-        </template>
       </el-table-column>
       <el-table-column
         label="操作"
@@ -259,37 +245,42 @@
         </template>
       </el-table-column>
     </el-table>
-    <AddCollection
-      v-model="addCollectionVisible"
-      :id="orderData.id"
-      @on-success="$router.back()"
-    />
+    <PreviewImg ref="view" />
   </div>
 </template>
 
 <script>
 import { getReceivableInfo, reviewReceivableOrder } from "@/api/crm";
-import AddCollection from "./components/AddCollection";
+import { mapGetters } from "vuex";
 export default {
   name: "institutionalCollectionDetail",
-  components: {
-    AddCollection,
-  },
   props: {
     logId: "",
+    isFromApproval: "",
   },
   data() {
     return {
       loading: false,
       orderData: {},
       listData: [],
-      addCollectionVisible: false,
     };
+  },
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
   created() {
     this.getReceivableInfo();
   },
   methods: {
+    toAddCollection() {
+      this.$router.push({
+        name: "addInstitutionalCollection",
+        query: { id: this.logId || this.$route.query.id },
+      });
+    },
+    handlePreview(src) {
+      this.$refs.view.show(src);
+    },
     // 驳回
     rejectConfirm() {
       this.$prompt("请输入驳回原因", "入账驳回", {
@@ -321,7 +312,7 @@ export default {
       if (res.code === 0) {
         this.$message.success(res.message);
         this.getReceivableInfo();
-        check_state === 2 && this.$router.back();
+        this.$emit("success");
       }
     },
     async getReceivableInfo() {

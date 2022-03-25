@@ -39,7 +39,6 @@
             <el-input
               v-model="ruleForm.id_card_number"
               v-if="isEdit"
-              placeholder="请输入"
               :disabled="datas.open_id_number !== 1"
             ></el-input>
             <span v-else>{{ datas.id_card_number | filterIdCard }}</span>

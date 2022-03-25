@@ -8,6 +8,38 @@
         @on-search="handleSearch"
       />
     </header>
+    <ul class="panel-list">
+      <li class="panel-item">
+        <span>回款总金额</span>
+        <div class="time_num">
+          <span>{{ panelData.total_money | moneyFormat }}</span>
+        </div>
+      </li>
+      <li class="panel-item">
+        <span>学费回款金额</span>
+        <div class="time_num">
+          <span>{{ panelData.pay_money | moneyFormat }}</span>
+        </div>
+      </li>
+      <li class="panel-item">
+        <span>其他回款金额</span>
+        <div class="time_num">
+          <span>{{ panelData.other_money | moneyFormat }}</span>
+        </div>
+      </li>
+      <li class="panel-item">
+        <span>入账总金额</span>
+        <div class="time_num">
+          <span>{{ panelData.verify_money | moneyFormat }}</span>
+        </div>
+      </li>
+      <li class="panel-item">
+        <span>未入账金额</span>
+        <div class="time_num">
+          <span>{{ panelData.not_verify_money | moneyFormat }}</span>
+        </div>
+      </li>
+    </ul>
     <!--列表-->
     <div class="userTable">
       <el-table
@@ -28,6 +60,13 @@
         >
         </el-table-column>
         <el-table-column
+          prop="org_name"
+          label="机构名称"
+          min-width="130"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="pay_date"
           label="回款日期"
           min-width="100"
@@ -35,10 +74,71 @@
         >
         </el-table-column>
         <el-table-column
-          prop="org_name"
-          label="机构名称"
-          min-width="130"
+          label="回款类型"
           show-overflow-tooltip
+          min-width="100"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>
+              {{ getType(row.type) }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="year"
+          label="所属年份"
+          min-width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>
+              {{ row.year || "--" }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="receivable_money"
+          label="回款总金额"
+          show-overflow-tooltip
+          min-width="100"
+        >
+          <template slot-scope="{ row }">
+            {{ row.receivable_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_money"
+          label="学费金额"
+          min-width="120"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.pay_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="other_money"
+          label="其他金额"
+          min-width="120"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.other_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_type"
+          label="支付方式"
+          show-overflow-tooltip
+          min-width="80"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="order_num"
+          label="关联订单数"
+          show-overflow-tooltip
+          min-width="100"
         >
         </el-table-column>
         <el-table-column
@@ -48,24 +148,14 @@
           show-overflow-tooltip
         >
         </el-table-column>
+        <el-table-column
+          prop="create_time"
+          label="创建时间"
+          min-width="140"
+          show-overflow-tooltip
+        >
+        </el-table-column>
 
-        <el-table-column
-          prop="order_num"
-          label="关联订单数"
-          show-overflow-tooltip
-          min-width="100"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="receivable_money"
-          label="回款总金额"
-          min-width="120"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            ￥{{ row.receivable_money || 0 }}
-          </template>
-        </el-table-column>
         <el-table-column
           prop="check_state"
           label="入账状态"
@@ -93,13 +183,6 @@
               <i class="el-icon-question" :title="row.rejected_note"></i>
             </span>
           </template>
-        </el-table-column>
-        <el-table-column
-          prop="check_time"
-          label="入账时间"
-          min-width="160"
-          show-overflow-tooltip
-        >
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
@@ -131,7 +214,12 @@
       </div>
     </div>
     <el-dialog title="回款详情" :visible.sync="dialogVisible" width="80%">
-      <Detail :logId="logId" :key="logId" />
+      <Detail
+        :logId="logId"
+        :key="logId"
+        :isFromApproval="true"
+        @success="getOrgReceivableList"
+      />
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogVisible = false"
@@ -144,7 +232,8 @@
 
 <script>
 import Detail from "@/views/institution/paymentRebate/components/institutionalCollection/detail.vue";
-import { getShortcuts } from "@/utils/date";
+import { getShortcuts, getPlanYearOptions } from "@/utils/date";
+import { mapGetters } from "vuex";
 import {
   getOrgReceivableList,
   getOrgName,
@@ -159,6 +248,7 @@ export default {
   },
   data() {
     return {
+      panelData: {},
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -223,6 +313,35 @@ export default {
           },
         },
         {
+          key: "type",
+          type: "select",
+          width: 120,
+          options: [],
+          optionValue: "value",
+          optionLabel: "label",
+          attrs: {
+            clearable: true,
+            filterable: true,
+            placeholder: "回款类型",
+          },
+        },
+        {
+          key: "year",
+          type: "select",
+          width: 120,
+          options: (getPlanYearOptions() || []).map((item) => ({
+            value: item,
+            lable: item,
+          })),
+          optionValue: "value",
+          optionLabel: "label",
+          attrs: {
+            clearable: true,
+            filterable: true,
+            placeholder: "所属年份",
+          },
+        },
+        {
           key: "money",
           type: "numberRange",
           width: 280,
@@ -242,6 +361,18 @@ export default {
       logId: "",
     };
   },
+  computed: {
+    ...mapGetters(["expenseType"]),
+    expenseTypeMap() {
+      this.searchOptions[4].options = Object.entries(this.expenseType).map(
+        (item) => ({
+          label: item[1],
+          value: item[0],
+        })
+      );
+      return this.expenseType;
+    },
+  },
   activated() {
     this.getOrgReceivableList();
   },
@@ -251,7 +382,15 @@ export default {
     this.getBelongPeople();
     this.getReceivableStatus();
   },
+
   methods: {
+    getType(types) {
+      if (types && types.length) {
+        return types.map((type) => this.expenseTypeMap[type]).join(",");
+      } else {
+        return "--";
+      }
+    },
     optenDialog(logId) {
       this.logId = logId;
       this.dialogVisible = true;
@@ -350,6 +489,7 @@ export default {
       const res = await getOrgReceivableList(data).catch(() => {});
       this.listLoading = false;
       this.listData = res.data.list;
+      this.panelData = res.data.count || {};
       this.listTotal = res.data.total;
     },
     toDetail(id) {
@@ -374,6 +514,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.panel-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #606266;
+  .panel-item {
+    width: calc(100% / 5);
+    margin-left: 16px;
+    border: 1px solid #e4e7ed;
+    text-align: center;
+    padding: 16px;
+    margin-bottom: 16px;
+    .time_num {
+      margin-top: 6px;
+      font-size: 22px;
+    }
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
 .approve-status {
   &::before {
     display: inline-block;

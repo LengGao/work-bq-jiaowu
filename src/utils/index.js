@@ -338,7 +338,7 @@ export function accSub(arg1, arg2) {
   return ((arg1 * m - arg2 * m) / m).toFixed(n);
 }
 // 加法函数
-function accAdd(arg1, arg2) {
+export function accAdd(arg1, arg2) {
   var r1, r2, m;
   try {
     r1 = arg1.toString().split(".")[1].length

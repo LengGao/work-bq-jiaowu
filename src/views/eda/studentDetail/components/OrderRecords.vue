@@ -197,6 +197,11 @@
       :orderIds="checkedIds"
       @on-success="getCrmOrderList"
     />
+    <RefundDialog
+      v-model="refundDialogVisible"
+      :order-info="dialogInfo"
+      @success="getCrmOrderList"
+    />
   </div>
 </template>
 
@@ -205,6 +210,7 @@ import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
 import UpdateInstitutionOrder from "@/views/eda/components/UpdateInstitutionOrder";
 import { getCrmOrderList } from "@/api/crm";
+import RefundDialog from "@/views/crm/crmOrder/components/RefundDialog";
 export default {
   name: "OrderRecords",
   props: {
@@ -217,6 +223,7 @@ export default {
     CollectionOrder,
     UpdatePerformanceAttribution,
     UpdateInstitutionOrder,
+    RefundDialog,
   },
   data() {
     return {
@@ -278,6 +285,7 @@ export default {
       checkedIds: [],
       staffDialog: false,
       orderFromDialog: false,
+      refundDialogVisible: false,
     };
   },
   activated() {
@@ -306,9 +314,13 @@ export default {
     },
     //作废弹窗
     openOrderActions(row, type) {
-      this.orderActionType = type;
       this.dialogInfo = row;
-      this.orderActionDialog = true;
+      if (row.from_organization_id) {
+        this.orderActionType = type;
+        this.orderActionDialog = true;
+      } else {
+        this.refundDialogVisible = true;
+      }
     },
     toCrmOrderDetail(id) {
       this.$router.push({

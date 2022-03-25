@@ -10,6 +10,38 @@
           @on-search="handleSearch"
         />
       </header>
+      <ul class="panel-list">
+        <li class="panel-item">
+          <span>订单金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.total_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>学费金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.order_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>其他金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.other_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>回款金额</span>
+          <div class="time_num">
+            <span>{{ panelData.pay_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>未回款金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.overdue_money | moneyFormat }}</span>
+          </div>
+        </li>
+      </ul>
       <!--列表-->
       <div class="userTable">
         <el-table
@@ -25,30 +57,21 @@
         >
           <!-- <el-table-column type="selection" width="45"> </el-table-column> -->
           <el-table-column
-            prop="order_id"
-            label="订单编号"
-            show-overflow-tooltip
-            min-width="190"
-          >
-            <template slot-scope="scope">
-              <div class="link" @click="toDetail(scope.row.order_id)">
-                {{ scope.row.order_no }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="create_time"
-            label="创建时间"
-            min-width="140"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
             prop="surname"
             label="客户姓名"
             min-width="90"
             show-overflow-tooltip
           >
+          </el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号码"
+            min-width="130"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <PartiallyHidden :value="row.mobile" />
+            </template>
           </el-table-column>
           <el-table-column
             prop="jiebie_name"
@@ -66,7 +89,7 @@
           </el-table-column>
           <el-table-column
             prop="from_institution_name"
-            label="所属机构"
+            label="机构名称"
             min-width="130"
             show-overflow-tooltip
           >
@@ -79,14 +102,78 @@
           >
           </el-table-column>
           <el-table-column
-            prop="order_money"
+            prop="total_money"
             label="订单总金额"
             min-width="90"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
+            <template slot-scope="{ row }">
+              {{ row.total_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="order_money"
+            label="学费金额"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="other_money"
+            label="其他金额"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.other_money | moneyFormat }}
+            </template>
           </el-table-column>
 
+          <el-table-column
+            prop="pay_money"
+            label="已回款金额"
+            min-width="90"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span>{{ row.pay_money | moneyFormat }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="pay_progress"
+            label="回款进度"
+            min-width="140"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-progress
+                :percentage="+(row.pay_progress || '').split('%')[0] || 0"
+              ></el-progress>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="pay_status"
+            label="支付状态"
+            min-width="100"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <el-tag size="small" :type="row.pay_status | orderTagType">{{
+                row.pay_status | orderStatus
+              }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="create_time"
+            label="创建时间"
+            min-width="140"
+            show-overflow-tooltip
+          >
+          </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <el-button type="text" @click="toDetail(row.order_id)"
@@ -119,6 +206,7 @@ export default {
   name: "studentOrder",
   data() {
     return {
+      panelData: {},
       listData: [],
       listLoading: false,
       pageNum: 1,
@@ -241,6 +329,16 @@ export default {
           attrs: {
             startPlaceholde: "订单金额起",
             endPlaceholde: "订单金额止",
+            valueFormat: " - ",
+          },
+        },
+        {
+          key: "pay_money",
+          type: "numberRange",
+          width: 280,
+          attrs: {
+            startPlaceholde: "回款金额起",
+            endPlaceholde: "回款金额止",
             valueFormat: " - ",
           },
         },

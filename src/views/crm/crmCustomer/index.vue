@@ -47,7 +47,7 @@
           <el-table-column
             prop="name"
             label="客户姓名"
-            min-width="90"
+            min-width="110"
             show-overflow-tooltip
             v-if="checkHeader.includes('客户姓名')"
           >
@@ -55,6 +55,13 @@
               <el-button type="text" @click="coustomDetail(row.uid, row.id)">
                 {{ row.name }}
               </el-button>
+              <el-tag
+                type="success"
+                size="mini"
+                style="margin-left: 4px"
+                v-if="row.is_new"
+                >新</el-tag
+              >
             </template>
           </el-table-column>
           <el-table-column
@@ -171,7 +178,9 @@
               </div>
             </template>
             <template slot-scope="{ row }">
-              <el-button type="text" @click="openSignUp(row)">报名</el-button>
+              <el-button type="text" @click="openCreateOrderDialog(row)"
+                >报名</el-button
+              >
               <el-button type="text" @click="coustomDetail(row.uid, row.id)"
                 >客户详情</el-button
               >
@@ -197,15 +206,15 @@
       v-model="dialogVisible"
       @on-success="onAddCustomeSuccess"
     />
-    <CustomeSignUp
-      v-model="signUpVisible"
-      :user-info="checkedUser"
-      @on-success="getCrmCustomerList"
-    />
     <UpdateTeacher
       v-model="updateTeacherDialog"
       :ids="checkedIds"
       :is-crm="true"
+      @on-success="getCrmCustomerList"
+    />
+    <CreateOrderDialog
+      v-model="createOrderVisible"
+      :user-info="checkedUser"
       @on-success="getCrmCustomerList"
     />
   </section>
@@ -213,7 +222,7 @@
 
 <script>
 import AddCustomeDialog from "./components/AddCustomeDialog";
-import CustomeSignUp from "./components/CustomeSignUp";
+import CreateOrderDialog from "./components/CreateOrderDialog";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect } from "@/api/eda";
 import { getDepartmentlists } from "@/api/set";
@@ -229,8 +238,8 @@ export default {
   name: "crmCustomer",
   components: {
     AddCustomeDialog,
-    CustomeSignUp,
     UpdateTeacher,
+    CreateOrderDialog,
   },
   data() {
     return {
@@ -386,6 +395,26 @@ export default {
           },
         },
         {
+          key: "is_new",
+          type: "select",
+          width: 140,
+          options: [
+            {
+              value: 1,
+              label: "新客户",
+            },
+            {
+              value: 2,
+              label: "老客户",
+            },
+          ],
+          attrs: {
+            filterable: true,
+            clearable: true,
+            placeholder: "客户类型",
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "学生姓名/手机号码",
@@ -393,11 +422,11 @@ export default {
         },
       ],
       dialogVisible: false,
-      signUpVisible: false,
       checkedUser: {},
       coustomFrom: [],
       checkedIds: [],
       updateTeacherDialog: false,
+      createOrderVisible: false,
     };
   },
   created() {
@@ -485,12 +514,12 @@ export default {
         }));
       }
     },
-    openSignUp(userInfo) {
+    openCreateOrderDialog(userInfo) {
       this.checkedUser = userInfo;
-      this.signUpVisible = true;
+      this.createOrderVisible = true;
     },
     onAddCustomeSuccess(isSignUp, userInfo) {
-      isSignUp && this.openSignUp(userInfo);
+      isSignUp && this.openCreateOrderDialog(userInfo);
       this.getCrmCustomerList();
     },
     // 获取所属老师

@@ -2,6 +2,7 @@
   <div>
     <el-upload
       class="list-upload"
+      :class="size"
       :headers="headers"
       :action="uploadImageUrl"
       :on-remove="handleRemoveImg"
@@ -30,6 +31,10 @@ export default {
     value: {
       type: Array,
       default: () => [], // 示例： [{name:xxx,url:xxx}]
+    },
+    size: {
+      type: String,
+      default: "",
     },
   },
   data() {
@@ -75,6 +80,31 @@ export default {
     height: 80px;
     line-height: 80px;
     border: none;
+  }
+  &.mini {
+    /deep/.el-upload-list--picture-card {
+      .el-upload-list__item {
+        width: 40px;
+        height: 40px;
+        .el-upload-list__item-actions {
+          font-size: 12px;
+          span.el-upload-list__item-delete {
+            margin-left: 4px;
+          }
+        }
+      }
+    }
+
+    /deep/.el-upload-dragger {
+      width: auto;
+      height: auto;
+    }
+    /deep/.el-upload--picture-card {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      border: none;
+    }
   }
 }
 </style>

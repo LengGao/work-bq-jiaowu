@@ -7,6 +7,7 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="基本信息" name="BasicInfo"></el-tab-pane>
       <el-tab-pane label="回款记录" name="CollectionRecord"></el-tab-pane>
+      <!-- <el-tab-pane label="审批记录" name="ApproveRecord"></el-tab-pane> -->
     </el-tabs>
     <component :is="getComponent" :data="detailData" />
   </div>

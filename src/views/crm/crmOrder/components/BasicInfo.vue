@@ -41,7 +41,7 @@
             </span>
           </div>
         </template>
-        <template v-if="data.verify_type === 1">
+        <template v-if="[1, 3].includes(data.verify_type)">
           <div class="info-item">
             <span class="info-item__name">退款金额：</span>
             <span class="info-item__value">{{
@@ -92,7 +92,14 @@
       </div>
       <div class="info-item">
         <span class="info-item__name">客户姓名：</span>
-        <span class="info-item__value">{{ data.surname }}</span>
+        <span class="info-item__value"
+          ><el-button
+            type="text"
+            @click="coursDetail(data.uid)"
+            style="padding: 0"
+            >{{ data.surname }}</el-button
+          ></span
+        >
       </div>
       <div class="info-item">
         <span class="info-item__name">业绩归属：</span>
@@ -101,7 +108,19 @@
       <div class="info-item">
         <span class="info-item__name">订单金额：</span>
         <span class="info-item__value">{{
+          data.total_money | moneyFormat
+        }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">学费金额：</span>
+        <span class="info-item__value">{{
           data.order_money | moneyFormat
+        }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-item__name">其他金额：</span>
+        <span class="info-item__value">{{
+          data.other_money | moneyFormat
         }}</span>
       </div>
       <div class="info-item">
@@ -124,48 +143,6 @@
           data.type === 1 ? "学历教育" : "职业教育"
         }}</span>
       </div>
-      <template v-if="data.type === 1">
-        <div class="info-item">
-          <span class="info-item__name">考前辅导费：</span>
-          <span class="info-item__value">{{
-            data.pre_tutor | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">报考费：</span>
-          <span class="info-item__value">{{
-            data.examination | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">教材费：</span>
-          <span class="info-item__value">{{
-            data.textbook | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">毕设指导费：</span>
-          <span class="info-item__value">{{
-            data.graduation_guidance | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">论文答辩费：</span>
-          <span class="info-item__value">{{
-            data.thesis_defense | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">平台费：</span>
-          <span class="info-item__value">{{
-            data.platform_fee | moneyFormat
-          }}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-item__name">其他费用：</span>
-          <span class="info-item__value">{{ data.others | moneyFormat }}</span>
-        </div>
-      </template>
       <div class="info-item">
         <span class="info-item__name">回款凭证：</span>
         <span class="info-item__value">
@@ -267,6 +244,17 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="实收金额"
+          align="center"
+          min-width="100"
+          prop="must_money"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span> {{ row.must_money | moneyFormat }} </span>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           align="center"
           fixed="right"
@@ -333,6 +321,17 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="实收金额"
+          align="center"
+          min-width="100"
+          prop="must_money"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span> {{ row.must_money | moneyFormat }} </span>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           align="center"
           fixed="right"
@@ -377,6 +376,10 @@ export default {
           text: "申请作废",
           type: "danger",
         },
+        3: {
+          text: "申请退差价",
+          type: "warning",
+        },
       },
     };
   },
@@ -387,6 +390,14 @@ export default {
     },
   },
   methods: {
+    coursDetail(uid) {
+      this.$router.push({
+        name: "cusdetail",
+        query: {
+          uid,
+        },
+      });
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },

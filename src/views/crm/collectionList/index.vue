@@ -15,23 +15,20 @@
           <el-button type="primary" :loading="exportLoading" @click="exportList"
             >导 出</el-button
           >
+          <el-button type="primary" @click="toAddCollection"
+            >添加回款</el-button
+          >
         </div>
       </header>
       <ul class="panel-list">
         <li class="panel-item">
-          <span>招生订单总金额</span>
-          <div class="time_num">
-            <span>{{ panelData.order_total_money | moneyFormat }}</span>
-          </div>
-        </li>
-        <li class="panel-item">
-          <span>招生回款总金额</span>
+          <span>回款总金额</span>
           <div class="time_num">
             <span>{{ panelData.pay_log_total | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
-          <span>入账总金额</span>
+          <span>已入账金额</span>
           <div class="time_num">
             <span>{{ panelData.verify_money | moneyFormat }}</span>
           </div>
@@ -71,32 +68,32 @@
           >
           </el-table-column>
           <el-table-column
-            prop="mobile"
-            label="手机号码"
-            min-width="130"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <PartiallyHidden :value="row.mobile" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="order_money"
-            label="订单金额"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              {{ row.order_money | moneyFormat }}
-            </template>
-          </el-table-column>
-          <el-table-column
             prop="pay_date"
             label="回款日期"
             min-width="100"
             show-overflow-tooltip
           >
           </el-table-column>
+          <el-table-column
+            prop="order_id"
+            label="关联订单"
+            show-overflow-tooltip
+            min-width="220"
+          >
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
+                {{ row.title }}
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="join_plan"
+            label="关联计划"
+            show-overflow-tooltip
+            min-width="220"
+          >
+          </el-table-column>
+
           <el-table-column
             prop="pay_money"
             label="回款金额"
@@ -116,13 +113,6 @@
           >
           </el-table-column>
           <el-table-column
-            prop="group_name"
-            label="部门名称"
-            min-width="160"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
             prop="staff_name"
             label="业绩归属"
             min-width="90"
@@ -130,40 +120,17 @@
           >
           </el-table-column>
           <el-table-column
-            prop="order_id"
-            label="关联订单"
-            show-overflow-tooltip
-            min-width="220"
-          >
-            <template slot-scope="{ row }">
-              <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-                {{ row.title }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="plan_pay_day"
-            label="计划回款日期"
-            min-width="100"
+            prop="group_name"
+            label="部门名称"
+            min-width="120"
             show-overflow-tooltip
           >
           </el-table-column>
+
           <el-table-column
-            prop="plan_pay_money"
-            label="计划回款金额"
-            min-width="90"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span v-if="row.plan_pay_money">
-                {{ row.plan_pay_money | moneyFormat }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="order_create_time"
-            label="订单创建日期"
-            min-width="100"
+            prop="create_time"
+            label="回款创建日期"
+            min-width="140"
             show-overflow-tooltip
           >
           </el-table-column>
@@ -192,6 +159,24 @@
               </span>
             </template>
           </el-table-column>
+          <el-table-column
+            prop="verify_time"
+            label="入账时间"
+            min-width="140"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column label="操作" min-width="80" fixed="right">
+            <template slot-scope="{ row }">
+              <el-button
+                v-if="row.verify_status"
+                type="text"
+                :loading="row.loading"
+                @click="resetConfirm(row)"
+                >重置</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
         <div class="table_bottom">
           <page
@@ -208,7 +193,11 @@
 
 <script>
 import { getShortcuts, today } from "@/utils/date";
-import { getReturnPaymentList, getCustomfieldOptions } from "@/api/crm";
+import {
+  getReturnPaymentList,
+  getCustomfieldOptions,
+  resetLog,
+} from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions, download } from "@/utils";
 export default {
@@ -382,6 +371,29 @@ export default {
     this.getDepartmentlists();
   },
   methods: {
+    // 重置
+    resetConfirm(row) {
+      this.$confirm("确定要重置该入账审批吗？", "提醒", {
+        type: "warning",
+      })
+        .then(() => {
+          this.resetLog(row);
+        })
+        .catch(() => {});
+    },
+    async resetLog(row) {
+      const data = { id: row.id };
+      row.loading = true;
+      const res = await resetLog(data).catch(() => {});
+      row.loading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getReturnPaymentList();
+      }
+    },
+    toAddCollection() {
+      this.$router.push({ name: "AddCrmCollection" });
+    },
     async exportList() {
       const data = {
         page: this.pageNum,
@@ -483,7 +495,10 @@ export default {
       this.listLoading = true;
       const res = await getReturnPaymentList(data).catch(() => {});
       this.listLoading = false;
-      this.listData = res.data.list;
+      this.listData = res.data.list.map((item) => ({
+        ...item,
+        loading: false,
+      }));
       this.panelData = res.data.count;
       this.listTotal = res.data.total;
     },
@@ -514,15 +529,18 @@ section {
   header {
     display: flex;
     justify-content: space-between;
+    .actions {
+      flex-shrink: 0;
+    }
   }
   .panel-list {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     font-size: 14px;
     color: #606266;
     .panel-item {
-      width: calc(100% / 4);
+      width: calc(100% / 3);
       margin-left: 16px;
       border: 1px solid #e4e7ed;
       text-align: center;

@@ -370,6 +370,10 @@ export default {
           text: "申请作废",
           type: "danger",
         },
+        3: {
+          text: "申请退差价",
+          type: "warning",
+        },
       },
 
       verifyStatusMap: {

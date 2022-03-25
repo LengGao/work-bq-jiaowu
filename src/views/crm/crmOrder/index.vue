@@ -14,19 +14,49 @@
       </header>
       <ul class="panel-list">
         <li class="panel-item">
-          <span>订单金额</span>
+          <span>订单金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.total_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span>学费金额 </span>
           <div class="time_num">
             <span>{{ panelData.order_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
-          <span>回款金额</span>
+          <span>其他金额 </span>
+          <div class="time_num">
+            <span>{{ panelData.other_money | moneyFormat }}</span>
+          </div>
+        </li>
+        <li class="panel-item">
+          <span
+            >回款金额
+            <el-tooltip
+              effect="dark"
+              content="该回款金额指按条件搜索的订单金额所涉及的回款金额，不包含实际时间期限内的回款金额。"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
           <div class="time_num">
             <span>{{ panelData.pay_money | moneyFormat }}</span>
           </div>
         </li>
         <li class="panel-item">
-          <span>未回款金额</span>
+          <span
+            >未回款金额
+            <el-tooltip
+              effect="dark"
+              content="订单金额减去已回款金额"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
           <div class="time_num">
             <span>{{ panelData.overdue_money | moneyFormat }}</span>
           </div>
@@ -120,22 +150,44 @@
           >
           </el-table-column>
           <el-table-column
-            prop="order_money"
+            prop="total_money"
             label="订单总金额"
-            min-width="90"
+            min-width="110"
             show-overflow-tooltip
           >
-            <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
+            <template slot-scope="{ row }">
+              {{ row.total_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="order_money"
+            label="学费金额"
+            min-width="110"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.order_money | moneyFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="other_money"
+            label="其他金额"
+            min-width="110"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              {{ row.other_money | moneyFormat }}
+            </template>
           </el-table-column>
 
           <el-table-column
             prop="pay_money"
             label="已回款金额"
-            min-width="90"
+            min-width="110"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span>￥{{ row.pay_money }}</span>
+              <span>{{ row.pay_money | moneyFormat }}</span>
             </template>
           </el-table-column>
 
@@ -349,6 +401,7 @@ export default {
           : [],
         pay_status: "",
         department_id: "",
+        verify_status: 3,
       },
       searchOptions: [
         {
@@ -475,7 +528,6 @@ export default {
             },
           ],
           attrs: {
-            clearable: true,
             placeholder: "审核状态",
           },
         },
@@ -520,6 +572,26 @@ export default {
             placeholder: "届别名称",
             clearable: true,
             filterable: true,
+          },
+        },
+        {
+          key: "is_new",
+          type: "select",
+          width: 140,
+          options: [
+            {
+              value: 1,
+              label: "新客户",
+            },
+            {
+              value: 2,
+              label: "老客户",
+            },
+          ],
+          attrs: {
+            filterable: true,
+            clearable: true,
+            placeholder: "客户类型",
           },
         },
         {

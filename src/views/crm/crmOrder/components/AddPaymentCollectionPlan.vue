@@ -1,10 +1,11 @@
 <template>
   <el-dialog
-    :title="title"
-    :visible.sync="visible"
+    :title="`${planEditData.id ? '编辑' : '配置'}回款计划`"
+    :visible="value"
     width="1000px"
     @open="handleOpen"
     :close-on-click-modal="false"
+    @close="handleClose"
     @closed="resetForm('formData')"
     append-to-body
   >
@@ -22,15 +23,65 @@
         }"
       >
         <el-table-column
-          label="回款期次"
+          label="序号"
           show-overflow-tooltip
-          min-width="100"
+          min-width="50"
           align="center"
           type="index"
         >
         </el-table-column>
         <el-table-column
-          label="计划回款时间"
+          label="回款类型"
+          show-overflow-tooltip
+          min-width="80"
+          align="center"
+        >
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :rules="[
+                { required: true, message: `请选择`, trigger: 'change' },
+              ]"
+              :prop="`tableData[${index}].type`"
+            >
+              <el-select v-model="row.type" placeholder="请选择" filterable>
+                <el-option
+                  v-for="(label, value) in expenseType"
+                  :key="value"
+                  :label="label"
+                  :value="+value"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="所属年份"
+          show-overflow-tooltip
+          min-width="120"
+          align="center"
+        >
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :rules="[
+                { required: true, message: `请选择`, trigger: 'change' },
+              ]"
+              :prop="`tableData[${index}].year`"
+            >
+              <el-select v-model="row.year" placeholder="请选择" filterable>
+                <el-option
+                  v-for="item in yearOptions"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="计划回款日期"
           min-width="200"
           align="center"
           show-overflow-tooltip
@@ -79,6 +130,7 @@
           fixed="right"
           align="center"
           min-width="100"
+          v-if="!planEditData.id"
         >
           <template slot-scope="{ $index: index }">
             <el-button
@@ -99,7 +151,7 @@
       </el-table>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="hanldeCancel">取 消</el-button>
+      <el-button @click="handleClose">取 消</el-button>
       <el-button
         type="primary"
         :loading="addLoading"
@@ -111,7 +163,9 @@
 </template>
 
 <script>
-import { createOrderPayPlan } from "@/api/crm";
+import { createOrderPayPlan, updateOrderPayPlan } from "@/api/crm";
+import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { mapGetters } from "vuex";
 export default {
   name: "AddCollectionPlan",
   props: {
@@ -119,39 +173,59 @@ export default {
       type: Boolean,
       default: false,
     },
-    title: {
-      type: String,
-      default: "",
-    },
     orderId: {
       type: [String, Number],
       default: "",
     },
-    data: {
-      type: Array,
-      default: () => [],
+    planEditData: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {
     return {
-      visible: this.value,
       formData: {
         tableData: [
           {
+            type: "",
+            year: currentYear,
             day: "",
             money: "",
           },
         ],
       },
       addLoading: false,
+      yearOptions: getPlanYearOptions(),
     };
   },
-  watch: {
-    value(val) {
-      this.visible = val;
-    },
+  computed: {
+    ...mapGetters(["expenseType"]),
   },
   methods: {
+    handleOpen() {
+      if (this.planEditData.id) {
+        this.formData.tableData = [this.planEditData];
+      }
+    },
+    // 修改计划
+    async updateOrderPayPlan(row) {
+      const { id, type, year, day, money } = row;
+      const data = {
+        id,
+        type,
+        year,
+        day,
+        money,
+      };
+      this.addLoading = true;
+      const res = await updateOrderPayPlan(data).catch(() => {});
+      this.addLoading = false;
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.$emit("on-success");
+        this.handleClose();
+      }
+    },
     disabledDate(e) {
       return Date.now() - 86400000 > e.getTime();
     },
@@ -160,19 +234,13 @@ export default {
     },
     handleAddRow() {
       this.formData.tableData.push({
+        type: "",
+        year: currentYear,
         day: "",
         money: "",
       });
     },
-    handleOpen() {
-      if (this.data.length) {
-        this.formData.tableData = this.data.map(({ day, money }) => ({
-          day,
-          money,
-        }));
-      }
-    },
-    async submit() {
+    async createOrderPayPlan() {
       const data = {
         data: JSON.stringify(this.formData.tableData),
       };
@@ -180,20 +248,22 @@ export default {
         data.order_id = this.orderId;
       }
       this.addLoading = true;
-      const res = await createOrderPayPlan(data).catch(() => {
-        this.addLoading = false;
-      });
+      const res = await createOrderPayPlan(data).catch(() => {});
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.visible = false;
-        this.$emit("on-success", res.data);
+        this.$emit("on-success");
+        this.handleClose();
       }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          if (this.planEditData.id) {
+            this.updateOrderPayPlan(this.formData.tableData[0]);
+          } else {
+            this.createOrderPayPlan();
+          }
         }
       });
     },
@@ -201,14 +271,15 @@ export default {
       this.$refs[formName].resetFields();
       this.formData.tableData = [
         {
+          type: "",
+          year: currentYear,
           day: "",
           money: "",
         },
       ];
-      this.$emit("input", false);
     },
-    hanldeCancel() {
-      this.visible = false;
+    handleClose() {
+      this.$emit("input", false);
     },
   },
 };

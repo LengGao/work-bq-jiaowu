@@ -9,6 +9,13 @@
             :src="detailData.avatar"
           ></el-avatar>
           <span class="name">{{ detailData.surname || "--" }}</span>
+          <el-tag
+            type="success"
+            v-if="detailData.is_new"
+            size="mini"
+            style="margin-left: 4px"
+            >新</el-tag
+          >
         </div>
         <div class="header-item">ID：{{ detailData.uid || "--" }}</div>
         <div class="header-item">
@@ -47,11 +54,11 @@
         :is="getComponent"
         @on-basic-success="getStudentBasicDetail"
         :datas="detailData"
-        :uid="$route.query.id"
+        :uid="$route.query.uid"
       />
     </section>
     <!-- 报名 -->
-    <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
+    <CreateOrderDialog v-model="signUpDialog" :user-info="detailData" />
     <!-- 开课 -->
     <AddStudent v-model="openCourseDialog" :user-info="detailData" />
   </div>
@@ -59,13 +66,13 @@
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
-import CustomeSignUp from "@/views/crm/crmCustomer/components/CustomeSignUp";
+import CreateOrderDialog from "@/views/crm/crmCustomer/components/CreateOrderDialog";
 import AddStudent from "@/views/crm/eduOpenClass/components/AddStudent";
 export default {
   name: "studentDetail",
   components: {
     AddStudent,
-    CustomeSignUp,
+    CreateOrderDialog,
   },
   data() {
     return {
@@ -94,7 +101,7 @@ export default {
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {
-        uid: this.$route.query?.id || "",
+        uid: this.$route.query?.uid || "",
       };
       this.detailLoading = true;
       const res = await getStudentBasicDetail(data);

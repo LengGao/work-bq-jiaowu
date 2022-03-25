@@ -74,6 +74,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="group_name"
+            label="所属部门"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="customer_type"
             label="客户性质"
             min-width="180"
@@ -152,6 +159,7 @@ import { cloneOptions } from "@/utils";
 import { getCateList, getInstitutionSelectData } from "@/api/sou";
 import { getAdminSelect, getproject } from "@/api/eda";
 import { projectUser, eduOpenCourse } from "@/api/crm";
+import { getDepartmentlists } from "@/api/set";
 export default {
   name: "eduOpenClass",
   components: {
@@ -169,6 +177,7 @@ export default {
         staff_id: "",
         type: "",
         open_course: "",
+        department_id: "",
       },
       searchOptions: [
         {
@@ -282,6 +291,22 @@ export default {
           },
         },
         {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "部门名称",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "客户姓名/手机号码",
@@ -300,6 +325,7 @@ export default {
     this.getAdminSelect();
     this.getCateList();
     this.getproject();
+    this.getDepartmentlists();
   },
   methods: {
     // 开课
@@ -349,11 +375,25 @@ export default {
         this.searchOptions[2].options = res.data;
       }
     },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[7].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
+      }
+    },
     handleSearch(data) {
       this.pageNum = 1;
+      data.department_id = data.department_id || [];
       this.searchData = {
         ...data,
         from_org: data.from_org ? data.from_org.pop() : "",
+        department_id: data.department_id.map((item) => item.pop()).join(","),
       };
       this.projectUser(data);
     },
