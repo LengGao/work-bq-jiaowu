@@ -14,7 +14,7 @@
         <el-button
           type="primary"
           v-if="$route.query.isFromList && orderData.check_state == 2"
-          @click="addCollectionVisible = true"
+          @click="toAddCollection"
           >再次回款</el-button
         >
         <el-button
@@ -225,6 +225,14 @@
         </template>
       </el-table-column> -->
       <el-table-column
+        label="支付方式"
+        align="center"
+        min-width="100"
+        prop="pay_type"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
         label="操作"
         fixed="right"
         align="center"
@@ -237,24 +245,15 @@
         </template>
       </el-table-column>
     </el-table>
-    <AddCollection
-      v-model="addCollectionVisible"
-      :id="orderData.id"
-      @on-success="$router.back()"
-    />
     <PreviewImg ref="view" />
   </div>
 </template>
 
 <script>
 import { getReceivableInfo, reviewReceivableOrder } from "@/api/crm";
-import AddCollection from "./components/AddCollection";
 import { mapGetters } from "vuex";
 export default {
   name: "institutionalCollectionDetail",
-  components: {
-    AddCollection,
-  },
   props: {
     logId: "",
     isFromApproval: "",
@@ -264,7 +263,6 @@ export default {
       loading: false,
       orderData: {},
       listData: [],
-      addCollectionVisible: false,
     };
   },
   computed: {
@@ -274,6 +272,12 @@ export default {
     this.getReceivableInfo();
   },
   methods: {
+    toAddCollection() {
+      this.$router.push({
+        name: "addInstitutionalCollection",
+        query: { id: this.logId || this.$route.query.id },
+      });
+    },
     handlePreview(src) {
       this.$refs.view.show(src);
     },
