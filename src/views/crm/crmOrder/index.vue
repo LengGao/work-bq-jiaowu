@@ -401,6 +401,7 @@ export default {
           : [],
         pay_status: "",
         department_id: "",
+        verify_status: 3,
       },
       searchOptions: [
         {
@@ -527,7 +528,6 @@ export default {
             },
           ],
           attrs: {
-            clearable: true,
             placeholder: "审核状态",
           },
         },
