@@ -48,18 +48,18 @@
         :uid="$route.query.uid"
       />
       <!-- 报名 -->
-      <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
+      <CreateOrderDialog v-model="signUpDialog" :user-info="detailData" />
     </section>
   </div>
 </template>
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
-import CustomeSignUp from "@/views/crm/crmCustomer/components/CustomeSignUp";
+import CreateOrderDialog from "@/views/crm/crmCustomer/components/CreateOrderDialog";
 export default {
   name: "cusdetail",
   components: {
-    CustomeSignUp,
+    CreateOrderDialog,
   },
   data() {
     return {

@@ -58,7 +58,7 @@
       />
     </section>
     <!-- 报名 -->
-    <CustomeSignUp v-model="signUpDialog" :user-info="detailData" />
+    <CreateOrderDialog v-model="signUpDialog" :user-info="detailData" />
     <!-- 开课 -->
     <AddStudent v-model="openCourseDialog" :user-info="detailData" />
   </div>
@@ -66,13 +66,13 @@
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
-import CustomeSignUp from "@/views/crm/crmCustomer/components/CustomeSignUp";
+import CreateOrderDialog from "@/views/crm/crmCustomer/components/CreateOrderDialog";
 import AddStudent from "@/views/crm/eduOpenClass/components/AddStudent";
 export default {
   name: "studentDetail",
   components: {
     AddStudent,
-    CustomeSignUp,
+    CreateOrderDialog,
   },
   data() {
     return {
