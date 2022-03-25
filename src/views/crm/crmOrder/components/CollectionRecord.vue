@@ -265,6 +265,7 @@
 import AddPaymentCollectionRecord from "./AddPaymentCollectionRecord.vue";
 import AddPaymentCollectionPlan from "./AddPaymentCollectionPlan.vue";
 import { mapGetters } from "vuex";
+import { payPlanDelete } from "@/api/crm";
 export default {
   name: "CollectionRecord",
   components: {
@@ -311,8 +312,17 @@ export default {
       this.$confirm("确定要删除该计划吗？", "提醒", {
         type: "warning",
       })
-        .then(() => {})
+        .then(() => {
+          this.payPlanDelete(row.id);
+        })
         .catch(() => {});
+    },
+    async payPlanDelete(id) {
+      const data = { id };
+      const res = await payPlanDelete(data);
+      if (res.code === 0) {
+        this.$parent.getCrmOrderDetail();
+      }
     },
     handleEditPlan(row) {
       this.planEditData = { ...row };

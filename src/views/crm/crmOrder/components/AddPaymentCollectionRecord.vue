@@ -370,6 +370,7 @@ export default {
   methods: {
     handleOpen() {
       this.initPlanTableData();
+      this.getCustomfieldOptions();
     },
     initPlanTableData() {
       this.planTableData = this.planData.map((item) => ({

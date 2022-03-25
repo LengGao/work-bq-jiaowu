@@ -807,4 +807,12 @@ export function resetLog(data) {
         data,
     })
 }
+// 删除回款计划
+export function payPlanDelete(data) {
+    return request({
+        url: '/CustomerOrder/payPlanDelete',
+        method: 'post',
+        data,
+    })
+}
 
