@@ -262,6 +262,24 @@
             min-width="150"
             prop="project_name"
           >
+            <template slot-scope="{ row }">
+              <el-select
+                  v-if="row.isSelectProject && +formData.type !== 1"
+                v-model="row.checkedProjectIds"
+                placeholder="请选择项目"
+                filterable
+                multiple
+              >
+                <el-option
+                  v-for="item in row.projectOptions"
+                  :key="item.project_id"
+                  :label="item.project_name"
+                  :value="item.project_id + ''"
+                >
+                </el-option>
+              </el-select>
+              <span v-else>{{ row.project_name }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             label="订单金额"
@@ -336,6 +354,24 @@
             min-width="150"
             prop="project_name"
           >
+            <template slot-scope="{ row }">
+              <el-select
+                v-model="row.checkedProjectIds"
+                placeholder="请选择项目"
+                filterable
+                multiple
+                v-if="row.isSelectProject && +formData.type !== 1"
+              >
+                <el-option
+                  v-for="item in row.projectOptions"
+                  :key="item.project_id"
+                  :label="item.project_name"
+                  :value="item.project_id + ''"
+                >
+                </el-option>
+              </el-select>
+              <span v-else>{{ row.project_name }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             label="学费金额"
@@ -797,10 +833,20 @@ export default {
         types.forEach((item) => {
           moneys[item] = "";
         });
-        this.againListData = res.data.list.map((item) => ({
-          ...item,
-          moneys: { ...moneys },
-        }));
+        this.againListData = res.data.list.map((item) => {
+          const project_ids = (item.project_ids || "").split(",");
+          const project_id_names = item.project_name.split(";");
+          return {
+            ...item,
+            moneys: { ...moneys },
+            checkedProjectIds: project_ids,
+            isSelectProject: project_ids.length > 1,
+            projectOptions: project_ids.map((item, index) => ({
+              project_id: item,
+              project_name: project_id_names[index],
+            })),
+          };
+        });
       }
     },
     // 选择机构时
@@ -868,11 +914,19 @@ export default {
         moneys[item] = "";
       });
       this.listData = res.data.list.map((item) => {
+        const project_ids = item.project_ids.split(",");
+        const project_id_names = item.project_name.split(";");
         return {
           ...item,
           moneys: { ...moneys },
           edit: false,
           loading: false,
+          checkedProjectIds: project_ids,
+          isSelectProject: project_ids.length > 1,
+          projectOptions: project_ids.map((item, index) => ({
+            project_id: item,
+            project_name: project_id_names[index],
+          })),
           resetOrderMoney: item.order_money,
           resetOrderOverdueMoney: item.outstanding_amount,
           resetOrderReductionMoney: item.reduction,
@@ -945,7 +999,11 @@ export default {
       };
       if (this.id) {
         data.arr_receivable = this.againListData.map(
-          ({ moneys, order_id }) => ({
+          ({ moneys, order_id, checkedProjectIds, project_ids }) => ({
+            project_ids:
+              +this.formData.type === 1
+                ? project_ids
+                : checkedProjectIds.join(","),
             order_id,
             pay_money: moneys["1"] || "",
             moneys,
@@ -954,6 +1012,10 @@ export default {
       } else {
         data.arr_receivable = this.checkedOrderData.map((item) => {
           return {
+            project_ids:
+              +this.formData.type === 1
+                ? item.project_ids
+                : item.checkedProjectIds.join(","),
             order_id: item.order_id,
             pay_money: item.moneys["1"] || "",
             moneys: item.moneys,

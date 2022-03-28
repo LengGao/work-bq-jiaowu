@@ -7,60 +7,7 @@
       inline
       ref="formData"
     >
-      <Title text="回款信息"></Title>
-      <el-form-item label="所属老师" prop="staff_id">
-        <el-select
-          v-model="formData.staff_id"
-          filterable
-          placeholder="请选择所属老师"
-          @change="onStaffChange"
-        >
-          <el-option
-            v-for="item in staffOptions"
-            :key="item.staff_id"
-            :label="item.staff_name"
-            :value="item.staff_id"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="回款类型" prop="plan_type">
-        <el-select
-          v-model="formData.plan_type"
-          placeholder="请选择回款类型"
-          class="input"
-          filterable
-        >
-          <el-option
-            v-for="(label, value) in expenseType"
-            :key="value"
-            :label="label"
-            :value="value"
-            :disabled="value == 1"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="所属年份" prop="year">
-        <el-select v-model="formData.year" placeholder="请选择" filterable>
-          <el-option
-            v-for="item in yearOptions"
-            :key="item"
-            :label="item"
-            :value="item"
-          >
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="回款金额" prop="total_money">
-        <el-input
-          class="input"
-          :value="totalInputMoney"
-          type="number"
-          disabled
-        />
-      </el-form-item>
-      <Title text="关联订单"></Title>
+      <Title text="查询订单"></Title>
       <SearchList
         :options="searchOptions"
         :data="searchData"
@@ -170,6 +117,31 @@
             >
               <template slot="header">
                 <span>已选（{{ formData.checkedOrderData.length }}）</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="项目名称"
+              show-overflow-tooltip
+              min-width="200"
+              prop="project_name"
+            >
+              <template slot-scope="{ row }">
+                <el-select
+                  v-if="row.isSelectProject"
+                  v-model="row.checkedProjectIds"
+                  placeholder="请选择项目"
+                  filterable
+                  multiple
+                >
+                  <el-option
+                    v-for="item in jsonParseProject(row.project)"
+                    :key="item.id"
+                    :label="item.project_name"
+                    :value="(row.type ? item.project.id : item.id) + ''"
+                  >
+                  </el-option>
+                </el-select>
+                <span v-else>{{ row.project_name }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -329,6 +301,43 @@
           </el-table>
         </div>
       </div>
+      <Title text="回款信息"></Title>
+      <el-form-item label="回款类型" prop="plan_type">
+        <el-select
+          v-model="formData.plan_type"
+          placeholder="请选择回款类型"
+          class="input"
+          filterable
+        >
+          <el-option
+            v-for="(label, value) in expenseType"
+            :key="value"
+            :label="label"
+            :value="value"
+            :disabled="value == 1"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="所属年份" prop="year">
+        <el-select v-model="formData.year" placeholder="请选择" filterable>
+          <el-option
+            v-for="item in yearOptions"
+            :key="item"
+            :label="item"
+            :value="item"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="回款金额" prop="total_money">
+        <el-input
+          class="input"
+          :value="totalInputMoney"
+          type="number"
+          disabled
+        />
+      </el-form-item>
     </el-form>
     <div class="footer">
       <el-button @click="hanldeCancel">取 消</el-button>
@@ -402,6 +411,21 @@ export default {
           },
         },
         {
+          key: "staff_id",
+          type: "select",
+          width: 150,
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
           key: "category_id",
           type: "select",
           width: 150,
@@ -409,7 +433,7 @@ export default {
           optionValue: "category_id",
           optionLabel: "category_name",
           attrs: {
-            placeholder: "所属分类（多选）",
+            placeholder: "所属分类",
             clearable: true,
             filterable: true,
             multiple: true,
@@ -423,7 +447,7 @@ export default {
           optionValue: "project_id",
           optionLabel: "project_name",
           attrs: {
-            placeholder: "所属项目（多选）",
+            placeholder: "所属项目",
             clearable: true,
             filterable: true,
             multiple: true,
@@ -465,17 +489,24 @@ export default {
     },
   },
   created() {
+    this.getCrmOrderList();
     this.getCustomfieldOptions();
     this.getStaffList();
+    this.getProject();
+    this.getGradeOptions();
+    this.getCateList();
   },
   methods: {
+    jsonParseProject(json) {
+      return JSON.parse(json || "[]");
+    },
     // 所属老师
     async getStaffList() {
       const data = {
         limit: 99999,
       };
       const res = await getStaffList(data);
-      this.staffOptions = res.data.list;
+      this.searchOptions[1].options = res.data.list;
     },
     // 双击表头复制指定金额
     handleHeaderDblclick(field) {
@@ -492,17 +523,11 @@ export default {
     async getGradeOptions() {
       const res = await getGradeOptions();
       if (res.code === 0) {
-        this.searchOptions[3].options = res.data;
+        this.searchOptions[4].options = res.data;
       }
     },
     disabledDate(e) {
       return e.getTime() > Date.now();
-    },
-    onStaffChange() {
-      this.handlePageChange(1);
-      this.getProject();
-      this.getGradeOptions();
-      this.getCateList();
     },
     // 右侧已选删除
     handleRemoveOrder(index) {
@@ -537,16 +562,9 @@ export default {
       this.getCrmOrderList();
     },
     async getCrmOrderList() {
-      const { staff_id } = this.formData;
-      if (!staff_id) {
-        this.$message.error("请选择所属老师");
-        return;
-      }
-      this.hadleResetOrder();
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
-        staff_id,
         ...this.searchData,
         verify_status: 3,
         channel: 2,
@@ -563,13 +581,18 @@ export default {
       this.listLoading = true;
       const res = await getCrmOrderList(data);
       this.listLoading = false;
-      this.listData = res.data.list.map((item) => ({
-        ...item,
-        pay_money: "",
-        pay_date: "",
-        pay_type: "",
-        receipt_file: [],
-      }));
+      this.listData = res.data.list.map((item) => {
+        const project_ids = item.project_ids.split(",");
+        return {
+          ...item,
+          checkedProjectIds: project_ids,
+          isSelectProject: project_ids.length > 1,
+          pay_money: "",
+          pay_date: "",
+          pay_type: "",
+          receipt_file: [],
+        };
+      });
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
     },
@@ -577,14 +600,14 @@ export default {
     async getProject() {
       const res = await getProject();
       if (res.code === 0) {
-        this.searchOptions[2].options = res.data;
+        this.searchOptions[3].options = res.data;
       }
     },
     // 获取所属分类
     async getCateList() {
       const res = await getCateList();
       if (res.code === 0) {
-        this.searchOptions[1].options = res.data;
+        this.searchOptions[2].options = res.data;
       }
     },
     // 获取支付方式
@@ -604,6 +627,7 @@ export default {
       };
       data.pay = this.formData.checkedOrderData.map((item) => {
         return {
+          project_ids: item.checkedProjectIds.join(","),
           order_id: item.order_id,
           pay_money: item.pay_money,
           pay_date: item.pay_date,

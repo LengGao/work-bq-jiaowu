@@ -253,7 +253,7 @@
     />
     <AddPaymentCollectionPlan
       v-model="planDialogVisible"
-      :order-id="data.order_id"
+      :data="data"
       :planEditData="planEditData"
       @on-success="$parent.getCrmOrderDetail"
     />

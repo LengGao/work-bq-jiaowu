@@ -56,6 +56,38 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="项目名称"
+          show-overflow-tooltip
+          min-width="140"
+          align="center"
+        >
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :rules="[
+                { required: true, message: `请选择`, trigger: 'change' },
+              ]"
+              :prop="`tableData[${index}].checkedProjectIds`"
+            >
+              <el-select
+                v-if="row.type != 1"
+                v-model="row.checkedProjectIds"
+                placeholder="请选择项目"
+                filterable
+                multiple
+              >
+                <el-option
+                  v-for="item in projectOptions"
+                  :key="item.id"
+                  :label="item.project_name"
+                  :value="item.id + ''"
+                >
+                </el-option>
+              </el-select>
+              <span v-else>{{ data.project_name }}</span>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="所属年份"
           show-overflow-tooltip
           min-width="120"
@@ -173,9 +205,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    orderId: {
-      type: [String, Number],
-      default: "",
+    data: {
+      type: Object,
+      default: () => ({}),
     },
     planEditData: {
       type: Object,
@@ -185,14 +217,7 @@ export default {
   data() {
     return {
       formData: {
-        tableData: [
-          {
-            type: "",
-            year: currentYear,
-            day: "",
-            money: "",
-          },
-        ],
+        tableData: [],
       },
       addLoading: false,
       yearOptions: getPlanYearOptions(),
@@ -200,12 +225,31 @@ export default {
   },
   computed: {
     ...mapGetters(["expenseType"]),
+    projectOptions() {
+      return JSON.parse(this.data?.project || "[]");
+    },
   },
   methods: {
     handleOpen() {
       if (this.planEditData.id) {
         this.formData.tableData = [this.planEditData];
+      } else {
+        this.formData.tableData = [
+          {
+            type: "",
+            year: currentYear,
+            checkedProjectIds: this.initProjectIds(),
+            day: "",
+            money: "",
+          },
+        ];
+        console.log(this.initProjectIds());
       }
+    },
+    initProjectIds() {
+      return this.data.type
+        ? JSON.parse(this.data?.project || "[]").map((item) => item.id + "")
+        : this.data.project_ids.split(",") || [];
     },
     // 修改计划
     async updateOrderPayPlan(row) {
@@ -236,16 +280,25 @@ export default {
       this.formData.tableData.push({
         type: "",
         year: currentYear,
+        checkedProjectIds: this.initProjectIds(),
         day: "",
         money: "",
       });
     },
     async createOrderPayPlan() {
       const data = {
-        data: JSON.stringify(this.formData.tableData),
+        data: JSON.stringify(
+          this.formData.tableData.map((item) => {
+            const { checkedProjectIds, ...restParams } = item;
+            return {
+              ...restParams,
+              project_ids: checkedProjectIds.join(","),
+            };
+          })
+        ),
       };
-      if (this.orderId) {
-        data.order_id = this.orderId;
+      if (this.data.order_id) {
+        data.order_id = this.data.order_id;
       }
       this.addLoading = true;
       const res = await createOrderPayPlan(data).catch(() => {});
@@ -269,14 +322,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      this.formData.tableData = [
-        {
-          type: "",
-          year: currentYear,
-          day: "",
-          money: "",
-        },
-      ];
+      this.formData.tableData = [];
     },
     handleClose() {
       this.$emit("input", false);
