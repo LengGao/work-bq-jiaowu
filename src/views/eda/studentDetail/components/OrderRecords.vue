@@ -20,12 +20,9 @@
           show-overflow-tooltip
           min-width="190"
         >
-          <template slot-scope="scope">
-            <el-button
-              type="text"
-              @click="toCrmOrderDetail(scope.row.order_id)"
-            >
-              {{ scope.row.order_no }}
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toCrmOrderDetail(row)">
+              {{ row.order_no }}
             </el-button>
           </template>
         </el-table-column>
@@ -66,12 +63,34 @@
         </el-table-column>
 
         <el-table-column
-          prop="order_money"
+          prop="total_money"
           label="订单总金额"
-          min-width="90"
+          min-width="110"
           show-overflow-tooltip
         >
-          <template slot-scope="{ row }"> ￥{{ row.order_money }} </template>
+          <template slot-scope="{ row }">
+            {{ row.total_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="学费金额"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.order_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="other_money"
+          label="其他金额"
+          min-width="110"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.other_money | moneyFormat }}
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -81,7 +100,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>￥{{ row.pay_money }}</span>
+            <span>{{ row.pay_money | moneyFormat }}</span>
           </template>
         </el-table-column>
 
@@ -164,7 +183,7 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="160">
           <template slot-scope="{ row }">
-            <el-button type="text" @click="toCrmOrderDetail(row.order_id)"
+            <el-button type="text" @click="toCrmOrderDetail(row)"
               >订单详情</el-button
             >
             <el-button @click="openOrderActions(row, 2)" type="text"
@@ -322,11 +341,15 @@ export default {
         this.refundDialogVisible = true;
       }
     },
-    toCrmOrderDetail(id) {
+    toCrmOrderDetail(row) {
+      let routeName = "crmOrderDetail";
+      if (row.from_organization_id) {
+        routeName = "studentOrderDetail";
+      }
       this.$router.push({
-        name: "crmOrderDetail",
+        name: routeName,
         query: {
-          id,
+          id: row.order_id,
         },
       });
     },

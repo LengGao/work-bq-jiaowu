@@ -62,6 +62,11 @@
             min-width="90"
             show-overflow-tooltip
           >
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="toStudentDetail(row.uid)">
+                {{ row.surname }}
+              </el-button>
+            </template>
           </el-table-column>
           <el-table-column
             prop="mobile"
