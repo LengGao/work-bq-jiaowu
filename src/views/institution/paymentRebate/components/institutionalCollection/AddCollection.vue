@@ -534,9 +534,6 @@ export default {
         receipt_file: [],
       },
       rules: {
-        receipt_file: [
-          { required: true, message: "请上传", trigger: "change" },
-        ],
         year: [{ required: true, message: "请选择", trigger: "change" }],
         type: [{ required: true, message: "请选择", trigger: "change" }],
         pay_date: [{ required: true, message: "请选择", trigger: "change" }],
