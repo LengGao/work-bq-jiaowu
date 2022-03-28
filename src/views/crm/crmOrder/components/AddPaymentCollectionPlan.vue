@@ -64,7 +64,11 @@
           <template slot-scope="{ row, $index: index }">
             <el-form-item
               :rules="[
-                { required: true, message: `请选择`, trigger: 'change' },
+                {
+                  required: row.type != 1,
+                  message: `请选择`,
+                  trigger: 'change',
+                },
               ]"
               :prop="`tableData[${index}].checkedProjectIds`"
             >
@@ -78,7 +82,7 @@
                 <el-option
                   v-for="item in projectOptions"
                   :key="item.id"
-                  :label="item.project_name"
+                  :label="data.type ? item.major.value : item.project_name"
                   :value="item.id + ''"
                 >
                 </el-option>
@@ -243,7 +247,6 @@ export default {
             money: "",
           },
         ];
-        console.log(this.initProjectIds());
       }
     },
     initProjectIds() {

@@ -136,8 +136,8 @@
                   <el-option
                     v-for="item in jsonParseProject(row.project)"
                     :key="item.id"
-                    :label="item.project_name"
-                    :value="(row.type ? item.project.id : item.id) + ''"
+                    :label="row.type ? item.major.value : item.project_name"
+                    :value="item.id + ''"
                   >
                   </el-option>
                 </el-select>
@@ -582,7 +582,7 @@ export default {
       const res = await getCrmOrderList(data);
       this.listLoading = false;
       this.listData = res.data.list.map((item) => {
-        const project_ids = item.project_ids.split(",");
+        const project_ids = this.initProjectIds(item);
         return {
           ...item,
           checkedProjectIds: project_ids,
@@ -595,6 +595,11 @@ export default {
       });
       this.listTotal = res.data.total;
       this.panelData = res.data.count || {};
+    },
+    initProjectIds(row) {
+      return row.type
+        ? JSON.parse(row.project || "[]").map((item) => item.id + "")
+        : row.project_ids.split(",") || [];
     },
     // 获取项目下拉
     async getProject() {
