@@ -207,7 +207,11 @@
             </el-table-column>
           </el-table>
           <div class="table_bottom">
-            <p>*未搜索到以下学生信息：{{ not_in_list }}</p>
+            <p>
+              *未搜索到以下学生信息：<span style="color: red">{{
+                not_in_list
+              }}</span>
+            </p>
             <page
               :data="listTotal"
               :curpage="pageNum"
@@ -325,6 +329,13 @@
             <template slot="header">
               <span>已选学生：{{ checkedOrderData.length }}</span>
             </template>
+          </el-table-column>
+          <el-table-column
+            label="项目名称"
+            show-overflow-tooltip
+            min-width="150"
+            prop="project_name"
+          >
           </el-table-column>
           <el-table-column
             label="学费金额"
@@ -454,7 +465,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="回款凭证" prop="receipt_file">
+      <el-form-item label="回款凭证">
         <el-select
           v-show="false"
           multiple
