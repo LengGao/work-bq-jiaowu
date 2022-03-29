@@ -7,6 +7,11 @@
         :data="searchData"
         @on-search="handleSearch"
       />
+      <div class="actions">
+        <el-button type="primary" :loading="exportLoading" @click="exportList"
+          >导 出</el-button
+        >
+      </div>
     </header>
     <ul class="panel-list">
       <li class="panel-item">
@@ -189,7 +194,7 @@
             <el-button
               type="text"
               v-if="!row.check_state"
-              @click="approveConfirm(row.log_id, 2)"
+              @click="openEntryDialog(row)"
               >入账</el-button
             >
             <el-button
@@ -227,6 +232,44 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      title="入帐"
+      width="400px"
+      center
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form :model="formData" :rules="rules" ref="formData">
+        <el-form-item label="入账时间" prop="pay_date">
+          <el-date-picker
+            class="input"
+            type="date"
+            placeholder="选择日期"
+            v-model="formData.pay_date"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="支付方式" prop="pay_type">
+          <el-select
+            v-model="formData.pay_type"
+            placeholder="请选择支付方式"
+            class="input"
+            filterable
+          >
+            <el-option
+              v-for="item in payMethodOptions"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleEntryCancel">取 消</el-button>
+        <el-button type="primary" @click="handleEntryConfirm">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -234,12 +277,14 @@
 import Detail from "@/views/institution/paymentRebate/components/institutionalCollection/detail.vue";
 import { getShortcuts, getPlanYearOptions } from "@/utils/date";
 import { mapGetters } from "vuex";
+import { download } from "@/utils";
 import {
   getOrgReceivableList,
   getOrgName,
   getReceivableStatus,
   getBelongPeople,
   reviewReceivableOrder,
+  getCustomfieldOptions,
 } from "@/api/crm";
 export default {
   name: "changeApprove",
@@ -251,6 +296,7 @@ export default {
       panelData: {},
       listData: [],
       listLoading: false,
+      exportLoading: false,
       pageNum: 1,
       pageSize: 20,
       listTotal: 0,
@@ -359,6 +405,18 @@ export default {
       ],
       dialogVisible: false,
       logId: "",
+      payMethodOptions: [],
+      formData: {
+        pay_type: "",
+        pay_date: "",
+        log_id: "",
+        check_state: 2,
+      },
+      rules: {
+        pay_date: [{ required: true, message: "请选择", trigger: "change" }],
+        pay_type: [{ required: true, message: "请选择", trigger: "change" }],
+      },
+      dialogFormVisible: false,
     };
   },
   computed: {
@@ -381,9 +439,49 @@ export default {
     this.getOrgName();
     this.getBelongPeople();
     this.getReceivableStatus();
+    this.getCustomfieldOptions();
   },
 
   methods: {
+    // 入账
+    openEntryDialog(row) {
+      this.formData.log_id = row.log_id;
+      this.formData.pay_type = row.pay_type;
+      this.formData.pay_date = row.pay_date;
+      this.dialogFormVisible = true;
+    },
+    handleEntryCancel() {
+      this.formData = {
+        pay_type: "",
+        pay_date: "",
+        log_id: "",
+        check_state: 2,
+      };
+      this.$refs.formData.resetFields();
+      this.dialogFormVisible = false;
+    },
+    handleEntryConfirm() {
+      this.$refs.formData.validate(async (valid) => {
+        if (valid) {
+          const res = await reviewReceivableOrder(this.formData);
+          if (res.code === 0) {
+            this.dialogFormVisible = false;
+            this.$message.success(res.message);
+            this.getOrgReceivableList();
+          }
+        }
+      });
+    },
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
+      }
+    },
     getType(types) {
       if (types && types.length) {
         return types.map((type) => this.expenseTypeMap[type]).join(",");
@@ -403,16 +501,6 @@ export default {
       })
         .then(({ value }) => {
           this.reviewReceivableOrder(log_id, check_state, value);
-        })
-        .catch(() => {});
-    },
-    // 入账
-    approveConfirm(log_id, check_state) {
-      this.$confirm(`是否确定该笔回款入账？`, "提示", {
-        type: "warning",
-      })
-        .then(() => {
-          this.reviewReceivableOrder(log_id, check_state);
         })
         .catch(() => {});
     },
@@ -478,6 +566,19 @@ export default {
       this.pageSize = size;
       this.getOrgReceivableList();
     },
+    async exportList() {
+      const data = {
+        page: this.pageNum,
+        limit: this.pageSize,
+        state: 1,
+        ...this.searchData,
+        export: 1,
+      };
+      this.exportLoading = true;
+      const res = await getOrgReceivableList(data).catch(() => {});
+      this.exportLoading = false;
+      download(res.data.url, "机构回款入帐");
+    },
     async getOrgReceivableList() {
       const data = {
         page: this.pageNum,
@@ -514,6 +615,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+header {
+  display: flex;
+  justify-content: space-between;
+}
 .panel-list {
   display: flex;
   align-items: center;
