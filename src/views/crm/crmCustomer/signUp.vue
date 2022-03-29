@@ -543,9 +543,9 @@
           <el-option
             v-for="item in formData.tableData"
             :key="item.temp_id"
-            :label="`${item.year}年 ${expenseType[item.type]} ￥${(
-              +item.money || 0
-            ).toFixed(2)}`"
+            :label="`${item.year}年 ${getProjectNameById(
+              item.checkedProjectIds
+            )} ${expenseType[item.type]} ￥${(+item.money || 0).toFixed(2)}`"
             :value="item.temp_id"
           >
           </el-option>
@@ -799,7 +799,6 @@ export default {
     // 获取已选项目id
     getPlanProjectIds() {
       const data = this.formData.type === 1 ? this.majorData : this.projectData;
-      console.log(data);
       return data.map((item) => item.id + "");
     },
     // 学费金额
@@ -842,6 +841,19 @@ export default {
     this.formData.id_card_number = id_card_number;
   },
   methods: {
+    getProjectNameById(ids) {
+      if (this.formData.type === 1) {
+        return this.majorData
+          .filter((item) => ids.includes(item.id + ""))
+          .map((item) => `${item.school_name}-${item.major_name}`)
+          .join(",");
+      } else {
+        return this.projectData
+          .filter((item) => ids.includes(item.id + ""))
+          .map((item) => item.project_name)
+          .join(",");
+      }
+    },
     // 获取来源
     async getCustomfieldOptions() {
       const data = {
@@ -912,6 +924,7 @@ export default {
       this.level_id = "";
       this.formData.selectMajor = [];
       this.formData.selectProject = [];
+      this.formData.pay_plan_ids = [];
       // 获取学历类届别选项
       type === 1 ? this.categoryGetSessionList(6) : (this.gradeOptions = []);
     },
@@ -1092,6 +1105,9 @@ export default {
   }
   .remark {
     width: 590px;
+  }
+  /deep/.el-select__tags {
+    overflow: hidden;
   }
   .plan-table {
     margin-bottom: 20px;

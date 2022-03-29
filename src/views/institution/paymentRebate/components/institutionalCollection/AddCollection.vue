@@ -264,7 +264,7 @@
           >
             <template slot-scope="{ row }">
               <el-select
-                  v-if="row.isSelectProject && +formData.type !== 1"
+                v-if="row.isSelectProject && +formData.type !== 1"
                 v-model="row.checkedProjectIds"
                 placeholder="请选择项目"
                 filterable
@@ -272,9 +272,9 @@
               >
                 <el-option
                   v-for="item in row.projectOptions"
-                  :key="item.project_id"
+                  :key="item.id"
                   :label="item.project_name"
-                  :value="item.project_id + ''"
+                  :value="item.id + ''"
                 >
                 </el-option>
               </el-select>
@@ -364,9 +364,9 @@
               >
                 <el-option
                   v-for="item in row.projectOptions"
-                  :key="item.project_id"
+                  :key="item.id"
                   :label="item.project_name"
-                  :value="item.project_id + ''"
+                  :value="item.id + ''"
                 >
                 </el-option>
               </el-select>
@@ -834,17 +834,15 @@ export default {
           moneys[item] = "";
         });
         this.againListData = res.data.list.map((item) => {
-          const project_ids = (item.project_ids || "").split(",");
-          const project_id_names = item.project_name.split(";");
+          const project_ids = item.project_ids.split(
+            item.project_ids ? "," : ""
+          );
           return {
             ...item,
             moneys: { ...moneys },
             checkedProjectIds: project_ids,
             isSelectProject: project_ids.length > 1,
-            projectOptions: project_ids.map((item, index) => ({
-              project_id: item,
-              project_name: project_id_names[index],
-            })),
+            projectOptions: item.project || [],
           };
         });
       }
@@ -914,8 +912,7 @@ export default {
         moneys[item] = "";
       });
       this.listData = res.data.list.map((item) => {
-        const project_ids = item.project_ids.split(",");
-        const project_id_names = item.project_name.split(";");
+        const project_ids = item.project_ids.split(item.project_ids ? "," : "");
         return {
           ...item,
           moneys: { ...moneys },
@@ -923,10 +920,7 @@ export default {
           loading: false,
           checkedProjectIds: project_ids,
           isSelectProject: project_ids.length > 1,
-          projectOptions: project_ids.map((item, index) => ({
-            project_id: item,
-            project_name: project_id_names[index],
-          })),
+          projectOptions: item.project || [],
           resetOrderMoney: item.order_money,
           resetOrderOverdueMoney: item.outstanding_amount,
           resetOrderReductionMoney: item.reduction,

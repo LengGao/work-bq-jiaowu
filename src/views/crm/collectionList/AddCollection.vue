@@ -136,7 +136,11 @@
                   <el-option
                     v-for="item in jsonParseProject(row.project)"
                     :key="item.id"
-                    :label="row.type ? item.major.value : item.project_name"
+                    :label="
+                      row.type
+                        ? `${item.project.value}-${item.major.value}`
+                        : item.project_name
+                    "
                     :value="item.id + ''"
                   >
                   </el-option>
