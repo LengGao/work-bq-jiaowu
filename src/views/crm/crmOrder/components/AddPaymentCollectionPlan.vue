@@ -2,7 +2,7 @@
   <el-dialog
     :title="`${planEditData.id ? '编辑' : '配置'}回款计划`"
     :visible="value"
-    width="1000px"
+    width="1200px"
     @open="handleOpen"
     :close-on-click-modal="false"
     @close="handleClose"
@@ -55,12 +55,18 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column
-          label="项目名称"
-          show-overflow-tooltip
-          min-width="140"
-          align="center"
-        >
+        <el-table-column show-overflow-tooltip min-width="200" align="center">
+          <template slot="header">
+            <span>所属项目 </span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="除学费外的其他费用都必须选择费用所属项目"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </template>
           <template slot-scope="{ row, $index: index }">
             <el-form-item
               :rules="[
@@ -82,7 +88,11 @@
                 <el-option
                   v-for="item in projectOptions"
                   :key="item.id"
-                  :label="data.type ? item.major.value : item.project_name"
+                  :label="
+                    data.type
+                      ? `${item.project.value}-${item.major.value}`
+                      : item.project_name
+                  "
                   :value="item.id + ''"
                 >
                 </el-option>
@@ -118,7 +128,7 @@
         </el-table-column>
         <el-table-column
           label="计划回款日期"
-          min-width="200"
+          min-width="180"
           align="center"
           show-overflow-tooltip
         >
@@ -130,14 +140,10 @@
               :prop="`tableData[${index}].day`"
             >
               <el-date-picker
-                class="input"
                 type="date"
                 placeholder="选择日期"
                 v-model="row.day"
                 value-format="yyyy-MM-dd"
-                :picker-options="{
-                  disabledDate: disabledDate,
-                }"
               ></el-date-picker>
             </el-form-item>
           </template>
@@ -236,7 +242,14 @@ export default {
   methods: {
     handleOpen() {
       if (this.planEditData.id) {
-        this.formData.tableData = [this.planEditData];
+        const { edu_ids = "", project_ids = "", ...rest } = this.planEditData;
+        const ids = this.data.type === 1 ? edu_ids : project_ids;
+        this.formData.tableData = [
+          {
+            ...rest,
+            checkedProjectIds: ids.split(ids ? "," : ""),
+          },
+        ];
       } else {
         this.formData.tableData = [
           {
@@ -250,19 +263,18 @@ export default {
       }
     },
     initProjectIds() {
-      return this.data.type
-        ? JSON.parse(this.data?.project || "[]").map((item) => item.id + "")
-        : this.data.project_ids.split(",") || [];
+      return JSON.parse(this.data?.project || "[]").map((item) => item.id + "");
     },
     // 修改计划
     async updateOrderPayPlan(row) {
-      const { id, type, year, day, money } = row;
+      const { id, type, year, day, money, checkedProjectIds } = row;
       const data = {
         id,
         type,
         year,
         day,
         money,
+        project_ids: checkedProjectIds.join(","),
       };
       this.addLoading = true;
       const res = await updateOrderPayPlan(data).catch(() => {});
@@ -272,9 +284,6 @@ export default {
         this.$emit("on-success");
         this.handleClose();
       }
-    },
-    disabledDate(e) {
-      return Date.now() - 86400000 > e.getTime();
     },
     handleDelRow(index) {
       this.formData.tableData.splice(index, 1);

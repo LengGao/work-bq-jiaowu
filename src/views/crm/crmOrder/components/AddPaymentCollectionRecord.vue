@@ -2,7 +2,7 @@
   <el-dialog
     title="添加回款记录"
     :visible="value"
-    width="80%"
+    width="85%"
     top="5vh"
     @open="handleOpen"
     :close-on-click-modal="false"
@@ -59,6 +59,42 @@
               <span v-else>{{ expenseType[row.type] || "" }}</span>
             </template>
           </el-table-column>
+          <el-table-column show-overflow-tooltip min-width="200" align="center">
+            <template slot="header">
+              <span>所属项目 </span>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="除学费外的其他费用都必须选择费用所属项目"
+                placement="top-start"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </template>
+            <template slot-scope="{ row }">
+              <el-select
+                v-if="row.type != 1 && !+row.pay_money && row.edit"
+                v-model="row.checkedProjectIds"
+                placeholder="请选择项目"
+                filterable
+                multiple
+              >
+                <el-option
+                  v-for="item in projectOptions"
+                  :key="item.id"
+                  :label="
+                    data.type
+                      ? `${item.project.value}-${item.major.value}`
+                      : item.project_name
+                  "
+                  :value="item.id + ''"
+                >
+                </el-option>
+              </el-select>
+              <span v-else-if="row.add">{{ data.project_name }}</span>
+              <span v-else>{{ row.project_name }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="所属年份" min-width="120" align="center">
             <template slot-scope="{ row }">
               <el-select
@@ -82,14 +118,11 @@
             <template slot-scope="{ row }">
               <el-date-picker
                 v-if="row.edit"
-                style="width: 160px"
+                style="width: 100%"
                 type="date"
                 placeholder="选择日期"
                 v-model="row.day"
                 value-format="yyyy-MM-dd"
-                :picker-options="{
-                  disabledDate: disabledPlanDate,
-                }"
               ></el-date-picker>
               <span v-else>{{ row.day }}</span>
             </template>
@@ -97,7 +130,7 @@
           <el-table-column
             label="计划回款金额"
             align="center"
-            min-width="140"
+            min-width="120"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -152,10 +185,8 @@
         <el-table
           :data="checkedPlanData"
           :header-cell-style="{
-            'text-align': 'center',
             'background-color': '#f8f8f8',
           }"
-          :cell-style="{ 'text-align': 'center' }"
           max-height="400"
         >
           <el-table-column
@@ -168,13 +199,14 @@
             </template>
             <template slot-scope="{ row }">
               <span
-                >{{ `${row.year}年 ${expenseType[row.type]} `
+                >{{
+                  `${row.year}年 ${row.project_name} ${expenseType[row.type]} `
                 }}{{ row.money | moneyFormat }}
               </span>
             </template>
           </el-table-column>
 
-          <el-table-column show-overflow-tooltip min-width="80" fixed="right">
+          <el-table-column show-overflow-tooltip width="60" fixed="right">
             <template slot="header">
               <el-button type="text" style="padding: 0" @click="hadleResetOrder"
                 >清空</el-button
@@ -287,14 +319,12 @@ export default {
       type: [String, Number],
       default: "",
     },
-    planData: {
-      type: Array,
-      default: () => [],
+    data: {
+      type: Object,
+      default: () => ({}),
     },
   },
-  computed: {
-    ...mapGetters(["expenseType"]),
-  },
+
   data() {
     return {
       payMethodOptions: [],
@@ -354,7 +384,7 @@ export default {
     };
   },
   watch: {
-    planData() {
+    "data.pay_plan"() {
       this.initPlanTableData();
     },
     checkedPlanData(data) {
@@ -367,27 +397,42 @@ export default {
       }
     },
   },
+  computed: {
+    ...mapGetters(["expenseType"]),
+    projectOptions() {
+      return JSON.parse(this.data?.project || "[]");
+    },
+  },
   methods: {
     handleOpen() {
       this.initPlanTableData();
       this.getCustomfieldOptions();
     },
     initPlanTableData() {
-      this.planTableData = this.planData.map((item) => ({
-        ...item,
-        edit: false,
-        loading: false,
-      }));
+      this.planTableData = this.data.pay_plan.map((item) => {
+        const { edu_ids = "", project_ids = "", ...rest } = item;
+        const ids = this.data.type === 1 ? edu_ids : project_ids;
+        return {
+          ...rest,
+          edit: false,
+          loading: false,
+          checkedProjectIds: ids.split(ids ? "," : ""),
+        };
+      });
+    },
+    initProjectIds() {
+      return JSON.parse(this.data?.project || "[]").map((item) => item.id + "");
     },
     // 修改计划
     async updateOrderPayPlan(row) {
-      const { id, type, year, day, money } = row;
+      const { id, type, year, day, money, checkedProjectIds } = row;
       const data = {
         id,
         type,
         year,
         day,
         money,
+        project_ids: checkedProjectIds.join(","),
       };
       row.loading = true;
       const res = await updateOrderPayPlan(data).catch(() => {});
@@ -399,9 +444,11 @@ export default {
     },
     // 新增计划
     async createOrderPayPlan(row) {
-      const { edit, add, loading, id, ...restParams } = row;
+      const { edit, add, loading, id, checkedProjectIds, ...restParams } = row;
       const data = {
-        data: JSON.stringify([restParams]),
+        data: JSON.stringify([
+          { ...restParams, project_ids: checkedProjectIds.join(",") },
+        ]),
         order_id: this.orderId,
       };
       row.loading = true;
@@ -425,7 +472,10 @@ export default {
           return;
         }
       }
-
+      if (!row.checkedProjectIds.length) {
+        this.$message.error("请完善计划数据后再保存！");
+        return;
+      }
       if (row.add) {
         // 新增
         this.createOrderPayPlan(row);
@@ -452,6 +502,7 @@ export default {
         loading: false,
         id: Date.now(),
         edit: true,
+        checkedProjectIds: this.initProjectIds(),
       });
       this.$nextTick(() => {
         const el = document.querySelector(
@@ -485,9 +536,6 @@ export default {
       if (res.code === 0) {
         this.payMethodOptions = res.data.field_content;
       }
-    },
-    disabledPlanDate(e) {
-      return Date.now() - 86400000 > e.getTime();
     },
     disabledDate(e) {
       return e.getTime() > Date.now();
@@ -551,9 +599,9 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;
+    overflow-x: auto;
     .plan-table {
-      flex: 1;
-      margin-right: 16px;
+      width: 69%;
       border: 1px solid #ededed;
       .plan-add {
         margin: 14px 30px;
@@ -567,7 +615,7 @@ export default {
       }
     }
     .checked-table {
-      width: 350px;
+      width: 30%;
       border: 1px solid #ededed;
     }
   }

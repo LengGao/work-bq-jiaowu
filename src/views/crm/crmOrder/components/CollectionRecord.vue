@@ -172,6 +172,24 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="project_name"
+          show-overflow-tooltip
+          min-width="200"
+          align="center"
+        >
+          <template slot="header">
+            <span>所属项目 </span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="除学费外的其他费用都必须选择费用所属项目"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="year"
           label="所属年份"
           min-width="100"
@@ -248,7 +266,7 @@
       v-model="dialogVisible"
       :order-id="data.order_id"
       @on-success="$parent.getCrmOrderDetail"
-      :plan-data="data.pay_plan"
+      :data="data"
       @refresh="$parent.getCrmOrderDetail"
     />
     <AddPaymentCollectionPlan
