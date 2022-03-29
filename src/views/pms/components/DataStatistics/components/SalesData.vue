@@ -2,89 +2,89 @@
   <div class="sales-data">
     <div class="sales-data-item" @click="$emit('item-click', 1)">
       <p class="sales-data-item-value primary">
-        {{ data.zhaoShengRenShu || 0 }}
+        {{ data.recruitStudentNum || 0 }}
       </p>
       <p class="sales-data-item-title">招生客户数量</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 3)">
       <p class="sales-data-item-value success">
-        {{ priceFormat(data.zhaoShengDingdan)
-        }}<span class="unit">{{ unitFormat(data.zhaoShengDingdan) }}</span>
+        {{ priceFormat(data.recruitOrderMoney)
+        }}<span class="unit">{{ unitFormat(data.recruitOrderMoney) }}</span>
       </p>
       <p class="sales-data-item-title">招生订单金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 3)">
       <p class="sales-data-item-value warning">
-        {{ priceFormat(data.zhaoShengDingdan)
-        }}<span class="unit">{{ unitFormat(data.zhaoShengDingdan) }}</span>
+        {{ priceFormat(data.recruitTuitionMoney)
+        }}<span class="unit">{{ unitFormat(data.recruitTuitionMoney) }}</span>
       </p>
       <p class="sales-data-item-title">招生学费金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 3)">
       <p class="sales-data-item-value danger">
-        {{ priceFormat(data.zhaoShengDingdan)
-        }}<span class="unit">{{ unitFormat(data.zhaoShengDingdan) }}</span>
+        {{ priceFormat(data.recruitOtherMoney)
+        }}<span class="unit">{{ unitFormat(data.recruitOtherMoney) }}</span>
       </p>
       <p class="sales-data-item-title">招生其他金额</p>
     </div>
 
     <div class="sales-data-item" @click="$emit('item-click', 4)">
       <p class="sales-data-item-value primary">
-        {{ priceFormat(data.zhaoShengHuiKuan)
-        }}<span class="unit">{{ unitFormat(data.zhaoShengHuiKuan) }}</span>
+        {{ priceFormat(data.recruitPayMoney)
+        }}<span class="unit">{{ unitFormat(data.recruitPayMoney) }}</span>
       </p>
       <p class="sales-data-item-title">招生回款金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 5)">
       <p class="sales-data-item-value success">
-        {{ priceFormat(data.zhaoShengRuZhang)
-        }}<span class="unit">{{ unitFormat(data.zhaoShengRuZhang) }}</span>
+        {{ priceFormat(data.recruitEntryMoney)
+        }}<span class="unit">{{ unitFormat(data.recruitEntryMoney) }}</span>
       </p>
       <p class="sales-data-item-title">招生入账金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 9)">
       <p class="sales-data-item-value warning">
-        {{ priceFormat(data.zuoFei)
-        }}<span class="unit">{{ unitFormat(data.zuoFei) }}</span>
+        {{ priceFormat(data.recruitRefundMoney)
+        }}<span class="unit">{{ unitFormat(data.recruitRefundMoney) }}</span>
       </p>
       <p class="sales-data-item-title">招生退款/作废金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 2)">
-      <p class="sales-data-item-value primary">{{ data.quDaoRenShu || 0 }}</p>
+      <p class="sales-data-item-value primary">{{ data.orgStudentNum || 0 }}</p>
       <p class="sales-data-item-title">机构学生数量</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 6)">
       <p class="sales-data-item-value success">
-        {{ priceFormat(data.jiGouDingdan)
-        }}<span class="unit">{{ unitFormat(data.jiGouDingdan) }}</span>
+        {{ priceFormat(data.orgOrderMoney)
+        }}<span class="unit">{{ unitFormat(data.orgOrderMoney) }}</span>
       </p>
       <p class="sales-data-item-title">机构订单金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 6)">
       <p class="sales-data-item-value warning">
-        {{ priceFormat(data.jiGouDingdan)
-        }}<span class="unit">{{ unitFormat(data.jiGouDingdan) }}</span>
+        {{ priceFormat(data.orgTuitionMoney)
+        }}<span class="unit">{{ unitFormat(data.orgTuitionMoney) }}</span>
       </p>
       <p class="sales-data-item-title">机构学费金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 6)">
       <p class="sales-data-item-value danger">
-        {{ priceFormat(data.jiGouDingdan)
-        }}<span class="unit">{{ unitFormat(data.jiGouDingdan) }}</span>
+        {{ priceFormat(data.orgOtherMoney)
+        }}<span class="unit">{{ unitFormat(data.orgOtherMoney) }}</span>
       </p>
       <p class="sales-data-item-title">机构其他金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 7)">
       <p class="sales-data-item-value primary">
-        {{ priceFormat(data.jiGouHuiKuan)
-        }}<span class="unit">{{ unitFormat(data.jiGouHuiKuan) }}</span>
+        {{ priceFormat(data.orgPayMoney)
+        }}<span class="unit">{{ unitFormat(data.orgPayMoney) }}</span>
       </p>
       <p class="sales-data-item-title">机构回款金额</p>
     </div>
     <div class="sales-data-item" @click="$emit('item-click', 8)">
       <p class="sales-data-item-value success">
-        {{ priceFormat(data.jiGouRuZhang)
-        }}<span class="unit">{{ unitFormat(data.jiGouRuZhang) }}</span>
+        {{ priceFormat(data.orgEntryMoney)
+        }}<span class="unit">{{ unitFormat(data.orgEntryMoney) }}</span>
       </p>
       <p class="sales-data-item-title">机构入账金额</p>
     </div>
