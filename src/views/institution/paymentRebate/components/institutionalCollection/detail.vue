@@ -143,6 +143,19 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="user_name"
+        label="学生姓名"
+        min-width="90"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-button type="text" @click="toStudentDetail(row.uid)">
+            {{ row.user_name }}
+          </el-button>
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="class_type_name"
         label="班型"
         min-width="100"
@@ -246,7 +259,6 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-
       <el-table-column
         label="支付方式"
         align="center"
@@ -349,6 +361,15 @@ export default {
         this.orderData = res.data.data;
         this.listData = res.data.list;
       }
+    },
+    toStudentDetail(uid) {
+      this.$parent.close && this.$parent.close();
+      this.$router.push({
+        name: "studentDetail",
+        query: {
+          uid,
+        },
+      });
     },
     toStudentOrderDetail(id) {
       this.$parent.close && this.$parent.close();
