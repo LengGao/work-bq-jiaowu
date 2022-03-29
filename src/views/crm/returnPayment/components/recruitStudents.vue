@@ -85,11 +85,60 @@
           min-width="220"
         >
         </el-table-column>
-
+        <el-table-column
+          prop="total_money"
+          label="订单总额"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.total_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="学费金额"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.order_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="other_money"
+          label="其他金额"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.other_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="overdue_money"
+          label="欠缴学费"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.overdue_money | moneyFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="all_pay_money"
+          label="总回款金额"
+          min-width="120"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.all_pay_money | moneyFormat }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="pay_money"
-          label="回款金额"
-          min-width="90"
+          label="本次回款金额"
+          min-width="120"
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
