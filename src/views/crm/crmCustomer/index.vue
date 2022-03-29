@@ -181,6 +181,7 @@
               <el-button type="text" @click="openCreateOrderDialog(row)"
                 >报名</el-button
               >
+              <el-button type="text" @click="toSignUp(row)">报名2</el-button>
               <el-button type="text" @click="coustomDetail(row.uid, row.id)"
                 >客户详情</el-button
               >
@@ -513,6 +514,17 @@ export default {
           title: item,
         }));
       }
+    },
+    toSignUp({ id, surname, mobile, id_card_number }) {
+      this.$router.push({
+        name: "signUp",
+        query: {
+          id,
+          surname,
+          mobile,
+          id_card_number,
+        },
+      });
     },
     openCreateOrderDialog(userInfo) {
       this.checkedUser = userInfo;

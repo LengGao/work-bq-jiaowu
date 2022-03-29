@@ -303,13 +303,6 @@ export default {
         this.formData.pay_money = totalMoney;
       }
     },
-    isDel(type) {
-      const currentTypeData = this.formData.tableData.filter(
-        (item) => item.type === type
-      );
-      return currentTypeData.length <= 1;
-    },
-
     handleCheckboxChange(checked) {
       checked = checked || [];
       const types = this.formData.tableData.map((item) => item.type);

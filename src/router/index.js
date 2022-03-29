@@ -366,6 +366,12 @@ export const asyncRouter = [
         meta: { title: '教务开课' },
       },
       {
+        path: 'signUp',
+        name: 'signUp',
+        component: () => import('@/views/crm/crmCustomer/signUp.vue'),
+        meta: { title: '客户报名' },
+      },
+      {
         path: 'crmCustomer',
         name: 'crmCustomer',
         component: () => import('@/views/crm/crmCustomer/index.vue'),
