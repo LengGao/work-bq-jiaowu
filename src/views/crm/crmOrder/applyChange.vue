@@ -225,11 +225,18 @@
               <span> {{ (row.total_money || row.price) | moneyFormat }} </span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="实收学费金额"
-            min-width="110"
-            show-overflow-tooltip
-          >
+          <el-table-column min-width="110" show-overflow-tooltip>
+            <template slot="header">
+              实收学费金额
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="不包含报考费，平台费，教材费等其他杂费。"
+                placement="top-start"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </template>
             <template slot-scope="{ row }">
               <el-input
                 v-model="row.must_money"
@@ -284,11 +291,18 @@
               <span>{{ (row.project_price || row.price) | moneyFormat }}</span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="实收学费金额"
-            min-width="110"
-            show-overflow-tooltip
-          >
+          <el-table-column min-width="110" show-overflow-tooltip>
+            <template slot="header">
+              实收学费金额
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="不包含报考费，平台费，教材费等其他杂费。"
+                placement="top-start"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </template>
             <template slot-scope="{ row }">
               <el-input
                 v-model="row.must_money"

@@ -410,8 +410,8 @@ export default {
     },
     initPlanTableData() {
       this.planTableData = this.data.pay_plan.map((item) => {
-        const { edu_ids = "", project_ids = "", ...rest } = item;
-        const ids = this.data.type === 1 ? edu_ids : project_ids;
+        const { major_detail_ids = "", project_ids = "", ...rest } = item;
+        const ids = this.data.type === 1 ? major_detail_ids : project_ids;
         return {
           ...rest,
           edit: false,

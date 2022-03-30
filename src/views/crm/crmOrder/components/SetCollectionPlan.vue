@@ -246,8 +246,8 @@ export default {
     handleOpen() {
       if (this.planData.length) {
         this.formData.tableData = this.planData.map((item) => {
-          const { edu_ids = "", project_ids = "", ...rest } = item;
-          const ids = this.signUpType === 1 ? edu_ids : project_ids;
+          const { major_detail_ids = "", project_ids = "", ...rest } = item;
+          const ids = this.signUpType === 1 ? major_detail_ids : project_ids;
           return {
             ...rest,
             checkedProjectIds: ids.split(ids ? "," : ""),
@@ -311,7 +311,7 @@ export default {
               console.log(rest);
               return {
                 ...rest,
-                [this.signUpType === 1 ? "edu_ids" : "project_ids"]:
+                [this.signUpType === 1 ? "major_detail_ids" : "project_ids"]:
                   checkedProjectIds.join(","),
                 project_name: this.getPlanProjectOptions(checkedProjectIds),
               };

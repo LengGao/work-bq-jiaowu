@@ -242,8 +242,12 @@ export default {
   methods: {
     handleOpen() {
       if (this.planEditData.id) {
-        const { edu_ids = "", project_ids = "", ...rest } = this.planEditData;
-        const ids = this.data.type === 1 ? edu_ids : project_ids;
+        const {
+          major_detail_ids = "",
+          project_ids = "",
+          ...rest
+        } = this.planEditData;
+        const ids = this.data.type === 1 ? major_detail_ids : project_ids;
         this.formData.tableData = [
           {
             ...rest,
