@@ -28,13 +28,24 @@
       </el-table-column>
       <el-table-column
         prop="order_money"
-        label="订单金额"
+        label="学费金额"
         min-width="120"
         align="center"
         show-overflow-tooltip
       >
         <template slot-scope="{ row }">
           <span>{{ row.order_money | moneyFormat }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="other_money"
+        label="其他金额"
+        min-width="120"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span>{{ row.other_money | moneyFormat }}</span>
         </template>
       </el-table-column>
       <el-table-column
