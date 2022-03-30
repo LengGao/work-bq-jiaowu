@@ -256,11 +256,12 @@ export default {
       } else {
         this.formData.tableData = [
           {
-            type: "",
-            year: currentYear,
-            checkedProjectIds: this.initProjectIds(),
             day: "",
             money: "",
+            type: "",
+            checkedProjectIds: this.initProjectIds(),
+            year: currentYear,
+            id: "n" + Date.now(),
           },
         ];
       }
@@ -307,6 +308,7 @@ export default {
           this.$emit(
             "on-success",
             this.formData.tableData.map(({ checkedProjectIds, ...rest }) => {
+              console.log(rest);
               return {
                 ...rest,
                 [this.signUpType === 1 ? "edu_ids" : "project_ids"]:

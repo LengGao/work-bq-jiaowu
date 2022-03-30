@@ -39,9 +39,9 @@
           <el-option
             v-for="item in planData"
             :key="item.id"
-            :label="`${item.year}年 ${expenseType[item.type]} ￥${(
-              +item.money || 0
-            ).toFixed(2)}`"
+            :label="`${item.year}年 ${item.project_name} ${
+              expenseType[item.type]
+            } ￥${(+item.money || 0).toFixed(2)}`"
             :value="item.id + ''"
           >
           </el-option>
