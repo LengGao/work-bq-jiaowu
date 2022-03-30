@@ -97,7 +97,7 @@
                 >
                 </el-option>
               </el-select>
-              <span v-else>{{ data.project_name }}</span>
+              <span v-else>{{ row.project_name }}</span>
             </el-form-item>
           </template>
         </el-table-column>

@@ -178,7 +178,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <div>￥{{ row.price }}</div>
+              <div>{{ row.price | moneyFormat }}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -259,7 +259,7 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <div>￥{{ row.price }}</div>
+              <div>{{ row.price | moneyFormat }}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -405,7 +405,7 @@
               :prop="`tableData[${index}].day`"
             >
               <el-date-picker
-                class="input"
+                style="width: 100%"
                 type="date"
                 placeholder="选择日期"
                 v-model="row.day"
