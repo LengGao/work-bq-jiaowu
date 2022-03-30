@@ -25,10 +25,7 @@
           录入日期：{{ detailData.create_time || "--" }}
         </div>
         <div class="header-item">
-          <el-button
-            type="primary"
-            @click="openSingUpDialog"
-            v-if="!detailData.aid"
+          <el-button type="primary" @click="toSignUp" v-if="!detailData.aid"
             >报名</el-button
           >
           <el-button type="primary" disabled v-else>已报名</el-button>
@@ -48,22 +45,17 @@
         :uid="$route.query.uid"
       />
       <!-- 报名 -->
-      <CreateOrderDialog v-model="signUpDialog" :user-info="detailData" />
     </section>
   </div>
 </template>
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
-import CreateOrderDialog from "@/views/crm/crmCustomer/components/CreateOrderDialog";
 export default {
   name: "cusdetail",
-  components: {
-    CreateOrderDialog,
-  },
+  components: {},
   data() {
     return {
-      signUpDialog: false,
       activeName: "BasicInfo",
       detailData: {},
     };
@@ -80,8 +72,17 @@ export default {
     this.getStudentBasicDetail();
   },
   methods: {
-    openSingUpDialog() {
-      this.signUpDialog = true;
+    toSignUp() {
+      const { id, surname, mobile, id_card_number } = this.detailData;
+      this.$router.push({
+        name: "signUp",
+        query: {
+          id,
+          surname,
+          mobile,
+          id_card_number,
+        },
+      });
     },
     //学生基本信息
     async getStudentBasicDetail() {

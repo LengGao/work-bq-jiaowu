@@ -78,13 +78,13 @@
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="join_plan"
           label="关联计划"
           show-overflow-tooltip
           min-width="220"
         >
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="total_money"
           label="订单总额"
@@ -170,14 +170,14 @@
             <span v-else>无</span>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="备注信息"
           align="center"
           min-width="100"
           prop="tips"
           show-overflow-tooltip
         >
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="staff_name"
           label="业绩归属"

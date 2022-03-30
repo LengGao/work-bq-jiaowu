@@ -31,7 +31,7 @@
           <el-button
             type="primary"
             v-if="!detailData.from_organization_id"
-            @click="openSingUpDialog"
+            @click="toSignUp"
             >报名</el-button
           >
           <el-button type="primary" v-else @click="openCourseDialog = true"
@@ -58,7 +58,6 @@
       />
     </section>
     <!-- 报名 -->
-    <CreateOrderDialog v-model="signUpDialog" :user-info="detailData" />
     <!-- 开课 -->
     <AddStudent v-model="openCourseDialog" :user-info="detailData" />
   </div>
@@ -66,20 +65,17 @@
 
 <script>
 import { getStudentBasicDetail } from "@/api/eda";
-import CreateOrderDialog from "@/views/crm/crmCustomer/components/CreateOrderDialog";
 import AddStudent from "@/views/crm/eduOpenClass/components/AddStudent";
 export default {
   name: "studentDetail",
   components: {
     AddStudent,
-    CreateOrderDialog,
   },
   data() {
     return {
       activeName: "BasicInfo",
       detailData: {},
       detailLoading: false,
-      signUpDialog: false,
       dialogVisible: false,
       openCourseDialog: false,
     };
@@ -95,9 +91,19 @@ export default {
     this.getStudentBasicDetail();
   },
   methods: {
-    openSingUpDialog() {
-      this.signUpDialog = true;
+    toSignUp() {
+      const { id, surname, mobile, id_card_number } = this.detailData;
+      this.$router.push({
+        name: "signUp",
+        query: {
+          id,
+          surname,
+          mobile,
+          id_card_number,
+        },
+      });
     },
+
     //学生基本信息
     async getStudentBasicDetail() {
       const data = {

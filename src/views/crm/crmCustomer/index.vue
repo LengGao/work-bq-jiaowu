@@ -178,10 +178,7 @@
               </div>
             </template>
             <template slot-scope="{ row }">
-              <el-button type="text" @click="openCreateOrderDialog(row)"
-                >报名</el-button
-              >
-              <el-button type="text" @click="toSignUp(row)">报名2</el-button>
+              <el-button type="text" @click="toSignUp(row)">报名</el-button>
               <el-button type="text" @click="coustomDetail(row.uid, row.id)"
                 >客户详情</el-button
               >
@@ -213,17 +210,11 @@
       :is-crm="true"
       @on-success="getCrmCustomerList"
     />
-    <CreateOrderDialog
-      v-model="createOrderVisible"
-      :user-info="checkedUser"
-      @on-success="getCrmCustomerList"
-    />
   </section>
 </template>
 
 <script>
 import AddCustomeDialog from "./components/AddCustomeDialog";
-import CreateOrderDialog from "./components/CreateOrderDialog";
 import { getShortcuts } from "@/utils/date";
 import { getAdminSelect } from "@/api/eda";
 import { getDepartmentlists } from "@/api/set";
@@ -240,7 +231,6 @@ export default {
   components: {
     AddCustomeDialog,
     UpdateTeacher,
-    CreateOrderDialog,
   },
   data() {
     return {
@@ -423,11 +413,9 @@ export default {
         },
       ],
       dialogVisible: false,
-      checkedUser: {},
       coustomFrom: [],
       checkedIds: [],
       updateTeacherDialog: false,
-      createOrderVisible: false,
     };
   },
   created() {
@@ -526,13 +514,10 @@ export default {
         },
       });
     },
-    openCreateOrderDialog(userInfo) {
-      this.checkedUser = userInfo;
-      this.createOrderVisible = true;
-    },
+
     onAddCustomeSuccess(isSignUp, userInfo) {
-      isSignUp && this.openCreateOrderDialog(userInfo);
       this.getCrmCustomerList();
+      isSignUp && this.toSignUp(userInfo);
     },
     // 获取所属老师
     async getAdminSelect() {
