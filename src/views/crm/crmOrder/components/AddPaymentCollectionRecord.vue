@@ -266,7 +266,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="回款凭证" prop="receipt_file">
+      <el-form-item label="回款凭证">
         <el-select
           v-show="false"
           multiple
