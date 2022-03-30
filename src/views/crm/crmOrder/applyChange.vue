@@ -30,14 +30,6 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="学费金额" prop="order_money">
-        <el-input
-          type="number"
-          class="input"
-          v-model="formData.order_money"
-          placeholder="请输入订单金额"
-        />
-      </el-form-item>
       <el-form-item label="共享业绩" prop="union_staff_id">
         <el-select
           class="input"
@@ -68,7 +60,18 @@
         <span>{{ detailData.project_name }}</span>
       </el-form-item>
 
-      <el-form-item v-if="detailData.type === 1" label="修改项目" key="666">
+      <el-form-item v-if="detailData.type === 1" key="666">
+        <template slot="label">
+          <span>修改项目 </span>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="修改项目会重置所有的回款计划，回款记录"
+            placement="top-start"
+          >
+            <i class="el-icon-question" style="color: red"></i>
+          </el-tooltip>
+        </template>
         <el-cascader
           ref="cascaderMajor"
           class="input"
@@ -78,9 +81,21 @@
           :props="majorProps"
           :show-all-levels="false"
           collapse-tags
+          @change="handleProjectChange"
         ></el-cascader>
       </el-form-item>
-      <el-form-item v-else key="777" label="修改项目">
+      <el-form-item v-else key="777">
+        <template slot="label">
+          <span>修改项目 </span>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="修改项目会重置所有的回款计划，回款记录"
+            placement="top-start"
+          >
+            <i class="el-icon-question" style="color: red"></i>
+          </el-tooltip>
+        </template>
         <el-cascader
           class="input"
           popper-class="select-project"
@@ -91,6 +106,7 @@
           :show-all-levels="false"
           filterable
           collapse-tags
+          @change="handleProjectChange"
         ></el-cascader>
       </el-form-item>
 
@@ -206,11 +222,11 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span> ￥{{ row.total_money || row.price }} </span>
+              <span> {{ (row.total_money || row.price) | moneyFormat }} </span>
             </template>
           </el-table-column>
           <el-table-column
-            label="实收金额"
+            label="实收学费金额"
             min-width="110"
             show-overflow-tooltip
           >
@@ -218,7 +234,7 @@
               <el-input
                 v-model="row.must_money"
                 type="number"
-                placeholder="请输入实收金额"
+                placeholder="请输入"
               />
             </template>
           </el-table-column>
@@ -265,11 +281,11 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <span> ￥{{ row.project_price || row.price }} </span>
+              <span>{{ (row.project_price || row.price) | moneyFormat }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="实收金额"
+            label="实收学费金额"
             min-width="110"
             show-overflow-tooltip
           >
@@ -277,7 +293,7 @@
               <el-input
                 v-model="row.must_money"
                 type="number"
-                placeholder="请输入实收金额"
+                placeholder="请输入"
               />
             </template>
           </el-table-column>
@@ -289,7 +305,7 @@
         >
       </Title>
       <el-table
-        :data="detailData.pay_plan"
+        :data="planData"
         style="width: 100%"
         :header-cell-style="{
           'text-align': 'center',
@@ -307,13 +323,31 @@
         <el-table-column
           label="回款类型"
           show-overflow-tooltip
-          min-width="80"
+          min-width="100"
           align="center"
         >
           <template slot-scope="{ row }">
             <span>
               {{ expenseType[row.type] || "--" }}
             </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="project_name"
+          show-overflow-tooltip
+          min-width="200"
+          align="center"
+        >
+          <template slot="header">
+            <span>所属项目 </span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="除学费外的其他费用都必须选择费用所属项目"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column
@@ -382,13 +416,66 @@
         >
         </el-table-column>
       </el-table>
+      <Title text="订单小结"></Title>
+      <el-form-item>
+        <template slot="label">
+          学费金额
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="学费金额=项目实收学费金额总和"
+            placement="top-start"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
+        <el-input class="input" :value="payMoneyTotal" type="number" disabled />
+      </el-form-item>
+      <el-form-item>
+        <template slot="label">
+          其他金额
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="其他金额=回款计划中除学费外的其他类型计划金额总和"
+            placement="top-start"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
+        <el-input
+          class="input"
+          :value="otherMoneyTotal"
+          type="number"
+          disabled
+        />
+      </el-form-item>
+      <el-form-item label="订单总额">
+        <template slot="label">
+          订单总额
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="订单金额=学费金额+其他金额"
+            placement="top-start"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
+        <el-input
+          class="input"
+          :value="orderMoneyTotal"
+          type="number"
+          disabled
+        />
+      </el-form-item>
       <Title text="回款记录" class="table-title">
         <el-button type="primary" plain @click="handleAdd()"
           >添加回款记录</el-button
         >
       </Title>
       <el-table
-        :data="detailData.pay_log"
+        :data="recordeData"
         style="
           width: 100%;
           border: 1px solid #eee;
@@ -550,13 +637,15 @@
       @on-success="onSetRecordSuccess"
       :staff-options="staffOptions"
       :data="editRecord"
-      :planData="detailData.pay_plan"
+      :planData="planData"
     />
     <SetCollectionPlan
       v-model="planDialogVisible"
       title="配置回款计划"
       @on-success="onSetPlanSuccess"
-      :data="detailData.pay_plan"
+      :planData="planData"
+      :signUpType="detailData.type"
+      :project-options="getPlanProjectOptions"
     />
     <PreviewImg ref="view" />
   </div>
@@ -576,6 +665,7 @@ import SetCollectionPlan from "./components/SetCollectionPlan.vue";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { mapGetters } from "vuex";
+import { accAdd } from "@/utils";
 export default {
   name: "applyChange",
   components: {
@@ -686,6 +776,8 @@ export default {
       tableData: [],
       gradeOptions: [],
       fromOptions: [],
+      planData: [],
+      recordeData: [],
     };
   },
   watch: {
@@ -719,6 +811,30 @@ export default {
   },
   computed: {
     ...mapGetters(["expenseType"]),
+    // 获取当前已选项目
+    getPlanProjectOptions() {
+      return this.detailData.type === 1 ? this.majorData : this.projectData;
+    },
+    // 学费金额
+    payMoneyTotal() {
+      const data =
+        this.detailData.type === 1 ? this.majorData : this.projectData;
+      return (this.formData.order_money = data.reduce((pre, cur) => {
+        return accAdd(pre, cur.must_money);
+      }, 0));
+    },
+    // 其他金额
+    otherMoneyTotal() {
+      return this.planData
+        .filter((item) => item.type != 1)
+        .reduce((pre, cur) => {
+          return accAdd(pre, cur.money);
+        }, 0);
+    },
+    // 订单总额
+    orderMoneyTotal() {
+      return accAdd(this.payMoneyTotal, this.otherMoneyTotal);
+    },
   },
   created() {
     this.getCrmOrderDetail();
@@ -728,6 +844,15 @@ export default {
     this.getCateProjectOption();
   },
   methods: {
+    handleProjectChange(e) {
+      if (e && e.length) {
+        this.planData = [];
+        this.recordeData = [];
+      } else {
+        this.planData = this.detailData.pay_plan;
+        this.recordeData = this.detailData.pay_log;
+      }
+    },
     // 获取来源
     async getFromOptions() {
       const data = {
@@ -802,8 +927,8 @@ export default {
           return item.response.data.data.url;
         }),
         union_staff_id: (this.formData.union_staff_id || []).join(","),
-        pay_plan: this.detailData.pay_plan,
-        pay_log: this.detailData.pay_log,
+        pay_plan: this.planData,
+        pay_log: this.recordeData,
         order_id: this.detailData.order_id,
         type: this.detailData.type,
       };
@@ -813,7 +938,9 @@ export default {
           this.majorData.map((item) => {
             if (!item.must_money) {
               this.$message.error(
-                `请输入 ${item.project_name || item.project?.value} 的实收金额`
+                `请输入 ${
+                  item.project_name || item.project?.value
+                } 的实收学费金额`
               );
               throw new Error("must_money is null");
             }
@@ -852,7 +979,7 @@ export default {
         data.project = JSON.stringify(
           this.projectData.map((item) => {
             if (!item.must_money) {
-              this.$message.error(`请输入 ${item.project_name} 的实收金额`);
+              this.$message.error(`请输入 ${item.project_name} 的实收学费金额`);
               throw new Error("must_money is null");
             }
             return {
@@ -877,20 +1004,20 @@ export default {
     },
     onSetRecordSuccess(data) {
       if (this.editIndex || this.editIndex === 0) {
-        this.detailData.pay_log.splice(this.editIndex, 1, data);
+        this.recordeData.splice(this.editIndex, 1, data);
         return;
       }
-      (this.detailData.pay_log || (this.detailData.pay_log = [])).push(data);
+      (this.recordeData || (this.recordeData = [])).push(data);
     },
     onSetPlanSuccess(data) {
-      this.detailData.pay_plan = data;
+      this.planData = data;
     },
     handleAddPlan() {
       this.planDialogTitle = "配置回款计划";
       this.planDialogVisible = true;
     },
     handleDel(index) {
-      this.detailData.pay_log.splice(index, 1);
+      this.recordeData.splice(index, 1);
     },
     handleAdd(row, index) {
       this.editRecord = row || {};
@@ -942,7 +1069,9 @@ export default {
         this.projectData =
           this.majorData =
           this.tableData =
-            JSON.parse(this.detailData.project) || [];
+            JSON.parse(res.data.project) || [];
+        this.planData = res.data.pay_plan;
+        this.recordeData = res.data.pay_log;
         this.categoryGetSessionList(res.data.category_id);
       }
     },

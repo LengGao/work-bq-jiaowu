@@ -350,7 +350,7 @@
                 multiple
               >
                 <el-option
-                  v-for="item in getPlanProject"
+                  v-for="item in getPlanProjectOptions"
                   :key="item.id"
                   :label="
                     formData.type === 1
@@ -783,7 +783,7 @@ export default {
   computed: {
     ...mapGetters(["expenseType"]),
     // 获取当前已选项目
-    getPlanProject() {
+    getPlanProjectOptions() {
       return this.formData.type === 1 ? this.majorData : this.projectData;
     },
     // 获取已选项目名称
@@ -804,9 +804,9 @@ export default {
     // 学费金额
     payMoneyTotal() {
       const data = this.formData.type === 1 ? this.majorData : this.projectData;
-      return data.reduce((pre, cur) => {
+      return (this.formData.order_money = data.reduce((pre, cur) => {
         return accAdd(pre, cur.pay_money);
-      }, 0);
+      }, 0));
     },
     // 其他金额
     otherMoneyTotal() {
@@ -818,10 +818,7 @@ export default {
     },
     // 订单总额
     orderMoneyTotal() {
-      return (this.formData.order_money = accAdd(
-        this.payMoneyTotal,
-        this.otherMoneyTotal
-      ));
+      return accAdd(this.payMoneyTotal, this.otherMoneyTotal);
     },
   },
   created() {

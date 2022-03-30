@@ -162,7 +162,7 @@
         <el-table-column
           label="回款类型"
           show-overflow-tooltip
-          min-width="80"
+          min-width="100"
           align="center"
         >
           <template slot-scope="{ row }">

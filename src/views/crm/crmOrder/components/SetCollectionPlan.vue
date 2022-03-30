@@ -6,6 +6,7 @@
     @open="handleOpen"
     :close-on-click-modal="false"
     @closed="resetForm('formData')"
+    @close="hanldeCancel"
     append-to-body
   >
     <el-form
@@ -32,7 +33,7 @@
         <el-table-column
           label="回款类型"
           show-overflow-tooltip
-          min-width="80"
+          min-width="120"
           align="center"
         >
           <template slot-scope="{ row, $index: index }">
@@ -51,6 +52,48 @@
                 >
                 </el-option>
               </el-select>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column show-overflow-tooltip min-width="200" align="center">
+          <template slot="header">
+            <span>所属项目 </span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="除学费外的其他费用都必须选择费用所属项目"
+              placement="top-start"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </template>
+          <template slot-scope="{ row, $index: index }">
+            <el-form-item
+              :rules="[
+                {
+                  required: row.type != 1,
+                  message: `请选择`,
+                  trigger: 'change',
+                },
+              ]"
+              :prop="`tableData[${index}].checkedProjectIds`"
+            >
+              <el-select
+                v-if="row.type != 1"
+                v-model="row.checkedProjectIds"
+                placeholder="请选择项目"
+                filterable
+                multiple
+              >
+                <el-option
+                  v-for="item in projectOptions"
+                  :key="item.id"
+                  :label="item.project_name"
+                  :value="item.id + ''"
+                >
+                </el-option>
+              </el-select>
+              <span v-else>{{ row.project_name || allProjectName }}</span>
             </el-form-item>
           </template>
         </el-table-column>
@@ -81,7 +124,7 @@
         </el-table-column>
         <el-table-column
           label="计划回款时间"
-          min-width="200"
+          min-width="140"
           align="center"
           show-overflow-tooltip
         >
@@ -93,14 +136,11 @@
               :prop="`tableData[${index}].day`"
             >
               <el-date-picker
-                class="input"
+                style="width: 100%"
                 type="date"
                 placeholder="选择日期"
                 v-model="row.day"
                 value-format="yyyy-MM-dd"
-                :picker-options="{
-                  disabledDate: disabledDate,
-                }"
               ></el-date-picker>
             </el-form-item>
           </template>
@@ -174,7 +214,15 @@ export default {
       type: String,
       default: "",
     },
-    data: {
+    signUpType: {
+      type: [String, Number],
+      default: "",
+    },
+    planData: {
+      type: Array,
+      default: () => [],
+    },
+    projectOptions: {
       type: Array,
       default: () => [],
     },
@@ -183,26 +231,44 @@ export default {
     return {
       yearOptions: getPlanYearOptions(),
       formData: {
-        tableData: [
-          {
-            day: "",
-            money: "",
-            type: "",
-            year: currentYear,
-            id: "n1",
-          },
-        ],
+        tableData: [],
       },
       addLoading: false,
     };
   },
   computed: {
     ...mapGetters(["expenseType"]),
+    allProjectName() {
+      return this.projectOptions.map((item) => item.project_name).join(",");
+    },
   },
   methods: {
-    disabledDate(e) {
-      return Date.now() - 86400000 > e.getTime();
+    handleOpen() {
+      if (this.planData.length) {
+        this.formData.tableData = this.planData.map((item) => {
+          const { edu_ids = "", project_ids = "", ...rest } = item;
+          const ids = this.signUpType === 1 ? edu_ids : project_ids;
+          return {
+            ...rest,
+            checkedProjectIds: ids.split(ids ? "," : ""),
+          };
+        });
+      } else {
+        this.formData.tableData = [
+          {
+            type: "",
+            year: currentYear,
+            checkedProjectIds: this.initProjectIds(),
+            day: "",
+            money: "",
+          },
+        ];
+      }
     },
+    initProjectIds() {
+      return this.projectOptions.map((item) => item.id + "");
+    },
+
     handleDelRow(index) {
       this.formData.tableData.splice(index, 1);
     },
@@ -211,14 +277,10 @@ export default {
         day: "",
         money: "",
         type: "",
+        checkedProjectIds: this.initProjectIds(),
         year: currentYear,
         id: "n" + Date.now(),
       });
-    },
-    handleOpen() {
-      if (this.data.length) {
-        this.formData.tableData = this.data.map((item) => ({ ...item }));
-      }
     },
     addOption() {
       this.formData.options.push({
@@ -229,13 +291,29 @@ export default {
     delOption(index) {
       this.formData.options.splice(index, 1);
     },
-
+    // 获取已选项目名称
+    getPlanProjectOptions(ids) {
+      const names = [];
+      this.projectOptions.forEach((item) => {
+        if (ids.includes(item.id + "")) {
+          names.push(item.project_name);
+        }
+      });
+      return names.join(",");
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$emit(
             "on-success",
-            this.formData.tableData.map((item) => ({ ...item }))
+            this.formData.tableData.map(({ checkedProjectIds, ...rest }) => {
+              return {
+                ...rest,
+                [this.signUpType === 1 ? "edu_ids" : "project_ids"]:
+                  checkedProjectIds.join(","),
+                project_name: this.getPlanProjectOptions(checkedProjectIds),
+              };
+            })
           );
           this.hanldeCancel();
         }
@@ -243,14 +321,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-      this.formData.tableData = [
-        {
-          day: "",
-          money: "",
-          type: "",
-          year: currentYear,
-        },
-      ];
+      this.formData.tableData = [];
     },
     hanldeCancel() {
       this.$emit("input", false);
