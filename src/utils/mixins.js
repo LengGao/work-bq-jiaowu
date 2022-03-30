@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { today } from '@/utils/date'
 const mixin = {
     methods: {
         // 跳转到学生详情
@@ -26,6 +27,10 @@ const mixin = {
                 },
             });
         },
+        // n年今日
+        getDateByYearMixin(date, target, key = 'day') {
+            target[key] = today.replace(/\d{4}/, date)
+        }
     }
 }
 Vue.mixin(mixin)

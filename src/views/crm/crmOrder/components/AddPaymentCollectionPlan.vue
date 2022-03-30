@@ -114,7 +114,12 @@
               ]"
               :prop="`tableData[${index}].year`"
             >
-              <el-select v-model="row.year" placeholder="请选择" filterable>
+              <el-select
+                v-model="row.year"
+                placeholder="请选择"
+                @change="getDateByYearMixin($event, row)"
+                filterable
+              >
                 <el-option
                   v-for="item in yearOptions"
                   :key="item"
@@ -206,7 +211,7 @@
 
 <script>
 import { createOrderPayPlan, updateOrderPayPlan } from "@/api/crm";
-import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { getPlanYearOptions, currentYear, today } from "@/utils/date";
 import { mapGetters } from "vuex";
 export default {
   name: "AddCollectionPlan",
@@ -260,7 +265,7 @@ export default {
             type: "",
             year: currentYear,
             checkedProjectIds: this.initProjectIds(),
-            day: "",
+            day: today,
             money: "",
           },
         ];
@@ -297,7 +302,7 @@ export default {
         type: "",
         year: currentYear,
         checkedProjectIds: this.initProjectIds(),
-        day: "",
+        day: today,
         money: "",
       });
     },

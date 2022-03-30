@@ -110,7 +110,12 @@
               ]"
               :prop="`tableData[${index}].year`"
             >
-              <el-select v-model="row.year" placeholder="请选择" filterable>
+              <el-select
+                v-model="row.year"
+                placeholder="请选择"
+                @change="getDateByYearMixin($event, row)"
+                filterable
+              >
                 <el-option
                   v-for="item in yearOptions"
                   :key="item"
@@ -201,7 +206,7 @@
 </template>
 
 <script>
-import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { getPlanYearOptions, currentYear, today } from "@/utils/date";
 import { mapGetters } from "vuex";
 export default {
   name: "SetCollectionPlan",
@@ -256,7 +261,7 @@ export default {
       } else {
         this.formData.tableData = [
           {
-            day: "",
+            day: today,
             money: "",
             type: "",
             checkedProjectIds: this.initProjectIds(),
@@ -275,7 +280,7 @@ export default {
     },
     handleAddRow() {
       this.formData.tableData.push({
-        day: "",
+        day: today,
         money: "",
         type: "",
         checkedProjectIds: this.initProjectIds(),

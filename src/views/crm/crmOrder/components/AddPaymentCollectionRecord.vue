@@ -102,6 +102,7 @@
                 v-model="row.year"
                 placeholder="请选择"
                 filterable
+                @change="getDateByYearMixin($event, row)"
               >
                 <el-option
                   v-for="item in yearOptions"
@@ -302,7 +303,7 @@ import {
   updateOrderPayPlan,
 } from "@/api/crm";
 import ImgListUpload from "@/components/imgListUpload";
-import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { getPlanYearOptions, currentYear, today } from "@/utils/date";
 import { mapGetters } from "vuex";
 import { accAdd } from "@/utils";
 export default {
@@ -496,7 +497,7 @@ export default {
       this.planTableData.push({
         type: "",
         year: currentYear,
-        day: "",
+        day: today,
         money: "",
         add: true,
         loading: false,

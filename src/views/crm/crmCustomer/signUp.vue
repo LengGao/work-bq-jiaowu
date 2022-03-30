@@ -393,7 +393,12 @@
               ]"
               :prop="`tableData[${index}].year`"
             >
-              <el-select v-model="row.year" placeholder="请选择" filterable>
+              <el-select
+                v-model="row.year"
+                placeholder="请选择"
+                @change="getDateByYearMixin($event, row)"
+                filterable
+              >
                 <el-option
                   v-for="item in yearOptions"
                   :key="item"
@@ -625,7 +630,7 @@ import {
 import { getStaffList } from "@/api/set";
 import { getUniversityMajorDetailList } from "@/api/sou";
 import { getCateProjectOption, getCateProjectDetail } from "@/api/etm";
-import { getPlanYearOptions, currentYear } from "@/utils/date";
+import { getPlanYearOptions, currentYear, today } from "@/utils/date";
 import ImgListUpload from "@/components/imgListUpload";
 import PreviewContract from "./components/PreviewContract";
 import { mapGetters } from "vuex";
@@ -968,7 +973,7 @@ export default {
         temp_id: this.getTempId(),
         type,
         year: currentYear,
-        day: "",
+        day: today,
         money: "",
         checkedProjectIds: this.getPlanProjectIds,
       };
