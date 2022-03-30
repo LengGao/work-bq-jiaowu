@@ -26,7 +26,7 @@
         <el-button
           type="primary"
           v-if="isFromApproval && orderData.check_state == 0"
-          @click="approveConfirm"
+          @click="openEntryDialog"
           >入 账</el-button
         >
 
@@ -280,12 +280,55 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog
+      title="入帐"
+      width="400px"
+      center
+      :visible.sync="dialogFormVisible"
+      append-to-body
+    >
+      <el-form :model="formData" :rules="rules" ref="formData">
+        <el-form-item label="入账时间" prop="pay_date">
+          <el-date-picker
+            class="input"
+            type="date"
+            placeholder="选择日期"
+            v-model="formData.pay_date"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="支付方式" prop="pay_type">
+          <el-select
+            v-model="formData.pay_type"
+            placeholder="请选择支付方式"
+            class="input"
+            filterable
+          >
+            <el-option
+              v-for="item in payMethodOptions"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleEntryCancel">取 消</el-button>
+        <el-button type="primary" @click="handleEntryConfirm">确 定</el-button>
+      </div>
+    </el-dialog>
     <PreviewImg ref="view" />
   </div>
 </template>
 
 <script>
-import { getReceivableInfo, reviewReceivableOrder } from "@/api/crm";
+import {
+  getReceivableInfo,
+  reviewReceivableOrder,
+  getCustomfieldOptions,
+} from "@/api/crm";
 import { mapGetters } from "vuex";
 export default {
   name: "institutionalCollectionDetail",
@@ -298,6 +341,18 @@ export default {
       loading: false,
       orderData: {},
       listData: [],
+      payMethodOptions: [],
+      formData: {
+        pay_type: "",
+        pay_date: "",
+        log_id: "",
+        check_state: 2,
+      },
+      rules: {
+        pay_date: [{ required: true, message: "请选择", trigger: "change" }],
+        pay_type: [{ required: true, message: "请选择", trigger: "change" }],
+      },
+      dialogFormVisible: false,
     };
   },
   computed: {
@@ -305,8 +360,49 @@ export default {
   },
   created() {
     this.getReceivableInfo();
+    this.getCustomfieldOptions();
   },
   methods: {
+    // 获取支付方式
+    async getCustomfieldOptions() {
+      const data = {
+        field_name: "payment_method",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.payMethodOptions = res.data.field_content;
+      }
+    },
+    // 入账
+    openEntryDialog() {
+      this.formData.log_id = this.orderData.id;
+      this.formData.pay_type = this.orderData.pay_type;
+      this.formData.pay_date = this.orderData.pay_date;
+      this.dialogFormVisible = true;
+    },
+    handleEntryCancel() {
+      this.formData = {
+        pay_type: "",
+        pay_date: "",
+        log_id: "",
+        check_state: 2,
+      };
+      this.$refs.formData.resetFields();
+      this.dialogFormVisible = false;
+    },
+    handleEntryConfirm() {
+      this.$refs.formData.validate(async (valid) => {
+        if (valid) {
+          const res = await reviewReceivableOrder(this.formData);
+          if (res.code === 0) {
+            this.dialogFormVisible = false;
+            this.$message.success(res.message);
+            this.$emit("success");
+            this.getReceivableInfo();
+          }
+        }
+      });
+    },
     toAddCollection() {
       this.$router.push({
         name: "addInstitutionalCollection",
@@ -324,16 +420,6 @@ export default {
       })
         .then(({ value }) => {
           this.reviewReceivableOrder(-1, value);
-        })
-        .catch(() => {});
-    },
-    // 入账
-    approveConfirm() {
-      this.$confirm(`是否确定该笔回款入账？`, "提示", {
-        type: "warning",
-      })
-        .then(() => {
-          this.reviewReceivableOrder(2);
         })
         .catch(() => {});
     },
