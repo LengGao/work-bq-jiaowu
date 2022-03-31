@@ -292,6 +292,7 @@ export default {
     },
     // 销售简报
     handleItemClick(type) {
+      console.log(type);
       let router = "";
       switch (type) {
         case 1:
@@ -307,19 +308,10 @@ export default {
           router = "collectionList";
           break;
         case 5:
-          router = "collectionList";
-          break;
-        case 6:
           router = "studentOrder";
           break;
-        case 7:
+        case 6:
           router = "paymentRebate";
-          break;
-        case 8:
-          router = "paymentRebate";
-          break;
-        case 9:
-          router = "crmOrder";
           break;
       }
       router &&

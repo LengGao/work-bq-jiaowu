@@ -1,93 +1,117 @@
 <template>
   <div class="sales-data">
-    <div class="sales-data-item" @click="$emit('item-click', 1)">
-      <p class="sales-data-item-value primary">
-        {{ data.recruitStudentNum || 0 }}
-      </p>
-      <p class="sales-data-item-title">招生客户数量</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 3)">
-      <p class="sales-data-item-value success">
-        {{ priceFormat(data.recruitOrderMoney)
-        }}<span class="unit">{{ unitFormat(data.recruitOrderMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">招生订单金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 3)">
-      <p class="sales-data-item-value warning">
-        {{ priceFormat(data.recruitTuitionMoney)
-        }}<span class="unit">{{ unitFormat(data.recruitTuitionMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">招生学费金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 3)">
-      <p class="sales-data-item-value danger">
-        {{ priceFormat(data.recruitOtherMoney)
-        }}<span class="unit">{{ unitFormat(data.recruitOtherMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">招生其他金额</p>
-    </div>
-
-    <div class="sales-data-item" @click="$emit('item-click', 4)">
-      <p class="sales-data-item-value primary">
-        {{ priceFormat(data.recruitPayMoney)
-        }}<span class="unit">{{ unitFormat(data.recruitPayMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">招生回款金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 5)">
-      <p class="sales-data-item-value success">
-        {{ priceFormat(data.recruitEntryMoney)
-        }}<span class="unit">{{ unitFormat(data.recruitEntryMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">招生入账金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 9)">
-      <p class="sales-data-item-value warning">
-        {{ priceFormat(data.recruitRefundMoney)
-        }}<span class="unit">{{ unitFormat(data.recruitRefundMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">招生退款/作废金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 2)">
-      <p class="sales-data-item-value primary">{{ data.orgStudentNum || 0 }}</p>
-      <p class="sales-data-item-title">机构学生数量</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 6)">
-      <p class="sales-data-item-value success">
-        {{ priceFormat(data.orgOrderMoney)
-        }}<span class="unit">{{ unitFormat(data.orgOrderMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">机构订单金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 6)">
-      <p class="sales-data-item-value warning">
-        {{ priceFormat(data.orgTuitionMoney)
-        }}<span class="unit">{{ unitFormat(data.orgTuitionMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">机构学费金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 6)">
-      <p class="sales-data-item-value danger">
-        {{ priceFormat(data.orgOtherMoney)
-        }}<span class="unit">{{ unitFormat(data.orgOtherMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">机构其他金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 7)">
-      <p class="sales-data-item-value primary">
-        {{ priceFormat(data.orgPayMoney)
-        }}<span class="unit">{{ unitFormat(data.orgPayMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">机构回款金额</p>
-    </div>
-    <div class="sales-data-item" @click="$emit('item-click', 8)">
-      <p class="sales-data-item-value success">
-        {{ priceFormat(data.orgEntryMoney)
-        }}<span class="unit">{{ unitFormat(data.orgEntryMoney) }}</span>
-      </p>
-      <p class="sales-data-item-title">机构入账金额</p>
-    </div>
+    <el-table
+      :data="tabaleData"
+      :header-cell-style="{ 'text-align': 'center' }"
+      border
+    >
+      <el-table-column prop="title" width="50"> </el-table-column>
+      <el-table-column label="学生数量" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value primary"
+            @click="$emit('item-click', index ? 2 : 1)"
+            >{{ row.studentCount }}</span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="订单金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value success"
+            @click="$emit('item-click', index ? 5 : 3)"
+          >
+            {{ priceFormat(row.orderAmount)
+            }}<span class="unit">{{ unitFormat(row.orderAmount) }}</span></span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="回款金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value warning"
+            @click="$emit('item-click', index ? 6 : 4)"
+          >
+            {{ priceFormat(row.payAmount)
+            }}<span class="unit">{{ unitFormat(row.payAmount) }}</span></span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="学费金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value danger"
+            @click="$emit('item-click', index ? 5 : 3)"
+          >
+            {{ priceFormat(row.tuitionAmount)
+            }}<span class="unit">{{
+              unitFormat(row.tuitionAmount)
+            }}</span></span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="其他金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value primary"
+            @click="$emit('item-click', index ? 5 : 3)"
+          >
+            {{ priceFormat(row.otherAmount)
+            }}<span class="unit">{{ unitFormat(row.otherAmount) }}</span></span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="入账金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value success"
+            @click="$emit('item-click', index ? 6 : 4)"
+          >
+            {{ priceFormat(row.recordedAmount)
+            }}<span class="unit">{{
+              unitFormat(row.recordedAmount)
+            }}</span></span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="官网缴费订单金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value warning"
+            @click="$emit('item-click', index ? 6 : 4)"
+          >
+            {{ priceFormat(row.officialWebsiteOrderAmount)
+            }}<span class="unit">{{
+              unitFormat(row.officialWebsiteOrderAmount)
+            }}</span></span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="官网缴费回款金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value danger"
+            @click="$emit('item-click', index ? 6 : 4)"
+          >
+            {{ priceFormat(row.officialWebsitePayAmount)
+            }}<span class="unit">{{
+              unitFormat(row.officialWebsitePayAmount)
+            }}</span></span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="退款作废金额" min-width="170" align="center">
+        <template slot-scope="{ row, $index: index }">
+          <span
+            class="value primary"
+            @click="$emit('item-click', index ? 5 : 3)"
+          >
+            {{ priceFormat(row.refundAmount)
+            }}<span class="unit">{{ unitFormat(row.refundAmount) }}</span></span
+          >
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 <script>
@@ -97,6 +121,37 @@ export default {
     data: {
       type: Object,
       default: () => ({}),
+    },
+  },
+
+  computed: {
+    tabaleData() {
+      return [
+        {
+          title: "招生",
+          studentCount: this.data.recruitStudentNum,
+          orderAmount: this.data.recruitOrderMoney,
+          payAmount: this.data.recruitPayMoney,
+          tuitionAmount: this.data.recruitTuitionMoney,
+          otherAmount: this.data.recruitOtherMoney,
+          recordedAmount: this.data.recruitEntryMoney,
+          officialWebsiteOrderAmount: this.data.recruitWebsiteMoney,
+          officialWebsitePayAmount: this.data.recruitWebsitePayMoney,
+          refundAmount: this.data.recruitRefundMoney,
+        },
+        {
+          title: "机构",
+          studentCount: this.data.orgStudentNum,
+          orderAmount: this.data.orgOrderMoney,
+          payAmount: this.data.orgPayMoney,
+          tuitionAmount: this.data.orgTuitionMoney,
+          otherAmount: this.data.orgOtherMoney,
+          recordedAmount: this.data.orgEntryMoney,
+          officialWebsiteOrderAmount: this.data.orgWebsiteMoney,
+          officialWebsitePayAmount: this.data.orgWebsitePayMoney,
+          refundAmount: this.data.orgRefundMoney,
+        },
+      ];
     },
   },
   methods: {
@@ -116,42 +171,26 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.primary {
-  color: #199fff;
-}
-.success {
-  color: #43d100;
-}
-.warning {
-  color: #fdc400;
-}
-.danger {
-  color: #fd6500;
-}
 .sales-data {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  &-item {
-    flex-shrink: 0;
-    text-align: center;
+  .primary {
+    color: #199fff;
+  }
+  .success {
+    color: #43d100;
+  }
+  .warning {
+    color: #fdc400;
+  }
+  .danger {
+    color: #fd6500;
+  }
+  .value {
+    display: inline-block;
+    padding: 10px 0;
+    font-size: 32px;
     cursor: pointer;
-    width: calc(100% / 7);
-    margin-bottom: 26px;
-    &:not(:last-child) {
-      border-right: 1px solid #f1f2f3;
-    }
-
-    &-title {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 4px;
-    }
-    &-value {
-      font-size: 32px;
-      span.unit {
-        font-size: 14px;
-      }
+    .unit {
+      font-size: 12px;
     }
   }
 }
