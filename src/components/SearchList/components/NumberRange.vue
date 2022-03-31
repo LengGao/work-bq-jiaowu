@@ -2,6 +2,7 @@
   <div class="number-range">
     <el-input
       type="number"
+      @mousewheel.native.prevent
       :placeholder="startPlaceholde"
       v-model="start"
       @input="handleInput"
@@ -9,6 +10,7 @@
     <span class="number-range-separator">-</span>
     <el-input
       type="number"
+      @mousewheel.native.prevent
       :placeholder="endPlaceholde"
       v-model="end"
       @input="handleInput"

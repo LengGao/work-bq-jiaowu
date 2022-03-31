@@ -70,6 +70,7 @@
                 v-model="row.money"
                 placeholder="请输入"
                 type="number"
+                @mousewheel.native.prevent
               />
             </el-form-item>
           </template>

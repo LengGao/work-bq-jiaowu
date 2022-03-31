@@ -46,6 +46,7 @@
           <template slot-scope="{ row }">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               v-model="row.sort"
               placeholder="请输入"
               maxlength="10"

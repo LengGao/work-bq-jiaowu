@@ -45,6 +45,7 @@
           v-model="formData.price"
           placeholder="请输入题库价格"
           type="number"
+          @mousewheel.native.prevent
           maxlength="20"
         />
       </el-form-item>
@@ -54,6 +55,7 @@
           v-model="formData.sort"
           placeholder="排序数字越大题库越靠前"
           type="number"
+          @mousewheel.native.prevent
           maxlength="20"
         />
       </el-form-item>

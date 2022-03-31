@@ -340,6 +340,7 @@
             class="input"
             v-model="adoptData.real_rebate_price"
             type="number"
+            @mousewheel.native.prevent
             placeholder="实际返点金额"
           />
         </el-form-item>

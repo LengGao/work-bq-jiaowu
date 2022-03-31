@@ -13,6 +13,7 @@
         <el-input
           class="input-score"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score1"
           placeholder="请输入"
           maxlength="10"
@@ -24,6 +25,7 @@
         <el-input
           class="input-score"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score2"
           placeholder="请输入"
           maxlength="10"
@@ -35,6 +37,7 @@
         <el-input
           class="input-score"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score3"
           placeholder="请输入"
           maxlength="10"
@@ -46,6 +49,7 @@
         <el-input
           class="input-score"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score4"
           placeholder="请输入"
           maxlength="10"
@@ -57,6 +61,7 @@
         <el-input
           class="input-score"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score5"
           placeholder="请输入"
           maxlength="10"
@@ -68,6 +73,7 @@
         <el-input
           class="input-score"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score6"
           placeholder="请输入"
           maxlength="10"
@@ -79,6 +85,7 @@
         <el-input
           class="input-score"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score7"
           placeholder="请输入"
           maxlength="10"
@@ -92,6 +99,7 @@
             >少选每个选项<el-input
               class="input-score"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.option_score"
               placeholder="请输入"
               maxlength="10"

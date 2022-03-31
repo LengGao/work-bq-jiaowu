@@ -51,6 +51,7 @@
             <template slot-scope="{ row }">
               <el-input
                 type="number"
+                @mousewheel.native.prevent
                 size="small"
                 v-model="row.price"
                 placeholder="请输入"

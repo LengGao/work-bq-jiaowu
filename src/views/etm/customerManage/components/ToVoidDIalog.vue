@@ -14,6 +14,7 @@
           v-model="formData.money"
           placeholder="请输入退款金额"
           type="number"
+          @mousewheel.native.prevent
         />
       </el-form-item>
       <el-form-item label="备注信息">

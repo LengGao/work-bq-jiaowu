@@ -21,6 +21,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.number1"
             placeholder="请输入"
             maxlength="10"
@@ -30,6 +31,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.score1"
             placeholder="请输入"
             maxlength="10"
@@ -41,6 +43,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.number2"
             placeholder="请输入"
             maxlength="10"
@@ -50,6 +53,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.score2"
             placeholder="请输入"
             maxlength="10"
@@ -61,6 +65,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.number3"
             placeholder="请输入"
             maxlength="10"
@@ -70,6 +75,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.score3"
             placeholder="请输入"
             maxlength="10"
@@ -81,6 +87,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.number4"
             placeholder="请输入"
             maxlength="10"
@@ -90,6 +97,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.score4"
             placeholder="请输入"
             maxlength="10"
@@ -101,6 +109,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.number5"
             placeholder="请输入"
             maxlength="10"
@@ -110,6 +119,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.score5"
             placeholder="请输入"
             maxlength="10"
@@ -121,6 +131,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.number6"
             placeholder="请输入"
             maxlength="10"
@@ -130,6 +141,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.score6"
             placeholder="请输入"
             maxlength="10"
@@ -141,6 +153,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.number7"
             placeholder="请输入"
             maxlength="10"
@@ -150,6 +163,7 @@
           <el-input
             class="input-number"
             type="number"
+            @mousewheel.native.prevent
             v-model="formData.score7"
             placeholder="请输入"
             maxlength="10"
@@ -163,6 +177,7 @@
               >少选每个选项<el-input
                 class="input-number"
                 type="number"
+                @mousewheel.native.prevent
                 v-model="formData.option_score"
                 placeholder="请输入"
                 maxlength="10"
@@ -179,6 +194,7 @@
             <el-input
               class="input-number"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.c_score1"
               placeholder="请输入"
               maxlength="10"
@@ -190,6 +206,7 @@
             <el-input
               class="input-number"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.c_score2"
               placeholder="请输入"
               maxlength="10"
@@ -201,6 +218,7 @@
             <el-input
               class="input-number"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.c_score3"
               placeholder="请输入"
               maxlength="10"
@@ -212,6 +230,7 @@
             <el-input
               class="input-number"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.c_score4"
               placeholder="请输入"
               maxlength="10"
@@ -223,6 +242,7 @@
             <el-input
               class="input-number"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.c_score5"
               placeholder="请输入"
               maxlength="10"
@@ -234,6 +254,7 @@
             <el-input
               class="input-number"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.c_score6"
               placeholder="请输入"
               maxlength="10"
@@ -245,6 +266,7 @@
             <el-input
               class="input-number"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.c_score7"
               placeholder="请输入"
               maxlength="10"
@@ -262,6 +284,7 @@
                 >少选每个选项<el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="formData.c_option_score"
                   placeholder="请输入"
                   maxlength="10"
@@ -288,6 +311,7 @@
                 <el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="item.chapter_config[0].topic_num"
                   placeholder="请输入"
                   @input="onMax($event, item.chapter_config[0])"
@@ -298,6 +322,7 @@
                 <el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="item.chapter_config[1].topic_num"
                   placeholder="请输入"
                   @input="onMax($event, item.chapter_config[1])"
@@ -308,6 +333,7 @@
                 <el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="item.chapter_config[2].topic_num"
                   placeholder="请输入"
                   @input="onMax($event, item.chapter_config[2])"
@@ -318,6 +344,7 @@
                 <el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="item.chapter_config[3].topic_num"
                   placeholder="请输入"
                   @input="onMax($event, item.chapter_config[3])"
@@ -328,6 +355,7 @@
                 <el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="item.chapter_config[4].topic_num"
                   placeholder="请输入"
                   @input="onMax($event, item.chapter_config[4])"
@@ -338,6 +366,7 @@
                 <el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="item.chapter_config[5].topic_num"
                   placeholder="请输入"
                   @input="onMax($event, item.chapter_config[5])"
@@ -348,6 +377,7 @@
                 <el-input
                   class="input-number"
                   type="number"
+                  @mousewheel.native.prevent
                   v-model="item.chapter_config[6].topic_num"
                   placeholder="请输入"
                   @input="onMax($event, item.chapter_config[6])"

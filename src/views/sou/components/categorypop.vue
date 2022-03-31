@@ -35,6 +35,7 @@
             class="input-width"
             placeholder=" 排序数字越大分类越靠前"
             type="number"
+            @mousewheel.native.prevent
           ></el-input>
           <!-- <p style="color:#aaa;ling-height:20px">
             排序数字越大分类越靠前,最小值为1
@@ -60,11 +61,11 @@ export default {
     },
     title: {
       type: String,
-      default: '',
+      default: "",
     },
     id: {
       type: [String, Number],
-      default: '',
+      default: "",
     },
     typeOptions: {
       type: Array,
@@ -73,49 +74,49 @@ export default {
   },
   watch: {
     value(val) {
-      this.visible = val
+      this.visible = val;
     },
   },
   data() {
     return {
       dialogVisible: false,
       selectData: [],
-      dialogTitle: '',
+      dialogTitle: "",
       ruleForm: {
-        pid: '',
-        category_name: '',
-        sort: '',
-        index_category_name: '',
+        pid: "",
+        category_name: "",
+        sort: "",
+        index_category_name: "",
       },
       rules: {
         index_category_name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' },
+          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
         ],
       },
-    }
+    };
   },
   methods: {
     submitForm(formName) {
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.id) {
             //修改
-            this.subjectList()
+            this.subjectList();
           } else {
             //添加分类
-            this.insertCategory()
-            this.dialogVisible = false
+            this.insertCategory();
+            this.dialogVisible = false;
           }
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="head_remind">
-      *管理所有教学教室以及使用情况
-    </div>
+    <div class="head_remind">*管理所有教学教室以及使用情况</div>
 
     <section class="mainwrap">
       <div class="client_head">
@@ -24,7 +22,7 @@
           :data="schoolData.list"
           tooltip-effect="light"
           stripe
-          style="width: 100%;"
+          style="width: 100%"
           :header-cell-style="{ 'text-align': 'center' }"
           :cell-style="{ 'text-align': 'center' }"
           class="min_table"
@@ -76,7 +74,7 @@
 
           <el-table-column label="操作" fixed="right" min-width="200">
             <template slot-scope="scope">
-              <div style="display: flex; justify-content:center;">
+              <div style="display: flex; justify-content: center">
                 <el-button type="text" @click="editClassroom(scope.row)"
                   >编辑</el-button
                 >
@@ -198,6 +196,7 @@
                 v-model="ruleForm.max_num"
                 placeholder="请输入容纳人数"
                 type="number"
+                @mousewheel.native.prevent
                 :min="0"
                 :maxlength="11"
                 :max="4294967295"
@@ -224,9 +223,9 @@
         </el-form>
         <!-- <span>这是一段信息</span> -->
         <span slot="footer" class="dialog-footer">
-          <div style="display:flex;justify-content:space-between">
+          <div style="display: flex; justify-content: space-between">
             <el-checkbox
-              style="padding-left:10px ;"
+              style="padding-left: 10px"
               :class="ruleForm.id ? 'continueAdd' : ''"
               v-model="addChecked"
               >继续添加</el-checkbox
@@ -246,45 +245,45 @@
 
 <script>
 export default {
-  name: 'courseManage',
+  name: "courseManage",
   data() {
     return {
       classVisible: false,
-      classTitle: '添加教室',
+      classTitle: "添加教室",
       addChecked: false, //继续添加
       rules: {
         room_name: [
-          { required: true, message: '请输入教室名称', trigger: 'blur' },
+          { required: true, message: "请输入教室名称", trigger: "blur" },
         ],
         max_num: [
-          { required: true, message: '请输入容纳人数', trigger: 'blur' },
+          { required: true, message: "请输入容纳人数", trigger: "blur" },
           {
             validator: (rule, value, callback) => {
               if (/^[1-9]\d*$/.test(value) == false) {
-                callback(new Error('请输入一个整数'))
+                callback(new Error("请输入一个整数"));
               } else {
-                callback()
+                callback();
               }
             },
-            trigger: 'change',
+            trigger: "change",
           },
         ],
       },
       ruleForm: {
-        room_name: '',
-        address: '',
-        comment: '',
-        max_num: '',
+        room_name: "",
+        address: "",
+        comment: "",
+        max_num: "",
       },
       isTagactive: 1,
       tabFun: [
         {
           id: 1,
-          name: '教室配置',
+          name: "教室配置",
         },
         {
           id: 2,
-          name: '使用情况',
+          name: "使用情况",
         },
       ],
       page: 1,
@@ -292,11 +291,11 @@ export default {
       course_ids: [],
       datas: {},
       selectData: [],
-    }
+    };
   },
   created() {},
   mounted() {
-    this.$api.getRoomList(this, 'schoolData')
+    this.$api.getRoomList(this, "schoolData");
     // this.$api.getCategoryList(this, 'selectData')
   },
 
@@ -307,26 +306,26 @@ export default {
         address: row.address,
         max_num: row.max_num,
         comment: row.comment,
-      }
+      };
       this.$router.push({
-        path: '/sou/classroomUsage',
+        path: "/sou/classroomUsage",
         query: {
           id: row.id,
           param: JSON.stringify(row),
         },
-      })
+      });
     },
     startUsing(ab) {
-      this.$api.updateRoomStatus(this, ab.id, ab.status)
+      this.$api.updateRoomStatus(this, ab.id, ab.status);
     },
     handleDelete(ab) {
-      this.$confirm('此操作将删除该教室, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("此操作将删除该教室, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.deleteRoom(this, ab.id)
+          this.$api.deleteRoom(this, ab.id);
           // this.$message({
           //   type: 'success',
           //   message: '删除成功!'
@@ -334,70 +333,70 @@ export default {
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
 
     handleConfirm(formName) {
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.id) {
             //修改教室
-            this.$api.updateRoom(this, this.ruleForm)
+            this.$api.updateRoom(this, this.ruleForm);
           } else {
             //添加教室
-            this.$api.createRoom(this, this.ruleForm)
+            this.$api.createRoom(this, this.ruleForm);
           }
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
     editClassroom(ab) {
-      console.log(ab)
-      this.classTitle = '编辑教室'
-      this.ruleForm = ab
-      this.classVisible = true
+      console.log(ab);
+      this.classTitle = "编辑教室";
+      this.ruleForm = ab;
+      this.classVisible = true;
     },
     addClassroom() {
-      this.classTitle = '添加教室'
+      this.classTitle = "添加教室";
       this.ruleForm = {
-        room_name: '',
-        address: '',
-        comment: '',
-        max_num: '',
-      }
+        room_name: "",
+        address: "",
+        comment: "",
+        max_num: "",
+      };
 
-      this.classVisible = true
+      this.classVisible = true;
     },
     statusSwitch(ab) {
-      this.isTagactive = ab.id
+      this.isTagactive = ab.id;
     },
     getTableList(state, val, datas) {
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.schoolData = val;
       }
     },
     doPageChange(page) {
-      this.page = page
-      this.$api.getRoomList(this, 'schoolData')
+      this.page = page;
+      this.$api.getRoomList(this, "schoolData");
     },
 
     toCreateClass(text) {
       this.$router.push({
-        path: '/sou/createClass',
+        path: "/sou/createClass",
         query: {},
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -435,7 +434,7 @@ export default {
   width: 133px;
   display: flex;
   justify-content: space-between;
-  font-family: 'Microsoft YaHei UI', sans-serif;
+  font-family: "Microsoft YaHei UI", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;

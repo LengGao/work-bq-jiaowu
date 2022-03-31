@@ -187,6 +187,7 @@
                 placeholder="请输入应收总额"
                 class="input-width"
                 type="number"
+                @mousewheel.native.prevent
                 v-model="ruleForm.total_money"
               ></el-input>
             </el-form-item>
@@ -227,6 +228,7 @@
                 placeholder="请输入支付金额"
                 class="input-width"
                 type="number"
+                @mousewheel.native.prevent
                 v-model="ruleForm.major_pay_money"
                 @input="majorPayMoneyChange"
               ></el-input>
@@ -314,6 +316,7 @@
                   <el-input
                     v-model="row.must_price"
                     type="number"
+                    @mousewheel.native.prevent
                     size="small"
                     placeholder="请输入"
                     @input="payPriceChange($event, row)"
@@ -387,6 +390,7 @@
                 placeholder="请输入支付金额"
                 class="input-width"
                 type="number"
+                @mousewheel.native.prevent
                 v-model="ruleForm.pay_money"
                 @input="payMoneyChange"
               ></el-input>
@@ -416,6 +420,7 @@
           <el-form-item label="考前辅导费">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.pre_tutor"
@@ -425,6 +430,7 @@
           <el-form-item label="报考费">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.examination"
@@ -435,6 +441,7 @@
           <el-form-item label="教材费">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.textbook"
@@ -450,6 +457,7 @@
           >
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.tuition_1"
@@ -462,6 +470,7 @@
           >
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.tuition_2"
@@ -474,6 +483,7 @@
           >
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.tuition_3"
@@ -482,6 +492,7 @@
           <el-form-item label="毕设指导费">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.graduation_guidance"
@@ -490,6 +501,7 @@
           <el-form-item label="论文答辩费">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.thesis_defense"
@@ -498,6 +510,7 @@
           <el-form-item label="平台费">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.platform_fee"
@@ -506,6 +519,7 @@
           <el-form-item label="其他费用">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               class="input-width"
               placeholder="请输入"
               v-model="ruleForm.others"

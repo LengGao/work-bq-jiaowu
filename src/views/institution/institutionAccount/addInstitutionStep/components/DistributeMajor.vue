@@ -72,6 +72,7 @@
         <template slot-scope="{ row }">
           <el-input
             type="number"
+            @mousewheel.native.prevent
             size="small"
             v-model="row.apply_price"
             placeholder="请输入"
@@ -89,6 +90,7 @@
         <template slot-scope="{ row }">
           <el-input
             type="number"
+            @mousewheel.native.prevent
             size="small"
             v-model="row.year_limit"
             placeholder="请输入"
@@ -106,6 +108,7 @@
         <template slot-scope="{ row }">
           <el-input
             type="number"
+            @mousewheel.native.prevent
             size="small"
             v-model="row.price"
             placeholder="请输入"
@@ -124,6 +127,7 @@
           <div class="percentage">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               size="small"
               v-model="row.rebate_rate"
               placeholder="0-100"

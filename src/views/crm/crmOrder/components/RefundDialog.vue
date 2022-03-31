@@ -64,6 +64,7 @@
             class="input"
             v-model="formData.refund_money"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入退款金额"
           />
         </el-form-item>

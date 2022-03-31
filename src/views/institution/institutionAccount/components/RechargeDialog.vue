@@ -20,6 +20,7 @@
       <el-form-item label="充值金额" prop="money">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.money"
           placeholder="请输入金额"
           class="w-90"

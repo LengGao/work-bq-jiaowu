@@ -26,6 +26,7 @@
         <el-input
           class="input"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.mobile"
           placeholder="请输入手机号码"
         />

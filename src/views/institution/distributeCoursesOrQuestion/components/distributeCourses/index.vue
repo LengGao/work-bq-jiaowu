@@ -59,6 +59,7 @@
             <template slot-scope="{ row }">
               <el-input
                 type="number"
+                @mousewheel.native.prevent
                 size="small"
                 v-model="row[row.course_id][item.id]"
                 placeholder="请输入"

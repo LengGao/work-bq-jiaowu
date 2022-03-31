@@ -59,6 +59,7 @@
                 v-model="row[yearMap[item]]"
                 placeholder="请输入"
                 type="number"
+                @mousewheel.native.prevent
                 @blur="handleEditBlur(row, `edit${item}`)"
               ></el-input>
               <div v-else class="show-value">

@@ -220,6 +220,7 @@
               <el-form-item label="项目价格" prop="price">
                 <el-input
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="请输入项目价格"
                   v-model="ruleForm.price"
                   class="input-width"
@@ -230,6 +231,7 @@
               <el-form-item label="最低价格" prop="lowest_price">
                 <el-input
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="请输入最低价格"
                   v-model="ruleForm.lowest_price"
                   class="input-width"

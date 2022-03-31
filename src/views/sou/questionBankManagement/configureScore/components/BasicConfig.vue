@@ -10,6 +10,7 @@
       <el-form-item label="题目总数" class="w-300" prop="topic_num">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.topic_num"
           placeholder="请输入题目总数"
           maxlength="10"
@@ -18,6 +19,7 @@
       <el-form-item label="考试总分" class="w-300" prop="score">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.score"
           placeholder="请输入考试总分"
           maxlength="10"
@@ -26,6 +28,7 @@
       <el-form-item label="合格分数" class="w-300" prop="pass_score">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.pass_score"
           placeholder="请输入合格分数"
           maxlength="10"
@@ -34,6 +37,7 @@
       <el-form-item label="考试时长" class="w-300" prop="test_time">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.test_time"
           placeholder="请输入考试时长"
           maxlength="10"
@@ -94,7 +98,7 @@ export default {
         for (const k in this.formData) {
           this.formData[k] = +res.data[k];
         }
-        this.$emit('on-conifg-id',res.data.id)
+        this.$emit("on-conifg-id", res.data.id);
       }
     },
     async submit() {

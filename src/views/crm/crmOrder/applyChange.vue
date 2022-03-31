@@ -241,6 +241,7 @@
               <el-input
                 v-model="row.must_money"
                 type="number"
+                @mousewheel.native.prevent
                 placeholder="请输入"
               />
             </template>
@@ -307,6 +308,7 @@
               <el-input
                 v-model="row.must_money"
                 type="number"
+                @mousewheel.native.prevent
                 placeholder="请输入"
               />
             </template>
@@ -461,6 +463,7 @@
           class="input"
           :value="otherMoneyTotal"
           type="number"
+          @mousewheel.native.prevent
           disabled
         />
       </el-form-item>
@@ -480,6 +483,7 @@
           class="input"
           :value="orderMoneyTotal"
           type="number"
+          @mousewheel.native.prevent
           disabled
         />
       </el-form-item>

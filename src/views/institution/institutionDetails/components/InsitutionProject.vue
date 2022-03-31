@@ -54,6 +54,7 @@
               <el-input
                 @blur="sendClassType(row)"
                 type="number"
+                @mousewheel.native.prevent
                 size="small"
                 v-model="row.org_class_type[index].price"
                 placeholder="请输入"

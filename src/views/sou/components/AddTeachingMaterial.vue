@@ -58,6 +58,7 @@
             <el-input
               maxlength="30"
               type="number"
+              @mousewheel.native.prevent
               placeholder="请输入价格"
               v-model="formData.book_price"
               class="input-width"

@@ -30,6 +30,7 @@
           v-model="formData.price"
           placeholder="请输入项目价格"
           type="number"
+          @mousewheel.native.prevent
         />
       </el-form-item>
 
@@ -38,6 +39,7 @@
           v-model="formData.lowest_price"
           placeholder="请输入项目最低价格"
           type="number"
+          @mousewheel.native.prevent
         />
       </el-form-item>
       <el-form-item label="是否启用">

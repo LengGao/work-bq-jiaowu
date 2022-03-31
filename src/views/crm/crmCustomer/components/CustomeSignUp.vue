@@ -28,6 +28,7 @@
         <el-input
           class="input"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.mobile"
           placeholder="请输入手机号码"
         />
@@ -82,6 +83,7 @@
       <el-form-item label="订单金额" prop="order_money">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           class="input"
           v-model="formData.order_money"
           placeholder="请输入订单金额"
@@ -132,6 +134,7 @@
             class="input"
             v-model="formData.pre_tutor"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入考前辅导费"
           />
         </el-form-item>
@@ -140,6 +143,7 @@
             class="input"
             v-model="formData.examination"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入报考费"
           >
             <template slot="append">元/科</template>
@@ -150,6 +154,7 @@
             class="input"
             v-model="formData.textbook"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入教材费"
           >
             <template slot="append">元/年</template>
@@ -160,6 +165,7 @@
             class="input"
             v-model="formData.graduation_guidance"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入毕设指导费"
           />
         </el-form-item>
@@ -168,6 +174,7 @@
             class="input"
             v-model="formData.thesis_defense"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入论文答辩费"
           />
         </el-form-item>
@@ -176,6 +183,7 @@
             class="input"
             v-model="formData.platform_fee"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入平台费"
           />
         </el-form-item>
@@ -184,6 +192,7 @@
             class="input"
             v-model="formData.others"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入其他费用"
           />
         </el-form-item>
@@ -354,6 +363,7 @@
             class="input"
             v-model="formData.pay_money"
             type="number"
+            @mousewheel.native.prevent
             placeholder="请输入回款金额"
           />
         </el-form-item>

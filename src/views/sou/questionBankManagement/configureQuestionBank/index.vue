@@ -96,7 +96,12 @@
                 show-overflow-tooltip
               >
                 <template slot-scope="{ row }">
-                  <el-input type="number" v-if="isSort" v-model="row.sort" />
+                  <el-input
+                    type="number"
+                    @mousewheel.native.prevent
+                    v-if="isSort"
+                    v-model="row.sort"
+                  />
                   <span v-else>{{ row.sort }}</span>
                 </template>
               </el-table-column>

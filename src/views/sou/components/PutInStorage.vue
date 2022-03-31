@@ -65,6 +65,7 @@
           <template slot-scope="{ row }">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               v-model="row.putNumber"
               placeholder="请输入入库数量"
               v-if="row.isChecked"

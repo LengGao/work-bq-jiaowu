@@ -41,6 +41,7 @@
             <p class="subject_name">{{ item.subject_name }}:</p>
             <el-input
               type="number"
+              @mousewheel.native.prevent
               style="width: 97px"
               placeholder="请输入分数"
               :max="item.total_score"
@@ -86,6 +87,7 @@
 
               <el-input
                 type="number"
+                @mousewheel.native.prevent
                 style="width: 97px"
                 placeholder="请输入分数"
                 v-model="v.score"

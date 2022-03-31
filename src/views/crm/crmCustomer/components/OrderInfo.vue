@@ -20,6 +20,7 @@
         <el-input
           class="input"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.mobile"
           placeholder="请输入手机号码"
         />
@@ -51,6 +52,7 @@
       <el-form-item label="学费价格" prop="order_money">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           class="input"
           v-model="formData.order_money"
           placeholder="请输入学费价格"
@@ -198,6 +200,7 @@
               <el-input
                 v-model="row.pay_money"
                 type="number"
+                @mousewheel.native.prevent
                 placeholder="请输入实收金额"
               />
             </template>
@@ -277,6 +280,7 @@
               <el-input
                 v-model="row.pay_money"
                 type="number"
+                @mousewheel.native.prevent
                 placeholder="请输入实收金额"
               />
             </template>
@@ -336,7 +340,9 @@ export default {
         source: "",
       },
       rules: {
-        online_course: [{ required: true, message: "请选择", trigger: "change" }],
+        online_course: [
+          { required: true, message: "请选择", trigger: "change" },
+        ],
         source: [{ required: true, message: "请选择", trigger: "change" }],
         type: [{ required: true, message: "请选择", trigger: "change" }],
         selectMajor: [{ required: true, message: "请选择", trigger: "change" }],

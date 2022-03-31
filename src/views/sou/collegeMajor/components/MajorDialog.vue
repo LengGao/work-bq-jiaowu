@@ -68,6 +68,7 @@
         <el-input
           class="w-217"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.school_system"
           placeholder="请输入"
           maxlength="10"
@@ -87,6 +88,7 @@
         <el-input
           class="w-217"
           type="number"
+          @mousewheel.native.prevent
           maxlength="20"
           v-model="formData.price"
           placeholder="请输入"
@@ -96,6 +98,7 @@
         <el-input
           class="w-217"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.lowest_price"
           placeholder="请输入"
           maxlength="20"
@@ -105,6 +108,7 @@
         <el-input
           class="w-217"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.apply_price"
           placeholder="请输入"
           maxlength="20"
@@ -114,6 +118,7 @@
         <el-input
           class="w-217"
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.rebate_rate"
           placeholder="0-100"
           maxlength="20"
@@ -124,6 +129,7 @@
           class="w-217"
           v-model="formData.sort"
           type="number"
+          @mousewheel.native.prevent
           placeholder="请输入"
           maxlength="20"
         />

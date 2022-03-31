@@ -116,6 +116,7 @@
                 v-model="row.money"
                 placeholder="请输入"
                 type="number"
+                @mousewheel.native.prevent
               />
             </el-form-item>
           </template>
@@ -190,6 +191,7 @@
           class="input"
           v-model="formData.pay_money"
           type="number"
+          @mousewheel.native.prevent
           placeholder="请输入回款金额"
         />
       </el-form-item>

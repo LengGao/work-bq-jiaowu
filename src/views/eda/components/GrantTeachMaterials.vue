@@ -80,6 +80,7 @@
             <template slot-scope="{ row }">
               <el-input
                 type="number"
+                @mousewheel.native.prevent
                 v-model="row.value"
                 placeholder="请输入"
               ></el-input>

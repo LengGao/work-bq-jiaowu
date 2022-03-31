@@ -31,6 +31,7 @@
       >
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.sort"
           placeholder="请输入"
           maxlength="10"

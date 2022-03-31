@@ -18,6 +18,7 @@
       <el-form-item label="视频排序" prop="sort">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.sort"
           placeholder="请输入"
           maxlength="10"

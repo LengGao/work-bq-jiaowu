@@ -30,6 +30,7 @@
       <el-form-item label="手机号码" prop="mobile">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.mobile"
           placeholder="请输入手机号码"
         />

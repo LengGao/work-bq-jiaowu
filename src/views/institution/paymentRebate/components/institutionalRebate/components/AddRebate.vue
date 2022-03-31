@@ -190,6 +190,7 @@
                     class="input"
                     size="mini"
                     type="number"
+                    @mousewheel.native.prevent
                     placeholder="申请返点金额"
                     style="padding: 0"
                     @input="onInputs"
@@ -211,6 +212,7 @@
                   v-model="row.currentMoney"
                   size="mini"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="返点金额"
                 />
               </template>
@@ -246,6 +248,7 @@
           class="input"
           :value="totalPrice"
           type="number"
+          @mousewheel.native.prevent
           placeholder="应返点金额"
           disabled
         />
@@ -255,6 +258,7 @@
           class="input"
           v-model="totalInputMoney"
           type="number"
+          @mousewheel.native.prevent
           disabled
           placeholder="申请返点金额"
           @input="onInput"

@@ -24,6 +24,7 @@
       <el-form-item label="位置排序" prop="sort">
         <el-input
           type="number"
+          @mousewheel.native.prevent
           v-model="formData.sort"
           placeholder="请输入"
           maxlength="10"

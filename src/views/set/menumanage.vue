@@ -202,6 +202,7 @@
             v-model="ruleForm.sort"
             class="input-width"
             type="number"
+            @mousewheel.native.prevent
           ></el-input>
           <p style="color: #aaa; ling-height: 20px">
             排序数字越大分类越靠前,最小值为1

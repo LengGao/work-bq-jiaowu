@@ -45,7 +45,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <div style="margin:0 auto;width:50px ;height:50px;">
+            <div style="margin: 0 auto; width: 50px; height: 50px">
               <img
                 :src="scope.row.index_category_icon"
                 alt
@@ -68,13 +68,13 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="200">
           <template slot-scope="scope">
-            <div style="display:flex;justify-content:center">
+            <div style="display: flex; justify-content: center">
               <el-button type="text" @click="topayment(scope.row)"
                 >编辑</el-button
               >
               <el-button
                 type="text"
-                style="padding-left:40px"
+                style="padding-left: 40px"
                 @click="delbtn(scope.row)"
                 >删除</el-button
               >
@@ -114,15 +114,15 @@
         <el-form-item label="分类图标：" style>
           <div v-show="!haschoose">
             <div class="headPortrait el-icon-plus" @click="addIcon"></div>
-            <div style="color:#aaa;ling-height:20px">
+            <div style="color: #aaa; ling-height: 20px">
               <p><span> 1. 支持jpg、jpeg、png、gif、bmp格式；</span></p>
               <p><span> 2. 推荐尺寸200*200px或者1:1</span></p>
             </div>
           </div>
-          <div v-show="haschoose" class=" imageBox ">
-            <i class=" iconjia el-icon-plus" @click="addIcon"></i>
+          <div v-show="haschoose" class="imageBox">
+            <i class="iconjia el-icon-plus" @click="addIcon"></i>
             <img
-              style="width:100%;height:100%;border-radius:3px;"
+              style="width: 100%; height: 100%; border-radius: 3px"
               :src="url"
               alt=""
             />
@@ -133,8 +133,9 @@
             v-model="addClassify.sort"
             class="input-width"
             type="number"
+            @mousewheel.native.prevent
           ></el-input>
-          <p style="color:#aaa;ling-height:20px">
+          <p style="color: #aaa; ling-height: 20px">
             排序数字越大分类越靠前,最小值为1
           </p>
         </el-form-item>
@@ -157,25 +158,25 @@ export default {
   data() {
     return {
       schoolData: [],
-      index_category_id: '',
-      dialogTitle: '',
+      index_category_id: "",
+      dialogTitle: "",
       addClassify: {
-        index_category_name: '',
-        sort: '',
+        index_category_name: "",
+        sort: "",
       },
       datas: {},
-      url: '',
+      url: "",
       pictureVisible: false,
       haschoose: false,
       page: 1,
       dialogVisible: false,
-    }
+    };
   },
   // mounted() {
   //   this.$api.getMyclient(this, 'myclient', status)
   // },
   created() {
-    this.$api.getHomeclassifiList(this, 'schoolData')
+    this.$api.getHomeclassifiList(this, "schoolData");
   },
   // activated: function() {
   //   console.log(JSON.parse(this.$route.query.url))
@@ -186,94 +187,94 @@ export default {
   // },
   methods: {
     doPageChange(page) {
-      this.page = page
-      this.$api.getHomeclassifiList(this, 'schoolData', this.datas)
+      this.page = page;
+      this.$api.getHomeclassifiList(this, "schoolData", this.datas);
     },
     // 获取数据
     getTableList(state, val, datas) {
-      console.log(state, val)
-      if (state == 'page') {
-        this.page = val
-        this.datas = datas
-      } else if (state == 'data') {
-        this.schoolData = val
+      console.log(state, val);
+      if (state == "page") {
+        this.page = val;
+        this.datas = datas;
+      } else if (state == "data") {
+        this.schoolData = val;
       }
     },
     topayment(zx) {
-      this.dialogTitle = '编辑首页分类'
-      console.log(zx)
-      this.dialogVisible = true
-      this.haschoose = true
-      this.index_category_id = zx.index_category_id
-      this.$api.getHomeclassifiDetail(this, this.index_category_id)
+      this.dialogTitle = "编辑首页分类";
+      console.log(zx);
+      this.dialogVisible = true;
+      this.haschoose = true;
+      this.index_category_id = zx.index_category_id;
+      this.$api.getHomeclassifiDetail(this, this.index_category_id);
       // this.$router.push(
       //   { path: '/etm/payMent', query: { id: 'row.id' } }
       // )
     },
     scopes(index_category_id, sorts) {
-      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/
-      var re = new RegExp(regu)
+      var regu = /^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/;
+      var re = new RegExp(regu);
       if (!re.test(sorts)) {
-        this.$message.error('请输入正确的排序！')
-        return false
+        this.$message.error("请输入正确的排序！");
+        return false;
       } else {
-        this.$api.updateHomeClassifiSort(index_category_id, sorts, this)
+        this.$api.updateHomeClassifiSort(index_category_id, sorts, this);
       }
     },
     delbtn(id) {
-      this.$confirm('确定要删除当前分类吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("确定要删除当前分类吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
         .then(() => {
-          this.$api.deleteHomeclassifi(id, this)
+          this.$api.deleteHomeclassifi(id, this);
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除',
-          })
-        })
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     addClassiFion() {
-      this.dialogTitle = '添加首页分类'
+      this.dialogTitle = "添加首页分类";
       for (let key in this.addClassify) {
-        this.addClassify[key] = ''
+        this.addClassify[key] = "";
       }
-      this.url = ''
-      this.haschoose = false
-      this.dialogVisible = true
+      this.url = "";
+      this.haschoose = false;
+      this.dialogVisible = true;
     },
     handleConfirm() {
-      console.log(this.index_category_id == '')
-      if (this.index_category_id == '' || this.index_category_id == undefined) {
-        this.$api.addHomeCategory(this, 'addClassify')
+      console.log(this.index_category_id == "");
+      if (this.index_category_id == "" || this.index_category_id == undefined) {
+        this.$api.addHomeCategory(this, "addClassify");
       } else {
-        this.$api.modifyHomeCategory(this, this.index_category_id)
+        this.$api.modifyHomeCategory(this, this.index_category_id);
       }
     },
     clearUrl() {
       // this.url = ''
       // this.haschoose = false
-      this.pictureVisible = false
+      this.pictureVisible = false;
     },
     closeImg(radioUrl) {
       // console.log(radioUrl + '我好睡')
-      this.pictureVisible = false
+      this.pictureVisible = false;
       if (radioUrl != undefined) {
-        this.haschoose = true
-        this.url = radioUrl
+        this.haschoose = true;
+        this.url = radioUrl;
       } else {
-        this.url = ''
-        this.haschoose = false
+        this.url = "";
+        this.haschoose = false;
       }
     },
     addIcon() {
-      this.pictureVisible = true
+      this.pictureVisible = true;
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -108,6 +108,7 @@
           <template slot-scope="{ row }">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               v-model="row.sort"
               @blur="updateClassTypeSort(row)"
             >

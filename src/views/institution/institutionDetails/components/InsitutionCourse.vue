@@ -91,6 +91,7 @@
               <template slot-scope="{ row }">
                 <el-input
                   type="number"
+                  @mousewheel.native.prevent
                   v-if="row.class_type[index]"
                   size="small"
                   v-model="row.class_type[index].price"
@@ -125,26 +126,30 @@
 </template>
 
 <script>
-  import { updateStudentBasicInfo } from "@/api/eda";
-  import { courseCateSelectTree, getCourseList, deleteOrgCourse } from "@/api/institution";
-  import AddCurriculum from "./addCurriculum";
-  export default {
-    name: "InsitutionCourse",
-    components: {
-      AddCurriculum,
-    },
-    data() {
-      return {
-        searchData: {
-          search_box: "",
-        },
-        searchOptions: [
-          {
-            key: "search_box",
-            attrs: {
-              placeholder: "课程名称",
-            },
+import { updateStudentBasicInfo } from "@/api/eda";
+import {
+  courseCateSelectTree,
+  getCourseList,
+  deleteOrgCourse,
+} from "@/api/institution";
+import AddCurriculum from "./addCurriculum";
+export default {
+  name: "InsitutionCourse",
+  components: {
+    AddCurriculum,
+  },
+  data() {
+    return {
+      searchData: {
+        search_box: "",
+      },
+      searchOptions: [
+        {
+          key: "search_box",
+          attrs: {
+            placeholder: "课程名称",
           },
+        },
       ],
       listData: [],
       listLoading: false,

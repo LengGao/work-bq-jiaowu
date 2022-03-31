@@ -79,6 +79,7 @@
           <el-form-item label="全部课程排序" prop="sort">
             <el-input
               type="number"
+              @mousewheel.native.prevent
               onkeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
               v-model="formData.sort"
               placeholder="排序数字越大课程越靠前"
@@ -90,6 +91,7 @@
               v-model="formData.course_price"
               :min="0"
               type="number"
+              @mousewheel.native.prevent
             ></el-input>
           </el-form-item>
 
@@ -169,6 +171,7 @@
             <el-input
               placeholder="请输入划线价格"
               type="number"
+              @mousewheel.native.prevent
               :min="0"
               v-model="formData.past_price"
             ></el-input>
@@ -185,6 +188,7 @@
             <el-input
               placeholder="排序数字越大课程越靠前"
               type="number"
+              @mousewheel.native.prevent
               onkeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
               v-model="formData.hot_sort"
             ></el-input>
@@ -205,6 +209,7 @@
             <el-input
               placeholder="排序数字越大课程越靠前"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.free_sort"
             ></el-input>
           </el-form-item>
@@ -225,6 +230,7 @@
               onkeypress="return( /[\d]/.test(String.fromCharCode(event.keyCode)))"
               placeholder="请输入虚拟数量"
               type="number"
+              @mousewheel.native.prevent
               v-model="formData.fictitious_num"
             ></el-input>
           </el-form-item>

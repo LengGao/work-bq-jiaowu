@@ -52,6 +52,7 @@
           class="input"
           v-model="formData.pay_money"
           type="number"
+          @mousewheel.native.prevent
           placeholder="请输入回款金额"
         />
       </el-form-item>

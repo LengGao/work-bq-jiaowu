@@ -92,6 +92,7 @@
           <el-input
             v-model="ruleForm.max_num"
             type="number"
+            @mousewheel.native.prevent
             style="width: 90px"
           ></el-input
           >人

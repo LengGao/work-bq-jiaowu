@@ -91,6 +91,7 @@
                   v-if="row.edit"
                   v-model="row.resetOrderMoney"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="请输入订单金额"
                 />
                 <span v-else>{{ row.order_money | moneyFormat }} </span>
@@ -143,6 +144,7 @@
                   size="small"
                   v-model="row.resetOrderOverdueMoney"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="请输入"
                 />
                 <span v-else>{{ row.outstanding_amount | moneyFormat }} </span>
@@ -170,6 +172,7 @@
                   size="small"
                   v-model="row.resetOrderReductionMoney"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="请输入"
                 />
                 <span v-else>{{ row.reduction | moneyFormat }} </span>
@@ -322,6 +325,7 @@
                 v-model="row.moneys[key]"
                 size="mini"
                 type="number"
+                @mousewheel.native.prevent
                 :placeholder="`请输入${item}`"
               />
             </template>
@@ -424,6 +428,7 @@
                 v-model="row.moneys[key]"
                 size="mini"
                 type="number"
+                @mousewheel.native.prevent
                 :placeholder="`请输入${item}`"
               />
             </template>

@@ -11,6 +11,7 @@
         <el-input
           class="conifg-item-number"
           type="number"
+          @mousewheel.native.prevent
           size="mini"
           v-model="formData.number"
         ></el-input>

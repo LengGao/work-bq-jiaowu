@@ -36,6 +36,7 @@
                 <el-input
                   class="input"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="0"
                   v-model="row.day"
                 ></el-input>
@@ -77,6 +78,7 @@
                 <el-input
                   class="input"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="0"
                   v-model="row.remind_day"
                 ></el-input>
@@ -121,6 +123,7 @@
                 <el-input
                   class="input"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="0"
                   v-model="row.day"
                 ></el-input>
@@ -162,6 +165,7 @@
                 <el-input
                   class="input"
                   type="number"
+                  @mousewheel.native.prevent
                   placeholder="0"
                   v-model="row.remind_day"
                 ></el-input>

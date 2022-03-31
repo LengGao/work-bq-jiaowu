@@ -63,6 +63,7 @@
                 style="width: 220px"
                 placeholder="请输入金额"
                 type="number"
+                @mousewheel.native.prevent
                 v-model="formData.pay_money"
               ></el-input>
             </el-form-item>
@@ -125,6 +126,7 @@
                 style="width: 220px"
                 placeholder="请输入金额"
                 type="number"
+                @mousewheel.native.prevent
                 v-model="formData.money"
               ></el-input>
             </el-form-item>
