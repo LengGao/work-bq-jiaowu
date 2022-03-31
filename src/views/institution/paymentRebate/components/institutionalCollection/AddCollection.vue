@@ -286,12 +286,35 @@
           </el-table-column>
           <el-table-column
             label="订单金额"
+            align="center"
+            min-width="100"
+            prop="total_money"
             show-overflow-tooltip
-            min-width="120"
-            prop="project_name"
           >
             <template slot-scope="{ row }">
-              <span>{{ row.order_money | moneyFormat }} </span>
+              <span> {{ row.total_money | moneyFormat }} </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="学费金额"
+            align="center"
+            min-width="100"
+            prop="order_money"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span> {{ row.order_money | moneyFormat }} </span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="其他金额"
+            align="center"
+            min-width="100"
+            prop="other_money"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <span> {{ row.other_money | moneyFormat }} </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -839,7 +862,7 @@ export default {
           moneys[item] = "";
         });
         this.againListData = res.data.list.map((item) => {
-          const project_ids = item.project_ids.split(
+          const project_ids = (item.project_ids || "").split(
             item.project_ids ? "," : ""
           );
           return {
@@ -847,7 +870,7 @@ export default {
             moneys: { ...moneys },
             checkedProjectIds: project_ids,
             isSelectProject: project_ids.length > 1,
-            projectOptions: item.project || [],
+            projectOptions: item.project || res.data.project || [],
           };
         });
       }
