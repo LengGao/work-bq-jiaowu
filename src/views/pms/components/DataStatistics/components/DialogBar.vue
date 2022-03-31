@@ -9,14 +9,26 @@
   >
     <div v-loading="loading">
       <div class="card">
-        <div class="card-item">
+        <!-- <div class="card-item">
           <div class="card-item-title">订单数量</div>
           <div class="card-item-value">{{ data.order_count }}</div>
-        </div>
+        </div> -->
         <div class="card-item">
           <div class="card-item-title">订单金额</div>
           <div class="card-item-value">
+            {{ accAdd(data.order_money, data.other_money || 0) | moneyFormat }}
+          </div>
+        </div>
+        <div class="card-item">
+          <div class="card-item-title">学费金额</div>
+          <div class="card-item-value">
             {{ data.order_money | moneyFormat }}
+          </div>
+        </div>
+        <div class="card-item">
+          <div class="card-item-title">其他金额</div>
+          <div class="card-item-value">
+            {{ data.other_money | moneyFormat }}
           </div>
         </div>
         <div class="card-item">
@@ -41,6 +53,7 @@
 
 <script>
 import { getJobTitleDetail, getEducationDetail } from "@/api/workbench.js";
+import { accAdd } from "@/utils";
 export default {
   props: {
     value: {
@@ -74,6 +87,7 @@ export default {
   },
   data() {
     return {
+      accAdd,
       chartInstance: null,
       loading: false,
     };
@@ -213,7 +227,7 @@ export default {
     border-radius: 4px;
     text-align: center;
     padding: 25px 0;
-    width: 24%;
+    width: 18%;
     &-title {
       margin-bottom: 8px;
     }
