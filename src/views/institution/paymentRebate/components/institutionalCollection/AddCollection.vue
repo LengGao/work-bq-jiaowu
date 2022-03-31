@@ -862,14 +862,14 @@ export default {
           moneys[item] = "";
         });
         this.againListData = res.data.list.map((item) => {
-          const project_ids = (item.project_ids || "").split(
-            item.project_ids ? "," : ""
-          );
+          const ids =
+            item.project_type === 1 ? item.major_detail_ids : item.project_ids;
+          const checkedProjectIds = (ids || "").split(ids ? "," : "");
           return {
             ...item,
             moneys: { ...moneys },
-            checkedProjectIds: project_ids,
-            isSelectProject: project_ids.length > 1,
+            checkedProjectIds,
+            isSelectProject: checkedProjectIds.length > 1,
             projectOptions: item.project || res.data.project || [],
           };
         });
