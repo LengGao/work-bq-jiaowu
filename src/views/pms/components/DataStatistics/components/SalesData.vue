@@ -186,7 +186,8 @@ export default {
   }
   .value {
     display: inline-block;
-    padding: 10px 0;
+    padding: 6px 0;
+    line-height: 1;
     font-size: 32px;
     cursor: pointer;
     .unit {
