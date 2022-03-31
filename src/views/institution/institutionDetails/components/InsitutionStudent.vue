@@ -153,6 +153,8 @@
 import UpdateTeacher from "@/views/eda/components/UpdateTeacher.vue";
 import { getShortcuts } from "@/utils/date";
 import { Organizationstudents } from "@/api/institution";
+import { getproject } from "@/api/eda";
+import { getCateList } from "@/api/sou";
 export default {
   name: "InsitutionStudent",
   components: {
@@ -177,7 +179,6 @@ export default {
       listTotal: 0,
       searchData: {
         keyword: "",
-        admin_id: "",
         date: "",
       },
       searchOptions: [
@@ -195,25 +196,33 @@ export default {
             },
           },
         },
-        // {
-        //     key: "is_pay",
-        //     type: "select",
-        //     width: 120,
-        //     options: [
-        //       {
-        //         value: 0,
-        //         label: "未报名",
-        //       },
-        //       {
-        //         value: 1,
-        //         label: "已报名",
-        //       },
-        //     ],
-        //     attrs: {
-        //       clearable: true,
-        //       placeholder: "报名状态",
-        //     },
-        //   },
+        {
+          key: "category_id",
+          type: "select",
+          options: [],
+          optionValue: "category_id",
+          optionLabel: "category_name",
+          attrs: {
+            placeholder: "所属分类",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
+          width: 280,
+          attrs: {
+            placeholder: "所属项目",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
         {
           key: "keyword",
           attrs: {
@@ -228,6 +237,8 @@ export default {
 
   created() {
     this.Organizationstudents();
+    this.getCateList();
+    this.getproject();
   },
   methods: {
     openTeacherDialog() {
@@ -240,15 +251,30 @@ export default {
     handleSeletChange(selection) {
       this.checkedIds = selection.map((item) => item.archive_id);
     },
+    // 获取所属分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
+      }
+    },
+    // 获取项目下拉
+    async getproject() {
+      const res = await getproject();
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data;
+      }
+    },
     handleSearch(data) {
-      const times = data.date || ["", ""];
-      console.log(times);
+      const { start_time, end_time } = data.date || ["", ""];
       delete data.date;
       this.pageNum = 1;
       this.searchData = {
         ...data,
-        start_time: times[0],
-        end_time: times[1],
+        start_time,
+        end_time,
+        project_id: data.project_id.join(","),
       };
       this.Organizationstudents();
     },

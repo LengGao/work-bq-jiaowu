@@ -146,6 +146,8 @@
 <script>
 import { getShortcuts } from "@/utils/date";
 import { studentsOrder } from "@/api/institution";
+import { getproject } from "@/api/eda";
+import { getCateList } from "@/api/sou";
 import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
 import UpdateInstitutionOrder from "@/views/eda/components/UpdateInstitutionOrder";
 export default {
@@ -185,6 +187,33 @@ export default {
             pickerOptions: {
               shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
             },
+          },
+        },
+        {
+          key: "category_id",
+          type: "select",
+          options: [],
+          optionValue: "category_id",
+          optionLabel: "category_name",
+          attrs: {
+            placeholder: "所属分类",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "project_id",
+          type: "select",
+          options: [],
+          optionValue: "project_id",
+          optionLabel: "project_name",
+          width: 280,
+          attrs: {
+            placeholder: "所属项目",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
           },
         },
         {
@@ -229,6 +258,8 @@ export default {
 
   created() {
     this.studentsOrder();
+    this.getCateList();
+    this.getproject();
   },
   methods: {
     toDetail(id) {
@@ -256,10 +287,27 @@ export default {
     handleSeletChange(selection) {
       this.checkedIds = selection.map((item) => item.order_id);
     },
+    // 获取所属分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[1].options = res.data;
+      }
+    },
+    // 获取项目下拉
+    async getproject() {
+      const res = await getproject();
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data;
+      }
+    },
     handleSearch(data) {
       this.pageNum = 1;
       this.searchData = {
         ...data,
+        date: (data.date || []).join(" - "),
+        project_id: data.project_id.join(","),
       };
       this.studentsOrder();
     },
