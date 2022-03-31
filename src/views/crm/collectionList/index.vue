@@ -166,7 +166,7 @@
             show-overflow-tooltip
           >
           </el-table-column>
-          <el-table-column label="操作" min-width="80" fixed="right">
+          <!-- <el-table-column label="操作" min-width="80" fixed="right">
             <template slot-scope="{ row }">
               <el-button
                 v-if="row.verify_status"
@@ -176,7 +176,7 @@
                 >重置</el-button
               >
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <div class="table_bottom">
           <page
