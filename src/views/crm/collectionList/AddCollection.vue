@@ -268,13 +268,8 @@
                   <i class="el-icon-document-copy"></i>
                 </div>
               </template>
-              <template slot-scope="{ row, $index: index }">
-                <el-form-item
-                  :rules="[
-                    { required: true, message: `请上传`, trigger: 'change' },
-                  ]"
-                  :prop="`checkedOrderData[${index}].receipt_file`"
-                >
+              <template slot-scope="{ row }">
+                <el-form-item>
                   <el-select
                     v-show="false"
                     multiple
