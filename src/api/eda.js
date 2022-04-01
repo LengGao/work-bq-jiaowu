@@ -995,9 +995,9 @@ export function getEduList(params) {
   })
 }
 // 补齐费用
-export function batchUpdateFee(data) {
+export function batchSaveFee(data) {
   return request({
-    url: '/Crm/batchUpdateFee',
+    url: '/Crm/batchSaveFee',
     method: 'post',
     data,
   })

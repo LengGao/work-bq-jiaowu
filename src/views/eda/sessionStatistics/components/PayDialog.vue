@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { batchUpdateFee } from "@/api/eda";
+import { batchSaveFee } from "@/api/eda";
 import { mapGetters } from "vuex";
 export default {
   name: "PayDialog",
@@ -63,13 +63,13 @@ export default {
     },
   },
   methods: {
-    async batchUpdateFee() {
+    async batchSaveFee() {
       const data = {
         id_arr: this.ids,
         ...this.formData,
       };
       this.submitLoading = true;
-      const res = await batchUpdateFee(data).catch(() => {});
+      const res = await batchSaveFee(data).catch(() => {});
       this.submitLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
@@ -80,7 +80,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.batchUpdateFee();
+          this.batchSaveFee();
         }
       });
     },

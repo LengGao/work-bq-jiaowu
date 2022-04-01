@@ -1,8 +1,6 @@
 <template>
   <div class="expense-statistics">
-    <div class="head_remind">
-      *本模块主要是渠道用来进行日常学生数据的跟进管理。
-    </div>
+    <div class="head_remind">*本模块主要是统计学生的学杂费用缴费情况。</div>
     <div class="expense-statistics-container">
       <!--搜索模块-->
       <SearchList
@@ -111,14 +109,14 @@
               <el-button
                 v-if="isPay(row.fee, type)"
                 type="text"
-                @click="updateExpenseStatus(row, item, type, 0)"
+                @click="updateExpenseStatus(row, item, `type${type}`, 0)"
                 class="success"
                 >已缴</el-button
               >
               <el-button
                 v-else
                 type="text"
-                @click="updateExpenseStatus(row, item, type, 1)"
+                @click="updateExpenseStatus(row, item, `type${type}`, 1)"
                 class="danger"
                 >未缴</el-button
               >
@@ -126,7 +124,9 @@
           </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
-              <el-button type="text">订单详情</el-button>
+              <el-button type="text" @click="toCrmOrderDetail(row)"
+                >订单详情</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -143,14 +143,18 @@
         />
       </div>
     </div>
-    <PayDialog v-model="payDialogVisible" />
+    <PayDialog
+      v-model="payDialogVisible"
+      :ids="checkedIds"
+      @on-success="getFeeList"
+    />
   </div>
 </template>
 
 <script>
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
-import { getproject, getAdminSelect } from "@/api/eda";
+import { getproject, getAdminSelect, batchSaveFee } from "@/api/eda";
 import { getFeeList, getOrgName } from "@/api/crm";
 import { getCateList, getGradeOptions } from "@/api/sou";
 import { getDepartmentlists } from "@/api/set";
@@ -291,7 +295,7 @@ export default {
         },
       ],
       payDialogVisible: false,
-      uids: [],
+      checkedIds: [],
     };
   },
   computed: {
@@ -326,21 +330,34 @@ export default {
   },
 
   methods: {
+    toCrmOrderDetail(row) {
+      let routeName = "crmOrderDetail";
+      if (row.institution_name) {
+        routeName = "studentOrderDetail";
+      }
+      this.$router.push({
+        name: routeName,
+        query: {
+          id: row.order_id,
+        },
+      });
+    },
     isPay(list, type) {
       const res = list.filter((item) => item.fee_type == type && item.status);
       return !!res.length;
     },
     handleSeletChange(selection) {
-      this.uids = selection.map((item) => item.uid);
+      this.checkedIds = selection.map((item) => item.id);
     },
     openPayDialog() {
-      if (!this.uids.length) {
+      if (!this.checkedIds.length) {
         this.$message.warning("请选择学生");
         return;
       }
       this.payDialogVisible = true;
     },
-    updateExpenseStatus(row, expenseName, type, status) {
+
+    updateExpenseStatus(row, expenseName, fieldName, status) {
       this.$confirm(
         `您确认要修改 ${row.surname}-${
           row.project_name || ""
@@ -351,7 +368,20 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         }
-      ).then(() => {});
+      ).then(() => {
+        this.batchSaveFee(row.id, fieldName, status);
+      });
+    },
+    async batchSaveFee(id, fieldName, status) {
+      const data = {
+        id_arr: [id],
+        [fieldName]: status,
+      };
+      const res = await batchSaveFee(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getFeeList();
+      }
     },
     handleSearch(data) {
       this.pageNum = 1;
@@ -384,7 +414,7 @@ export default {
     },
     //学生列表
     async getFeeList() {
-      this.uids = [];
+      this.checkedIds = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
