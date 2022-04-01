@@ -69,6 +69,13 @@
         >
         </el-table-column>
         <el-table-column
+          prop="category_name"
+          label="分类名称"
+          min-width="100"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
           prop="course_name"
           label="开通课程"
           min-width="180"

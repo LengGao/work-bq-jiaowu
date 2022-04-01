@@ -70,6 +70,13 @@
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
+          prop="category_name"
+          label="分类名称"
+          min-width="100"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
           prop="course_list"
           label="课程名称"
           min-width="180"
