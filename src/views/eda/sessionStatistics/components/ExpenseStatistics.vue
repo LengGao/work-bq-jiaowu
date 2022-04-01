@@ -140,7 +140,7 @@
 <script>
 import { getOrderListForNot6, getproject, getJiebieSelect } from "@/api/eda";
 export default {
-  name: "ProfessionalList",
+  name: "ExpenseStatistics",
   data() {
     return {
       ResetDialogflag: false,
