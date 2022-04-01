@@ -169,7 +169,6 @@
         <div class="table_bottom">
           <div>
             <el-button @click="openGradeDialog">修改届别</el-button>
-            <el-button @click="openResetDialog">补齐费用</el-button>
             <el-button @click="exportEduList" :loading="exportLoading">
               导出数据
             </el-button>
@@ -183,11 +182,6 @@
         </div>
       </div>
     </div>
-    <PayDialog
-      v-model="ResetDialogflag"
-      :ids="checkedIds"
-      @on-success="getEduList"
-    />
     <UpdateOrderGrade
       v-model="gradeDialogflag"
       :order-ids="checkedOrderIds"
@@ -201,7 +195,6 @@
   </div>
 </template>
 <script>
-import PayDialog from "@/views/eda/components/PayDialog";
 import UpdateOrderGrade from "@/views/eda/components/UpdateOrderGrade";
 import StudentStatusChange from "@/views/eda/components/StudentStatusChange";
 import {
@@ -216,24 +209,16 @@ import { getShortcuts } from "@/utils/date";
 export default {
   name: "EducationList",
   components: {
-    PayDialog,
     UpdateOrderGrade,
     StudentStatusChange,
   },
   data() {
     return {
-      ResetDialogflag: false,
       searchData: {
         keyword: "",
         from_organization_id: "",
         admin_id: "",
         date: "",
-        book_fee_status: "",
-        platform_fee_status: "",
-        service_fee_status: "",
-        paper_teach_fee_status: "",
-        paper_reply_fee_status: "",
-        paper_handle_fee_status: "",
       },
       searchOptions: [
         {
@@ -274,121 +259,6 @@ export default {
             filterable: true,
           },
         },
-        {
-          key: "book_fee_status",
-          type: "select",
-          width: 110,
-          options: [
-            {
-              value: 0,
-              label: "未缴",
-            },
-            {
-              value: 1,
-              label: "已缴",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "教材费",
-          },
-        },
-        {
-          key: "platform_fee_status",
-          type: "select",
-          width: 110,
-          options: [
-            {
-              value: 0,
-              label: "未缴",
-            },
-            {
-              value: 1,
-              label: "已缴",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "平台费",
-          },
-        },
-        {
-          key: "service_fee_status",
-          type: "select",
-          width: 130,
-          options: [
-            {
-              value: 0,
-              label: "未缴",
-            },
-            {
-              value: 1,
-              label: "已缴",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "教务服务费",
-          },
-        },
-        {
-          key: "paper_teach_fee_status",
-          type: "select",
-          width: 130,
-          options: [
-            {
-              value: 0,
-              label: "未缴",
-            },
-            {
-              value: 1,
-              label: "已缴",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "论文指导费",
-          },
-        },
-        {
-          key: "paper_reply_fee_status",
-          type: "select",
-          width: 120,
-          options: [
-            {
-              value: 0,
-              label: "未缴",
-            },
-            {
-              value: 1,
-              label: "已缴",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "论文答辩费",
-          },
-        },
-        {
-          key: "paper_handle_fee_status",
-          type: "select",
-          width: 120,
-          options: [
-            {
-              value: 0,
-              label: "未缴",
-            },
-            {
-              value: 1,
-              label: "已缴",
-            },
-          ],
-          attrs: {
-            clearable: true,
-            placeholder: "论文处理费",
-          },
-        },
-
         {
           key: "keyword",
           attrs: {
@@ -460,13 +330,6 @@ export default {
         this.checkedIds.push(item.id);
         this.checkedOrderIds.push(item.order_id);
       });
-    },
-    openResetDialog() {
-      if (!this.checkedIds.length) {
-        this.$message.warning("请选择学生");
-        return;
-      }
-      this.ResetDialogflag = true;
     },
 
     async exportEduList() {

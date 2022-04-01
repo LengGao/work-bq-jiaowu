@@ -815,4 +815,12 @@ export function payPlanDelete(data) {
         data,
     })
 }
+// 届别统计-费用列表
+export function getFeeList(data) {
+    return request({
+        url: '/Crm/feeList',
+        method: 'post',
+        data,
+    })
+}
 

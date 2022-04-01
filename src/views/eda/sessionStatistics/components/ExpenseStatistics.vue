@@ -35,7 +35,7 @@
           <el-table-column
             prop="surname"
             label="学生姓名"
-            min-width="100"
+            min-width="90"
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
@@ -55,7 +55,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="from_institution_name"
+            prop="institution_name"
             label="推荐机构"
             min-width="150"
             show-overflow-tooltip
@@ -63,12 +63,12 @@
           <el-table-column
             prop="staff_name"
             label="所属老师"
-            min-width="100"
+            min-width="90"
             show-overflow-tooltip
           ></el-table-column>
 
           <el-table-column
-            prop="customer_type"
+            prop="department"
             label="所属部门"
             min-width="100"
             show-overflow-tooltip
@@ -89,7 +89,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="jiebie_name"
+            prop="title"
             label="届别名称"
             min-width="100"
             show-overflow-tooltip
@@ -97,7 +97,7 @@
           <el-table-column
             prop="year"
             label="所属年份"
-            min-width="100"
+            min-width="90"
             show-overflow-tooltip
           ></el-table-column>
           <el-table-column
@@ -106,7 +106,24 @@
             :label="item"
             min-width="100"
             show-overflow-tooltip
-          ></el-table-column>
+          >
+            <template slot-scope="{ row }">
+              <el-button
+                v-if="isPay(row.fee, type)"
+                type="text"
+                @click="updateExpenseStatus(row, item, type, 0)"
+                class="success"
+                >已缴</el-button
+              >
+              <el-button
+                v-else
+                type="text"
+                @click="updateExpenseStatus(row, item, type, 1)"
+                class="danger"
+                >未缴</el-button
+              >
+            </template>
+          </el-table-column>
           <el-table-column label="操作" fixed="right" min-width="100">
             <template slot-scope="{ row }">
               <el-button type="text">订单详情</el-button>
@@ -116,7 +133,7 @@
       </div>
       <div class="table_bottom">
         <div>
-          <el-button @click="openResetDialog">补齐费用</el-button>
+          <el-button @click="openPayDialog">补齐费用</el-button>
         </div>
         <page
           :data="listTotal"
@@ -126,6 +143,7 @@
         />
       </div>
     </div>
+    <PayDialog v-model="payDialogVisible" />
   </div>
 </template>
 
@@ -133,14 +151,17 @@
 import { getShortcuts } from "@/utils/date";
 import { cloneOptions } from "@/utils/index";
 import { getproject, getAdminSelect } from "@/api/eda";
-import { getChannelStudentList, getOrgName } from "@/api/crm";
+import { getFeeList, getOrgName } from "@/api/crm";
 import { getCateList, getGradeOptions } from "@/api/sou";
 import { getDepartmentlists } from "@/api/set";
 import { getPlanYearOptions } from "@/utils/date";
 import { mapGetters } from "vuex";
+import PayDialog from "./PayDialog";
 export default {
-  name: "channelStudent",
-  components: {},
+  name: "ExpenseStatistics",
+  components: {
+    PayDialog,
+  },
   data() {
     return {
       importVisible: false,
@@ -269,7 +290,7 @@ export default {
           },
         },
       ],
-      ResetDialogflag: false,
+      payDialogVisible: false,
       uids: [],
     };
   },
@@ -295,7 +316,7 @@ export default {
     },
   },
   created() {
-    this.getChannelStudentList();
+    this.getFeeList();
     this.getOrgName();
     this.getproject();
     this.getCateList();
@@ -305,17 +326,33 @@ export default {
   },
 
   methods: {
+    isPay(list, type) {
+      const res = list.filter((item) => item.fee_type == type && item.status);
+      return !!res.length;
+    },
     handleSeletChange(selection) {
       this.uids = selection.map((item) => item.uid);
     },
-    openResetDialog() {
+    openPayDialog() {
       if (!this.uids.length) {
         this.$message.warning("请选择学生");
         return;
       }
-      this.ResetDialogflag = true;
+      this.payDialogVisible = true;
     },
-
+    updateExpenseStatus(row, expenseName, type, status) {
+      this.$confirm(
+        `您确认要修改 ${row.surname}-${
+          row.project_name || ""
+        } 的 ${expenseName} 状态为【${status ? "已缴" : "未缴"}】吗?"`,
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      ).then(() => {});
+    },
     handleSearch(data) {
       this.pageNum = 1;
       const {
@@ -335,42 +372,27 @@ export default {
         from_org: [...(from_org || [])].pop(),
         staff_id: staff_id.join(","),
       };
-      this.getChannelStudentList();
+      this.getFeeList();
     },
     handleSizeChange(size) {
       this.pageSize = size;
-      this.getChannelStudentList();
+      this.getFeeList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getChannelStudentList();
+      this.getFeeList();
     },
     //学生列表
-    async getChannelStudentList() {
+    async getFeeList() {
       this.uids = [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
         channel: 1,
         ...this.searchData,
-        // date: Array.isArray(this.searchData.date)
-        //   ? this.searchData.date.join(" - ")
-        //   : "",
-        // category_id: Array.isArray(this.searchData.category_id)
-        //   ? this.searchData.category_id.join(",")
-        //   : "",
-        // project_id: Array.isArray(this.searchData.project_id)
-        //   ? this.searchData.project_id.join(",")
-        //   : "",
-        // from_org: Array.isArray(this.searchData.from_org)
-        //   ? [...this.searchData.from_org].pop()
-        //   : "",
-        // staff_id: Array.isArray(this.searchData.staff_id)
-        //   ? this.searchData.staff_id.join(",")
-        //   : "",
       };
       this.listLoading = true;
-      const res = await getChannelStudentList(data);
+      const res = await getFeeList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
@@ -447,6 +469,12 @@ export default {
   }
   &-container {
     padding: 20px;
+    .success {
+      color: #43d100;
+    }
+    .danger {
+      color: #fd6500;
+    }
   }
   .table_bottom {
     display: flex;

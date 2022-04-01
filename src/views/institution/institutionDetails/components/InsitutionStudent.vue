@@ -72,6 +72,7 @@
         <el-table-column
           prop="category_name"
           label="分类名称"
+          show-overflow-tooltip
           min-width="100"
           align="center"
         >
