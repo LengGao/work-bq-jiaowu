@@ -344,8 +344,14 @@
       <el-button
         type="primary"
         :loading="addLoading"
-        @click="submitForm('formData')"
+        @click="submitForm('formData', true)"
         >开 课</el-button
+      >
+      <el-button
+        type="primary"
+        :loading="addLoading"
+        @click="submitForm('formData', false)"
+        >连续开课</el-button
       >
     </span>
   </el-dialog>
@@ -499,6 +505,7 @@ export default {
     "formData.selectMajor"(val) {
       const el = this.$refs.cascaderMajor;
       val &&
+        el &&
         this.$nextTick(() => {
           let checkNodes = el.getCheckedNodes(true);
           let tableData = checkNodes
@@ -604,7 +611,7 @@ export default {
         id: +new Date(),
       });
     },
-    async submit() {
+    async submit(isClose) {
       const data = {
         student: JSON.stringify(this.formData.student),
         type: this.formData.type,
@@ -681,7 +688,18 @@ export default {
       this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
-        this.visible = false;
+        if (isClose) {
+          this.visible = false;
+        } else {
+          this.formData.student = [
+            {
+              surname: "",
+              mobile: "",
+              id_card_number: "",
+              id: 1,
+            },
+          ];
+        }
         this.$emit("on-success");
       }
     },
@@ -758,10 +776,10 @@ export default {
         this.projectOptions = res.data || [];
       }
     },
-    submitForm(formName) {
+    submitForm(formName, isClose) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.submit();
+          this.submit(isClose);
         }
       });
     },
