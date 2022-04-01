@@ -1,261 +1,441 @@
 <template>
-  <div class="college-student">
-    <div class="head_remind">*本模块主要展示最近职称报名的学生。</div>
-    <div class="college-student-container">
-      <div
-        class="tree-list"
-        :style="{
-          width: isTreeOpen ? '280px' : '0px',
-        }"
-      >
-        <el-tree
-          title
-          :data="treeData"
-          :props="defaultProps"
-          ref="tree"
-          highlight-current
-          @node-click="onNodeClick"
+  <div class="expense-statistics">
+    <div class="head_remind">
+      *本模块主要是渠道用来进行日常学生数据的跟进管理。
+    </div>
+    <div class="expense-statistics-container">
+      <!--搜索模块-->
+      <SearchList
+        :options="searchOptions"
+        :data="searchData"
+        @on-search="handleSearch"
+      />
+      <!--列表-->
+      <div class="userTable">
+        <el-table
+          ref="multipleTable"
+          :data="listData"
+          v-loading="listLoading"
+          element-loading-text="loading"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="#fff"
+          tooltip-effect="light"
+          stripe
+          style="width: 100%"
+          class="min_table"
+          :header-cell-style="{
+            'text-align': 'center',
+            'background-color': '#f8f8f8',
+            color: '#909399',
+          }"
+          :cell-style="{ 'text-align': 'center' }"
+          @selection-change="handleSeletChange"
         >
-        </el-tree>
-        <div class="tree-list-toggle" @click="handleToggle">
-          <i :class="`el-icon-caret-${isTreeOpen ? 'left' : 'right'}`"></i>
-        </div>
-      </div>
-      <div class="table-list">
-        <!--搜索模块-->
-        <div class="college-student-search">
-          <SearchList
-            :options="searchOptions"
-            :data="searchData"
-            @on-search="handleSearch"
-          />
-        </div>
-
-        <!--列表-->
-        <div class="userTable">
-          <el-table
-            :data="listData"
-            v-loading="listLoading"
-            element-loading-text="loading"
-            element-loading-spinner="el-icon-loading"
-            element-loading-background="#fff"
-            tooltip-effect="light"
-            stripe
-            style="width: 100%"
-            :header-cell-style="{
-              'text-align': 'center',
-              background: '#f8f8f8',
-            }"
-            :cell-style="{ 'text-align': 'center' }"
-            height="640"
+          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column
+            prop="surname"
+            label="学生姓名"
+            min-width="100"
+            show-overflow-tooltip
           >
-            <el-table-column
-              prop="user_realname"
-              label="学生姓名"
-              min-width="90"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <el-button type="text" @click="toStudentDetail(row.uid)">
-                  {{ row.user_realname }}
-                </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="telphone"
-              label="手机号码"
-              min-width="130"
-              show-overflow-tooltip
-            >
-              <template slot-scope="{ row }">
-                <PartiallyHidden :value="row.telphone" />
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="title"
-              label="届别名称"
-              show-overflow-tooltip
-              min-width="100"
-            ></el-table-column>
-            <el-table-column
-              prop="project_ids_name"
-              label="报名项目"
-              show-overflow-tooltip
-              min-width="180"
-            ></el-table-column>
-            <el-table-column
-              prop="category_name"
-              label="所属分类"
-              show-overflow-tooltip
-              min-width="100"
-            ></el-table-column>
-            <el-table-column
-              prop="institution_name"
-              label="所属机构"
-              show-overflow-tooltip
-              min-width="130"
-            ></el-table-column>
-            <el-table-column
-              prop="staff_name"
-              label="所属老师"
-              show-overflow-tooltip
-              min-width="100"
-            ></el-table-column>
-            <el-table-column
-              prop="class_name"
-              label="所属班级"
-              show-overflow-tooltip
-              min-width="180"
-            ></el-table-column>
-            <el-table-column
-              prop="create_time"
-              label="创建时间"
-              show-overflow-tooltip
-              min-width="160"
-            ></el-table-column>
-            <el-table-column label="操作" fixed="right" min-width="160">
-              <template slot-scope="{ row }">
-                <el-button type="text" @click="toStudentDetail(row.uid)">
-                  学生详情
-                </el-button>
-                <el-button type="text" @click="toOrderDetail(row.order_id)">
-                  订单详情
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+            <template slot-scope="{ row }">
+              <el-button type="text" @click="toStudentDetail(row.uid)">
+                {{ row.surname }}
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="mobile"
+            label="手机号码"
+            min-width="130"
+            show-overflow-tooltip
+          >
+            <template slot-scope="{ row }">
+              <PartiallyHidden :value="row.mobile" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="from_institution_name"
+            label="推荐机构"
+            min-width="150"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="staff_name"
+            label="所属老师"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+
+          <el-table-column
+            prop="customer_type"
+            label="所属部门"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="category_name"
+            label="所属分类"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="project_name"
+            label="项目名称"
+            min-width="220"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
+            prop="jiebie_name"
+            label="届别名称"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            prop="year"
+            label="所属年份"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column
+            v-for="(item, type) in expenseTypeColumns"
+            :key="type"
+            :label="item"
+            min-width="100"
+            show-overflow-tooltip
+          ></el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="100">
+            <template slot-scope="{ row }">
+              <el-button type="text">订单详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="table_bottom">
+        <div>
+          <el-button @click="openResetDialog">补齐费用</el-button>
         </div>
-        <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageSizeChange="handleSizeChange"
-            @pageChange="handlePageChange"
-          />
-        </div>
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
+          @pageChange="handlePageChange"
+        />
       </div>
     </div>
   </div>
 </template>
+
 <script>
-import { getOrderListForNot6, getproject, getJiebieSelect } from "@/api/eda";
+import { getShortcuts } from "@/utils/date";
+import { cloneOptions } from "@/utils/index";
+import { getproject, getAdminSelect } from "@/api/eda";
+import { getChannelStudentList, getOrgName } from "@/api/crm";
+import { getCateList, getGradeOptions } from "@/api/sou";
+import { getDepartmentlists } from "@/api/set";
+import { getPlanYearOptions } from "@/utils/date";
+import { mapGetters } from "vuex";
 export default {
-  name: "ExpenseStatistics",
+  name: "channelStudent",
+  components: {},
   data() {
     return {
-      ResetDialogflag: false,
+      importVisible: false,
+      listData: [],
+      listLoading: false,
+      pageNum: 1,
+      pageSize: 20,
+      listTotal: 0,
       searchData: {
         keyword: "",
       },
       searchOptions: [
+        {
+          key: "date",
+          type: "datePicker",
+          attrs: {
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "开始日期",
+            "end-placeholder": "结束日期",
+            "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
+          },
+        },
+        {
+          key: "from_org",
+          type: "cascader",
+          attrs: {
+            placeholder: "所属机构",
+            filterable: true,
+            clearable: true,
+            options: [],
+          },
+        },
+        {
+          key: "staff_id",
+          type: "select",
+          width: 220,
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
+          key: "department_id",
+          type: "cascader",
+          width: 240,
+          attrs: {
+            placeholder: "所属部门",
+            clearable: true,
+            props: {
+              multiple: true,
+              checkStrictly: true,
+            },
+            "collapse-tags": true,
+            filterable: true,
+            options: [],
+          },
+        },
+        {
+          key: "category_id",
+          type: "select",
+          options: [],
+          optionValue: "category_id",
+          optionLabel: "category_name",
+          attrs: {
+            placeholder: "所属分类",
+            "collapse-tags": true,
+            filterable: true,
+            clearable: true,
+            multiple: true,
+          },
+        },
         {
           key: "project_id",
           type: "select",
           options: [],
           optionValue: "project_id",
           optionLabel: "project_name",
+          width: 300,
           attrs: {
             placeholder: "所属项目",
             clearable: true,
             filterable: true,
+            multiple: true,
+            "collapse-tags": true,
           },
         },
-
+        {
+          key: "jiebie_id",
+          type: "select",
+          options: [],
+          optionValue: "id",
+          optionLabel: "category_name,title",
+          attrs: {
+            placeholder: "届别名称",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
+          key: "year",
+          type: "select",
+          options: (getPlanYearOptions() || []).map((item) => ({
+            label: item,
+            value: item,
+          })),
+          attrs: {
+            placeholder: "所属年份",
+            clearable: true,
+            filterable: true,
+          },
+        },
         {
           key: "keyword",
           attrs: {
-            placeholder: "学生姓名",
+            placeholder: "学生姓名/手机号码",
           },
         },
       ],
-      listData: [],
-      listLoading: false,
-      pageNum: 1,
-      pageSize: 20,
-      listTotal: 0,
-      defaultProps: {
-        children: "child",
-        label: (data) => {
-          return `${data.title} (${data.count})`;
-        },
-      },
-      treeData: [],
-      treeParams: {},
-      isTreeOpen: true,
+      ResetDialogflag: false,
+      uids: [],
     };
   },
-  created() {
-    this.getJiebieSelect();
-    this.getOrderListForNot6();
-    this.getproject();
-  },
-  methods: {
-    handleToggle() {
-      this.isTreeOpen = !this.isTreeOpen;
-    },
-    onNodeClick(data) {
-      const { category_id = "", jiebie_id = "" } = data;
-      this.treeParams = {
-        jiebie_id,
-        category_id,
-      };
-      this.getOrderListForNot6();
-    },
-    async getJiebieSelect() {
-      const res = await getJiebieSelect();
-      if (res.code === 0) {
-        this.treeData = [
-          {
-            title: "全部",
-            count: res.data.total,
+  computed: {
+    ...mapGetters(["expenseType"]),
+    expenseTypeColumns() {
+      for (const k in this.expenseType) {
+        this.searchOptions.splice(-1, 0, {
+          key: `type${k}`,
+          type: "select",
+          width: 120,
+          options: [
+            { label: "已缴", value: 1 },
+            { label: "未缴", value: 0 },
+          ],
+          attrs: {
+            placeholder: this.expenseType[k],
+            clearable: true,
           },
-        ].concat(res.data.list);
+        });
+      }
+      return this.expenseType;
+    },
+  },
+  created() {
+    this.getChannelStudentList();
+    this.getOrgName();
+    this.getproject();
+    this.getCateList();
+    this.getDepartmentlists();
+    this.getAdminSelect();
+    this.getGradeOptions();
+  },
+
+  methods: {
+    handleSeletChange(selection) {
+      this.uids = selection.map((item) => item.uid);
+    },
+    openResetDialog() {
+      if (!this.uids.length) {
+        this.$message.warning("请选择学生");
+        return;
+      }
+      this.ResetDialogflag = true;
+    },
+
+    handleSearch(data) {
+      this.pageNum = 1;
+      const {
+        department_id = [],
+        date,
+        category_id,
+        project_id,
+        from_org,
+        staff_id,
+      } = data;
+      this.searchData = {
+        ...data,
+        department_id: department_id.map((item) => item.pop()).join(","),
+        date: (date || []).join(" - "),
+        category_id: category_id.join(","),
+        project_id: project_id.join(","),
+        from_org: [...(from_org || [])].pop(),
+        staff_id: staff_id.join(","),
+      };
+      this.getChannelStudentList();
+    },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getChannelStudentList();
+    },
+    handlePageChange(val) {
+      this.pageNum = val;
+      this.getChannelStudentList();
+    },
+    //学生列表
+    async getChannelStudentList() {
+      this.uids = [];
+      const data = {
+        page: this.pageNum,
+        limit: this.pageSize,
+        channel: 1,
+        ...this.searchData,
+        // date: Array.isArray(this.searchData.date)
+        //   ? this.searchData.date.join(" - ")
+        //   : "",
+        // category_id: Array.isArray(this.searchData.category_id)
+        //   ? this.searchData.category_id.join(",")
+        //   : "",
+        // project_id: Array.isArray(this.searchData.project_id)
+        //   ? this.searchData.project_id.join(",")
+        //   : "",
+        // from_org: Array.isArray(this.searchData.from_org)
+        //   ? [...this.searchData.from_org].pop()
+        //   : "",
+        // staff_id: Array.isArray(this.searchData.staff_id)
+        //   ? this.searchData.staff_id.join(",")
+        //   : "",
+      };
+      this.listLoading = true;
+      const res = await getChannelStudentList(data);
+      this.listLoading = false;
+      this.listData = res.data.list;
+      this.listTotal = res.data.total;
+    },
+    // 获取届别选项
+    async getGradeOptions() {
+      const res = await getGradeOptions();
+      if (res.code === 0) {
+        this.searchOptions[6].options = res.data;
+      }
+    },
+    // 获取部门
+    async getDepartmentlists() {
+      const res = await getDepartmentlists();
+      if (res.code === 0) {
+        this.searchOptions[3].attrs.options = cloneOptions(
+          res.data,
+          "title",
+          "id",
+          "children"
+        );
       }
     },
     // 获取项目下拉
     async getproject() {
       const res = await getproject();
       if (res.code === 0) {
-        this.searchOptions[0].options = res.data;
+        this.searchOptions[5].options = res.data;
       }
     },
-    handleSearch(data) {
-      this.pageNum = 1;
-      this.searchData = {
-        ...data,
-      };
-      this.getOrderListForNot6();
-    },
-    handleSizeChange(size) {
-      this.pageSize = size;
-      this.getOrderListForNot6();
-    },
-    handlePageChange(val) {
-      this.pageNum = val;
-      this.getOrderListForNot6();
-    },
-    // 获取列表
-    async getOrderListForNot6() {
-      const data = {
-        page: this.pageNum,
-        limit: this.pageSize,
-        ...this.searchData,
-        ...this.treeParams,
-      };
-      this.listLoading = true;
-      const res = await getOrderListForNot6(data);
-      this.listLoading = false;
+    // 获取所属老师
+    async getAdminSelect() {
+      const data = { list: true };
+      const res = await getAdminSelect(data);
       if (res.code === 0) {
-        this.listData = res.data.list;
-        this.listTotal = res.data.total;
+        this.searchOptions[2].options = res.data;
+      }
+    },
+    // 获取教材分类
+    async getCateList() {
+      const data = { list: true };
+      const res = await getCateList(data);
+      if (res.code === 0) {
+        this.searchOptions[4].options = res.data;
+      }
+    },
+    // 获取机构
+    async getOrgName() {
+      const data = { state: 0 };
+      const res = await getOrgName(data);
+      if (res.code === 0) {
+        this.searchOptions[1].attrs.options = cloneOptions(
+          res.data,
+          "institution_name",
+          "from_organization_id",
+          "children"
+        );
       }
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.college-student {
+<style lang="less" scoped>
+.expense-statistics {
   .head_remind {
     padding: 0 20px 20px 20px;
     font-weight: 400;
@@ -267,37 +447,10 @@ export default {
   }
   &-container {
     padding: 20px;
+  }
+  .table_bottom {
     display: flex;
-    .tree-list {
-      flex-shrink: 0;
-      border-right: 1px solid #eee;
-      position: relative;
-      transition: width 0.3s;
-      &-toggle {
-        position: absolute;
-        overflow: hidden;
-        right: 0;
-        top: 50%;
-        line-height: 80px;
-        transform: translateY(-50%);
-        width: 12px;
-        background-color: #e4e7ed;
-        cursor: pointer;
-        z-index: 10px;
-        i {
-          transform: translateX(-1px);
-          color: #c0c4cc;
-        }
-      }
-    }
-    .table-list {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-      z-index: 10;
-      padding-left: 20px;
-      background-color: #fff;
-    }
+    justify-content: space-between;
   }
 }
 </style>
