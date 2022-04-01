@@ -180,11 +180,8 @@
     <component
       :is="getComponent"
       :list-data="orderTransactionData"
-      :data="
-        activeName.includes(unusualLabelName)
-          ? detailData.reshuffle_list[unusualIndex].new_detail
-          : detailData
-      "
+      :data="detailData"
+      :changeIndex="unusualIndex"
     />
     <RefundDialog
       v-model="dialogVisible"
@@ -304,7 +301,7 @@ export default {
     getComponent() {
       if (this.activeName) {
         let componentName = this.activeName.includes(this.unusualLabelName)
-          ? "UnusualRecord"
+          ? "ChangeRecord"
           : this.activeName;
         return () => import(`./components/${componentName}.vue`);
       }
