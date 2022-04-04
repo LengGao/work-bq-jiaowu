@@ -192,6 +192,9 @@
             <el-button @click="openOrderActions(row, 3)" type="text"
               >作废</el-button
             >
+            <el-button @click="delConfirm(row.order_id)" type="text"
+              >清除合同</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -228,7 +231,7 @@
 import CollectionOrder from "@/views/fina/components/CollectionOrder";
 import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
 import UpdateInstitutionOrder from "@/views/eda/components/UpdateInstitutionOrder";
-import { getCrmOrderList } from "@/api/crm";
+import { getCrmOrderList, clearContract } from "@/api/crm";
 import RefundDialog from "@/views/crm/crmOrder/components/RefundDialog";
 export default {
   name: "OrderRecords",
@@ -277,6 +280,10 @@ export default {
         },
       },
       verifyStatusMap: {
+        0: {
+          text: "待审核",
+          type: "info",
+        },
         1: {
           text: "待审核",
           type: "info",
@@ -314,6 +321,24 @@ export default {
     this.getCrmOrderList();
   },
   methods: {
+    // 清除合同
+    delConfirm(order_id) {
+      this.$confirm("确定要清除该合同吗？", "提醒", {
+        type: "warning",
+      })
+        .then(() => {
+          this.clearContract(order_id);
+        })
+        .catch(() => {});
+    },
+    async clearContract(order_id) {
+      const data = { order_id };
+      const res = await clearContract(data);
+      if (res.code === 0) {
+        this.$message.success(res.message);
+        this.getCrmOrderList();
+      }
+    },
     openOrderFromDialog() {
       if (!this.checkedIds.length) {
         this.$message.warning("请选择订单");

@@ -823,4 +823,12 @@ export function getFeeList(data) {
         data,
     })
 }
+// 清除合同
+export function clearContract(data) {
+    return request({
+        url: '/contract/clearContract',
+        method: 'post',
+        data,
+    })
+}
 
