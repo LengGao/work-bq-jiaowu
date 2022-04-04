@@ -1080,7 +1080,9 @@ export default {
         this.previewDialog = true;
         return;
       }
-      const res = await createOrder(data);
+      this.addLoading = true;
+      const res = await createOrder(data).catch(() => {});
+      this.addLoading = false;
       if (res.code === 0) {
         this.$message.success(res.message);
         this.hanldeCancel();
