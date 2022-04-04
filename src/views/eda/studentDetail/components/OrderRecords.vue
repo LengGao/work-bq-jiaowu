@@ -137,9 +137,9 @@
           <template slot-scope="{ row }">
             <el-tag
               size="small"
-              :type="verifyStatusMap[row.verify_status || 0].type"
+              :type="verifyStatusMap[row.verify_status || 1].type"
             >
-              {{ verifyStatusMap[row.verify_status || 0].text }}
+              {{ verifyStatusMap[row.verify_status || 1].text }}
             </el-tag>
           </template>
         </el-table-column>
@@ -192,7 +192,10 @@
             <el-button @click="openOrderActions(row, 3)" type="text"
               >作废</el-button
             >
-            <el-button @click="delConfirm(row.order_id)" type="text"
+            <el-button
+              v-if="row.contract_status && row.sign_url"
+              @click="delConfirm(row.order_id)"
+              type="text"
               >清除合同</el-button
             >
           </template>
@@ -280,10 +283,6 @@ export default {
         },
       },
       verifyStatusMap: {
-        0: {
-          text: "待审核",
-          type: "info",
-        },
         1: {
           text: "待审核",
           type: "info",
