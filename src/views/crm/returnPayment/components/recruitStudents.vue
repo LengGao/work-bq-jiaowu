@@ -86,14 +86,12 @@
           class-name="badge"
         >
           <template slot-scope="{ row }">
-            <el-badge :value="row.reshuffle ? '异' : ''" class="item">
-              <el-tag
-                size="small"
-                :type="verifyStatusMap[row.verify_status || 1].type"
-              >
-                {{ verifyStatusMap[row.verify_status || 1].text }}
-              </el-tag>
-            </el-badge>
+            <el-tag
+              size="small"
+              :type="orderVerifyStatusMap[row.order_verify_status || 1].type"
+            >
+              {{ orderVerifyStatusMap[row.order_verify_status || 1].text }}
+            </el-tag>
           </template>
         </el-table-column>
         <!-- <el-table-column
@@ -338,7 +336,7 @@ export default {
         department_id: "",
         staff_id: "",
         verify_status: "",
-        order_status: 3,
+        order_verify_status: 3,
         pay_type: "",
       },
       searchOptions: [
@@ -401,7 +399,7 @@ export default {
           },
         },
         {
-          key: "order_status",
+          key: "order_verify_status",
           type: "select",
           width: 120,
           options: [
@@ -498,7 +496,7 @@ export default {
         id: "",
         verify_status: 1,
       },
-      verifyStatusMap: {
+      orderVerifyStatusMap: {
         1: {
           text: "待审核",
           type: "info",
