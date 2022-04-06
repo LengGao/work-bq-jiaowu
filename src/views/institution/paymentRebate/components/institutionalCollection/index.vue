@@ -217,6 +217,12 @@
                 @click="toAddCollection(row.log_id)"
                 >再次回款</el-button
               >
+              <el-button
+                v-if="row.check_state == -1"
+                type="text"
+                @click="toAddCollection(row.log_id)"
+                >重新回款</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
