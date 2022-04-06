@@ -226,9 +226,9 @@
               <el-badge :value="row.reshuffle ? '异' : ''" class="item">
                 <el-tag
                   size="small"
-                  :type="verifyStatusMap[row.verify_status || 0].type"
+                  :type="verifyStatusMap[row.verify_status || 1].type"
                 >
-                  {{ verifyStatusMap[row.verify_status || 0].text }}
+                  {{ verifyStatusMap[row.verify_status || 1].text }}
                 </el-tag>
               </el-badge>
             </template>

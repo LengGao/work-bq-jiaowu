@@ -78,6 +78,24 @@
             </el-button>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="verify_status"
+          label="订单状态"
+          min-width="100"
+          style="overflow: auto"
+          class-name="badge"
+        >
+          <template slot-scope="{ row }">
+            <el-badge :value="row.reshuffle ? '异' : ''" class="item">
+              <el-tag
+                size="small"
+                :type="verifyStatusMap[row.verify_status || 1].type"
+              >
+                {{ verifyStatusMap[row.verify_status || 1].text }}
+              </el-tag>
+            </el-badge>
+          </template>
+        </el-table-column>
         <!-- <el-table-column
           prop="join_plan"
           label="关联计划"
@@ -320,6 +338,7 @@ export default {
         department_id: "",
         staff_id: "",
         verify_status: "",
+        order_status: 3,
         pay_type: "",
       },
       searchOptions: [
@@ -379,6 +398,36 @@ export default {
             placeholder: "业绩归属",
             clearable: true,
             filterable: true,
+          },
+        },
+        {
+          key: "order_status",
+          type: "select",
+          width: 120,
+          options: [
+            {
+              value: 1,
+              label: "待审核",
+            },
+            {
+              value: 2,
+              label: "（多人）审核中",
+            },
+            {
+              value: 3,
+              label: "审核通过",
+            },
+            {
+              value: 8,
+              label: "已撤销审核",
+            },
+            {
+              value: 9,
+              label: "驳回不通过",
+            },
+          ],
+          attrs: {
+            placeholder: "订单状态",
           },
         },
         {
@@ -448,6 +497,28 @@ export default {
         pay_date: "",
         id: "",
         verify_status: 1,
+      },
+      verifyStatusMap: {
+        1: {
+          text: "待审核",
+          type: "info",
+        },
+        2: {
+          text: "（多人）审核中",
+          type: "primary",
+        },
+        3: {
+          text: "审核通过",
+          type: "success",
+        },
+        8: {
+          text: "已撤销审核",
+          type: "info",
+        },
+        9: {
+          text: "驳回不通过",
+          type: "danger",
+        },
       },
     };
   },
