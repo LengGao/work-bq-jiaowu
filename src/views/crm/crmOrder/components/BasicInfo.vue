@@ -28,12 +28,7 @@
                 :src="item"
                 alt=""
                 title="点击预览大图"
-                style="
-                  width: 40px;
-                  height: 30px;
-                  cursor: pointer;
-                  margin-right: 10px;
-                "
+                style="height: 30px; cursor: pointer; margin-right: 10px"
                 v-for="(item, index) in data.refund_invalid_voucher"
                 :key="index"
                 @click="handlePreview(item)"
@@ -68,12 +63,7 @@
                 :src="item"
                 alt=""
                 title="点击预览大图"
-                style="
-                  width: 40px;
-                  height: 30px;
-                  cursor: pointer;
-                  margin-right: 10px;
-                "
+                style="height: 30px; cursor: pointer; margin-right: 10px"
                 v-for="(item, index) in data.refund_invalid_voucher"
                 :key="index"
                 @click="handlePreview(item)"
@@ -151,12 +141,7 @@
               :src="item"
               alt=""
               title="点击预览大图"
-              style="
-                width: 40px;
-                height: 30px;
-                cursor: pointer;
-                margin-right: 10px;
-              "
+              style="height: 30px; cursor: pointer; margin-right: 10px"
               v-for="(item, index) in data.receipt_file"
               :key="index"
               @click="handlePreview(item)"

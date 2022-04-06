@@ -125,12 +125,7 @@
               :src="item"
               alt=""
               title="点击预览大图"
-              style="
-                width: 40px;
-                height: 30px;
-                cursor: pointer;
-                margin-right: 10px;
-              "
+              style="height: 30px; cursor: pointer; margin-right: 10px"
               v-for="(item, index) in getReceiptFile(data.receipt_file)"
               :key="index"
               @click="handlePreview(item)"
@@ -225,7 +220,9 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span> {{ row.must_money | moneyFormat }} </span>
+            <span>
+              {{ row.must_money | moneyFormat }}
+            </span>
           </template>
         </el-table-column>
       </el-table>
@@ -291,20 +288,255 @@
         </el-table-column>
       </el-table>
     </template>
+    <Title :text="payTitle" style="margin-top: 20px"></Title>
+    <el-table
+      :data="data.pay_log"
+      style="width: 100%; border: 1px solid #eee; border-bottom: none"
+      :header-cell-style="{
+        'background-color': '#f8f8f8',
+      }"
+    >
+      <el-table-column
+        label="序号"
+        show-overflow-tooltip
+        min-width="70"
+        align="center"
+        type="index"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="pay_date"
+        label="回款日期"
+        min-width="100"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        prop="relation_plan"
+        label="关联计划"
+        min-width="200"
+        align="left"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        label="回款总金额"
+        prop="pay_money"
+        align="center"
+        min-width="100"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span>{{ row.pay_money | moneyFormat }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="pay_type"
+        label="支付方式"
+        align="center"
+        min-width="100"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        label="收款人员"
+        align="center"
+        prop="admin_name"
+        min-width="100"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        label="回款凭证"
+        align="center"
+        prop="admin_name"
+        min-width="120"
+      >
+        <template slot-scope="{ row }">
+          <template v-if="getReceiptFile(row.receipt_file).length">
+            <img
+              :src="src"
+              @click="handlePreview(src)"
+              style="height: 30px; cursor: pointer; margin-left: 10px"
+              v-for="(src, index) in getReceiptFile(row.receipt_file)"
+              :key="index"
+              alt=""
+            />
+          </template>
+          <span v-else>无</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="备注信息"
+        align="center"
+        min-width="100"
+        prop="tips"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        label="入账状态"
+        prop="pay_status"
+        align="center"
+        min-width="100"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <el-tag
+            v-if="payStatusMap[row.verify_status]"
+            size="small"
+            :type="payStatusMap[row.verify_status].type"
+            >{{ payStatusMap[row.verify_status].text }}</el-tag
+          >
+          <span v-else>--</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="verify_time"
+        label="入账时间"
+        min-width="160"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+    </el-table>
+    <Title :text="planTitle" style="margin-top: 20px"></Title>
+    <el-table
+      :data="data.pay_plan"
+      style="width: 100%"
+      :header-cell-style="{
+        'text-align': 'center',
+        'background-color': '#f8f8f8',
+      }"
+    >
+      <el-table-column
+        label="序号"
+        show-overflow-tooltip
+        min-width="50"
+        align="center"
+        type="index"
+      >
+      </el-table-column>
+      <el-table-column
+        label="回款类型"
+        show-overflow-tooltip
+        min-width="100"
+        align="center"
+      >
+        <template slot-scope="{ row }">
+          <span>
+            {{ expenseType[row.type] || "--" }}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="project_name"
+        show-overflow-tooltip
+        min-width="200"
+        align="center"
+      >
+        <template slot="header">
+          <span>所属项目 </span>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="除学费外的其他费用都必须选择费用所属项目"
+            placement="top-start"
+          >
+            <i class="el-icon-question"></i>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="year"
+        label="所属年份"
+        min-width="100"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        prop="day"
+        label="计划回款日期"
+        min-width="140"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+      <el-table-column
+        label="计划回款金额"
+        prop="money"
+        align="center"
+        min-width="100"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span>{{ row.money | moneyFormat }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="已回款金额"
+        prop="money"
+        align="center"
+        min-width="100"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span>{{ row.pay_money | moneyFormat }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="pay_progress"
+        label="回款进度"
+        min-width="90"
+        align="center"
+        show-overflow-tooltip
+      >
+        <template slot-scope="{ row }">
+          <span
+            class="progress"
+            :class="{
+              'progress--wait': +(row.pay_progress || '').split('%')[0] > 0,
+              'progress--success':
+                +(row.pay_progress || '').split('%')[0] >= 100,
+            }"
+            >{{ row.pay_progress }}</span
+          >
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="pay_day"
+        label="实际回款时间"
+        min-width="140"
+        align="center"
+        show-overflow-tooltip
+      >
+      </el-table-column>
+    </el-table>
     <PreviewImg ref="view" />
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "OrderChangeInfo",
   props: {
     orderTitle: {
       type: String,
-      default: "原始订单信息",
+      default: "当前订单信息",
     },
     projectTitle: {
       type: String,
-      default: "原始项目信息",
+      default: "当前项目信息",
+    },
+    payTitle: {
+      type: String,
+      default: "当前订单回款",
+    },
+    planTitle: {
+      type: String,
+      default: "当前回款计划",
     },
     changeIndex: 0,
     data: {
@@ -340,9 +572,24 @@ export default {
           type: "warning",
         },
       },
+      payStatusMap: {
+        0: {
+          type: "primary",
+          text: "待入账",
+        },
+        1: {
+          type: "success",
+          text: "已入账",
+        },
+        2: {
+          type: "danger",
+          text: "已驳回",
+        },
+      },
     };
   },
   computed: {
+    ...mapGetters(["expenseType"]),
     getTableData() {
       const tableData =
         typeof this.data.project === "string"

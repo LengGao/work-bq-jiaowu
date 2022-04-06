@@ -8,6 +8,8 @@
       <OrderChangeInfo
         project-title="异动项目信息"
         order-title="异动订单信息"
+        pay-title="异动订单回款"
+        plan-title="异动回款计划"
         :data="data.reshuffle_list[changeIndex].new_detail"
         isChange
         :originData="data"
@@ -41,14 +43,13 @@ export default {
   display: flex;
   justify-content: space-between;
   &-left {
-    width: 50%;
+    width: 49%;
   }
   .line {
     border: 1px dashed #ededed;
-    margin: 0 20px;
   }
   &-right {
-    width: 50%;
+    width: 49%;
   }
 }
 </style>

@@ -98,7 +98,7 @@
             <img
               :src="src"
               @click="handlePreview(src)"
-              style="height: 40px; cursor: pointer; margin-left: 10px"
+              style="height: 30px; cursor: pointer; margin-left: 10px"
               v-for="(src, index) in row.receipt_file"
               :key="index"
               alt=""
