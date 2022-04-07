@@ -277,7 +277,6 @@
 import Detail from "@/views/institution/paymentRebate/components/institutionalCollection/detail.vue";
 import { getShortcuts, getPlanYearOptions } from "@/utils/date";
 import { mapGetters } from "vuex";
-import { download } from "@/utils";
 import {
   getOrgReceivableList,
   getOrgName,
@@ -577,7 +576,9 @@ export default {
       this.exportLoading = true;
       const res = await getOrgReceivableList(data).catch(() => {});
       this.exportLoading = false;
-      download(res.data.url, "机构回款入帐");
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
     },
     async getOrgReceivableList() {
       const data = {
