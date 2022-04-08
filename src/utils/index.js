@@ -145,7 +145,6 @@ export function timeago(dateTimeStamp) {
   var halfamonth = day * 15
   var month = day * 30
   var now = new Date().getTime() / 1000 //获取当前时间毫秒
-  console.log(now)
   var diffValue = dateTimeStamp - now //时间差
 
   if (diffValue < 0) {
@@ -342,8 +341,6 @@ export function accAdd(arg1, arg2) {
   var r1, r2, m;
   try {
     r1 = arg1.toString().split(".")[1].length
-    console.log(arg1.toString().split(".")[0]);
-    console.log(arg1.toString().split(".")[1]);
   } catch (e) {
     r1 = 0
   }
