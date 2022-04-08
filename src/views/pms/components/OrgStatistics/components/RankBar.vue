@@ -66,11 +66,13 @@ export default {
       return `${val}${this.unit}`;
     },
     chartInit() {
-      const seriesData = this.data.map(({ num }) => +num).reverse();
+      const seriesData = this.data
+        .map(({ num, money }) => +(num || money))
+        .reverse();
       const yAxisData = this.data
         .map(
-          ({ institution_name, name }, index) =>
-            index + 1 + ". " + (name || institution_name)
+          ({ institution_name, name, staff_name }, index) =>
+            index + 1 + ". " + (name || institution_name || staff_name)
         )
         .reverse();
       this.chartInstance = this.$echarts.init(

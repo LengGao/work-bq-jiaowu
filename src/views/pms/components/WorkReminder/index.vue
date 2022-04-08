@@ -1,5 +1,40 @@
 <template>
   <div class="work-reminder">
+    <Block
+      date-type="5"
+      v-model="departmentRankDate"
+      @date-change="getDepartmentRank"
+      class="scroll-chart"
+    >
+      <Title slot="header-title" text="部门龙虎榜"></Title>
+      <Tabs
+        :data="departmentRankTabs"
+        v-model="departmentRankType"
+        type="danger"
+      />
+      <RankBar
+        chart-id="department-chart"
+        v-loading="departmentRankLoading"
+        :data="departmentRankData[departmentRankType]"
+        :series-name="departmentRankTypeNameMap[departmentRankType]"
+      />
+    </Block>
+    <Block
+      date-type="5"
+      v-model="schoolRankDate"
+      @date-change="getSchoolRank"
+      class="scroll-chart"
+    >
+      <Title slot="header-title" text="校区龙虎榜"></Title>
+      <Tabs :data="schoolRankTabs" v-model="schoolRankType" type="success" />
+      <RankBar
+        chartColor="#43d100"
+        chart-id="school-chart"
+        v-loading="schoolRankLoading"
+        :data="schoolRankData[schoolRankType]"
+        :series-name="schoolRankTypeNameMap[schoolRankType]"
+      />
+    </Block>
     <TableBlock
       title="回款计划提醒"
       :tabs="returnPaymentTabs"
@@ -131,14 +166,20 @@
 <script>
 import MsgDialog from "./components/MsgDialog";
 import TableBlock from "./components/TableBlock";
+import Tabs from "../OrgStatistics/components/Tabs";
+import Block from "../OrgStatistics/components/Block";
+import RankBar from "../OrgStatistics/components/RankBar";
 import { followRoute } from "@/utils/index";
 import AddCollectionRecord from "../AddCollectionRecord";
+import { today } from "@/utils/date";
 import {
   receivablePlan,
   staffFollow,
   getSystemMsgList,
   getStaffNotice,
   readStaffNotice,
+  getDepartmentRank,
+  getSchoolRank,
 } from "@/api/workbench.js";
 export default {
   name: "WorkReminder",
@@ -146,11 +187,18 @@ export default {
     TableBlock,
     MsgDialog,
     AddCollectionRecord,
+    Tabs,
+    Block,
+    RankBar,
   },
   props: {
     userIds: {
       type: Array,
       default: () => [],
+    },
+    returnedType: {
+      type: [Number, String],
+      default: "",
     },
   },
   data() {
@@ -217,17 +265,56 @@ export default {
       recordData: {},
       //颜色缓存
       colorCache: {},
+      // 部门龙虎榜
+      departmentRankData: {},
+      departmentRankType: "payMOney",
+      departmentRankTypeNameMap: {
+        payMOney: "回款",
+        orderMoney: "订单",
+      },
+      departmentRankLoading: false,
+      departmentRankDate: [today, today],
+      departmentRankTabs: [
+        {
+          label: "回款金额",
+          value: "payMOney",
+        },
+        {
+          label: "订单金额",
+          value: "orderMoney",
+        },
+      ],
+      // 校区龙虎榜
+      schoolRankData: {},
+      schoolRankType: "payMOney",
+      schoolRankTypeNameMap: {
+        payMOney: "回款",
+        orderMoney: "订单",
+      },
+      schoolRankLoading: false,
+      schoolRankDate: [today, today],
+      schoolRankTabs: [
+        {
+          label: "回款金额",
+          value: "payMOney",
+        },
+        {
+          label: "订单金额",
+          value: "orderMoney",
+        },
+      ],
     };
   },
   watch: {
-    userIds: {
-      handler() {
-        this.staffFollowPage = 1;
-        this.returnPaymentPage = 1;
-        this.receivablePlan();
-        this.staffFollow();
-      },
-      deep: true,
+    userIds() {
+      this.staffFollowPage = 1;
+      this.returnPaymentPage = 1;
+      this.receivablePlan();
+      this.staffFollow();
+    },
+    returnedType() {
+      this.getDepartmentRank();
+      this.getSchoolRank();
     },
   },
   activated() {
@@ -239,14 +326,48 @@ export default {
     this.staffFollow();
     this.getSystemMsgList();
     this.getStaffNotice();
+    this.getDepartmentRank();
+    this.getSchoolRank();
   },
   created() {
     this.receivablePlan();
     this.staffFollow();
     this.getSystemMsgList();
     this.getStaffNotice();
+    this.getDepartmentRank();
+    this.getSchoolRank();
   },
   methods: {
+    // 销售数据
+    async getSchoolRank() {
+      const [start_date, end_date] = this.schoolRankDate || ["", ""];
+      const data = {
+        start_date,
+        end_date,
+        returned_type: this.returnedType,
+      };
+      this.schoolRankLoading = true;
+      const res = await getSchoolRank(data).catch(() => {});
+      this.schoolRankLoading = false;
+      if (res.code === 0) {
+        this.schoolRankData = res.data;
+      }
+    },
+    // 部门销售数据
+    async getDepartmentRank() {
+      const [start_date, end_date] = this.departmentRankDate || ["", ""];
+      const data = {
+        start_date,
+        end_date,
+        returned_type: this.returnedType,
+      };
+      this.departmentRankLoading = true;
+      const res = await getDepartmentRank(data).catch(() => {});
+      this.departmentRankLoading = false;
+      if (res.code === 0) {
+        this.departmentRankData = res.data;
+      }
+    },
     getColor(id) {
       return (
         this.colorCache[id] ||
@@ -420,7 +541,8 @@ export default {
     font-size: 12px;
     margin-left: auto;
   }
-  .table-block {
+  .table-block,
+  .block {
     width: calc(50% - 10px);
     @media only screen and (max-width: 1200px) {
       width: 100%;
@@ -511,6 +633,12 @@ export default {
     .notic-time,
     .notic-user {
       color: #999;
+    }
+  }
+  .scroll-chart {
+    /deep/.block-container {
+      height: 400px;
+      overflow-y: auto;
     }
   }
 }

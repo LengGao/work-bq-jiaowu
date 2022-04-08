@@ -74,7 +74,7 @@
         <Title slot="header-title" text="其他金额排行榜"></Title>
         <RankBar
           v-loading="otherRankLoading"
-          :data="otherRankData"
+          :data="otherRankData[otherRankType]"
           chart-id="other-money-chart"
           chartColor="#fdc400"
           series-name="其他金额"
@@ -215,7 +215,8 @@ export default {
         },
       ],
       // 其他金额排行
-      otherRankData: [],
+      otherRankData: {},
+      otherRankType: "otherMoney",
       otherRankLoading: false,
       otherRankDate: [today, today],
     };

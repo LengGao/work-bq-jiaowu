@@ -173,11 +173,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .block {
-  // border: 1px solid #eceef3;
+  border: 1px solid #eceef3;
   border-radius: 4px;
   padding: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 0 6px #ddd;
   &-head {
     display: flex;
     align-items: center;

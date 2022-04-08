@@ -335,3 +335,19 @@ export function getOrgStudentRank(data) {
         data
     })
 }
+// 获取部门销售数据排行
+export function getDepartmentRank(data) {
+    return request({
+        url: '/index/departmentRank',
+        method: 'post',
+        data
+    })
+}
+// 获取校区销售数据排行
+export function getSchoolRank(data) {
+    return request({
+        url: '/index/schoolRank',
+        method: 'post',
+        data
+    })
+}
