@@ -50,7 +50,13 @@
           min-width="100"
           align="center"
           show-overflow-tooltip
-        ></el-table-column>
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toStudentDetail(row.uid)">
+              {{ row.surname }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="mobile"
           label="手机号码"
@@ -111,9 +117,9 @@
           show-overflow-tooltip
         >
           <template slot-scope="{ row }">
-            <span>
-              {{ statusMap[row.pay_status] }}
-            </span>
+            <el-tag size="small" :type="row.pay_status | orderTagType">{{
+              row.pay_status | orderStatus
+            }}</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -223,19 +229,27 @@ export default {
           options: [
             {
               value: 0,
-              label: "已成交",
+              label: "未付款",
             },
             {
               value: 1,
-              label: "已退款",
+              label: "新订单",
             },
             {
               value: 2,
-              label: "待退款",
+              label: "部分付款",
+            },
+            {
+              value: 3,
+              label: "已付款",
             },
             {
               value: 4,
               label: "已作废",
+            },
+            {
+              value: 5,
+              label: "已退款",
             },
           ],
           attrs: {
