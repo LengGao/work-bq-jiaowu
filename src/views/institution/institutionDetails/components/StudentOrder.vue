@@ -24,27 +24,6 @@
       >
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column
-          label="订单编号"
-          show-overflow-tooltip
-          min-width="180"
-          align="left"
-          prop="order_no"
-        >
-          <template slot-scope="{ row }">
-            <el-button type="text" @click="toDetail(row.order_id)">
-              {{ row.order_no }}
-            </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="create_time"
-          label="订单时间"
-          min-width="160"
-          align="center"
-          show-overflow-tooltip
-        >
-        </el-table-column>
-        <el-table-column
           prop="surname"
           label="学生姓名"
           min-width="100"
@@ -65,6 +44,63 @@
         >
           <template slot-scope="{ row }">
             <PartiallyHidden :value="row.mobile || ''" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="订单金额"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>{{
+              accAdd(row.order_money, row.other_money) | moneyFormat
+            }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="学费金额"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.order_money | moneyFormat }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="order_money"
+          label="其他金额"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.other_money | moneyFormat }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_money"
+          label="已回款金额"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.pay_money | moneyFormat }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="overdue_money"
+          label="未回款金额"
+          min-width="100"
+          align="center"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.overdue_money | moneyFormat }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -102,17 +138,11 @@
             <span v-else>--</span>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="order_money"
-          label="订单金额"
-          min-width="140"
-          align="center"
-          show-overflow-tooltip
-        ></el-table-column>
+
         <el-table-column
           prop="pay_status"
           label="订单状态"
-          min-width="140"
+          min-width="110"
           align="center"
           show-overflow-tooltip
         >
@@ -120,6 +150,26 @@
             <el-tag size="small" :type="row.pay_status | orderTagType">{{
               row.pay_status | orderStatus
             }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="create_time"
+          label="创建时间"
+          min-width="160"
+          align="center"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          min-width="100"
+          fixed="right"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toDetail(row.order_id)">
+              订单详情
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -150,6 +200,7 @@
 </template>
 
 <script>
+import { accAdd } from "@/utils";
 import { getShortcuts } from "@/utils/date";
 import { studentsOrder } from "@/api/institution";
 import { getproject } from "@/api/eda";
@@ -164,12 +215,7 @@ export default {
   },
   data() {
     return {
-      statusMap: {
-        0: "已成交",
-        1: "已退款",
-        2: "待退款",
-        4: "已作废",
-      },
+      accAdd,
       listData: [],
       listLoading: false,
       pageNum: 1,
