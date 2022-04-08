@@ -92,6 +92,7 @@
     <el-tabs v-model="activeName" class="workbench-tab">
       <el-tab-pane label="工作提醒" name="WorkReminder"> </el-tab-pane>
       <el-tab-pane label="数据看板" name="DataStatistics"></el-tab-pane>
+      <el-tab-pane label="机构看板" name="OrgStatistics"></el-tab-pane>
     </el-tabs>
 
     <template v-if="activeName">

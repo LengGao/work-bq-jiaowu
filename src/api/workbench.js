@@ -303,3 +303,35 @@ export function getEducationDetail(data) {
         data
     })
 }
+// 获取机构学费金额排行
+export function getOrgTuitionRank(data) {
+    return request({
+        url: '/index/orgTuitionRank',
+        method: 'post',
+        data
+    })
+}
+// 获取机构其他金额排行
+export function getOrgOtherMoneyRank(data) {
+    return request({
+        url: '/index/orgOtherMoneyRank',
+        method: 'post',
+        data
+    })
+}
+// 获取机构销售数据排行
+export function getOrgSalesRank(data) {
+    return request({
+        url: '/index/orgSalesRank',
+        method: 'post',
+        data
+    })
+}
+// 获取机构学生数据排行
+export function getOrgStudentRank(data) {
+    return request({
+        url: '/index/orgStudentRank',
+        method: 'post',
+        data
+    })
+}

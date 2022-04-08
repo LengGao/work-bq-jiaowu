@@ -154,7 +154,7 @@ import OnlineChart from "./components/OnlineChart";
 import Pie from "./components/Pie";
 import OrderTable from "./components/OrderTable";
 export default {
-  name: "Administrators",
+  name: "DataStatistics",
   components: {
     Block,
     SalesData,
