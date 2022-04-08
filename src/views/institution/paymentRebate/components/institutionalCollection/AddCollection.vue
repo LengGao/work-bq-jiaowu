@@ -698,6 +698,25 @@ export default {
           },
         },
         {
+          key: "full",
+          type: "select",
+          options: [
+            {
+              label: "已缴清",
+              value: 1,
+            },
+            {
+              label: "未缴清",
+              value: 2,
+            },
+          ],
+          attrs: {
+            placeholder: "学费",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "date",
           type: "datePicker",
           attrs: {
