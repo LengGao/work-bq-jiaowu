@@ -483,6 +483,7 @@ export default {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        pay_list: 1,
         ...this.searchData,
         staff_id: Array.isArray(this.searchData.staff_id)
           ? this.searchData.staff_id.join(",")
