@@ -52,12 +52,12 @@ const searchCache = {
             institutionalCollection: ['institutionalCollectionDetail'],
             institutionalCollectionDetail: ['studentOrderDetail'],
             studentOrder: ['studentOrderDetail', 'studentDetail'],
-            collectionList: ['crmOrderDetail'],
+            collectionList: ['cusdetail', 'crmOrderDetail'],
             studentStatusChangeList: ['crmOrderDetail', 'studentDetail'],
             expireManage: ['crmOrderDetail'],
             institutionProject: ['institutionDetails'],
             institutionDetails: ['collectionDetail', 'studentDetail', 'studentOrderDetail', 'crmOrderDetail'],
-            paymentRebate: ['institutionalCollectionDetail', 'institutionalRebateDetail', 'studentOrderDetail', 'addInstitutionalCollection']
+            paymentRebate: ['institutionalCollectionDetail', 'studentDetail', 'crmOrderDetail', 'institutionalRebateDetail', 'studentOrderDetail', 'addInstitutionalCollection']
         },
         // 当前缓存的页面
         currentCache: ['visualization']

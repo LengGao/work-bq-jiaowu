@@ -47,7 +47,7 @@
             min-width="150"
             show-overflow-tooltip
           >
-           <template slot-scope="{ row }">
+            <template slot-scope="{ row }">
               ￥{{ row.apply_rebate_price || 0 }}
             </template>
           </el-table-column>
@@ -72,7 +72,7 @@
             min-width="160"
           >
           </el-table-column>
-         
+
           <el-table-column
             prop="status"
             label="返点状态"
@@ -96,13 +96,13 @@
               </span>
             </template>
           </el-table-column>
-           <el-table-column
+          <el-table-column
             prop="real_rebate_price"
             label="实际返点金额"
             min-width="120"
             show-overflow-tooltip
           >
-          <template slot-scope="{ row }">
+            <template slot-scope="{ row }">
               ￥{{ row.real_rebate_price || 0 }}
             </template>
           </el-table-column>
@@ -112,10 +112,10 @@
             min-width="100"
             show-overflow-tooltip
           >
-          <template slot-scope="{ row }">
-            <span v-if="row.approve_staff_name">
-              {{ row.approve_staff_name}}
-            </span>
+            <template slot-scope="{ row }">
+              <span v-if="row.approve_staff_name">
+                {{ row.approve_staff_name }}
+              </span>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -125,10 +125,10 @@
             min-width="150"
             show-overflow-tooltip
           >
-          <template slot-scope="{ row }">
-            <span v-if="row.operate_time">
-              {{ row.operate_time}}
-            </span>
+            <template slot-scope="{ row }">
+              <span v-if="row.operate_time">
+                {{ row.operate_time }}
+              </span>
               <span v-else>--</span>
             </template>
           </el-table-column>
@@ -151,15 +151,15 @@
       </div>
     </section>
     <AddRebate
-        v-model="addRebateVisible"
-        :id="currentId"
-         @on-success="rebateList"
-      />
+      v-model="addRebateVisible"
+      :id="currentId"
+      @on-success="rebateList"
+    />
   </div>
 </template>
 
 <script>
-import { rebateList,getStaffSelect } from "@/api/rebate";
+import { rebateList, getStaffSelect } from "@/api/rebate";
 import { getShortcuts } from "@/utils/date";
 import AddRebate from "./components/AddRebate";
 import { getInstitutionSelectData } from "@/api/sou";
@@ -171,17 +171,17 @@ export default {
   },
   data() {
     return {
-      addRebateVisible:false,
-      currentId:"",
+      addRebateVisible: false,
+      currentId: "",
       listData: [],
       listLoading: false,
       pageNum: 1,
       listTotal: 0,
       pageSize: 20,
       searchData: {
-        apply_staff_id:"",
-        status:"",
-        from_organization_id:"",
+        apply_staff_id: "",
+        status: "",
+        from_organization_id: "",
         date: "",
       },
       searchOptions: [
@@ -201,7 +201,7 @@ export default {
             },
           },
         },
-         {
+        {
           key: "from_organization_id",
           type: "cascader",
           attrs: {
@@ -237,7 +237,7 @@ export default {
               value: 1,
               label: "已通过",
             },
-             {
+            {
               value: 2,
               label: "已驳回",
             },
@@ -247,9 +247,7 @@ export default {
             placeholder: "返点状态",
           },
         },
-
       ],
-
     };
   },
   created() {
@@ -258,7 +256,7 @@ export default {
     this.getStaffSelect();
   },
   methods: {
-   // 获取机构
+    // 获取机构
     async getInstitutionSelectData() {
       const data = { list: true };
       const res = await getInstitutionSelectData(data);
@@ -271,7 +269,7 @@ export default {
         );
       }
     },
-      // 获取创建人
+    // 获取创建人
     async getStaffSelect() {
       const data = {
         limit: 99999,
@@ -279,7 +277,7 @@ export default {
       const res = await getStaffSelect(data);
       this.searchOptions[2].options = res.data;
     },
-     handleSearch(data) {
+    handleSearch(data) {
       this.pageNum = 1;
       const date = data.date || ["", ""];
       delete data.date;
@@ -316,15 +314,15 @@ export default {
       this.currentId = id;
       this.addRebateVisible = true;
     },
-    toDetail(id){
+    toDetail(id) {
       this.$router.push({
         name: "institutionalRebateDetail",
         query: {
-        id,
+          id,
         },
-      })
+      });
     },
-     handleSizeChange(size) {
+    handleSizeChange(size) {
       this.pageNum = 1;
       this.pageSize = size;
       this.rebateList();
@@ -336,7 +334,6 @@ export default {
 <style lang="scss" scoped>
 .institutional-collection {
   section {
-    padding: 16px;
     header {
       display: flex;
       justify-content: space-between;

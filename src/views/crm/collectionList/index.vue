@@ -66,6 +66,11 @@
             min-width="100"
             show-overflow-tooltip
           >
+            <template slot-scope="scope">
+              <el-button type="text" @click="coursDetail(scope.row.uid)">
+                {{ scope.row.surname }}
+              </el-button>
+            </template>
           </el-table-column>
           <el-table-column
             prop="pay_date"
@@ -199,7 +204,7 @@ import {
   resetLog,
 } from "@/api/crm";
 import { getDepartmentlists, getStaffList } from "@/api/set";
-import { cloneOptions, download } from "@/utils";
+import { cloneOptions } from "@/utils";
 export default {
   name: "collectionList",
   data() {
@@ -414,7 +419,9 @@ export default {
       this.exportLoading = true;
       const res = await getReturnPaymentList(data).catch(() => {});
       this.exportLoading = false;
-      download(res.data.url, "回款入帐");
+      if (res.code === 0) {
+        this.$message.success(res.message);
+      }
     },
     // 获取客户来源
     async getCustomFromOptions() {

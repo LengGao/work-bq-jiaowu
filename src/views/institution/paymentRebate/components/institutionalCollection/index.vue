@@ -520,7 +520,6 @@ export default {
 <style lang="scss" scoped>
 .institutional-collection {
   section {
-    padding: 16px;
     header {
       display: flex;
       justify-content: space-between;
