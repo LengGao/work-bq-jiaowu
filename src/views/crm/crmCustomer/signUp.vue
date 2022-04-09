@@ -74,7 +74,7 @@
       <el-form-item label="开通网课" prop="online_course">
         <el-radio-group class="input" v-model="formData.online_course">
           <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+          <el-radio :label="2">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注信息" prop="tips">
