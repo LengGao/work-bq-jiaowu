@@ -85,14 +85,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="join_plan"
-          label="关联计划"
-          show-overflow-tooltip
-          min-width="220"
-        >
-        </el-table-column>
-
-        <el-table-column
           prop="pay_money"
           label="回款金额"
           min-width="90"
@@ -170,17 +162,6 @@
           min-width="140"
           show-overflow-tooltip
         >
-        </el-table-column>
-        <el-table-column label="操作" min-width="120" fixed="right">
-          <template slot-scope="{ row }">
-            <el-button
-              v-if="row.verify_status"
-              type="text"
-              :loading="row.loading"
-              @click="resetConfirm(row)"
-              >移除关联计划</el-button
-            >
-          </template>
         </el-table-column>
       </el-table>
       <div class="table_bottom">
