@@ -286,7 +286,7 @@ export default {
       ],
       // 校区龙虎榜
       schoolRankData: {},
-      schoolRankType: "payMOney",
+      schoolRankType: "payMoney",
       schoolRankTypeNameMap: {
         payMOney: "回款",
         orderMoney: "订单",
@@ -296,7 +296,7 @@ export default {
       schoolRankTabs: [
         {
           label: "回款金额",
-          value: "payMOney",
+          value: "payMoney",
         },
         {
           label: "订单金额",
