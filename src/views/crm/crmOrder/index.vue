@@ -529,6 +529,8 @@ export default {
           ],
           attrs: {
             placeholder: "审核状态",
+            filterable: true,
+            clearable: true,
           },
         },
         {

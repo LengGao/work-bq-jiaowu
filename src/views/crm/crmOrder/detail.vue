@@ -307,6 +307,10 @@ export default {
       }
     },
   },
+  activated() {
+    this.getCrmOrderDetail();
+    this.getOrderTransactionList();
+  },
   created() {
     this.getCrmOrderDetail();
     this.getOrderTransactionList();
