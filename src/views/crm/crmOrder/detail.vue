@@ -20,6 +20,12 @@
     <div class="change-title">
       <h3>{{ detailData.surname }}-{{ detailData.project_name }}</h3>
       <el-tag
+        size="small"
+        style="margin-left: 10px"
+        :type="detailData.pay_status | orderTagType"
+        >{{ detailData.pay_status | orderStatus }}</el-tag
+      >
+      <el-tag
         style="margin-left: 10px"
         size="small"
         :type="verifyTypeMap[detailData.final_type || 0].type"
