@@ -4,6 +4,9 @@
       <Title slot="header-title" text="销售简报"></Title>
       <SalesData
         @item-click="handleItemClick"
+        @click-order-money="orderDialogVisible = true"
+        @click-pay-money="payMoneyDialogVisible = true"
+        @click-entry-money="entryMoneyDialogVisible = true"
         :data="salesData"
         v-loading="salesLoading"
       />
@@ -131,6 +134,21 @@
         <OnlineChart :data="onlineData" v-loading="onlineLoading" />
       </Block>
     </div>
+    <OrderDialog
+      v-model="orderDialogVisible"
+      :user-ids="userIds"
+      :date="salesDate"
+    />
+    <PayMoneyDialog
+      v-model="payMoneyDialogVisible"
+      :user-ids="userIds"
+      :date="salesDate"
+    />
+    <EntryMoneyDialog
+      v-model="entryMoneyDialogVisible"
+      :user-ids="userIds"
+      :date="salesDate"
+    />
   </div>
 </template>
 <script>
@@ -153,6 +171,9 @@ import RankBar from "./components/RankBar";
 import OnlineChart from "./components/OnlineChart";
 import Pie from "./components/Pie";
 import OrderTable from "./components/OrderTable";
+import OrderDialog from "./components/OrderDialog";
+import PayMoneyDialog from "./components/PayMoneyDialog";
+import EntryMoneyDialog from "./components/EntryMoneyDialog";
 export default {
   name: "DataStatistics",
   components: {
@@ -164,6 +185,9 @@ export default {
     OnlineChart,
     Pie,
     OrderTable,
+    OrderDialog,
+    PayMoneyDialog,
+    EntryMoneyDialog,
   },
   props: {
     userIds: {
@@ -231,6 +255,12 @@ export default {
       eduMonth: new Date().getFullYear() + "-" + (new Date().getMonth() + 1),
       eduData: [],
       eduLoading: false,
+      //订单金额弹窗
+      orderDialogVisible: false,
+      //回款金额弹窗
+      payMoneyDialogVisible: false,
+      //回款金额弹窗
+      entryMoneyDialogVisible: false,
     };
   },
   watch: {
@@ -335,10 +365,16 @@ export default {
         returned_type: this.returnedType,
       };
       this.salesLoading = true;
-      const res = await getBriefing(data).catch(() => {});
+      const [res1, res2] = await Promise.all([
+        getBriefing({ ...data, select_type: 1 }),
+        getBriefing({ ...data, select_type: 2 }),
+      ]).catch(() => []);
       this.salesLoading = false;
-      if (res.code === 0) {
-        this.salesData = res.data;
+      if (res1.code === 0) {
+        this.salesData = {
+          ...res2.data,
+          ...res1.data,
+        };
       }
     },
     // 在线人数

@@ -1,16 +1,12 @@
 <template>
   <div class="admin" v-loading="loading">
-    <Block date-type="5" v-model="salesDate" @date-change="getBriefing">
+    <Block date-type="5" v-model="salesDate" @date-change="handleDateChange">
       <Title slot="header-title" text="数据概览"></Title>
-      <SalesData
-        @item-click="handleItemClick"
-        :data="salesData"
-        v-loading="salesLoading"
-      />
+      <SalesData :data="salesData" v-loading="salesLoading" />
     </Block>
     <div class="admin-container">
       <Block
-        date-type="5"
+        date-type="none"
         v-model="salesRankDate"
         @date-change="getOrgSalesRank"
         class="scroll-chart"
@@ -24,12 +20,7 @@
           :series-name="salesRankTypeNameMap[salesRankType]"
         />
       </Block>
-      <Block
-        date-type="5"
-        v-model="studentRankDate"
-        @date-change="getOrgStudentRank"
-        class="scroll-chart"
-      >
+      <Block date-type="none" v-model="studentRankDate" class="scroll-chart">
         <Title slot="header-title" text="学生数据"></Title>
         <Tabs
           :data="studentRankTabs"
@@ -45,12 +36,7 @@
           :series-name="studentRankTypeNameMap[studentRankType]"
         />
       </Block>
-      <Block
-        date-type="5"
-        v-model="tuitionRankDate"
-        @date-change="getOrgTuitionRank"
-        class="scroll-chart"
-      >
+      <Block date-type="none" v-model="tuitionRankDate" class="scroll-chart">
         <Title slot="header-title" text="学费金额排行榜"></Title>
         <Tabs
           :data="tuitionRankTabs"
@@ -65,12 +51,7 @@
           :series-name="tuitionRankTypeNameMap[tuitionRankType]"
         />
       </Block>
-      <Block
-        date-type="5"
-        v-model="otherRankDate"
-        @date-change="getOrgOtherMoneyRank"
-        class="scroll-chart"
-      >
+      <Block date-type="none" v-model="otherRankDate" class="scroll-chart">
         <Title slot="header-title" text="其他金额排行榜"></Title>
         <RankBar
           v-loading="otherRankLoading"
@@ -243,42 +224,13 @@ export default {
       this.getOrgTuitionRank();
       this.getOrgOtherMoneyRank();
     },
-
-    // 销售简报
-    handleItemClick(type) {
-      console.log(type);
-      let router = "";
-      switch (type) {
-        case 1:
-          router = "crmCustomer";
-          break;
-        case 2:
-          router = "channelStudent";
-          break;
-        case 3:
-          router = "crmOrder";
-          break;
-        case 4:
-          router = "collectionList";
-          break;
-        case 5:
-          router = "studentOrder";
-          break;
-        case 6:
-          router = "paymentRebate";
-          break;
-      }
-      router &&
-        this.$router.push({
-          name: router,
-          query: {
-            date: (this.salesDate || []).join(","),
-            type: "2",
-            staff_id:
-              this.userIds.join(",") ||
-              this.$store.getters.userInfo.staff_id + "",
-          },
-        });
+    handleDateChange(date) {
+      console.log(date);
+      this.salesRankDate = date;
+      this.studentRankDate = date;
+      this.tuitionRankDate = date;
+      this.otherRankDate = date;
+      this.getAllData();
     },
     // 数据概览
     async getBriefing() {
@@ -286,6 +238,7 @@ export default {
       const data = {
         start_date,
         end_date,
+        select_type: 2,
         arr_uid: this.userIds,
         returned_type: this.returnedType,
       };
