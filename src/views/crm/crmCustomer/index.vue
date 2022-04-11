@@ -503,10 +503,11 @@ export default {
         }));
       }
     },
-    toSignUp({ id, surname, mobile, id_card_number }) {
+    toSignUp({ id, surname, mobile, id_card_number, source }) {
       this.$router.push({
         name: "signUp",
         query: {
+          source,
           id,
           surname,
           mobile,
