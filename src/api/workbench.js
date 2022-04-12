@@ -359,3 +359,11 @@ export function getPayLogList(data) {
         data
     })
 }
+// 获取招生机构订单列表
+export function getOrderList(data) {
+    return request({
+        url: '/index/getOrderList',
+        method: 'post',
+        data
+    })
+}

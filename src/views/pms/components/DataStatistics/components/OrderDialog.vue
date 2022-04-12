@@ -20,6 +20,13 @@
         height="550"
         top="5vh"
       >
+        <el-table-column
+          prop="order_id"
+          label="ID"
+          show-overflow-tooltip
+          min-width="70"
+        >
+        </el-table-column>
         <!-- <el-table-column
           prop="order_id"
           label="订单编号"
@@ -48,26 +55,17 @@
             </el-button>
           </template> -->
         </el-table-column>
-        <!-- <el-table-column
-          prop="mobile"
-          label="手机号码"
-          min-width="130"
-          show-overflow-tooltip
-        >
-          <template slot-scope="{ row }">
-            <PartiallyHidden :value="row.mobile" />
-          </template>
-        </el-table-column> -->
+
         <el-table-column
-          prop="jiebie_name"
-          label="届别名称"
+          prop="sources"
+          label="客户来源"
           min-width="100"
           show-overflow-tooltip
         >
         </el-table-column>
         <el-table-column
-          prop="from"
-          label="客户来源"
+          prop="institution_name"
+          label="所属机构"
           min-width="100"
           show-overflow-tooltip
         >
@@ -160,14 +158,12 @@
           class-name="badge"
         >
           <template slot-scope="{ row }">
-            <el-badge :value="row.reshuffle ? '异' : ''" class="item">
-              <el-tag
-                size="small"
-                :type="verifyStatusMap[row.verify_status || 1].type"
-              >
-                {{ verifyStatusMap[row.verify_status || 1].text }}
-              </el-tag>
-            </el-badge>
+            <el-tag
+              size="small"
+              :type="verifyStatusMap[row.verify_status || 1].type"
+            >
+              {{ verifyStatusMap[row.verify_status || 1].text }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -189,7 +185,7 @@
         <el-table-column
           prop="create_time"
           label="创建时间"
-          min-width="140"
+          min-width="160"
           show-overflow-tooltip
         >
         </el-table-column>
@@ -207,7 +203,7 @@
 </template>
 
 <script>
-import { getCrmOrderList } from "@/api/crm.js";
+import { getOrderList } from "@/api/workbench.js";
 export default {
   name: "OrderDialog",
   props: {
@@ -279,30 +275,30 @@ export default {
   },
   methods: {
     handleOpen() {
-      this.getCrmOrderList();
+      this.getOrderList();
     },
     handleSizeChange(size) {
       this.pageNum = 1;
       this.pageSize = size;
-      this.getCrmOrderList();
+      this.getOrderList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getCrmOrderList();
+      this.getOrderList();
     },
-    async getCrmOrderList() {
+    async getOrderList() {
+      const [start_date, end_date] = this.date || [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
-        // pay_status: "1,2,3",
-        // verfity_status: 1,
-        staff_id: this.userIds.length
-          ? this.userIds.join(",")
-          : this.$store.getters.userInfo.staff_id,
-        date: (this.date || []).join(" - "),
+        arr_uid: this.userIds.length
+          ? this.userIds
+          : [this.$store.getters.userInfo.staff_id],
+        start_date,
+        end_date,
       };
       this.listLoading = true;
-      const res = await getCrmOrderList(data);
+      const res = await getOrderList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;
