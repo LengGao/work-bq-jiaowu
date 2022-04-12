@@ -205,4 +205,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.approve-status {
+  &::before {
+    display: inline-block;
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #fd6500;
+    vertical-align: middle;
+    margin-right: 2px;
+  }
+  &--success::before {
+    background-color: #43d100;
+  }
+  &--wait::before {
+    background-color: #199fff;
+  }
+  &--none::before {
+    background-color: #999;
+  }
+}
 </style>
