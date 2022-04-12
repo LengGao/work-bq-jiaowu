@@ -1064,6 +1064,7 @@ export default {
     async getCrmOrderDetail() {
       const data = {
         order_id: this.$route.query.id,
+        help: 1,
       };
       this.loading = true;
       const res = await getCrmOrderDetail(data).catch(() => {});
