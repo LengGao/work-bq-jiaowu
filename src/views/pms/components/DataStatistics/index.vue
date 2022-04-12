@@ -143,11 +143,13 @@
       v-model="payMoneyDialogVisible"
       :user-ids="userIds"
       :date="salesDate"
+      :returnedType="returnedType"
     />
     <EntryMoneyDialog
       v-model="entryMoneyDialogVisible"
       :user-ids="userIds"
       :date="salesDate"
+      :returnedType="returnedType"
     />
   </div>
 </template>

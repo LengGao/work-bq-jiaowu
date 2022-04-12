@@ -42,19 +42,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="title"
-          label="关联订单"
-          show-overflow-tooltip
-          min-width="220"
-        >
-          <!-- <template slot-scope="{ row }">
-              <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-                {{ row.title }}
-              </el-button>
-            </template> -->
-        </el-table-column>
-        <el-table-column
-          prop="join_plan"
+          prop="plan_info"
           label="关联计划"
           show-overflow-tooltip
           min-width="220"
@@ -87,7 +75,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="group_name"
+          prop="department_name"
           label="部门名称"
           min-width="120"
           show-overflow-tooltip
@@ -147,7 +135,7 @@
 </template>
 
 <script>
-import { getReturnPaymentList } from "@/api/crm.js";
+import { getPayLogList } from "@/api/workbench.js";
 export default {
   name: "EntryMoneyDialog",
   props: {
@@ -163,6 +151,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    returnedType: {
+      type: [Number, String],
+      default: "",
+    },
   },
   data() {
     return {
@@ -175,29 +167,32 @@ export default {
   },
   methods: {
     handleOpen() {
-      this.getReturnPaymentList();
+      this.getPayLogList();
     },
     handleSizeChange(size) {
       this.pageNum = 1;
       this.pageSize = size;
-      this.getReturnPaymentList();
+      this.getPayLogList();
     },
     handlePageChange(val) {
       this.pageNum = val;
-      this.getReturnPaymentList();
+      this.getPayLogList();
     },
-    async getReturnPaymentList() {
+    async getPayLogList() {
+      const [start_date, end_date] = this.date || [];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
-        verify_status: 1,
-        staff_id: this.userIds.length
-          ? this.userIds.join(",")
-          : this.$store.getters.userInfo.staff_id,
-        date: (this.date || []).join(" - "),
+        is_entry: 1,
+        returned_type: this.returnedType,
+        arr_uid: this.userIds.length
+          ? this.userIds
+          : [this.$store.getters.userInfo.staff_id],
+        start_date,
+        end_date,
       };
       this.listLoading = true;
-      const res = await getReturnPaymentList(data);
+      const res = await getPayLogList(data);
       this.listLoading = false;
       this.listData = res.data.list;
       this.listTotal = res.data.total;

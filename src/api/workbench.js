@@ -351,3 +351,11 @@ export function getSchoolRank(data) {
         data
     })
 }
+// 获取入账列表
+export function getPayLogList(data) {
+    return request({
+        url: '/index/payLogList',
+        method: 'post',
+        data
+    })
+}
