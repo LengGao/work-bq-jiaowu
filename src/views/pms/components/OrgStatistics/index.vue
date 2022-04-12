@@ -11,7 +11,7 @@
         @date-change="getOrgSalesRank"
         class="scroll-chart"
       >
-        <Title slot="header-title" text="销售数据"></Title>
+        <Title slot="header-title" text="销售增量数据"></Title>
         <Tabs :data="salesRankTabs" v-model="salesRankType" type="danger" />
         <RankBar
           chart-id="sales-chart"
@@ -21,7 +21,7 @@
         />
       </Block>
       <Block date-type="none" v-model="studentRankDate" class="scroll-chart">
-        <Title slot="header-title" text="学生数据"></Title>
+        <Title slot="header-title" text="学生增量数据"></Title>
         <Tabs
           :data="studentRankTabs"
           v-model="studentRankType"
@@ -37,7 +37,7 @@
         />
       </Block>
       <Block date-type="none" v-model="tuitionRankDate" class="scroll-chart">
-        <Title slot="header-title" text="学费金额排行榜"></Title>
+        <Title slot="header-title" text="订单增量数据"></Title>
         <Tabs
           :data="tuitionRankTabs"
           v-model="tuitionRankType"
@@ -52,7 +52,7 @@
         />
       </Block>
       <Block date-type="none" v-model="otherRankDate" class="scroll-chart">
-        <Title slot="header-title" text="其他金额排行榜"></Title>
+        <Title slot="header-title" text="其他金额增量数据"></Title>
         <RankBar
           v-loading="otherRankLoading"
           :data="otherRankData[otherRankType]"
