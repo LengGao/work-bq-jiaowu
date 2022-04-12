@@ -566,11 +566,15 @@ export default {
       this.getOrgReceivableList();
     },
     async exportList() {
+      const { date, rest } = this.searchData;
+      const [start_date, end_date] = date || ["", ""];
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
         state: 1,
-        ...this.searchData,
+        ...rest,
+        start_date,
+        end_date,
         export: 1,
       };
       this.exportLoading = true;

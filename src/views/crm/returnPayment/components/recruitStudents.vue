@@ -690,8 +690,8 @@ export default {
         export: 1,
         limit: this.pageSize,
         ...this.searchData,
-        date: Array.isArray(this.searchData.date)
-          ? this.searchData.date.join(" - ")
+        verify_time: Array.isArray(this.searchData.verify_time)
+          ? this.searchData.verify_time.join(" - ")
           : "",
         pay_date: Array.isArray(this.searchData.pay_date)
           ? this.searchData.pay_date.join(" - ")
