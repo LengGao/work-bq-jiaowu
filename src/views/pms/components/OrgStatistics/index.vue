@@ -142,7 +142,7 @@ export default {
       studentRankType: "user_total",
       studentRankTypeNameMap: {
         user_total: "用户",
-        archives_total: "学生档案",
+        // archives_total: "学生档案",
         registered_total: "已报名",
         not_registered_total: "未报名",
       },
@@ -153,10 +153,10 @@ export default {
           label: "用户总数",
           value: "user_total",
         },
-        {
-          label: "学生档案数",
-          value: "archives_total",
-        },
+        // {
+        //   label: "学生档案数",
+        //   value: "archives_total",
+        // },
         {
           label: "已报名",
           value: "registered_total",
