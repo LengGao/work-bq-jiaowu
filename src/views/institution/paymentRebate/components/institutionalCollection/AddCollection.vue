@@ -614,7 +614,7 @@ export default {
         user_name: "",
         arr_project: [],
         from_organization_id: "",
-        full: 1,
+        full: 2,
       },
       searchOptions: [
         {
