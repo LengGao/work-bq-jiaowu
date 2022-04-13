@@ -614,6 +614,7 @@ export default {
         user_name: "",
         arr_project: [],
         from_organization_id: "",
+        full: 1,
       },
       searchOptions: [
         {
@@ -631,7 +632,25 @@ export default {
             change: this.onOrgChange,
           },
         },
-
+        {
+          key: "full",
+          type: "select",
+          options: [
+            {
+              label: "已缴清",
+              value: 1,
+            },
+            {
+              label: "未缴清",
+              value: 2,
+            },
+          ],
+          attrs: {
+            placeholder: "学费",
+            clearable: true,
+            filterable: true,
+          },
+        },
         {
           key: "arr_category",
           type: "select",
@@ -697,25 +716,7 @@ export default {
             filterable: true,
           },
         },
-        {
-          key: "full",
-          type: "select",
-          options: [
-            {
-              label: "已缴清",
-              value: 1,
-            },
-            {
-              label: "未缴清",
-              value: 2,
-            },
-          ],
-          attrs: {
-            placeholder: "学费",
-            clearable: true,
-            filterable: true,
-          },
-        },
+
         {
           key: "date",
           type: "datePicker",
@@ -982,7 +983,7 @@ export default {
       const data = { from_organization_id: this.formData.from_organization_id };
       const res = await getProject(data);
       if (res.code === 0) {
-        this.searchOptions[2].options = res.data;
+        this.searchOptions[3].options = res.data;
       }
     },
     // 获取所属分类
@@ -990,28 +991,28 @@ export default {
       const data = { from_organization_id: this.formData.from_organization_id };
       const res = await getCategory(data);
       if (res.code === 0) {
-        this.searchOptions[1].options = res.data;
+        this.searchOptions[2].options = res.data;
       }
     },
     // 获取届别选项
     async getGradeOptions() {
       const res = await getGradeOptions();
       if (res.code === 0) {
-        this.searchOptions[5].options = res.data;
+        this.searchOptions[6].options = res.data;
       }
     },
     // 获取学历形式选项
     async getUniversityTypeOptions() {
       const res = await getUniversityTypeOptions();
       if (res.code === 0) {
-        this.searchOptions[3].options = res.data;
+        this.searchOptions[4].options = res.data;
       }
     },
     // 获取院校选项
     async getUniversityOptions() {
       const res = await getUniversityOptions();
       if (res.code === 0) {
-        this.searchOptions[4].options = res.data;
+        this.searchOptions[5].options = res.data;
       }
     },
     // 获取支付方式
