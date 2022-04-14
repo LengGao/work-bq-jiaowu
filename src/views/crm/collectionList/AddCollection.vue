@@ -600,7 +600,7 @@ export default {
     initProjectIds(row) {
       return row.type
         ? JSON.parse(row.project || "[]").map((item) => item.id + "")
-        : row.project_ids.split(",") || [];
+        : row.sub_project_ids.split(",") || [];
     },
     // 获取项目下拉
     async getProject() {
