@@ -31,7 +31,7 @@ service.interceptors.response.use(
     * code为非0是抛错 可结合自己业务进行修改
     */
     const res = response.data
-    if (res.data.help_url) {
+    if (res?.data?.help_url) {
       store.commit("SET_HELP_URL", res.data.help_url)
     }
     if (res.code !== 0 && response.config.responseType !== 'blob') {
