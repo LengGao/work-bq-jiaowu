@@ -1,14 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-Vue.use(Vuex)
+import app from './modules/app'
 import user from './modules/user'
 import options from './modules/options'
+import cacheView from './modules/cacheView'
 import getters from './getters'
+
+Vue.use(Vuex)
+
 const store = new Vuex.Store({
-    modules: {
-        user,
-        options
-    },
-    getters
+  modules: {
+    app,
+    user,
+    cacheView,
+    options
+  },
+  getters,
 })
+
 export default store
