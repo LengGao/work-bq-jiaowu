@@ -60,6 +60,13 @@
         >
         </el-table-column>
         <el-table-column
+          prop="institution_name"
+          label="所属机构"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
           prop="pay_date"
           label="回款日期"
           min-width="100"
@@ -78,7 +85,7 @@
             </el-button>
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="verify_status"
           label="订单状态"
           min-width="100"
@@ -93,7 +100,7 @@
               {{ orderVerifyStatusMap[row.order_verify_status || 1].text }}
             </el-tag>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!-- <el-table-column
           prop="join_plan"
           label="关联计划"
@@ -168,7 +175,7 @@
           show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="回款凭证"
           align="center"
           prop="admin_name"
@@ -185,7 +192,7 @@
             </template>
             <span v-else>无</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <!-- <el-table-column
           label="备注信息"
           align="center"
@@ -201,6 +208,7 @@
           show-overflow-tooltip
         >
         </el-table-column>
+
         <el-table-column
           prop="group_name"
           label="部门名称"
@@ -324,7 +332,7 @@ import {
 import { getDepartmentlists, getStaffList } from "@/api/set";
 import { cloneOptions } from "@/utils";
 export default {
-  name: "recruitStudents",
+  name: "orgCollection",
   data() {
     return {
       panelData: {},
@@ -341,7 +349,7 @@ export default {
         department_id: "",
         staff_id: "",
         verify_status: "",
-        order_verify_status: 3,
+        // order_verify_status: 3,
         pay_type: "",
       },
       searchOptions: [
@@ -403,38 +411,38 @@ export default {
             filterable: true,
           },
         },
-        {
-          key: "order_verify_status",
-          type: "select",
-          width: 120,
-          options: [
-            {
-              value: 1,
-              label: "待审核",
-            },
-            {
-              value: 2,
-              label: "（多人）审核中",
-            },
-            {
-              value: 3,
-              label: "审核通过",
-            },
-            {
-              value: 8,
-              label: "已撤销审核",
-            },
-            {
-              value: 9,
-              label: "驳回不通过",
-            },
-          ],
-          attrs: {
-            placeholder: "订单状态",
-            clearable: true,
-            filterable: true,
-          },
-        },
+        // {
+        //   key: "order_verify_status",
+        //   type: "select",
+        //   width: 120,
+        //   options: [
+        //     {
+        //       value: 1,
+        //       label: "待审核",
+        //     },
+        //     {
+        //       value: 2,
+        //       label: "（多人）审核中",
+        //     },
+        //     {
+        //       value: 3,
+        //       label: "审核通过",
+        //     },
+        //     {
+        //       value: 8,
+        //       label: "已撤销审核",
+        //     },
+        //     {
+        //       value: 9,
+        //       label: "驳回不通过",
+        //     },
+        //   ],
+        //   attrs: {
+        //     placeholder: "订单状态",
+        //     clearable: true,
+        //     filterable: true,
+        //   },
+        // },
         {
           key: "verify_status",
           type: "select",
@@ -669,6 +677,7 @@ export default {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        is_org: 1,
         ...this.searchData,
         verify_time: Array.isArray(this.searchData.verify_time)
           ? this.searchData.verify_time.join(" - ")
@@ -688,6 +697,7 @@ export default {
       const data = {
         page: this.pageNum,
         export: 1,
+        is_org: 1,
         limit: this.pageSize,
         ...this.searchData,
         verify_time: Array.isArray(this.searchData.verify_time)

@@ -5,6 +5,7 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="招生回款" name="recruitStudents"></el-tab-pane>
         <el-tab-pane label="渠道回款" name="changeApprove"></el-tab-pane>
+        <el-tab-pane label="机构详细回款" name="orgCollection"></el-tab-pane>
       </el-tabs>
       <component :is="getComponent" />
     </div>

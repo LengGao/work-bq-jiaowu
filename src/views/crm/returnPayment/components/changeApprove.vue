@@ -112,6 +112,7 @@
             {{ row.receivable_money | moneyFormat }}
           </template>
         </el-table-column>
+
         <el-table-column
           prop="pay_money"
           label="学费金额"
@@ -132,6 +133,25 @@
             {{ row.other_money | moneyFormat }}
           </template>
         </el-table-column>
+        <el-table-column
+          label="回款凭证"
+          align="center"
+          prop="admin_name"
+          min-width="100"
+        >
+          <template slot-scope="{ row }">
+            <template v-if="row.receipt_file && row.receipt_file.length">
+              <img
+                :src="row.receipt_file[0]"
+                @click="handlePreview(row.receipt_file)"
+                style="height: 30px; cursor: pointer"
+                alt=""
+              />
+            </template>
+            <span v-else>无</span>
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop="pay_type"
           label="支付方式"
@@ -270,6 +290,7 @@
         <el-button type="primary" @click="handleEntryConfirm">确 定</el-button>
       </div>
     </el-dialog>
+    <PreviewImg ref="view" />
   </div>
 </template>
 
@@ -358,6 +379,18 @@ export default {
           },
         },
         {
+          key: "pay_type",
+          type: "select",
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "支付方式",
+            clearable: true,
+            filterable: true,
+          },
+        },
+        {
           key: "type",
           type: "select",
           width: 120,
@@ -421,7 +454,7 @@ export default {
   computed: {
     ...mapGetters(["expenseType"]),
     expenseTypeMap() {
-      this.searchOptions[4].options = Object.entries(this.expenseType).map(
+      this.searchOptions[5].options = Object.entries(this.expenseType).map(
         (item) => ({
           label: item[1],
           value: item[0],
@@ -442,6 +475,9 @@ export default {
   },
 
   methods: {
+    handlePreview(imgs) {
+      this.$refs.view.show(imgs);
+    },
     // 入账
     openEntryDialog(row) {
       this.formData.log_id = row.log_id;
@@ -479,6 +515,9 @@ export default {
       const res = await getCustomfieldOptions(data);
       if (res.code === 0) {
         this.payMethodOptions = res.data.field_content;
+        this.searchOptions[4].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
       }
     },
     getType(types) {

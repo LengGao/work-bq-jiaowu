@@ -3,7 +3,11 @@
     <div class="head_remind">*管理机构回款/机构返点数据。</div>
     <div class="container">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="机构回款" name="institutionalCollection"></el-tab-pane>
+        <el-tab-pane
+          label="机构回款"
+          name="institutionalCollection"
+        ></el-tab-pane>
+        <el-tab-pane label="订单回款" name="collectionList"></el-tab-pane>
         <el-tab-pane label="机构返点" name="institutionalRebate"></el-tab-pane>
       </el-tabs>
       <component :is="getComponent" />

@@ -15,7 +15,12 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="订单金额" min-width="170" align="center">
+      <el-table-column min-width="170" align="center">
+        <template slot="header">
+          <span style="cursor: pointer" @click="$emit('click-order-money')">
+            订单金额 <i class="el-icon-zoom-in"></i
+          ></span>
+        </template>
         <template slot-scope="{ row, $index: index }">
           <span
             class="value success"
@@ -26,7 +31,12 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="回款金额" min-width="170" align="center">
+      <el-table-column min-width="170" align="center">
+        <template slot="header">
+          <span style="cursor: pointer" @click="$emit('click-pay-money')">
+            回款金额 <i class="el-icon-zoom-in"></i
+          ></span>
+        </template>
         <template slot-scope="{ row, $index: index }">
           <span
             class="value warning"
@@ -61,7 +71,12 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="入账金额" min-width="170" align="center">
+      <el-table-column min-width="170" align="center">
+        <template slot="header">
+          <span style="cursor: pointer" @click="$emit('click-entry-money')">
+            入账金额 <i class="el-icon-zoom-in"></i
+          ></span>
+        </template>
         <template slot-scope="{ row, $index: index }">
           <span
             class="value success"
@@ -163,7 +178,7 @@ export default {
         return `0.00`;
       }
       if (val / 10000 >= 1) {
-        return (val / 10000).toFixed(3).slice(0, -1);
+        return (val / 10000).toFixed(4).slice(0, -2);
       }
       return (+val).toFixed(2);
     },

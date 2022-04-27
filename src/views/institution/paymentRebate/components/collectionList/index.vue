@@ -1,203 +1,183 @@
 <template>
   <div>
-    <div class="head_remind">
-      *本页的订单统计数据是根据回款创建时间进行统计的，所以列出的订单金额不局限于您选择的日期所限定的订单金额。
-    </div>
-    <section>
-      <!--搜索模块-->
-      <header>
-        <SearchList
-          :options="searchOptions"
-          :data="searchData"
-          @on-search="handleSearch"
-        />
-        <div class="actions">
-          <el-button type="primary" :loading="exportLoading" @click="exportList"
-            >导 出</el-button
-          >
-          <el-button type="primary" @click="toAddCollection"
-            >添加回款</el-button
-          >
-        </div>
-      </header>
-      <ul class="panel-list">
-        <li class="panel-item">
-          <span>回款总金额</span>
-          <div class="time_num">
-            <span>{{ panelData.pay_log_total | moneyFormat }}</span>
-          </div>
-        </li>
-        <li class="panel-item">
-          <span>已入账金额</span>
-          <div class="time_num">
-            <span>{{ panelData.verify_money | moneyFormat }}</span>
-          </div>
-        </li>
-        <li class="panel-item">
-          <span>未入账金额</span>
-          <div class="time_num">
-            <span>{{ panelData.not_verify_money | moneyFormat }}</span>
-          </div>
-        </li>
-      </ul>
-      <!--列表-->
-      <div class="userTable">
-        <el-table
-          ref="multipleTable"
-          :data="listData"
-          v-loading="listLoading"
-          element-loading-text="loading"
-          element-loading-spinner="el-icon-loading"
-          element-loading-background="#fff"
-          :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
-          :cell-style="{ 'text-align': 'center' }"
-          all="1"
+    <!--搜索模块-->
+    <header>
+      <SearchList
+        :options="searchOptions"
+        :data="searchData"
+        @on-search="handleSearch"
+      />
+      <!-- <div class="actions">
+        <el-button type="primary" :loading="exportLoading" @click="exportList"
+          >导 出</el-button
         >
-          <el-table-column
-            prop="id"
-            label="序号"
-            show-overflow-tooltip
-            min-width="70"
-          >
-          </el-table-column>
-          <el-table-column
-            prop="surname"
-            label="客户姓名"
-            min-width="100"
-            show-overflow-tooltip
-          >
-            <template slot-scope="scope">
-              <el-button type="text" @click="coursDetail(scope.row.uid)">
-                {{ scope.row.surname }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="pay_date"
-            label="回款日期"
-            min-width="100"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="order_id"
-            label="关联订单"
-            show-overflow-tooltip
-            min-width="220"
-          >
-            <template slot-scope="{ row }">
-              <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
-                {{ row.title }}
-              </el-button>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="join_plan"
-            label="关联计划"
-            show-overflow-tooltip
-            min-width="220"
-          >
-          </el-table-column>
-
-          <el-table-column
-            prop="pay_money"
-            label="回款金额"
-            min-width="90"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              {{ row.pay_money | moneyFormat }}
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            prop="pay_type"
-            label="支付方式"
-            min-width="90"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="staff_name"
-            label="业绩归属"
-            min-width="90"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="group_name"
-            label="部门名称"
-            min-width="120"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-
-          <el-table-column
-            prop="create_time"
-            label="回款创建日期"
-            min-width="140"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <el-table-column
-            prop="verify_status"
-            label="入账状态"
-            min-width="90"
-            show-overflow-tooltip
-          >
-            <template slot-scope="{ row }">
-              <span
-                v-if="row.verify_status == 0"
-                class="approve-status approve-status--none"
-                >未入账</span
-              >
-              <span
-                v-if="row.verify_status == 1"
-                class="approve-status approve-status--success"
-                >已入账</span
-              >
-              <span v-if="row.verify_status == 2" class="approve-status"
-                >已驳回 <i class="el-icon-question" :title="row.tips"></i>
-              </span>
-              <span v-if="row.verify_status == 3" class="approve-status--wait"
-                >多级审批中
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="verify_time"
-            label="入账时间"
-            min-width="140"
-            show-overflow-tooltip
-          >
-          </el-table-column>
-          <!-- <el-table-column label="操作" min-width="80" fixed="right">
-            <template slot-scope="{ row }">
-              <el-button
-                v-if="row.verify_status"
-                type="text"
-                :loading="row.loading"
-                @click="resetConfirm(row)"
-                >重置</el-button
-              >
-            </template>
-          </el-table-column> -->
-        </el-table>
-        <div class="table_bottom">
-          <page
-            :data="listTotal"
-            :curpage="pageNum"
-            @pageChange="handlePageChange"
-            @pageSizeChange="handleSizeChange"
-          />
+      </div> -->
+    </header>
+    <ul class="panel-list">
+      <li class="panel-item">
+        <span>回款总金额</span>
+        <div class="time_num">
+          <span>{{ panelData.pay_log_total | moneyFormat }}</span>
         </div>
+      </li>
+      <li class="panel-item">
+        <span>已入账金额</span>
+        <div class="time_num">
+          <span>{{ panelData.verify_money | moneyFormat }}</span>
+        </div>
+      </li>
+      <li class="panel-item">
+        <span>未入账金额</span>
+        <div class="time_num">
+          <span>{{ panelData.not_verify_money | moneyFormat }}</span>
+        </div>
+      </li>
+    </ul>
+    <!--列表-->
+    <div class="userTable">
+      <el-table
+        ref="multipleTable"
+        :data="listData"
+        v-loading="listLoading"
+        element-loading-text="loading"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="#fff"
+        :header-cell-style="{ 'text-align': 'center', background: '#f8f8f8' }"
+        :cell-style="{ 'text-align': 'center' }"
+        all="1"
+      >
+        <el-table-column
+          prop="id"
+          label="序号"
+          show-overflow-tooltip
+          min-width="70"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="surname"
+          label="客户姓名"
+          min-width="100"
+          show-overflow-tooltip
+        >
+          <template slot-scope="scope">
+            <el-button type="text" @click="toStudentDetail(scope.row.uid)">
+              {{ scope.row.surname }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_date"
+          label="回款日期"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="order_id"
+          label="关联订单"
+          show-overflow-tooltip
+          min-width="220"
+        >
+          <template slot-scope="{ row }">
+            <el-button type="text" @click="toCrmOrderDetail(row.order_id)">
+              {{ row.title }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pay_money"
+          label="回款金额"
+          min-width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            {{ row.pay_money | moneyFormat }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="pay_type"
+          label="支付方式"
+          min-width="90"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="staff_name"
+          label="业绩归属"
+          min-width="90"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="institution_name"
+          label="所属机构"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="group_name"
+          label="部门名称"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+
+        <el-table-column
+          prop="create_time"
+          label="回款创建日期"
+          min-width="140"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="verify_status"
+          label="入账状态"
+          min-width="90"
+          show-overflow-tooltip
+        >
+          <template slot-scope="{ row }">
+            <span
+              v-if="row.verify_status == 0"
+              class="approve-status approve-status--none"
+              >未入账</span
+            >
+            <span
+              v-if="row.verify_status == 1"
+              class="approve-status approve-status--success"
+              >已入账</span
+            >
+            <span v-if="row.verify_status == 2" class="approve-status"
+              >已驳回 <i class="el-icon-question" :title="row.tips"></i>
+            </span>
+            <span v-if="row.verify_status == 3" class="approve-status--wait"
+              >多级审批中
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="verify_time"
+          label="入账时间"
+          min-width="140"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+      </el-table>
+      <div class="table_bottom">
+        <page
+          :data="listTotal"
+          :curpage="pageNum"
+          @pageChange="handlePageChange"
+          @pageSizeChange="handleSizeChange"
+        />
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script>
-import { getShortcuts, today } from "@/utils/date";
+import { getShortcuts } from "@/utils/date";
 import {
   getReturnPaymentList,
   getCustomfieldOptions,
@@ -217,12 +197,10 @@ export default {
       pageSize: 20,
       listTotal: 0,
       searchData: {
-        date: (this.$route.query.date || `${today},${today}`).split(","),
+        date: "",
         keyword: "",
         department_id: "",
-        staff_id: this.$route.query.staff_id
-          ? this.$route.query.staff_id.split(",").map((item) => +item)
-          : [],
+        staff_id: "",
         verify_status: "",
         pay_type: "",
       },
@@ -378,10 +356,11 @@ export default {
   methods: {
     // 重置
     resetConfirm(row) {
-      this.$confirm("确定要重置该入账审批吗？", "提醒", {
+      this.$confirm("确定要移除该回款关联的计划吗？", "提醒", {
         type: "warning",
       })
         .then(() => {
+          return;
           this.resetLog(row);
         })
         .catch(() => {});
@@ -404,7 +383,7 @@ export default {
         page: this.pageNum,
         limit: this.pageSize,
         export: 1,
-
+        is_org: 1,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
@@ -488,6 +467,7 @@ export default {
       const data = {
         page: this.pageNum,
         limit: this.pageSize,
+        is_org: 1,
         ...this.searchData,
         date: Array.isArray(this.searchData.date)
           ? this.searchData.date.join(" - ")
@@ -508,15 +488,6 @@ export default {
       }));
       this.panelData = res.data.count;
       this.listTotal = res.data.total;
-    },
-
-    coursDetail(uid) {
-      this.$router.push({
-        name: "cusdetail",
-        query: {
-          uid,
-        },
-      });
     },
     toCrmOrderDetail(id) {
       this.$router.push({

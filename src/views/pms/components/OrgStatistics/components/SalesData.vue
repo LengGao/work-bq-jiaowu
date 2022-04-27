@@ -18,15 +18,15 @@
     <div class="sales-data-item">
       <p class="sales-data-item-title">学费回款金额</p>
       <p class="sales-data-item-value">
-        {{ priceFormat(data.orgTuitionMoney)
-        }}<span class="unit">{{ unitFormat(data.orgTuitionMoney) }}</span>
+        {{ priceFormat(data.orgTuitionPayMoney)
+        }}<span class="unit">{{ unitFormat(data.orgTuitionPayMoney) }}</span>
       </p>
     </div>
     <div class="sales-data-item">
       <p class="sales-data-item-title">其他回款金额</p>
       <p class="sales-data-item-value">
-        {{ priceFormat(data.orgOtherMoney)
-        }}<span class="unit">{{ unitFormat(data.orgOtherMoney) }}</span>
+        {{ priceFormat(data.orgOtherPayMoney)
+        }}<span class="unit">{{ unitFormat(data.orgOtherPayMoney) }}</span>
       </p>
     </div>
     <div class="sales-data-item">
@@ -63,7 +63,7 @@ export default {
         return `0.00`;
       }
       if (val / 10000 >= 1) {
-        return (val / 10000).toFixed(3).slice(0, -1);
+        return (val / 10000).toFixed(4).slice(0, -2);
       }
       return (+val).toFixed(2);
     },

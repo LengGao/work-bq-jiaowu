@@ -74,7 +74,7 @@
       <el-form-item label="开通网课" prop="online_course">
         <el-radio-group class="input" v-model="formData.online_course">
           <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+          <el-radio :label="2">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注信息" prop="tips">
@@ -179,7 +179,15 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <div>{{ row.price | moneyFormat }}</div>
+              <div>
+                {{ row.price | moneyFormat }}
+                <i
+                  @click="row.pay_money = row.price"
+                  class="el-icon-document-copy"
+                  style="cursor: pointer; color: #199fff"
+                  title="单击填充实收学费金额"
+                ></i>
+              </div>
             </template>
           </el-table-column>
           <el-table-column min-width="110" show-overflow-tooltip>
@@ -268,7 +276,15 @@
             show-overflow-tooltip
           >
             <template slot-scope="{ row }">
-              <div>{{ row.price | moneyFormat }}</div>
+              <div>
+                {{ row.price | moneyFormat }}
+                <i
+                  @click="row.pay_money = row.price"
+                  class="el-icon-document-copy"
+                  style="cursor: pointer; color: #199fff"
+                  title="单击填充实收学费金额"
+                ></i>
+              </div>
             </template>
           </el-table-column>
           <el-table-column min-width="120" show-overflow-tooltip>
@@ -654,7 +670,7 @@ export default {
         id: "",
         surname: "",
         mobile: "",
-        online_course: "",
+        online_course: 1,
         id_card_number: "",
         order_money: "",
         union_staff_id: [],
@@ -855,11 +871,13 @@ export default {
       surname = "",
       mobile = "",
       id_card_number = "",
+      source = "",
     } = this.$route.query;
     this.formData.id = id;
     this.formData.surname = surname;
     this.formData.mobile = mobile;
     this.formData.id_card_number = id_card_number;
+    this.formData.source = source;
   },
   methods: {
     getProjectNameById(ids) {

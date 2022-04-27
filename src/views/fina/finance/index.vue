@@ -73,10 +73,17 @@ export default {
   },
   methods: {
     toSignUp() {
-      const { id, surname, mobile, id_card_number } = this.detailData;
+      const {
+        id,
+        surname,
+        mobile,
+        id_card_number,
+        sources: source,
+      } = this.detailData;
       this.$router.push({
         name: "signUp",
         query: {
+          source,
           id,
           surname,
           mobile,

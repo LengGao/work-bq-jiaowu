@@ -210,7 +210,7 @@
 import { accAdd } from "@/utils";
 import { getShortcuts } from "@/utils/date";
 import { studentsOrder } from "@/api/institution";
-import { getproject } from "@/api/eda";
+import { getproject, getAdminSelect } from "@/api/eda";
 import { getCateList } from "@/api/sou";
 import UpdatePerformanceAttribution from "@/views/eda/components/UpdatePerformanceAttribution";
 import UpdateInstitutionOrder from "@/views/eda/components/UpdateInstitutionOrder";
@@ -258,6 +258,21 @@ export default {
             placeholder: "所属分类",
             clearable: true,
             filterable: true,
+          },
+        },
+        {
+          key: "staff_id",
+          type: "select",
+          width: 220,
+          options: [],
+          optionValue: "staff_id",
+          optionLabel: "staff_name",
+          attrs: {
+            placeholder: "所属老师",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
           },
         },
         {
@@ -326,6 +341,7 @@ export default {
   created() {
     this.studentsOrder();
     this.getCateList();
+    this.getAdminSelect();
     this.getproject();
   },
   methods: {
@@ -354,6 +370,14 @@ export default {
     handleSeletChange(selection) {
       this.checkedIds = selection.map((item) => item.order_id);
     },
+    // 获取所属老师
+    async getAdminSelect() {
+      const data = { list: true };
+      const res = await getAdminSelect(data);
+      if (res.code === 0) {
+        this.searchOptions[2].options = res.data;
+      }
+    },
     // 获取所属分类
     async getCateList() {
       const data = { list: true };
@@ -366,7 +390,7 @@ export default {
     async getproject() {
       const res = await getproject();
       if (res.code === 0) {
-        this.searchOptions[2].options = res.data;
+        this.searchOptions[3].options = res.data;
       }
     },
     handleSearch(data) {
@@ -375,6 +399,7 @@ export default {
         ...data,
         date: (data.date || []).join(" - "),
         project_id: data.project_id.join(","),
+        staff_id: data.staff_id.join(","),
       };
       this.studentsOrder();
     },
