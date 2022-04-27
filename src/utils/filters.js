@@ -1,65 +1,16 @@
 import Vue from 'vue'
-const min = (val) => val < 10 ? '0' + val : val
 const filters = {
-    moneyFormat(number, isCompact) {
-        return new Intl.NumberFormat('zh-CN', { style: 'currency', minimumFractionDigits: 2, notation: isCompact ? 'compact' : 'standard', currency: 'CNY' }).format(number || 0)
+    phoneFormat(val) {
+        if (!val) return '--'
+        return (val + '').replace(/(\d{3})\d{4}(\d{4})/, `$1****$2`)
     },
-    filterPhone(val) {
-        if (!val) return "--";
-        val = val + ''
-        let start = val.substr(0, 3);
-        let end = val.substr(-4);
-        return `${start}****${end}`;
+    idCardFormat(val) {
+        if (!val) return '--'
+        return (val + '').replace(/(\d{2})\d+(\d{3})/, `$1**************$2`)
     },
-    filterIdCard(val) {
-        if (!val) return "--";
-        val = val + ''
-        let start = val.substr(0, 3);
-        let end = val.substr(-4);
-        return `${start}***********${end}`;
-    },
-    removeTag(val) {
-        const regx = /<[^>]*>|<\/[^>]*>/gm;
-        return val ? val.replace(regx, "") : ''
-    },
-    // 视频时长
-    filterDuration(val) {
-        val = (+val || 0).toFixed(0)
-        let s = val
-        let h = 0
-        let m = 0
-        if (s >= 60) {
-            m = Math.floor(s / 60)
-            s = s % 60
-        }
-        if (m >= 60) {
-            h = Math.floor(m / 60)
-            m = m % 60
-        }
-        return `${min(h)}:${min(m)}:${min(s)}`
-    },
-    // 视频大小
-    filterFileSize(b) {
-        let kb = 0
-        let mb = 0
-        let g = 0
-        if (b / 1024 >= 1) {
-            kb = (b / 1024).toFixed(2)
-            if (kb < 1024) {
-                return `${kb}KB`
-            }
-        }
-        if (kb / 1024 >= 1) {
-            mb = (kb / 1024).toFixed(2)
-            if (mb < 1024) {
-                return `${mb}MB`
-            }
-        }
-        if (mb / 1024 >= 1) {
-            g = (mb / 1024).toFixed(2)
-            return `${g}G`
-        }
-        return `${b}B`
+    moneyFormat(number) {
+        number = (number * 1 || 0).toFixed(3).slice(0, -1)
+        return `￥${number}`
     },
     orderStatus(status) {
         const statusMap = {
@@ -72,25 +23,47 @@ const filters = {
         }
         return statusMap[status]
     },
-    orderTagType(status) {
+    orderTagColor(status) {
         const tagTypeMap = {
-            0: "info",
-            1: "",
-            2: "warning",
-            3: "success",
-            4: "danger",
-            5: "danger",
+            0: "#888",
+            1: "#888",
+            2: "#ff976a",
+            3: "#07c160",
+            4: "#ee0a24",
+            5: "#ee0a24",
         }
         return tagTypeMap[status]
-    }
+    },
+    orderApplyStatus(status, isText) {
+        const applyStatusMap = {
+            1: {
+                text: "待审核",
+                color: "#fdc400",
+            },
+            2: {
+                text: "审核中",
+                color: "#199fff",
+            },
+            3: {
+                text: "已通过",
+                color: "#59D234",
+            },
+            8: {
+                text: "已撤销",
+                color: "#c0c4cc",
+            },
+            9: {
+                text: "已驳回",
+                color: "#fd6500",
+            },
+        }
+        if (isText) {
+            return applyStatusMap[status].text || '--'
+        }
+        return applyStatusMap[status].color || ''
+    },
 }
-Vue.directive('focus', {
-    // 当被绑定的元素插入到 DOM 中时……
-    inserted: function (el) {
-        // 聚焦元素
-        el.querySelector('input').focus()
-    }
-})
+
 Object.keys(filters).forEach(key => {
     Vue.filter(key, filters[key])
 })
