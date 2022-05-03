@@ -357,6 +357,22 @@ export default {
           },
         },
         {
+          key: "pay_date",
+          type: "datePicker",
+          attrs: {
+            value: "",
+            type: "daterange",
+            "range-separator": "至",
+            "start-placeholder": "回款日期起",
+            "end-placeholder": "回款日期止",
+            format: "yyyy-MM-dd",
+            "value-format": "yyyy-MM-dd",
+            pickerOptions: {
+              shortcuts: getShortcuts([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+            },
+          },
+        },
+        {
           key: "money",
           type: "numberRange",
           width: 280,
@@ -487,6 +503,9 @@ export default {
         ...this.searchData,
         staff_id: Array.isArray(this.searchData.staff_id)
           ? this.searchData.staff_id.join(",")
+          : "",
+        pay_date: Array.isArray(this.searchData.pay_date)
+          ? this.searchData.pay_date.join(" - ")
           : "",
       };
       this.listLoading = true;
