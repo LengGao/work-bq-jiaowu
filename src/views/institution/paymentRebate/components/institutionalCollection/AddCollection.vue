@@ -56,6 +56,16 @@
             >
             </el-table-column>
             <el-table-column
+              prop="mobile"
+              label="手机号码"
+              min-width="130"
+              show-overflow-tooltip
+            >
+              <template slot-scope="{ row }">
+                <PartiallyHidden :value="row.mobile" />
+              </template>
+            </el-table-column>
+            <el-table-column
               label="项目名称"
               show-overflow-tooltip
               min-width="200"
