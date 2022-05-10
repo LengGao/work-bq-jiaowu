@@ -114,6 +114,7 @@
         <page
           :data="listTotal"
           :curpage="pageNum"
+          @pageSizeChange="handleSizeChange"
           @pageChange="handlePageChange"
         />
       </div>
@@ -139,6 +140,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         search_box: "",
@@ -189,6 +191,10 @@ export default {
       };
       this.courseUserVideoStatisticsList();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.courseUserVideoStatisticsList();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.courseUserVideoStatisticsList();
@@ -197,6 +203,7 @@ export default {
     async courseUserVideoStatisticsList() {
       const data = {
         page: this.pageNum,
+        limit: this.pageSize,
         class_id: this.$route.query.id,
         course_id: this.classData.course_id,
         ...this.searchData,

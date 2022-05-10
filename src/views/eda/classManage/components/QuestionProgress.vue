@@ -107,6 +107,7 @@
       <page
         :data="listTotal"
         :curpage="pageNum"
+        @pageSizeChange="handleSizeChange"
         @pageChange="handlePageChange"
       />
     </div>
@@ -123,6 +124,7 @@ export default {
       listData: [],
       listLoading: false,
       pageNum: 1,
+      pageSize: 20,
       listTotal: 0,
       searchData: {
         keyword: "",
@@ -158,6 +160,10 @@ export default {
       };
       this.getClassQuestionStatistics();
     },
+    handleSizeChange(size) {
+      this.pageSize = size;
+      this.getClassQuestionStatistics();
+    },
     handlePageChange(val) {
       this.pageNum = val;
       this.getClassQuestionStatistics();
@@ -167,6 +173,7 @@ export default {
       const data = {
         class_id: this.$route.query.id,
         page: this.pageNum,
+        limit: this.pageSize,
         ...this.searchData,
       };
       const res = await getClassQuestionStatistics(data);
