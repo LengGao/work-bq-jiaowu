@@ -347,7 +347,7 @@
               <div
                 class="header-copy"
                 title="双击复制（同时编辑多个时有效）"
-                @dblclick="handleHeaderDblclick('moneys', key)"
+                @dblclick="handleCheckedHeaderDblclick('moneys', key)"
               >
                 <span>{{ item }}</span>
                 <i class="el-icon-document-copy"></i>
@@ -450,7 +450,7 @@
               <div
                 class="header-copy"
                 title="双击复制（同时编辑多个时有效）"
-                @dblclick="handleHeaderDblclick('moneys', key)"
+                @dblclick="handleCheckedHeaderDblclick('moneys', key)"
               >
                 <span>{{ item }}</span>
                 <i class="el-icon-document-copy"></i>
@@ -815,24 +815,29 @@ export default {
       });
     },
     // 双击表头复制指定金额
-    handleHeaderDblclick(field, field2) {
+    handleHeaderDblclick(field) {
       let value = "";
-      const data = this.id ? this.againListData : this.listData;
+      const data = this.listData;
       data.forEach((item) => {
-        if (field2) {
+        if (item.edit) {
           if (value !== "") {
-            item[field][field2] = value;
+            item[field] = value;
           } else {
-            value = item[field][field2];
+            value = item[field];
           }
+        }
+      });
+    },
+    // 选中的双击表头复制指定金额
+    handleCheckedHeaderDblclick(field, field2) {
+      let value = "";
+      const data = this.id ? this.againListData : this.checkedOrderData;
+      console.log(data);
+      data.forEach((item) => {
+        if (value !== "") {
+          item[field][field2] = value;
         } else {
-          if (item.edit) {
-            if (value !== "") {
-              item[field] = value;
-            } else {
-              value = item[field];
-            }
-          }
+          value = item[field][field2];
         }
       });
     },
