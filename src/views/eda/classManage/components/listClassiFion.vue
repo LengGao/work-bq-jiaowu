@@ -49,10 +49,9 @@
           <template slot-scope="scope">
             <div
               :style="{
-                color:
-                  scope.row.send_status_name == '失败'
-                    ? 'red'
-                    : 'rgb(2, 179, 2)',
+                color: [2, 4, 6].includes(scope.row.send_status)
+                  ? 'red'
+                  : 'rgb(2, 179, 2)',
               }"
             >
               {{ scope.row.send_status_name }}

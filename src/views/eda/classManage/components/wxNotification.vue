@@ -85,7 +85,7 @@
       </el-table-column>
       <el-table-column
         prop="success"
-        label="发送总数/成功/失败"
+        label="发送总数/公众号/短信"
         min-width="120"
         align="center"
         show-overflow-tooltip
