@@ -117,7 +117,7 @@
               <el-button
                 v-if="row.check_state == 2"
                 type="text"
-                @click="openAddCollectionDialog(row.log_id)"
+                @click="toAddCollection(row.log_id)"
                 >再次回款</el-button
               >
             </template>
@@ -294,10 +294,17 @@ export default {
     },
     toDetail(id) {
       this.$router.push({
-        name: "collectionDetail",
+        name: "institutionalCollectionDetail",
         query: {
           id,
+          isFromList: 1,
         },
+      });
+    },
+    toAddCollection(id) {
+      this.$router.push({
+        name: "addInstitutionalCollection",
+        query: { id },
       });
     },
     toCrmOrderDetail(id) {
