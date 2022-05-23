@@ -38,7 +38,7 @@
           v-model="formData.source"
           filterable
           clearable
-          placeholder="请选择客户来源"
+          placeholder="请选择订单来源"
         >
           <el-option
             v-for="item in fromOptions"
@@ -127,7 +127,17 @@
         ></el-cascader>
       </el-form-item>
 
-      <el-form-item label="届别名称">
+      <el-form-item
+        label="届别名称"
+        prop="jiebie_id"
+        :rules="[
+          {
+            required: formData.type === 1,
+            message: '请选择届别',
+            trigger: 'change',
+          },
+        ]"
+      >
         <el-select
           class="input"
           v-model="formData.jiebie_id"
@@ -896,7 +906,7 @@ export default {
     // 获取来源
     async getCustomfieldOptions() {
       const data = {
-        field_name: "customer_source",
+        field_name: "order_source",
       };
       const res = await getCustomfieldOptions(data);
       if (res.code === 0) {

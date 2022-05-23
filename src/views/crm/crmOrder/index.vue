@@ -136,6 +136,13 @@
           >
           </el-table-column>
           <el-table-column
+            prop="source"
+            label="订单来源"
+            min-width="100"
+            show-overflow-tooltip
+          >
+          </el-table-column>
+          <el-table-column
             prop="project_name"
             label="项目名称"
             min-width="220"
@@ -564,6 +571,7 @@ export default {
             options: [],
           },
         },
+
         {
           key: "jiebie_id",
           type: "select",
@@ -574,6 +582,21 @@ export default {
             placeholder: "届别名称",
             clearable: true,
             filterable: true,
+          },
+        },
+        {
+          key: "order_source",
+          type: "select",
+          width: 200,
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "订单来源",
+            clearable: true,
+            filterable: true,
+            "collapse-tags": true,
+            multiple: true,
           },
         },
         {
@@ -697,6 +720,7 @@ export default {
     this.getDepartmentlists();
     this.getCustomfieldOptions();
     this.getGradeOptions();
+    this.getOrderSourceOptions();
   },
   methods: {
     handleSeletChange(selection) {
@@ -796,6 +820,18 @@ export default {
         }));
       }
     },
+    // 获取订单来源
+    async getOrderSourceOptions() {
+      const data = {
+        field_name: "order_source",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.searchOptions[9].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
+      }
+    },
     // 获取所属分类
     async getCateList() {
       const data = { list: true };
@@ -871,6 +907,9 @@ export default {
           : "",
         sources: Array.isArray(this.searchData.sources)
           ? this.searchData.sources.join(",")
+          : "",
+        order_source: Array.isArray(this.searchData.order_source)
+          ? this.searchData.order_source.join(",")
           : "",
         staff_id: Array.isArray(this.searchData.staff_id)
           ? this.searchData.staff_id.join(",")
