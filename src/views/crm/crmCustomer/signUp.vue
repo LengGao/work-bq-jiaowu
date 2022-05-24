@@ -881,13 +881,11 @@ export default {
       surname = "",
       mobile = "",
       id_card_number = "",
-      source = "",
-    } = this.$route.query;
+    } = this.$route.query;  
     this.formData.id = id;
     this.formData.surname = surname;
     this.formData.mobile = mobile;
     this.formData.id_card_number = id_card_number;
-    this.formData.source = source;
   },
   methods: {
     getProjectNameById(ids) {
