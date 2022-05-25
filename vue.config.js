@@ -39,11 +39,11 @@ module.exports = {
         // target: 'http://192.168.8.201', //陈
         // target: 'http://thing.com',
         // target: 'http://192.168.8.120:90', //蚁
-        // target: 'http://v2.testadmin.beiqujy.com/apidata', //测试
+        target: 'http://v2.testadmin.beiqujy.com/apidata', //测试
         // target: 'http://thing.com',
         // target: 'http://192.168.8.100', //权
         // target: 'http://dpadmin.beiqujy.com/apidata', //生产
-        target: 'http://store.beiqujy.com/apidata', //生产
+        // target: 'http://store.beiqujy.com/apidata', //生产
         // target: 'http://edu.com',
         //target: 'http://www.beiqujy.com/apidata',
         // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题

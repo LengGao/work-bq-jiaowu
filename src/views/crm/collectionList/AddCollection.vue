@@ -357,8 +357,8 @@ import {
   batchPayment,
   getCustomfieldOptions,
   getCrmOrderList,
-  getProject,
 } from "@/api/crm";
+import { getproject } from "@/api/eda";
 import { getStaffList } from "@/api/set";
 import { getCateList, getGradeOptions } from "@/api/sou";
 import { getShortcuts, getPlanYearOptions } from "@/utils/date";
@@ -493,7 +493,7 @@ export default {
     this.getCrmOrderList();
     this.getCustomfieldOptions();
     this.getStaffList();
-    this.getProject();
+    this.getproject();
     this.getGradeOptions();
     this.getCateList();
   },
@@ -603,8 +603,8 @@ export default {
         : row.sub_project_ids.split(",") || [];
     },
     // 获取项目下拉
-    async getProject() {
-      const res = await getProject();
+    async getproject() {
+      const res = await getproject();
       if (res.code === 0) {
         this.searchOptions[3].options = res.data;
       }
