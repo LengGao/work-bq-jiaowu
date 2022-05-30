@@ -21,6 +21,12 @@
         />
       </div>
       <!-- 返回 -->
+      <div class="btn-help" title="使用帮助">
+        <a href="https://help.beiqujy.com/web/#/5/52" target="_blank">
+          <i class="iconfont iconicon_hlep"></i>
+        </a>
+      </div>
+      <!-- 返回 -->
       <div class="btn-share" title="营销管理后台" @click="handleLink">
         <i class="iconfont iconfenxiang3"></i>
       </div>
@@ -395,6 +401,17 @@ export default {
     }
     &:hover {
       color: #2798ee;
+    }
+  }
+  .btn-help {
+    color: #424542;
+    cursor: pointer;
+    margin-right: 20px;
+    &:hover {
+      color: #2798ee;
+    }
+    i {
+      font-size: 18px;
     }
   }
   .btn-share {

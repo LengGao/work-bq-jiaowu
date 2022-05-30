@@ -233,6 +233,20 @@
             </span>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="from"
+          label="客户来源"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
+        <el-table-column
+          prop="source"
+          label="订单来源"
+          min-width="100"
+          show-overflow-tooltip
+        >
+        </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="120">
           <template slot-scope="{ row }">
             <template v-if="!row.verify_status">
@@ -485,6 +499,36 @@ export default {
           },
         },
         {
+          key: "sources",
+          type: "select",
+          width: 200,
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "客户来源",
+            clearable: true,
+            filterable: true,
+            multiple: true,
+            "collapse-tags": true,
+          },
+        },
+        {
+          key: "order_source",
+          type: "select",
+          width: 200,
+          options: [],
+          optionValue: "title",
+          optionLabel: "title",
+          attrs: {
+            placeholder: "订单来源",
+            clearable: true,
+            filterable: true,
+            "collapse-tags": true,
+            multiple: true,
+          },
+        },
+        {
           key: "keyword",
           attrs: {
             placeholder: "订单名称",
@@ -533,6 +577,8 @@ export default {
     this.getCustomfieldOptions();
     this.getStaffList();
     this.getDepartmentlists();
+    this.getCustomerFromOptions();
+    this.getOrderSourceOptions();
   },
   methods: {
     // 重置
@@ -568,6 +614,31 @@ export default {
           "id",
           "children"
         );
+      }
+    },
+    // 获取客户来源
+    async getCustomerFromOptions() {
+      const data = {
+        field_name: "customer_source",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.coustomFrom = res.data.field_content;
+        this.searchOptions[8].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
+      }
+    },
+    // 获取订单来源
+    async getOrderSourceOptions() {
+      const data = {
+        field_name: "order_source",
+      };
+      const res = await getCustomfieldOptions(data);
+      if (res.code === 0) {
+        this.searchOptions[9].options = res.data.field_content.map((item) => ({
+          title: item,
+        }));
       }
     },
     // 获取支付方式
@@ -675,6 +746,12 @@ export default {
           : "",
         pay_date: Array.isArray(this.searchData.pay_date)
           ? this.searchData.pay_date.join(" - ")
+          : "",
+        sources: Array.isArray(this.searchData.sources)
+          ? this.searchData.sources.join(",")
+          : "",
+        order_source: Array.isArray(this.searchData.order_source)
+          ? this.searchData.order_source.join(",")
           : "",
       };
       this.listLoading = true;
