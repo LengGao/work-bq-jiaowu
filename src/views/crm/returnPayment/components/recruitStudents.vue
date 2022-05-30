@@ -773,6 +773,12 @@ export default {
         pay_date: Array.isArray(this.searchData.pay_date)
           ? this.searchData.pay_date.join(" - ")
           : "",
+        sources: Array.isArray(this.searchData.sources)
+          ? this.searchData.sources.join(",")
+          : "",
+        order_source: Array.isArray(this.searchData.order_source)
+          ? this.searchData.order_source.join(",")
+          : "",
       };
       this.exportLoading = true;
       const res = await getReturnPaymentList(data).catch(() => {});
