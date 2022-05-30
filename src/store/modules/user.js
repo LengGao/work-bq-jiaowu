@@ -18,7 +18,9 @@ const user = {
     identity: '', // 用户身份 1教务 2招生 3老师 4财务 5管理员
     msgCount: 0,// 任务中心未读数量
     userRouter: [],
-    menus: []
+    menus: [],
+    isBindPhone: true,
+    showBindPhoneDialog: false,
   },
 
   mutations: {
@@ -45,6 +47,15 @@ const user = {
     },
     SET_IDENTITY: (state, identity) => {
       state.identity = identity
+    },
+    SET_IS_BIND_PHONE: (state, isBindPhone) => {
+      state.isBindPhone = isBindPhone
+      if (!isBindPhone) {
+        state.showBindPhoneDialog = true
+      }
+    },
+    SET_BIND_SHOW: (state, isShow) => {
+      state.showBindPhoneDialog = isShow
     }
   },
 
@@ -116,7 +127,9 @@ const user = {
     async setIdentity({ commit }) {
       const res = await getIdentity()
       const identity = res.data?.identity || ''
+      const isBindPhone = res.data?.bind !== 0
       commit('SET_IDENTITY', identity)
+      commit('SET_IS_BIND_PHONE', isBindPhone)
     },
     // 前端 登出
     FedLogOut({ commit }) {

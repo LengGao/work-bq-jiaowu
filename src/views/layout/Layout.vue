@@ -6,10 +6,12 @@
       <app-main></app-main>
     </div>
     <Help :url="helpUrl" v-model="helpFullScreen" />
+    <BindPhoneDialog :value="showBindPhoneDialog" />
   </div>
 </template>
 <script>
 import { Navbar, Sidebar, AppMain, Help } from "./components";
+import BindPhoneDialog from "./components/BindPhoneDialog.vue";
 import ResizeMixin from "./mixin/ResizeHandler";
 import { getNoticeData } from "@/api/workbench";
 import { mapGetters } from "vuex";
@@ -20,6 +22,7 @@ export default {
     Sidebar,
     AppMain,
     Help,
+    BindPhoneDialog,
   },
   mixins: [ResizeMixin],
   data() {
@@ -30,7 +33,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["menus", "helpUrl"]),
+    ...mapGetters(["menus", "helpUrl", "showBindPhoneDialog"]),
     sidebar() {
       return this.$store.state.app.sidebar;
     },

@@ -130,7 +130,9 @@
           <el-dropdown-item @click.native="modifyPassword">
             <span> 修改密码</span>
           </el-dropdown-item>
-
+          <el-dropdown-item @click.native="handleShowBindDialog">
+            <span> 修改绑定</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span>退出</span>
           </el-dropdown-item>
@@ -241,6 +243,9 @@ export default {
     this.getUnreadCount();
   },
   methods: {
+    handleShowBindDialog() {
+      this.$store.commit("SET_BIND_SHOW", true);
+    },
     toWorkOrder() {
       this.$router.push({
         name: "workOrderManage",

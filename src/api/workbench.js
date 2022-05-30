@@ -13,6 +13,16 @@ export function getIdentity() {
     })
 }
 /**
+ * 绑定东培手机号
+ */
+export function bindDongpei(params) {
+    return request({
+        url: '/staff/bindDongpei',
+        method: 'get',
+        params
+    })
+}
+/**
  * 獲取工作台基礎信息
  */
 export function getAdminWorkData() {
