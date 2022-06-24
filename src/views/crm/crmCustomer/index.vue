@@ -507,6 +507,7 @@ export default {
       this.$router.push({
         name: "signUp",
         query: {
+          source: from || source || "",
           id,
           surname,
           mobile,

@@ -56,7 +56,11 @@ const searchCache = {
             studentStatusChangeList: ['crmOrderDetail', 'studentDetail'],
             expireManage: ['crmOrderDetail'],
             institutionProject: ['institutionDetails'],
+<<<<<<< HEAD
             institutionDetails: ['addInstitutionalCollection', 'institutionalCollectionDetail', 'collectionDetail', 'studentDetail', 'studentOrderDetail', 'crmOrderDetail'],
+=======
+            institutionDetails: ['collectionDetail', 'studentDetail', 'studentOrderDetail', 'crmOrderDetail'],
+>>>>>>> 4b66ca7278daa9494b34f41cdc93675f129355aa
             paymentRebate: ['institutionalCollectionDetail', 'studentDetail', 'crmOrderDetail', 'institutionalRebateDetail', 'studentOrderDetail', 'addInstitutionalCollection']
         },
         // 当前缓存的页面
